@@ -1,10 +1,11 @@
 <nav style="background: #f8f9fa" class="shadow-md relative z-40">
     <div class="mx-auto px-2 sm:px-6 lg:px-8" style="max-width: 100rem">
         <div class="relative flex items-center justify-between h-16 z-50">
-            <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+            <div class="absolute inset-y-0 left-0 flex items-center md:hidden">
                 <!-- Mobile menu button-->
                 <button (click)="toggleMobileMenu()"
-                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-white hover:bg-gray-900 focus:ring-2 focus:ring-inset focus:ring-gray-900"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-white
+                        hover:bg-gray-900 focus:ring-2 focus:ring-inset focus:ring-gray-900"
                         aria-expanded="false">
                     <svg *ngIf="!this.mobileMenuState" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg"
                          fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -23,7 +24,7 @@
                 <div class="flex-shrink-0 items-center sm:flex xl:hidden">
                     <img class="hidden lg:block h-10 w-auto" [src]="this.imageMobile" alt="Open-Capture logo">
                 </div>
-                <div class="hidden sm:block sm:ml-3">
+                <div class="hidden md:block sm:ml-3">
                     <div class="flex space-x-4">
                         <button mat-flat-button routerLink="/home" [routerLinkActive]="'bg-gray-900 text-green-400'"
                                 [class.text-gray-500]="!location.path().includes('/home')"
@@ -59,9 +60,9 @@
                     </div>
                 </div>
             </div>
-            <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+            <div class="flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <!-- Profile dropdown -->
-                <div class="ml-3 relative mr-2">
+                <div class="ml-3 mr-0 md:mr-2 relative">
                     <div *ngIf="userService.user">
                         <button [class.settings_active]="location.path().includes('profile/' + userService.user['id'])"
                                 mat-mini-fab (click)="toggleProfileDropdown()" id="user-menu" aria-haspopup="true"
@@ -91,7 +92,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ml-3 mr-2 relative" *ngIf="this.privilegesService.hasPrivilege('settings')">
+                <div class="ml-3 mr-0 md:mr-2 relative" *ngIf="this.privilegesService.hasPrivilege('settings')">
                     <button id="settings-menu" aria-haspopup="true" mat-mini-fab routerLink="/settings"
                             [class.settings_active]="location.path().includes('settings')"
                             [matTooltip]="this.translate.instant('GLOBAL.settings')"
@@ -99,7 +100,7 @@
                         <i class="fa-solid fa-cog"></i>
                     </button>
                 </div>
-                <div class="ml-3 mr-2 relative" *ngIf="this.privilegesService.hasPrivilege('history')">
+                <div class="ml-3 mr-2 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('history')">
                     <button id="history-menu" aria-haspopup="true" mat-mini-fab routerLink="/history"
                             [class.settings_active]="location.path().includes('history')"
                             [matTooltip]="'GLOBAL.history' | translate"
@@ -107,7 +108,7 @@
                         <i class="fa-solid fa-history"></i>
                     </button>
                 </div>
-                <div class="ml-3 mr-2 relative" *ngIf="this.privilegesService.hasPrivilege('statistics')">
+                <div class="ml-3 mr-2 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('statistics')">
                     <button id="statistics-menu" aria-haspopup="true" mat-mini-fab routerLink="/statistics"
                             [class.settings_active]="location.path().includes('statistics')"
                             [matTooltip]="'GLOBAL.statistics' | translate"
@@ -115,7 +116,7 @@
                         <i class="fa-solid fa-chart-bar"></i>
                     </button>
                 </div>
-                <div class="ml-3 mr-2 relative border-l border-green-400 pl-5" *ngIf="this.privilegesService.hasPrivilege('suppliers_list')">
+                <div class="ml-3 mr-2 relative border-l border-green-400 pl-5 hidden md:block" *ngIf="this.privilegesService.hasPrivilege('suppliers_list')">
                     <button id="supplier-menu" aria-haspopup="true" mat-mini-fab routerLink="/accounts/suppliers"
                             [class.settings_active]="location.path().includes('accounts/suppliers')"
                             [matTooltip]="'ACCOUNTS.suppliers_list' | translate"
@@ -123,7 +124,7 @@
                         <i class="fa-solid fa-city"></i>
                     </button>
                 </div>
-                <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('customers_list')">
+                <div class="ml-3 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('customers_list')">
                     <button id="customer-menu" aria-haspopup="true" mat-mini-fab routerLink="/accounts/customers"
                             [class.settings_active]="location.path().includes('accounts/customers')"
                             [matTooltip]="'ACCOUNTS.customers_list' | translate"
@@ -131,7 +132,7 @@
                         <i class="fa-solid fa-users"></i>
                     </button>
                 </div>
-                <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('change_language')">
+                <div class="ml-3 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('change_language')">
                     <mat-form-field class="origin-top-right right-0 mt-4 w-32">
                         <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
                         <mat-select (selectionChange)="localeService.changeLocale($event)" [(value)]="localeService.currentLang">

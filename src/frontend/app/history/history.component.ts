@@ -11,6 +11,7 @@ import { NotificationService } from "../../services/notifications/notifications.
 import { Sort } from "@angular/material/sort";
 import { DatePipe } from '@angular/common';
 import * as moment from "moment";
+import {UserService} from "../../services/user.service";
 
 @Component({
     selector: 'app-history',
@@ -76,6 +77,7 @@ export class HistoryComponent implements OnInit {
     constructor(
         private http: HttpClient,
         private datePipe: DatePipe,
+        private userService: UserService,
         private authService: AuthService,
         private notify: NotificationService,
         private translate: TranslateService,
@@ -96,6 +98,11 @@ export class HistoryComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+
+        if (!this.userService.user) {
+            this.userService.user = this.userService.getUserFromLocal();
+        }
+
         this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.users = [];

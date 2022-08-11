@@ -259,8 +259,13 @@ echo ""
 
 ####################
 # Install packages
-echo "APT & PIP packages installation....."
+echo "System packages installation....."
 xargs -a apt-requirements.txt apt-get install -y > /dev/null
+echo ""
+echo "######################################################################################################################"
+echo ""
+
+echo "Python packages installation....."
 python3 -m pip install --upgrade pip > /dev/null
 python3 -m pip install --upgrade setuptools > /dev/null
 python3 -m pip install -r pip-requirements.txt > /dev/null
@@ -464,6 +469,12 @@ mkdir -p /var/log/watcher/
 touch /var/log/watcher/daemon.log
 chmod -R 775 /var/log/watcher/
 cp $defaultPath/instance/config/watcher.ini.default $defaultPath/instance/config/watcher.ini
+
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input watch /var/share/"$customId"/
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input watch /var/share/"$customId"/
+
+sed -i "s#verifier_default_input#verifier_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"
+sed -i "s#verifier_default_input#splitter_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"
 
 touch /etc/systemd/system/fs-watcher.service
 su -c "cat > /etc/systemd/system/fs-watcher.service << EOF

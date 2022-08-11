@@ -395,7 +395,7 @@
 		"created": "Chaîne entrante créée",
 		"default_form_id": "Formulaire par défaut",
 		"duplicate": "Dupliquer la chaîne entrante",
-		"incron_and_script_updated": "Script et incron mis à jour",
+		"watcher_and_script_updated": "Script et watcher mis à jour",
 		"input_deleted": "Chaîne entrante supprimée",
 		"input_duplicated": "Chaîne entrante dupliquée avec succès",
 		"input_folder": "Chemin de capture des documents",
@@ -408,7 +408,7 @@
 		"separate_by_document": "Séparation par document (toutes les 2 pages)",
 		"splitter_method": "Méthode de séparation",
 		"update": "Mettre à jour la chaîne entrante",
-		"update_script_and_incron": "Mettre à jour le script et l'incron",
+		"update_script_and_watcher": "Mettre à jour le script et le watcher",
 		"updated": "Chaîne entrante mise à jour"
 	},
 	"INVOICES": {
