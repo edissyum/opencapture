@@ -47,7 +47,9 @@ export class MenuComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.userService.user = this.userService.getUserFromLocal();
+        setTimeout(() => {
+            this.userService.user = this.userService.getUserFromLocal();
+        }, 100);
         if (this.userService.user) {
             this.localeService.getLocales();
             this.localeService.getCurrentLocale();

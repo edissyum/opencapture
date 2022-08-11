@@ -75,7 +75,7 @@
                          role="menu" aria-orientation="vertical" aria-labelledby="user-menu" *ngIf="userService.user">
                         <span class="block text-center mb-2 text-gray-900">
                             <b>{{ userService.user['lastname'] }}</b> {{ userService.user['firstname'] }} ({{ userService.user['username'] }})
-                            <i>{{ userService.user['role']['label'] }}</i>
+                            <i *ngIf="userService.user['role']">{{ userService.user['role']['label'] }}</i>
                             <hr>
                         </span>
                         <a (click)="closeprofileDropDown()" routerLink="/profile/{{ userService.user['id'] }}"

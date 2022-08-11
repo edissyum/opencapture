@@ -15,7 +15,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Injectable } from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import { LocalStorageService } from "./local-storage.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Router } from "@angular/router";
@@ -65,28 +65,44 @@ export class AuthService {
         return this.localStorage.get(name);
     }
 
-    setTokens(token: string, token2: string, daysBeforeExp: number) {
-        this.localStorage.setCookie('OpenCaptureForInvoicesToken', token, daysBeforeExp);
-        this.localStorage.setCookie('OpenCaptureForInvoicesToken_2', token2, daysBeforeExp);
+    getTokenName() {
+        let token_name = 'OpenCaptureForInvoicesToken';
+        let user_token_name = 'OpenCaptureForInvoicesToken_user';
+        if (environment['customId']) {
+            token_name += '_' + environment['customId'];
+            user_token_name += '_' + environment['customId'];
+        }
+        return {
+            'token_jwt': token_name,
+            'user_token': user_token_name
+        };
     }
 
-    setTokenAuth(token: string, daysBeforeExp: number) {
-        this.localStorage.setCookie('OpenCaptureForInvoicesToken_2', token, daysBeforeExp);
+    setTokens(token: string, user_token: string, daysBeforeExp: number) {
+        const token_names = this.getTokenName();
+        this.localStorage.setCookie(token_names['token_jwt'], token, daysBeforeExp);
+        this.localStorage.setCookie(token_names['user_token'], user_token, daysBeforeExp);
+    }
+
+    setTokenUser(user_token: string, daysBeforeExp: number) {
+        const token_names = this.getTokenName();
+        this.localStorage.setCookie(token_names['user_token'], user_token, daysBeforeExp);
     }
 
     getToken() {
-        return this.localStorage.getCookie('OpenCaptureForInvoicesToken');
+        const token_names = this.getTokenName();
+        return this.localStorage.getCookie(token_names['token_jwt']);
     }
 
     logout() {
+        const token_names = this.getTokenName();
         this.userService.setUser({});
         this.localStorage.remove('login_image_b64');
         this.localStorage.remove('selectedSettings');
         this.localStorage.remove('splitter_or_verifier');
         this.localStorage.remove('selectedParentSettings');
-        this.localStorage.deleteCookie('OpenCaptureCustom');
-        this.localStorage.deleteCookie('OpenCaptureForInvoicesToken');
-        this.localStorage.deleteCookie('OpenCaptureForInvoicesToken_2');
+        this.localStorage.deleteCookie(token_names['token_jwt']);
+        this.localStorage.deleteCookie(token_names['user_token']);
         this.http.get(environment['url'] + '/ws/auth/logout').pipe(
             catchError((err: any) => {
                 console.debug(err);

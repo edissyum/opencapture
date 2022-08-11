@@ -109,7 +109,7 @@ def login_with_token(token, lang):
 
     if error is None:
         returned_user = user.get_user_by_username({
-            'select': ['users.id', 'username', 'firstname', 'lsastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
+            'select': ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
             'username': decoded_token['sub']
         })[0]
 
