@@ -22,17 +22,19 @@ from . import privileges
 from flask_babel import gettext
 from src.backend.import_models import auth, user, roles
 from flask import request, session, jsonify, current_app
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def encode_auth_token(user_id):
-    """
-    Generates the Auth Token
-    :return: string
-    """
-    days_before_exp = 1
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    configurations = _vars[10]
+    minutes_before_exp = int(configurations['jwtExpiration'])
+
     try:
         payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=days_before_exp, seconds=0),
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=minutes_before_exp),
             'iat': datetime.datetime.utcnow(),
             'sub': user_id
         }
@@ -40,7 +42,7 @@ def encode_auth_token(user_id):
             payload,
             current_app.config.get('SECRET_KEY'),
             algorithm='HS512'
-        ), days_before_exp
+        ), minutes_before_exp
     except Exception as _e:
         return str(_e)
 
@@ -56,6 +58,7 @@ def login(username, password, lang, method='default'):
             "errors": gettext('LOGIN_ERROR'),
             "message": 'missing_secret_key'
         }, 401
+
     session['lang'] = lang
     error = None
     user_info = None
@@ -85,7 +88,7 @@ def login(username, password, lang, method='default'):
 
         response = {
             'auth_token': str(encoded_token[0]),
-            'days_before_exp': encoded_token[1],
+            'minutes_before_exp': encoded_token[1],
             'user': returned_user
         }
         return response, 200
@@ -98,6 +101,10 @@ def login(username, password, lang, method='default'):
 
 
 def login_with_token(token, lang):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    configurations = _vars[10]
+    minutes_before_exp = configurations['jwtExpiration']
     session['lang'] = lang
     error = None
 
@@ -123,7 +130,7 @@ def login_with_token(token, lang):
 
         response = {
             'auth_token': str(token),
-            'days_before_exp': 1,
+            'minutes_before_exp': minutes_before_exp,
             'user': returned_user
         }
         return response, 200

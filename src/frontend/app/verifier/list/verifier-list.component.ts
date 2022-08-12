@@ -654,7 +654,7 @@ export class VerifierListComponent implements OnInit {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('VERIFIER.confirm_delete_all_invoices'),
-                confirmButton       : this.translate.instant('VERIFIER.delete_all_checked'),
+                confirmButton       : this.translate.instant('GLOBAL.delete_all_checked'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
             },

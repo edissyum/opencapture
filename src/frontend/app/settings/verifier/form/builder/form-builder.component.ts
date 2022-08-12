@@ -172,7 +172,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'email',
-                    label: marker('ACCOUNTS.email'),
+                    label: marker('FORMATS.email'),
                     unit: 'supplier',
                     type: 'text',
                     required: false,

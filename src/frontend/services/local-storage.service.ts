@@ -52,10 +52,10 @@ export class LocalStorageService {
         return "";
     }
 
-    setCookie(cname: string, cvalue: string, exdays: number) {
+    setCookie(cname: string, cvalue: string, expMinutes: number) {
         const d = new Date();
-        if (exdays !== 0) {
-            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        if (expMinutes !== 0) {
+            d.setMinutes(d.getMinutes() + expMinutes);
             const expires = "expires=" + d.toUTCString();
             document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;SameSite=Strict";
         } else {
