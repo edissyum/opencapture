@@ -201,8 +201,6 @@ class Splitter:
         _date = year + month + day + hour + minute + seconds
         random_num = str(random.randint(0, 99999)).zfill(5)
         mask_values = mask_args['mask'].split('#')
-        print("mask_values : ")
-        print(mask_values)
         separator = mask_args['separator'] if mask_args['separator'] else ''
         for mask_value in mask_values:
             if not mask_value:
