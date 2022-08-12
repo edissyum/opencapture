@@ -48,10 +48,12 @@ export class UserService {
     }
 
     getTokenUser() {
-        let user_token_name = 'OpenCaptureForInvoicesToken_user';
+        let userTokenName = 'OpenCaptureForInvoicesToken_user';
         if (environment['customId']) {
-            user_token_name += '_' + environment['customId'];
+            userTokenName += '_' + environment['customId'];
+        } else if (environment['fqdn']) {
+            userTokenName += '_' + environment['fqdn'];
         }
-        return this.localStorage.getCookie(user_token_name);
+        return this.localStorage.getCookie(userTokenName);
     }
 }

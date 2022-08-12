@@ -45,8 +45,11 @@ export class LoginRequiredService implements CanActivate {
         private historyService: HistoryService,
     ) {}
 
+
+
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         const token = this.authService.getToken();
+
         if (!token) {
             this.translate.get('AUTH.not_connected').subscribe((translated: string) => {
                 this.authService.setCachedUrl(state.url.replace(/^\//g, ''));
@@ -55,7 +58,7 @@ export class LoginRequiredService implements CanActivate {
             });
             return false;
         }
-        if (this.userService.getUser() === undefined) {
+        if (this.userService.getUser() === undefined && this.userService.getUserFromLocal() === undefined) {
             this.http.post(
                 environment['url'] + '/ws/auth/login',
                 {
@@ -69,7 +72,9 @@ export class LoginRequiredService implements CanActivate {
                 tap((data: any) => {
                     this.userService.setUser(data.body.user);
                     this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())), data.body.days_before_exp);
-                    this.authService.generateHeaders();
+                    if (!this.authService.headersExists) {
+                        this.authService.generateHeaders();
+                    }
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {
                         this.historyService.addHistory('general', 'login', this.translate.instant('HISTORY-DESC.login_with_token'));

@@ -36,6 +36,9 @@ export class HistoryService {
     ) { }
 
     addHistory(module: any, submodule: string, desc: string) {
+        if (!this.userService.user || !this.userService.user.id) {
+            this.userService.user = this.userService.getUserFromLocal();
+        }
         const user = this.userService.user.lastname + ' ' + this.userService.user.firstname + ' (' + this.userService.user.username + ')';
         const data = {
             'module': module,

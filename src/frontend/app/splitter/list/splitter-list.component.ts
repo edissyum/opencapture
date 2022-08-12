@@ -95,6 +95,9 @@ export class SplitterListComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        if (!this.authService.headersExists) {
+            this.authService.generateHeaders();
+        }
         this.localStorageService.save('splitter_or_verifier', 'splitter');
 
         const lastUrl = this.routerExtService.getPreviousUrl();

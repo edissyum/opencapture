@@ -25,7 +25,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
     styleUrls: ['./document-type.component.scss']
 })
 export class DocumentTypeComponent implements OnInit {
-    selectedItem:any;
+    selectedItem: any;
+
     constructor(
         public router: Router,
         private dialogRef: MatDialogRef<DocumentTypeComponent>,
