@@ -332,36 +332,7 @@ export class VerifierListComponent implements OnInit {
                         if (invoice.form_label === null || invoice.form_label === '' || invoice.form_label === undefined) {
                             invoice.form_label = this.translate.instant('VERIFIER.no_form');
                         }
-                        if (invoice.form_id) {
-                            const form_data = this.getFormInfo(invoice.form_id);
-                            if (form_data) {
-                                invoice.display = {'subtitles': []};
-                                form_data.display.subtitles.forEach((subtitle: any) => {
-                                    let subtitle_data = '';
-                                    if (invoice.datas.hasOwnProperty(subtitle.id)) {
-                                        subtitle_data= invoice.datas[subtitle.id];
-                                    } else if (invoice.hasOwnProperty(subtitle.id)) {
-                                        subtitle_data = invoice[subtitle.id];
-                                    }
-
-                                    invoice.display.subtitles.push({
-                                        'id': subtitle.id,
-                                        'label': subtitle.label,
-                                        'data': subtitle_data
-                                    });
-                                });
-                            } else {
-                                invoice.display = {
-                                    "subtitles": [
-                                        {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-                                        {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
-                                        {"id": "date", "label": "VERIFIER.register_date"},
-                                        {"id": "original_filename", "label": "VERIFIER.original_file"},
-                                        {"id": "form_label", "label": "VERIFIER.form"}
-                                    ]
-                                };
-                            }
-                        } else {
+                        if (!invoice.form_id) {
                             invoice.display = {
                                 "subtitles": [
                                     {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
@@ -372,6 +343,34 @@ export class VerifierListComponent implements OnInit {
                                 ]
                             };
                         }
+                        if (!invoice.display) {
+                            invoice.display = {
+                                "subtitles": [
+                                    {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
+                                    {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+                                    {"id": "date", "label": "VERIFIER.register_date"},
+                                    {"id": "original_filename", "label": "VERIFIER.original_file"},
+                                    {"id": "form_label", "label": "VERIFIER.form"}
+                                ]
+                            };
+                        }
+
+                        const invoice_display_tmp = invoice.display.subtitles;
+                        invoice.display = {'subtitles': []};
+                        invoice_display_tmp.forEach((subtitle: any) => {
+                            let subtitle_data = '';
+                            if (invoice.datas.hasOwnProperty(subtitle.id)) {
+                                subtitle_data= invoice.datas[subtitle.id];
+                            } else if (invoice.hasOwnProperty(subtitle.id)) {
+                                subtitle_data = invoice[subtitle.id];
+                            }
+
+                            invoice.display.subtitles.push({
+                                'id': subtitle.id,
+                                'label': subtitle.label,
+                                'data': subtitle_data
+                            });
+                        });
                     });
                 }
 
