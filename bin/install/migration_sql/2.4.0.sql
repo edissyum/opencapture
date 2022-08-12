@@ -4,6 +4,9 @@ INSERT INTO "configurations" ("label", "data") VALUES ('loginMessage', '{"type":
 -- Add minimum quotation number size
 INSERT INTO "configurations" ("label", "data") VALUES ('devisSizeMin', '{"type": "int", "value": "3", "description": "Taille minimale pour un numéro de devis"}');
 
+-- Add token expiration
+INSERT INTO "configurations" ("label", "data") VALUES ('jwtExpiration', '{"type": "int", "value": "1440", "description": "Délai avant expiration du token d''authentification (en minutes)"}');
+
 -- Improve REGEX
 UPDATE regex SET content = '(((?P<r1>NUMERO|N(O|°|º|R.))?\s*(DE)?\s*(DEVIS)(\s*:)?\s*(?(r1)()|(NUMERO|N(O|°|º|R.)?))(\s*:)?|(R(E|É)F(\.)?\s*PROPOSITION\s*COMMERCIALE)|CONTRAT\s*(N(O|°|º|R.)))\s*(:|#){0,1}).*' WHERE lang = 'fra' AND regex_id = 'quotationRegex';
 

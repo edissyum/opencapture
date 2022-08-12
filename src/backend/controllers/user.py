@@ -17,6 +17,8 @@
 
 from flask_babel import gettext
 from src.backend.import_models import user, accounts
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -119,6 +121,10 @@ def get_customers_by_user_id(user_id):
 
 
 def update_user(user_id, data):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    configurations = _vars[10]
+    minutes_before_exp = configurations['jwtExpiration']
     user_info, error = user.get_user_by_id({'user_id': user_id})
 
     if error is None:
@@ -153,9 +159,8 @@ def update_user(user_id, data):
         _, error = user.update_user({'set': _set, 'user_id': user_id})
 
         if error is None:
-            days_before_exp = 1
             user_info = user.get_user_by_id({'user_id': user_id})
-            return {"user": user_info[0], "days_before_exp": days_before_exp}, 200
+            return {"user": user_info[0], "minutes_before_exp": minutes_before_exp}, 200
         else:
             response = {
                 "errors": gettext('UPDATE_USER_ERROR'),

@@ -131,7 +131,7 @@ export class LoginComponent implements OnInit {
             ).pipe(
                 tap((data: any) => {
                     this.userService.setUser(data.body.user);
-                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())), data.body.days_before_exp);
+                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())), data.body.minutes_before_exp);
                     this.authService.generateHeaders();
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {

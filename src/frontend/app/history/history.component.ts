@@ -43,7 +43,7 @@ export class HistoryComponent implements OnInit {
         },
         {
             'id': 'module',
-            'label': this.translate.instant('HISTORY.module'),
+            'label': this.translate.instant('CUSTOM-FIELDS.module'),
             'type': 'select',
             'control': new FormControl(),
             'values': [

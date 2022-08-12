@@ -243,7 +243,7 @@ export class SplitterListComponent implements OnInit {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('SPLITTER.confirm_delete_all_batches'),
-                confirmButton       : this.translate.instant('SPLITTER.delete_all_checked'),
+                confirmButton       : this.translate.instant('GLOBAL.delete_all_checked'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
             },

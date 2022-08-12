@@ -88,7 +88,7 @@ export class CreateSupplierComponent implements OnInit {
         },
         {
             id: 'email',
-            label: marker('ACCOUNTS.email'),
+            label: marker('FORMATS.email'),
             type: 'text',
             control: new FormControl('', Validators.email),
             required: false
