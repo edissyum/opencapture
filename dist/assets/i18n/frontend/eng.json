@@ -391,11 +391,11 @@
 		"confirm_delete": "Are you sure you want to delete the input <b>{{ input }}</b> ?",
 		"confirm_duplicate": "Are you sure you want to duplicate input <b>{{ input }}</b> ?",
 		"create": "Create input",
-		"create_hint": "Create the input will automatically create script <b>.sh</b> and the incron to capture automatically files",
+		"create_hint": "Create the input will automatically create script <b>.sh</b> and the watcher to capture automatically files",
 		"created": "Input created successfully",
 		"default_form_id": "Default form",
 		"duplicate": "Duplicate input",
-		"incron_and_script_updated": "Incron and script updated successfully",
+		"watcher_and_script_updated": "Watcher and script updated successfully",
 		"input_deleted": "Input deleted sucessfully",
 		"input_duplicated": "Input duplicated successfully",
 		"input_folder": "Document capture path",
@@ -408,7 +408,7 @@
 		"separate_by_document": "separate by document (every other page)",
 		"splitter_method": "Split method",
 		"update": "Update input",
-		"update_script_and_incron": "Update script and incron",
+		"update_script_and_watcher": "Update script and watcher",
 		"updated": "Input updated successfully"
 	},
 	"INVOICES": {

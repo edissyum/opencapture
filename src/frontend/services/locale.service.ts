@@ -80,6 +80,9 @@ export class LocaleService {
     }
 
     changeLocale(data: any) {
+        if (!this.authService.headersExists) {
+            this.authService.generateHeaders();
+        }
         this.http.get(environment['url'] + '/ws/i18n/changeLanguage/' + data.value, {headers: this.authService.headers}).pipe(
             tap(() => {
                 const label = data.source._elementRef.nativeElement.textContent;
@@ -114,8 +117,8 @@ export class LocaleService {
         ).subscribe();
     }
 
-    getLocales() {
-        this.http.get(environment['url'] + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
+    getLocales(){
+        this.http.get(environment['url'] + '/ws/i18n/getAllLang').pipe(
             tap((data: any) => {
                 this.langs = data.langs;
             }),

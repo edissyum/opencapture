@@ -28,7 +28,6 @@ import { PrivilegesService } from "../../services/privileges.service";
 })
 export class HomeComponent implements OnInit {
     constructor(
-        private authService: AuthService,
         private userService: UserService,
         public privilegesService: PrivilegesService,
         private localStorageService: LocalStorageService

@@ -247,7 +247,7 @@ export class UpdateInputComponent implements OnInit {
             });
             this.http.post(environment['url'] + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.notify.success(this.translate.instant('INPUT.incron_and_script_updated'));
+                    this.notify.success(this.translate.instant('INPUT.watcher_and_script_updated'));
                     this.onSubmit();
                 }),
                 catchError((err: any) => {

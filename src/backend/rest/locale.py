@@ -33,7 +33,6 @@ def change_language(lang):
 
 
 @bp.route('i18n/getAllLang', methods=['GET'])
-@auth.token_required
 def get_all_lang():
     if 'languages' in session:
         languages = json.loads(session['languages'])

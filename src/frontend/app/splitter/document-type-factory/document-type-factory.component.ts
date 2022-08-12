@@ -240,6 +240,9 @@ export class DocumentTypeFactoryComponent implements OnInit {
     hasChild      = (_: number, _nodeData: TreeItemFlatNode)  => _nodeData.type === 'folder';
 
     ngOnInit(): void {
+        if (!this.authService.headersExists) {
+            this.authService.generateHeaders();
+        }
         this.treeFlattener  = new MatTreeFlattener(this.transformer, this.getLevel,
             this.isExpandable, this.getChildren);
         this.treeControl    = new FlatTreeControl<TreeItemFlatNode>(this.getLevel, this.isExpandable);

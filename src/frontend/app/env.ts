@@ -20,6 +20,7 @@ declare const require: any;
 export const environment = {
     url: 'http://localhost:5000',
     customId: '',
+    fqdn: '',
     production: false,
     version: require('../../../package.json').version + ' (development mode)'
 };

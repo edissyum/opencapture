@@ -259,8 +259,13 @@ echo ""
 
 ####################
 # Install packages
-echo "APT & PIP packages installation....."
+echo "System packages installation....."
 xargs -a apt-requirements.txt apt-get install -y > /dev/null
+echo ""
+echo "######################################################################################################################"
+echo ""
+
+echo "Python packages installation....."
 python3 -m pip install --upgrade pip > /dev/null
 python3 -m pip install --upgrade setuptools > /dev/null
 python3 -m pip install -r pip-requirements.txt > /dev/null
@@ -465,6 +470,12 @@ touch /var/log/watcher/daemon.log
 chmod -R 775 /var/log/watcher/
 cp $defaultPath/instance/config/watcher.ini.default $defaultPath/instance/config/watcher.ini
 
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input watch /var/share/"$customId"/
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input watch /var/share/"$customId"/
+
+sed -i "s#verifier_default_input#verifier_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"
+sed -i "s#verifier_default_input#splitter_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"
+
 touch /etc/systemd/system/fs-watcher.service
 su -c "cat > /etc/systemd/system/fs-watcher.service << EOF
 [Unit]
@@ -504,6 +515,7 @@ echo "$secret" > $customPath/config/secret_key
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh"
 if ! test -f "$defaultScriptFile"; then
     mkdir -p "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
+    cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
     cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
     sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
@@ -516,6 +528,7 @@ fi
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh"
 if ! test -f "$defaultScriptFile"; then
     mkdir -p "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
+    cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
     cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh $defaultScriptFile
     sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile

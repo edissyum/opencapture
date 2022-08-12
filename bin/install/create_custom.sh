@@ -292,7 +292,6 @@ sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scri
 # Move defaults scripts to new custom location
 cp $defaultPath/bin/scripts/verifier_inputs/*.sh "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
 cp $defaultPath/bin/scripts/splitter_inputs/*.sh "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
-cp $defaultPath/bin/scripts/splitter_inputs/*.sh "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
 
 ####################
 # Fix the rights after root launch to avoid permissions issues

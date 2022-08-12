@@ -21,6 +21,7 @@ import { LocalStorageService } from "./local-storage.service";
 import { LastUrlService } from "./last-url.service";
 import { Title } from "@angular/platform-browser";
 import { Router } from "@angular/router";
+import {AuthService} from "./auth.service";
 
 @Injectable({
     providedIn: 'root'
@@ -359,19 +360,25 @@ export class SettingsService {
     constructor(
         private router: Router,
         private titleService: Title,
+        private authService: AuthService,
         private translate: TranslateService,
         private routerExtService: LastUrlService,
         private localStorage: LocalStorageService
     ) {}
 
     init() {
+        if (!this.authService.headersExists) {
+            this.authService.generateHeaders();
+        }
         const selectedParentSetting = this.localStorage.get('selectedParentSettings');
         const selectedSetting = this.localStorage.get('selectedSettings');
 
-        if (selectedSetting)
+        if (selectedSetting) {
             this.setSelectedSettings(selectedSetting);
-        if (selectedParentSetting)
+        }
+        if (selectedParentSetting) {
             this.setSelectedParentSettings(selectedParentSetting);
+        }
 
         if (selectedParentSetting == null && selectedSetting == null) {
             let foundSettings = false;

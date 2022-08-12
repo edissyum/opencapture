@@ -175,6 +175,9 @@ export class UpdateSupplierComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        if (!this.authService.headersExists) {
+            this.authService.generateHeaders();
+        }
         this.supplierId = this.route.snapshot.params['id'];
         this.supplierForm.forEach((element: any) => {
             if (element.id === 'document_lang') {
