@@ -209,7 +209,7 @@ class Splitter:
                 PDF or XML masks value
             """
             if mask_value in metadata:
-                mask_result.append(metadata[mask_value].replace(' ', separator))
+                mask_result.append(str(metadata[mask_value]).replace(' ', separator))
             elif mask_value == 'date':
                 mask_result.append(_date.replace(' ', separator))
             elif mask_value == 'random':

@@ -211,9 +211,9 @@
 		"vat_rate": "VAT rate"
 	},
 	"FIELD_METADATA": {
-		"resultMask": "Result mask",
-		"searchMask": "Search mask",
-		"xmlTag": "XML Tag"
+		"result_mask": "Result mask",
+		"search_mask": "Search mask",
+		"validation_mask": "Validation mask"
 	},
 	"FORMATS": {
 		"alphanum": "Alphanumeric [0-9aA-zZ']",
@@ -395,7 +395,6 @@
 		"created": "Input created successfully",
 		"default_form_id": "Default form",
 		"duplicate": "Duplicate input",
-		"watcher_and_script_updated": "Watcher and script updated successfully",
 		"input_deleted": "Input deleted sucessfully",
 		"input_duplicated": "Input duplicated successfully",
 		"input_folder": "Document capture path",
@@ -409,7 +408,8 @@
 		"splitter_method": "Split method",
 		"update": "Update input",
 		"update_script_and_watcher": "Update script and watcher",
-		"updated": "Input updated successfully"
+		"updated": "Input updated successfully",
+		"watcher_and_script_updated": "Watcher and script updated successfully"
 	},
 	"INVOICES": {
 		"data_deleted": "Data deleted",

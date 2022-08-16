@@ -327,7 +327,6 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
         """
             Add PDF file names using masks
         """
-
         mask_args = {
             'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
             'separator': parameters['separator'],
@@ -337,7 +336,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
         if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in documents[index]['documentTypeKey']:
             pdf_filepaths.append({
                 'input_path': parameters['folder_out'] + '/' + documents[index]['fileName'],
-                'path_in_zip': zip_filename.split('.zip')[0] + '/' + documents[index]['fileName']
+                'path_in_zip': documents[index]['fileName']
             })
         else:
             doc_except_from_zip.append(documents[index]['id'])
@@ -657,10 +656,9 @@ def validate(args):
         """
             Change status to END
         """
-
         splitter.change_status({
             'id': args['batchMetadata']['id'],
-            'status': 'END'
+            'status': 'NEW'
         })
 
     return {"OK": True}, 200
