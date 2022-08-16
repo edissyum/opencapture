@@ -44,6 +44,12 @@ def launch(args):
     tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
     with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
         filename = tmp_file.name
+
+    try:
+        os.chmod(tmp_folder, int('775', base=8))
+    except OSError:
+        pass
+
     files = _Files(filename, log, docservers, configurations, regex, languages)
 
     remove_blank_pages = False
