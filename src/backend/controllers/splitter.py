@@ -323,10 +323,13 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
         }
         zip_filename = _Splitter.get_mask_result(None, batch['metadata'], now, mask_args)
 
+    documents_doctypes = []
     for index, document in enumerate(documents):
         """
             Add PDF file names using masks
         """
+        documents[index]['metadata']['document_index'] = documents_doctypes.count(document['documentTypeKey']) + 1
+        documents_doctypes.append(document['documentTypeKey'])
         mask_args = {
             'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
             'separator': parameters['separator'],

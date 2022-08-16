@@ -226,6 +226,8 @@ class Splitter:
                     mask_result.append(document['documentTypeKey'].replace(' ', separator))
                 elif mask_value == 'document_identifier':
                     mask_result.append(document['id'])
+                elif mask_value == 'document_index':
+                    mask_result.append(document['id'])
                 else:
                     """
                         PDF value when mask value not found in metadata
