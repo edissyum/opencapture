@@ -211,9 +211,9 @@
 		"vat_rate": "Taux de TVA"
 	},
 	"FIELD_METADATA": {
-		"resultMask": "Masque de résultat",
-		"searchMask": "Masque de recherche",
-		"xmlTag": "Balise xml associée"
+		"result_mask": "Masque de résultat",
+		"search_mask": "Masque de recherche",
+		"validation_mask": "Masque de validation"
 	},
 	"FORMATS": {
 		"alphanum": "Caractères alphanumériques [0-9aA-zZ']",
@@ -395,7 +395,6 @@
 		"created": "Chaîne entrante créée",
 		"default_form_id": "Formulaire par défaut",
 		"duplicate": "Dupliquer la chaîne entrante",
-		"watcher_and_script_updated": "Script et watcher mis à jour",
 		"input_deleted": "Chaîne entrante supprimée",
 		"input_duplicated": "Chaîne entrante dupliquée avec succès",
 		"input_folder": "Chemin de capture des documents",
@@ -409,7 +408,8 @@
 		"splitter_method": "Méthode de séparation",
 		"update": "Mettre à jour la chaîne entrante",
 		"update_script_and_watcher": "Mettre à jour le script et le watcher",
-		"updated": "Chaîne entrante mise à jour"
+		"updated": "Chaîne entrante mise à jour",
+		"watcher_and_script_updated": "Script et watcher mis à jour"
 	},
 	"INVOICES": {
 		"data_deleted": "Champ supprimé",
@@ -671,6 +671,7 @@
 		"doc_type_separator": "Séparateur avec type de document",
 		"document_added_with_success": "Document ajouté",
 		"document_identifier": "Identifiant du document",
+		"document_index": "Indice du document",
 		"document_metadata": "Métadonnées de document",
 		"document_number": "Nombre de document",
 		"document_separator": "Séparateur de documents",
