@@ -681,6 +681,7 @@
 		"error_empty_batch_metadata": "Veuillez remplir les métadonnées du lot",
 		"error_empty_document_metadata": "Veuillez remplir les métadonnées des documents",
 		"error_no_doc_type": "Veuillez sélectionner les types de documents",
+		"field_form_not_respected": "Veuillez respecter le format requis du champ : <b>{{ field }}</b>",
 		"form_label": "Libellé du formulaire",
 		"identifier": "Identifiant",
 		"list": "Liste des lots",

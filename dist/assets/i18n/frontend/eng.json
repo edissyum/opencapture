@@ -681,6 +681,7 @@
 		"error_empty_batch_metadata": "Please fill batch metadata",
 		"error_empty_document_metadata": "Please fill document metadata",
 		"error_no_doc_type": "Please choose document types",
+		"field_form_not_respected": "Please respect the required format of the field : <b>{{ field }}</b>",
 		"form_label": "Form label",
 		"identifier": "Identifier",
 		"list": "List of batches",
