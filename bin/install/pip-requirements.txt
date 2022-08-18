@@ -2,8 +2,8 @@ numpy
 pandas
 unidecode
 fpdf==1.7.2
-wand==0.6.9
 zeep==4.1.0
+wand==0.6.10
 ldap3==2.9.1
 pyocr==0.8.3
 PyJWT==2.4.0
@@ -11,7 +11,7 @@ flask==2.2.2
 qrcode==7.3.1
 pillow==9.2.0
 kuyruk==9.4.0
-pyPdf2==2.10.0
+pyPdf2==2.10.2
 psycopg2==2.9.3
 werkzeug==2.2.2
 cmislib3==1.0.8
@@ -20,11 +20,11 @@ pdf2image==1.16.0
 gitpython==3.1.27
 tensorflow==2.9.1
 xlsxwriter==3.0.3
-pytesseract==0.3.9
 fs-watcher==1.0.11
 flask_cors==3.0.10
 Flask-Babel==2.0.0
 imap-tools==0.56.0
+pytesseract==0.3.10
 pyexcel_ods3==0.6.1
 configparser==5.2.0
 opencv-python==4.6.0.66
