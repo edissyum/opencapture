@@ -83,83 +83,76 @@
                 <h3>{{ this.serviceSettings.getTitle() }}</h3>
                 <div class="absolute right-4 top-0">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'CONFIGURATIONS.search_config' | translate }}</mat-label>
-                        <input matInput type="text" [disabled]="this.loading" (keyup)="searchConfiguration($event)">
+                        <mat-label>{{ 'MAILCOLLECT.search_process' | translate }}</mat-label>
+                        <input matInput type="text" [disabled]="this.loading" (keyup)="searchProcess($event)">
                     </mat-form-field>
                 </div>
                 <hr class="border-green-400">
             </div>
         </div>
-        <div *ngIf="!loading" class="w-full overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
-            <div class="text-center">
-                <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.change_image" | translate }}</h3>
-                <hr class="border-green-400 w-1/2 m-auto mb-4">
-                <div>
-                    <img class="shadow-md hover:shadow-2xl m-auto p-2 transition-all ease-in-out duration-500
-                         cursor-pointer shadow-gray-900 hover:shadow-gray-900" [src]="this.loginImage" alt="Login image"
-                         (click)="onClick(logo)">
-                    <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
-                </div>
-                <mat-hint class="relative top-2">{{ "CONFIGURATIONS.authorized_extensions" | translate }}</mat-hint>
+        <div *ngIf="!this.loading" class="w-full">
+            <div class="text-center text-gray-900 m-4">
+                <h3>{{ "MAILCOLLECT.global_parameters" | translate }}</h3>
+                <hr class="border-green-400 w-1/2 m-auto">
             </div>
-            <mat-divider class="border-green-400 mt-4 mb-4 w-3/4 m-auto"></mat-divider>
-            <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
-            <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
+            <div class="flex flex-wrap m-10 mb-0 text-center">
+                <ng-container *ngFor="let field of this.globalForm">
+                    <div class="w-1/3" *ngIf="field.type === 'text' || field.type === 'password'">
+                        <mat-form-field class="block m-1">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                            <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="field.type === 'number'">
+                        <mat-form-field class="block m-1">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                            <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="w-1/6" *ngIf="field.type === 'boolean'">
+                        <mat-slide-toggle class="relative m-auto top-4" [formControl]="field.control">
+                            {{ field.label | translate }}
+                        </mat-slide-toggle>
+                    </div>
+                </ng-container>
+            </div>
+
+            <div class="w-full text-center mb-4">
+                <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
+                    {{ 'MAILCOLLECT.update_global' | translate }}
+                </button>
+            </div>
+
+            <mat-table matSort [dataSource]="processesMail" (matSortChange)="sortData($event)">
                 <ng-container matColumnDef="id">
                     <mat-header-cell *matHeaderCellDef mat-sort-header="id"> {{ 'HEADER.id' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="label">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header="label"> {{ 'HEADER.label' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.label }} </mat-cell>
+                <ng-container matColumnDef="process_id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="process_id"> {{ 'HEADER.process_id' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.process_id }} </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="description">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header="description"> {{ 'HEADER.description' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.data.description }} </mat-cell>
+                <ng-container matColumnDef="process_folder_in">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="process_folder_in"> {{ 'HEADER.process_folder_in' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.process_folder_in }} </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="type">
-                    <mat-header-cell *matHeaderCellDef> {{ 'HEADER.type' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.data.label_type | translate }} </mat-cell>
+                <ng-container matColumnDef="process_folder_out">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="process_folder_out"> {{ 'HEADER.process_folder_out' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.process_folder_out }} </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="value">
-                    <mat-header-cell *matHeaderCellDef>{{ 'HEADER.value' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element" (click)="element.updateMode = true">
-                        <ng-container *ngIf="!element.updateMode else update">
-                            {{ element.data.value }}
-                        </ng-container>
-                        <ng-template #update>
-                            <mat-form-field appearance="outline" *ngIf="element.data.type === 'bool'">
-                                <mat-select class="relative -top-2" [(ngModel)]="element.data.value"
-                                            (selectionChange)="updateValue($event, element.id)">
-                                    <mat-option [value]="'True'">True</mat-option>
-                                    <mat-option [value]="'False'">False</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <mat-form-field appearance="outline" *ngIf="element.data.type === 'int' || element.data.type === 'float'">
-                                <input matInput type="number" [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
-                                       class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
-                            </mat-form-field>
-                            <mat-form-field appearance="outline" *ngIf="element.data.type === 'string'">
-                                <input matInput [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
-                                       class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
-                            </mat-form-field>
-                        </ng-template>
-                    </mat-cell>
+                <ng-container matColumnDef="process_action">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="process_action"> {{ 'HEADER.process_action' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.process_action }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <button *ngIf="!element.updateMode"
-                                (click)="element.updateMode = true"
-                                matTooltip="{{ 'CONFIGURATIONS.update' | translate }}" mat-icon-button
+                        <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.name)"
+                                matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
                                 class="inline-block align-text-top">
-                            <i class="fa-solid fa-edit fa-lg"></i>
-                        </button>
-                        <button *ngIf="element.updateMode"
-                                matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button
-                                class="inline-block align-text-top">
-                            <i *ngIf="!this.updateLoading" class="fa-solid fa-check fa-lg"></i>
-                            <i *ngIf="this.updateLoading" class="fa-solid fa-circle-notch fa-spin fa-lg"></i>
+                            <i class="fa-solid fa-trash fa-lg"></i>
                         </button>
                     </mat-cell>
                 </ng-container>

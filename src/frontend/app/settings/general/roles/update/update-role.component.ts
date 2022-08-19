@@ -130,7 +130,8 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.update_document_type'),
         marker('PRIVILEGES.add_document_type'),
         marker('PRIVILEGES.login_methods'),
-        marker('PRIVILEGES.verifier_display')
+        marker('PRIVILEGES.verifier_display'),
+        marker('PRIVILEGES.mailcollect')
     ];
     // End translation
     constructor(

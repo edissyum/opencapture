@@ -482,7 +482,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'adminis
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'login_methods', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (54, 'verifier_display', 'verifier');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 54;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (55, 'mailcollect', 'general');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 55;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

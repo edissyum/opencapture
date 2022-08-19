@@ -37,7 +37,8 @@ def read_config():
 def get_configurations():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
-        'where': [],
+        'where': ['display = %s'],
+        'data': [True],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else ''
     }
