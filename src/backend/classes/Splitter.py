@@ -317,8 +317,9 @@ class Splitter:
         xml_as_string = re.sub(regex['empty_line'], '', xml_as_string)
         try:
             with open(xml_file_path, "w", encoding="utf-8") as f:
-                minidom.parseString(xml_as_string)
-                f.write(xml_as_string)
+                dom = minidom.parseString(xml_as_string)
+                pretty_xml_as_string = dom.toprettyxml(indent='', newl='', encoding="utf-8")
+                f.write(pretty_xml_as_string)
         except Exception as e:
             return False, str(e)
 
