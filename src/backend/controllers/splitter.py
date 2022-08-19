@@ -500,6 +500,7 @@ def validate(args):
     now = _Files.get_now_date()
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
+    regex = _vars[2]
     _log = _vars[5]
     docservers = _vars[9]
     exported_files = []
@@ -551,6 +552,11 @@ def validate(args):
                     Export XML file
                 """
                 if output[0]['output_type_id'] in ['export_xml']:
+                    parameters['doc_loop_regex'] = regex['splitter_doc_loop']
+                    parameters['condition_regex'] = regex['splitter_condition']
+                    parameters['empty_line_regex'] = regex['splitter_empty_line']
+                    parameters['xml_comment_regex'] = regex['splitter_xml_comment']
+
                     res_export_xml = export_xml(args['documents'], parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
@@ -594,10 +600,14 @@ def validate(args):
                         Export xml for Alfresco
                     """
                     xml_export_parameters = {
-                        'separator': cmis_params['separator'],
-                        'filename': cmis_params['xml_filename'],
                         'extension': 'xml',
                         'folder_out': docservers['TMP_PATH'],
+                        'separator': cmis_params['separator'],
+                        'filename': cmis_params['xml_filename'],
+                        'doc_loop_regex': regex['splitter_doc_loop'],
+                        'condition_regex': regex['splitter_condition'],
+                        'empty_line_regex': regex['splitter_empty_line'],
+                        'xml_comment_regex': regex['splitter_xml_comment'],
                     }
                     res_export_xml = export_xml(args['documents'], xml_export_parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:

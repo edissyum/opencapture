@@ -1,8 +1,8 @@
--- Création des languages
+-- Languages creation
 INSERT INTO "languages" ("language_id", "label", "lang_code", "moment_lang_code", "date_format") VALUES ('fr','Francais', 'fra', 'fr-FR', '%d %m %Y');
 INSERT INTO "languages" ("language_id", "label", "lang_code", "moment_lang_code", "date_format") VALUES ('en', 'English', 'eng', 'en-GB', '%m %d %Y');
 
--- Création des regex
+-- REGEX creation (fra)
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('email', 'global', 'Adresse email', '([A-Za-z0-9]+[.\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.(fr|com|org|eu|law))+');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('siret', 'global', 'Numéro de SIRET', '[0-9]{14}');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('siren', 'global', 'Numéro de SIREN', '[0-9]{9}');
@@ -21,7 +21,12 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_amount
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_rate_list', 'fra', 'Liste des taux de TVA', '[20, 19.6, 10, 5.5, 2.1]');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('format_date', 'fra', 'Format final de la date', '%d/%m/%Y');
 
--- CRÉATION DES REGEX
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_doc_loop', 'fra', 'Boucle des documents dans la sortie XML du Splitter', '<!-- %BEGIN-DOCUMENT-LOOP -->(.*?)<!-- %END-DOCUMENT-LOOP -->');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_condition', 'fra', 'Condition des balises dans la sortie XML du Splitter', '<!-- %BEGIN-IF(.*?) -->(.*?)<!-- %END-IF -->');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_xml_comment', 'fra', 'Commentaire technique dans la sortie XML du Splitter', '\s?<!--[\s\S\n]*?-->\s');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_empty_line', 'fra', 'Lignes vides dans la sortie XML du Splitter', '^\s*$');
+
+-- REGEX creation (eng)
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('date', 'eng', 'Date', '([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9})\s*(3[01]|[12][0-9]|0?[1-9][\.,-]?)\s*((1|2|3){1}\d{1,3}|(1|2|3))|(((1[0-2]|0?[1-9])|\d{1}\w{2})\s?([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9}|[\/,-\.](3[01]|[12][0-9]|0?[1-9])[\/,-\.])\s?((1|2|3){1}\d{1,3}|(1|2|3)))');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('due_date', 'eng', 'Due date', '');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('invoice_number', 'eng', 'Invoice number', '(INVOICE\s*NUMBER\s*(:)?).*');
@@ -33,3 +38,8 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_rate',
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_amount', 'eng', 'VAT amount', '(VAT\s*(AMOUNT\s*)?)(\$|£|€|EUROS|EUR|CAD|USD)?\s*.*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_rate_list', 'eng', 'VAT rate list', '[20, 5,0]');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('format_date', 'eng', 'Final date format', '%m/%d/%Y');
+
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_doc_loop', 'eng', 'Document loop in Splitter XML output', '<!-- %BEGIN-DOCUMENT-LOOP -->(.*?)<!-- %END-DOCUMENT-LOOP -->');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_condition', 'eng', 'Conditions in Splitter XML output', '<!-- %BEGIN-IF(.*?) -->(.*?)<!-- %END-IF -->');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_xml_comment', 'eng', 'Tech comments in Splitter XML output', '\s?<!--[\s\S\n]*?-->\s');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_empty_line', 'eng', 'Empty line in Splitter XML output', '^\s*$');

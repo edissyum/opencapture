@@ -254,14 +254,10 @@ class Splitter:
         minute = str(now.minute).zfill(2)
         second = str(now.second).zfill(2)
         date = day + "-" + month + "-" + year + " " + hour + ":" + minute + ":" + second
-        regex = {
-            'document_loop': r'<!-- %BEGIN-DOCUMENT-LOOP -->(.*?)<!-- %END-DOCUMENT-LOOP -->',
-            'if_condition': r'<!-- %BEGIN-IF(.*?) -->(.*?)<!-- %END-IF -->',
-            'xml_comment': r'\s?<!--[\s\S\n]*?-->\s',
-            'empty_line': r'^\s*$'
-        }
+
         xml_as_string = parameters['xml_template']
-        doc_loop_item_template = re.search(regex['document_loop'], xml_as_string, re.DOTALL)
+
+        doc_loop_item_template = re.search(parameters['doc_loop_regex'], xml_as_string, re.DOTALL)
         xml_as_string = xml_as_string.replace('#date', date)
         xml_as_string = xml_as_string.replace('#documents_count', str(len(documents)))
         xml_as_string = xml_as_string.replace('#user_first_name', str(metadata['userFirstName']))
@@ -278,7 +274,7 @@ class Splitter:
         """
             Apply if conditions
         """
-        conditions_template = re.findall(regex['if_condition'], xml_as_string, re.DOTALL)
+        conditions_template = re.findall(parameters['condition_regex'], xml_as_string, re.DOTALL)
         for condition in conditions_template:
             condition_var = re.sub('[{}]', '', condition[0])
             if not metadata[condition_var]:
@@ -313,8 +309,8 @@ class Splitter:
         """
             Check XML Syntax and write file result & remove tech comments
         """
-        xml_as_string = re.sub(regex['xml_comment'], '', xml_as_string)
-        xml_as_string = re.sub(regex['empty_line'], '', xml_as_string)
+        xml_as_string = re.sub(parameters['xml_comment_regex'], '', xml_as_string)
+        xml_as_string = re.sub(parameters['empty_line_regex'], '', xml_as_string)
         try:
             with open(xml_file_path, "w") as f:
                 minidom.parseString(xml_as_string)
