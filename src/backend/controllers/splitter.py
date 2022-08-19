@@ -351,7 +351,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
         }
         return response, 400
 
-    if 'add_to_zip' in parameters and parameters['add_to_zip']:
+    if 'add_to_zip' in parameters and parameters['add_to_zip'] and pdf_filepaths:
         zip_file_path = parameters['folder_out'] + '/' + zip_filename
         _Files.zip_files(pdf_filepaths, zip_file_path, True)
 
@@ -661,7 +661,7 @@ def validate(args):
         """
         splitter.change_status({
             'id': args['batchMetadata']['id'],
-            'status': 'END'
+            'status': 'NEW'
         })
 
     return {"OK": True}, 200

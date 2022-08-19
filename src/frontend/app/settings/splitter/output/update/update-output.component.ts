@@ -108,7 +108,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
             'label'         : marker('TYPES.date')
         },
         {
-            "labelShort"    : 'idgit a',
+            "labelShort"    : 'id',
             'label'         : marker('SPLITTER.batch_identifier')
         },
         {
