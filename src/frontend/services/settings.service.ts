@@ -21,7 +21,7 @@ import { LocalStorageService } from "./local-storage.service";
 import { LastUrlService } from "./last-url.service";
 import { Title } from "@angular/platform-browser";
 import { Router } from "@angular/router";
-import {AuthService} from "./auth.service";
+import { AuthService } from "./auth.service";
 
 @Injectable({
     providedIn: 'root'
@@ -69,6 +69,13 @@ export class SettingsService {
                 "icon"      : "fa-solid fa-star-of-life",
                 "route"     : '/settings/general/regex',
                 "privilege" : "regex",
+            },
+            {
+                "id"        : "mailcollect",
+                "label"     : this.translate.instant("SETTINGS.mailcollect"),
+                "icon"      : "fa-solid fa-inbox",
+                "route"     : '/settings/general/mailcollect',
+                "privilege" : "mailcollect",
             },
             {
                 "id"        : "users",
