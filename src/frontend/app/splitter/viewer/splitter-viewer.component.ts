@@ -733,7 +733,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : confirmMessage,
-                confirmButton       : this.translate.instant('SPLITTER.delete'),
+                confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
             },
@@ -775,7 +775,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('SPLITTER.confirm_delete_pages', {"pagesCount": this.currentBatch.selectedPagesCount}),
-                confirmButton       : this.translate.instant('SPLITTER.delete'),
+                confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
             },

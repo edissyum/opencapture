@@ -92,15 +92,15 @@ export class AuthService {
         };
     }
 
-    setTokens(token: string, user_token: string, daysBeforeExp: number) {
+    setTokens(token: string, user_token: string, minutesBeforeExp: number) {
         const tokenNames = this.getTokenName();
-        this.localStorage.setCookie(tokenNames['tokenJwt'], token, daysBeforeExp);
-        this.localStorage.setCookie(tokenNames['userToken'], user_token, daysBeforeExp);
+        this.localStorage.setCookie(tokenNames['tokenJwt'], token, minutesBeforeExp);
+        this.localStorage.setCookie(tokenNames['userToken'], user_token, minutesBeforeExp);
     }
 
-    setTokenUser(user_token: string, daysBeforeExp: number) {
+    setTokenUser(user_token: string, minutesBeforeExp: number) {
         const tokenNames = this.getTokenName();
-        this.localStorage.setCookie(tokenNames['userToken'], user_token, daysBeforeExp);
+        this.localStorage.setCookie(tokenNames['userToken'], user_token, minutesBeforeExp);
     }
 
     getToken() {
