@@ -16,7 +16,6 @@
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 import re
 from PIL import Image
-from src.backend.import_models import config as config_model
 
 
 def process(args, file, log, splitter, files, tmp_folder, config, docservers, ocr, regex):
