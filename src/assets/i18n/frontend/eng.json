@@ -204,9 +204,9 @@
 		"vat_rate": "VAT rate"
 	},
 	"FIELD_METADATA": {
-		"resultMask": "Result mask",
-		"searchMask": "Search mask",
-		"xmlTag": "XML Tag"
+		"result_mask": "Result mask",
+		"search_mask": "Search mask",
+		"validation_mask": "Validation mask"
 	},
 	"FORMATS": {
 		"alphanum": "Alphanumeric [0-9aA-zZ']",
@@ -687,6 +687,7 @@
 		"doc_type_separator": "Separator with doctype",
 		"document_added_with_success": "Document added",
 		"document_identifier": "Document identifier",
+		"document_index": "Document index",
 		"document_metadata": "Document metadata",
 		"document_number": "Number of documents",
 		"document_separator": "Document separator",
@@ -695,6 +696,7 @@
 		"error_empty_batch_metadata": "Please fill batch metadata",
 		"error_empty_document_metadata": "Please fill document metadata",
 		"error_no_doc_type": "Please choose document types",
+		"field_form_not_respected": "Please respect the required format of the field : <b>{{ field }}</b>",
 		"form_label": "Form label",
 		"identifier": "Identifier",
 		"list": "List of batches",

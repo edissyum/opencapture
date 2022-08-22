@@ -16,10 +16,9 @@
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 import re
 from PIL import Image
-from src.backend.import_models import config as config_model
 
 
-def process(args, file, log, splitter, files, tmp_folder, config, docservers, ocr):
+def process(args, file, log, splitter, files, tmp_folder, config, docservers, ocr, regex):
     """
     :param args:
     :param file: File path to split
@@ -29,16 +28,17 @@ def process(args, file, log, splitter, files, tmp_folder, config, docservers, oc
     :param tmp_folder: tmp folder path
     :param config: Config object
     :param ocr: PyTesseract object
+    :param regex: regex content values
     :return: N/A
     """
     log.info('Processing file for separation : ' + file)
 
     regex_content = {
-        'invoice_number': config_model.retrieve_regex_by_regex_id({'regex_id': 'invoice_number'})[0][0]['content'],
-        'vat_number': config_model.retrieve_regex_by_regex_id({'regex_id': 'vat_number'})[0][0]['content'],
-        'siret': config_model.retrieve_regex_by_regex_id({'regex_id': 'siret'})[0][0]['content'],
-        'siren': config_model.retrieve_regex_by_regex_id({'regex_id': 'siren'})[0][0]['content'],
-        'iban': config_model.retrieve_regex_by_regex_id({'regex_id': 'iban'})[0][0]['content']
+        'invoice_number': regex['invoice_number'],
+        'vat_number': regex['vat_number'],
+        'siret': regex['siret'],
+        'siren': regex['siren'],
+        'iban': regex['iban'],
     }
 
     # Get the OCR of the file as a list of line content and position

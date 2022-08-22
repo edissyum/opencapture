@@ -38,24 +38,24 @@ import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm
 export interface Batch {
     id          : number
     input_id    : number
-    thumbnail   : any
+    page_number : number
     file_name   : string
     batch_date  : string
-    page_number : number
+    thumbnail   : any
 }
 
 export interface Field {
-    id          : number
-    type        : string
-    label       : string
-    class       : string
-    settings    : any
-    required    : string
-    xmlTag      : string
-    resultMask  : string
-    searchMask  : string
-    label_short : string
-    metadata_key: string
+    id              : number
+    type            : string
+    label           : string
+    class           : string
+    required        : string
+    resultMask      : string
+    searchMask      : string
+    label_short     : string
+    metadata_key    : string
+    validationMask  : string
+    settings        : any
 }
 
 @Component({
@@ -367,9 +367,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     id                  : newId,
                     documentTypeName    : this.defaultDoctype.label,
                     documentTypeKey     : this.defaultDoctype.key,
-                    status              : "NEW",
                     splitIndex          : this.currentBatch.maxSplitIndex + 1,
                     displayOrder        : this.currentBatch.selectedDocument.displayOrder + 1,
+                    status              : "NEW",
                     pages               : [],
                     customFieldsValues  : {},
                     class               : "",
@@ -432,8 +432,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 data.doctypes.forEach((doctype: {
                         id          : any
                         key         : string
-                        label       : string
                         type        : string
+                        label       : string
                         is_default  : boolean
                     }) => {
                         if (doctype.is_default && doctype.type === 'document') {
@@ -577,17 +577,17 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     if (data.fields.hasOwnProperty(fieldCategory)) {
                         data.fields[fieldCategory].forEach((field: Field) => {
                             this.fieldsCategories[fieldCategory].push({
-                                'id'            : field.id,
-                                'type'          : field.type,
-                                'label'         : field.label,
-                                'class'         : field.class,
-                                'xmlTag'        : field.xmlTag,
-                                'settings'      : field.settings,
-                                'required'      : field.required,
-                                'label_short'   : field.label_short,
-                                'metadata_key'  : field.metadata_key,
-                                'searchMask'    : field.searchMask,
-                                'resultMask'    : field.resultMask,
+                                'id'                : field.id,
+                                'type'              : field.type,
+                                'label'             : field.label,
+                                'class'             : field.class,
+                                'settings'          : field.settings,
+                                'required'          : field.required,
+                                'searchMask'        : field.searchMask,
+                                'resultMask'        : field.resultMask,
+                                'label_short'       : field.label_short,
+                                'metadata_key'      : field.metadata_key,
+                                'validationMask'    : field.validationMask,
                             });
                             if (field.metadata_key && fieldCategory === 'batch_metadata') {
                                 this.inputMode = 'Auto';
@@ -926,6 +926,24 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 document.class = "";
         }
 
+        if(this.inputMode === 'Manual'){
+            for(const field of this.fieldsCategories['batch_metadata']){
+                if (this.batchForm.get(field.label_short)) {
+                    this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
+                }
+            }
+        }
+
+        for(const field of this.fieldsCategories['batch_metadata']){
+            if(field.validationMask){
+                if(!this.batchMetadataValues[field.label_short].match(field.validationMask)){
+                    this.notify.error(this.translate.instant('SPLITTER.field_form_not_respected', {'field': field.label}));
+                    this.loading = false;
+                    return;
+                }
+            }
+        }
+
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -947,18 +965,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     validate() {
         this.loading = true;
         this.notify.success(this.translate.instant('SPLITTER.batch_validate_processing'), 10000);
-        for (const field of this.fieldsCategories['batch_metadata']) {
-            if (this.batchForm.get(field.label_short) && !this.batchMetadataValues.hasOwnProperty(field.label_short)) {
-                this.batchMetadataValues[field.label_short] = this.inputMode === 'Manual' ?
-                    this.batchForm.get(field.label_short)?.value: '';
-            }
-        }
-
         const batchMetadata             = this.batchMetadataValues;
         batchMetadata['id']             = this.currentBatch.id;
         batchMetadata['userName']       = this.userService.user['username'];
-        batchMetadata['userFirstName']  = this.userService.user['firstname'];
         batchMetadata['userLastName']   = this.userService.user['lastname'];
+        batchMetadata['userFirstName']  = this.userService.user['firstname'];
 
         // Add metadata arguments and Remove unnecessary ones
         const _documents = [];
@@ -1019,11 +1030,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.http.post(environment['url'] + '/ws/splitter/saveInfo',
             {
                 'documents'             : _documents,
-                'batchId'               : this.currentBatch.id,
-                'batchMetadata'         : this.batchMetadataValues,
-                'deletedPagesIds'       : this.deletedPagesIds,
-                'deletedDocumentsIds'   : this.deletedDocumentsIds,
                 'movedPages'            : this.movedPages,
+                'batchId'               : this.currentBatch.id,
+                'deletedPagesIds'       : this.deletedPagesIds,
+                'batchMetadata'         : this.batchMetadataValues,
+                'deletedDocumentsIds'   : this.deletedDocumentsIds,
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {

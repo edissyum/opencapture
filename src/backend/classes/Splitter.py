@@ -209,7 +209,7 @@ class Splitter:
                 PDF or XML masks value
             """
             if mask_value in metadata:
-                mask_result.append(metadata[mask_value].replace(' ', separator))
+                mask_result.append(str(metadata[mask_value]).replace(' ', separator))
             elif mask_value == 'date':
                 mask_result.append(_date.replace(' ', separator))
             elif mask_value == 'random':
@@ -221,10 +221,12 @@ class Splitter:
                 if mask_value in document['metadata']:
                     mask_result.append(
                         (document['metadata'][mask_value] if document['metadata'][mask_value] else '')
-                        .replace(' ', separator))
+                            .replace(' ', separator))
                 elif mask_value == 'doctype':
                     mask_result.append(document['documentTypeKey'].replace(' ', separator))
                 elif mask_value == 'document_identifier':
+                    mask_result.append(document['id'])
+                elif mask_value == 'document_index':
                     mask_result.append(document['id'])
                 else:
                     """
@@ -252,23 +254,31 @@ class Splitter:
         minute = str(now.minute).zfill(2)
         second = str(now.second).zfill(2)
         date = day + "-" + month + "-" + year + " " + hour + ":" + minute + ":" + second
-        doc_loop_item_template = re.search(r'<!-- %BEGIN-DOCUMENT-LOOP -->(.*?)<!-- %END-DOCUMENT-LOOP -->',
-                                           parameters['xml_template'], re.DOTALL)
-        parameters['xml_template'] = parameters['xml_template'].replace('#date', date)
-        parameters['xml_template'] = parameters['xml_template'].replace('#identifier', str(metadata['id']))
-        parameters['xml_template'] = parameters['xml_template'].replace('#documents_count', str(len(documents)))
-        parameters['xml_template'] = parameters['xml_template'].replace('#user_first_name',
-                                                                        str(metadata['userFirstName']))
-        parameters['xml_template'] = parameters['xml_template'].replace('#user_last_name',
-                                                                        str(metadata['userLastName']))
-        parameters['xml_template'] = parameters['xml_template'].replace('#random',
-                                                                        str(random.randint(0, 99999)).zfill(5))
+
+        xml_as_string = parameters['xml_template']
+
+        doc_loop_item_template = re.search(parameters['doc_loop_regex'], xml_as_string, re.DOTALL)
+        xml_as_string = xml_as_string.replace('#date', date)
+        xml_as_string = xml_as_string.replace('#documents_count', str(len(documents)))
+        xml_as_string = xml_as_string.replace('#user_first_name', str(metadata['userFirstName']))
+        xml_as_string = xml_as_string.replace('#user_last_name', str(metadata['userLastName']))
+        xml_as_string = xml_as_string.replace('#random', str(random.randint(0, 99999)).zfill(5))
+
         """
             Add batch metadata
         """
         for key in metadata:
-            if f'#{key}' in parameters['xml_template']:
-                parameters['xml_template'] = parameters['xml_template'].replace(f'#{key}', str(metadata[key]))
+            if f'#{key}' in xml_as_string:
+                xml_as_string = xml_as_string.replace(f'#{key}', str(metadata[key]))
+
+        """
+            Apply if conditions
+        """
+        conditions_template = re.findall(parameters['condition_regex'], xml_as_string, re.DOTALL)
+        for condition in conditions_template:
+            condition_var = re.sub('[{}]', '', condition[0])
+            if not metadata[condition_var]:
+                xml_as_string = xml_as_string.replace(condition[1], '')
 
         """
             Add document metadata
@@ -288,21 +298,23 @@ class Splitter:
                 doc_loop_item = doc_loop_item.replace('#random', str(random.randint(0, 99999)).zfill(5))
                 doc_loop_item = doc_loop_item.replace('#user_first_name', str(metadata['userFirstName']))
                 for key in document['metadata']:
-                    if f'#{key}' in parameters['xml_template']:
+                    if f'#{key}' in xml_as_string:
                         doc_loop_item = doc_loop_item.replace(f'#{key}', str(document['metadata'][key]))
                 documents_tags += doc_loop_item
 
-            parameters['xml_template'] = parameters['xml_template'].replace(doc_loop_item_template.group(1), documents_tags)
+            xml_as_string = xml_as_string.replace(doc_loop_item_template.group(1), documents_tags)
 
         xml_file_path = parameters['folder_out'] + filename
 
         """
-            Check XML Syntax and write file result 
+            Check XML Syntax and write file result & remove tech comments
         """
+        xml_as_string = re.sub(parameters['xml_comment_regex'], '', xml_as_string)
+        xml_as_string = re.sub(parameters['empty_line_regex'], '', xml_as_string)
         try:
-            with open(xml_file_path, "w", encoding="utf-8") as f:
-                minidom.parseString(parameters['xml_template'])
-                f.write(parameters['xml_template'])
+            with open(xml_file_path, "w") as f:
+                minidom.parseString(xml_as_string)
+                f.write(xml_as_string)
         except Exception as e:
             return False, str(e)
 

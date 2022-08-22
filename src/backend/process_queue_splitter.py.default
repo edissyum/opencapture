@@ -86,7 +86,7 @@ def launch(args):
                                                                                    available_split_method['script'],
                                                                                    available_split_method['method'])
                                 log.info('Split using method : {}'.format(available_split_method['id']))
-                                split_method(args, path, log, splitter, files, tmp_folder, config, docservers, ocr)
+                                split_method(args, path, log, splitter, files, tmp_folder, config, docservers, ocr, regex)
             else:
                 log.error("The input_id doesn't exists in database")
     database.conn.close()
