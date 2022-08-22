@@ -158,17 +158,17 @@ export class SplitterFormBuilderComponent implements OnInit {
     fieldMetadata           : any []    = [
         {
             'id'            : 'searchMask',
-            'placeholder'   : marker('FIELD_METADATA.searchMask'),
+            'placeholder'   : marker('FIELD_METADATA.search_mask'),
             'control'       : new FormControl(),
         },
         {
             'id'            : 'resultMask',
-            'placeholder'   : marker('FIELD_METADATA.resultMask'),
+            'placeholder'   : marker('FIELD_METADATA.result_mask'),
             'control'       : new FormControl(),
         },
         {
-            'id'            : 'xmlTag',
-            'placeholder'   : marker('FIELD_METADATA.xmlTag'),
+            'id'            : 'validationMask',
+            'placeholder'   : marker('FIELD_METADATA.validation_mask'),
             'control'       : new FormControl(),
         }
     ];

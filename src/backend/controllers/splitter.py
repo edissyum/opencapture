@@ -323,11 +323,13 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
         }
         zip_filename = _Splitter.get_mask_result(None, batch['metadata'], now, mask_args)
 
+    documents_doctypes = []
     for index, document in enumerate(documents):
         """
             Add PDF file names using masks
         """
-
+        documents[index]['metadata']['document_index'] = documents_doctypes.count(document['documentTypeKey']) + 1
+        documents_doctypes.append(document['documentTypeKey'])
         mask_args = {
             'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
             'separator': parameters['separator'],
@@ -337,7 +339,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
         if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in documents[index]['documentTypeKey']:
             pdf_filepaths.append({
                 'input_path': parameters['folder_out'] + '/' + documents[index]['fileName'],
-                'path_in_zip': zip_filename.split('.zip')[0] + '/' + documents[index]['fileName']
+                'path_in_zip': documents[index]['fileName']
             })
         else:
             doc_except_from_zip.append(documents[index]['id'])
@@ -349,7 +351,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
         }
         return response, 400
 
-    if 'add_to_zip' in parameters and parameters['add_to_zip']:
+    if 'add_to_zip' in parameters and parameters['add_to_zip'] and pdf_filepaths:
         zip_file_path = parameters['folder_out'] + '/' + zip_filename
         _Files.zip_files(pdf_filepaths, zip_file_path, True)
 
@@ -498,6 +500,7 @@ def validate(args):
     now = _Files.get_now_date()
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
+    regex = _vars[2]
     _log = _vars[5]
     docservers = _vars[9]
     exported_files = []
@@ -549,6 +552,11 @@ def validate(args):
                     Export XML file
                 """
                 if output[0]['output_type_id'] in ['export_xml']:
+                    parameters['doc_loop_regex'] = regex['splitter_doc_loop']
+                    parameters['condition_regex'] = regex['splitter_condition']
+                    parameters['empty_line_regex'] = regex['splitter_empty_line']
+                    parameters['xml_comment_regex'] = regex['splitter_xml_comment']
+
                     res_export_xml = export_xml(args['documents'], parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
@@ -592,10 +600,14 @@ def validate(args):
                         Export xml for Alfresco
                     """
                     xml_export_parameters = {
-                        'separator': cmis_params['separator'],
-                        'filename': cmis_params['xml_filename'],
                         'extension': 'xml',
                         'folder_out': docservers['TMP_PATH'],
+                        'separator': cmis_params['separator'],
+                        'filename': cmis_params['xml_filename'],
+                        'doc_loop_regex': regex['splitter_doc_loop'],
+                        'condition_regex': regex['splitter_condition'],
+                        'empty_line_regex': regex['splitter_empty_line'],
+                        'xml_comment_regex': regex['splitter_xml_comment'],
                     }
                     res_export_xml = export_xml(args['documents'], xml_export_parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
@@ -657,7 +669,6 @@ def validate(args):
         """
             Change status to END
         """
-
         splitter.change_status({
             'id': args['batchMetadata']['id'],
             'status': 'END'

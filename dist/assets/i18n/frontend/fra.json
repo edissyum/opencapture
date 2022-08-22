@@ -204,9 +204,9 @@
 		"vat_rate": "Taux de TVA"
 	},
 	"FIELD_METADATA": {
-		"resultMask": "Masque de résultat",
-		"searchMask": "Masque de recherche",
-		"xmlTag": "Balise xml associée"
+		"result_mask": "Masque de résultat",
+		"search_mask": "Masque de recherche",
+		"validation_mask": "Masque de validation"
 	},
 	"FORMATS": {
 		"alphanum": "Caractères alphanumériques [0-9aA-zZ']",
@@ -663,6 +663,7 @@
 		"doc_type_separator": "Séparateur avec type de document",
 		"document_added_with_success": "Document ajouté",
 		"document_identifier": "Identifiant du document",
+		"document_index": "Indice du document",
 		"document_metadata": "Métadonnées de document",
 		"document_number": "Nombre de document",
 		"document_separator": "Séparateur de documents",
@@ -671,6 +672,7 @@
 		"error_empty_batch_metadata": "Veuillez remplir les métadonnées du lot",
 		"error_empty_document_metadata": "Veuillez remplir les métadonnées des documents",
 		"error_no_doc_type": "Veuillez sélectionner les types de documents",
+		"field_form_not_respected": "Veuillez respecter le format requis du champ : <b>{{ field }}</b>",
 		"form_label": "Libellé du formulaire",
 		"identifier": "Identifiant",
 		"list": "Liste des lots",

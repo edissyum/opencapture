@@ -108,12 +108,16 @@ export class SplitterUpdateOutputComponent implements OnInit {
             'label'         : marker('TYPES.date')
         },
         {
-            "labelShort"    : 'batch_identifier',
+            "labelShort"    : 'id',
             'label'         : marker('SPLITTER.batch_identifier')
         },
         {
             "labelShort"    : 'document_identifier',
             'label'         : marker('SPLITTER.document_identifier')
+        },
+        {
+            "labelShort"    : 'document_index',
+            'label'         : marker('SPLITTER.document_index')
         },
         {
             "labelShort"    : 'validate_by_firstname',
