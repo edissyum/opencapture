@@ -353,7 +353,8 @@ class Files:
 
             for res in re.finditer(r"" + self.regex['date'] + "", text):
 
-                date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '', self.docservers, self.languages, None)
+                date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '',
+                                      self.docservers, self.languages, None)
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
                 if date:
                     text = date[0]
@@ -438,10 +439,11 @@ class Files:
         return Image.open(img)
 
     @staticmethod
-    def save_uploaded_file(file, path):
+    def save_uploaded_file(file, path, add_rand=True):
         filename, file_ext = os.path.splitext(file.filename)
         rand = ''.join(random.choice(string.ascii_lowercase) for i in range(4))
-        filename = filename.replace(' ', '_') + '_' + rand + file_ext.lower()
+        filename = filename.replace(' ', '_') + '_' + rand + file_ext.lower() if add_rand \
+            else filename.replace(' ', '_') + file_ext.lower()
         new_path = os.path.join(path, secure_filename(filename))
         file.save(new_path)
         return new_path

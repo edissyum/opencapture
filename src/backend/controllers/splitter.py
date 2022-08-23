@@ -39,7 +39,7 @@ def handle_uploaded_file(files, input_id):
     path = current_app.config['UPLOAD_FOLDER_SPLITTER']
     for file in files:
         f = files[file]
-        filename = _Files.save_uploaded_file(f, path)
+        filename = _Files.save_uploaded_file(f, path, False)
         worker_splitter_from_python.main({
             'file': filename,
             'custom_id': custom_id,
