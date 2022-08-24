@@ -1,6 +1,6 @@
 <mat-card class="w-1/3 h-32 absolute bottom-2 left-2 z-10 bg-slate-50" style="padding: 0 !important;" *ngIf="!minimizeDisplay">
     <mat-card-title class="text-sm m-4">Liste des tâches actuelles</mat-card-title>
-    <span (click)="minimizeDisplay=true" class="text-lg absolute right-4 top-2 hover:text-green-400 inline-block align-bottom hover:cursor-pointer">
+    <span (click)="changeDisplayMode(!minimizeDisplay)" class="text-lg absolute right-4 top-2 hover:text-green-400 inline-block align-bottom hover:cursor-pointer">
         <i class="fa-solid fa-window-minimize align-top"></i>
     </span>
     <div *ngFor="let task of tasks">
@@ -20,7 +20,7 @@
         </div>
     </div>
 </mat-card>
-<div (click)="minimizeDisplay=false" class="w-12 h-12 absolute bottom-6 left-6 rounded-full z-10 bg-slate-100
+<div (click)="changeDisplayMode(!minimizeDisplay)" class="w-12 h-12 absolute bottom-6 left-6 rounded-full z-10 bg-slate-100
     hover:text-green-400 hover:cursor-pointer grid justify-items-center drop-shadow-md" *ngIf="minimizeDisplay">
     <span  class="text-lg pt-2">
         <i class="fa-solid fa-list-check fa-align-center"></i>

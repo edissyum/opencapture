@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {LocalStorageService} from "../local-storage.service";
 
 @Component({
   selector: 'app-tasks-watcher',
@@ -15,9 +16,17 @@ export class TasksWatcherComponent implements OnInit {
       'status'  : "progress"
     },
   ];
-  constructor() { }
+  constructor(
+      private localStorageService: LocalStorageService,
+  ) { }
 
   ngOnInit(): void {
+    const minimizeDisplayValue = this.localStorageService.get('task_watcher_minimize_display');
+    this.minimizeDisplay = (minimizeDisplayValue === 'true');
   }
 
+  changeDisplayMode(minimizeDisplay: boolean) {
+    this.minimizeDisplay = minimizeDisplay;
+    this.localStorageService.save('task_watcher_minimize_display', minimizeDisplay ? 'true': 'false');
+  }
 }
