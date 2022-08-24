@@ -11,9 +11,15 @@ export class TasksWatcherComponent implements OnInit {
   tasks           : any[]   = [
     {
       'id'      : 1,
-      'time'    : "il y'a 1min",
+      'time'    : "il y'a 1 min",
       'fileName': "test.pdf",
-      'status'  : "progress"
+      'status'  : "in_progress"
+    },
+    {
+      'id'      : 2,
+      'time'    : "il y'a 8 min",
+      'fileName': "Facture_SFR_08-07.pdf",
+      'status'  : "done"
     },
   ];
   constructor(
