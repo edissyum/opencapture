@@ -1,9 +1,14 @@
-<div *ngIf="loading || documentsLoading">
+<div *ngIf="loading || documentsLoading || batchesLoading">
     <app-loader></app-loader>
 </div>
 <mat-drawer-container *ngIf="!loading" class="viewer-container" hasBackdrop="false">
     <mat-drawer #drawer mode="side" opened>
         <div class="mt-1">
+            <div [ngSwitch]="currentTime" class="mt-2 w-full h-10 grid place-content-center">
+                <div class="text-base text-slate-400">
+                    {{ timeLabels[currentTime] | translate }}, {{ getStatusLabel(currentBatch.status) }}
+                </div>
+            </div>
             <div class="card" *ngFor="let batch of this.batches | slice: 0 : 10">
                 <mat-card class="mat-elevation-z4 my-2"
                           [ngClass]="{'border-4 border-green-400': this.currentBatch.id === batch.id}">
@@ -13,16 +18,17 @@
                         </mat-card-header>
                     </a>
                     <mat-card-content>
-                        <mat-card-title class="card-title text-lg break-words">
-                            <a>{{ batch['file_name'] }}</a>
-                        </mat-card-title>
-                        <span matTooltip="{{ 'SPLITTER.document_number' | translate }} : {{ batch['page_number'] }}"
-                              class="file-count absolute right-4 text-green-400">
-                            {{ batch['page_number'] }} <i class="far fa-file"></i>
-                        </span>
-                        <span class="text-gray-500 block w-11/12">
-                            {{ 'VERIFIER.register_date' | translate }} : {{ batch['batch_date'] }} <br>
-                        </span>
+                            <span matTooltip="{{ 'SPLITTER.document_number' | translate }} : {{ batch['pageNumber'] }}"
+                                  class="float-right text-green-400">
+                                {{ batch['pageNumber'] }} <i class="far fa-file"></i>
+                            </span>
+                        <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">
+                            <span class="leading-7 flex">
+                                {{ batch['fileName'] }}
+                            </span>
+                            <b>{{ 'SPLITTER.identifier' | translate }}</b> : {{ batch['id'] }}<br>
+                            <b>{{ 'VERIFIER.register_date' | translate }}</b> : {{ batch['date'] }}<br>
+                        </mat-card-subtitle>
                     </mat-card-content>
                 </mat-card>
             </div>

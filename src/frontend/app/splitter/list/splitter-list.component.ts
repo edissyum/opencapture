@@ -333,7 +333,6 @@ export class SplitterListComponent implements OnInit {
     }
 
     onTabChange(event: any) {
-        // this.search = '';
         this.selectedTab = event.index;
         this.localStorageService.save('splitterTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
