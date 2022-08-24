@@ -22,6 +22,7 @@ import { HintServiceComponent } from './hint/hint.service';
 import { TranslateModule } from "@ngx-translate/core";
 import { AppMaterialModule } from '../app/app-material.module';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { TasksWatcherComponent } from './tasks-watcher/tasks-watcher.component';
 import { CustomSnackbarComponent, NotificationService } from './notifications/notifications.service';
 
 @NgModule({
@@ -33,8 +34,10 @@ import { CustomSnackbarComponent, NotificationService } from './notifications/no
     declarations: [
         CustomSnackbarComponent,
         ConfirmDialogComponent,
+        TasksWatcherComponent,
     ],
     exports: [
+        TasksWatcherComponent
     ],
     entryComponents: [
         CustomSnackbarComponent,
