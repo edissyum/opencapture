@@ -36,6 +36,15 @@ def launch(args):
         sys.exit('Custom config file couldn\'t be found')
 
     database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
+    task_id = database.insert({
+        'table': 'tasks_watcher',
+        'columns': {
+            'title': os.path.basename(args['file']),
+            'type': 'upload',
+            'module': 'splitter',
+        }
+    })
+
     tmp_folder = tempfile.mkdtemp(dir=docservers['SPLITTER_BATCHES']) + '/'
     with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
         filename = tmp_file.name
@@ -91,4 +100,12 @@ def launch(args):
                 log.error("The input_id doesn't exists in database")
     database.conn.close()
     end = time.time()
+    database.update({
+        'table': ['tasks_watcher'],
+        'set': {
+            'status': 'done'
+        },
+        'where': ['id = %s'],
+        'data': [task_id]
+    })
     log.info('Process end after ' + timer(start, end) + '')

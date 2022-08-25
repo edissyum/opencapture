@@ -16,6 +16,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask import request
+from gettext import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
@@ -27,7 +28,43 @@ def get_last_tasks():
     tasks = database.select({
         'select': ['*', '(Extract(epoch FROM (CURRENT_TIMESTAMP - creation_date))/60)::INTEGER as age'],
         'table': ['tasks_watcher'],
-        'where': ["status IS NULL OR creation_date >= NOW() - INTERVAL '5 minutes'"],
+        'where': ["status IS NULL OR creation_date >= NOW() - INTERVAL '1 hour'"],
+        'order_by': ["id desc"],
     })
 
     return tasks
+
+
+def create_task(args):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    res = database.insert({
+        'table': 'tasks_watcher',
+        'columns': {
+            'title': args['title'],
+            'type': args['type'],
+            'module': args['module'],
+        }
+    })
+
+    return res
+
+
+def update_task(args):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    error = None
+
+    res = database.update({
+        'table': ['tasks_watcher'],
+        'set': args['set'],
+        'where': ['id = %s'],
+        'data': [args['task_id']]
+    })
+
+    if res[0] is False:
+        error = gettext('UPDATE_TASK_ERROR')
+
+    return res, error

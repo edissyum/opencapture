@@ -14,6 +14,7 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
+from gettext import gettext
 
 from src.backend.import_models import tasks_watcher
 
@@ -23,6 +24,16 @@ def get_last_tasks():
     response = {
         "tasks": tasks
     }
-    print("response : ")
-    print(response)
     return response, 200
+
+
+def create_task(args):
+    res = tasks_watcher.create_task(args)
+    if not res:
+        response = {
+            "errors": gettext('CREATE_TASK_ERROR'),
+            "message": ''
+        }
+        return response, 401
+
+    return '', 200

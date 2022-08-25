@@ -22,8 +22,7 @@ from flask import Blueprint, make_response, jsonify
 bp = Blueprint('task_watcher', __name__, url_prefix='/ws/')
 
 
-@bp.route('tasks/new', methods=['GET'])
+@bp.route('tasks/progress', methods=['GET'])
 def get_last_task():
     tasks = tasks_watcher.get_last_tasks()
     return make_response(jsonify(tasks[0])), tasks[1]
-
