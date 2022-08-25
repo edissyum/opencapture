@@ -43,7 +43,7 @@ import { UpdateOutputComponent } from "./verifier/outputs/update/update-output.c
 import { ConfigurationsComponent } from "./general/configurations/configurations.component";
 import { DocserversComponent } from "./general/docservers/docservers.component";
 import { RegexComponent } from "./general/regex/regex.component";
-import { MailcollectListComponent } from "./general/mailcollect/list/mailcollect-list.component";
+import { MailCollectComponent } from "./general/mailcollect/mailcollect.component";
 import { CreateOutputComponent } from "./verifier/outputs/create/create-output.component";
 import { SplitterFormBuilderComponent } from "./splitter/form/builder/form-builder.component";
 import { SplitterCreateInputComponent } from "./splitter/inputs/create/create-input.component";
@@ -83,7 +83,7 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/general/mailcollect', component: MailcollectListComponent,
+        path: 'settings/general/mailcollect', component: MailCollectComponent,
         data: {title: 'SETTINGS.mailcollect', privileges: ['settings', 'mailcollect']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },

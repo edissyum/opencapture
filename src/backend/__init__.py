@@ -26,7 +26,7 @@ from flask import request, session, Flask
 from src.backend.main import create_classes_from_custom_id
 from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_config_from_custom_id
 from src.backend.import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
-    forms, status, accounts, outputs, maarch, inputs, positions_masks, history, doctypes
+    forms, status, accounts, outputs, maarch, inputs, positions_masks, history, doctypes, mailcollect
 
 
 class Middleware:
@@ -88,6 +88,7 @@ app.register_blueprint(privileges.bp)
 app.register_blueprint(custom_fields.bp)
 app.register_blueprint(positions_masks.bp)
 app.register_blueprint(doctypes.bp)
+app.register_blueprint(mailcollect.bp)
 
 
 @babel.localeselector

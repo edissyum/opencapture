@@ -12,6 +12,11 @@ if 'user' or 'models' not in custom_array['user']['path']:
 elif 'models' in custom_array['user']['path']:
     user = getattr(__import__(custom_array['user']['path'], fromlist=[custom_array['user']['module']]), custom_array['user']['module'])
 
+if 'mailcollect' or 'models' not in custom_array['mailcollect']['path']:
+    from .models import mailcollect
+elif 'models' in custom_array['mailcollect']['path']:
+    user = getattr(__import__(custom_array['mailcollect']['path'], fromlist=[custom_array['mailcollect']['module']]), custom_array['mailcollect']['module'])
+
 if 'roles' or 'models' not in custom_array['roles']['path']:
     from .models import roles
 elif 'models' in custom_array['roles']['path']:
