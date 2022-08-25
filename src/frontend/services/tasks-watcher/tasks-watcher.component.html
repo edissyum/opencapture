@@ -1,23 +1,29 @@
 <mat-card class="w-1/3 h-36 absolute bottom-2 right-2 z-10 bg-slate-50" style="padding: 0 !important;" *ngIf="!minimizeDisplay">
-    <mat-card-title class="text-sm m-4">Liste des tâches actuelles</mat-card-title>
-    <span (click)="changeDisplayMode(!minimizeDisplay)" class="text-lg absolute right-4 top-2 hover:text-green-400 inline-block align-bottom hover:cursor-pointer">
+    <mat-card-title class="text-sm m-4" cdkDragHandle>
+        {{ 'GLOBAL.current_tasks' | translate }}
+        <span (click)="changeDisplayMode(!minimizeDisplay)" class="text-lg absolute right-4 top-2 hover:text-green-400 inline-block align-bottom hover:cursor-pointer">
         <i class="fa-solid fa-window-minimize align-top"></i>
     </span>
-    <div *ngFor="let task of tasks" class="mx-4 ">
-        <div class="h-8 w-full border-t-2 flex">
-            <span class="flex-initial w-8 pt-1">
+    </mat-card-title>
+    <div  class="mx-4 h-20 overflow-y-auto bg-slate-100">
+        <div class="text-gray-400 my-4 text-center w-full" *ngIf="lastTasks.length === 0">
+            <i class="block fa-solid fa-check fa-2x"></i>
+            <span class="block">{{ 'GLOBAL.no_task_to_show' | translate }}</span>
+        </div>
+        <div *ngFor="let task of lastTasks" class="h-8 w-full px-4 border-t-2 grid grid-cols-10">
+            <span class="col-span-1 pt-1">
                 {{ task.id }}
             </span>
-            <span class="flex-initial w-2/3 pt-1 w-full">
+            <span class="col-span-5 pt-1 w-full">
                 {{ task.fileName }}
             </span>
-            <span class="flex-initial w-20 text-sm text-slate-400 pt-1">
-                {{ task.time }}
+            <span class="col-span-3 text-sm text-slate-400 pt-1">
+                {{ task.age }}
             </span>
-            <span *ngIf="task.status === 'in_progress'" class="flex-initial w-16 text-right">
+            <span *ngIf="task.status === 'in_progress'" class="col-span-1 text-right">
                 <i class="fas fa-circle-notch fa-spin fa-lg my-4"></i>
             </span>
-            <span *ngIf="task.status === 'done'" class="flex-initial w-16 text-right">
+            <span *ngIf="task.status === 'done'" class="col-span-1 text-right">
                 <i class="fa-solid fa-check fa-lg my-4"></i>
             </span>
         </div>

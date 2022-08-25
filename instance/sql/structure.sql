@@ -360,5 +360,15 @@ CREATE TABLE "languages"
     "date_format"       VARCHAR(20)
 );
 
+create table tasks_watcher
+(
+    id            SERIAL      UNIQUE PRIMARY KEY,
+    title         VARCHAR(255),
+    creation_date DATE DEFAULT CURRENT_TIMESTAMP ,
+    type          VARCHAR(10),
+    module        VARCHAR(10),
+    status        VARCHAR(10)
+);
+
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;
 COMMENT ON SEQUENCE splitter_referential_call_count IS 'Splitter referential demand number count';
