@@ -98,8 +98,6 @@ def launch(args):
                                 split_method(args, path, log, splitter, files, tmp_folder, config, docservers, ocr, regex)
             else:
                 log.error("The input_id doesn't exists in database")
-    database.conn.close()
-    end = time.time()
     database.update({
         'table': ['tasks_watcher'],
         'set': {
@@ -108,4 +106,6 @@ def launch(args):
         'where': ['id = %s'],
         'data': [task_id]
     })
+    database.conn.close()
+    end = time.time()
     log.info('Process end after ' + timer(start, end) + '')
