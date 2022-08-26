@@ -367,8 +367,8 @@ create table tasks_watcher
     type            VARCHAR(10),
     module          VARCHAR(10),
     status          VARCHAR(10),
-    creation_date   DATE DEFAULT CURRENT_TIMESTAMP ,
-    end_date        DATE DEFAULT ,
+    creation_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
+    end_date        TIMESTAMP DEFAULT ,
 );
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;
