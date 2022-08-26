@@ -5,3 +5,18 @@
 .mat-column-actions {
     flex: 0 0 5%;
 }
+
+::ng-deep .mat-tab-disabled {
+    @apply opacity-100 #{!important};
+}
+
+::ng-deep .change_process_name .mat-form-field-wrapper {
+    @apply top-3.5;
+    & .mat-form-field-flex {
+        @apply h-8 #{!important};
+    }
+
+    & .mat-form-field-infix {
+        @apply -top-3.5;
+    }
+}

@@ -42,6 +42,23 @@ def retrieve_processes(args):
     return processes, error
 
 
+def get_process_by_name(args):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    if not _vars[0]:
+        return {}, _vars[1]
+    database = _vars[0]
+    error = None
+    process = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['mailcollect'],
+        'where': ['name = %s'],
+        'data': [args['process_name']],
+        'order_by': ['id ASC'],
+    })
+    return process, error
+
+
 def update_process(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
@@ -57,4 +74,20 @@ def update_process(args):
     })
     if process[0] is False:
         error = gettext('MAILCOLLECT_PROCESS_UPDATE_ERROR')
+    return process, error
+
+
+def create_process(args):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    if not _vars[0]:
+        return {}, _vars[1]
+    database = _vars[0]
+    error = None
+    args = {
+        'table': 'mailcollect',
+        'columns': args['columns']
+    }
+    process = database.insert(args)
+
     return process, error

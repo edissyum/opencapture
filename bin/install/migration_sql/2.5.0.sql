@@ -27,6 +27,7 @@ CREATE TABLE mailcollect (
     "port"                          INTEGER      NOT NULL,
     "login"                         VARCHAR(255) NOT NULL,
     "password"                      VARCHAR(255) NOT NULL,
+    "status"                        VARCHAR(10)  DEFAULT 'OK',
     "secured_connection"            VARCHAR(255) NOT NULL,
     "is_splitter"                   BOOLEAN      DEFAULT False,
     "splitter_technical_input_id"   VARCHAR(255),

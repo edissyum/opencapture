@@ -39,11 +39,11 @@ def retrieve_processes(args):
 
 
 def update_process(args):
-    processes, error = mailcollect.update_process(args)
+    process, error = mailcollect.update_process(args)
 
     if error is None:
         response = {
-            "processes": processes
+            "process": process
         }
         return response, 200
 
@@ -52,6 +52,42 @@ def update_process(args):
         "message": error
     }
     return response, 401
+
+
+def create_process(args):
+    process, error = mailcollect.create_process(args)
+
+    if error is None:
+        response = {
+            "process": process
+        }
+        return response, 200
+
+    response = {
+        "errors": gettext("CREATE_PROCESS_ERROR"),
+        "message": error
+    }
+    return response, 401
+
+
+def delete_process(process_name):
+    _, error = mailcollect.get_process_by_name({'process_name': process_name})
+    if error is None:
+        _, error = mailcollect.update_process({'set': {'status': 'DEL'}, 'process_name': process_name})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('DELETE_MAILCOLLECT_PROCESS_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('DELETE_MAILCOLLECT_PROCESS_ERROR'),
+            "message": error
+        }
+        return response, 401
 
 
 def retrieve_folders(args):

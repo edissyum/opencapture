@@ -29,6 +29,8 @@ bp = Blueprint('mailcollect', __name__,  url_prefix='/ws/')
 def retrieve_processes():
     args = {
         'select': ['*'],
+        'where': ['status <> %s'],
+        'data': ['DEL']
     }
 
     res = mailcollect.retrieve_processes(args)
@@ -52,4 +54,22 @@ def update_process(process_name):
         'process_name': process_name
     }
     res = mailcollect.update_process(args)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('mailcollect/createProcess', methods=['POST'])
+@auth.token_required
+def create_process():
+    data = request.json
+    args = {
+        'columns': data,
+    }
+    res = mailcollect.create_process(args)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('mailcollect/deleteProcess/<string:process_name>', methods=['DELETE'])
+@auth.token_required
+def deletes_process(process_name):
+    res = mailcollect.delete_process(process_name)
     return make_response(jsonify(res[0])), res[1]

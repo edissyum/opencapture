@@ -131,10 +131,49 @@
             </mat-accordion>
 
             <h3 class="text-center text-gray-900 mx-4">{{ 'MAILCOLLECT.process_parameters' | translate }}</h3>
-            <hr class="border-green-400 w-1/2 m-auto">
+            <hr class="border-green-400 w-1/2 m-auto mb-4">
 
             <mat-tab-group class="mx-5">
-                <mat-tab *ngFor="let process of this.processes" [label]="getNameOfProcess(process)">
+                <mat-tab *ngFor="let process of this.processes">
+                    <ng-template mat-tab-label>
+                        <span *ngIf="getNameOfProcess(process) !== '' && getNameOfProcess(process) !== null else input">
+                            <span *ngIf="!process.edit_name">
+                                {{ getNameOfProcess(process) }}
+                            </span>
+                            <i *ngIf="!process.edit_name" class="fas fa-edit ml-2"
+                               (click)="process.edit_name = true"></i>
+                            <i *ngIf="!process.edit_name" class="fas fa-trash text-red-600 ml-3"
+                               (click)="deleteConfirmDialog(process)"></i>
+                            <div *ngIf="process.edit_name" class="grid grid-cols-5">
+                                <div class="change_process_name col-span-4">
+                                    <mat-form-field class="block">
+                                        <input #new_process_name [value]="getNameOfProcess(process)" matInput
+                                               (focusout)="updateProcessName(process, new_process_name.value)"
+                                               type="text" placeholder="{{ 'MAILCOLLECT.process_name' | translate }}">
+                                    </mat-form-field>
+                                </div>
+                                <div class="relative top-5">
+                                    <i *ngIf="!this.loadingProcessName" class="fas fa-check ml-2" (click)="updateProcessName(process, new_process_name.value)"></i>
+                                    <i *ngIf="this.loadingProcessName" class="fa-solid fa-circle-notcha f-spin"
+                                       style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
+                                </div>
+                            </div>
+                        </span>
+                        <ng-template #input>
+                            <div class="grid grid-cols-5">
+                                <div class="change_process_name col-span-4">
+                                    <mat-form-field class="block">
+                                        <input #new_process_name_input matInput type="text"
+                                               (focusout)="updateProcessName(process, new_process_name_input.value)"
+                                               placeholder="{{ 'MAILCOLLECT.process_name' | translate }}">
+                                    </mat-form-field>
+                                </div>
+                                <div class="relative top-5">
+                                    <i class="fas fa-check ml-1" (click)="updateProcessName(process, new_process_name_input.value, false)"></i>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ng-template>
                     <div class="flex flex-wrap m-10 mb-0 text-center">
                         <ng-container *ngFor="let field of process">
                             <div [class]="field.class" *ngIf="field.type === 'text' || field.type === 'password'">
@@ -154,13 +193,15 @@
                                                             field.id !== 'verifier_form_id'">
                                 <mat-form-field class="block m-2">
                                     <mat-label>{{ field.label | translate }}</mat-label>
-                                    <input matInput [formControl]="field.control" [type]="field.type" [matAutocomplete]="autocomplete">
+                                    <input matInput [formControl]="field.control" [required]="field.required"
+                                           [type]="field.type" [matAutocomplete]="autocomplete">
                                     <mat-hint *ngIf="field.hint">{{ field.hint | translate }}</mat-hint>
                                     <mat-autocomplete #autocomplete="matAutocomplete">
                                         <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option.id">
                                             <span [innerHTML]="option | highlight: toHighlight"></span>
                                         </mat-option>
                                     </mat-autocomplete>
+                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                                 </mat-form-field>
                             </div>
                             <div [class]="field.class" *ngIf="field.type === 'autocomplete' &&
@@ -169,13 +210,15 @@
                                                                 field.id === 'verifier_form_id')">
                                 <mat-form-field class="block m-2">
                                     <mat-label>{{ field.label | translate }}</mat-label>
-                                    <input matInput [formControl]="field.control" [type]="field.type" [matAutocomplete]="autocomplete">
+                                    <input matInput [formControl]="field.control" [required]="field.required"
+                                           [type]="field.type" [matAutocomplete]="autocomplete">
                                     <mat-hint *ngIf="field.hint">{{ field.hint | translate }}</mat-hint>
                                     <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn">
                                         <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option.id">
                                             <span [innerHTML]="option.name ? option.name : option.label ? option.label : option.input_label | highlight: toHighlight"></span>
                                         </mat-option>
                                     </mat-autocomplete>
+                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                                 </mat-form-field>
                             </div>
                             <div [class]="field.class" *ngIf="field.type === 'select'">
@@ -186,6 +229,7 @@
                                             {{ option }}
                                         </mat-option>
                                     </mat-select>
+                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                                 </mat-form-field>
                             </div>
                             <div [class]="field.class" *ngIf="field.type === 'number'">
@@ -210,18 +254,26 @@
                             <i *ngIf="this.folderLoading" class="fa-solid text-2xl fa-circle-notch fa-spin
                                         text-gray-900" style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
                         </button>
-                        <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white
+                        <button *ngIf="process.exists"
+                                class="border-solid border-green-400 border hover:bg-green-400 hover:text-white
                                     transition duration-300" mat-button (click)="updateProcess(process)">
                             <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.update_process' | translate }}</span>
                             <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin
                                         text-gray-900" style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
                         </button>
+                        <button *ngIf="!process.exists"
+                                class="border-solid border-green-400 border hover:bg-green-400 hover:text-white
+                                    transition duration-300" mat-button (click)="createProcess(process)">
+                            <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.create_process' | translate }}</span>
+                            <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin
+                                        text-gray-900" style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
+                        </button>
                     </div>
                 </mat-tab>
-                <mat-tab disabled>
+                <mat-tab disabled class="opacity-100">
                     <ng-template mat-tab-label>
-                        <button mat-icon-button>
-                            <mat-icon>add_circle</mat-icon>
+                        <button mat-icon-button class="relative -left-14" (click)="addProcess()">
+                            <i class="fas fa-plus text-gray-900"></i>
                         </button>
                     </ng-template>
                 </mat-tab>
