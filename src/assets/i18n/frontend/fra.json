@@ -146,7 +146,7 @@
 		"folder_added": "Chemise ajouté",
 		"generating_separator": "Génération du séparateur...",
 		"maximise_tree": "Maximiser l'affichage",
-		"minimise_tree": "Minimiser l'affichage",
+		"minimize_tree": "Minimiser l'affichage",
 		"no_doctype_to_show": "Aucun type de document à afficher",
 		"no_master": "(Ajouter dans la racine)",
 		"separator_choice ": "Choix de séparateur"
@@ -271,6 +271,7 @@
 		"validate": "Valider"
 	},
 	"GLOBAL": {
+		"add_time": "Ajouté à ",
 		"batches": "Lots",
 		"cancel": "Annuler",
 		"confirm": "Confirmation",
@@ -284,12 +285,14 @@
 		"duplicate": "Dupliquer",
 		"edit": "Modifier",
 		"enable": "Activer",
+		"end_time": "Terminé à",
 		"few_seconds_ago": "il y'a quelques secondes",
 		"history": "Historique",
 		"home": "Accueil",
 		"language": "Langue",
 		"log_out": "Déconnexion",
 		"login": "Connexion",
+		"minimize": "Minimiser ",
 		"move_to_active": "Déplacer vers les actifs",
 		"move_to_inactive": "Déplacer vers les inactifs",
 		"n_minutes_ago": "il y'a {{ minutes }} min",

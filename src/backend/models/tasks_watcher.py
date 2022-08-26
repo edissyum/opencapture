@@ -26,7 +26,9 @@ def get_last_tasks():
     _vars = create_classes_from_custom_id(custom_id)
     database = _vars[0]
     tasks = database.select({
-        'select': ['*', '(Extract(epoch FROM (CURRENT_TIMESTAMP - creation_date))/60)::INTEGER as age'],
+        'select': ['*', "to_char(creation_date, 'HH24:MI:SS') as begin_time",
+                   "to_char(end_date, 'HH24:MI:SS') as end_time",
+                   '(Extract(epoch FROM (CURRENT_TIMESTAMP - creation_date))/60)::INTEGER as age'],
         'table': ['tasks_watcher'],
         'where': ["status IS NULL OR creation_date >= NOW() - INTERVAL '1 hour'"],
         'order_by': ["id desc"],

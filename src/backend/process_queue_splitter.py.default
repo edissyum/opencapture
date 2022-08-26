@@ -101,7 +101,8 @@ def launch(args):
     database.update({
         'table': ['tasks_watcher'],
         'set': {
-            'status': 'done'
+            'status': 'done',
+            'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
         },
         'where': ['id = %s'],
         'data': [task_id]

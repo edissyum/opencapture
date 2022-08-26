@@ -146,7 +146,7 @@
 		"folder_added": "Folder added",
 		"generating_separator": "Generating separator",
 		"maximise_tree": "Maximise tree",
-		"minimise_tree": "Minimise tree",
+		"minimize_tree": "Minimize tree",
 		"no_doctype_to_show": "No document type to show",
 		"no_master": "(No master folder)",
 		"separator_choice ": "Separator choice"
@@ -271,6 +271,7 @@
 		"validate": "Validate"
 	},
 	"GLOBAL": {
+		"add_time": "Added at ",
 		"batches": "Batches",
 		"cancel": "Cancel",
 		"confirm": "Confirm",
@@ -284,12 +285,14 @@
 		"duplicate": "Duplicate",
 		"edit": "Edit",
 		"enable": "Enable",
+		"end_time": "End at ",
 		"few_seconds_ago": "Few seconds ago",
 		"history": "History",
 		"home": "Home",
 		"language": "Language",
 		"log_out": "Log out",
 		"login": "Login",
+		"minimize": "Minimize",
 		"move_to_active": "Move to active",
 		"move_to_inactive": "Move to inactive",
 		"n_minutes_ago": "{{ minutes }} min ago",

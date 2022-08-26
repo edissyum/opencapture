@@ -34,10 +34,11 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_e
 -- Add tasks watcher
 create table tasks_watcher
 (
-    id            SERIAL      UNIQUE PRIMARY KEY,
-    title         VARCHAR(255),
-    creation_date DATE DEFAULT CURRENT_TIMESTAMP ,
-    type          VARCHAR(10),
-    module        VARCHAR(10),
-    status        VARCHAR(10)
+    id              SERIAL      UNIQUE PRIMARY KEY,
+    title           VARCHAR(255),
+    type            VARCHAR(10),
+    module          VARCHAR(10),
+    status          VARCHAR(10),
+    creation_date   DATE DEFAULT CURRENT_TIMESTAMP ,
+    end_date        DATE DEFAULT ,
 );
