@@ -39,6 +39,7 @@ export class MailCollectComponent implements OnInit {
     pageIndex           : number        = 0;
     total               : number        = 0;
     offset              : number        = 0;
+    selectedIndex       : number        = 0;
     search              : string        = '';
     globalForm          : any[]         = [
         {
@@ -364,7 +365,7 @@ export class MailCollectComponent implements OnInit {
                 this.http.post(environment['url'] + '/ws/mailcollect/updateProcess/' + oldProcessName, {"name": new_process_name}, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('MAILCOLLECT.process_name_updated'));
-                        this.historyService.addHistory('general', 'update_mailcollect_name', this.translate.instant('HISTORY-DESC.update_mailcollect_name', {mailcollect: oldProcessName}));
+                        this.historyService.addHistory('general', 'update_mailcollect_name', this.translate.instant('HISTORY-DESC.update_mailcollect_name', {process: oldProcessName}));
                     }),
                     finalize(() => {
                         this.loadingProcessName = false;
@@ -647,7 +648,11 @@ export class MailCollectComponent implements OnInit {
     deleteProcess(processName: string) {
         this.http.delete(environment['url'] + '/ws/mailcollect/deleteProcess/' + processName, {headers: this.authService.headers}).pipe(
             tap(() => {
+                this.selectedIndex = 1;
                 this.loadProcess();
+                setTimeout(() => {
+                    this.selectedIndex = 0;
+                }, 300);
                 this.notify.success(this.translate.instant('MAILCOLLECT.process_deleted'));
             }),
             catchError((err: any) => {
@@ -674,7 +679,7 @@ export class MailCollectComponent implements OnInit {
             this.http.post(environment['url'] + '/ws/mailcollect/updateProcess/' + data['name'], data, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('MAILCOLLECT.process_updated'));
-                    this.historyService.addHistory('general', 'update_mailcollect', this.translate.instant('HISTORY-DESC.update_mailcollect', {mailcollect: data['name']}));
+                    this.historyService.addHistory('general', 'update_mailcollect', this.translate.instant('HISTORY-DESC.update_mailcollect', {process: data['name']}));
                 }),
                 finalize(() => this.processLoading = false),
                 catchError((err: any) => {

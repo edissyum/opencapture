@@ -127,7 +127,7 @@
             <h3 class="text-center text-gray-900 mx-4">{{ 'MAILCOLLECT.process_parameters' | translate }}</h3>
             <hr class="border-green-400 w-1/2 m-auto mb-4">
 
-            <mat-tab-group class="mx-5">
+            <mat-tab-group class="mx-5" [selectedIndex]="this.selectedIndex">
                 <mat-tab *ngFor="let process of this.processes">
                     <ng-template mat-tab-label>
                         <span *ngIf="getNameOfProcess(process) !== '' && getNameOfProcess(process) !== null else input">
@@ -241,7 +241,7 @@
                             </div>
                         </ng-container>
                     </div>
-                    <div class="mb-6 grid grid-cols-6 gap-4 h-10 text-gray-900 mt-8">
+                    <div class="mb-6 grid grid-cols-6 gap-4 h-10 mt-8">
                         <button class="border-solid border-gray-900 border hover:bg-gray-900 hover:text-white
                                     transition duration-300 col-start-3" mat-button (click)="retrieveFolders(process)">
                             <span *ngIf="!this.folderLoading">{{ 'MAILCOLLECT.retrieve_folders' | translate }}</span>
