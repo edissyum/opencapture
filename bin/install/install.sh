@@ -239,18 +239,22 @@ if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     echo ""
     echo "######################################################################################################################"
     echo ""
-    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'"
-    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
-    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
-    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
+    echo "Create database user...."
+    echo ""
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'" > /dev/null
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'" > /dev/null
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'" > /dev/null
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\"" > /dev/null
 else
     echo ""
     echo "######################################################################################################################"
     echo ""
-    su postgres -c "psql -c 'CREATE ROLE $databaseUsername'"
-    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
-    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
-    su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
+    echo "Create database user...."
+    echo ""
+    su postgres -c "psql -c 'CREATE ROLE $databaseUsername'" > /dev/null
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"> /dev/null
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"> /dev/null
+    su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""> /dev/null
 fi
 
 echo ""
