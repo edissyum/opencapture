@@ -139,7 +139,7 @@
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le type de document <b>{{ doctypeLabel }}</b> ?",
 		"default_doctype": "Type de document par défaut",
 		"doctype_added": "Type de document ajouté",
-		"doctype_edited": "Type de document Modifié",
+		"doctype_edited": "Type de document modifié",
 		"download_separator": "Télécharger le séparateur",
 		"edit_doctype": "Modifier un type de document",
 		"folder": "Chemise",
