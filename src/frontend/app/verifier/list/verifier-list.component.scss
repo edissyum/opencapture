@@ -4,6 +4,12 @@
     @apply font-bold;
 }
 
+::ng-deep .cards-list {
+    & .mat-card .mat-card-header .mat-card-header-text {
+        width: 95%;
+    }
+}
+
 ::ng-deep .batches {
     & .mat-paginator-page-size {
         @apply sm:hidden;

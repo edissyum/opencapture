@@ -24,7 +24,7 @@
                            placeholder="{{ 'USER.password' | translate }}" required>
                     <mat-icon matSuffix (click)="this.showPassword = !this.showPassword"
                               class="text-green-400 relative cursor-pointer -top-1.5 text-base">
-                        <i class="fa fa-1x" [class.fa-eye-slash]="!showPassword" [class.fa-eye]="this.showPassword"></i>
+                        <i class="fa fa-1x" [class.fa-eye-slash]="!this.showPassword" [class.fa-eye]="this.showPassword"></i>
                     </mat-icon>
                     <mat-error *ngIf="this.loginForm.controls.password.invalid">
                         {{ getErrorMessage('password') }}

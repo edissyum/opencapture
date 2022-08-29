@@ -239,18 +239,22 @@ if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     echo ""
     echo "######################################################################################################################"
     echo ""
-    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'"
-    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
-    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
-    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
+    echo "Create database user...."
+    echo ""
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'" > /dev/null
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'" > /dev/null
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'" > /dev/null
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\"" > /dev/null
 else
     echo ""
     echo "######################################################################################################################"
     echo ""
-    su postgres -c "psql -c 'CREATE ROLE $databaseUsername'"
-    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
-    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
-    su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
+    echo "Create database user...."
+    echo ""
+    su postgres -c "psql -c 'CREATE ROLE $databaseUsername'" > /dev/null
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"> /dev/null
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"> /dev/null
+    su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""> /dev/null
 fi
 
 echo ""
@@ -302,7 +306,9 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF'" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'verifier';" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/entrant/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_pdf';" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';" "$databaseName" > /dev/null
 
 ####################
 # Create the Apache service for backend
@@ -474,7 +480,7 @@ crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input 
 crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input watch /var/share/"$customId"/
 
 sed -i "s#verifier_default_input#verifier_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"
-sed -i "s#verifier_default_input#splitter_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"
+sed -i "s#splitter_default_input_#splitter_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"
 
 touch /etc/systemd/system/fs-watcher.service
 su -c "cat > /etc/systemd/system/fs-watcher.service << EOF
@@ -515,10 +521,10 @@ echo "$secret" > $customPath/config/secret_key
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh"
 if ! test -f "$defaultScriptFile"; then
     mkdir -p "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
-    cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
     cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
     sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
-    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+    sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OCForInvoices.log#g" $defaultScriptFile
+    sed -i "s#§§LOG_PATH§§#$defaultPath#g" $defaultScriptFile
     sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 fi

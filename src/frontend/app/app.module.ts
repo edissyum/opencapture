@@ -107,7 +107,7 @@ import { Error500Component } from './errors/error-500/error-500.component';
 import { MatSelectCountryModule } from "@angular-material-extensions/select-country";
 import { MiddlewareComponent } from "./middleware.component";
 import { VerifierDisplayComponent } from './settings/verifier/display/display.component';
-import { MailcollectListComponent } from './settings/general/mailcollect/list/mailcollect-list.component';
+import { MailCollectComponent } from './settings/general/mailcollect/mailcollect.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -179,7 +179,7 @@ export function createTranslateLoader(http: HttpClient) {
         Error500Component,
         LoginMethodsComponent,
         VerifierDisplayComponent,
-        MailcollectListComponent
+        MailCollectComponent
     ],
     imports: [
         BrowserModule,
