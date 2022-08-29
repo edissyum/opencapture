@@ -251,7 +251,9 @@ chmod -R 775 /var/share/"$customId"/
 chown -R "$user":"$group" /var/share/"$customId"/
 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/entrant/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_pdf';" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';" "$databaseName" > /dev/null
 
 ####################
 # Copy file from default one
@@ -290,8 +292,24 @@ sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scri
 
 ####################
 # Move defaults scripts to new custom location
-cp $defaultPath/bin/scripts/verifier_inputs/*.sh "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
-cp $defaultPath/bin/scripts/splitter_inputs/*.sh "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
+cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
+cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
+
+defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh"
+cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
+sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
+sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OCForInvoices.log#g" $defaultScriptFile
+sed -i "s#§§LOG_PATH§§#$defaultPath#g" $defaultScriptFile
+sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
+sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
+
+defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh"
+cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh $defaultScriptFile
+sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
+sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OCForInvoices.log#g" $defaultScriptFile
+sed -i "s#§§LOG_PATH§§#$defaultPath#g" $defaultScriptFile
+sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
+sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 
 ####################
 # Fix the rights after root launch to avoid permissions issues

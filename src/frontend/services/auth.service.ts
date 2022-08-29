@@ -115,6 +115,8 @@ export class AuthService {
         this.localStorage.remove('selectedSettings');
         this.localStorage.remove('splitter_or_verifier');
         this.localStorage.remove('selectedParentSettings');
+        this.localStorage.remove('selectedParentSettings');
+        this.localStorage.remove('task_watcher_minimize_display');
         this.localStorage.deleteCookie(tokenNames['tokenJwt']);
         this.localStorage.deleteCookie(tokenNames['userToken']);
         this.http.get(environment['url'] + '/ws/auth/logout').pipe(

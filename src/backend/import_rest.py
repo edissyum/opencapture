@@ -15,6 +15,12 @@ elif 'rest' in custom_array['user']['path']:
     user = getattr(__import__(custom_array['user']['path'], fromlist=[custom_array['user']['module']]),
                    custom_array['user']['module'])
 
+if 'mailcollect' not in custom_array or 'rest' not in custom_array['mailcollect']['path']:
+    from .rest import mailcollect
+elif 'rest' in custom_array['mailcollect']['path']:
+    user = getattr(__import__(custom_array['mailcollect']['path'], fromlist=[custom_array['mailcollect']['module']]),
+                   custom_array['mailcollect']['module'])
+
 if 'locale' not in custom_array or 'rest' not in custom_array['locale']['path']:
     from .rest import locale
 elif 'rest' in custom_array['locale']['path']:
