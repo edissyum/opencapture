@@ -25,14 +25,6 @@
             }
             & .mat-tab-label-active {
                 @apply opacity-100;
-                & .mat-tab-label-content {
-                    & span:first-child {
-                        @apply opacity-30;
-                    }
-                    & span:nth-child(2) {
-                        @apply opacity-100;
-                    }
-                }
             }
         }
     }
