@@ -362,13 +362,13 @@ CREATE TABLE "languages"
 
 create table tasks_watcher
 (
-    id              SERIAL      UNIQUE PRIMARY KEY,
-    title           VARCHAR(255),
-    type            VARCHAR(10),
-    module          VARCHAR(10),
-    status          VARCHAR(10),
-    creation_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
-    end_date        TIMESTAMP DEFAULT ,
+    "id"              SERIAL      UNIQUE PRIMARY KEY,
+    "title"           VARCHAR(255),
+    "type"            VARCHAR(10),
+    "module"          VARCHAR(10),
+    "status"          VARCHAR(10),
+    "creation_date"   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "end_date"        TIMESTAMP
 );
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;
