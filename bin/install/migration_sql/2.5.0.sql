@@ -20,25 +20,6 @@ INSERT INTO "configurations" (label, data, display) VALUES ('mailCollectGeneral'
     "description": "Paramétrage par défaut du MailCollect"
 }', false);
 
-CREATE TABLE mailcollect (
-    "id"                            SERIAL       UNIQUE PRIMARY KEY,
-    "name"                          VARCHAR(255) UNIQUE NOT NULL,
-    "hostname"                      VARCHAR(255) NOT NULL,
-    "port"                          INTEGER      NOT NULL,
-    "login"                         VARCHAR(255) NOT NULL,
-    "password"                      VARCHAR(255) NOT NULL,
-    "status"                        VARCHAR(10)  DEFAULT 'OK',
-    "secured_connection"            VARCHAR(255) NOT NULL,
-    "is_splitter"                   BOOLEAN      DEFAULT False,
-    "splitter_technical_input_id"   VARCHAR(255),
-    "folder_to_crawl"               VARCHAR(255) NOT NULL,
-    "folder_destination"            VARCHAR(255) NOT NULL,
-    "folder_trash"                  VARCHAR(255) NOT NULL,
-    "action_after_process"          VARCHAR(255) NOT NULL,
-    "verifier_customer_id"          INTEGER,
-    "verifier_form_id"              INTEGER
-);
-
 -- Add regex for Splitter XML output
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_doc_loop', 'fra', 'Boucle des documents dans la sortie XML du Splitter', '<!-- %BEGIN-DOCUMENT-LOOP -->(.*?)<!-- %END-DOCUMENT-LOOP -->');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_condition', 'fra', 'Condition des balises dans la sortie XML du Splitter', '<!-- %BEGIN-IF(.*?) -->(.*?)<!-- %END-IF -->');

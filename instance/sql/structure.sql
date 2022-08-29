@@ -371,24 +371,5 @@ create table tasks_watcher
     "end_date"        TIMESTAMP
 );
 
-CREATE TABLE mailcollect (
-    "id"                            SERIAL       UNIQUE PRIMARY KEY,
-    "name"                          VARCHAR(255) UNIQUE NOT NULL,
-    "hostname"                      VARCHAR(255) NOT NULL,
-    "port"                          INTEGER      NOT NULL,
-    "login"                         VARCHAR(255) NOT NULL,
-    "password"                      VARCHAR(255) NOT NULL,
-    "secured_connection"            VARCHAR(255) NOT NULL,
-    "status"                        VARCHAR(10)  DEFAULT 'OK',
-    "is_splitter"                   BOOLEAN      DEFAULT False,
-    "splitter_technical_input_id"   VARCHAR(255),
-    "folder_to_crawl"               VARCHAR(255) NOT NULL,
-    "folder_destination"            VARCHAR(255) NOT NULL,
-    "folder_trash"                  VARCHAR(255) NOT NULL,
-    "action_after_process"          VARCHAR(255) NOT NULL,
-    "verifier_customer_id"          INTEGER,
-    "verifier_form_id"              INTEGER
-);
-
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;
 COMMENT ON SEQUENCE splitter_referential_call_count IS 'Splitter referential demand number count';
