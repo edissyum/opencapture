@@ -27,13 +27,13 @@ CREATE TABLE "form_models"
     "metadata_method"                VARCHAR(50),
     "export_zip_file"                VARCHAR(255),
     "display"                        JSONB         DEFAULT '{
-        "subtitles": [
-            {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-            {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
-            {"id": "date", "label": "VERIFIER.register_date"},
-            {"id": "original_file", "label": "VERIFIER.original_file"},
-            {"id": "form_label", "label": "ACCOUNTS.form"}
-        ]
+            "subtitles": [
+                {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
+                {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+                {"id": "date", "label": "VERIFIER.register_date"},
+                {"id": "original_file", "label": "VERIFIER.original_file"},
+                {"id": "form_label", "label": "ACCOUNTS.form"}
+            ]
     }'
 );
 
