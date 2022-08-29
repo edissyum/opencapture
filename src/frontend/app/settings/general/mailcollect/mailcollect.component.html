@@ -252,7 +252,7 @@
                                     transition duration-300 col-start-3" mat-button (click)="retrieveFolders(process)">
                             <span *ngIf="!this.folderLoading">{{ 'MAILCOLLECT.retrieve_folders' | translate }}</span>
                             <i *ngIf="this.folderLoading" class="fa-solid text-2xl fa-circle-notch fa-spin
-                                        text-gray-900" style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
+                                        text-green-400" style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
                         </button>
                         <button *ngIf="process.exists"
                                 class="border-solid border-green-400 border hover:bg-green-400 hover:text-white

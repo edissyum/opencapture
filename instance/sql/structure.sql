@@ -360,6 +360,17 @@ CREATE TABLE "languages"
     "date_format"       VARCHAR(20)
 );
 
+create table tasks_watcher
+(
+    "id"              SERIAL      UNIQUE PRIMARY KEY,
+    "title"           VARCHAR(255),
+    "type"            VARCHAR(10),
+    "module"          VARCHAR(10),
+    "status"          VARCHAR(10),
+    "creation_date"   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "end_date"        TIMESTAMP
+);
+
 CREATE TABLE mailcollect (
     "id"                            SERIAL       UNIQUE PRIMARY KEY,
     "name"                          VARCHAR(255) UNIQUE NOT NULL,
