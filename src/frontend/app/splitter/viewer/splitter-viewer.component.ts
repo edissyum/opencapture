@@ -34,15 +34,7 @@ import { DocumentTypeComponent } from "../document-type/document-type.component"
 import {remove } from 'remove-accents';
 import { HistoryService } from "../../../services/history.service";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
-
-export interface Batch {
-    id          : number
-    input_id    : number
-    page_number : number
-    file_name   : string
-    batch_date  : string
-    thumbnail   : any
-}
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 export interface Field {
     id              : number
@@ -76,13 +68,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     loading                     : boolean       = true;
     showZoomPage                : boolean       = false;
     isDataEdited                : boolean       = false;
+    batchesLoading              : boolean       = false;
     saveInfosLoading            : boolean       = false;
     documentsLoading            : boolean       = false;
     addDocumentLoading          : boolean       = false;
     batchMetadataOpenState      : boolean       = true;
     documentMetadataOpenState   : boolean       = false;
     batchForm                   : FormGroup     = new FormGroup({});
-    batches                     : Batch[]       = [];
+    batches                     : any[]       = [];
     status                      : any[]         = [];
     outputs                     : any           = [];
     metadata                    : any[]         = [];
@@ -92,9 +85,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     deletedPagesIds             : number[]      = [];
     deletedDocumentsIds         : number[]      = [];
     DropListDocumentsIds        : string[]      = [];
-    toolSelectedOption          : string        = "";
     batchMetadataValues         : any           = {};
     inputMode                   : string        = "Manual";
+    currentTime                 : string        = "";
+    toolSelectedOption          : string        = "";
+    timeLabels                  : any           = {
+        'today'     : marker('BATCH.today'),
+        'yesterday' : marker('BATCH.yesterday'),
+        'older'     : marker('BATCH.older'),
+    };
     defaultDoctype              : any           = {
         label       : null,
         key         : null,
@@ -151,7 +150,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.localStorageService.save('splitter_or_verifier', 'splitter');
         this.userService.user   = this.userService.getUserFromLocal();
         this.currentBatch.id    = this.route.snapshot.params['id'];
-        this.loadBatches();
+        this.currentTime        = this.route.snapshot.params['currentTime'];
         this.loadSelectedBatch();
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
             this.historyService.addHistory('splitter', 'viewer', translated);
@@ -192,6 +191,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         displayOrder    : -1,
                     }
                 };
+                this.loadBatches();
                 this.loadStatus();
                 this.loadFormFields();
                 this.loadDocuments();
@@ -255,22 +255,26 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadBatches(): void {
-        this.http.get(environment['url'] + '/ws/splitter/batches/0/5/None/NEW', {headers: this.authService.headers}).pipe(
+        this.batchesLoading = true;
+        this.batches        = [];
+        this.http.get(environment['url'] + '/ws/splitter/batches/0/5/' + this.currentTime + '/' + this.currentBatch.status, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                data.batches.forEach((batch: Batch) =>
+                data.batches.forEach((batch: any) =>
                     this.batches.push(
                         {
                             id          : batch.id,
+                            inputId     : batch.input_id,
+                            fileName    : batch.file_name,
+                            date        : batch.batch_date,
+                            pageNumber  : batch.page_number,
                             thumbnail   : this.sanitize(batch.thumbnail),
-                            file_name   : batch.file_name,
-                            page_number : batch.page_number,
-                            batch_date  : batch.batch_date,
-                            input_id    : batch.input_id,
                         }
                     )
                 );
+                this.batchesLoading = false;
             }),
             catchError((err: any) => {
+                this.batchesLoading = false;
                 this.notify.handleErrors(err);
                 return of(false);
             })
@@ -871,7 +875,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.fieldsCategories['batch_metadata'] = [];
         this.batchMetadataValues                = {};
         this.fillDataValues({});
-        this.router.navigate(['splitter/viewer/' + id]).then();
+        this.router.navigate(['splitter/viewer/' + this.currentTime + '/' + id]).then();
         this.currentBatch.id = id;
         this.loadSelectedBatch();
         this.isDataEdited = false;

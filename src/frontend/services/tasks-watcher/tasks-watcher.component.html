@@ -1,0 +1,37 @@
+<mat-card class="w-1/3 h-36 absolute bottom-2 right-2 z-10 bg-slate-50" style="padding: 0 !important;" *ngIf="!minimizeDisplay">
+    <mat-card-title class="text-sm m-4" cdkDragHandle>
+        {{ 'GLOBAL.current_tasks' | translate }}
+    <span class="text-lg absolute right-4 top-2 hover:text-green-400 inline-block align-bottom hover:cursor-pointer"
+          (click)="changeDisplayMode(!minimizeDisplay)" matTooltip="{{ 'GLOBAL.minimize' | translate }}">
+        <i class="fa-solid fa-window-minimize align-top"></i>
+    </span>
+    </mat-card-title>
+    <div  class="mx-4 h-20 overflow-y-auto bg-slate-100">
+        <div class="text-gray-400 my-4 text-center w-full" *ngIf="tasks.length === 0 && !loading">
+            <i class="block fa-solid fa-check fa-2x"></i>
+            <span class="block">{{ 'GLOBAL.no_task_to_show' | translate }}</span>
+        </div>
+        <div *ngFor="let task of tasks" class="h-8 w-full px-4 border-t-2 grid grid-cols-10">
+            <span class="col-span-1 pt-1">
+                {{ task.id }}
+            </span>
+            <span class="col-span-5 pt-1 w-full truncate ...">
+                {{ task.fileName }}
+            </span>
+            <span class="col-span-3 text-sm text-slate-400 pt-1" matTooltip="{{ 'GLOBAL.add_time' | translate }} {{ task.beginTime}}">
+                {{ task.age }}
+            </span>
+            <span class="col-span-1 text-right">
+                <i *ngIf="task.status === 'in_progress'" class="fas fa-circle-notch fa-spin fa-lg my-4"></i>
+                <i *ngIf="task.status === 'done'" class="fa-solid fa-check fa-lg my-4"
+                   matTooltip="{{ 'GLOBAL.end_time' | translate }} {{ task.endTime}}"></i>
+            </span>
+        </div>
+    </div>
+</mat-card>
+<div (click)="changeDisplayMode(!minimizeDisplay)" class="w-12 h-12 absolute bottom-6 right-6 rounded-full z-10 bg-slate-100
+    hover:text-green-400 hover:cursor-pointer grid justify-items-center drop-shadow-md" *ngIf="minimizeDisplay">
+    <span  class="text-lg pt-2">
+        <i class="fa-solid fa-list-check fa-align-center"></i>
+    </span>
+</div>

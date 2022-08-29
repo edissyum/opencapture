@@ -22,19 +22,24 @@ import { HintServiceComponent } from './hint/hint.service';
 import { TranslateModule } from "@ngx-translate/core";
 import { AppMaterialModule } from '../app/app-material.module';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { TasksWatcherComponent } from './tasks-watcher/tasks-watcher.component';
 import { CustomSnackbarComponent, NotificationService } from './notifications/notifications.service';
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 @NgModule({
     imports: [
         AppMaterialModule,
         CommonModule,
-        TranslateModule
+        TranslateModule,
+        DragDropModule
     ],
     declarations: [
         CustomSnackbarComponent,
         ConfirmDialogComponent,
+        TasksWatcherComponent,
     ],
     exports: [
+        TasksWatcherComponent
     ],
     entryComponents: [
         CustomSnackbarComponent,
