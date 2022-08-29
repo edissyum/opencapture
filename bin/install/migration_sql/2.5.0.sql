@@ -31,14 +31,14 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_c
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_xml_comment', 'eng', 'Tech comments in Splitter XML output', '\s?<!--[\s\S\n]*?-->\s');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_empty_line', 'eng', 'Empty line in Splitter XML output', '^\s*$');
 
--- Add tasks watcher
+-- Create tasks watcher
 create table tasks_watcher
 (
-    id              SERIAL      UNIQUE PRIMARY KEY,
-    title           VARCHAR(255),
-    type            VARCHAR(10),
-    module          VARCHAR(10),
-    status          VARCHAR(10),
-    creation_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
-    end_date        TIMESTAMP DEFAULT
+    "id"              SERIAL      UNIQUE PRIMARY KEY,
+    "title"           VARCHAR(255),
+    "type"            VARCHAR(10),
+    "module"          VARCHAR(10),
+    "status"          VARCHAR(10),
+    "creation_date"   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "end_date"        TIMESTAMP
 );
