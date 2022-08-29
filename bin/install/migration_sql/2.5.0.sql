@@ -40,5 +40,5 @@ create table tasks_watcher
     module          VARCHAR(10),
     status          VARCHAR(10),
     creation_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
-    end_date        TIMESTAMP DEFAULT ,
+    end_date        TIMESTAMP DEFAULT
 );
