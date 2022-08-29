@@ -107,3 +107,8 @@ if 'doctypes' or 'controllers' not in custom_array['doctypes']['path']:
     from .controllers import doctypes
 elif 'controllers' in custom_array['doctypes']['path']:
     inputs = getattr(__import__(custom_array['doctypes']['path'], fromlist=[custom_array['doctypes']['module']]), custom_array['doctypes']['module'])
+
+if 'tasks_watcher' or 'controllers' not in custom_array['tasks_watcher']['path']:
+    from .controllers import tasks_watcher
+elif 'controllers' in custom_array['tasks_watcher']['path']:
+    inputs = getattr(__import__(custom_array['tasks_watcher']['path'], fromlist=[custom_array['tasks_watcher']['module']]), custom_array['tasks_watcher']['module'])

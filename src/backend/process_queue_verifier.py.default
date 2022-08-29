@@ -41,6 +41,15 @@ def launch(args):
     start = time.time()
 
     database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
+    task_id = database.insert({
+        'table': 'tasks_watcher',
+        'columns': {
+            'title': os.path.basename(args['file']),
+            'type': 'upload',
+            'module': 'verifier',
+        }
+    })
+
     tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
     with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
         filename = tmp_file.name
@@ -123,6 +132,15 @@ def launch(args):
                     log.error('Error while processing e-mail', False)
 
     recursive_delete(tmp_folder, log)
+    database.update({
+        'table': ['tasks_watcher'],
+        'set': {
+            'status': 'done',
+            'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
+        },
+        'where': ['id = %s'],
+        'data': [task_id]
+    })
     database.conn.close()
     end = time.time()
     log.info('Process end after ' + timer(start, end) + '')

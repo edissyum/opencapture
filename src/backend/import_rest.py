@@ -117,3 +117,9 @@ if 'doctypes' not in custom_array or 'rest' not in custom_array['doctypes']['pat
 elif 'rest' in custom_array['doctypes']['path']:
     doctypes = getattr(__import__(custom_array['doctypes']['path'], fromlist=[custom_array['doctypes']['module']]),
                      custom_array['doctypes']['module'])
+
+if 'tasks_watcher' not in custom_array or 'rest' not in custom_array['tasks_watcher']['path']:
+    from .rest import tasks_watcher
+elif 'rest' in custom_array['tasks_watcher']['path']:
+    tasks_watcher = getattr(__import__(custom_array['tasks_watcher']['path'], fromlist=[custom_array['tasks_watcher']['module']]),
+                       custom_array['tasks_watcher']['module'])
