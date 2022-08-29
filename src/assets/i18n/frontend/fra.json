@@ -723,6 +723,7 @@
 		"quit_without_saving": "Quitter sans enregistrer",
 		"quit_without_saving_modifications": "Voulez-vous quitter sans enregistrer les modifications ?",
 		"referential_updated": "Référentiel mis à jour avec succès",
+		"reload_batches": "Recharger les lots",
 		"rotatePage": "Tourner les pages sélectionnées",
 		"save": "Enregistrer",
 		"search": "Recherche",
