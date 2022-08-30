@@ -6,6 +6,7 @@ zbar-tools
 pkg-config
 imagemagick
 python3-pip
+python3-venv
 poppler-utils
 tesseract-ocr
 python3-chardet

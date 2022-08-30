@@ -182,6 +182,19 @@ echo ""
 echo "######################################################################################################################"
 echo ""
 
+echo 'Would you use Python virtual environment ? (default : yes)'
+printf "Enter your choice [%s] : " "${bold}yes${normal}/no"
+read -r choice
+if [ "$choice" != "no" ]; then
+    pythonVenv='true'
+else
+    pythonVenv='false'
+fi
+
+echo ""
+echo "######################################################################################################################"
+echo ""
+
 ####################
 # Retrieve database informations
 echo "Type database informations (hostname, port, username and password and postgres user password)."
@@ -270,9 +283,20 @@ echo "##########################################################################
 echo ""
 
 echo "Python packages installation....."
-python3 -m pip install --upgrade pip > /dev/null
-python3 -m pip install --upgrade setuptools > /dev/null
-python3 -m pip install -r pip-requirements.txt > /dev/null
+
+if [ $pythonVenv = 'true' ]; then
+    mkdir "/home/$user/python-venv/"
+    cd "/home/$user/python-venv/"
+    python3 -m venv opencapture
+    echo "source /home/$user/python-venv/opencapture/bin/activate" >> "/home/$user/.bashrc"
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade pip > /dev/null
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade setuptools > /dev/null
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install -r pip-requirements.txt > /dev/null
+else
+    python3 -m pip install --upgrade pip > /dev/null
+    python3 -m pip install --upgrade setuptools > /dev/null
+    python3 -m pip install -r pip-requirements.txt > /dev/null
+fi
 
 cd $defaultPath || exit 1
 find . -name ".gitkeep" -delete
@@ -305,13 +329,12 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF'" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE configuratons SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'verifier';" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/entrant/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_pdf';" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE configurations SET data = jsonb_set(data, '{value, batchPath}', '\"$defaultPath/custom/$customId/bin/data/MailCollect/\"') WHERE label = 'mailCollectGeneral';" "$databaseName" > /dev/null
-
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE configurations SET data = jsonb_set(data, '{value, batchPath}', '\"$customPath/bin/data/MailCollect/\"') WHERE label = 'mailCollectGeneral';" "$databaseName" > /dev/null
 
 ####################
 # Create the Apache service for backend

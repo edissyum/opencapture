@@ -1,6 +1,6 @@
 {
     "name": "open-capture-for-invoices",
-    "version": "2.4.0",
+    "version": "2.5.0",
     "scripts": {
         "lint": "ng lint",
         "check-update": "ncu",
@@ -30,7 +30,7 @@
         "@ngx-translate/http-loader": "^7.0.0",
         "@schematics/angular": "^14.2.1",
         "@swimlane/ngx-charts": "^20.1.0",
-        "@syncfusion/ej2": "^20.2.45",
+        "@syncfusion/ej2": "^20.2.46",
         "jquery": "^3.6.1",
         "moment": "^2.29.4",
         "ng-click-outside2": "^11.1.0",
@@ -56,8 +56,8 @@
         "@types/d3-scale": "^4.0.2",
         "@types/d3-selection": "^3.0.3",
         "@types/node": "^18.7.14",
-        "@typescript-eslint/eslint-plugin": "5.36.0",
-        "@typescript-eslint/parser": "5.36.0",
+        "@typescript-eslint/eslint-plugin": "5.36.1",
+        "@typescript-eslint/parser": "5.36.1",
         "autoprefixer": "^10.4.8",
         "eslint": "^8.23.0",
         "eslint-plugin-import": "latest",
