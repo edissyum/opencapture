@@ -230,7 +230,7 @@ mkdir -p $customPath/instance/referencial/
 mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $customPath/bin/data/log/Supervisor/
 touch $customPath/bin/data/log/OCforInvoices.log
-mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
+mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs,MailCollect}/
 mkdir -p $customPath/src/backend/
 touch $customPath/config/secret_key
 
@@ -254,25 +254,26 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/entrant/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_pdf';" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE configurations SET data = jsonb_set(data, '{value, batchPath}', '\"$defaultPath/custom/$customId/bin/data/MailCollect/\"') WHERE label = 'mailCollectGeneral';" "$databaseName" > /dev/null
 
 ####################
 # Copy file from default one
 cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.ods"
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
-cp $defaultPath/instance/config/mail.ini.default "$defaultPath/custom/$customId/config/mail.ini"
 cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
 cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
 cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 cp $defaultPath/src/backend/process_queue_splitter.py.default "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
 cp $defaultPath/bin/scripts/service_workerOC.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
 cp $defaultPath/bin/scripts/service_workerOC_splitter.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
+cp $defaultPath/bin/scripts/MailCollect/clean.sh.default "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/mail.ini"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
+sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/bin/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
 confFile="$defaultPath/custom/$customId/config/config.ini"
 crudini --set "$confFile" DATABASE postgresHost "$hostname"
@@ -286,9 +287,10 @@ echo "##########################################################################
 echo ""
 
 ####################
-# Create default MAIL script and config
+# Create default MAIL script
 cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
+sed -i "s#§§OC_PATH§§#$defaultPath#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 
 ####################
 # Move defaults scripts to new custom location

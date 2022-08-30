@@ -70,6 +70,20 @@ def create_process():
 
 @bp.route('mailcollect/deleteProcess/<string:process_name>', methods=['DELETE'])
 @auth.token_required
-def deletes_process(process_name):
+def delete_process(process_name):
     res = mailcollect.delete_process(process_name)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('mailcollect/enableProcess/<string:process_name>', methods=['DELETE'])
+@auth.token_required
+def enable_process(process_name):
+    res = mailcollect.enable_process(process_name)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('mailcollect/disableProcess/<string:process_name>', methods=['DELETE'])
+@auth.token_required
+def disable_process(process_name):
+    res = mailcollect.disable_process(process_name)
     return make_response(jsonify(res[0])), res[1]

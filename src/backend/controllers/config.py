@@ -117,15 +117,19 @@ def update_configuration(args, configuration_id):
     _, error = config.retrieve_configuration_by_id({'configuration_id': configuration_id})
 
     if error is None:
-        args = {
+        data = {
             'configuration_id': configuration_id,
             'data': {
-                'type': args['type'],
-                'value': args['value'],
-                'description': args['description']
+                'value': args['value']
             }
         }
-        config.update_configuration(args)
+
+        if 'type' in args and args['type']:
+            data['data']['type'] = args['type']
+        if 'description' in args and args['description']:
+            data['data']['description'] = args['description']
+
+        config.update_configuration(data)
         return '', 200
 
     response = {

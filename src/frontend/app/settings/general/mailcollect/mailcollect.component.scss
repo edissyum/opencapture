@@ -6,12 +6,24 @@
     flex: 0 0 5%;
 }
 
-::ng-deep .mat-tab-disabled {
-    @apply opacity-100 #{!important};
-}
 
-::ng-deep .mat-tab-label-active {
-    @apply opacity-100 #{!important};
+::ng-deep .mat-tab-labels {
+    & .mat-tab-disabled {
+        @apply opacity-100 #{!important};
+    }
+
+    & :not(.mat-tab-label-active) {
+        & .actions {
+            @apply pointer-events-none;
+        }
+    }
+
+    & .mat-tab-label-active {
+        @apply opacity-100 #{!important};
+        & .actions {
+            @apply pointer-events-auto;
+        }
+    }
 }
 
 ::ng-deep .change_process_name .mat-form-field-wrapper {

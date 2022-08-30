@@ -320,9 +320,10 @@ CREATE TABLE "metadata"
 
 CREATE TABLE "configurations"
 (
-    "id"    SERIAL      UNIQUE PRIMARY KEY,
-    "label" VARCHAR(64) UNIQUE,
-    "data"  JSONB       DEFAULT '{}'
+    "id"        SERIAL      UNIQUE PRIMARY KEY,
+    "label"     VARCHAR(64) UNIQUE,
+    "data"      JSONB       DEFAULT '{}',
+    "display"   BOOLEAN     DEFAULT true
 );
 
 CREATE TABLE "docservers"
@@ -381,6 +382,7 @@ CREATE TABLE mailcollect (
      "secured_connection"            VARCHAR(255) NOT NULL,
      "status"                        VARCHAR(10)  DEFAULT 'OK',
      "is_splitter"                   BOOLEAN      DEFAULT False,
+     "enabled"                       BOOLEAN      DEFAULT True,
      "splitter_technical_input_id"   VARCHAR(255),
      "folder_to_crawl"               VARCHAR(255) NOT NULL,
      "folder_destination"            VARCHAR(255) NOT NULL,

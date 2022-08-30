@@ -16,8 +16,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-# Bash script to clean MailCollect batches and log
-batch_path='/var/www/html/opencaptureforinvoices/bin/data/MailCollect/'
+batch_path="§§BATCH_PATH§§"
 conservation_time=7
 conservation_time_error_folder=14
 

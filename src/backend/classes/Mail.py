@@ -274,9 +274,7 @@ class Mail:
                 smtp.send_email(
                     message='    - Nom du batch : ' + os.path.basename(batch_path) + '/ \n' +
                             '    - Nom du process : ' + process + '\n' +
-                            '    - Chemin vers le batch en erreur : ' + docservers['PROJECT_PATH'] +
-                            'bin/data/MailCollect/_ERROR/' + process + '/' + os.path.basename(error_path) + '/' +
-                            os.path.basename(batch_path) + ' \n' +
+                            '    - Chemin vers le batch en erreur : ' + error_path + '/' + os.path.basename(batch_path) + '/ \n' +
                             '    - Sujet du mail : ' + msg['subject'] + '\n' +
                             '    - Date du mail : ' + msg['date'] + '\n' +
                             '    - UID du mail : ' + msg['uid'] + '\n' +

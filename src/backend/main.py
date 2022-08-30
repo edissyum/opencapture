@@ -35,22 +35,7 @@ def create_classes_from_custom_id(custom_id):
     except RuntimeError:
         pass
 
-    config_mail = _Config(config.cfg['GLOBAL']['configmail'])
-    smtp = _SMTP(
-        config_mail.cfg['GLOBAL']['smtp_notif_on_error'],
-        config_mail.cfg['GLOBAL']['smtp_host'],
-        config_mail.cfg['GLOBAL']['smtp_port'],
-        config_mail.cfg['GLOBAL']['smtp_login'],
-        config_mail.cfg['GLOBAL']['smtp_pwd'],
-        config_mail.cfg['GLOBAL']['smtp_ssl'],
-        config_mail.cfg['GLOBAL']['smtp_starttls'],
-        config_mail.cfg['GLOBAL']['smtp_dest_admin_mail'],
-        config_mail.cfg['GLOBAL']['smtp_delay'],
-        config_mail.cfg['GLOBAL']['smtp_auth'],
-        config_mail.cfg['GLOBAL']['smtp_from_mail'],
-    )
-
-    log = _Log(config.cfg['GLOBAL']['logfile'], smtp)
+    log = _Log(config.cfg['GLOBAL']['logfile'], False)
     db_user = config.cfg['DATABASE']['postgresuser']
     db_pwd = config.cfg['DATABASE']['postgrespassword']
     db_name = config.cfg['DATABASE']['postgresdatabase']
@@ -59,6 +44,29 @@ def create_classes_from_custom_id(custom_id):
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
     if not database.conn:
         return False, 'bad_or_missing_database_informations'
+
+    mail_global = database.select({
+        'select': ['*'],
+        'table': ['configurations'],
+        'where': ['label = %s'],
+        'data': ['mailCollectGeneral']
+    })
+    if mail_global:
+        mail_global = mail_global[0]['data']['value']
+        smtp = _SMTP(
+            mail_global['smtpNotifOnError'],
+            mail_global['smtpHost'],
+            mail_global['smtpPort'],
+            mail_global['smtpLogin'],
+            mail_global['smtpPwd'],
+            mail_global['smtpSSL'],
+            mail_global['smtpStartTLS'],
+            mail_global['smtpDestAdminMail'],
+            mail_global['smtpDelay'],
+            mail_global['smtpAuth'],
+            mail_global['smtpFromMail'],
+        )
+        log.smtp = smtp
 
     regex = {}
     languages = {}

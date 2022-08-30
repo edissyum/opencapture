@@ -73,7 +73,7 @@ def create_process(args):
 def delete_process(process_name):
     _, error = mailcollect.get_process_by_name({'process_name': process_name})
     if error is None:
-        _, error = mailcollect.update_process({'set': {'status': 'DEL'}, 'process_name': process_name})
+        _, error = mailcollect.update_process({'set': {'status': 'DEL', 'enabled': False}, 'process_name': process_name})
         if error is None:
             return '', 200
         else:
@@ -85,6 +85,46 @@ def delete_process(process_name):
     else:
         response = {
             "errors": gettext('DELETE_MAILCOLLECT_PROCESS_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def enable_process(process_name):
+    _, error = mailcollect.get_process_by_name({'process_name': process_name})
+    if error is None:
+        _, error = mailcollect.update_process({'set': {'enabled': True}, 'process_name': process_name})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('ENABLE_MAILCOLLECT_PROCESS_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('ENABLE_MAILCOLLECT_PROCESS_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def disable_process(process_name):
+    _, error = mailcollect.get_process_by_name({'process_name': process_name})
+    if error is None:
+        _, error = mailcollect.update_process({'set': {'enabled': False}, 'process_name': process_name})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('DISABLE_MAILCOLLECT_PROCESS_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('DISABLE_MAILCOLLECT_PROCESS_ERROR'),
             "message": error
         }
         return response, 401

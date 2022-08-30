@@ -58,108 +58,145 @@ def check_folders(folder_crawl, folder_dest=False):
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-c", "--custom-id", required=True, help="Identifier of the custom")
-ap.add_argument("-cm", "--config_mail", required=True, help="path to mail.ini")
-ap.add_argument('-p', "--process", required=True, default='MAIL_1')
 args = vars(ap.parse_args())
 
 if not retrieve_config_from_custom_id(args['custom_id']):
     sys.exit('Custom config file couldn\'t be found')
 
-process = args['process']
-print('Start process : ' + process)
-
 database, config, regex, files, ocr, log, _, spreadsheet, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
 
-config_mail = _Config(args['config_mail'])
-cfg = config_mail.cfg[process]
+processes = database.select({
+    'select': ['*'],
+    'table': ['mailcollect'],
+    'where': ['status <> %s', 'enabled = %s'],
+    'data': ['DEL', True]
+})
 
-if config_mail.cfg.get(process) is None:
-    sys.exit('Process ' + process + ' is not set into ' + args['config_mail'] + ' file')
+if not processes:
+    exit('No processes available')
 
-global_log = _Log(config['GLOBAL']['logfile'], smtp)
+mail_global = database.select({
+    'select': ['*'],
+    'table': ['configurations'],
+    'where': ['label = %s'],
+    'data': ['mailCollectGeneral']
+})
 
-now = datetime.datetime.now()
-path = config_mail.cfg['GLOBAL']['batchpath'] + '/' + process + '/' + str('%02d' % now.year) + str('%02d' % now.month) + str('%02d' % now.day) + '/'
-path_without_time = config_mail.cfg['GLOBAL']['batchpath']
+if not mail_global:
+    exit('Error with mailCollectGeneral settings in configurations table')
 
-Mail = _Mail(
-    config_mail.cfg[process]['host'],
-    config_mail.cfg[process]['port'],
-    config_mail.cfg[process]['login'],
-    config_mail.cfg[process]['password']
-)
+mail_global = mail_global[0]['data']['value']
+config_mail = {}
 
-secured_connection = str2bool(cfg['securedconnection'])
-folder_trash = cfg['foldertrash']
-action = cfg['actionafterprocess']
-folder_to_crawl = cfg['foldertocrawl']
-folder_destination = cfg['folderdestination']
-isSplitter = str2bool(cfg['issplitter'])
-splitterInputId = cfg['splittertechnicalinputid']
-verifierFormId = cfg['verifierformid']
-verifierCustomerId = cfg['verifiercustomerid']
+for process in processes:
+    print('Start process : ' + process['name'])
+    for _p in process:
+        config_mail[_p] = process[_p]
+    global_log = _Log(config['GLOBAL']['logfile'], smtp)
 
-Mail.test_connection(secured_connection)
+    now = datetime.datetime.now()
+    path = mail_global['batchPath'] + '/' + process['name'] + '/' + str('%02d' % now.year) + str('%02d' % now.month) + str('%02d' % now.day) + '/'
+    path_without_time = mail_global['batchPath']
 
-if action == 'delete':
-    if folder_trash != '':
-        check = check_folders(folder_to_crawl, folder_trash)
+    Mail = _Mail(
+        config_mail['hostname'],
+        config_mail['port'],
+        config_mail['login'],
+        config_mail['password']
+    )
+
+    secured_connection = config_mail['secured_connection']
+    folder_trash = config_mail['folder_trash']
+    action = config_mail['action_after_process']
+    folder_to_crawl = config_mail['folder_to_crawl']
+    folder_destination = config_mail['folder_destination']
+    isSplitter = config_mail['is_splitter']
+    splitterInputId = config_mail['splitter_technical_input_id']
+    verifierFormId = config_mail['verifier_form_id']
+    verifierCustomerId = config_mail['verifier_customer_id']
+
+    Mail.test_connection(secured_connection)
+
+    if action == 'delete':
+        if folder_trash != '':
+            check = check_folders(folder_to_crawl, folder_trash)
+        else:
+            check = check_folders(folder_to_crawl)
+    elif action == 'move':
+        check = check_folders(folder_to_crawl, folder_destination)
     else:
         check = check_folders(folder_to_crawl)
-elif action == 'move':
-    check = check_folders(folder_to_crawl, folder_destination)
-else:
-    check = check_folders(folder_to_crawl)
 
-if check:
-    Mail.select_folder(folder_to_crawl)
-    emails = Mail.retrieve_message()
-    if len(emails) > 0:
-        now = datetime.datetime.now()
-        if not os.path.exists(path):
-            os.makedirs(path)
+    if check:
+        Mail.select_folder(folder_to_crawl)
+        emails = Mail.retrieve_message()
+        if len(emails) > 0:
+            now = datetime.datetime.now()
+            if not os.path.exists(path):
+                os.makedirs(path)
 
-        year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]
-        hour, minute, second, microsecond = [str('%02d' % now.hour), str('%02d' % now.minute), str('%02d' % now.second), str('%02d' % now.microsecond)]
+            year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]
+            hour, minute, second, microsecond = [str('%02d' % now.hour), str('%02d' % now.minute), str('%02d' % now.second), str('%02d' % now.microsecond)]
 
-        date_batch = year + month + day + '_' + hour + minute + second + microsecond
-        batch_path = tempfile.mkdtemp(dir=path, prefix='BATCH_' + date_batch + '_')
+            date_batch = year + month + day + '_' + hour + minute + second + microsecond
+            batch_path = tempfile.mkdtemp(dir=path, prefix='BATCH_' + date_batch + '_')
 
-        print('Batch name : custom/' + args['custom_id'] + '/bin/data/MailCollect' + batch_path.split('/MailCollect')[1].replace('//', '/'))
-        print('Batch error name : custom/' + args['custom_id'] + '/bin/data/MailCollect/_ERROR/' + batch_path.split('/MailCollect')[1].replace('//', '/'))
+            print('Batch name : ' + mail_global['batchPath'].replace("/var/www/html/opencaptureforinvoices/", "") + '/' + batch_path.split('/MailCollect')[1].replace('//', '/'))
+            print('Batch error name : ' + mail_global['batchPath'].replace("/var/www/html/opencaptureforinvoices/", "") + '/_ERROR/' + batch_path.split('/MailCollect')[1].replace('//', '/'))
 
-        Log = _Log(batch_path + '/' + date_batch + '.log', smtp)
-        Log.info('Start following batch : ' + os.path.basename(os.path.normpath(batch_path)))
-        Log.info('Action after processing e-mail is : ' + action)
-        Log.info('Number of e-mail to process : ' + str(len(emails)))
+            Log = _Log(batch_path + '/' + date_batch + '.log', smtp)
+            Log.info('Start following batch : ' + os.path.basename(os.path.normpath(batch_path)))
+            Log.info('Action after processing e-mail is : ' + action)
+            Log.info('Number of e-mail to process : ' + str(len(emails)))
 
-        cpt_mail = 1
-        for msg in emails:
-            # Backup all the e-mail into batch path
-            Mail.backup_email(msg, batch_path)
-            ret = Mail.construct_dict(msg, batch_path)
-            Log.info('Start to process only attachments')
-            Log.info('Process e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
-            if len(ret['attachments']) > 0:
-                Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
-                cpt = 1
-                for attachment in ret['attachments']:
-                    if attachment['format'].lower() == 'pdf':
-                        if not isSplitter:
-                            with app.app_context():
-                                launch_verifier({
-                                    'cpt': str(cpt),
+            cpt_mail = 1
+            for msg in emails:
+                # Backup all the e-mail into batch path
+                Mail.backup_email(msg, batch_path)
+                ret = Mail.construct_dict(msg, batch_path)
+                Log.info('Start to process only attachments')
+                Log.info('Process e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
+                if len(ret['attachments']) > 0:
+                    Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
+                    cpt = 1
+                    for attachment in ret['attachments']:
+                        if attachment['format'].lower() == 'pdf':
+                            if not isSplitter:
+                                print(batch_path)
+                                print(path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day)
+                                with app.app_context():
+                                    launch_verifier({
+                                        'cpt': str(cpt),
+                                        'isMail': True,
+                                        'process_name': process['name'],
+                                        'process': process,
+                                        'custom_id': args['custom_id'],
+                                        'batch_path': batch_path,
+                                        'form_id': verifierFormId,
+                                        'file': attachment['file'],
+                                        'customer_id': verifierCustomerId,
+                                        'log': batch_path + '/' + date_batch + '.log',
+                                        'nb_of_attachments': str(len(ret['attachments'])),
+                                        'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
+                                        'msg': {
+                                            'uid': msg.uid,
+                                            'subject': msg.subject,
+                                            'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
+                                        },
+                                    })
+                            else:
+                                launch_splitter({
                                     'isMail': True,
-                                    'process': process,
-                                    'custom_id': args['custom_id'],
+                                    'cpt': str(cpt),
+                                    'process': process['name'],
                                     'batch_path': batch_path,
-                                    'form_id': verifierFormId,
+                                    'custom_id': args['custom_id'],
                                     'file': attachment['file'],
-                                    'customer_id': verifierCustomerId,
+                                    'input_id': splitterInputId,
                                     'config_mail': args['config_mail'],
                                     'log': batch_path + '/' + date_batch + '.log',
                                     'nb_of_attachments': str(len(ret['attachments'])),
-                                    'error_path': path_without_time + '/_ERROR/' + process + '/' + year + month + day,
+                                    'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                     'msg': {
                                         'uid': msg.uid,
                                         'subject': msg.subject,
@@ -167,42 +204,23 @@ if check:
                                     },
                                 })
                         else:
-                            launch_splitter({
-                                'isMail': True,
-                                'cpt': str(cpt),
-                                'process': process,
-                                'batch_path': batch_path,
-                                'custom_id': args['custom_id'],
-                                'file': attachment['file'],
-                                'input_id': splitterInputId,
-                                'config_mail': args['config_mail'],
-                                'log': batch_path + '/' + date_batch + '.log',
-                                'nb_of_attachments': str(len(ret['attachments'])),
-                                'error_path': path_without_time + '/_ERROR/' + process + '/' + year + month + day,
-                                'msg': {
-                                    'uid': msg.uid,
-                                    'subject': msg.subject,
-                                    'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
-                                },
-                            })
-                    else:
-                        Log.info('Attachment n°' + str(cpt) + ' is not a PDF file')
-                    cpt = cpt + 1
-            else:
-                Log.info('No attachments found')
+                            Log.info('Attachment n°' + str(cpt) + ' is not a PDF file')
+                        cpt = cpt + 1
+                else:
+                    Log.info('No attachments found')
 
-            if action not in ['move', 'delete', 'none']:
-                action = 'none'
+                if action not in ['move', 'delete', 'none']:
+                    action = 'none'
 
-            if action == 'move':
-                Log.info('Move mail into archive folder : ' + folder_destination)
-                Mail.move_to_destination_folder(msg, folder_destination, Log)
+                if action == 'move':
+                    Log.info('Move mail into archive folder : ' + folder_destination)
+                    Mail.move_to_destination_folder(msg, folder_destination, Log)
 
-            elif action == 'delete':
-                Log.info('Move mail to trash')
-                Mail.delete_mail(msg, folder_trash, Log)
-            cpt_mail = cpt_mail + 1
+                elif action == 'delete':
+                    Log.info('Move mail to trash')
+                    Mail.delete_mail(msg, folder_trash, Log)
+                cpt_mail = cpt_mail + 1
+        else:
+            sys.exit('Folder do not contain any e-mail. Exit...')
     else:
-        sys.exit('Folder do not contain any e-mail. Exit...')
-else:
-    sys.exit(0)
+        sys.exit(0)

@@ -33,12 +33,12 @@ class SMTP:
         self.is_up = False
         self.login = login
         self.delay = int(delay)
-        self.ssl = str2bool(ssl)
-        self.auth = str2bool(auth)
+        self.ssl = ssl
+        self.auth = auth
         self.dest_mail = dest_mail
         self.from_mail = from_mail
-        self.enabled = str2bool(enabled)
-        self.starttls = str2bool(starttls)
+        self.enabled = enabled
+        self.starttls = starttls
 
         if self.enabled:
             self.test_connection()
@@ -57,7 +57,6 @@ class SMTP:
                     self.conn.ehlo()
             except (smtplib.SMTPException, OSError) as smtp_error:
                 print('SMTP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(smtp_error))
-                sys.exit()
         else:
             try:
                 self.conn = smtplib.SMTP(self.host, self.port)
@@ -67,13 +66,11 @@ class SMTP:
                     self.conn.ehlo()
             except (smtplib.SMTPException, OSError) as smtp_error:
                 print('SMTP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(smtp_error))
-                sys.exit()
         try:
             if self.auth:
                 self.conn.login(self.login, self.pwd)
         except (smtplib.SMTPException, OSError) as smtp_error:
             print('Error while trying to login to ' + self.host + ' using ' + self.login + '/' + self.pwd + ' as login/password : ' + str(smtp_error))
-            sys.exit()
 
         self.is_up = True
 
@@ -167,12 +164,3 @@ class SMTP:
                 last_notif.close()
         except smtplib.SMTPException as smtp_error:
             print('Erreur lors de l\'envoi du mail : ' + str(smtp_error))
-
-
-def str2bool(value):
-    """
-    Function to convert string to boolean
-
-    :return: Boolean
-    """
-    return value.lower() in "true"
