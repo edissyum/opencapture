@@ -285,13 +285,12 @@ echo ""
 echo "Python packages installation....."
 
 if [ $pythonVenv = 'true' ]; then
-    mkdir "/home/$user/python-venv/"
-    cd "/home/$user/python-venv/"
-    python3 -m venv opencapture
+    mkdir -p "/home/$user/python-venv/"
+    python3 -m venv "/home/$user/python-venv/opencapture"
     echo "source /home/$user/python-venv/opencapture/bin/activate" >> "/home/$user/.bashrc"
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade pip > /dev/null
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade setuptools > /dev/null
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install -r pip-requirements.txt > /dev/null
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install -r "$defaultPath/bin/install/pip-requirements.txt" > /dev/null
 else
     python3 -m pip install --upgrade pip > /dev/null
     python3 -m pip install --upgrade setuptools > /dev/null
