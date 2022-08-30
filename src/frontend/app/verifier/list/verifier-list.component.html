@@ -1,3 +1,4 @@
+<app-tasks-watcher></app-tasks-watcher>
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
     <mat-sidenav #sidenav mode="side" opened class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem" [class.pointer-events-none]="this.loading">
@@ -140,7 +141,8 @@
                             </mat-paginator>
                         </span>
                     </div>
-                    <div class="z-30 -mt-2 mb-2 select-none" style="margin-left: 1.2rem" *ngIf="this.invoices.length> 1">
+
+                    <div class="z-30 -mt-2 mb-2 select-none" style="margin-left: 1.2rem" *ngIf="this.invoices.length > 1">
                         <span class="cursor-pointer" (click)="selectOrUnselectAllInvoices($event)"
                               [innerHTML]="this.invoiceToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')">
                         </span>
@@ -151,10 +153,17 @@
                                matTooltip="{{ 'GLOBAL.delete_all_checked' | translate }}"></i>
                         </span>
                     </div>
+
                     <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
+
+                    <div *ngIf="this.invoices.length == 0" class="m-4">
+                        {{ 'SPLITTER.no_batch_found' | translate }}
+                    </div>
+
                     <div *ngIf="this.loading">
                         <app-loader></app-loader>
                     </div>
+
                     <div class="content mx-10 mt-3" *ngIf="!this.loading">
                         <div class="cards-list list grid 2xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-flow-row gap-12">
                             <mat-card *ngFor="let invoice of this.invoices;" class="cursor-pointer p-0 mb-0">

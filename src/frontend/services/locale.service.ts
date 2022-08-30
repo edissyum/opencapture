@@ -117,7 +117,7 @@ export class LocaleService {
         ).subscribe();
     }
 
-    getLocales(){
+    getLocales() {
         this.http.get(environment['url'] + '/ws/i18n/getAllLang').pipe(
             tap((data: any) => {
                 this.langs = data.langs;

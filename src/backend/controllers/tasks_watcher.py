@@ -19,8 +19,8 @@ from gettext import gettext
 from src.backend.import_models import tasks_watcher
 
 
-def get_last_tasks():
-    tasks = tasks_watcher.get_last_tasks()
+def get_last_tasks(module):
+    tasks = tasks_watcher.get_last_tasks(module)
     response = {
         "tasks": tasks
     }
