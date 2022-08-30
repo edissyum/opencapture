@@ -57,7 +57,9 @@ def retrieve_custom_from_url(request):
     splitted_request = url.replace('/backend_oc', '').split('ws/')
     if splitted_request[0] != '/':
         custom_id = splitted_request[0]
-    return custom_id.replace('/', '')
+    custom_id = custom_id.replace('/', '')
+    custom_id = custom_id.replace('.', '_')
+    return custom_id
 
 
 def retrieve_config_from_custom_id(custom_id):
