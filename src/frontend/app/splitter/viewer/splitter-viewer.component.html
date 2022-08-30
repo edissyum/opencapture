@@ -1,7 +1,7 @@
-<div *ngIf="loading || documentsLoading || batchesLoading">
+<div *ngIf="this.loading || this.documentsLoading || this.batchesLoading">
     <app-loader></app-loader>
 </div>
-<mat-drawer-container *ngIf="!loading" class="viewer-container" hasBackdrop="false">
+<mat-drawer-container *ngIf="!this.loading" class="viewer-container" hasBackdrop="false">
     <mat-drawer #drawer mode="side" opened>
         <div class="mt-1">
             <div [ngSwitch]="currentTime" class="mt-2 w-full h-10 grid place-content-center">

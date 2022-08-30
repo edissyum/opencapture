@@ -17,8 +17,8 @@
                             <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
                             <input matInput type="text" [(ngModel)]="this.searchText" [disabled]="this.total === 0">
                         </mat-form-field>
-                        <div>
-                            <mat-form-field class="w-1/2 m-auto" appearance="outline">
+                        <div class="w-1/2 m-auto">
+                            <mat-form-field appearance="outline">
                                 <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
                                 <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)" [disabled]="this.isLoading">
                                     <mat-option *ngFor="let option of this.status" [value]="option['id']">
@@ -54,7 +54,7 @@
                     </div>
                     <div class="content mx-10 mt-3" *ngIf="!this.isLoading">
                         <div class="list grid 2xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-flow-row gap-12">
-                            <span *ngIf="(this.batches | filter : 'file_name' : this.searchText).length === 0 && !this.isLoading" class="text-gray-800">{{ 'SPLITTER.no_batch_found' | translate }}</span>
+                            <span *ngIf="(this.batches | filter : 'file_name' : this.searchText).length === 0 && !this.isLoading" class="text-gray-900">{{ 'SPLITTER.no_batch_found' | translate }}</span>
                             <mat-card class="batch-card cursor-pointer p-0 mb-0" *ngFor="let batch of this.batches | filter : 'file_name' : this.searchText">
                                 <label class="p-5 absolute z-40 cursor-pointer">
                                     <input id="{{ batch.id }}_checkbox" class="accent-green-400 checkBox_list cursor-pointer" type="checkbox" (click)="checkSelectedBatch()">
