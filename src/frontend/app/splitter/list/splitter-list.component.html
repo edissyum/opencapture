@@ -17,8 +17,8 @@
                             <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
                             <input matInput type="text" [(ngModel)]="this.searchText" [disabled]="this.total === 0">
                         </mat-form-field>
-                        <div>
-                            <mat-form-field class="w-1/2 m-auto" appearance="outline">
+                        <div class="w-1/2 m-auto">
+                            <mat-form-field appearance="outline">
                                 <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
                                 <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)" [disabled]="this.isLoading">
                                     <mat-option *ngFor="let option of this.status" [value]="option['id']">
