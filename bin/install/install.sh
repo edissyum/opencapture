@@ -240,7 +240,7 @@ if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     echo "######################################################################################################################"
     echo ""
     echo "Create database user...."
-    echo ""
+
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'" > /dev/null
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'" > /dev/null
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'" > /dev/null
@@ -250,7 +250,7 @@ else
     echo "######################################################################################################################"
     echo ""
     echo "Create database user...."
-    echo ""
+
     su postgres -c "psql -c 'CREATE ROLE $databaseUsername'" > /dev/null
     su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"> /dev/null
     su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"> /dev/null

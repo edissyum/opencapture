@@ -162,8 +162,6 @@ for process in processes:
                     for attachment in ret['attachments']:
                         if attachment['format'].lower() == 'pdf':
                             if not isSplitter:
-                                print(batch_path)
-                                print(path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day)
                                 with app.app_context():
                                     launch_verifier({
                                         'cpt': str(cpt),
