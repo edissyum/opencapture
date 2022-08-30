@@ -930,17 +930,17 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 document.class = "";
         }
 
-        if(this.inputMode === 'Manual'){
-            for(const field of this.fieldsCategories['batch_metadata']){
+        if(this.inputMode === 'Manual') {
+            for(const field of this.fieldsCategories['batch_metadata']) {
                 if (this.batchForm.get(field.label_short)) {
                     this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
                 }
             }
         }
 
-        for(const field of this.fieldsCategories['batch_metadata']){
-            if(field.validationMask){
-                if(!this.batchMetadataValues[field.label_short].match(field.validationMask)){
+        for(const field of this.fieldsCategories['batch_metadata']) {
+            if(field.validationMask) {
+                if(!this.batchMetadataValues[field.label_short].match(field.validationMask)) {
                     this.notify.error(this.translate.instant('SPLITTER.field_form_not_respected', {'field': field.label}));
                     this.loading = false;
                     return;
