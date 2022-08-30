@@ -27,7 +27,7 @@
                                 </mat-select>
                             </mat-form-field>
                             <i class="fa-solid fa-sync-alt mx-4 cursor-pointer text-xl hover:text-green-400" (click)="loadBatches()"
-                               [matTooltip]="'VERIFIER.reload_batches' | translate"></i>
+                               [matTooltip]="'SPLITTER.reload_batches' | translate"></i>
                         </div>
                         <span [class.hidden]="this.isLoading || this.total === 0" class="relative right-0">
                             <mat-paginator [length] = "this.total"

@@ -36,6 +36,7 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         this.setValue('');
+        this.localStorageService.save('task_watcher_minimize_display', 'true');
     }
 
     setValue(value: string) {
