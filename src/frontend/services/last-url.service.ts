@@ -35,6 +35,10 @@ export class LastUrlService {
         });
     }
 
+    public getCurrentUrl() {
+        return this.currentUrl;
+    }
+
     public getPreviousUrl() {
         return this.previousUrl;
     }

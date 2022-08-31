@@ -28,6 +28,7 @@ import { HttpClient } from "@angular/common/http";
 import { LocaleService } from "./locale.service";
 import { ConfigService } from "./config.service";
 import { HistoryService } from "./history.service";
+import {LastUrlService} from "./last-url.service";
 
 @Injectable({
     providedIn: 'root'
@@ -43,16 +44,18 @@ export class LoginRequiredService implements CanActivate {
         private configService: ConfigService,
         private localeService: LocaleService,
         private historyService: HistoryService,
+        private routerExtService: LastUrlService,
     ) {}
-
-
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         const token = this.authService.getToken();
 
         if (!token) {
             this.translate.get('AUTH.not_connected').subscribe((translated: string) => {
-                this.authService.setCachedUrl(state.url.replace(/^\//g, ''));
+                const currentUrl = this.routerExtService.getCurrentUrl();
+                if (currentUrl !== '/logout' && currentUrl !== '/login') {
+                    this.authService.setCachedUrl(currentUrl.replace(/^\//g, ''));
+                }
                 this.notify.error(translated);
                 this.authService.logout();
             });
