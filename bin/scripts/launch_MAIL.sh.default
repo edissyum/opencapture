@@ -27,7 +27,7 @@ spaces="                               "
 scriptName="launch_$script.sh"
 scriptName=${scriptName:0:31}${spaces:0:$((31-${#scriptName}))}
 
-OCPath="/var/www/html/opencaptureforinvoices/"
+OCPath="§§OC_PATH§§"
 config_mail_file="$OCPath"/custom/§§CUSTOM_ID§§/config/mail.ini
 logFile="$OCPath"/bin/data/log/OCForInvoices.log
 PID=/tmp/securite-$script-$$.pid

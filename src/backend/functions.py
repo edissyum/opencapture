@@ -60,6 +60,19 @@ def retrieve_custom_from_url(request):
     return custom_id.replace('/', '')
 
 
+def get_custom_path(custom_id):
+    custom_directory = str(Path(__file__).parents[2]) + '/custom/'
+    custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
+    path = False
+    if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
+        customs_config = _Config(custom_ini_file)
+        for custom_name in customs_config.cfg:
+            if custom_id == custom_name:
+                if os.path.isdir(customs_config.cfg[custom_name]['path']):
+                    path = customs_config.cfg[custom_name]['path']
+    return path
+
+
 def retrieve_config_from_custom_id(custom_id):
     res = False
     found_custom = False

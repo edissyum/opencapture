@@ -23,8 +23,8 @@ import subprocess
 from flask_babel import gettext
 from flask import request, session
 from src.backend.import_models import config
-from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from src.backend.functions import retrieve_custom_from_url, get_custom_path
 
 
 def change_locale_in_config(lang):
@@ -117,15 +117,19 @@ def update_configuration(args, configuration_id):
     _, error = config.retrieve_configuration_by_id({'configuration_id': configuration_id})
 
     if error is None:
-        args = {
+        data = {
             'configuration_id': configuration_id,
             'data': {
-                'type': args['type'],
-                'value': args['value'],
-                'description': args['description']
+                'value': args['value']
             }
         }
-        config.update_configuration(args)
+
+        if 'type' in args and args['type']:
+            data['data']['type'] = args['type']
+        if 'description' in args and args['description']:
+            data['data']['description'] = args['description']
+
+        config.update_configuration(data)
         return '', 200
 
     response = {
@@ -203,18 +207,25 @@ def get_login_image():
 def update_login_image(image_content):
     custom_id = retrieve_custom_from_url(request)
     if custom_id:
-        image_data = base64.b64decode(str(image_content).replace('data:image/png;base64,', ''))
-        image_path = 'custom/' + custom_id + '/assets/imgs/'
-        if not os.path.isdir(image_path):
+        custom_path = get_custom_path(custom_id)
+        if custom_path:
+            image_data = base64.b64decode(str(image_content).replace('data:image/png;base64,', ''))
+            image_path = custom_path + '/assets/imgs/'
+            if not os.path.isdir(image_path):
+                return {
+                    "errors": gettext("ERROR_UPDATING_IMAGE"),
+                    "message": gettext("CUSTOM_IMAGE_PATH_NOT_WRITEABLE")
+                }, 401
+            image_filename = 'login_image.png'
+            image_handler = open(image_path + '/' + image_filename, 'wb')
+            image_handler.write(image_data)
+            image_handler.close()
+            return '', 200
+        else:
             return {
-                "errors": gettext("ERROR_UPDATING_IMAGE"),
-                "message": gettext("CUSTOM_IMAGE_PATH_NOT_WRITEABLE")
+               "errors": gettext("ERROR_UPDATING_IMAGE"),
+               "message": gettext("CUSTOM_PATH_NOT_EXISTS")
             }, 401
-        image_filename = 'login_image.png'
-        image_handler = open(image_path + '/' + image_filename, 'wb')
-        image_handler.write(image_data)
-        image_handler.close()
-        return '', 200
     else:
         return {
            "errors": gettext("ERROR_UPDATING_IMAGE"),

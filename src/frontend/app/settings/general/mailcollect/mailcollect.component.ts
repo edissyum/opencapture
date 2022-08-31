@@ -40,6 +40,7 @@ export class MailCollectComponent implements OnInit {
     total               : number        = 0;
     offset              : number        = 0;
     selectedIndex       : number        = 0;
+    mailCollectConfigId : number        = 0;
     search              : string        = '';
     globalForm          : any[]         = [
         {
@@ -54,70 +55,77 @@ export class MailCollectComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_delay'),
             type: 'number',
-            required: true,
+            required: false,
         },
         {
             id: 'smtpNotifOnError',
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_notif_on_error'),
             type: 'boolean',
-            required: true,
+            required: false,
         },
         {
             id: 'smtpSSL',
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_ssl'),
             type: 'boolean',
-            required: true,
+            required: false,
         },
         {
             id: 'smtpStartTLS',
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_starttls'),
             type: 'boolean',
-            required: true,
+            required: false,
+        },
+        {
+            id: 'smtpAuth',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.smtp_auth'),
+            type: 'boolean',
+            required: false,
         },
         {
             id: 'smtpHost',
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_host'),
             type: 'text',
-            required: true,
+            required: false,
         },
         {
             id: 'smtpPort',
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_port'),
             type: 'text',
-            required: true,
+            required: false,
         },
         {
             id: 'smtpLogin',
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_login'),
             type: 'text',
-            required: true,
+            required: false,
         },
         {
             id: 'smtpPwd',
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_pwd'),
             type: 'password',
-            required: true,
+            required: false,
         },
         {
             id: 'smtpFromMail',
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_from_mail'),
             type: 'text',
-            required: true,
+            required: false,
         },
         {
             id: 'smtpDestAdminMail',
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_dest_admin_mail'),
             type: 'text',
-            required: true,
+            required: false,
         }
     ];
     processes           : any           = [];
@@ -133,6 +141,14 @@ export class MailCollectComponent implements OnInit {
             label: marker('MAILCOLLECT.hostname'),
             type: 'text',
             required: true,
+        },
+        {
+            id: 'enabled',
+            class: 'w-1/4',
+            control: new FormControl(),
+            disabled: true,
+            type: 'boolean',
+            required: false,
         },
         {
             id: 'port',
@@ -207,7 +223,7 @@ export class MailCollectComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.folder_trash'),
             type: 'autocomplete',
-            required: true,
+            required: false,
         },
         {
             id: 'action_after_process',
@@ -267,6 +283,7 @@ export class MailCollectComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/config/getConfiguration/mailCollectGeneral', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.configuration.length === 1) {
+                    this.mailCollectConfigId = data.configuration[0].id;
                     Object.keys(data.configuration[0].data.value).forEach((config: any ) => {
                         this.globalForm.forEach((element: any) => {
                             if (element.id === config) {
@@ -348,6 +365,38 @@ export class MailCollectComponent implements OnInit {
         setTimeout(() => {
             this.loadProcess();
         });
+    }
+
+    processIsEnabled(process: any) {
+        let enabled = false;
+        process.forEach((element: any) => {
+            if (element.id === 'enabled') {
+                enabled = element.control.value;
+            }
+        });
+        return enabled;
+    }
+
+    updateGlobal() {
+        const data: any = {
+            'value': {}
+        };
+
+        this.globalForm.forEach((element: any) => {
+            data['value'][element.id] = element.control.value;
+        })
+
+        this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + this.mailCollectConfigId, {'data': data}, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('MAILCOLLECT.general_settings_updated'));
+            }),
+            finalize(() => this.processLoading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     updateProcessName(process: any, new_process_name: any, updateDatabase: boolean = true) {
@@ -449,6 +498,14 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
             },
             {
+                id: 'enabled',
+                class: 'w-1/4',
+                control: new FormControl(),
+                disabled: true,
+                type: 'boolean',
+                required: false,
+            },
+            {
                 id: 'hostname',
                 class: 'w-1/4',
                 control: new FormControl(),
@@ -529,7 +586,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.folder_trash'),
                 type: 'autocomplete',
-                required: true,
+                required: false,
             },
             {
                 id: 'action_after_process',
@@ -600,6 +657,11 @@ export class MailCollectComponent implements OnInit {
     }
 
     createProcess(process: any) {
+        if (!this.getNameOfProcess(process)) {
+            this.notify.error(this.translate.instant('MAILCOLLECT.process_name_mandatory'));
+            return;
+        }
+
         if (this.isValidForm(process)) {
             const data: any = {};
             process.forEach((element: any) => {
@@ -611,7 +673,7 @@ export class MailCollectComponent implements OnInit {
             });
 
             this.http.post(environment['url'] + '/ws/mailcollect/createProcess', data, {headers: this.authService.headers}).pipe(
-                tap((data: any) => {
+                tap(() => {
                     this.notify.success(this.translate.instant('MAILCOLLECT.process_created'));
                 }),
                 finalize(() => this.processLoading = false),
@@ -622,6 +684,128 @@ export class MailCollectComponent implements OnInit {
                 })
             ).subscribe();
         }
+    }
+
+    duplicateConfirmDialog(process: any) {
+        const processName = this.getNameOfProcess(process);
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('MAILCOLLECT.confirm_duplicate_process', {"process": processName}),
+                confirmButton       : this.translate.instant('GLOBAL.disable'),
+                confirmButtonColor  : "green",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.duplicateProcess(process);
+                this.historyService.addHistory('general', 'duplicate_mailcollect_process', this.translate.instant('HISTORY-DESC.duplicate-mailcollect-process', {process: processName}));
+            }
+        });
+    }
+
+    duplicateProcess(process: any) {
+        this.addProcess();
+        this.processes[this.processes.length - 1].forEach((element: any) => {
+            process.forEach((element_child: any ) => {
+                if (element.id === element_child.id && element.id !== 'name') {
+                    element.control.setValue(element_child.control.value);
+                }
+            });
+        })
+
+        // this.http.post(environment['url'] + '/ws/mailcollect/createProcess', data, {headers: this.authService.headers}).pipe(
+        //     tap(() => {
+        //         this.notify.success(this.translate.instant('MAILCOLLECT.process_created'));
+        //     }),
+        //     finalize(() => this.processLoading = false),
+        //     catchError((err: any) => {
+        //         console.debug(err);
+        //         this.notify.handleErrors(err);
+        //         return of(false);
+        //     })
+        // ).subscribe();
+    }
+
+    disableConfirmDialog(process: any) {
+        const processName = this.getNameOfProcess(process);
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('MAILCOLLECT.confirm_disable_process', {"process": processName}),
+                confirmButton       : this.translate.instant('GLOBAL.disable'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.disableProcess(processName);
+                this.historyService.addHistory('general', 'disable_mailcollect_process', this.translate.instant('HISTORY-DESC.disable-mailcollect-process', {process: processName}));
+            }
+        });
+    }
+
+    disableProcess(processName: string) {
+        this.http.delete(environment['url'] + '/ws/mailcollect/disableProcess/' + processName, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.selectedIndex = 1;
+                this.loadProcess();
+                setTimeout(() => {
+                    this.selectedIndex = 0;
+                }, 200);
+                this.notify.success(this.translate.instant('MAILCOLLECT.process_disabled'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    enableConfirmDialog(process: any) {
+        const processName = this.getNameOfProcess(process);
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('MAILCOLLECT.confirm_enable_process', {"process": processName}),
+                confirmButton       : this.translate.instant('GLOBAL.enable'),
+                confirmButtonColor  : "green",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.enableProcess(processName);
+                this.historyService.addHistory('general', 'enable_mailcollect_process', this.translate.instant('HISTORY-DESC.enable-mailcollect-process', {process: processName}));
+            }
+        });
+    }
+
+    enableProcess(processName: string) {
+        this.http.delete(environment['url'] + '/ws/mailcollect/enableProcess/' + processName, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.selectedIndex = 1;
+                this.loadProcess();
+                setTimeout(() => {
+                    this.selectedIndex = 0;
+                }, 200);
+                this.notify.success(this.translate.instant('MAILCOLLECT.process_enabled'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     deleteConfirmDialog(process: any) {

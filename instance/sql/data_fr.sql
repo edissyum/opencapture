@@ -13,7 +13,7 @@ INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") V
 INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('ldap', 'Authentification par LDAP', False, '{"host": "", "port": "", "baseDN": "", "suffix": "","prefix": "", "typeAD": "", "usersDN": "", "classUser": "", "loginAdmin": "", "classObject": "", "passwordAdmin": "", "attributLastName": "", "attributFirstName": "", "attributSourceUser": "", "attributRoleDefault": ""}');
 
 -- CRÉATION D'UNE CHAINE DE MAILCOLLECT PAR DÉFAUT
-INSERT INTO "mailcollect" ("name", "hostname", "port", "login", "password", "secured_connection", "folder_to_crawl", "folder_destination", "folder_trash", "action_after_process") VALUES ('MAIL_1', 'imap.gmail.com', '993', 'test@test.gmail.com', 'test', True, 'INBOX/MAARCH', 'INBOX/MAARCH_ARCHIVES', 'Corbeille', 'move');
+INSERT INTO "mailcollect" ("name", "hostname", "port", "login", "password", "secured_connection", "folder_to_crawl", "folder_destination", "folder_trash", "action_after_process") VALUES ('MAIL_1', '', '993', '', '', True, '', '', '', 'move');
 
 -- CRÉATION DES PARAMÈTRES
 INSERT INTO "configurations" ("label", "data") VALUES ('jwtExpiration', '{"type": "int", "value": "1440", "description": "Délai avant expiration du token d''authentification (en minutes)"}');
@@ -24,6 +24,24 @@ INSERT INTO "configurations" ("label", "data") VALUES ('locale', '{"type": "stri
 INSERT INTO "configurations" ("label", "data") VALUES ('invoiceSizeMin', '{"type": "int", "value": "6", "description": "Taille minimale pour un numéro de facture"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('devisSizeMin', '{"type": "int", "value": "3", "description": "Taille minimale pour un numéro de devis"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('loginMessage', '{"type": "string", "value": "Open-Capture For Invoices - LAD / RAD", "description": "Court message affiché sur l''écran d''accueil"}');
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('mailCollectGeneral', '{
+    "type": "json",
+    "value": {
+        "batchPath": "/var/www/html/opencaptureforinvoices/bin/data/MailCollect/",
+        "smtpNotifOnError": true,
+        "smtpSSL": true,
+        "smtpStartTLS": false,
+        "smtpHost": "",
+        "smtpPort": "",
+        "smtpAuth": "",
+        "smtpLogin": "",
+        "smtpPwd": "",
+        "smtpFromMail": "",
+        "smtpDestAdminMail": "",
+        "smtpDelay": "30"
+    },
+    "description": "Paramétrage par défaut du MailCollect"
+}', false);
 
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture For Invoices', '/var/www/html/opencaptureforinvoices/');
