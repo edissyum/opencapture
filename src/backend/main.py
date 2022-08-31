@@ -52,7 +52,7 @@ def create_classes_from_custom_id(custom_id):
         'data': ['mailCollectGeneral']
     })
 
-    smtp = False
+    smtp = None
 
     if mail_global:
         mail_global = mail_global[0]['data']['value']

@@ -24,6 +24,7 @@ import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
+import {NotificationService} from "../notifications/notifications.service";
 
 @Component({
     selector: 'app-tasks-watcher',
@@ -41,6 +42,7 @@ export class TasksWatcherComponent implements OnInit {
         private http: HttpClient,
         private authService: AuthService,
         public translate: TranslateService,
+        private notify: NotificationService,
         private localStorageService: LocalStorageService
     ) {}
 
@@ -90,6 +92,7 @@ export class TasksWatcherComponent implements OnInit {
             }),
             catchError((err: any) => {
                 console.debug(err);
+                this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();

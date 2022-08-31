@@ -196,8 +196,10 @@ def get_login_image():
     custom_id = retrieve_custom_from_url(request)
     login_image = 'src/assets/imgs/login_image.png'
     if custom_id:
-        if os.path.isfile('custom/' + custom_id + '/assets/imgs/login_image.png'):
-            login_image = 'custom/' + custom_id + '/assets/imgs/login_image.png'
+        custom_path = get_custom_path(custom_id)
+        if custom_path:
+            if os.path.isfile(custom_path + '/assets/imgs/login_image.png'):
+                login_image = custom_path + '/assets/imgs/login_image.png'
 
     with open(login_image, 'rb') as image_file:
         b64_content = str(base64.b64encode(image_file.read()).decode('UTF-8'))
