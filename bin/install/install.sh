@@ -282,9 +282,9 @@ echo ""
 echo "######################################################################################################################"
 echo ""
 
-echo "Python packages installation....."
 
 if [ $pythonVenv = 'true' ]; then
+    echo "Python packages installation using virtual environment....."
     mkdir -p "/home/$user/python-venv/"
     python3 -m venv "/home/$user/python-venv/opencapture"
     echo "source /home/$user/python-venv/opencapture/bin/activate" >> "/home/$user/.bashrc"
@@ -292,6 +292,7 @@ if [ $pythonVenv = 'true' ]; then
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade setuptools > /dev/null
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install -r "$defaultPath/bin/install/pip-requirements.txt" > /dev/null
 else
+    echo "Python packages installation....."
     python3 -m pip install --upgrade pip > /dev/null
     python3 -m pip install --upgrade setuptools > /dev/null
     python3 -m pip install -r pip-requirements.txt > /dev/null
