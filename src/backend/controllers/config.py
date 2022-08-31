@@ -214,7 +214,7 @@ def update_login_image(image_content):
             if not os.path.isdir(image_path):
                 return {
                     "errors": gettext("ERROR_UPDATING_IMAGE"),
-                    "message": gettext("CUSTOM_IMAGE_PATH_NOT_WRITEABLE")
+                    "message": gettext("CUSTOM_IMAGE_PATH_NOT_WRITEABLE_OR_NOT_EXISTS")
                 }, 401
             image_filename = 'login_image.png'
             image_handler = open(image_path + '/' + image_filename, 'wb')
@@ -224,7 +224,7 @@ def update_login_image(image_content):
         else:
             return {
                "errors": gettext("ERROR_UPDATING_IMAGE"),
-               "message": gettext("CUSTOM_PATH_NOT_EXISTS")
+               "message": gettext("CUSTOM_IMAGE_PATH_NOT_WRITEABLE_OR_NOT_EXISTS")
             }, 401
     else:
         return {
