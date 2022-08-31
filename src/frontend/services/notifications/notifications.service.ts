@@ -92,7 +92,7 @@ export class NotificationService {
                     this.router.navigate(['/login']).then();
                 }
                 else if (err.error.errors === this.translate.instant('ERROR.jwt_error')) {
-                    // this.router.navigate(['/logout']).then();
+                    this.router.navigate(['/logout']).then();
                 }
             } else if (err.error.exception !== undefined)
                 this.error(err.error.exception[0].message, err.url);
@@ -103,8 +103,9 @@ export class NotificationService {
                     this.error(err.error.error.message, err.url);
             } else
                 this.error(`${err.status} : ${err.statusText}`, err.url);
-        } else
+        } else {
             this.error(err);
+        }
 
         if (route) {
             this.router.navigate([route]).then();
