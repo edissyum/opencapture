@@ -193,7 +193,7 @@ def export_maarch(data, invoice_info, log, regex, database):
                         })
 
                     if 'invoice_date' in invoice_info['datas'] and invoice_info['datas']['invoice_date']:
-                        invoice_date = pd.to_datetime(invoice_info['datas']['invoice_date'], infer_datetime_format=True)
+                        invoice_date = pd.to_datetime(invoice_info['datas']['invoice_date'], format=regex['format_date'])
                         args.update({
                             'documentDate': str(invoice_date.date())
                         })

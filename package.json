@@ -25,7 +25,7 @@
         "@angular/platform-browser-dynamic": "~14.2.0",
         "@angular/router": "~14.2.0",
         "@biesbjerg/ngx-translate-extract-marker": "^1.0.0",
-        "@fortawesome/fontawesome-free": "^6.1.2",
+        "@fortawesome/fontawesome-free": "^6.2.0",
         "@ngx-translate/core": "^14.0.0",
         "@ngx-translate/http-loader": "^7.0.0",
         "@schematics/angular": "^14.2.1",
