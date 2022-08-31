@@ -51,6 +51,9 @@ def create_classes_from_custom_id(custom_id):
         'where': ['label = %s'],
         'data': ['mailCollectGeneral']
     })
+
+    smtp = False
+
     if mail_global:
         mail_global = mail_global[0]['data']['value']
         smtp = _SMTP(
