@@ -114,9 +114,15 @@ def retrieve_regex(args):
 
 
 def update_configuration(args, configuration_id):
-    _, error = config.retrieve_configuration_by_id({'configuration_id': configuration_id})
+    configuration, error = config.retrieve_configuration_by_id({'configuration_id': configuration_id})
 
     if error is None:
+        if configuration[0]['label'] == 'jwtExpiration' and int(args['value']) <= 0:
+            response = {
+                "errors": gettext("UPDATE_CONFIGURATION_ERROR"),
+                "message": gettext("JWT_EXPIRATION_COULDNT_BE_ZERO_OR_LESS")
+            }
+            return response, 401
         data = {
             'configuration_id': configuration_id,
             'data': {
