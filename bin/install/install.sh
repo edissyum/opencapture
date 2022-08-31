@@ -282,9 +282,9 @@ echo ""
 echo "######################################################################################################################"
 echo ""
 
-echo "Python packages installation....."
 
 if [ $pythonVenv = 'true' ]; then
+    echo "Python packages installation using virtual environment....."
     mkdir -p "/home/$user/python-venv/"
     python3 -m venv "/home/$user/python-venv/opencapture"
     echo "source /home/$user/python-venv/opencapture/bin/activate" >> "/home/$user/.bashrc"
@@ -292,6 +292,7 @@ if [ $pythonVenv = 'true' ]; then
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade setuptools > /dev/null
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install -r "$defaultPath/bin/install/pip-requirements.txt" > /dev/null
 else
+    echo "Python packages installation....."
     python3 -m pip install --upgrade pip > /dev/null
     python3 -m pip install --upgrade setuptools > /dev/null
     python3 -m pip install -r pip-requirements.txt > /dev/null
@@ -338,11 +339,20 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 ####################
 # Create the Apache service for backend
 touch /etc/apache2/sites-available/opencapture.conf
+
+wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$nbThreads processes=$nbProcesses"
+if [ $pythonVenv = 'true' ]; then
+    sitePackageLocation=$(/home/$user/python-venv/opencapture/bin/python3 -c 'import site; print(site.getsitepackages()[0])')
+    if [ $sitePackageLocation ]; then
+        wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$nbThreads processes=$nbProcesses python-path=$sitePackageLocation"
+    fi
+fi
+
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
 <VirtualHost *:80>
     ServerName localhost
     DocumentRoot $defaultPath
-    WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$nbThreads processes=$nbProcesses
+    $wsgiDaemonProcessLine
     WSGIScriptAlias /backend_oc /var/www/html/opencaptureforinvoices/wsgi.py
 
     <Directory $defaultPath>

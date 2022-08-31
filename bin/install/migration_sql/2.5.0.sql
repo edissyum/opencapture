@@ -6,7 +6,7 @@ INSERT INTO "configurations" (label, data, display) VALUES ('mailCollectGeneral'
     "type": "json",
     "value": {
         "batchPath": "/var/www/html/opencaptureforinvoices/bin/data/MailCollect/",
-        "smtpNotifOnError": true,
+        "smtpNotifOnError": false,
         "smtpSSL": true,
         "smtpStartTLS": false,
         "smtpHost": "",
