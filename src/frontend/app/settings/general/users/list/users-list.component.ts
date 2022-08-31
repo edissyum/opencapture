@@ -93,6 +93,15 @@ export class UsersListComponent implements OnInit {
                 this.http.get(environment['url'] + '/ws/roles/list', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.roles = data.roles;
+                        if (this.roles) {
+                            this.allUsers.forEach((user: any) => {
+                                this.roles.forEach((element: any) => {
+                                    if (user.role === element.id) {
+                                        user.role_label = element.label;
+                                    }
+                                });
+                            });
+                        }
                         this.loadUsers();
                     }),
                     finalize(() => this.loading = false),

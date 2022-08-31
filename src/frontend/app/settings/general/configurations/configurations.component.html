@@ -135,11 +135,13 @@
                                     <mat-option [value]="'False'">False</mat-option>
                                 </mat-select>
                             </mat-form-field>
-                            <mat-form-field appearance="outline" *ngIf="element.data.type === 'int' || element.data.type === 'float'">
+                            <mat-form-field appearance="outline" class="w-full"
+                                            *ngIf="element.data.type === 'int' || element.data.type === 'float'">
                                 <input matInput type="number" [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
                                        class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
                             </mat-form-field>
-                            <mat-form-field appearance="outline" *ngIf="element.data.type === 'string'">
+                            <mat-form-field appearance="outline" class="w-full"
+                                            *ngIf="element.data.type === 'string'">
                                 <input matInput [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
                                        class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
                             </mat-form-field>

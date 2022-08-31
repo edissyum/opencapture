@@ -137,7 +137,7 @@ export class LoginComponent implements OnInit {
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {
                         this.historyService.addHistory('general', 'login', this.translate.instant('HISTORY-DESC.login'));
-                        if (this.authService.getCachedUrl()) {
+                            if (this.authService.getCachedUrl()) {
                             this.router.navigate([this.authService.getCachedUrl()]).then();
                             this.authService.cleanCachedUrl();
                         } else {

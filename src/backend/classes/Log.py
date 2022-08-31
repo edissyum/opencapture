@@ -58,7 +58,7 @@ class Log:
 
     @caller_reader
     def error(self, msg, send_notif=True):
-        if self.smtp.enabled and send_notif:
+        if self.smtp and self.smtp.enabled and send_notif:
             self.smtp.send_notification(msg, self.filename)
         self.logger.error(msg)
 
