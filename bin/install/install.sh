@@ -339,13 +339,15 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 ####################
 # Create the Apache service for backend
 touch /etc/apache2/sites-available/opencapture.conf
+
 wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$nbThreads processes=$nbProcesses"
 if [ $pythonVenv = 'true' ]; then
     sitePackageLocation=$(python3 -c 'import site; print(site.getsitepackages()[0])')
-    if [ -z $sitePackageLocation ] then
+    if [ -z $sitePackageLocation ]; then
         wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$nbThreads processes=$nbProcesses python-path=$sitePackageLocation"
     fi
 fi
+
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
 <VirtualHost *:80>
     ServerName localhost
