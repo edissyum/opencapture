@@ -100,14 +100,14 @@
             <div class="grid grid-cols-1 gap-x-2 gap-y-2 m-4">
                 <mat-form-field>
                     <mat-label>{{ 'DOCTYPE.folder' | translate }}</mat-label>
-                    <mat-select id='folder' [formControlName]="'folder'" [disabled]="!this.selectedDocType.key">
+                    <mat-select id='folder' [formControlName]="'folder'">
                         <mat-option [value]="noMasterFolder">
                             {{ 'DOCTYPE.no_master' | translate }}
                         </mat-option>
-                        <div *ngFor="let folder of documentTypeFactoryComponent.treeDataObj.doctypeData">
+                        <div *ngFor="let folder of this.documentTypeFactoryComponent.treeDataObj.doctypeData">
                             <mat-option *ngIf="folder.type === 'folder' && folder.formId === selectedFormId"
-                                        [disabled]="folder.code.startsWith(this.selectedDocType.code + '.')
-                                                        || folder.key === selectedDocType.key"
+                                        [disabled]="!this.selectedDocType.key || folder.code.startsWith(this.selectedDocType.code + '.')
+                                                        || folder.key === this.selectedDocType.key"
                                         [value]="folder.code">
                                 {{ folder.label }}
                             </mat-option>
@@ -117,12 +117,11 @@
                 <ng-container *ngFor="let field of this.fields">
                     <mat-form-field *ngIf="field.type === 'text'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControlName]="field.id" [type]="field.type" [disabled]="!this.selectedDocType.key"
-                               [readonly]="!this.selectedDocType.key"
+                        <input matInput [formControlName]="field.id" [type]="field.type" [readonly]="!this.selectedDocType.key"
                                [placeholder]="field.placeholder" [required]="field.required">
                     </mat-form-field>
                     <div class="text-center p-4" *ngIf="field.type === 'slide'">
-                        <mat-slide-toggle [formControlName]="field.id" [disabled]="!this.selectedDocType.key">
+                        <mat-slide-toggle [formControlName]="field.id">
                             {{ field.label | translate }}
                         </mat-slide-toggle>
                     </div>
