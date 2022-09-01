@@ -145,8 +145,9 @@
                 </mat-form-field>
             </div>
             <div class="form-container">
-                <ng-container *ngFor="let category of fieldCategories; let i = index">
-                    <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 2.5rem; left:2.5rem;" [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
+                <ng-container *ngFor="let category of this.fieldCategories; let i = index">
+                    <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 2.5rem; left:2.5rem;"
+                         [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
                         {{ category['label'] | translate }}
                     </div>
                     <div class="border-green-400 border rounded-lg mx-6 my-7">
