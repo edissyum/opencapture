@@ -65,7 +65,7 @@ find . -name ".gitkeep" -delete
 # Restart worker by custom
 systemctl restart apache2
 systemctl restart OCForInvoices-worker_* || supervisorctl restart all
-systemctl restart OCForInvoices_Split-worker_*
+systemctl restart OCForInvoices_Split-worker_* || supervisorctl restart all
 
 ####################
 # Fix rights on folder and files
