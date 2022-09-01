@@ -57,11 +57,11 @@ export class ListDocTypeComponent implements OnInit {
             disabled  : false,
         },
         {
-            id      : 'isDefault',
-            type    : 'slide',
-            label   : this.translate.instant('DOCTYPE.default_doctype'),
-            required: false,
-            disabled: false,
+            id       : 'isDefault',
+            type     : 'slide',
+            label    : this.translate.instant('DOCTYPE.default_doctype'),
+            required : false,
+            disabled : false,
         },
     ];
     selectedDocType : any     = {

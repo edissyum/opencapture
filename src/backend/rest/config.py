@@ -72,8 +72,9 @@ def get_docservers():
     if 'search' in request.args and request.args['search']:
         args['offset'] = ''
         args['where'].append(
-            "(LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%')"
+            "(LOWER(docserver_id) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(description) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(path) LIKE '%%" + request.args['search'].lower() + "%%')"
         )
     res = config.retrieve_docservers(args)
     return make_response(jsonify(res[0])), res[1]

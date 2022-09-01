@@ -100,7 +100,7 @@
                 <div class="grid grid-cols-1 gap-x-2 gap-y-2 m-2">
                     <mat-form-field>
                         <mat-label>{{ 'DOCTYPE.folder' | translate }}</mat-label>
-                        <mat-select id='folder' [formControlName]="'folder'">
+                        <mat-select id='folder' [formControlName]="'folder'" [required]="true">
                             <div *ngFor="let folder of documentTypeFactoryComponent.treeDataObj.doctypeData">
                                 <mat-option *ngIf="folder.type === 'folder' && folder.formId === selectedFormId"
                                             [value]="folder.code">
@@ -108,6 +108,7 @@
                                 </mat-option>
                             </div>
                         </mat-select>
+                        <mat-error *ngIf="form.get('folder')!.hasError('required')">{{ 'AUTH.field_required' | translate }}</mat-error>
                     </mat-form-field>
                     <ng-container *ngFor="let field of fields">
                         <mat-form-field *ngIf="field.type === 'text'">
@@ -115,6 +116,7 @@
                             <input matInput [formControlName]="field.id" [type]="field.type"
                                    [placeholder]="field.placeholder" [required]="field.required">
                             <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
+                            <mat-error *ngIf="form.get(field.id)!.hasError('required')">{{ 'AUTH.field_required' | translate }}</mat-error>
                         </mat-form-field>
                         <div class="text-center p-4" *ngIf="field.type === 'slide'">
                             <mat-slide-toggle [formControlName]="field.id">

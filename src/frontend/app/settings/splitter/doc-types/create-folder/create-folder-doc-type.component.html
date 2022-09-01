@@ -111,6 +111,7 @@
                             </mat-option>
                         </div>
                     </mat-select>
+                    <mat-error *ngIf="form.get('folder')!.hasError('required')">{{ 'AUTH.field_required' | translate }}</mat-error>
                 </mat-form-field>
                 <ng-container *ngFor="let field of fields">
                     <mat-form-field *ngIf="field.type === 'text'">
@@ -118,6 +119,7 @@
                         <input matInput [formControlName]="field.id" [type]="field.type"
                                [placeholder]="field.placeholder" [required]="field.required">
                         <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
+                        <mat-error *ngIf="form.get(field.id)!.hasError('required')">{{ 'AUTH.field_required' | translate }}</mat-error>
                     </mat-form-field>
                     <div class="text-center p-4" *ngIf="field.type === 'slide'">
                         <mat-slide-toggle [formControlName]="field.id">

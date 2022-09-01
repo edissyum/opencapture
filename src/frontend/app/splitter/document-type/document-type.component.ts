@@ -24,18 +24,14 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
     templateUrl: './document-type.component.html',
     styleUrls: ['./document-type.component.scss']
 })
-export class DocumentTypeComponent implements OnInit {
+export class DocumentTypeComponent {
     selectedItem: any;
 
     constructor(
         public router: Router,
         private dialogRef: MatDialogRef<DocumentTypeComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
-    ) {
-    }
-
-    ngOnInit(): void {
-    }
+    ) {}
 
     getOutPut($event: any) {
         this.selectedItem = $event;
