@@ -152,8 +152,9 @@
                     <div class="border-green-400 border rounded-lg mx-6 my-7">
                         <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" [id]="category['id']"
                              class="flex flex-wrap cursor-pointer w-full my-3" style="min-height: 50px;">
-                            <div *ngFor="let field of this.fields[category['id']]; let index = index" class="flex items-center px-3 overflow-hidden" [class]="field.class"
-                                 [ngSortGridGroup]="category['id']" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
+                            <div *ngFor="let field of this.fields[category['id']]; let index = index" [class]="field.class"
+                                 class="flex items-center px-3 overflow-hidden" [ngSortGridItems]="fields[category['id']]"
+                                 [ngSortGridGroup]="category['id']" ngSortgridItem (sorted)="storeNewOrder($event, category['id'])">
                                 <mat-form-field class="right-0 w-full form-builder">
                                     <i cdkDrag class="fa-solid fa-trash z-10 text-red-500"
                                        *ngIf="!field.edit_name" (click)="deleteField(index, category['id'], field.unit)"
