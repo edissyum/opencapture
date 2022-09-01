@@ -39,6 +39,7 @@ cd "$OCForInvoicesPath" || exit 1
 git config --global user.email "update@ocforinvoices"
 git config --global user.name "Update Open-Capture For Invoices"
 git pull
+git fetch --tags
 git stash # Remove custom code if needed
 latest_tag=$(git describe --tags "$(git rev-list --tags=2.* --max-count=1)")
 git checkout "$latest_tag"
@@ -47,7 +48,7 @@ git config core.fileMode False
 ####################
 # Force launch of apt and pip requirements
 # in case of older version without somes packages/libs
-echo "APT & PIP packages installation & upgrade......."
+echo "APT & PIP packages installation & ......."
 cd bin/install/ || exit 2
 apt-get update > /dev/null
 apt-get install php > /dev/null
