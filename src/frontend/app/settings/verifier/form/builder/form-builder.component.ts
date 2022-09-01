@@ -40,6 +40,7 @@ import { HistoryService } from "../../../../../services/history.service";
 export class FormBuilderComponent implements OnInit {
     loading                 : boolean   = true;
     loadingCustomFields     : boolean   = true;
+    updateFormLoading       : boolean   = false;
     creationMode            : boolean   = true;
     openAvailableField      : boolean   = false;
     modalOpen               : boolean   = false;
@@ -872,9 +873,10 @@ export class FormBuilderComponent implements OnInit {
         }
     }
 
-    deleteField(event: any, previousIndex: any, category:any, unit: any) {
-        if (unit === 'addresses' || unit === 'supplier')
+    deleteField(previousIndex: any, category: any, unit: any) {
+        if (unit === 'addresses' || unit === 'supplier') {
             unit = 'accounts';
+        }
         for (const parentField in this.availableFieldsParent) {
             const id = this.availableFieldsParent[parentField].id.split('_fields')[0];
             if (id === unit) {
@@ -885,6 +887,14 @@ export class FormBuilderComponent implements OnInit {
                     currentIndex);
             }
         }
+    }
+
+    updateValue(event: any, field: any) {
+        const value = event.target ? event.target.value : event.value;
+        if (value) {
+            field.label = value;
+        }
+        field.edit_name = false;
     }
 
     storeNewOrder(event: any, categoryId: any) {
@@ -912,6 +922,7 @@ export class FormBuilderComponent implements OnInit {
     }
 
     updateForm() {
+        this.updateFormLoading = true;
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
         const allowAutomaticValidation = this.form.allow_automatic_validation.control.value;
@@ -945,6 +956,7 @@ export class FormBuilderComponent implements OnInit {
                         })
                     ).subscribe();
                 }),
+                finalize(() => this.updateFormLoading = false),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);

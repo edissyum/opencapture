@@ -48,7 +48,7 @@ git config core.fileMode False
 ####################
 # Force launch of apt and pip requirements
 # in case of older version without somes packages/libs
-echo "APT & PIP packages installation & ......."
+echo "APT & PIP packages installation ......."
 cd bin/install/ || exit 2
 apt-get update > /dev/null
 apt-get install php > /dev/null

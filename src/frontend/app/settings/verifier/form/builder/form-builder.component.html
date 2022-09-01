@@ -149,22 +149,40 @@
                     <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 2.5rem; left:2.5rem;" [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
                         {{ category['label'] | translate }}
                     </div>
-                    <div class="border-green-400 border rounded-lg mx-6 m-7">
-                        <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" id="{{ category['id'] }}"
+                    <div class="border-green-400 border rounded-lg mx-6 my-7">
+                        <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" [id]="category['id']"
                              class="flex flex-wrap cursor-pointer w-full my-3" style="min-height: 50px;">
                             <div *ngFor="let field of this.fields[category['id']]; let index = index" class="flex items-center px-3 overflow-hidden" [class]="field.class"
-                                 ngSortGridGroup="{{ category['id'] }}" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
+                                 [ngSortGridGroup]="category['id']" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
                                 <mat-form-field class="right-0 w-full form-builder">
-                                    <i cdkDrag class="fa-solid fa-trash z-10" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
-                                    <span class="input-label relative -top-1 border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12">
-                                    <span *ngIf="field.required" class="text-red-500 mr-2 relative top-0.5">*</span>
-                                    <b>{{ field.label | translate }}</b>
-                                    <span *ngIf="field.type !== 'select' && field.type !== 'textarea'"> ({{ 'FORMATS.' + field.format | translate }})</span>
-                                    <span *ngIf="field.type === 'select'"> ({{ 'FORMATS.select' | translate }})</span>
-                                    <span *ngIf="field.type === 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>
-                                </span>
+                                    <i cdkDrag class="fa-solid fa-trash z-10 text-red-500"
+                                       *ngIf="!field.edit_name" (click)="deleteField(index, category['id'], field.unit)"
+                                       [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
+                                    <i cdkDrag class="fa-solid fa-edit z-10 ml-6 text-green-400"
+                                       *ngIf="!field.edit_name" (click)="field.edit_name = true"
+                                       [matTooltip]="this.translate.instant('FORMS.update_label')"></i>
+                                    <span class="input-label relative -top-1 border-r-2 border-green-400 inline-block
+                                                overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12"
+                                          *ngIf="!field.edit_name">
+                                        <span *ngIf="field.required" class="text-red-500 mr-2 relative top-0.5">*</span>
+                                        <b>{{ field.label | translate }}</b>
+                                        <span *ngIf="field.type !== 'select' && field.type !== 'textarea'"> ({{ 'FORMATS.' + field.format | translate }})</span>
+                                        <span *ngIf="field.type === 'select'"> ({{ 'FORMATS.select' | translate }})</span>
+                                        <span *ngIf="field.type === 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>
+                                    </span>
+                                    <span *ngIf="field.edit_name" class="relative flex w-full" style="top: -1.325rem">
+                                        <mat-form-field appearance="outline" class="w-full input-label-builder">
+                                            <input matInput [value]="field.label | translate" class="relative top-1"
+                                                   (keyup.enter)="updateValue($event, field)"
+                                                   (focusout)="updateValue($event, field)">
+                                        </mat-form-field>
+                                        <button matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button
+                                                class="top-1.5">
+                                            <i class="fa-solid fa-check visible opacity-100 fa-lg"></i>
+                                        </button>
+                                    </span>
                                     <input class="cursor-pointer" matInput type="text" readonly>
-                                    <div class="absolute top-0 -right-4">
+                                    <div class="absolute top-0 -right-4" *ngIf="!field.edit_name">
                                         <button mat-button [matMenuTriggerFor]="menu" matTooltipPosition="above"
                                                 [matTooltip]="this.translate.instant('VERIFIER.field_settings')">
                                             <mat-icon class="field_settings text-md">more_vert</mat-icon>
@@ -239,11 +257,13 @@
             </div>
             <div class="flex justify-center items-center">
                 <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
-                    <span class="block" (click)="createForm()" *ngIf="creationMode">
+                    <span class="block" (click)="createForm()" *ngIf="this.creationMode">
                         {{ "FORMS.create" | translate }}
                     </span>
-                    <span class="block" (click)="updateForm()" *ngIf="!creationMode">
-                        {{ "FORMS.modify" | translate }}
+                    <span class="w-48 block" (click)="updateForm()" *ngIf="!this.creationMode">
+                        <span *ngIf="!this.updateFormLoading">{{ "FORMS.modify" | translate }}</span>
+                        <i *ngIf="this.updateFormLoading" class="fa-solid text-2xl fa-circle-notch fa-spin
+                                  text-gray-900 relative top-1" style="--fa-animation-duration: 1.5s;"></i>
                     </span>
                 </button>
             </div>
