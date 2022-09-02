@@ -66,10 +66,10 @@ def get_custom_path(custom_id):
     path = False
     if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
         customs_config = _Config(custom_ini_file)
-        for custom_name in customs_config.cfg:
+        for custom_name, custom_param in customs_config.cfg.items():
             if custom_id == custom_name:
-                if os.path.isdir(customs_config.cfg[custom_name]['path']):
-                    path = customs_config.cfg[custom_name]['path']
+                if os.path.isdir(custom_param['path']):
+                    path = custom_param['path']
     return path
 
 
@@ -81,12 +81,12 @@ def retrieve_config_from_custom_id(custom_id):
     custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
     if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
         customs_config = _Config(custom_ini_file)
-        for custom_name in customs_config.cfg:
+        for custom_name, custom_param in customs_config.cfg.items():
             if custom_id == custom_name:
                 found_custom = True
-                if os.path.isdir(customs_config.cfg[custom_name]['path']):
-                    if os.path.isfile(customs_config.cfg[custom_name]['path'] + '/config/config.ini'):
-                        res = customs_config.cfg[custom_name]['path'] + '/config/config.ini'
+                if os.path.isdir(custom_param['path']):
+                    if os.path.isfile(custom_param['path'] + '/config/config.ini'):
+                        res = custom_param['path'] + '/config/config.ini'
     if res is False and os.path.isfile(default_config_file) and (found_custom or not custom_id):
         res = default_config_file
     elif not found_custom and custom_id:
@@ -104,14 +104,14 @@ def get_custom_array(custom_id=False):
 
 
 def get_custom_id():
-    custom_file = 'custom/custom.ini'
-    if os.path.isfile(custom_file):
-        config = _Config(custom_file)
-        for custom in config.cfg:
-            if config.cfg[custom]['isdefault'] == 'True':
-                path = config.cfg[custom]['path']
+    custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
+    if os.path.isfile(custom_ini_file):
+        customs_config = _Config(custom_ini_file)
+        for custom_name, custom_param in customs_config.cfg.items():
+            if custom_param['isdefault'] == 'True':
+                path = custom_param['path']
                 if os.path.isdir(path):
-                    return [custom, path]
+                    return [custom_name, path]
 
 
 def check_python_customized_files(path):

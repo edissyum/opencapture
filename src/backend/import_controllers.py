@@ -14,6 +14,7 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
+# pylint: skip-file
 
 from .functions import get_custom_array
 custom_array = get_custom_array()
