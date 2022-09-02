@@ -23,7 +23,7 @@ fi
 
 bold=$(tput bold)
 normal=$(tput sgr0)
-defaultPath=/var/www/html/opencaptureforinvoices
+defaultPath=/var/www/html/opencapture
 user=$(who am i | awk '{print $1}')
 group=www-data
 
@@ -194,12 +194,12 @@ echo ""
 
 ####################
 # Create docservers
-echo "Type docserver default path informations. By default it's /var/docservers/OpenCapture/"
-printf "Docserver default path [%s] : " "${bold}/var/docservers/OpenCapture/${normal}"
+echo "Type docserver default path informations. By default it's /var/docservers/opencapture/"
+printf "Docserver default path [%s] : " "${bold}/var/docservers/opencapture/${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    docserverDefaultPath="/var/docservers/OpenCapture/"
+    docserverDefaultPath="/var/docservers/opencapture/"
 else
     docserverDefaultPath="$choice"
 fi
@@ -229,7 +229,7 @@ mkdir -p $customPath/bin/ldap/config/
 mkdir -p $customPath/instance/referencial/
 mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $customPath/bin/data/log/Supervisor/
-touch $customPath/bin/data/log/OCforInvoices.log
+touch $customPath/bin/data/log/OpenCapture.log
 mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs,MailCollect}/
 mkdir -p $customPath/src/backend/
 touch $customPath/config/secret_key
@@ -264,15 +264,15 @@ cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customI
 cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
 cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 cp $defaultPath/src/backend/process_queue_splitter.py.default "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
-cp $defaultPath/bin/scripts/service_workerOC.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
-cp $defaultPath/bin/scripts/service_workerOC_splitter.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
+cp $defaultPath/bin/scripts/OCVerifier_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
+cp $defaultPath/bin/scripts/OCSplitter_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 cp $defaultPath/bin/scripts/MailCollect/clean.sh.default "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/bin/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
 confFile="$defaultPath/custom/$customId/config/config.ini"
@@ -300,7 +300,7 @@ cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh "$defaul
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh"
 cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
 sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
-sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OCForInvoices.log#g" $defaultScriptFile
+sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
 sed -i "s#§§LOG_PATH§§#$defaultPath#g" $defaultScriptFile
 sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
@@ -308,7 +308,7 @@ sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh"
 cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh $defaultScriptFile
 sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
-sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OCForInvoices.log#g" $defaultScriptFile
+sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
 sed -i "s#§§LOG_PATH§§#$defaultPath#g" $defaultScriptFile
 sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
@@ -323,8 +323,8 @@ chown -R "$user":"$group" $defaultPath
 # Create new supervisor or systemd files
 
 if [ $installationType == 'systemd' ]; then
-    touch "/etc/systemd/system/OCForInvoices-worker_$customId.service"
-    su -c "cat > /etc/systemd/system/OCForInvoices-worker_$customId.service << EOF
+    touch "/etc/systemd/system/OCVerifier-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCVerifier-worker_$customId.service << EOF
 [Unit]
 Description=Daemon for Open-Capture
 
@@ -335,7 +335,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
+ExecStart=$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh
 KillSignal=SIGQUIT
 
 Restart=on-failure
@@ -344,8 +344,8 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
-    touch "/etc/systemd/system/OCForInvoices_Split-worker_$customId.service"
-    su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker_$customId.service << EOF
+    touch "/etc/systemd/system/OCSplitter-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCSplitter-worker_$customId.service << EOF
 [Unit]
 Description=Splitter Daemon for Open-Capture
 
@@ -356,7 +356,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
+ExecStart=$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh
 KillSignal=SIGQUIT
 Restart=on-failure
 
@@ -365,16 +365,15 @@ WantedBy=multi-user.target
 EOF"
 
     systemctl daemon-reload
-    systemctl start "OCForInvoices-worker_$customId".service
-    systemctl start "OCForInvoices_Split-worker_$customId".service
-    sudo systemctl enable "OCForInvoices-worker_$customId".service
-    sudo systemctl enable "OCForInvoices_Split-worker_$customId".service
+    systemctl start "OCVerifier-worker_$customId".service
+    systemctl start "OCSplitter-worker_$customId".service
+    sudo systemctl enable "OCVerifier-worker_$customId".service
+    sudo systemctl enable "OCSplitter-worker_$customId".service
 elif [ $installationType == 'supervisor' ]; then
-    touch "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
-    touch "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
-    su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf << EOF
+    touch "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
+    su -c "cat > /etc/supervisor/conf.d/OCVerifier-worker_$customId.conf << EOF
 [program:OCWorker_$customId]
-command=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
+command=$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
 user=$user
@@ -386,12 +385,12 @@ stopasgroup=true
 killasgroup=true
 stopwaitsecs=10
 
-stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCVerifier-worker_%(process_num)02d_error.log
 EOF"
-
-    su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf << EOF
+    touch "/etc/supervisor/conf.d/OCSplitter-worker_$customId.conf"
+    su -c "cat > /etc/supervisor/conf.d/OCSplitter-worker_$customId.conf << EOF
 [program:OCWorker-Split_$customId]
-command=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
+command=$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
 user=$user
@@ -403,11 +402,11 @@ stopasgroup=true
 killasgroup=true
 stopwaitsecs=10
 
-stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_SPLIT_worker_%(process_num)02d_error.log
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCSplitter-worker_%(process_num)02d_error.log
 EOF"
 
-    chmod 755 "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
-    chmod 755 "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
+    chmod 755 "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
+    chmod 755 "/etc/supervisor/conf.d/OCSplitter-worker_$customId.conf"
 
     systemctl restart supervisor
     systemctl enable supervisor

@@ -56,7 +56,7 @@ export class UserService {
     }
 
     getTokenUser() {
-        let userTokenName = 'OpenCaptureForInvoicesToken_user';
+        let userTokenName = 'OpenCaptureToken_user';
         if (environment['customId']) {
             userTokenName += '_' + environment['customId'];
         } else if (environment['fqdn']) {

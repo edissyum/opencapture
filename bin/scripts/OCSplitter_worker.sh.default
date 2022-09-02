@@ -18,9 +18,9 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 export LD_LIBRARY_PATH=/usr/local/lib/
-export MAGICK_TMPDIR=/tmp/opencaptureforinvoices/
+export MAGICK_TMPDIR=/tmp/opencapture/
 export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
 
-cd /var/www/html/opencaptureforinvoices/ || exit
+cd /var/www/html/opencapture/ || exit
 kuyruk_location=$(which kuyruk)
 $kuyruk_location --app custom.§§CUSTOM_ID§§.src.backend.process_queue_splitter.kuyruk worker --queue splitter_§§CUSTOM_ID§§

@@ -27,7 +27,7 @@ from ldap3 import Server, ALL
 from ldap3.core.exceptions import LDAPException
 from werkzeug.security import generate_password_hash
 
-sys.path.insert(0, '/var/www/html/opencaptureforinvoices/')
+sys.path.insert(0, '/var/www/html/opencapture/')
 from src.backend.main import create_classes_from_custom_id
 
 
@@ -183,7 +183,7 @@ def check_database_users(ldap_users_data, default_role):
         if users:
             for user in users:
                 oc_users.append([user['username'], user['firstname'], user['lastname']])
-        print_log("Users retrieved from the OCFORINVOICES database " + str(oc_users))
+        print_log("Users retrieved from the OpenCapture database " + str(oc_users))
         print_log("Users retrieved from the  LDAP " + str(ldap_users_data))
         print_log("Start of synchronization program")
         for ldap_user in ldap_users_data:

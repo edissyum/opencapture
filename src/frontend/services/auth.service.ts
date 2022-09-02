@@ -73,9 +73,9 @@ export class AuthService {
     }
 
     getTokenName() {
-        let tokenName = 'OpenCaptureForInvoicesToken';
-        let userTokenName = 'OpenCaptureForInvoicesToken_user';
-        let cachedUrlName = 'OpenCaptureForInvoicesCachedUrl';
+        let tokenName = 'OpenCaptureToken';
+        let userTokenName = 'OpenCaptureToken_user';
+        let cachedUrlName = 'OpenCaptureCachedUrl';
         if (environment['customId']) {
             tokenName += '_' + environment['customId'];
             userTokenName += '_' + environment['customId'];

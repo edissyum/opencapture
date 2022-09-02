@@ -29,7 +29,7 @@ scriptName=${scriptName:0:31}${spaces:0:$((31-${#scriptName}))}
 
 OCPath="§§OC_PATH§§"
 config_mail_file="$OCPath"/custom/§§CUSTOM_ID§§/config/mail.ini
-logFile="$OCPath"/bin/data/log/OCForInvoices.log
+logFile="$OCPath"/bin/data/log/OpenCapture.log
 PID=/tmp/securite-$script-$$.pid
 
 if ! test -e $PID;

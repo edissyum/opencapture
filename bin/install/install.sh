@@ -23,7 +23,7 @@ fi
 
 bold=$(tput bold)
 normal=$(tput sgr0)
-defaultPath=/var/www/html/opencaptureforinvoices/
+defaultPath=/var/www/html/opencapture/
 imageMagickPolicyFile=/etc/ImageMagick-6/policy.xml
 docserverPath=/var/docservers/
 user=$(who am i | awk '{print $1}')
@@ -321,7 +321,7 @@ echo ""
 echo "######################################################################################################################"
 echo ""
 
-docserverDefaultPath="/var/docservers/OpenCapture/"
+docserverDefaultPath="/var/docservers/opencapture/"
 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName" > /dev/null
@@ -381,8 +381,8 @@ systemctl restart apache2
 ####################
 # Create the service systemd or supervisor
 if [ "$finalChoice" == 2 ]; then
-    touch "/etc/systemd/system/OCForInvoices-worker_$customId.service"
-    su -c "cat > /etc/systemd/system/OCForInvoices-worker_$customId.service << EOF
+    touch "/etc/systemd/system/OCVerifier-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCVerifier-worker_$customId.service << EOF
 [Unit]
 Description=Daemon for Open-Capture
 
@@ -393,7 +393,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
+ExecStart=$defaultPath/custom/$customId/bin/scripts/OCVerifier-worker.sh
 KillSignal=SIGQUIT
 
 Restart=on-failure
@@ -402,8 +402,8 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
-    touch "/etc/systemd/system/OCForInvoices_Split-worker_$customId.service"
-    su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker_$customId.service << EOF
+    touch "/etc/systemd/system/OCSplitter-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCSplitter-worker_$customId.service << EOF
 [Unit]
 Description=Splitter Daemon for Open-Capture
 
@@ -414,7 +414,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
+ExecStart=$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh
 KillSignal=SIGQUIT
 Restart=on-failure
 
@@ -423,18 +423,18 @@ WantedBy=multi-user.target
 EOF"
 
     systemctl daemon-reload
-    systemctl start "OCForInvoices-worker_$customId".service
-    systemctl start "OCForInvoices_Split-worker_$customId".service
-    sudo systemctl enable "OCForInvoices-worker_$customId".service
-    sudo systemctl enable "OCForInvoices_Split-worker_$customId".service
+    systemctl start "OCVerifier-worker_$customId".service
+    systemctl start "OCSplitter-worker_$customId".service
+    sudo systemctl enable "OCVerifier-worker_$customId".service
+    sudo systemctl enable "OCSplitter-worker_$customId".service
 else
     apt-get install -y supervisor > /dev/null
-    touch "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
-    touch "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
+    touch "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
+    touch "/etc/supervisor/conf.d/OCSplitter-worker_$customId.conf"
 
-    su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf << EOF
+    su -c "cat > /etc/supervisor/conf.d/OCVerifier-worker_$customId.conf << EOF
 [program:OCWorker_$customId]
-command=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
+command=$defaultPath/custom/$customId/bin/scripts/OCVerifier-worker.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
 user=$user
@@ -446,12 +446,12 @@ stopasgroup=true
 killasgroup=true
 stopwaitsecs=10
 
-stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCVerifier-worker_%(process_num)02d_error.log
 EOF"
 
-    su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf << EOF
+    su -c "cat > /etc/supervisor/conf.d/OCSplitter-worker_$customId.conf << EOF
 [program:OCWorker-Split_$customId]
-command=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
+command=$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
 user=$user
@@ -463,11 +463,11 @@ stopasgroup=true
 killasgroup=true
 stopwaitsecs=10
 
-stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_SPLIT_worker_%(process_num)02d_error.log
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCSplitter-worker_%(process_num)02d_error.log
 EOF"
 
-    chmod 755 "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
-    chmod 755 "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
+    chmod 755 "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
+    chmod 755 "/etc/supervisor/conf.d/OCSplitter-worker_$customId.conf"
 
     systemctl restart supervisor
     systemctl enable supervisor
@@ -475,8 +475,8 @@ fi
 
 ####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content
-mkdir -p /tmp/OpenCaptureForInvoices/
-chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
+mkdir -p /tmp/opencapture/
+chown -R "$user":"$user" /tmp/opencapture/
 
 ####################
 # Copy file from default one
@@ -486,15 +486,15 @@ cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default "$
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
 cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 cp $defaultPath/src/backend/process_queue_splitter.py.default "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
-cp $defaultPath/bin/scripts/service_workerOC.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
-cp $defaultPath/bin/scripts/service_workerOC_splitter.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
+cp $defaultPath/bin/scripts/OCVerifier_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
+cp $defaultPath/bin/scripts/OCSplitter_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 cp $defaultPath/bin/scripts/MailCollect/clean.sh.default "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier-worker.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/bin/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
 confFile="$defaultPath/custom/$customId/config/config.ini"
@@ -558,7 +558,7 @@ if ! test -f "$defaultScriptFile"; then
     mkdir -p "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
     cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
     sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
-    sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OCForInvoices.log#g" $defaultScriptFile
+    sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
     sed -i "s#§§LOG_PATH§§#$defaultPath#g" $defaultScriptFile
     sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
@@ -604,12 +604,12 @@ chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/splitter_in
 
 ####################
 # Create docservers
-mkdir -p $docserverPath/OpenCapture/"$customId"/{verifier,splitter}
-mkdir -p $docserverPath/OpenCapture/"$customId"/verifier/{original_pdf,full,thumbs,positions_masks}
-mkdir -p $docserverPath/OpenCapture/"$customId"/splitter/{original_pdf,batches,separated_pdf,error}
-chmod -R 775 $docserverPath/OpenCapture/
-chmod -R g+s $docserverPath/OpenCapture/
-chown -R "$user":"$group" $docserverPath/OpenCapture/
+mkdir -p $docserverPath/opencapture/"$customId"/{verifier,splitter}
+mkdir -p $docserverPath/opencapture/"$customId"/verifier/{original_pdf,full,thumbs,positions_masks}
+mkdir -p $docserverPath/opencapture/"$customId"/splitter/{original_pdf,batches,separated_pdf,error}
+chmod -R 775 $docserverPath/opencapture/
+chmod -R g+s $docserverPath/opencapture/
+chown -R "$user":"$group" $docserverPath/opencapture/
 
 ####################
 # Create default export and input XML and PDF folder

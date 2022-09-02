@@ -5,7 +5,7 @@ ALTER TABLE "configurations" ADD COLUMN display BOOLEAN default true;
 INSERT INTO "configurations" (label, data, display) VALUES ('mailCollectGeneral', '{
     "type": "json",
     "value": {
-        "batchPath": "/var/www/html/opencaptureforinvoices/bin/data/MailCollect/",
+        "batchPath": "/var/www/html/opencapture/bin/data/MailCollect/",
         "smtpNotifOnError": false,
         "smtpSSL": true,
         "smtpStartTLS": false,

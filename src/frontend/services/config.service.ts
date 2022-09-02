@@ -52,10 +52,10 @@ export class ConfigService {
     }
 
     setConfig(config: any) {
-        this.authService.setTokenCustom('OpenCaptureForInvoicesConfig', btoa(JSON.stringify(config)));
+        this.authService.setTokenCustom('OpenCaptureConfig', btoa(JSON.stringify(config)));
     }
 
     getConfig() {
-        return JSON.parse(atob(this.authService.getTokenCustom('OpenCaptureForInvoicesConfig') as string));
+        return JSON.parse(atob(this.authService.getTokenCustom('OpenCaptureConfig') as string));
     }
 }
