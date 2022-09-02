@@ -1,7 +1,7 @@
 #!/bin/bash
-# This file is part of Open-Capture for Invoices.
+# This file is part of Open-Capture.
 
-# Open-Capture for Invoices is free software: you can redistribute it and/or modify
+# Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -37,7 +37,7 @@ cp -r "$OCForInvoicesPath" "$backupPath"
 # Retrieve the last tags from gitlab
 cd "$OCForInvoicesPath" || exit 1
 git config --global user.email "update@ocforinvoices"
-git config --global user.name "Update Open-Capture For Invoices"
+git config --global user.name "Update Open-Capture"
 git pull
 git fetch --tags
 git stash # Remove custom code if needed

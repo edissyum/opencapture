@@ -1,7 +1,7 @@
 #!/bin/bash
-# This file is part of Open-Capture for Invoices.
+# This file is part of Open-Capture.
 
-# Open-Capture for Invoices is free software: you can redistribute it and/or modify
+# Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -326,7 +326,7 @@ if [ $installationType == 'systemd' ]; then
     touch "/etc/systemd/system/OCForInvoices-worker_$customId.service"
     su -c "cat > /etc/systemd/system/OCForInvoices-worker_$customId.service << EOF
 [Unit]
-Description=Daemon for Open-Capture for Invoices
+Description=Daemon for Open-Capture
 
 [Service]
 Type=simple
@@ -347,7 +347,7 @@ EOF"
     touch "/etc/systemd/system/OCForInvoices_Split-worker_$customId.service"
     su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker_$customId.service << EOF
 [Unit]
-Description=Splitter Daemon for Open-Capture for Invoices
+Description=Splitter Daemon for Open-Capture
 
 [Service]
 Type=simple

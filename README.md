@@ -1,6 +1,6 @@
 ![Logo Open-Capture](https://edissyum.com/wp-content/uploads/2019/08/OpenCaptureForInvoices.png)
 
-# Open-Capture for Invoices by Edissyum v2
+# Open-Capture by Edissyum v2
 
 <pre>
 Link to the full documentation : <a href="https://kutt.it/DocumentationV2">https://kutt.it/DocumentationV2</a>
@@ -8,7 +8,7 @@ Link to the full documentation : <a href="https://kutt.it/DocumentationV2">https
 
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
-The functionnalities of Open-Capture for Invoices are :
+The functionnalities of Open-Capture are :
    - Fully web interface for videocoding : No installation needed on user's workstation
    - OCR On Fly. Draw a rectangle on the image, get the text directly in your input
    - The core works on Linux (tested on Ubuntu and Debian)
@@ -23,4 +23,4 @@ The functionnalities of Open-Capture for Invoices are :
 
 # LICENSE
 
-Open-Capture for Invoices is released under the GPL v3.
+Open-Capture is released under the GPL v3.

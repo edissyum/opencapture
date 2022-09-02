@@ -11,7 +11,7 @@
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture.  If not, see <https://www.gnu.org/licenses/>.
+# along with Open-Capture. If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
@@ -76,7 +76,7 @@ class SMTP:
 
     def send_notification(self, error, file_name):
         """
-        Send email with the error message coming from Open-Capture For Invoices process
+        Send email with the error message coming from Open-Capture process
 
         :param error: Message to send
         :param file_name: Filename
@@ -100,7 +100,7 @@ class SMTP:
         else:
             msg['From'] = 'MailCollect@OpenCapture.com'
 
-        msg['Subject'] = "[Open-Capture For Invoices] Erreur lors du traitement d'une facture"
+        msg['Subject'] = "[Open-Capture] Erreur lors du traitement d'une facture"
         message = 'Une erreur est arrivée lors du traitement du fichier ' + file_name + '\n\n'
         message += "Description de l'erreur : \n    " + error
         if self.delay != 0:
