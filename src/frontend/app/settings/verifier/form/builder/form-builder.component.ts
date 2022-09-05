@@ -1,6 +1,6 @@
-/** This file is part of Open-Capture for Invoices.
+/** This file is part of Open-Capture.
 
- Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ Open-Capture is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
@@ -11,7 +11,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -40,6 +40,7 @@ import { HistoryService } from "../../../../../services/history.service";
 export class FormBuilderComponent implements OnInit {
     loading                 : boolean   = true;
     loadingCustomFields     : boolean   = true;
+    updateFormLoading       : boolean   = false;
     creationMode            : boolean   = true;
     openAvailableField      : boolean   = false;
     modalOpen               : boolean   = false;
@@ -872,9 +873,10 @@ export class FormBuilderComponent implements OnInit {
         }
     }
 
-    deleteField(event: any, previousIndex: any, category:any, unit: any) {
-        if (unit === 'addresses' || unit === 'supplier')
+    deleteField(previousIndex: any, category: any, unit: any) {
+        if (unit === 'addresses' || unit === 'supplier') {
             unit = 'accounts';
+        }
         for (const parentField in this.availableFieldsParent) {
             const id = this.availableFieldsParent[parentField].id.split('_fields')[0];
             if (id === unit) {
@@ -885,6 +887,14 @@ export class FormBuilderComponent implements OnInit {
                     currentIndex);
             }
         }
+    }
+
+    updateValue(event: any, field: any) {
+        const value = event.target ? event.target.value : event.value;
+        if (value) {
+            field.label = value;
+        }
+        field.edit_name = false;
     }
 
     storeNewOrder(event: any, categoryId: any) {
@@ -912,6 +922,7 @@ export class FormBuilderComponent implements OnInit {
     }
 
     updateForm() {
+        this.updateFormLoading = true;
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
         const allowAutomaticValidation = this.form.allow_automatic_validation.control.value;
@@ -945,6 +956,7 @@ export class FormBuilderComponent implements OnInit {
                         })
                     ).subscribe();
                 }),
+                finalize(() => this.updateFormLoading = false),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);

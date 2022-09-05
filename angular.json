@@ -7,7 +7,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "OpenCaptureForInvoices": {
+        "Open-Capture": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -96,7 +96,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "OpenCaptureForInvoices:build"
+                        "browserTarget": "Open-Capture:build"
                     }
                 },
                 "test": {
@@ -126,5 +126,5 @@
             }
         }
     },
-    "defaultProject": "OpenCaptureForInvoices"
+    "defaultProject": "Open-Capture"
 }

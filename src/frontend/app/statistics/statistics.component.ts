@@ -1,6 +1,6 @@
-/** This file is part of Open-Capture for Invoices.
+/** This file is part of Open-Capture.
 
- Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ Open-Capture is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
@@ -11,7 +11,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
@@ -93,7 +93,7 @@ export class StatisticsComponent implements OnInit {
                     .pipe(
                         tap((data: any) => {
                             this.options[cpt].data.push({
-                                'name': form.label + '(' + form.module + ')',
+                                'name': form.label + ' (' + form.module + ')',
                                 'value': data.total
                             });
                             this.currentData = this.options[cpt].data;
@@ -118,7 +118,7 @@ export class StatisticsComponent implements OnInit {
     getUsersProcessDocument(cpt: number) {
         this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=invoice_validated', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=document_validated', {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.users.forEach((user: any) => {
                             let historyCpt = 0;

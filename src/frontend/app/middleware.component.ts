@@ -1,6 +1,6 @@
-/** This file is part of Open-Capture for Invoices.
+/** This file is part of Open-Capture.
 
- Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ Open-Capture is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
@@ -11,7 +11,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -55,7 +55,7 @@ export class MiddlewareComponent implements HttpInterceptor {
                     const isFQDN = this.isValidFQDN(currentUrlArray[i - 1]);
                     const currentCustom = environment['customId'];
                     customId = currentUrlArray[i - 1];
-                    if (!isFQDN && !isIp && currentUrlArray[i - 1] !== 'localhost' && !currentUrlArray[i - 1].includes('opencaptureforinvoices') && !currentUrlArray[i - 1].includes('backend_oc')) {
+                    if (!isFQDN && !isIp && currentUrlArray[i - 1] !== 'localhost' && !currentUrlArray[i - 1].includes('opencapture') && !currentUrlArray[i - 1].includes('opencaptureforinvoices') && !currentUrlArray[i - 1].includes('backend_oc')) {
                         customId = currentUrlArray[i - 1];
                         const oldUrl = environment['url'];
                         environment['customId'] = customId;
@@ -63,7 +63,7 @@ export class MiddlewareComponent implements HttpInterceptor {
                         if (environment.production) {
                             environment['url'] = '../' + environment['url'];
                         }
-                        const token = this.localStorage.getCookie('OpenCaptureForInvoicesToken_' + customId);
+                        const token = this.localStorage.getCookie('OpenCaptureToken_' + customId);
                         if (currentCustom && customId !== currentCustom) {
                             this.router.navigate(['/logout']).then();
                         }

@@ -1,6 +1,6 @@
-/** This file is part of Open-Capture for Invoices.
+/** This file is part of Open-Capture.
 
-Open-Capture for Invoices is free software: you can redistribute it and/or modify
+Open-Capture is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
@@ -11,7 +11,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -164,7 +164,7 @@ export class UpdateOutputComponent implements OnInit {
      * Les données doivent être formatés comme suit : {'id': XX, 'value': XX} et être mise dans la clé "values" du champ
      * Regarder la fonction getUsersMaarch() pour voir le fonctionnement
      * Du côté des webservices permettant l'execution des chaînes sortantes, il faut créer un WS dans le fichier rest/verifier.py
-     * La route doit être : verifier/invoices/<int:invoice_id>/output_type_id (e.g : verifier/invoices/<int:invoice_id>/export_maarch)
+     * La route doit être : verifier/invoices/<int:document_id>/output_type_id (e.g : verifier/invoices/<int:document_id>/export_maarch)
     **/
 
     constructor(

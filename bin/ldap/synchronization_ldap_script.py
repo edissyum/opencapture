@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# This file is part of Open-Capture for Invoices.
+# This file is part of Open-Capture.
 
-# Open-Capture for Invoices is free software: you can redistribute it and/or modify
+# Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev: Essaid MEGHELLET <essaid.meghellet@edissyum.com>
 
@@ -27,7 +27,7 @@ from ldap3 import Server, ALL
 from ldap3.core.exceptions import LDAPException
 from werkzeug.security import generate_password_hash
 
-sys.path.insert(0, '/var/www/html/opencaptureforinvoices/')
+sys.path.insert(0, '/var/www/html/opencapture/')
 from src.backend.main import create_classes_from_custom_id
 
 
@@ -183,7 +183,7 @@ def check_database_users(ldap_users_data, default_role):
         if users:
             for user in users:
                 oc_users.append([user['username'], user['firstname'], user['lastname']])
-        print_log("Users retrieved from the OCFORINVOICES database " + str(oc_users))
+        print_log("Users retrieved from the OpenCapture database " + str(oc_users))
         print_log("Users retrieved from the  LDAP " + str(ldap_users_data))
         print_log("Start of synchronization program")
         for ldap_user in ldap_users_data:

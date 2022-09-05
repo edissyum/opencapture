@@ -1,7 +1,7 @@
 #!/bin/bash
-# This file is part of Open-Capture for Invoices.
+# This file is part of Open-Capture.
 
-# Open-Capture for Invoices is free software: you can redistribute it and/or modify
+# Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -25,19 +25,19 @@ fi
 # Put the default paths.
 # Modify them if needed
 currentDate=$(date +%m%d%Y-%H%M%S)
-OCForInvoicesPath="/var/www/html/opencaptureforinvoices/"
-backupPath="/var/www/html/opencaptureforinvoices.$currentDate"
+OpenCapturePath="/var/www/html/opencapture/"
+backupPath="/var/www/html/opencapture.$currentDate"
 user=$(who am i | awk '{print $1}')
 
 ####################
 # Backup all the Open-Capture path
-cp -r "$OCForInvoicesPath" "$backupPath"
+cp -r "$OpenCapturePath" "$backupPath"
 
 ####################
 # Retrieve the last tags from gitlab
-cd "$OCForInvoicesPath" || exit 1
-git config --global user.email "update@ocforinvoices"
-git config --global user.name "Update Open-Capture For Invoices"
+cd "$OpenCapturePath" || exit 1
+git config --global user.email "update@opencapture"
+git config --global user.name "Update Open-Capture"
 git pull
 git fetch --tags
 git stash # Remove custom code if needed
@@ -48,7 +48,7 @@ git config core.fileMode False
 ####################
 # Force launch of apt and pip requirements
 # in case of older version without somes packages/libs
-echo "APT & PIP packages installation & ......."
+echo "APT & PIP packages installation ......."
 cd bin/install/ || exit 2
 apt-get update > /dev/null
 apt-get install php > /dev/null
@@ -58,23 +58,23 @@ python3 -m pip install --upgrade setuptools > /dev/null
 python3 -m pip install -r pip-requirements.txt > /dev/null
 python3 -m pip install --upgrade -r pip-requirements.txt > /dev/null
 
-cd $OCForInvoicesPath || exit 2
+cd $OpenCapturePath || exit 2
 find . -name ".gitkeep" -delete
 
 ####################
 # Restart worker by custom
 systemctl restart apache2
-systemctl restart OCForInvoices-worker_* || supervisorctl restart all
-systemctl restart OCForInvoices_Split-worker_* || supervisorctl restart all
+systemctl restart OCVerifier-worker_* || supervisorctl restart all
+systemctl restart OCSplitter-worker_* || supervisorctl restart all
 
 ####################
 # Fix rights on folder and files
-chmod -R 775 $OCForInvoicesPath
-chown -R "$user":"$user" $OCForInvoicesPath
+chmod -R 775 $OpenCapturePath
+chown -R "$user":"$user" $OpenCapturePath
 
 ####################
 # Display a message if a SQL migration file is present for new version
-if test -f "$OCForInvoicesPath/bin/install/migration_sql/$latest_tag.sql"; then
+if test -f "$OpenCapturePath/bin/install/migration_sql/$latest_tag.sql"; then
     echo "####################################################################"
     echo "                     Version : $latest_tag                          "
     echo "      A script to update database in the application is present     "
