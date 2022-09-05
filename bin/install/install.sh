@@ -28,6 +28,8 @@ imageMagickPolicyFile=/etc/ImageMagick-6/policy.xml
 docserverPath=/var/docservers/
 user=$(who am i | awk '{print $1}')
 group=www-data
+INFOLOG_PATH=install_info.log
+ERRORLOG_PATH=install_error.log
 
 if [ -z "$user" ]; then
     printf "The user variable is empty. Please fill it with your desired user : "
@@ -238,7 +240,7 @@ fi
 
 echo ""
 echo "Postgres installation....."
-apt-get install -y postgresql > /dev/null
+apt-get install -y postgresql >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
@@ -254,20 +256,20 @@ if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     echo ""
     echo "Create database user...."
 
-    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'" > /dev/null
-    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'" > /dev/null
-    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'" > /dev/null
-    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\"" > /dev/null
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\"" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 else
     echo ""
     echo "######################################################################################################################"
     echo ""
     echo "Create database user...."
 
-    su postgres -c "psql -c 'CREATE ROLE $databaseUsername'" > /dev/null
-    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"> /dev/null
-    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"> /dev/null
-    su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""> /dev/null
+    su postgres -c "psql -c 'CREATE ROLE $databaseUsername'" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'">>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'">>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\"">>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 fi
 
 echo ""
@@ -277,7 +279,7 @@ echo ""
 ####################
 # Install packages
 echo "System packages installation....."
-xargs -a apt-requirements.txt apt-get install -y > /dev/null
+xargs -a apt-requirements.txt apt-get install -y >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 echo ""
 echo "######################################################################################################################"
 echo ""
@@ -288,14 +290,14 @@ if [ $pythonVenv = 'true' ]; then
     mkdir -p "/home/$user/python-venv/"
     python3 -m venv "/home/$user/python-venv/opencapture"
     echo "source /home/$user/python-venv/opencapture/bin/activate" >> "/home/$user/.bashrc"
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade pip > /dev/null
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade setuptools > /dev/null
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install -r "$defaultPath/bin/install/pip-requirements.txt" > /dev/null
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install -r "$defaultPath/bin/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 else
     echo "Python packages installation....."
-    python3 -m pip install --upgrade pip > /dev/null
-    python3 -m pip install --upgrade setuptools > /dev/null
-    python3 -m pip install -r pip-requirements.txt > /dev/null
+    python3 -m pip install --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    python3 -m pip install --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    python3 -m pip install -r pip-requirements.txt >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 fi
 
 cd $defaultPath || exit 1
@@ -312,10 +314,10 @@ databaseName="opencapture_$customId"
 if [[ "$customId" = *"opencapture_"* ]]; then
     databaseName="$customId"
 fi
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName" postgres > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName" postgres >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 echo ""
 echo "######################################################################################################################"
@@ -323,18 +325,18 @@ echo ""
 
 docserverDefaultPath="/var/docservers/opencapture/"
 
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/tmp/' WHERE docserver_id = 'TMP_PATH'" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF'" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'verifier';" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/entrant/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_pdf';" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE configurations SET data = jsonb_set(data, '{value, batchPath}', '\"$customPath/bin/data/MailCollect/\"') WHERE label = 'mailCollectGeneral';" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/tmp/' WHERE docserver_id = 'TMP_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'verifier';" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/entrant/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_pdf';" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE configurations SET data = jsonb_set(data, '{value, batchPath}', '\"$customPath/bin/data/MailCollect/\"') WHERE label = 'mailCollectGeneral';" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 ####################
 # Create the Apache service for backend
@@ -393,7 +395,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/custom/$customId/bin/scripts/OCVerifier-worker.sh
+ExecStart=$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh
 KillSignal=SIGQUIT
 
 Restart=on-failure
@@ -428,7 +430,7 @@ EOF"
     sudo systemctl enable "OCVerifier-worker_$customId".service
     sudo systemctl enable "OCSplitter-worker_$customId".service
 else
-    apt-get install -y supervisor > /dev/null
+    apt-get install -y supervisor >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     touch "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
     touch "/etc/supervisor/conf.d/OCSplitter-worker_$customId.conf"
 
