@@ -382,7 +382,12 @@ systemctl restart apache2
 
 ####################
 # Create the service systemd or supervisor
+
 if [ "$finalChoice" == 2 ]; then
+    execStartLine="$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
+    if [ $pythonVenv = 'true' ]; then
+        execStartLine="/bin/bash -c '/home/$user/python-venv/opencapture/bin/activate && $defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh'"
+    fi
     touch "/etc/systemd/system/OCVerifier-worker_$customId.service"
     su -c "cat > /etc/systemd/system/OCVerifier-worker_$customId.service << EOF
 [Unit]
@@ -395,7 +400,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh
+ExecStart=$execStartLine
 KillSignal=SIGQUIT
 
 Restart=on-failure
@@ -404,6 +409,10 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
+    execStartLine="$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
+    if [ $pythonVenv = 'true' ]; then
+        execStartLine="/bin/bash -c '/home/$user/python-venv/opencapture/bin/activate && $defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh'"
+    fi
     touch "/etc/systemd/system/OCSplitter-worker_$customId.service"
     su -c "cat > /etc/systemd/system/OCSplitter-worker_$customId.service << EOF
 [Unit]
@@ -416,7 +425,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh
+ExecStart=$execStartLine
 KillSignal=SIGQUIT
 Restart=on-failure
 
@@ -433,10 +442,13 @@ else
     apt-get install -y supervisor >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     touch "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
     touch "/etc/supervisor/conf.d/OCSplitter-worker_$customId.conf"
-
+    commandSupervisor="$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
+    if [ $pythonVenv = 'true' ]; then
+        commandSupervisor="/bin/bash -c '/home/$user/python-venv/opencapture/bin/activate && $defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh'"
+    fi
     su -c "cat > /etc/supervisor/conf.d/OCVerifier-worker_$customId.conf << EOF
 [program:OCWorker_$customId]
-command=$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh
+command=$commandSupervisor
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
 user=$user
@@ -450,10 +462,13 @@ stopwaitsecs=10
 
 stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCVerifier-worker_%(process_num)02d_error.log
 EOF"
-
+    commandSupervisor="$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
+    if [ $pythonVenv = 'true' ]; then
+        commandSupervisor="/bin/bash -c '/home/$user/python-venv/opencapture/bin/activate && $defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh'"
+    fi
     su -c "cat > /etc/supervisor/conf.d/OCSplitter-worker_$customId.conf << EOF
 [program:OCWorker-Split_$customId]
-command=$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh
+command=$commandSupervisor
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
 user=$user
