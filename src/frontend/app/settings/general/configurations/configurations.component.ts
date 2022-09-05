@@ -33,6 +33,7 @@ import { NotificationService } from "../../../../services/notifications/notifica
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import {HistoryService} from "../../../../services/history.service";
 
 @Component({
     selector: 'app-configurations',
@@ -64,6 +65,7 @@ export class ConfigurationsComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -128,6 +130,7 @@ export class ConfigurationsComponent implements OnInit {
                 ).pipe(
                     tap(() => {
                         this.loginImage = this.sanitizer.bypassSecurityTrustUrl(args['image_content']);
+                        this.historyService.addHistory('general', 'update_login_image', this.translate.instant('HISTORY-DESC.update_login_image'));
                         this.notify.success(this.translate.instant('CONFIGURATIONS.login_image_changed'));
                     }),
                     finalize(() => this.loading = false),
@@ -179,7 +182,7 @@ export class ConfigurationsComponent implements OnInit {
         ).subscribe();
     }
 
-    updateValue(event: any, id: number) {
+    updateValue(event: any, id: number, name: string) {
         this.updateLoading = true;
         const value = event.target ? event.target.value : event.value;
         this.configurations.forEach((element: any) => {
@@ -187,9 +190,10 @@ export class ConfigurationsComponent implements OnInit {
                 element.data.value = value;
                 this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + element.id, element, {headers: this.authService.headers}).pipe(
                     tap(() => {
-                        this.notify.success(this.translate.instant('CONFIGURATIONS.configuration_updated'));
                         element.updateMode = false;
                         this.updateLoading = false;
+                        this.notify.success(this.translate.instant('CONFIGURATIONS.configuration_updated'));
+                        this.historyService.addHistory('general', 'update_configuration', this.translate.instant('HISTORY-DESC.update_configuration', {configuration: name}));
                     }),
                     catchError((err: any) => {
                         console.debug(err);

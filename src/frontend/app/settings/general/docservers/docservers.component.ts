@@ -31,6 +31,7 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
+import {HistoryService} from "../../../../services/history.service";
 
 @Component({
     selector: 'app-docservers',
@@ -60,6 +61,7 @@ export class DocserversComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -110,7 +112,7 @@ export class DocserversComponent implements OnInit {
         ).subscribe();
     }
 
-    updateValue(event: any, id: number) {
+    updateValue(event: any, id: number, docserver: string) {
         this.updateLoading = true;
         const value = event.target.value;
         this.docservers.forEach((element: any) => {
@@ -118,9 +120,10 @@ export class DocserversComponent implements OnInit {
                 element.path = value;
                 this.http.put(environment['url'] + '/ws/config/updateDocserver/' + element.id, {'data': element}, {headers: this.authService.headers}).pipe(
                     tap(() => {
-                        this.notify.success(this.translate.instant('DOCSERVERS.docserver_updated'));
                         element.updateMode = false;
                         this.updateLoading = false;
+                        this.notify.success(this.translate.instant('DOCSERVERS.docserver_updated'));
+                        this.historyService.addHistory('general', 'update_docserver', this.translate.instant('HISTORY-DESC.update_docserver', {docserver: docserver}));
                     }),
                     catchError((err: any) => {
                         console.debug(err);
