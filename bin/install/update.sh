@@ -28,6 +28,8 @@ currentDate=$(date +%m%d%Y-%H%M%S)
 OpenCapturePath="/var/www/html/opencapture/"
 backupPath="/var/www/html/opencapture.$currentDate"
 user=$(who am i | awk '{print $1}')
+INFOLOG_PATH=update_info.log
+ERRORLOG_PATH=update_error.log
 
 ####################
 # Backup all the Open-Capture path
@@ -50,13 +52,13 @@ git config core.fileMode False
 # in case of older version without somes packages/libs
 echo "APT & PIP packages installation ......."
 cd bin/install/ || exit 2
-apt-get update > /dev/null
-apt-get install php > /dev/null
-xargs -a apt-requirements.txt apt-get install -y > /dev/null
-python3 -m pip install --upgrade pip > /dev/null
-python3 -m pip install --upgrade setuptools > /dev/null
-python3 -m pip install -r pip-requirements.txt > /dev/null
-python3 -m pip install --upgrade -r pip-requirements.txt > /dev/null
+apt-get update >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+apt-get install php >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+xargs -a apt-requirements.txt apt-get install -y >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+python3 -m pip install --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+python3 -m pip install --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+python3 -m pip install -r pip-requirements.txt >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+python3 -m pip install --upgrade -r pip-requirements.txt >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 cd $OpenCapturePath || exit 2
 find . -name ".gitkeep" -delete
