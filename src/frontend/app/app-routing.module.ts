@@ -51,7 +51,7 @@ const routes: Routes = [
     { path: 'logout', component: LogoutComponent , canActivate: [LoginRequiredService] },
     { path: 'profile/:id', component: UserProfileComponent, canActivate: [LoginRequiredService] },
     {
-        path: 'splitter/viewer/:id', component: SplitterViewerComponent,
+        path: 'splitter/viewer/:currentTime/:id', component: SplitterViewerComponent,
         data: { title: marker('SPLITTER.viewer'), privileges: ['access_splitter'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
