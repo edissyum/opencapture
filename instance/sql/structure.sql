@@ -212,12 +212,6 @@ CREATE TABLE "accounting_plan"
     "ecriture_lib"  VARCHAR
 );
 
-CREATE TABLE "journals"
-(
-    "id"    SERIAL UNIQUE PRIMARY KEY,
-    "label" VARCHAR(10)
-);
-
 CREATE TABLE "invoices"
 (
     "id"                SERIAL              UNIQUE PRIMARY KEY,

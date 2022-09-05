@@ -1,6 +1,6 @@
-# This file is part of Open-Capture for Invoices.
+# This file is part of Open-Capture.
 
-# Open-Capture for Invoices is free software: you can redistribute it and/or modify
+# Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -11,7 +11,7 @@
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
@@ -114,9 +114,15 @@ def retrieve_regex(args):
 
 
 def update_configuration(args, configuration_id):
-    _, error = config.retrieve_configuration_by_id({'configuration_id': configuration_id})
+    configuration, error = config.retrieve_configuration_by_id({'configuration_id': configuration_id})
 
     if error is None:
+        if configuration[0]['label'] == 'jwtExpiration' and int(args['value']) <= 0:
+            response = {
+                "errors": gettext("UPDATE_CONFIGURATION_ERROR"),
+                "message": gettext("JWT_EXPIRATION_COULDNT_BE_ZERO_OR_LESS")
+            }
+            return response, 401
         data = {
             'configuration_id': configuration_id,
             'data': {
@@ -196,8 +202,10 @@ def get_login_image():
     custom_id = retrieve_custom_from_url(request)
     login_image = 'src/assets/imgs/login_image.png'
     if custom_id:
-        if os.path.isfile('custom/' + custom_id + '/assets/imgs/login_image.png'):
-            login_image = 'custom/' + custom_id + '/assets/imgs/login_image.png'
+        custom_path = get_custom_path(custom_id)
+        if custom_path:
+            if os.path.isfile(custom_path + '/assets/imgs/login_image.png'):
+                login_image = custom_path + '/assets/imgs/login_image.png'
 
     with open(login_image, 'rb') as image_file:
         b64_content = str(base64.b64encode(image_file.read()).decode('UTF-8'))

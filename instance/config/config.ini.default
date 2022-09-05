@@ -1,12 +1,12 @@
 [GLOBAL]
-configMail       = /var/www/html/opencaptureforinvoices/custom/§§CUSTOM_ID§§/config/mail.ini
-watcherConfig    = /var/www/html/opencaptureforinvoices/instance/config/watcher.ini
-logFile          = /var/www/html/opencaptureforinvoices/custom/§§CUSTOM_ID§§/bin/data/log/OCforInvoices.log
+configMail       = /var/www/html/opencapture/custom/§§CUSTOM_ID§§/config/mail.ini
+watcherConfig    = /var/www/html/opencapture/instance/config/watcher.ini
+logFile          = /var/www/html/opencapture/custom/§§CUSTOM_ID§§/bin/data/log/OpenCapture.log
 
 [AI-CLASSIFICATION]
 ; True or False, python way
 enabled          = False
-iaPath           = /var/www/html/opencaptureforinvoices/bin/src/invoice_classification/
+iaPath           = /var/www/html/opencapture/bin/src/invoice_classification/
 modelPath        = ${AI-CLASSIFICATION:iaPath}/invoice_classification.model
 trainImagePath   = ${AI-CLASSIFICATION:iaPath}/images/training-images/
 predictImagePath = ${AI-CLASSIFICATION:iaPath}/images/predict-images/

@@ -1,5 +1,5 @@
 {
-    "name": "open-capture-for-invoices",
+    "name": "opencapture",
     "version": "2.5.0",
     "scripts": {
         "lint": "ng lint",

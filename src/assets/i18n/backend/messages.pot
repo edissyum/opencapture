@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-08-31 10:02+0200\n"
+"POT-Creation-Date: 2022-08-31 16:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -171,28 +171,33 @@ msgstr ""
 msgid "RETRIEVE_REGEX_ERRORS"
 msgstr ""
 
-#: src/backend/controllers/config.py:136 src/backend/models/config.py:157
+#: src/backend/controllers/config.py:122 src/backend/controllers/config.py:142
+#: src/backend/models/config.py:157
 msgid "UPDATE_CONFIGURATION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/config.py:157 src/backend/models/config.py:176
+#: src/backend/controllers/config.py:123
+msgid "JWT_EXPIRATION_COULDNT_BE_ZERO_OR_LESS"
+msgstr ""
+
+#: src/backend/controllers/config.py:163 src/backend/models/config.py:176
 msgid "UPDATE_REGEX_ERROR"
 msgstr ""
 
-#: src/backend/controllers/config.py:177 src/backend/models/config.py:199
+#: src/backend/controllers/config.py:183 src/backend/models/config.py:199
 msgid "UPDATE_DOCSERVER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/config.py:216 src/backend/controllers/config.py:226
-#: src/backend/controllers/config.py:231
+#: src/backend/controllers/config.py:224 src/backend/controllers/config.py:234
+#: src/backend/controllers/config.py:239
 msgid "ERROR_UPDATING_IMAGE"
 msgstr ""
 
-#: src/backend/controllers/config.py:217 src/backend/controllers/config.py:227
+#: src/backend/controllers/config.py:225 src/backend/controllers/config.py:235
 msgid "CUSTOM_IMAGE_PATH_NOT_WRITEABLE_OR_NOT_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/config.py:232
+#: src/backend/controllers/config.py:240
 msgid "CUSTOM_NOT_PRESENT"
 msgstr ""
 

@@ -1,6 +1,6 @@
-/** This file is part of Open-Capture for Invoices.
+/** This file is part of Open-Capture.
 
- Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ Open-Capture is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
@@ -11,7 +11,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -28,6 +28,7 @@ import { HttpClient } from "@angular/common/http";
 import { LocaleService } from "./locale.service";
 import { ConfigService } from "./config.service";
 import { HistoryService } from "./history.service";
+import {LastUrlService} from "./last-url.service";
 
 @Injectable({
     providedIn: 'root'
@@ -43,16 +44,18 @@ export class LoginRequiredService implements CanActivate {
         private configService: ConfigService,
         private localeService: LocaleService,
         private historyService: HistoryService,
+        private routerExtService: LastUrlService,
     ) {}
-
-
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         const token = this.authService.getToken();
 
         if (!token) {
             this.translate.get('AUTH.not_connected').subscribe((translated: string) => {
-                this.authService.setCachedUrl(state.url.replace(/^\//g, ''));
+                const currentUrl = this.routerExtService.getCurrentUrl();
+                if (currentUrl !== '/logout' && currentUrl !== '/login') {
+                    this.authService.setCachedUrl(currentUrl.replace(/^\//g, ''));
+                }
                 this.notify.error(translated);
                 this.authService.logout();
             });

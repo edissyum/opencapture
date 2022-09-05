@@ -1,6 +1,6 @@
-/** This file is part of Open-Capture for Invoices.
+/** This file is part of Open-Capture.
 
-Open-Capture for Invoices is free software: you can redistribute it and/or modify
+Open-Capture is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
@@ -11,7 +11,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -137,7 +137,7 @@ export class LoginComponent implements OnInit {
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {
                         this.historyService.addHistory('general', 'login', this.translate.instant('HISTORY-DESC.login'));
-                        if (this.authService.getCachedUrl()) {
+                            if (this.authService.getCachedUrl()) {
                             this.router.navigate([this.authService.getCachedUrl()]).then();
                             this.authService.cleanCachedUrl();
                         } else {

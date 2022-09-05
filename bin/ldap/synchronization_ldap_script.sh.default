@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd /var/www/html/opencaptureforinvoices/ || exit 1
-python3 bin/ldap/synchronization_ldap_script.py "/var/www/html/opencaptureforinvoices/custom/§§CUSTOM_ID§§/bin/ldap/config/config.ini"
+cd /var/www/html/opencapture/ || exit 1
+python3 bin/ldap/synchronization_ldap_script.py "/var/www/html/opencapture/custom/§§CUSTOM_ID§§/bin/ldap/config/config.ini"
 

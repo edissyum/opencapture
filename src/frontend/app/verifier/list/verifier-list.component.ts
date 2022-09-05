@@ -1,6 +1,6 @@
-/** This file is part of Open-Capture for Invoices.
+/** This file is part of Open-Capture.
 
- Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ Open-Capture is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
@@ -11,7 +11,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -599,7 +599,7 @@ export class VerifierListComponent implements OnInit {
             const invoiceId = element.id.split('_')[0];
             this.deleteInvoice(invoiceId, true);
         });
-        this.notify.success(this.translate.instant('VERIFIER.all_invoices_checked_deleted'));
+        this.notify.success(this.translate.instant('VERIFIER.all_documents_checked_deleted'));
         this.loadCustomers();
     }
 
@@ -608,9 +608,9 @@ export class VerifierListComponent implements OnInit {
             tap(() => {
                 if (!batchDelete) {
                     this.loadCustomers();
-                    this.notify.success(this.translate.instant('VERIFIER.invoices_deleted'));
+                    this.notify.success(this.translate.instant('VERIFIER.documents_deleted'));
                 }
-                this.historyService.addHistory('verifier', 'delete_invoice', this.translate.instant('HISTORY-DESC.delete_invoice', {invoice_id: invoiceId}));
+                this.historyService.addHistory('verifier', 'delete_document', this.translate.instant('HISTORY-DESC.delete_document', {document_id: invoiceId}));
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -629,7 +629,7 @@ export class VerifierListComponent implements OnInit {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('VERIFIER.confirm_delete_invoice'),
+                confirmText         : this.translate.instant('VERIFIER.confirm_delete_document'),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
@@ -649,8 +649,8 @@ export class VerifierListComponent implements OnInit {
     displayInvoiceLocked(lockedBy: any) {
         this.dialog.open(ConfirmDialogComponent, {
             data:{
-                confirmTitle        : this.translate.instant('VERIFIER.invoice_locked'),
-                confirmText         : this.translate.instant('VERIFIER.invoice_locked_by', {'locked_by': lockedBy}),
+                confirmTitle        : this.translate.instant('VERIFIER.document_locked'),
+                confirmText         : this.translate.instant('VERIFIER.document_locked_by', {'locked_by': lockedBy}),
                 confirmButton       : this.translate.instant('GLOBAL.confirm'),
                 confirmButtonColor  : "warn"
             },
@@ -662,7 +662,7 @@ export class VerifierListComponent implements OnInit {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('VERIFIER.confirm_delete_all_invoices'),
+                confirmText         : this.translate.instant('VERIFIER.confirm_delete_all_documents'),
                 confirmButton       : this.translate.instant('GLOBAL.delete_all_checked'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),

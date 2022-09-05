@@ -1,6 +1,6 @@
-/** This file is part of Open-Capture for Invoices.
+/** This file is part of Open-Capture.
 
- Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ Open-Capture is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
@@ -11,7 +11,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
@@ -24,6 +24,7 @@ import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
+import {NotificationService} from "../notifications/notifications.service";
 
 @Component({
     selector: 'app-tasks-watcher',
@@ -41,6 +42,7 @@ export class TasksWatcherComponent implements OnInit {
         private http: HttpClient,
         private authService: AuthService,
         public translate: TranslateService,
+        private notify: NotificationService,
         private localStorageService: LocalStorageService
     ) {}
 
@@ -90,6 +92,7 @@ export class TasksWatcherComponent implements OnInit {
             }),
             catchError((err: any) => {
                 console.debug(err);
+                this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();

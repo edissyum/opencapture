@@ -1,7 +1,7 @@
 #!/bin/bash
-# This file is part of Open-Capture for Invoices.
+# This file is part of Open-Capture.
 
-# Open-Capture for Invoices is free software: you can redistribute it and/or modify
+# Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
@@ -23,8 +23,7 @@ errFilepath="$OCPath/bin/data/error/$name/"
 tmpFilepath="$OCPath/bin/data/pdf/"
 PID=/tmp/securite-$name-$$.pid
 
-echo "[$name    ] [Script Open-Capture For Invoices  ] $(date +"%d-%m-%Y %T") INFO Launching $name.sh script" >> "$logFile"
-
+echo "[$name    ] [Script Open-Capture               ] $(date +"%d-%m-%Y %T") INFO Launching $name.sh script" >> "$logFile"
 filepath=$1
 filename=$(basename "$filepath")
 ext=$(file -b -i "$filepath")
@@ -33,7 +32,7 @@ if ! test -e $PID && test "$ext" = 'application/pdf; charset=binary' && test -f 
 then
     touch $PID
     echo $$ > $PID
-    echo "[$name    ] [Script Open-Capture For Invoices  ] $(date +"%d-%m-%Y %T") INFO $filepath is a valid file and PID file created" >> "$logFile"
+    echo "[$name    ] [Script Open-Capture               ] $(date +"%d-%m-%Y %T") INFO $filepath is a valid file and PID file created" >> "$logFile"
 
     mv "$filepath" "$tmpFilepath"
 
@@ -42,12 +41,12 @@ then
     rm -f $PID
 elif test -f "$filepath" && test "$ext" != 'application/pdf; charset=binary';
 then
-    echo "[$name    ] [Script Open-Capture For Invoices  ] $(date +"%d-%m-%Y %T") ERROR $filename is a not valid PDF file" >> "$logFile"
+    echo "[$name    ] [Script Open-Capture               ] $(date +"%d-%m-%Y %T") ERROR $filename is a not valid PDF file" >> "$logFile"
     mkdir -p "$errFilepath"
     mv "$filepath" "$errFilepath"
 elif ! test -f "$filepath";
 then
-    echo "[$name    ] [Script Open-Capture For Invoices  ] $(date +"%d-%m-%Y %T") ERROR $filename doesn't exists or cannot be read" >> "$logFile"
+    echo "[$name    ] [Script Open-Capture               ] $(date +"%d-%m-%Y %T") ERROR $filename doesn't exists or cannot be read" >> "$logFile"
 else
-    echo "[$name    ] [Script Open-Capture For Invoices  ] $(date +"%d-%m-%Y %T") WARNING capture on $filepath already active : PID exists : $PID" >> "$logFile"
+    echo "[$name    ] [Script Open-Capture               ] $(date +"%d-%m-%Y %T") WARNING capture on $filepath already active : PID exists : $PID" >> "$logFile"
 fi

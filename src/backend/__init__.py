@@ -1,6 +1,6 @@
-# This file is part of Open-Capture for Invoices.
+# This file is part of Open-Capture.
 
-# Open-Capture for Invoices is free software: you can redistribute it and/or modify
+# Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -11,7 +11,7 @@
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
@@ -37,13 +37,13 @@ class Middleware:
         _request = Request(environ)
         splitted_request = _request.path.split('ws/')
         domain_name = urllib.parse.urlparse(environ['HTTP_REFERER']).netloc
-        local_regex = re.compile('^(127.0.(0|1).1|10(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){3}|((172\.(1[6-9]|2[0-9]|3[01]))|192\.168)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){2})$')
+        local_regex = re.compile(r'^(127.0.(0|1).1|10(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){3}|((172\.(1[6-9]|2[0-9]|3[01]))|192\.168)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){2})$')
         if 'mod_wsgi.path_info' in environ and domain_name != 'localhost' and not local_regex.match(domain_name) and is_custom_exists(domain_name):
             environ['mod_wsgi.path_info'] = environ['mod_wsgi.path_info'].replace('/backend_oc/', '/' + domain_name + '/backend_oc/')
             environ['SCRIPT_NAME'] = domain_name
             path = retrieve_config_from_custom_id(domain_name.replace('/', '')).replace('config.ini', '')
             if os.path.isfile(path + '/secret_key'):
-                with open(path + '/secret_key', 'r') as secret_file:
+                with open(path + '/secret_key', 'r', encoding='UTF-8') as secret_file:
                     app.config['SECRET_KEY'] = secret_file.read()
             return self.middleware_app(environ, start_response)
 
@@ -54,7 +54,7 @@ class Middleware:
                 environ['SCRIPT_NAME'] = custom_id
                 path = retrieve_config_from_custom_id(custom_id.replace('/', '')).replace('config.ini', '')
                 if os.path.isfile(path + '/secret_key'):
-                    with open(path + '/secret_key', 'r') as secret_file:
+                    with open(path + '/secret_key', 'r', encoding='UTF-8') as secret_file:
                         app.config['SECRET_KEY'] = secret_file.read()
         return self.middleware_app(environ, start_response)
 

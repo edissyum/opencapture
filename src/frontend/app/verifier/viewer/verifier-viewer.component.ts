@@ -1,6 +1,6 @@
-/** This file is part of Open-Capture for Invoices.
+/** This file is part of Open-Capture.
 
- Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ Open-Capture is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
@@ -11,7 +11,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -135,7 +135,7 @@ export class VerifierViewerComponent implements OnInit {
         this.saveInfo = true;
         this.config = this.configService.getConfig();
         this.invoiceId = this.route.snapshot.params['id'];
-        this.translate.get('HISTORY-DESC.viewer', {invoice_id: this.invoiceId}).subscribe((translated: string) => {
+        this.translate.get('HISTORY-DESC.viewer', {document_id: this.invoiceId}).subscribe((translated: string) => {
             this.historyService.addHistory('verifier', 'viewer', translated);
         });
         this.updateInvoice({
@@ -1260,7 +1260,7 @@ export class VerifierViewerComponent implements OnInit {
                             tap(() => {
                                 /* Actions à effectuer après le traitement des chaînes sortantes */
                                 if (cpt + 1 === this.formSettings.outputs.length) {
-                                    this.historyService.addHistory('verifier', 'invoice_validated', this.translate.instant('HISTORY-DESC.invoice_validated', {invoice_id: this.invoiceId, outputs: this.outputsLabel.join(', ')}));
+                                    this.historyService.addHistory('verifier', 'document_validated', this.translate.instant('HISTORY-DESC.document_validated', {document_id: this.invoiceId, outputs: this.outputsLabel.join(', ')}));
                                     this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
                                     this.router.navigate(['/verifier']).then();
                                     this.loadingSubmit = false;
@@ -1298,9 +1298,9 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     refuseForm() {
-        this.historyService.addHistory('verifier', 'invoice_refused', this.translate.instant('HISTORY-DESC.invoice_refused', {invoice_id: this.invoiceId}));
+        this.historyService.addHistory('verifier', 'document_refused', this.translate.instant('HISTORY-DESC.document_refused', {invoice_id: this.invoiceId}));
         this.updateInvoice({'status': 'ERR', 'locked': false, 'locked_by': null});
-        this.notify.error(this.translate.instant('VERIFIER.invoice_refused'));
+        this.notify.error(this.translate.instant('VERIFIER.document_refused'));
         this.router.navigate(['/verifier/list']).then();
     }
 

@@ -15,11 +15,11 @@ working_directory=/
 watch=/var/share/entrant/verifier/
 events=close,move
 include_extensions=pdf
-command=/var/www/html/opencaptureforinvoices/bin/scripts/verifier_inputs/default_input.sh $filename
+command=/var/www/html/opencapture/bin/scripts/verifier_inputs/default_input.sh $filename
 
 [splitter_default_input]
 watch=/var/share/entrant/splitter/
 events=close,move
 include_extensions=pdf
-command=/var/www/html/opencaptureforinvoices/bin/scripts/splitter_inputs/default_input.sh $filename
+command=/var/www/html/opencapture/bin/scripts/splitter_inputs/default_input.sh $filename
 
