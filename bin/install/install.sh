@@ -57,7 +57,7 @@ customId=${customId//[\.\-]/_}
 if [ -z "$customId" ]; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
-    echo "      Exemple of command line call : sudo ./update.sh -c edissyum"
+    echo "      Exemple of command line call : sudo ./install.sh -c edissyum"
     echo "##########################################################################"
     exit 2
 fi
@@ -65,7 +65,7 @@ fi
 if [ "$customId" == 'custom' ] ; then
     echo "##########################################################################"
     echo "              Please do not create a custom called 'custom'"
-    echo "      Exemple of command line call : sudo ./update.sh -c edissyum"
+    echo "      Exemple of command line call : sudo ./install.sh -c edissyum"
     echo "##########################################################################"
     exit 2
 fi
@@ -434,7 +434,7 @@ else
 
     su -c "cat > /etc/supervisor/conf.d/OCVerifier-worker_$customId.conf << EOF
 [program:OCWorker_$customId]
-command=$defaultPath/custom/$customId/bin/scripts/OCVerifier-worker.sh
+command=$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
 user=$user
@@ -493,7 +493,7 @@ cp $defaultPath/bin/scripts/MailCollect/clean.sh.default "$defaultPath/custom/$c
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier-worker.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/bin/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
