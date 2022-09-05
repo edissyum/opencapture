@@ -71,8 +71,8 @@ export class TasksWatcherComponent implements OnInit {
             tap((data: any) => {
                 if(this.displayedTasksData !== data.tasks) {
                     this.loading = true;
-                    this.tasks   = [];
-                    let cpt      = 1;
+                    this.tasks = [];
+                    let cpt = 1;
                     for(const task of data.tasks) {
                         this.tasks.push({
                             'id'            : cpt,
@@ -104,7 +104,12 @@ export class TasksWatcherComponent implements OnInit {
 
     showError(error: any) {
         if (error) {
-            this.notify.error(error);
+            this.notify.handleErrors({
+                error: {
+                    errors : this.translate.instant('GLOBAL.task_error_informations'),
+                    message : error
+                }
+            });
         }
     }
 }
