@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import time
 import logging
 from inspect import getframeinfo, stack
 from logging.handlers import RotatingFileHandler
@@ -36,6 +37,8 @@ class Log:
     def __init__(self, path, smtp):
         self.smtp = smtp
         self.filename = ''
+        self.task_id = None
+        self.database = None
         self.logger = logging.getLogger('Open-Capture')
         if self.logger.hasHandlers():
             self.logger.handlers.clear()  # Clear the handlers to avoid double logs
@@ -60,6 +63,18 @@ class Log:
     def error(self, msg, send_notif=True):
         if self.smtp and self.smtp.enabled and send_notif:
             self.smtp.send_notification(msg, self.filename)
+
+        if self.task_id and self.database:
+            self.database.update({
+                'table': ['tasks_watcher'],
+                'set': {
+                    'status': 'error',
+                    'error_description': msg,
+                    'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
+                },
+                'where': ['id = %s'],
+                'data': [self.task_id]
+            })
         self.logger.error(msg)
 
 

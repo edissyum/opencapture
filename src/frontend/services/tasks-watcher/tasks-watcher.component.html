@@ -11,7 +11,8 @@
             <i class="block fa-solid fa-check fa-2x"></i>
             <span class="block">{{ 'GLOBAL.no_task_to_show' | translate }}</span>
         </div>
-        <div *ngFor="let task of tasks" class="h-8 w-full px-4 border-t-2 grid grid-cols-10">
+        <div *ngFor="let task of tasks" class="h-8 w-full px-4 border-t-2 grid grid-cols-10"
+             (click)="showError(task.error)" [class.cursor-pointer] = task.error>
             <span class="col-span-1 pt-1">
                 {{ task.id }}
             </span>
@@ -23,6 +24,8 @@
             </span>
             <span class="col-span-1 text-right">
                 <i *ngIf="task.status === 'in_progress'" class="fas fa-circle-notch fa-spin fa-lg my-4"></i>
+                <i *ngIf="task.status === 'error'" class="fas fa-xmark fa-lg my-4 cursor-pointer"
+                    matTooltip="{{ 'GLOBAL.task_error' | translate }} : {{ task.error}}"></i>
                 <i *ngIf="task.status === 'done'" class="fa-solid fa-check fa-lg my-4"
                    matTooltip="{{ 'GLOBAL.end_time' | translate }} {{ task.endTime}}"></i>
             </span>
