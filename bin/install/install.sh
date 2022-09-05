@@ -380,115 +380,6 @@ a2dissite 000-default.conf
 a2enmod rewrite
 systemctl restart apache2
 
-####################
-# Create the service systemd or supervisor
-
-if [ "$finalChoice" == 2 ]; then
-    execStartLine="$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
-    if [ $pythonVenv = 'true' ]; then
-        execStartLine="/bin/bash -c '/home/$user/python-venv/opencapture/bin/activate && $defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh'"
-    fi
-    touch "/etc/systemd/system/OCVerifier-worker_$customId.service"
-    su -c "cat > /etc/systemd/system/OCVerifier-worker_$customId.service << EOF
-[Unit]
-Description=Daemon for Open-Capture
-
-[Service]
-Type=simple
-
-User=$user
-Group=$user
-UMask=0022
-
-ExecStart=$execStartLine
-KillSignal=SIGQUIT
-
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-EOF"
-
-    execStartLine="$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
-    if [ $pythonVenv = 'true' ]; then
-        execStartLine="/bin/bash -c '/home/$user/python-venv/opencapture/bin/activate && $defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh'"
-    fi
-    touch "/etc/systemd/system/OCSplitter-worker_$customId.service"
-    su -c "cat > /etc/systemd/system/OCSplitter-worker_$customId.service << EOF
-[Unit]
-Description=Splitter Daemon for Open-Capture
-
-[Service]
-Type=simple
-
-User=$user
-Group=$user
-UMask=0022
-
-ExecStart=$execStartLine
-KillSignal=SIGQUIT
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-EOF"
-
-    systemctl daemon-reload
-    systemctl start "OCVerifier-worker_$customId".service
-    systemctl start "OCSplitter-worker_$customId".service
-    sudo systemctl enable "OCVerifier-worker_$customId".service
-    sudo systemctl enable "OCSplitter-worker_$customId".service
-else
-    apt-get install -y supervisor >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    touch "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
-    touch "/etc/supervisor/conf.d/OCSplitter-worker_$customId.conf"
-    commandSupervisor="$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
-    if [ $pythonVenv = 'true' ]; then
-        commandSupervisor="/bin/bash -c '/home/$user/python-venv/opencapture/bin/activate && $defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh'"
-    fi
-    su -c "cat > /etc/supervisor/conf.d/OCVerifier-worker_$customId.conf << EOF
-[program:OCWorker_$customId]
-command=$commandSupervisor
-process_name=%(program_name)s_%(process_num)02d
-numprocs=$nbProcessSupervisor
-user=$user
-chmod=0777
-chown=$user:$group
-socket_owner=$user
-stopsignal=QUIT
-stopasgroup=true
-killasgroup=true
-stopwaitsecs=10
-
-stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCVerifier-worker_%(process_num)02d_error.log
-EOF"
-    commandSupervisor="$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
-    if [ $pythonVenv = 'true' ]; then
-        commandSupervisor="/bin/bash -c '/home/$user/python-venv/opencapture/bin/activate && $defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh'"
-    fi
-    su -c "cat > /etc/supervisor/conf.d/OCSplitter-worker_$customId.conf << EOF
-[program:OCWorker-Split_$customId]
-command=$commandSupervisor
-process_name=%(program_name)s_%(process_num)02d
-numprocs=$nbProcessSupervisor
-user=$user
-chmod=0777
-chown=$user:$group
-socket_owner=$user
-stopsignal=QUIT
-stopasgroup=true
-killasgroup=true
-stopwaitsecs=10
-
-stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCSplitter-worker_%(process_num)02d_error.log
-EOF"
-
-    chmod 755 "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
-    chmod 755 "/etc/supervisor/conf.d/OCSplitter-worker_$customId.conf"
-
-    systemctl restart supervisor
-    systemctl enable supervisor
-fi
 
 ####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content
@@ -513,6 +404,109 @@ sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/back
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/bin/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
+
+if [ $pythonVenv = 'true' ]; then
+    sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
+    sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activat#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
+else
+    sed -i "s#§§PYTHON_VENV§§##g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
+    sed -i "s#§§PYTHON_VENV§§##g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
+fi
+
+####################
+# Create the service systemd or supervisor
+if [ "$finalChoice" == 2 ]; then
+    touch "/etc/systemd/system/OCVerifier-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCVerifier-worker_$customId.service << EOF
+[Unit]
+Description=Daemon for Open-Capture
+
+[Service]
+Type=simple
+
+User=$user
+Group=$user
+UMask=0022
+
+ExecStart=$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh
+KillSignal=SIGQUIT
+
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF"
+
+    touch "/etc/systemd/system/OCSplitter-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCSplitter-worker_$customId.service << EOF
+[Unit]
+Description=Splitter Daemon for Open-Capture
+
+[Service]
+Type=simple
+
+User=$user
+Group=$user
+UMask=0022
+
+ExecStart=$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh
+KillSignal=SIGQUIT
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF"
+
+    systemctl daemon-reload
+    systemctl start "OCVerifier-worker_$customId".service
+    systemctl start "OCSplitter-worker_$customId".service
+    sudo systemctl enable "OCVerifier-worker_$customId".service
+    sudo systemctl enable "OCSplitter-worker_$customId".service
+else
+    apt-get install -y supervisor >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    touch "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
+    touch "/etc/supervisor/conf.d/OCSplitter-worker_$customId.conf"
+
+    su -c "cat > /etc/supervisor/conf.d/OCVerifier-worker_$customId.conf << EOF
+[program:OCWorker_$customId]
+command=$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh
+process_name=%(program_name)s_%(process_num)02d
+numprocs=$nbProcessSupervisor
+user=$user
+chmod=0777
+chown=$user:$group
+socket_owner=$user
+stopsignal=QUIT
+stopasgroup=true
+killasgroup=true
+stopwaitsecs=10
+
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCVerifier-worker_%(process_num)02d_error.log
+EOF"
+
+    su -c "cat > /etc/supervisor/conf.d/OCSplitter-worker_$customId.conf << EOF
+[program:OCWorker-Split_$customId]
+command=$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh
+process_name=%(program_name)s_%(process_num)02d
+numprocs=$nbProcessSupervisor
+user=$user
+chmod=0777
+chown=$user:$group
+socket_owner=$user
+stopsignal=QUIT
+stopasgroup=true
+killasgroup=true
+stopwaitsecs=10
+
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCSplitter-worker_%(process_num)02d_error.log
+EOF"
+
+    chmod 755 "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
+    chmod 755 "/etc/supervisor/conf.d/OCSplitter-worker_$customId.conf"
+
+    systemctl restart supervisor
+    systemctl enable supervisor
+fi
 
 confFile="$defaultPath/custom/$customId/config/config.ini"
 crudini --set "$confFile" DATABASE postgresHost "$hostname"
