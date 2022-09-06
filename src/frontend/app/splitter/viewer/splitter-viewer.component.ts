@@ -35,6 +35,9 @@ import {remove } from 'remove-accents';
 import { HistoryService } from "../../../services/history.service";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import { formatDate } from '@angular/common';
+import * as moment from "moment";
+import {LocaleService} from "../../../services/locale.service";
 
 export interface Field {
     id              : number
@@ -140,6 +143,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         private translate: TranslateService,
         private notify: NotificationService,
         private historyService: HistoryService,
+        public localeService: LocaleService,
         private localStorageService: LocalStorageService,
     ) {}
 
@@ -645,17 +649,31 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
+    getFormFieldsValues() {
+        for (const field of this.fieldsCategories['batch_metadata']) {
+            if (this.batchForm.get(field.label_short) && !this.batchMetadataValues.hasOwnProperty(field.label_short)) {
+                this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
+                if (field.type === 'date') {
+                    this.batchMetadataValues[field.label_short] = moment(this.batchMetadataValues[field.label_short]).format('L');
+                }
+            }
+        }
+    }
+
     toBatchFormGroup() {
         const group: any = {};
-        this.fieldsCategories['batch_metadata'].forEach((input: Field) => {
-            group[input.label_short] = input.required ?
+        const format = moment().localeData().longDateFormat('L');
+        this.fieldsCategories['batch_metadata'].forEach((field: Field) => {
+            group[field.label_short] = field.required ?
                 new FormControl('', Validators.required) :
                 new FormControl('');
-            if (this.currentBatch.customFieldsValues.hasOwnProperty(input.label_short)) {
-                group[input.label_short].setValue(this.currentBatch.customFieldsValues[input.label_short]);
+            if (this.currentBatch.customFieldsValues.hasOwnProperty(field.label_short)) {
+                const value = field.type !=='date' ? this.currentBatch.customFieldsValues[field.label_short]:
+                    moment(this.currentBatch.customFieldsValues[field.label_short], format);
+                group[field.label_short].setValue(value);
             }
-            if (input.metadata_key)
-                group['search_' + input.label_short] = new FormControl('');
+            if (field.metadata_key)
+                group['search_' + field.label_short] = new FormControl('');
         });
         return new FormGroup(group);
     }
@@ -912,7 +930,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             return;
         }
         if (this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId && this.fieldsCategories['batch_metadata'].length !== 0) {
-            this.notify.error(this.translate.instant('SPLITTER.error_empty_batch_metadata'));
+            this.notify.error(this.translate.instant('SPLITTER.error_autocomplete_value'));
             return;
         }
         for (const document of this.documents) {
@@ -929,15 +947,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             } else
                 document.class = "";
         }
-
-        if(this.inputMode === 'Manual') {
-            for(const field of this.fieldsCategories['batch_metadata']) {
-                if (this.batchForm.get(field.label_short)) {
-                    this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
-                }
-            }
-        }
-
+        this.getFormFieldsValues();
         for(const field of this.fieldsCategories['batch_metadata']) {
             if(field.validationMask) {
                 if(!this.batchMetadataValues[field.label_short].match(field.validationMask)) {
@@ -1014,18 +1024,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     saveInfo() {
-        this.saveInfosLoading = true;
-        for (const field of this.fieldsCategories['batch_metadata']) {
-            if (this.batchForm.get(field.label_short) && !this.batchMetadataValues.hasOwnProperty(field.label_short)) {
-                this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
-            }
-        }
+        this.saveInfosLoading   = true;
+        this.getFormFieldsValues();
 
-        // Add arguments and Remove unnecessary ones
-        const _documents = [];
+        const _documents        = [];
         for (const document of this.documents) {
-            const _document = Object.assign({}, document);
-            _document['metadata'] = document.form.getRawValue();
+            const _document         = Object.assign({}, document);
+            _document['metadata']   = document.form.getRawValue();
             delete _document.class;
             delete _document.form;
             _documents.push(_document);
