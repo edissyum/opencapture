@@ -140,10 +140,10 @@
                             </ng-container>
                             <ng-container *ngIf="input.type === 'date'">
                                 <mat-form-field class="w-full" >
-                                    <input matInput [id]="input.id" [matDatepicker]="picker" [formControl]="input.control">
+                                    <input matInput [id]="input.id" [matDatepicker]="datePicker" [formControlName]="input.label_short">
                                     <mat-label>{{ input.label }}</mat-label>
-                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                    <mat-datepicker #picker></mat-datepicker>
+                                    <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+                                    <mat-datepicker #datePicker></mat-datepicker>
                                 </mat-form-field>
                             </ng-container>
                             <ng-container *ngIf="input.type === 'checkbox'" class="flex justify-center inline-block my-4">
