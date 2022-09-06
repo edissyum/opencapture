@@ -188,11 +188,11 @@ def update_docserver(args, docserver_id):
 
 def get_last_git_version():
     try:
-        requests.get('https://github.com/edissyum/opencaptureforinvoices', timeout=5)
+        requests.get('https://github.com/edissyum/opencapture', timeout=5)
     except requests.exceptions.ConnectionError:
         return None
     latest_git_version = subprocess.Popen("git ls-remote --tags --sort='v:refname' "
-                                          "https://github.com/edissyum/opencaptureforinvoices.git | "
+                                          "https://github.com/edissyum/opencapture.git | "
                                           "tail -n1 |  sed 's/.*\///; s/\^{}//' | grep -E '2.+([0-9])$'", shell=True,
                                           stdout=subprocess.PIPE).stdout.read()
     return str(latest_git_version.decode('utf-8').strip())
