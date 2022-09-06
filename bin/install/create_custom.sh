@@ -50,44 +50,58 @@ oldCustomId=$customId
 customId=${customId//[\.\-]/_}
 
 if [ -z "$customId" ]; then
-    echo "#####################################################################################"
-    echo "                  Custom id is needed to run the installation"
-    echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -p true"
-    echo "#####################################################################################"
+    echo "###############################################################################################"
+    echo "                       Custom id is needed to run the installation"
+    echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd -p true"
+    echo "###############################################################################################"
     exit 2
 fi
 
 if [ -z "$pythonVenv" ]; then
-    echo "#####################################################################################"
-    echo "                  Python Venv is mandatory using the -p argument"
-    echo "                      Possible values are 'true' or 'false'"
-    echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -p true"
-    echo "#####################################################################################"
+    echo "###############################################################################################"
+    echo "                      Python Venv is mandatory using the -p argument"
+    echo "                          Possible values are 'true' or 'false'"
+    echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd -p true"
+    echo "###############################################################################################"
     exit 2
 fi
 
 if [ "$customId" == 'custom' ]; then
-    echo "##################################################################################"
-    echo "                 Please do not create a custom called 'custom'"
-    echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis -p true"
-    echo "###################################################################################"
+    echo "##############################################################################################"
+    echo "                     Please do not create a custom called 'custom'"
+    echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis -t systemd -p true      "
+    echo "##############################################################################################"
     exit 2
 fi
 
 if [ "$pythonVenv" != 'true' ] && [ "$pythonVenv" != 'false' ]; then
-    echo "##################################################################################"
+    echo "##############################################################################################"
     echo "               Possible values for -p argument are 'true' or 'false'"
-    echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis -p true"
-    echo "###################################################################################"
+    echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis -t systemd -p true"
+    echo "##############################################################################################"
     exit 2
 fi
 
+if [ ! -f "/home/$user/python-venv/opencapture/bin/python3" ]; then
+    echo "#######################################################################################"
+    echo "            The default Python Virtual environment path doesn't exist"
+    echo "  Do you want to exit update ? If no, the script will use default Python installation"
+    echo "#######################################################################################"
+    printf "Enter your choice [%s] : " "yes/${bold}no${normal}"
+    read -r choice
+    if [ "$choice" = "yes" ]; then
+        exit
+    else
+        pythonVenv='false'
+    fi
+fi
+
 if [ "$installationType" == '' ] || { [ "$installationType" != 'systemd' ] && [ "$installationType" != 'supervisor' ]; }; then
-    echo "#################################################################################################"
-    echo "                         Bad value for installationType variable"
-    echo "       Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd"
-    echo "      Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t supervisor"
-    echo "#################################################################################################"
+    echo "#######################################################################################################"
+    echo "                           Bad value for installationType variable"
+    echo "       Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd -p true"
+    echo "      Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t supervisor-p true"
+    echo "#######################################################################################################"
     exit 2
 fi
 
