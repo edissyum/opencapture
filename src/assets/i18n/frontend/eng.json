@@ -739,7 +739,7 @@
 		"document_separator": "Document separator",
 		"doubleClickToSelectDoctype": "Double click to select a document type",
 		"drop_document_in_position": "Drop document in wanted position",
-		"error_empty_batch_metadata": "Please fill batch metadata",
+		"error_autocomplete_value": "No autocomplete item is selected",
 		"error_empty_document_metadata": "Please fill document metadata",
 		"error_no_doc_type": "Please choose document types",
 		"field_form_not_respected": "Please respect the required format of the field : <b>{{ field }}</b>",

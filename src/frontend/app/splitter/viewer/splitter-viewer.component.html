@@ -231,7 +231,7 @@
                                                         <span *ngIf="metadata.metadataId !== batchMetadataValues.metadataId"
                                                               [innerHTML]="getPlaceholderFromResultMask(field.resultMask, metadata)">
                                                         </span>
-                                                                    <span *ngIf="metadata.metadataId === batchMetadataValues.metadataId">
+                                                        <span *ngIf="metadata.metadataId === batchMetadataValues.metadataId">
                                                             {{ metadata[field.label_short] }}
                                                         </span>
                                                     </mat-option>
