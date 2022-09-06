@@ -22,5 +22,6 @@ export MAGICK_TMPDIR=/tmp/opencapture/
 export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
 
 cd /var/www/html/opencapture/ || exit
+§§PYTHON_VENV§§
 kuyruk_location=$(which kuyruk)
 $kuyruk_location --app custom.§§CUSTOM_ID§§.src.backend.process_queue_splitter.kuyruk worker --queue splitter_§§CUSTOM_ID§§
