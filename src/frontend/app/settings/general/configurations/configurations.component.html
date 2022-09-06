@@ -130,20 +130,20 @@
                         <ng-template #update>
                             <mat-form-field appearance="outline" *ngIf="element.data.type === 'bool'">
                                 <mat-select class="relative -top-2" [(ngModel)]="element.data.value"
-                                            (selectionChange)="updateValue($event, element.id)">
+                                            (selectionChange)="updateValue($event, element.id, element.label)">
                                     <mat-option [value]="'True'">True</mat-option>
                                     <mat-option [value]="'False'">False</mat-option>
                                 </mat-select>
                             </mat-form-field>
                             <mat-form-field appearance="outline" class="w-full"
                                             *ngIf="element.data.type === 'int' || element.data.type === 'float'">
-                                <input matInput type="number" [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
-                                       class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
+                                <input matInput type="number" [value]="element.data.value" (keyup.enter)="updateValue($event, element.id, element.label)"
+                                       class="relative -top-2.5" (focusout)="updateValue($event, element.id, element.label)">
                             </mat-form-field>
                             <mat-form-field appearance="outline" class="w-full"
                                             *ngIf="element.data.type === 'string'">
-                                <input matInput [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
-                                       class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
+                                <input matInput [value]="element.data.value" (keyup.enter)="updateValue($event, element.id, element.label)"
+                                       class="relative -top-2.5" (focusout)="updateValue($event, element.id, element.label)">
                             </mat-form-field>
                         </ng-template>
                     </mat-cell>

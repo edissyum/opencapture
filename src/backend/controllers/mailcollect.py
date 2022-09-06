@@ -1,5 +1,4 @@
 # This file is part of Open-Capture.
-import imap_tools
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -15,9 +14,10 @@ import imap_tools
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-from flask_babel import gettext
+import imap_tools
 from socket import gaierror
 from imaplib import IMAP4_SSL
+from flask_babel import gettext
 from src.backend.import_models import mailcollect
 from imap_tools import MailBox, MailBoxUnencrypted
 

@@ -113,8 +113,8 @@
                         </ng-container>
                         <ng-template #update>
                             <mat-form-field appearance="outline" class="w-full">
-                                <input matInput [value]="element.path" (keyup.enter)="updateValue($event, element.id)"
-                                       class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
+                                <input matInput [value]="element.path" (keyup.enter)="updateValue($event, element.id, element.docserver_id)"
+                                       class="relative -top-2.5" (focusout)="updateValue($event, element.id, element.docserver_id)">
                             </mat-form-field>
                         </ng-template>
                     </mat-cell>
