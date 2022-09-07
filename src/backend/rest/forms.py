@@ -14,6 +14,7 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
 import json
 
 from flask import Blueprint, request, make_response, jsonify
@@ -82,6 +83,14 @@ def get_default_form():
 def update_form(form_id):
     data = request.json['args']
     res = forms.update_form(form_id, data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('forms/updateFormSettings/<int:setting_id>', methods=['PUT'])
+@auth.token_required
+def update_form_settings(setting_id):
+    data = request.json['args']
+    res = forms.update_form_settings(data, setting_id)
     return make_response(jsonify(res[0])), res[1]
 
 

@@ -286,6 +286,31 @@ def update_fields(args):
         return response, 401
 
 
+def update_form_settings(data, setting_id):
+    _, error = forms.get_form_settings_by_id({'setting_id': setting_id})
+    if error is None:
+        for setting in data:
+            if type(data[setting]) is bool:
+                forms.update_form_setting({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + str(data[setting]).lower() + "')"}, 'setting_id': setting_id})
+            else:
+                forms.update_form_setting({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '\"" + str(data[setting]) + "\"')"}, 'setting_id': setting_id})
+
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_FORMS_FIELDS_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('UPDATE_FORMS_FIELDS_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def delete_custom_field_from_forms(args):
     _forms, error = forms.get_forms({'where': ['status <> %s'], 'data': ['DEL']})
     if not error:

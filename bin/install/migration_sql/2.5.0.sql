@@ -64,3 +64,43 @@ create table tasks_watcher
     "creation_date"     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "end_date"          TIMESTAMP
 );
+
+-- Improve form models settings definition
+ALTER TABLE "form_models" DROP COLUMN supplier_verif;
+ALTER TABLE "form_models" DROP COLUMN allow_automatic_validation;
+ALTER TABLE "form_models" DROP COLUMN delete_documents_after_outputs;
+ALTER TABLE "form_models" DROP COLUMN automatic_validation_data;
+ALTER TABLE "form_models" DROP COLUMN metadata_method;
+ALTER TABLE "form_models" DROP COLUMN export_zip_file;
+ALTER TABLE "form_models" DROP COLUMN display;
+ALTER TABLE "form_models" ADD COLUMN module_settings_id INTEGER;
+
+CREATE TABLE "form_model_settings"
+(
+    "setting_id" SERIAL      UNIQUE PRIMARY KEY,
+    "module"     VARCHAR(10),
+    "settings"   JSONB       DEFAULT '{}'
+);
+
+INSERT INTO "form_model_settings" ("setting_id", "module", "settings") VALUES (1, 'verifier', '{
+    "display": {
+        "subtitles": [
+            {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
+            {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+            {"id": "date", "label": "VERIFIER.register_date"},
+            {"id": "original_file", "label": "VERIFIER.original_file"},
+            {"id": "form_label", "label": "ACCOUNTS.form"}
+        ]
+    },
+    "supplier_verif": false,
+    "automatic_validation_data": "",
+    "allow_automatic_validation": false,
+    "delete_documents_after_outputs": false
+}');
+INSERT INTO "form_model_settings" ("setting_id", "module", "settings") VALUES (2, 'splitter', '{
+    "metadata_method": "",
+    "export_zip_file": ""
+}');
+
+UPDATE form_models SET module_settings_id = 1 WHERE module = 'verifier';
+UPDATE form_models SET module_settings_id = 2 WHERE module = 'splitter';
