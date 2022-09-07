@@ -16,25 +16,18 @@ CREATE TABLE "form_models"
     "id"                             SERIAL        UNIQUE PRIMARY KEY,
     "label"                          VARCHAR(50),
     "default_form"                   BOOLEAN       DEFAULT False,
-    "supplier_verif"                 BOOLEAN       DEFAULT True,
-    "allow_automatic_validation"     BOOLEAN       DEFAULT False,
-    "delete_documents_after_outputs" BOOLEAN       DEFAULT False,
-    "automatic_validation_data"      TEXT          DEFAULT '',
     "enabled"                        BOOLEAN       DEFAULT True,
     "outputs"                        TEXT[],
     "status"                         VARCHAR(5)    DEFAULT 'OK',
     "module"                         VARCHAR(10),
-    "metadata_method"                VARCHAR(50),
-    "export_zip_file"                VARCHAR(255),
-    "display"                        JSONB         DEFAULT '{
-            "subtitles": [
-                {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-                {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
-                {"id": "date", "label": "VERIFIER.register_date"},
-                {"id": "original_file", "label": "VERIFIER.original_file"},
-                {"id": "form_label", "label": "ACCOUNTS.form"}
-            ]
-    }'
+    "module_settings_id"             INTEGER,
+);
+
+CREATE TABLE "form_model_settings"
+(
+    "setting_id" SERIAL      UNIQUE PRIMARY KEY,
+    "module"     VARCHAR(10),
+    "settings"       JSONB       DEFAULT '{}'
 );
 
 CREATE TABLE "positions_masks"
