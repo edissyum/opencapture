@@ -25,8 +25,8 @@
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-                            <i class="fa-solid fa-sync-alt mx-4 cursor-pointer text-xl hover:text-green-400" (click)="loadBatches()"
-                               [matTooltip]="'SPLITTER.reload_batches' | translate"></i>
+                            <em class="fa-solid fa-sync-alt mx-4 cursor-pointer text-xl hover:text-green-400" (click)="loadBatches()"
+                                [matTooltip]="'SPLITTER.reload_batches' | translate"></em>
                         </div>
                         <span [class.hidden]="this.isLoading || this.total === 0" class="relative right-0">
                             <mat-paginator [length] = "this.total"
@@ -42,9 +42,9 @@
                         </span>
                         <span [class.hidden]="this.totalChecked === 0"> ({{ this.totalChecked }})</span>
                         <span [class.hidden]="!this.batchesSelected">
-                            <i class="fa-solid fa-trash ml-5 text-red-500 cursor-pointer"
+                            <em class="fa-solid fa-trash ml-5 text-red-500 cursor-pointer"
                                (click)="$event.stopPropagation(); deleteAllConfirmDialog()"
-                               matTooltip="{{ 'GLOBAL.delete_all_checked' | translate }}"></i>
+                               matTooltip="{{ 'GLOBAL.delete_all_checked' | translate }}"></em>
                         </span>
                     </div>
                     <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
@@ -67,27 +67,27 @@
                                         </span>
                                         <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
                                               [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + batch['page_number']">
-                                            {{ batch['page_number'] }}<i class="far fa-file-alt ml-1"></i>
+                                            {{ batch['page_number'] }}<em class="far fa-file-alt ml-1"></em>
                                         </span>
                                     </mat-card-title>
                                     <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">
-                                        <b>{{ 'SPLITTER.identifier' | translate }}</b> : {{ batch['id'] }}<br>
-                                        <b>{{ 'VERIFIER.register_date' | translate }}</b> : {{ batch['batch_date'] }}<br>
-                                        <b>{{ 'SPLITTER.form_label' | translate }}</b> : {{ batch['form_label'] }}<br>
+                                        <strong>{{ 'SPLITTER.identifier' | translate }}</strong> : {{ batch['id'] }}<br>
+                                        <strong>{{ 'VERIFIER.register_date' | translate }}</strong> : {{ batch['batch_date'] }}<br>
+                                        <strong>{{ 'SPLITTER.form_label' | translate }}</strong> : {{ batch['form_label'] }}<br>
                                     </mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-actions class="pb-4">
-                                    <i class="fa-solid fa-trash cursor-pointer text-red-500 pl-4"
+                                    <em class="fa-solid fa-trash cursor-pointer text-red-500 pl-4"
                                        (click)="$event.stopPropagation();openConfirmDialog(batch['id'])">
                                         <span class="font-medium mat-typography">{{ 'GLOBAL.delete' | translate }}</span>
-                                    </i>
-                                    <i *ngIf="this.totalChecked >= 2 && isCheckboxChecked(batch['id'])"
+                                    </em>
+                                    <em *ngIf="this.totalChecked >= 2 && isCheckboxChecked(batch['id'])"
                                        class="fa-solid fa-object-group cursor-pointer text-green-400 relative float-right"
                                        (click)="$event.stopPropagation();mergeAllConfirmDialog(batch['id'])">
                                         <span class="font-medium mat-typography float-left mr-3 relative bottom-1">
                                             {{ 'SPLITTER.merge' | translate }} {{ this.totalChecked }} {{ 'SPLITTER.batches' | translate }}
                                         </span>
-                                    </i>
+                                    </em>
                                 </mat-card-actions>
                             </mat-card>
                         </div>
