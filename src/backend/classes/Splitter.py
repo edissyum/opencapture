@@ -14,14 +14,14 @@
 # along with Open-Capture.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-import json
+
+import re
 import os
 import sys
+import json
 import random
-import re
 from xml.dom import minidom
 from unidecode import unidecode
-
 from src.backend.classes.Files import Files
 
 

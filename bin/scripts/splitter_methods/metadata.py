@@ -14,6 +14,7 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
+
 import re
 from PIL import Image
 
