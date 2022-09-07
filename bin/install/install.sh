@@ -287,7 +287,6 @@ echo ""
 
 if [ $pythonVenv = 'true' ]; then
     echo "Python packages installation using virtual environment....."
-    mkdir -p "/home/$user/python-venv/"
     python3 -m venv "/home/$user/python-venv/opencapture"
     echo "source /home/$user/python-venv/opencapture/bin/activate" >> "/home/$user/.bashrc"
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH

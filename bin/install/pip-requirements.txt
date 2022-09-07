@@ -18,7 +18,7 @@ cmislib3==1.0.8
 requests==2.28.1
 pdf2image==1.16.0
 gitpython==3.1.27
-tensorflow==2.9.2
+tensorflow==2.10.0
 xlsxwriter==3.0.3
 fs-watcher==1.0.11
 flask_cors==3.0.10

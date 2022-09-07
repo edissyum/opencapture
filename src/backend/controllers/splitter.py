@@ -23,10 +23,10 @@ import shutil
 import os.path
 import datetime
 import pandas as pd
-from flask import request, session
 from flask import current_app
 from flask_babel import gettext
-import worker_splitter_from_python
+from flask import request, session
+from src.backend.main_splitter import launch
 from src.backend.import_models import splitter, doctypes
 from src.backend.import_controllers import forms, outputs
 from src.backend.functions import retrieve_custom_from_url
@@ -37,10 +37,11 @@ from src.backend.import_classes import _Files, _Splitter, _CMIS, _MaarchWebServi
 def handle_uploaded_file(files, input_id):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER_SPLITTER']
+
     for file in files:
         f = files[file]
         filename = _Files.save_uploaded_file(f, path, False)
-        worker_splitter_from_python.main({
+        launch({
             'file': filename,
             'custom_id': custom_id,
             'input_id': input_id
