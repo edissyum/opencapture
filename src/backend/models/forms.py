@@ -30,7 +30,8 @@ def get_forms(args):
     error = None
     forms = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['form_models'],
+        'table': ['form_models', 'form_model_settings'],
+        'left_join': ['form_models.module_settings_id = form_model_settings.setting_id'],
         'where': ['1=%s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
         'limit': str(args['limit']) if 'limit' in args else [],

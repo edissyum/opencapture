@@ -31,7 +31,7 @@ def get_forms():
         'select': ['*', 'count(*) OVER() as total'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else '',
-        'where': ["status <> 'DEL'", "module like %s"],
+        'where': ["status <> 'DEL'", "form_models.module like %s"],
         'data': [request.args['module']] if 'module' in request.args else '%',
         'totals': 'totals' in request.args and request.args['totals'] == 'true',
         'status': request.args['status'] if 'status' in request.args and request.args['status'] else 'NEW',
@@ -94,11 +94,11 @@ def update_form_settings(setting_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('forms/updateDisplay/<int:form_id>', methods=['PUT'])
+@bp.route('forms/updateDisplay/<int:setting_id>', methods=['PUT'])
 @auth.token_required
-def update_form_display(form_id):
+def update_form_display(setting_id):
     display = request.json
-    res = forms.update_form(form_id, {"display": json.dumps(display)})
+    res = forms.update_form_settings({"display": json.dumps(display)}, setting_id)
     return make_response(jsonify(res[0])), res[1]
 
 

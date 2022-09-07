@@ -342,7 +342,16 @@ export class VerifierListComponent implements OnInit {
                                     {"id": "form_label", "label": "VERIFIER.form"}
                                 ]
                             };
+                        } else {
+                            this.forms.forEach((form: any) =>  {
+                                if (form.id === invoice.form_id) {
+                                    if (form.settings.display) {
+                                        invoice.display = form.settings.display;
+                                    }
+                                }
+                            });
                         }
+
                         if (!invoice.display) {
                             invoice.display = {
                                 "subtitles": [
@@ -360,7 +369,7 @@ export class VerifierListComponent implements OnInit {
                         invoice_display_tmp.forEach((subtitle: any) => {
                             let subtitle_data = '';
                             if (invoice.datas.hasOwnProperty(subtitle.id)) {
-                                subtitle_data= invoice.datas[subtitle.id];
+                                subtitle_data = invoice.datas[subtitle.id];
                             } else if (invoice.hasOwnProperty(subtitle.id)) {
                                 subtitle_data = invoice[subtitle.id];
                             }
