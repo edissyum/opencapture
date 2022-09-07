@@ -14,8 +14,9 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-import json
+
 import re
+import json
 from src.backend.functions import search_custom_positions
 
 
