@@ -61,9 +61,10 @@ def retrieve_doctypes(args):
     doctypes = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['doctypes'],
-        'where': ['status<>%s'] if 'where' not in args else args['where'],
+        'where': ['status <> %s'] if 'where' not in args else args['where'],
         'data': ['DEL'] if 'data' not in args else args['data'],
-        'order_by': ["id ASC"],
+        'order_by': ["id ASC"] if 'order_by' not in args else args['order_by'],
+        'limit': '' if 'limit' not in args else args['limit'],
     })
 
     return doctypes, error
