@@ -75,7 +75,7 @@ export class LoginComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
             tap((data: any) => {
                 this.localStorageService.save('login_image_b64', data);
-                this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data);
+                this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
             }),
             catchError((err: any) => {
                 console.debug(err);

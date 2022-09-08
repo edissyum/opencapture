@@ -97,7 +97,7 @@ export class ConfigurationsComponent implements OnInit {
         if (!b64Content) {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                 tap((data: any) => {
-                    this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data);
+                    this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -106,7 +106,7 @@ export class ConfigurationsComponent implements OnInit {
                 })
             ).subscribe();
         } else {
-            this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
+            this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
         }
 
         this.loadConfigurations();
@@ -130,6 +130,11 @@ export class ConfigurationsComponent implements OnInit {
                 ).pipe(
                     tap(() => {
                         this.loginImage = this.sanitizer.bypassSecurityTrustUrl(args['image_content']);
+                        this.localStorageService.save('login_image_b64', args['image_content'].replace('data:image/png;base64,', ''));
+                        const currentUrl = this.router.url;
+                        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+                            this.router.navigate([currentUrl]).then();
+                        });
                         this.historyService.addHistory('general', 'update_login_image', this.translate.instant('HISTORY-DESC.update_login_image'));
                         this.notify.success(this.translate.instant('CONFIGURATIONS.login_image_changed'));
                     }),
