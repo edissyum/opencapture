@@ -6,23 +6,23 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2022-08-31 16:37+0200\n"
+"POT-Creation-Date: 2022-09-08 11:38+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
 "Language-Team: fr <nathan.cheval@edissyum.com>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.10.3\n"
 
 #: src/backend/verifier_exports.py:71 src/backend/verifier_exports.py:74
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier de destination XML n'existe pas"
 
-#: src/backend/controllers/splitter.py:281
-#: src/backend/controllers/splitter.py:287 src/backend/verifier_exports.py:219
+#: src/backend/controllers/splitter.py:282
+#: src/backend/controllers/splitter.py:288 src/backend/verifier_exports.py:219
 #: src/backend/verifier_exports.py:225 src/backend/verifier_exports.py:231
 msgid "EXPORT_MAARCH_ERROR"
 msgstr "Erreur lors de l'export vers Maarch"
@@ -35,7 +35,7 @@ msgstr "Le fichier PDF est introuvable"
 msgid "MAARCH_WS_INFO_WRONG"
 msgstr "Les informations de connexion à Maarch sont erronées"
 
-#: src/backend/controllers/splitter.py:293 src/backend/verifier_exports.py:243
+#: src/backend/controllers/splitter.py:294 src/backend/verifier_exports.py:243
 msgid "MAARCH_WS_INFO_EMPTY"
 msgstr "Les informations de connexion à Maarch sont vides"
 
@@ -122,7 +122,7 @@ msgstr "Erreur lors du chargement du référentiel fournisseur"
 #: src/backend/controllers/auth.py:58 src/backend/controllers/auth.py:97
 #: src/backend/controllers/auth.py:139 src/backend/controllers/auth.py:183
 #: src/backend/controllers/auth.py:194 src/backend/controllers/auth.py:204
-#: src/backend/controllers/auth.py:231 src/backend/rest/auth.py:97
+#: src/backend/controllers/auth.py:231 src/backend/rest/auth.py:99
 msgid "LOGIN_ERROR"
 msgstr "Erreur lors de la connexion"
 
@@ -246,7 +246,7 @@ msgid "FORMS_ERROR"
 msgstr "Erreur sur les formulaires"
 
 #: src/backend/controllers/forms.py:76 src/backend/controllers/forms.py:125
-#: src/backend/models/forms.py:57
+#: src/backend/models/forms.py:59
 msgid "GET_FORM_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du formulaire"
 
@@ -281,6 +281,7 @@ msgid "GET_FORMS_FIELDS_ERROR"
 msgstr "Erreur lors de la récupération des champs du formulaire"
 
 #: src/backend/controllers/forms.py:277 src/backend/controllers/forms.py:283
+#: src/backend/controllers/forms.py:307 src/backend/controllers/forms.py:313
 msgid "UPDATE_FORMS_FIELDS_ERROR"
 msgstr "Erreur lors de la mise à jour des champs du formulaire"
 
@@ -477,57 +478,57 @@ msgstr "Erreur lors de la désactivation du rôle"
 msgid "ENABLE_ROLE_ERROR"
 msgstr "Erreur lors de l'activation du rôle"
 
-#: src/backend/controllers/splitter.py:83
+#: src/backend/controllers/splitter.py:84
 msgid "LOAD_METADATA_ERROR"
 msgstr "Erreur du chargement des métadonnées"
 
-#: src/backend/controllers/splitter.py:111
+#: src/backend/controllers/splitter.py:112
 #: src/backend/controllers/verifier.py:75
 msgid "AT"
 msgstr "à"
 
-#: src/backend/controllers/splitter.py:133
+#: src/backend/controllers/splitter.py:134
 msgid "FORM_UNDEFINED"
 msgstr "Formulaire non défini"
 
-#: src/backend/controllers/splitter.py:230
+#: src/backend/controllers/splitter.py:231
 msgid "ADD_DOCUMENT_ERROR"
 msgstr "Erreur lors de l'ajout d'un document"
 
-#: src/backend/controllers/splitter.py:349
-#: src/backend/controllers/splitter.py:594
+#: src/backend/controllers/splitter.py:350
+#: src/backend/controllers/splitter.py:595
 msgid "EXPORT_PDF_ERROR"
 msgstr "Erreur lors de l'export PDF"
 
-#: src/backend/controllers/splitter.py:371
-#: src/backend/controllers/splitter.py:618
+#: src/backend/controllers/splitter.py:372
+#: src/backend/controllers/splitter.py:619
 msgid "EXPORT_XML_ERROR"
 msgstr "Erreur lors de l'export XML"
 
-#: src/backend/controllers/splitter.py:387
+#: src/backend/controllers/splitter.py:388
 msgid "UPDATE_BATCH_ERROR"
 msgstr "Erreur lors de la mise à jour du lot"
 
-#: src/backend/controllers/splitter.py:399
+#: src/backend/controllers/splitter.py:400
 msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
-#: src/backend/controllers/splitter.py:412
+#: src/backend/controllers/splitter.py:413
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
-#: src/backend/controllers/splitter.py:427
-#: src/backend/controllers/splitter.py:448
-#: src/backend/controllers/splitter.py:463
-#: src/backend/controllers/splitter.py:478
+#: src/backend/controllers/splitter.py:428
+#: src/backend/controllers/splitter.py:449
+#: src/backend/controllers/splitter.py:464
+#: src/backend/controllers/splitter.py:479
 msgid "UPDATE_PAGES_ERROR"
 msgstr "Erreur lors de la modification des pages"
 
-#: src/backend/controllers/splitter.py:492
+#: src/backend/controllers/splitter.py:493
 msgid "CMIS_CONNECTION_ERROR"
 msgstr "Erreur lors de la connexion CMIS"
 
-#: src/backend/controllers/splitter.py:716
+#: src/backend/controllers/splitter.py:717
 #: src/backend/controllers/verifier.py:537 src/backend/models/splitter.py:423
 #: src/backend/models/verifier.py:153
 msgid "GET_TOTALS_ERROR"
@@ -647,7 +648,7 @@ msgid "SUPPLIER_UPDATE_ERROR"
 msgstr "Erreur lors de la mise à jour du fournisseur"
 
 #: src/backend/models/auth.py:40 src/backend/models/auth.py:92
-#: src/backend/models/user.py:40 src/backend/rest/auth.py:98
+#: src/backend/models/user.py:40 src/backend/rest/auth.py:100
 msgid "BAD_USERNAME"
 msgstr "Mauvais nom de compte"
 
@@ -704,23 +705,31 @@ msgstr "Le type de document existe déjà"
 msgid "UPDATE_DOCTYPE_ERROR"
 msgstr "Erreur lors de la mise à jour du type de document"
 
-#: src/backend/models/forms.py:77
+#: src/backend/models/forms.py:79
+msgid "GET_FORM_SETTINGS_BY_ID_ERROR"
+msgstr "Erreur lors de la récupération des paramètres du formulaire"
+
+#: src/backend/models/forms.py:99
 msgid "GET_DEFAULT_FORM_ERROR"
 msgstr "Erreur lors de la récupération du formulaire par défaut"
 
-#: src/backend/models/forms.py:98
+#: src/backend/models/forms.py:120
 msgid "UPDATE_FORM_ERROR"
 msgstr "Erreur lors de la mise à jour du formulaire"
 
-#: src/backend/models/forms.py:117
+#: src/backend/models/forms.py:139
 msgid "UPDATE_FORM_FIELDS_ERROR"
 msgstr "Erreur lors de la mise à jour des champs du formulaire"
 
-#: src/backend/models/forms.py:170
+#: src/backend/models/forms.py:158
+msgid "UPDATE_FORM_SETTINGS_ERROR"
+msgstr "Erreur lors de la mise à jour des paramètres du formulaire"
+
+#: src/backend/models/forms.py:211
 msgid "ADD_FORM_ERROR"
 msgstr "Erreur lors de la création du formulaire"
 
-#: src/backend/models/forms.py:173
+#: src/backend/models/forms.py:214
 msgid "FORM_LABEL_ALREADY_EXIST"
 msgstr "Le libellé de formulaire existe déjà"
 
@@ -844,50 +853,50 @@ msgstr "est déjà enregistré"
 msgid "INVOICE_UPDATE_ERROR"
 msgstr "Erreur lors de la mise à jour de la facture"
 
-#: src/backend/rest/auth.py:51 src/backend/rest/auth.py:102
+#: src/backend/rest/auth.py:53 src/backend/rest/auth.py:104
 msgid "PGSQL_ERROR"
 msgstr "Erreur lors de la connexion à la base de donnée"
 
-#: src/backend/rest/auth.py:87 src/backend/rest/auth.py:252
-#: src/backend/rest/auth.py:266 src/backend/rest/auth.py:275
-#: src/backend/rest/auth.py:280 src/backend/rest/auth.py:471
+#: src/backend/rest/auth.py:89 src/backend/rest/auth.py:254
+#: src/backend/rest/auth.py:268 src/backend/rest/auth.py:277
+#: src/backend/rest/auth.py:282 src/backend/rest/auth.py:473
 msgid "LDAP_CONNECTION_ERROR"
 msgstr "Impossible de se connecter au serveur LDAP"
 
-#: src/backend/rest/auth.py:88
+#: src/backend/rest/auth.py:90
 msgid "LOGIN_LDAP_ERROR"
 msgstr "Information(s) de connexion incorrecte(s)"
 
-#: src/backend/rest/auth.py:250 src/backend/rest/auth.py:264
-#: src/backend/rest/auth.py:273
+#: src/backend/rest/auth.py:252 src/backend/rest/auth.py:266
+#: src/backend/rest/auth.py:275
 msgid "BAD_CONNECTION_LDAP_INFOS"
 msgstr "Information(s) incorrecte(s)"
 
-#: src/backend/rest/auth.py:284
+#: src/backend/rest/auth.py:286
 msgid "NOT_COMPLETE_CONNECTION_INFOS"
 msgstr "Il manque une ou plusieurs informations pour établir la connexion"
 
-#: src/backend/rest/auth.py:286 src/backend/rest/auth.py:476
-#: src/backend/rest/auth.py:482
+#: src/backend/rest/auth.py:288 src/backend/rest/auth.py:478
+#: src/backend/rest/auth.py:484
 msgid "INFOS_LDAP_NOT_COMPLETE"
 msgstr "Informations non complètes"
 
-#: src/backend/rest/auth.py:458 src/backend/rest/auth.py:464
-#: src/backend/rest/auth.py:470 src/backend/rest/auth.py:475
-#: src/backend/rest/auth.py:481
+#: src/backend/rest/auth.py:460 src/backend/rest/auth.py:466
+#: src/backend/rest/auth.py:472 src/backend/rest/auth.py:477
+#: src/backend/rest/auth.py:483
 msgid "LDAP_SYNCHRO_ERROR"
 msgstr "Erreur lors de la synchronisation LDAP"
 
-#: src/backend/rest/auth.py:459 src/backend/rest/auth.py:465
+#: src/backend/rest/auth.py:461 src/backend/rest/auth.py:467
 msgid "LDAP_SYNCHRO_INFOS_ERROR"
 msgstr "Information(s) de synchronisation incorrecte(s)"
 
-#: src/backend/rest/auth.py:494 src/backend/rest/auth.py:521
-#: src/backend/rest/auth.py:535
+#: src/backend/rest/auth.py:496 src/backend/rest/auth.py:523
+#: src/backend/rest/auth.py:537
 msgid "REQUEST_MODIFS_ERROR"
 msgstr "Erreur base de données impossible d'exécuter la requête"
 
-#: src/backend/rest/auth.py:507
+#: src/backend/rest/auth.py:509
 msgid "RETRIEVE_LOGIN_METHODS_ERROR"
 msgstr "Erreur lors du chargement des méthodes d'authentification"
 
