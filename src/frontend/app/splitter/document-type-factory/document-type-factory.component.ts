@@ -31,6 +31,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { PrivilegesService } from "../../../services/privileges.service";
 import { LocalStorageService } from "../../../services/local-storage.service";
+import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Injectable()
 export class ChecklistDatabase {
@@ -219,17 +221,18 @@ export class DocumentTypeFactoryComponent implements OnInit {
     dataSource!    : MatTreeFlatDataSource<TreeItemNode, TreeItemFlatNode>;
 
     constructor(
-        public treeDataObj : ChecklistDatabase,
-        public serviceSettings  : SettingsService,
-        private http: HttpClient,
         public router: Router,
-        private route: ActivatedRoute,
-        private formBuilder: FormBuilder,
-        private authService: AuthService,
+        public dialog: MatDialog,
         public userService: UserService,
         public translate: TranslateService,
-        private notify: NotificationService,
+        public serviceSettings  : SettingsService,
+        public treeDataObj : ChecklistDatabase,
         public privilegesService: PrivilegesService,
+        private http: HttpClient,
+        private route: ActivatedRoute,
+        private authService: AuthService,
+        private formBuilder: FormBuilder,
+        private notify: NotificationService,
         private localStorageService: LocalStorageService
     ) {
     }
@@ -339,19 +342,34 @@ export class DocumentTypeFactoryComponent implements OnInit {
     }
 
     cloneFormDoctypes(sourceFormId: number, destFormId: number) {
-        this.loading = true;
-        this.http.get(environment['url'] + '/ws/doctypes/clone/' + sourceFormId + '/' + destFormId,
-            {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.notify.handleErrors(this.translate.instant('DOCTYPES.doctypes_clone_success'));
-            }),
-            finalize(() => this.loading = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                this.loading = false;
-                return of(false);
-            })
-        ).subscribe();
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('DOCTYPE.confirm_doctypes_clone'),
+                confirmButton       : this.translate.instant('DOCTYPE.clone_doctypes'),
+                confirmButtonColor  : "green",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+        dialogRef.afterClosed().subscribe((result: any) => {
+            if (result) {
+                this.treeDataObj.loading = true;
+                this.http.get(environment['url'] + '/ws/doctypes/clone/' + sourceFormId + '/' + destFormId,
+                    {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        this.treeDataObj.retrieveDocTypes(this.selectFormControl.value);
+                        this.notify.success(this.translate.instant('DOCTYPE.doctypes_clone_success'));
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        this.treeDataObj.loading = false;
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+        });
     }
 }
