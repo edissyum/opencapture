@@ -20,7 +20,7 @@ import * as moment from 'moment';
 import { environment } from  "../app/env";
 import { Injectable } from '@angular/core';
 import { AuthService } from "./auth.service";
-import { catchError, tap } from "rxjs/operators";
+import {catchError, finalize, tap} from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { HistoryService } from "./history.service";
 import { DateAdapter } from "@angular/material/core";
@@ -35,6 +35,7 @@ export class LocaleService {
     currentBabelLang    : string = 'fr';
     dateAdaptaterLocale : string = 'fr-FR';
     langs               : [] = [];
+    localeLoading       : boolean = false;
 
     constructor(
         private http: HttpClient,
@@ -80,6 +81,7 @@ export class LocaleService {
     }
 
     changeLocale(data: any) {
+        this.localeLoading = true;
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
@@ -88,6 +90,12 @@ export class LocaleService {
                 const label = data.source._elementRef.nativeElement.textContent;
                 this.historyService.addHistory('general', 'language_changed', this.translate.instant('HISTORY-DESC.language_changed', {lang: label}));
                 this.getCurrentLocale();
+            }),
+            finalize(() => {
+                setTimeout(() => {
+                    this.localeLoading = false;
+                    window.location.reload();
+                }, 500);
             }),
             catchError((err: any) => {
                 console.debug(err);

@@ -136,14 +136,20 @@
                 <div class="ml-3 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('change_language')">
                     <mat-form-field class="origin-top-right right-0 mt-4 w-32">
                         <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
-                        <mat-select (selectionChange)="localeService.changeLocale($event)" [(value)]="localeService.currentLang">
-                            <mat-option *ngFor="let lang of localeService.langs" [value]="lang[0]">{{ lang[1] }}</mat-option>
+                        <mat-select (selectionChange)="this.localeService.changeLocale($event)"
+                                    [(value)]="this.localeService.currentLang" [disabled]="this.localeService.localeLoading">
+                            <mat-option *ngFor="let lang of this.localeService.langs" [value]="lang[0]">
+                                {{ lang[1] }}
+                            </mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <i *ngIf="this.localeService.localeLoading"
+                       class="fa-solid fa-earth-europe fa-beat fa-lg text-gray-900 ml-4"></i>
                 </div>
                 <div class="ml-6 relative">
                     <span class="text-gray-600" *ngIf="this.userService.user">
-                        <b>{{ this.userService.user['lastname'] }}</b> {{ this.userService.user['firstname'] }} ({{ this.userService.user['username'] }})
+                        <b>{{ this.userService.user['lastname'] }}</b>
+                        {{ this.userService.user['firstname'] }} ({{ this.userService.user['username'] }})
                     </span>
                 </div>
             </div>

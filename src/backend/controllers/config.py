@@ -189,7 +189,7 @@ def update_docserver(args, docserver_id):
 def get_last_git_version():
     try:
         requests.get('https://github.com/edissyum/opencapture', timeout=5)
-    except requests.exceptions.ConnectionError:
+    except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
         return None
     latest_git_version = subprocess.Popen("git ls-remote --tags --sort='v:refname' "
                                           "https://github.com/edissyum/opencapture.git | "
