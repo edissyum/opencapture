@@ -20,7 +20,10 @@
         <mat-select id='folder' [formControl]="selectFormControl">
             <div *ngFor="let form of forms">
                 <mat-option [value]="form.id">
-                    {{ form.label | translate }}
+                    <span class="">{{ form.label | translate }}</span>
+                    <button *ngIf="form.id !== selectFormControl.value" matTooltip="{{ 'DOCTYPES.clone_form_doctypes' | translate }}"
+                        (click)="$event.stopPropagation(); cloneFormDoctypes(form.id, selectFormControl.value)"
+                        class="hover:text-green-400 fa fa-clone text-xl absolute right-0 m-2"></button>
                 </mat-option>
             </div>
         </mat-select>

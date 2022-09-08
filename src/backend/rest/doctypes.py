@@ -60,3 +60,10 @@ def generate_separator():
     data = json.loads(request.data)
     res = doctypes.generate_separator(data)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('doctypes/clone/<int:src_form_id>/<int:dest_form_id>', methods=['GET'])
+@auth.token_required
+def clone_form_doctypes(src_form_id, dest_form_id):
+    res = doctypes.clone_form_doctypes(src_form_id, dest_form_id)
+    return make_response(jsonify(res[0])), res[1]

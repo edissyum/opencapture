@@ -202,11 +202,11 @@ export class TreeItemFlatNode {
 export class DocumentTypeFactoryComponent implements OnInit {
     loading: boolean                        = false;
     searchText: string                      = this.localStorageService.get('doctype_last_search_value') || '';
-    forms: any[]                            = [];
     @Input() selectedDocTypeInput: any      = {"key": undefined, "id": -1};
     @Output() selectedDoctypeOutput: any    = new EventEmitter < string > ();
     @Output() selectedFormOutput: any       = new EventEmitter < string > ();
-    selectFormControl: FormControl          =  new FormControl();
+    selectFormControl: FormControl          = new FormControl();
+    forms: any[]                            = [];
     @Input() data:any;
 
     /** Map from flat node to nested node. This helps us finding the nested node to be modified */
@@ -277,6 +277,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
+                this.loading = false;
                 return of(false);
             })
         ).subscribe();
@@ -335,5 +336,22 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 this.selectedDoctypeOutput.emit(doctype);
             }
         });
+    }
+
+    cloneFormDoctypes(sourceFormId: number, destFormId: number) {
+        this.loading = true;
+        this.http.get(environment['url'] + '/ws/doctypes/clone/' + sourceFormId + '/' + destFormId,
+            {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.notify.handleErrors(this.translate.instant('DOCTYPES.doctypes_clone_success'));
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                this.loading = false;
+                return of(false);
+            })
+        ).subscribe();
     }
 }
