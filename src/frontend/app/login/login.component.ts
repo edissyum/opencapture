@@ -136,12 +136,20 @@ export class LoginComponent implements OnInit {
                     this.authService.generateHeaders();
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {
-                        this.historyService.addHistory('general', 'login', this.translate.instant('HISTORY-DESC.login'));
-                            if (this.authService.getCachedUrl()) {
-                            this.router.navigate([this.authService.getCachedUrl()]).then();
+                    this.historyService.addHistory('general', 'login', this.translate.instant('HISTORY-DESC.login'));
+                        if (this.authService.getCachedUrl()) {
+                            this.router.navigate([this.authService.getCachedUrl()]).then(() => {
+                                if (data.body.admin_password_alert) {
+                                    this.notify.error(this.translate.instant('ERROR.admin_password_alert'));
+                                }
+                            });
                             this.authService.cleanCachedUrl();
                         } else {
-                            this.router.navigate(['/home']).then();
+                            this.router.navigate(['/home']).then(() => {
+                                if (data.body.admin_password_alert) {
+                                    this.notify.error(this.translate.instant('ERROR.admin_password_alert'));
+                                }
+                            });
                         }
                     });
                 }),

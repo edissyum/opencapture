@@ -42,6 +42,8 @@ def login():
         if res is None:
             if 'username' in data and 'password' in data:
                 res = auth.login(data['username'], data['password'], data['lang'])
+                if res[1] == 200 and data['username'] == 'admin' and data['password'] == 'admin':
+                    res[0]['admin_password_alert'] = True
             elif 'token' in data:
                 res = auth.login_with_token(data['token'], data['lang'])
             else:
