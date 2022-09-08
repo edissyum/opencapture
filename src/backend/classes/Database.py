@@ -133,7 +133,7 @@ class Database:
             data = []
             for column in args['set']:
                 if args['set'][column] is not None:
-                    if type(args['set'][column]) != bool and 'jsonb_set' in args['set'][column]:
+                    if type(args['set'][column]) not in (bool, int) and 'jsonb_set' in args['set'][column]:
                         query_list.append(column + " = " + args['set'][column])
                     else:
                         query_list.append(column + " = %s")
