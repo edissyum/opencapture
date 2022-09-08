@@ -29,6 +29,10 @@ def get_roles():
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else ''
     }
+    if 'full' in request.args:
+        args['where'] = ['status NOT IN (%s)']
+        args['data'] = ['DEL']
+
     _roles = roles.get_roles(args)
     return make_response(jsonify(_roles[0])), _roles[1]
 
