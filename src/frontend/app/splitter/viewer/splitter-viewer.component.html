@@ -9,6 +9,9 @@
                     {{ timeLabels[currentTime] | translate }}, {{ getStatusLabel(currentBatch.status) }}
                 </div>
             </div>
+            <span *ngIf="batches.length === 0" class="text-slate-400 w-full grid place-content-center">
+                {{ 'SPLITTER.no_batch_found' | translate }}
+            </span>
             <div class="card" *ngFor="let batch of this.batches | slice: 0 : 10">
                 <mat-card class="mat-elevation-z4 my-2"
                           [ngClass]="{'border-4 border-green-400': this.currentBatch.id === batch.id}">
@@ -20,14 +23,14 @@
                     <mat-card-content>
                             <span matTooltip="{{ 'SPLITTER.document_number' | translate }} : {{ batch['pageNumber'] }}"
                                   class="float-right text-green-400">
-                                {{ batch['pageNumber'] }} <i class="far fa-file"></i>
+                                {{ batch['pageNumber'] }} <em class="far fa-file"></em>
                             </span>
                         <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">
                             <span class="leading-7 flex">
                                 {{ batch['fileName'] }}
                             </span>
-                            <b>{{ 'SPLITTER.identifier' | translate }}</b> : {{ batch['id'] }}<br>
-                            <b>{{ 'VERIFIER.register_date' | translate }}</b> : {{ batch['date'] }}<br>
+                            <strong>{{ 'SPLITTER.identifier' | translate }}</strong> : {{ batch['id'] }}<br>
+                            <strong>{{ 'VERIFIER.register_date' | translate }}</strong> : {{ batch['date'] }}<br>
                         </mat-card-subtitle>
                     </mat-card-content>
                 </mat-card>
@@ -37,8 +40,8 @@
     <mat-drawer-content>
         <button class="btn-show-batches left-0" mat-raised-button (click)="drawer.toggle()">
             <span>
-                <i *ngIf="drawer.opened" class="fa-solid fa-angle-left"></i>
-                <i *ngIf="!drawer.opened" class="fa-solid fa-angle-right"></i>
+                <em *ngIf="drawer.opened" class="fa-solid fa-angle-left"></em>
+                <em *ngIf="!drawer.opened" class="fa-solid fa-angle-right"></em>
             </span>
         </button>
         <div *ngIf="showZoomPage" class="fixed z-10 w-4/12 h-5/6 grid justify-items-stretch right-0 top-20">
@@ -71,18 +74,18 @@
                             </div>
                             <div class="text-gray-400 absolute right-12 divide-x-2">
                                 <span class="mx-2" matTooltip="{{ 'HEADER.status' | translate }}">
-                                    <i class="fa-solid fa-flag"></i>
+                                    <em class="fa-solid fa-flag"></em>
                                     {{ getStatusLabel(currentBatch.status) }}
                                 </span>
                                 <span>
-                                    <i class="fa-solid fa-pipe"></i>
+                                    <em class="fa-solid fa-pipe"></em>
                                     {{ 'SPLITTER.identifier' | translate }} : {{ currentBatch.id }}
                                 </span>
                             </div>
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="text-gray-400 text-center w-full" *ngIf="fieldsCategories['batch_metadata'].length === 0">
-                        <i class="block fa-solid fa-check fa-3x"></i>
+                        <em class="block fa-solid fa-check fa-3x"></em>
                         <span class="block">{{ 'SPLITTER.no_metadata_required' | translate }}</span>
                     </div>
                     <form [formGroup]="batchForm"  class="flex flex-wrap mx-8">
@@ -154,7 +157,7 @@
                     <button mat-button (click)="loadReferential(true); $event.stopPropagation();"
                             class="float-right mb-2"
                             title="{{ 'SPLITTER.loadReferential' | translate }}">
-                        <i class="fa-solid fa-sync fa-2x"></i>
+                        <em class="fa-solid fa-sync fa-2x"></em>
                     </button>
                 </mat-expansion-panel>
             </mat-accordion>
@@ -165,15 +168,15 @@
                     <div class="drag-document absolute w-6 h-6 -left-1 -top-1 z-10 rounded-full text-gray-400 text-center
                       align-middle bg-slate-50 drop-shadow-xl hover:cursor-grabbing group-hover:text-gray-500
                       " matTooltip="{{ 'SPLITTER.change_document_position' | translate }}" cdkDragHandle>
-                        <i class="fa-solid fa-arrows-up-down-left-right fa-lg"></i>
+                        <em class="fa-solid fa-arrows-up-down-left-right fa-lg"></em>
                     </div>
                     <div *cdkDragPreview class="drop-shadow-xl w-4/6 h-40 text-center text-gray-500 bg-slate-50 grid place-content-center">
                         <div class="absolute w-8 h-8 -left-1 -top-1 z-10 rounded-full text-center
                               align-middle bg-slate-50 drop-shadow-xl hover:cursor-grabbing group-hover:text-gray-500
                               grid place-content-center" cdkDragHandle>
-                            <i class="fa-solid fa-arrows-up-down-left-right fa-lg"></i>
+                            <em class="fa-solid fa-arrows-up-down-left-right fa-lg"></em>
                         </div>
-                        <i class="fa-solid fa-copy fa-3x"></i>
+                        <em class="fa-solid fa-copy fa-3x"></em>
                         <span>{{ 'SPLITTER.drop_document_in_position' | translate }}</span>
                     </div>
                     <mat-card-title>
@@ -187,7 +190,7 @@
                                                 (click)="documentMetadata.toggle(); openDocumentTypeDialog(document);"
                                                 matTooltip="{{ 'GLOBAL.edit' | translate }}">
                                             <span class="w-full font-medium">
-                                                <i class="fa-solid fa-edit"></i>
+                                                <em class="fa-solid fa-edit"></em>
                                                 <span *ngIf="!document['documentTypeName']" class="mx-2">{{ 'SPLITTER.no_selected_doctype' | translate }}</span>
                                                 {{ document['documentTypeName'] }}
                                             </span>
@@ -195,14 +198,14 @@
                                     </mat-panel-title>
                                     <button mat-button class="right-2" (click)="deleteDocument(documentIndex); $event.stopPropagation();"
                                             matTooltip="{{ 'GLOBAL.delete' | translate }}">
-                                        <i class="fa-solid fa-trash-alt fa-lg"></i>
+                                        <em class="fa-solid fa-trash-alt fa-lg"></em>
                                     </button>
                                 </mat-expansion-panel-header>
                                 <div class="text-gray-400 w-full">
                                     <span class="m-6 w-11/12">{{ 'SPLITTER.document_metadata' | translate }}</span>
                                     <mat-divider class="mx-6" style="width: 96%;"></mat-divider>
                                     <div *ngIf="fieldsCategories['document_metadata'].length === 0">
-                                        <i class="text-center block fa-solid fa-check fa-3x"></i>
+                                        <em class="text-center block fa-solid fa-check fa-3x"></em>
                                         <span class="block text-center" >
                                             {{ 'SPLITTER.no_metadata_required' | translate }}
                                         </span>
@@ -231,7 +234,7 @@
                                                         <span *ngIf="metadata.metadataId !== batchMetadataValues.metadataId"
                                                               [innerHTML]="getPlaceholderFromResultMask(field.resultMask, metadata)">
                                                         </span>
-                                                                    <span *ngIf="metadata.metadataId === batchMetadataValues.metadataId">
+                                                        <span *ngIf="metadata.metadataId === batchMetadataValues.metadataId">
                                                             {{ metadata[field.label_short] }}
                                                         </span>
                                                     </mat-option>
@@ -310,12 +313,12 @@
                                         <span *ngIf="page['rotation'] !== 0">
                                             {{ page['rotation'] }}
                                         </span>
-                                        <i class="fa-solid fa-rotate-right"></i>
+                                        <em class="fa-solid fa-rotate-right"></em>
                                     </button>
                                     <button mat-button class="page-header-btn float-right bg-gray-100"
                                             matTooltip="{{ 'SPLITTER.zoom' | translate }}"
                                             (click)="getZoomPage(page); $event.stopPropagation();">
-                                        <i class="fa-solid fa-search-plus"></i>
+                                        <em class="fa-solid fa-search-plus"></em>
                                     </button>
                                 </div>
                                 <img [ngClass]="
@@ -337,33 +340,33 @@
                     <div class="absolute top-2 left-8 text-gray-500 bg-white px-2"
                          matTooltip="{{ currentBatch.selectedPagesCount }} {{ 'SPLITTER.selected_pages' | translate }}">
                         <span class="font-medium mx-1">{{ currentBatch.selectedPagesCount }}</span>
-                        <i class="fa-solid fa-file"></i>
+                        <em class="fa-solid fa-file"></em>
                     </div>
                     <div class="border border-gray-600 rounded-lg flex h-20 col-span-2 py-4 my-4 overflow-x-auto overflow-y-hidden">
                         <button mat-button (click)="deleteSelectedPages()" class="btn-icon w-8 ml-4"
                                 matTooltip="{{ 'SPLITTER.delete_selected_pages' | translate }}"
                                 [disabled]="currentBatch.selectedPagesCount === 0">
-                            <i class="fas fa-trash-alt fa-lg"></i>
+                            <em class="fas fa-trash-alt fa-lg"></em>
                         </button>
                         <button mat-button (click)="setAllPagesTo(true)" class="btn-icon w-8"
                                 matTooltip="{{ 'SPLITTER.select_all' | translate }}">
-                            <i class="fas fa-check-circle fa-lg"></i>
+                            <em class="fas fa-check-circle fa-lg"></em>
                         </button>
                         <button mat-button (click)="setAllPagesTo(false)"
                                 class="btn-icon border-r-2 border-black w-8"
                                 matTooltip="{{ 'SPLITTER.unselect_all' | translate }}">
-                            <i class="fas fa-ban fa-lg"></i>
+                            <em class="fas fa-ban fa-lg"></em>
                         </button>
                         <button mat-button (click)="rotateSelectedPages()"
                                 [disabled]="currentBatch.selectedPagesCount === 0"
                                 class="btn-icon btn-rotate border-r-10 border-gray-400 w-8"
                                 matTooltip="{{ 'SPLITTER.rotatePage' | translate }}">
-                            <i class="fas fa-rotate-right fa-lg"></i>
+                            <em class="fas fa-rotate-right fa-lg"></em>
                         </button>
                         <button mat-button (click)="createDocument()"
                                 matTooltip="{{ 'SPLITTER.add_document' | translate }}">
-                            <i class="fas fa-plus-circle fa-lg" *ngIf="!addDocumentLoading"></i>
-                            <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="addDocumentLoading"></i>
+                            <em class="fas fa-plus-circle fa-lg" *ngIf="!addDocumentLoading"></em>
+                            <em class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="addDocumentLoading"></em>
                         </button>
                         <mat-form-field class="-top-2">
                             <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>
@@ -375,12 +378,12 @@
                         </mat-form-field>
                         <button (click)="sendSelectedPages()" mat-button class="btn-icon w-8"
                                 matTooltip="{{ 'SPLITTER.send' | translate }}">
-                            <i class="fa fa-paper-plane fa-lg"></i>
+                            <em class="fa fa-paper-plane fa-lg"></em>
                         </button>
                         <button (click)="saveInfo()" mat-button class="w-8"
                                 matTooltip="{{ 'SPLITTER.save' | translate }}" [ngClass]="{'text-green-400': isDataEdited}">
-                            <i class="fa fa-save fa-lg" *ngIf="!saveInfosLoading"></i>
-                            <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="saveInfosLoading"></i>
+                            <em class="fa fa-save fa-lg" *ngIf="!saveInfosLoading"></em>
+                            <em class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="saveInfosLoading"></em>
                         </button>
                     </div>
                     <div class="grid grid-rows-4 py-2">
