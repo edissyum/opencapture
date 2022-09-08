@@ -137,7 +137,8 @@
                     <mat-form-field class="origin-top-right right-0 mt-4 w-32">
                         <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
                         <mat-select (selectionChange)="this.localeService.changeLocale($event)"
-                                    [(value)]="this.localeService.currentLang" [disabled]="this.localeService.localeLoading">
+                                    [disabled]="this.localeService.localeLoading"
+                                    [(value)]="this.localeService.currentLang">
                             <mat-option *ngFor="let lang of this.localeService.langs" [value]="lang[0]">
                                 {{ lang[1] }}
                             </mat-option>

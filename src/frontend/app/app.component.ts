@@ -96,7 +96,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
                     this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                         tap((data: any) => {
                             this.localStorageService.save('login_image_b64', data);
-                            this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data);
+                            this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
                         }),
                         catchError((err: any) => {
                             console.debug(err);
@@ -105,7 +105,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
                         })
                     ).subscribe();
                 } else {
-                    this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
+                    this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
                 }
             }
             if (this.localeService.currentLang === undefined) {
