@@ -100,27 +100,27 @@
                     </mat-slide-toggle>
                 </div>
                 <div class="flex justify-center flex-col mt-4">
-                    <mat-slide-toggle [formControl]="this.form['delete_documents_after_outputs'].control">
+                    <mat-slide-toggle [formControl]="this.formSettings['delete_documents_after_outputs'].control">
                         {{ "FORMS.delete_documents_after_outputs" | translate }}
                     </mat-slide-toggle>
                     <mat-hint class="mt-4">{{ "FORMS.delete_documents_after_outputs_hint" | translate }}</mat-hint>
                 </div>
                 <div class="flex justify-center mt-4">
-                    <mat-slide-toggle [formControl]="this.form['allow_automatic_validation'].control"
+                    <mat-slide-toggle [formControl]="this.formSettings['allow_automatic_validation'].control"
                                       (change)="this.openAvailableField = !this.openAvailableField">
                         {{ "FORMS.allow_automatic_validation" | translate }}
                     </mat-slide-toggle>
                 </div>
                 <mat-form-field *ngIf="this.openAvailableField" [class.z-50]="this.modalOpen">
                     <mat-label>{{ "FORMS.automatic_validation_data" | translate }}</mat-label>
-                    <input matInput [formControl]="this.form['automatic_validation_data'].control" required
+                    <input matInput [formControl]="this.formSettings['automatic_validation_data'].control" required
                            placeholder="supplier,footer,invoice_number,invoice_date">
                     <mat-hint (click)="this.modalOpen = true" class="cursor-pointer">
                         {{ 'FORMS.automatic_validation_data_hint' | translate }}
                     </mat-hint>
                 </mat-form-field>
                 <div class="flex justify-center flex-col mt-4">
-                    <mat-slide-toggle [formControl]="this.form['supplier_verif'].control">
+                    <mat-slide-toggle [formControl]="this.formSettings['supplier_verif'].control">
                         {{ "FORMS.supplier_verif" | translate }}
                     </mat-slide-toggle>
                     <mat-hint class="mt-4">{{ "FORMS.supplier_verif_hint" | translate }}</mat-hint>

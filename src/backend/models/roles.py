@@ -28,8 +28,8 @@ def get_roles(args):
     roles = database.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["roles"],
-        'where': ["status NOT IN (%s)", "editable <> %s"],
-        'data': ["DEL", "false"],
+        'where': ["status NOT IN (%s)", "editable <> %s"] if "where" not in args else args["where"],
+        'data': ["DEL", "false"] if "data" not in args else args["data"],
         'order_by': ["id ASC"],
         'limit': str(args['limit']) if 'limit' in args else [],
         'offset': str(args['offset']) if 'offset' in args else [],

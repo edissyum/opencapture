@@ -147,8 +147,8 @@ export class VerifierDisplayComponent implements OnInit {
             if (element.id === form_id) {
                 this.formLoaded = true;
                 this.currentForm = element;
-                if (this.currentForm.display) {
-                    this.currentForm.display.subtitles.forEach((subtitle: any) => {
+                if (this.currentForm.settings.display) {
+                   this.currentForm.settings.display.subtitles.forEach((subtitle: any) => {
                         this.availableFieldsTmp.forEach((item: any, index: number, object: any) => {
                             if (subtitle.id === item.id) {
                                 object.splice(index, 1);
@@ -167,12 +167,13 @@ export class VerifierDisplayComponent implements OnInit {
     }
 
     updateDisplay() {
-        this.currentForm.display.subtitles.forEach((element: any) => {
+       this.currentForm.settings.display.subtitles.forEach((element: any) => {
             delete element['updateMode'];
         });
-        this.http.put(environment['url'] + '/ws/forms/updateDisplay/' + this.currentForm.id, this.currentForm.display,
+        this.http.put(environment['url'] + '/ws/forms/updateDisplay/' + this.currentForm.module_settings_id, this.currentForm.settings.display,
             {headers: this.authService.headers}).pipe(
             tap(() => {
+                this.historyService.addHistory('verifier', 'update_form_display', this.translate.instant('HISTORY-DESC.update_form_display', {'form': this.currentForm.label}))
                 this.notify.success(this.translate.instant('FORMS.display_updated_success'));
             }),
             catchError((err: any) => {
@@ -184,9 +185,9 @@ export class VerifierDisplayComponent implements OnInit {
     }
 
     removeLine(id: any, cpt: number) {
-        this.currentForm.display.subtitles.forEach((element: any) => {
+       this.currentForm.settings.display.subtitles.forEach((element: any) => {
             if (id === element.id) {
-                this.currentForm.display.subtitles.splice(cpt, 1);
+               this.currentForm.settings.display.subtitles.splice(cpt, 1);
                 this.loadDisplay({value: this.currentForm.id});
             }
         });

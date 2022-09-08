@@ -38,9 +38,10 @@ export class TasksWatcherComponent implements OnInit {
     loading             : boolean = true;
     tasks               : any[]   = [];
     displayedTasksData  : any[]   = [];
+    authorizedUrl       : any[]   = ['/verifier/list', '/splitter/list', '/upload'];
 
     constructor(
-        private router: Router,
+        public router: Router,
         private http: HttpClient,
         private authService: AuthService,
         public translate: TranslateService,
@@ -50,9 +51,8 @@ export class TasksWatcherComponent implements OnInit {
 
     ngOnInit(): void {
         this.minimizeDisplay = this.localStorageService.get('task_watcher_minimize_display') === 'true';
-        const authorizedUrl = ['/verifier/list', '/splitter/list', '/upload'];
         interval(4000).subscribe(() => {
-            if (authorizedUrl.includes(this.router.url) && !this.getTaskRunning) {
+            if (this.authorizedUrl.includes(this.router.url) && !this.getTaskRunning) {
                 this.getLastTasks();
             }
         });

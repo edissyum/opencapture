@@ -107,7 +107,7 @@ export class UserProfileComponent implements OnInit {
             }
         }
 
-        this.http.get(environment['url'] + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/roles/list?full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {

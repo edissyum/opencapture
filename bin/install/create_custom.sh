@@ -82,7 +82,7 @@ if [ "$pythonVenv" != 'true' ] && [ "$pythonVenv" != 'false' ]; then
     exit 2
 fi
 
-if [ ! -f "/home/$user/python-venv/opencapture/bin/python3" ]; then
+if [ "$pythonVenv" == 'true' ] && [ ! -f "/home/$user/python-venv/opencapture/bin/python3" ]; then
     echo "#######################################################################################"
     echo "            The default Python Virtual environment path doesn't exist"
     echo "  Do you want to exit update ? If no, the script will use default Python installation"

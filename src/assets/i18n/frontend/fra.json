@@ -157,6 +157,7 @@
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
 		"500": "Une erreur technique est apparue de notre côté. <br> Merci de réessayer ultérieurement",
+		"admin_password_alert": "<b class='text-center block right-4 relative -mt-42'>/!\\ ATTENTION /!\\</b> <br>Vous utilisez encore le mot de passe par défaut du compte admin. Veuillez le changer au plus vite pour des questions de sécurité",
 		"alphanum_extended_pattern": "La valeur n'est pas au format attendu : alphanumérique avec caractères spéciaux",
 		"alphanum_pattern": "La valeur n'est pas au format attendu : alphanumérique",
 		"bad_or_missing_database_informations": "Les informations de base de données sont manquantes ou erronées",
@@ -378,6 +379,7 @@
 		"update-user": "Mise à jour de l'utilisateur&nbsp;<b>{{ user }}</b>",
 		"update_configuration": "Mise à jour de la configuration&nbsp;<b>{{ configuration }}</b>",
 		"update_docserver": "Mise à jour de la zone de stockage&nbsp;<b>{{ docserver }}</b>",
+		"update_form_display": "Mise à jour de l'affichage du formulaire&nbsp;<b>{{ form }}</b>",
 		"update_login_image": "Mise à jour de l'image de login",
 		"update_mailcollect": "Mise à jour du processus MailCollect&nbsp;<b>{{ process }}</b>",
 		"update_mailcollect_name": "Mise à jour du nom du processus MailCollect&nbsp;<b>{{ process }}</b>",

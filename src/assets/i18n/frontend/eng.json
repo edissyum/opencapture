@@ -157,6 +157,7 @@
 	"ERROR": {
 		"404": "The page you are looking for does not exist",
 		"500": "A technical issue appear on our side. <b>Please try again later</b>",
+		"admin_password_alert": "<b class='text-center block right-4 relative -mt-42'>/!\\ WARNING /!\\</b> <br>You're still using the default admin password. Change it ASAP for security reasons",
 		"alphanum_extended_pattern": "The value is not well formatted : alphanumeric with special char",
 		"alphanum_pattern": "The value is not well formatted : alphanumeric",
 		"bad_or_missing_database_informations": "The database informations are missing or mispelled",
@@ -378,6 +379,7 @@
 		"update-user": "User updated&nbsp;<b>{{ user }}</b>",
 		"update_configuration": "Configuration updated&nbsp;<b>{{ configuration }}</b>",
 		"update_docserver": "Docserver updated&nbsp;<b>{{ docserver }}</b>",
+		"update_form_display": "Display form updated&nbsp;<b>{{ form }}</b>",
 		"update_login_image": "Login image updated",
 		"update_mailcollect": "MailCollect process updated&nbsp;<b>{{ process }}</b>",
 		"update_mailcollect_name": "MailCollect process name updated&nbsp;<b>{{ process }}</b>",

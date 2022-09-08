@@ -45,6 +45,7 @@ export class FormBuilderComponent implements OnInit {
     openAvailableField      : boolean   = false;
     modalOpen               : boolean   = false;
     formId                  : any;
+    formSettingId           : any;
     outputs                 : any[]     = [];
     form                    : any       = {
         'label': {
@@ -52,7 +53,9 @@ export class FormBuilderComponent implements OnInit {
         },
         'default_form': {
             'control': new FormControl(),
-        },
+        }
+    };
+    formSettings           : any       = {
         'allow_automatic_validation': {
             'control': new FormControl(),
         },
@@ -668,10 +671,22 @@ export class FormBuilderComponent implements OnInit {
                     this.creationMode = false;
                     this.http.get(environment['url'] + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
+                            this.formSettingId = data.module_settings_id;
                             for (const field in this.form) {
                                 for (const info in data) {
-                                    if (field === 'allow_automatic_validation') this.openAvailableField = data[field];
                                     if (info === field) this.form[field].control.setValue(data[field]);
+                                }
+                            }
+
+                            for (const field in this.formSettings) {
+                                for (const setting in data['settings']) {
+                                    if (setting === 'allow_automatic_validation') {
+                                        this.openAvailableField = data['settings'][setting];
+                                    }
+
+                                    if (setting === field) {
+                                        this.formSettings[setting].control.setValue(data['settings'][setting]);
+                                    }
                                 }
                             }
 
@@ -840,16 +855,6 @@ export class FormBuilderComponent implements OnInit {
         });
     }
 
-    changeAutocompletion(fieldId: any, newAutocompletion: any, autocompletionIcon: any, category: any) {
-        const id = fieldId;
-        this.fields[category].forEach((element: any) => {
-            if (element.id === id) {
-                element.autocomplete = newAutocompletion;
-                element.autocomplete_icon = autocompletionIcon;
-            }
-        });
-    }
-
     changeColor(fieldId: any, newColor: any, category: any) {
         const id = fieldId;
         this.fields[category].forEach((element: any) => {
@@ -925,29 +930,35 @@ export class FormBuilderComponent implements OnInit {
         this.updateFormLoading = true;
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
-        const allowAutomaticValidation = this.form.allow_automatic_validation.control.value;
-        const automaticValidationData = this.form.automatic_validation_data.control.value;
-        const deleteDocumentsAfterOutputs = this.form.delete_documents_after_outputs.control.value;
-        const supplierVerif = this.form.supplier_verif.control.value;
         const outputs: any[] = [];
         this.outputForm.forEach((element: any) => {
             if (element.control.value) outputs.push(element.control.value);
         });
 
+        const settings: any = {};
+        Object.keys(this.formSettings).forEach((element: any) => {
+            settings[element] = this.formSettings[element].control.value;
+        });
+
         if (label !== '' && outputs.length >= 1) {
             this.http.put(environment['url'] + '/ws/forms/update/' + this.formId, {
-                    'args': {
-                        'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif,
-                        'outputs': outputs, 'allow_automatic_validation': allowAutomaticValidation,
-                        'automatic_validation_data': automaticValidationData, 'delete_documents_after_outputs': deleteDocumentsAfterOutputs
-                    }
+                    'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs}
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
                     this.http.post(environment['url'] + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
                         tap(() => {
-                            this.historyService.addHistory('verifier', 'update_form', this.translate.instant('HISTORY-DESC.update-form', {form: label}));
-                            this.notify.success(this.translate.instant('FORMS.updated'));
+                            this.http.put(environment['url'] + '/ws/forms/updateFormSettings/' + this.formSettingId, {'args': settings}, {headers: this.authService.headers}).pipe(
+                                tap(() => {
+                                    this.historyService.addHistory('verifier', 'update_form', this.translate.instant('HISTORY-DESC.update-form', {form: label}));
+                                    this.notify.success(this.translate.instant('FORMS.updated'));
+                                }),
+                                catchError((err: any) => {
+                                    console.debug(err);
+                                    this.notify.handleErrors(err);
+                                    return of(false);
+                                })
+                            ).subscribe();
                         }),
                         catchError((err: any) => {
                             console.debug(err);

@@ -49,15 +49,10 @@ def get_all_lang():
 
 @bp.route('i18n/getCurrentLang', methods=['GET'])
 def get_current_lang():
-    if 'configurations' in session and 'languages' in session:
-        configurations = json.loads(session['configurations'])
-        languages = json.loads(session['languages'])
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[10]
-        languages = _vars[11]
-
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    configurations = _vars[10]
+    languages = _vars[11]
     current_lang = configurations['locale']
     angular_moment_lang = ''
     babel_lang = ''

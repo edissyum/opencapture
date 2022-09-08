@@ -75,7 +75,7 @@ export class LoginComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
             tap((data: any) => {
                 this.localStorageService.save('login_image_b64', data);
-                this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data);
+                this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -136,12 +136,20 @@ export class LoginComponent implements OnInit {
                     this.authService.generateHeaders();
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {
-                        this.historyService.addHistory('general', 'login', this.translate.instant('HISTORY-DESC.login'));
-                            if (this.authService.getCachedUrl()) {
-                            this.router.navigate([this.authService.getCachedUrl()]).then();
+                    this.historyService.addHistory('general', 'login', this.translate.instant('HISTORY-DESC.login'));
+                        if (this.authService.getCachedUrl()) {
+                            this.router.navigate([this.authService.getCachedUrl()]).then(() => {
+                                if (data.body.admin_password_alert) {
+                                    this.notify.error(this.translate.instant('ERROR.admin_password_alert'));
+                                }
+                            });
                             this.authService.cleanCachedUrl();
                         } else {
-                            this.router.navigate(['/home']).then();
+                            this.router.navigate(['/home']).then(() => {
+                                if (data.body.admin_password_alert) {
+                                    this.notify.error(this.translate.instant('ERROR.admin_password_alert'));
+                                }
+                            });
                         }
                     });
                 }),
