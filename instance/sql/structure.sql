@@ -20,7 +20,7 @@ CREATE TABLE "form_models"
     "outputs"                        TEXT[],
     "status"                         VARCHAR(5)    DEFAULT 'OK',
     "module"                         VARCHAR(10),
-    "module_settings_id"             INTEGER,
+    "module_settings_id"             INTEGER
 );
 
 CREATE TABLE "form_model_settings"
