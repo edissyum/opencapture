@@ -45,6 +45,19 @@ def get_forms(args):
 
 
 def add_form(args):
+    form_settings, error = forms.get_form_settings_by_module(args)
+    if error:
+        response = {
+            "errors": gettext("FORMS_ERROR"),
+            "message": error
+        }
+        return response, 401
+
+    if 'settings' in args:
+        for key in args['settings']:
+            form_settings[key] = args['settings'][key]
+    args['settings'] = json.dumps(form_settings)
+
     form_id, error = forms.add_form(args)
     if form_id:
         if 'default_form' in args and args['default_form'] is True:
@@ -156,6 +169,36 @@ def update_form(form_id, args):
             "message": error
         }
     return response, 401
+
+
+def update_form_settings(data, setting_id):
+    _, error = forms.get_form_settings_by_id({'setting_id': setting_id})
+    if error is None:
+        for setting in data:
+            try:
+                if type(data[setting]) is bool:
+                    forms.update_form_setting({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + str(data[setting]).lower() + "')"}, 'setting_id': setting_id})
+                elif data[setting] and type(eval(data[setting])) is dict:
+                    forms.update_form_setting({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + str(data[setting]) + "')"}, 'setting_id': setting_id})
+                else:
+                    forms.update_form_setting({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '\"" + str(data[setting]) + "\"')"}, 'setting_id': setting_id})
+            except Exception:
+                forms.update_form_setting({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '\"" + str(data[setting]) + "\"')"}, 'setting_id': setting_id})
+
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_FORMS_FIELDS_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('UPDATE_FORMS_FIELDS_ERROR'),
+            "message": error
+        }
+        return response, 401
 
 
 def delete_form(form_id):
@@ -270,36 +313,6 @@ def update_fields(args):
     _, error = forms.get_form_by_id({'form_id': args['form_id']})
     if error is None:
         _, error = forms.update_form_fields({'set': {'fields': json.dumps(args['data'])}, 'form_id': args['form_id']})
-        if error is None:
-            return '', 200
-        else:
-            response = {
-                "errors": gettext('UPDATE_FORMS_FIELDS_ERROR'),
-                "message": error
-            }
-            return response, 401
-    else:
-        response = {
-            "errors": gettext('UPDATE_FORMS_FIELDS_ERROR'),
-            "message": error
-        }
-        return response, 401
-
-
-def update_form_settings(data, setting_id):
-    _, error = forms.get_form_settings_by_id({'setting_id': setting_id})
-    if error is None:
-        for setting in data:
-            try:
-                if type(data[setting]) is bool:
-                    forms.update_form_setting({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + str(data[setting]).lower() + "')"}, 'setting_id': setting_id})
-                elif data[setting] and type(eval(data[setting])) is dict:
-                    forms.update_form_setting({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + str(data[setting]) + "')"}, 'setting_id': setting_id})
-                else:
-                    forms.update_form_setting({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '\"" + str(data[setting]) + "\"')"}, 'setting_id': setting_id})
-            except Exception:
-                forms.update_form_setting({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '\"" + str(data[setting]) + "\"')"}, 'setting_id': setting_id})
-
         if error is None:
             return '', 200
         else:

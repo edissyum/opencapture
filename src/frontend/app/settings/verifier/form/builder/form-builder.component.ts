@@ -942,23 +942,14 @@ export class FormBuilderComponent implements OnInit {
 
         if (label !== '' && outputs.length >= 1) {
             this.http.put(environment['url'] + '/ws/forms/update/' + this.formId, {
-                    'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs}
+                    'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs, 'settings': settings}
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
                     this.http.post(environment['url'] + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
                         tap(() => {
-                            this.http.put(environment['url'] + '/ws/forms/updateFormSettings/' + this.formSettingId, {'args': settings}, {headers: this.authService.headers}).pipe(
-                                tap(() => {
-                                    this.historyService.addHistory('verifier', 'update_form', this.translate.instant('HISTORY-DESC.update-form', {form: label}));
-                                    this.notify.success(this.translate.instant('FORMS.updated'));
-                                }),
-                                catchError((err: any) => {
-                                    console.debug(err);
-                                    this.notify.handleErrors(err);
-                                    return of(false);
-                                })
-                            ).subscribe();
+                            this.historyService.addHistory('verifier', 'update_form', this.translate.instant('HISTORY-DESC.update-form', {form: label}));
+                            this.notify.success(this.translate.instant('FORMS.updated'));
                         }),
                         catchError((err: any) => {
                             console.debug(err);
@@ -984,10 +975,10 @@ export class FormBuilderComponent implements OnInit {
     createForm() {
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
-        let supplierVerif = this.form.supplier_verif.control.value;
-        const automaticValidationData = this.form.automatic_validation_data.control.value;
-        const allowAutomaticValidation = this.form.allow_automatic_validation.control.value;
-        const deleteDocumentsAfterOutputs = this.form.delete_documents_after_outputs.control.value;
+        let supplierVerif = this.formSettings.supplier_verif.control.value;
+        const automaticValidationData = this.formSettings.automatic_validation_data.control.value;
+        const allowAutomaticValidation = this.formSettings.allow_automatic_validation.control.value;
+        const deleteDocumentsAfterOutputs = this.formSettings.delete_documents_after_outputs.control.value;
         if (!supplierVerif) supplierVerif = false;
         const outputs: any[] = [];
         this.outputForm.forEach((element: any) => {
@@ -996,9 +987,16 @@ export class FormBuilderComponent implements OnInit {
         if (label) {
             this.http.post(environment['url'] + '/ws/forms/add', {
                     'args': {
-                        'module': 'verifier', 'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif,
-                        'outputs': outputs, 'allow_automatic_validation': allowAutomaticValidation,
-                        'automatic_validation_data': automaticValidationData, 'delete_documents_after_outputs': deleteDocumentsAfterOutputs
+                        'module'        : 'verifier',
+                        'label'         : label,
+                        'outputs'       : outputs,
+                        'default_form'  : isDefault,
+                        'settings'      : {
+                            "supplier_verif"                 : supplierVerif,
+                            "automatic_validation_data"      : automaticValidationData,
+                            "allow_automatic_validation"     : allowAutomaticValidation,
+                            "delete_documents_after_outputs" : deleteDocumentsAfterOutputs
+                        },
                     }
                 }, {headers: this.authService.headers},
             ).pipe(
