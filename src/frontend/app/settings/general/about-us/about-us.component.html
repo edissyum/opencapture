@@ -82,21 +82,21 @@
             </button>
             <div class="settings_title text-center">
                 <h3>
-                    Open-Capture <span *ngIf="!this.loading"><b>version {{ this.currentVersion }}</b></span>
+                    Open-Capture <span *ngIf="!this.loading"><strong>version {{ this.currentVersion }}</strong></span>
                     <span *ngIf="this.lastVersion === undefined">
                         | <span class="text-red-600">{{ 'ERROR.git_connection' | translate }}</span>
                     </span>
                     <span *ngIf="!this.loading && this.lastVersion > this.currentVersion && this.isProd">
-                        | {{ 'ABOUT-US.new_version_available' | translate }} (<b>
+                        | {{ 'ABOUT-US.new_version_available' | translate }} (<strong>
                                 <a [href]="'https://github.com/edissyum/opencaptureforinvoices/releases/tag/' + this.lastVersion"
                                     target="_blank">{{ this.lastVersion }}</a>
-                            </b>)
+                            </strong>)
                     </span>
                     <span *ngIf="!this.loading && this.lastVersion < this.currentVersion && this.isProd">
-                        | {{ 'ABOUT-US.are_you_in_future' | translate }} ({{ 'ABOUT-US.last_official_version' | translate }} : <b>
+                        | {{ 'ABOUT-US.are_you_in_future' | translate }} ({{ 'ABOUT-US.last_official_version' | translate }} : <strong>
                                 <a [href]="'https://github.com/edissyum/opencaptureforinvoices/releases/tag/' + this.lastVersion"
                                     target="_blank">{{ this.lastVersion }}</a>
-                            </b>)
+                            </strong>)
                     </span>
                 </h3>
                 <hr class="border-green-400">

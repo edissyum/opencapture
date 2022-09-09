@@ -167,7 +167,7 @@
                                                 overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12"
                                           *ngIf="!field.edit_name">
                                         <span *ngIf="field.required" class="text-red-500 mr-2 relative top-0.5">*</span>
-                                        <b>{{ field.label | translate }}</b>
+                                        <strong>{{ field.label | translate }}</strong>
                                         <span *ngIf="field.type !== 'select' && field.type !== 'textarea'"> ({{ 'FORMATS.' + field.format | translate }})</span>
                                         <span *ngIf="field.type === 'select'"> ({{ 'FORMATS.select' | translate }})</span>
                                         <span *ngIf="field.type === 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>

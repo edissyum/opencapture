@@ -239,11 +239,11 @@ echo ""
 echo "######################################################################################################################"
 echo ""
 
-
 customIniFile=$defaultPath/custom/custom.ini
 if [ ! -f "$customIniFile" ]; then
     touch $customIniFile
 fi
+
 SECTIONS=$(crudini --get $defaultPath/custom/custom.ini | sed 's/:.*//')
 # shellcheck disable=SC2068
 for custom_name in ${SECTIONS[@]}; do # Do not double quote it
@@ -284,7 +284,6 @@ xargs -a apt-requirements.txt apt-get install -y >>$INFOLOG_PATH 2>>$ERRORLOG_PA
 echo ""
 echo "######################################################################################################################"
 echo ""
-
 
 if [ $pythonVenv = 'true' ]; then
     echo "Python packages installation using virtual environment....."
@@ -378,7 +377,6 @@ a2ensite opencapture.conf
 a2dissite 000-default.conf
 a2enmod rewrite
 systemctl restart apache2
-
 
 ####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content

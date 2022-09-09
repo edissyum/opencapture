@@ -123,7 +123,7 @@
                                  [cdkDropListData]="this.currentForm.settings.display['subtitles']">
                                 <div cdkDrag class="cursor-move mt-1 flex align-center items-center"
                                      *ngFor="let subtitle of this.currentForm.settings.display['subtitles']; let cpt = index">
-                                    <b *ngIf="!subtitle['updateMode']">{{ subtitle['label'] | translate }}</b>
+                                    <strong *ngIf="!subtitle['updateMode']">{{ subtitle['label'] | translate }}</strong>
                                     <mat-form-field appearance="outline" *ngIf="subtitle['updateMode']">
                                         <input matInput [value]="subtitle['label'] | translate" class="relative -top-2.5"
                                                (focusout)="updateLabel($event, subtitle)">
