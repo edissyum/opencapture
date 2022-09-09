@@ -26,7 +26,7 @@ from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, 
 
 
 def insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status,
-           nb_pages, docservers, input_settings, log, regex, config, form_data):
+           nb_pages, docservers, input_settings, log, regex, form_settings):
     try:
         filename = os.path.splitext(files.custom_file_name)
         improved_img = filename[0] + '_improved' + filename[1]
@@ -103,7 +103,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                     elif output_info[0]['output_type_id'] == 'export_maarch':
                         verifier_exports.export_maarch(output_info[0]['data'], invoice_data, log, regex, database)
 
-                    if 'delete_documents_after_outputs' in form_data and form_data['delete_documents_after_outputs']:
+                    if 'delete_documents_after_outputs' in form_settings and form_settings['delete_documents_after_outputs']:
                         delete_documents(docservers, invoice_data['path'], invoice_data['filename'], full_jpg_filename)
                         insert_invoice = False
 
@@ -463,18 +463,20 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     files.save_img_with_wand_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
 
     allow_auto = False
-    form_data = None
+    form_settings = None
     if form_id:
-        form_data = database.select({
-            'select': ['allow_automatic_validation', 'automatic_validation_data', 'delete_documents_after_outputs'],
-            'table': ['form_models'],
+        form_settings = database.select({
+            'select': ['settings'],
+            'table': ['form_models', 'form_model_settings'],
+            'left_join': ['form_models.module_settings_id = form_model_settings.setting_id'],
             'where': ['id = %s'],
             'data': [form_id]
         })
-        if form_data:
-            form_data = form_data[0]
-            if form_data['allow_automatic_validation'] and form_data['automatic_validation_data']:
-                for column in form_data['automatic_validation_data'].split(','):
+
+        if form_settings and form_settings[0]['settings']:
+            form_settings = form_settings[0]['settings']
+            if form_settings['allow_automatic_validation'] and form_settings['automatic_validation_data']:
+                for column in form_settings['automatic_validation_data'].split(','):
                     column = column.strip()
                     if column == 'supplier':
                         column = 'name'
@@ -491,10 +493,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
         log.info('All the usefull informations are found. Execute outputs action and end process')
         insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
-               'END', nb_pages, docservers, input_settings, log, regex, config, form_data)
+               'END', nb_pages, docservers, input_settings, log, regex, form_settings)
     else:
         insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
-               'NEW', nb_pages, docservers, input_settings, log, regex, config, form_data)
+               'NEW', nb_pages, docservers, input_settings, log, regex, form_settings)
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')

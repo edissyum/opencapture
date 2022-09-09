@@ -79,43 +79,6 @@ if [ -L "$defaultPath/$customId" ] && [ -e "$defaultPath/$customId" ]; then
     exit 3
 fi
 
-customIniFile=$defaultPath/custom/custom.ini
-if [ ! -f "$customIniFile" ]; then
-    touch $customIniFile
-fi
-SECTIONS=$(crudini --get $defaultPath/custom/custom.ini | sed 's/:.*//')
-# shellcheck disable=SC2068
-for custom_name in ${SECTIONS[@]}; do # Do not double quote it
-    if [ "$custom_name" == "$customId" ]; then
-       echo "######################################################"
-       echo "      Custom id \"$customId\" already exists"
-       echo "######################################################"
-       exit 4
-    fi
-done
-
-####################
-# Create custom symbolic link and folders
-ln -s "$defaultPath" "$defaultPath/$customId"
-
-customPath=$defaultPath/custom/"$customId"
-
-mkdir -p $customPath/{config,bin,assets,instance,src}/
-mkdir -p $customPath/bin/{data,ldap,scripts}/
-mkdir -p $customPath/assets/imgs/
-mkdir -p $customPath/bin/ldap/config/
-mkdir -p $customPath/instance/referencial/
-mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
-mkdir -p $customPath/bin/data/log/Supervisor/
-mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs,MailCollect}/
-mkdir -p $customPath/src/backend/
-touch $customPath/config/secret_key
-
-echo "[$oldCustomId]" >> $customIniFile
-echo "path = $defaultPath/custom/$customId" >> $customIniFile
-echo "isdefault = False" >> $customIniFile
-echo "" >> $customIniFile
-
 ####################
 # User choice
 echo ""
@@ -275,6 +238,44 @@ fi
 echo ""
 echo "######################################################################################################################"
 echo ""
+
+
+customIniFile=$defaultPath/custom/custom.ini
+if [ ! -f "$customIniFile" ]; then
+    touch $customIniFile
+fi
+SECTIONS=$(crudini --get $defaultPath/custom/custom.ini | sed 's/:.*//')
+# shellcheck disable=SC2068
+for custom_name in ${SECTIONS[@]}; do # Do not double quote it
+    if [ "$custom_name" == "$customId" ]; then
+       echo "######################################################"
+       echo "      Custom id \"$customId\" already exists"
+       echo "######################################################"
+       exit 4
+    fi
+done
+
+####################
+# Create custom symbolic link and folders
+ln -s "$defaultPath" "$defaultPath/$customId"
+
+customPath=$defaultPath/custom/"$customId"
+
+mkdir -p $customPath/{config,bin,assets,instance,src}/
+mkdir -p $customPath/bin/{data,ldap,scripts}/
+mkdir -p $customPath/assets/imgs/
+mkdir -p $customPath/bin/ldap/config/
+mkdir -p $customPath/instance/referencial/
+mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
+mkdir -p $customPath/bin/data/log/Supervisor/
+mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs,MailCollect}/
+mkdir -p $customPath/src/backend/
+touch $customPath/config/secret_key
+
+echo "[$oldCustomId]" >> $customIniFile
+echo "path = $defaultPath/custom/$customId" >> $customIniFile
+echo "isdefault = False" >> $customIniFile
+echo "" >> $customIniFile
 
 ####################
 # Install packages
