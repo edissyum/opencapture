@@ -73,7 +73,7 @@ ALTER TABLE "form_models" DROP COLUMN automatic_validation_data;
 ALTER TABLE "form_models" DROP COLUMN metadata_method;
 ALTER TABLE "form_models" DROP COLUMN export_zip_file;
 ALTER TABLE "form_models" DROP COLUMN display;
-ALTER TABLE "form_models" ADD COLUMN module_settings_id INTEGER;
+ALTER TABLE "form_models" ADD  COLUMN settings JSONB DEFAULT '{}';
 
 CREATE TABLE "form_model_settings"
 (
