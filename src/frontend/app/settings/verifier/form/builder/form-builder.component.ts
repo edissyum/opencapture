@@ -941,8 +941,6 @@ export class FormBuilderComponent implements OnInit {
         });
 
         if (label !== '' && outputs.length >= 1) {
-            console.log("settings : ");
-            console.log(settings);
             this.http.put(environment['url'] + '/ws/forms/update/' + this.formId, {
                     'args': {
                         'label'        : label,
