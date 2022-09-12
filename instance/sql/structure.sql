@@ -18,9 +18,9 @@ CREATE TABLE "form_models"
     "default_form"                   BOOLEAN       DEFAULT False,
     "enabled"                        BOOLEAN       DEFAULT True,
     "outputs"                        TEXT[],
-    "status"                         VARCHAR(5)    DEFAULT 'OK',
     "module"                         VARCHAR(10),
-    "module_settings_id"             INTEGER
+    "status"                         VARCHAR(5)    DEFAULT 'OK',
+    "settings"                       JSONB         DEFAULT '{}'
 );
 
 CREATE TABLE "form_model_settings"
