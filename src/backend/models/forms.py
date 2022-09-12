@@ -30,8 +30,7 @@ def get_forms(args):
     error = None
     forms = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['form_models', 'form_model_settings'],
-        'left_join': ['form_models.module_settings_id = form_model_settings.setting_id'],
+        'table': ['form_models'],
         'where': ['1=%s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
         'limit': str(args['limit']) if 'limit' in args else [],
@@ -49,8 +48,7 @@ def get_form_by_id(args):
     error = None
     form = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['form_models', 'form_model_settings'],
-        'left_join': ['form_models.module_settings_id = form_model_settings.setting_id'],
+        'table': ['form_models'],
         'where': ['id = %s', 'status <> %s'],
         'data': [args['form_id'], 'DEL']
     })
@@ -63,7 +61,7 @@ def get_form_by_id(args):
     return form, error
 
 
-def get_form_settings_by_id(args):
+def get_form_settings_by_module(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     database = _vars[0]
@@ -71,8 +69,8 @@ def get_form_settings_by_id(args):
     form = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['form_model_settings'],
-        'where': ['setting_id = %s'],
-        'data': [args['setting_id']]
+        'where': ['module = %s'],
+        'data': [args['module']]
     })
 
     if not form:
@@ -141,25 +139,6 @@ def update_form_fields(args):
     return res, error
 
 
-def update_form_setting(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
-    error = None
-
-    res = database.update({
-        'table': ['form_model_settings'],
-        'set': args['set'],
-        'where': ['setting_id = %s'],
-        'data': [args['setting_id']]
-    })
-
-    if not res:
-        error = gettext('UPDATE_FORM_SETTINGS_ERROR')
-
-    return res, error
-
-
 def add_form_fields(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
@@ -199,10 +178,7 @@ def add_form(args):
                 'label': args['label'],
                 'module': args['module'],
                 'default_form': args['default_form'],
-                'automatic_validation_data': args['automatic_validation_data'] if 'automatic_validation_data' in args else '',
-                'allow_automatic_validation': args['allow_automatic_validation'] if 'allow_automatic_validation' in args else False,
-                'delete_documents_after_outputs': args['delete_documents_after_outputs'] if 'delete_documents_after_outputs' in args else False,
-                'supplier_verif': args['supplier_verif'] if 'supplier_verif' in args else False
+                'settings': args['settings'],
             }
         }
         res = database.insert(args)
