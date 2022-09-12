@@ -90,10 +90,10 @@ def launch_referential_update(form_data):
 
 def retrieve_referential(form_id):
     form = forms.get_form_by_id(form_id)
-    if form and form[0]['metadata_method']:
+    if form and form[0]['settings']['metadata_method']:
         res = launch_referential_update({
             'form_id': form[0]['id'],
-            'metadata_method': form[0]['metadata_method']
+            'metadata_method': form[0]['settings']['metadata_method']
         })
         if res[1] != 200:
             return res
@@ -653,7 +653,7 @@ def validate(args):
         """
             Zip all exported files if enabled
         """
-        if form[0]['export_zip_file']:
+        if form[0]['settings']['export_zip_file']:
             files_to_zip = []
             for file in exported_files:
                 files_to_zip.append({
@@ -661,7 +661,7 @@ def validate(args):
                     'path_in_zip': os.path.basename(file)
                 })
             mask_args = {
-                'mask': form[0]['export_zip_file'],
+                'mask': form[0]['settings']['export_zip_file'],
                 'separator': '',
             }
             export_zip_file = _Splitter.get_mask_result(None, args['batchMetadata'], now, mask_args)

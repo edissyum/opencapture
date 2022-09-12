@@ -134,7 +134,7 @@ def get_split_methods():
 def get_metadata_methods(form_id=False):
     if form_id:
         form_infos = forms.get_form_by_id(form_id)
-        split_methods, status = splitter.get_metadata_methods(form_infos[0]['metadata_method'])
+        split_methods, status = splitter.get_metadata_methods(form_infos[0]['settings']['metadata_method'])
     else:
         split_methods, status = splitter.get_metadata_methods()
     response = {

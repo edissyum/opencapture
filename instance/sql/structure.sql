@@ -25,9 +25,9 @@ CREATE TABLE "form_models"
 
 CREATE TABLE "form_model_settings"
 (
-    "setting_id" SERIAL      UNIQUE PRIMARY KEY,
-    "module"     VARCHAR(10),
-    "settings"       JSONB       DEFAULT '{}'
+    "id"       SERIAL      UNIQUE PRIMARY KEY,
+    "module"   VARCHAR(10),
+    "settings" JSONB       DEFAULT '{}'
 );
 
 CREATE TABLE "positions_masks"
