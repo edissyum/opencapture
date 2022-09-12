@@ -271,6 +271,7 @@
 		"supplier": "Fournisseur",
 		"supplier_verif": "Vérification du fournisseur",
 		"supplier_verif_hint": "Vérification via API des SIRET / SIREN / TVA INTRA",
+		"update_label": "Mettre à jour le libellé du champ",
 		"updated": "Formulaire mis à jour avec succès",
 		"validate": "Valider"
 	},
