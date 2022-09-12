@@ -48,8 +48,7 @@ def get_form_by_id(args):
     error = None
     form = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['form_models', 'form_model_settings'],
-        'left_join': ['form_models.module_settings_id = form_model_settings.setting_id'],
+        'table': ['form_models'],
         'where': ['id = %s', 'status <> %s'],
         'data': [args['form_id'], 'DEL']
     })

@@ -941,8 +941,15 @@ export class FormBuilderComponent implements OnInit {
         });
 
         if (label !== '' && outputs.length >= 1) {
+            console.log("settings : ");
+            console.log(settings);
             this.http.put(environment['url'] + '/ws/forms/update/' + this.formId, {
-                    'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs, 'settings': settings}
+                    'args': {
+                        'label'        : label,
+                        'default_form' : isDefault,
+                        'outputs'      : outputs,
+                        'settings'     : settings
+                    }
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {

@@ -55,15 +55,18 @@ def add_form(args):
 
     if 'settings' in args:
         for key in args['settings']:
-            form_settings[key] = args['settings'][key]
-    args['settings'] = json.dumps(form_settings)
+            form_settings['settings'][key] = args['settings'][key]
+    args['settings'] = json.dumps(form_settings['settings'])
 
     form_id, error = forms.add_form(args)
     if form_id:
         if 'default_form' in args and args['default_form'] is True:
             default_form, error = forms.get_default_form({})
             if not error and default_form['id'] != form_id:
-                forms.update_form({'set': {'default_form': False}, 'form_id': default_form['id']})
+                forms.update_form({
+                    'set': {'default_form': False},
+                    'form_id': default_form['id']
+                })
         response = {
             "id": form_id
         }
@@ -142,13 +145,19 @@ def get_default_form():
 
 
 def update_form(form_id, args):
-    _, error = forms.get_form_by_id({'form_id': form_id})
+    form, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         # Remove previous default form is the updated one is set to default
         if 'default_form' in args and args['default_form'] is True:
             default_form, error = forms.get_default_form({})
             if not error and default_form['id'] != form_id:
                 forms.update_form({'set': {'default_form': False}, 'form_id': default_form['id']})
+
+        form_old_settings = form['settings']
+        for key in args['settings']:
+            form_old_settings[key] = args['settings'][key]
+
+        args['settings'] = json.dumps(form_old_settings)
 
         res, error = forms.update_form({'set': args, 'form_id': form_id})
 
