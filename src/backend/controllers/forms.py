@@ -153,11 +153,7 @@ def update_form(form_id, args):
             if not error and default_form['id'] != form_id:
                 forms.update_form({'set': {'default_form': False}, 'form_id': default_form['id']})
 
-        # form_old_settings = form['settings']
-        # for key in args['settings']:
-        #     form_old_settings[key] = args['settings'][key]
-        # args['settings'] = json.dumps(form_old_settings)
-
+        # Update form settings
         for setting in args['settings']:
             try:
                 if type(args['settings'][setting]) is bool:
@@ -168,6 +164,10 @@ def update_form(form_id, args):
                     forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '\"" + str(args['settings'][setting]) + "\"')"}, 'form_id': form_id})
             except Exception:
                 forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '\"" + str(args['settings'][setting]) + "\"')"}, 'form_id': form_id})
+
+        # Update form other database columns
+        del args['settings']
+        res, error = forms.update_form({'set': args, 'form_id': form_id})
 
         if error is None:
             return '', 200

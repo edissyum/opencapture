@@ -41,7 +41,7 @@ export class SplitterFormBuilderComponent implements OnInit {
     loadingCustomFields     : boolean   = true;
     outputs                 : any[]     = [];
     metadataMethods         : any[]     = [];
-    form            : any       = {
+    form                    : any       = {
         'label': {
             'control': new FormControl(),
         },
@@ -49,7 +49,6 @@ export class SplitterFormBuilderComponent implements OnInit {
             'control': new FormControl(),
         },
     };
-
     formSettings            : any       = {
         'metadata_method': {
             'control': new FormControl(),
@@ -58,7 +57,6 @@ export class SplitterFormBuilderComponent implements OnInit {
             'control': new FormControl(),
         },
     };
-
     outputForm              : any       = [
         {
             control: new FormControl(),
@@ -67,6 +65,15 @@ export class SplitterFormBuilderComponent implements OnInit {
     ];
     formId                  : any;
     creationMode            : boolean   = true;
+    labelType               : any []    = [
+        marker('FORMATS.text'),
+        marker('TYPES.text'),
+        marker('TYPES.textarea'),
+        marker('TYPES.date'),
+        marker('TYPES.select'),
+        marker('VERIFIER.field_settings'),
+        marker('FORMS.delete_field'),
+    ];
     fieldCategories         : any []    = [
         {
             'id'    : 'batch_metadata',
