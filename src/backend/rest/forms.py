@@ -86,19 +86,11 @@ def update_form(form_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('forms/updateFormSettings/<int:setting_id>', methods=['PUT'])
+@bp.route('forms/updateDisplay/<int:form_id>', methods=['PUT'])
 @auth.token_required
-def update_form_settings(setting_id):
-    data = request.json['args']
-    res = forms.update_form_settings(data, setting_id)
-    return make_response(jsonify(res[0])), res[1]
-
-
-@bp.route('forms/updateDisplay/<int:setting_id>', methods=['PUT'])
-@auth.token_required
-def update_form_display(setting_id):
+def update_form_display(form_id):
     display = request.json
-    res = forms.update_form_settings({"display": json.dumps(display)}, setting_id)
+    res = forms.update_form_settings({"display": json.dumps(display)}, form_id)
     return make_response(jsonify(res[0])), res[1]
 
 

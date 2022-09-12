@@ -170,7 +170,7 @@ export class VerifierDisplayComponent implements OnInit {
        this.currentForm.settings.display.subtitles.forEach((element: any) => {
             delete element['updateMode'];
         });
-        this.http.put(environment['url'] + '/ws/forms/updateDisplay/' + this.currentForm.module_settings_id, this.currentForm.settings.display,
+        this.http.put(environment['url'] + '/ws/forms/updateDisplay/' + this.currentForm.id, this.currentForm.settings.display,
             {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.historyService.addHistory('verifier', 'update_form_display', this.translate.instant('HISTORY-DESC.update_form_display', {'form': this.currentForm.label}))
