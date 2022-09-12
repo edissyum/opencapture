@@ -41,13 +41,16 @@ export class SplitterFormBuilderComponent implements OnInit {
     loadingCustomFields     : boolean   = true;
     outputs                 : any[]     = [];
     metadataMethods         : any[]     = [];
-    form                    : any       = {
+    form            : any       = {
         'label': {
             'control': new FormControl(),
         },
         'default_form': {
             'control': new FormControl(),
         },
+    };
+
+    formSettings            : any       = {
         'metadata_method': {
             'control': new FormControl(),
         },
@@ -55,6 +58,7 @@ export class SplitterFormBuilderComponent implements OnInit {
             'control': new FormControl(),
         },
     };
+
     outputForm              : any       = [
         {
             control: new FormControl(),
@@ -63,15 +67,6 @@ export class SplitterFormBuilderComponent implements OnInit {
     ];
     formId                  : any;
     creationMode            : boolean   = true;
-    labelType               : any []    = [
-        marker('FORMATS.text'),
-        marker('TYPES.text'),
-        marker('TYPES.textarea'),
-        marker('TYPES.date'),
-        marker('TYPES.select'),
-        marker('VERIFIER.field_settings'),
-        marker('FORMS.delete_field'),
-    ];
     fieldCategories         : any []    = [
         {
             'id'    : 'batch_metadata',
@@ -203,6 +198,14 @@ export class SplitterFormBuilderComponent implements OnInit {
                                 }
                             }
 
+                            for (const field in this.formSettings) {
+                                for (const setting in data['settings']) {
+                                    if (setting === field) {
+                                        this.formSettings[setting].control.setValue(data['settings'][setting]);
+                                    }
+                                }
+                            }
+
                             if (data.outputs) {
                                 const length = data.outputs.length;
                                 if (length === 1) this.outputForm[0].control.setValue(data.outputs[0]);
@@ -255,14 +258,14 @@ export class SplitterFormBuilderComponent implements OnInit {
                                         this.availableFieldsParent[parent].values.push(
                                             {
                                                 id          : 'custom_' + data.customFields[field].id,
-                                                label       : data.customFields[field].label,
-                                                label_short : data.customFields[field].label_short,
                                                 metadata_key: data.customFields[field].metadata_key,
+                                                label_short : data.customFields[field].label_short,
                                                 settings    : data.customFields[field].settings,
-                                                unit        : 'custom',
+                                                required    : data.customFields[field].required,
+                                                label       : data.customFields[field].label,
                                                 type        : data.customFields[field].type,
                                                 format      : data.customFields[field].type,
-                                                required    : data.customFields[field].required,
+                                                unit        : 'custom',
                                                 class       : "w-1/3",
                                                 class_label : "1/33",
                                             }
@@ -419,8 +422,8 @@ export class SplitterFormBuilderComponent implements OnInit {
     updateForm() {
         const label             = this.form.label.control.value;
         const isDefault         = this.form.default_form.control.value;
-        const metadataMethod    = this.form.metadata_method.control.value;
-        const exportZipFile     = this.form.export_zip_file.control.value;
+        const metadataMethod    = this.formSettings.metadata_method.control.value;
+        const exportZipFile     = this.formSettings.export_zip_file.control.value;
         const outputs: any[]    = [];
         this.outputForm.forEach((element: any) => {
             if (element.control.value) outputs.push(element.control.value);
@@ -429,11 +432,13 @@ export class SplitterFormBuilderComponent implements OnInit {
         if (label !== '' && outputs.length >= 1) {
             this.http.put(environment['url'] + '/ws/forms/update/' + this.formId, {
                     'args': {
-                        'label'             : label,
-                        'default_form'      : isDefault,
-                        'outputs'           : outputs,
-                        'metadata_method'   : metadataMethod,
-                        'export_zip_file'   : exportZipFile
+                        'label'        : label,
+                        'default_form' : isDefault,
+                        'outputs'      : outputs,
+                        'settings'     : {
+                            'metadata_method' : metadataMethod,
+                            'export_zip_file' : exportZipFile
+                        },
                     }
                 }, {headers: this.authService.headers},
             ).pipe(
@@ -463,15 +468,21 @@ export class SplitterFormBuilderComponent implements OnInit {
     }
 
     createForm() {
-        const label = this.form.label.control.value;
-        const isDefault = this.form.default_form.control.value;
+        const label             = this.form.label.control.value;
+        const isDefault         = this.form.default_form.control.value;
+        const metadataMethod    = this.formSettings.metadata_method.control.value;
+        const exportZipFile     = this.formSettings.export_zip_file.control.value;
         if (label) {
             this.http.post(environment['url'] + '/ws/forms/add',
                 {
                     'args': {
                         'label'         : label,
                         'default_form'  : isDefault,
-                        'module'        : "splitter"
+                        'module'        : "splitter",
+                        'settings'      : {
+                            'metadata_method' : metadataMethod,
+                            'export_zip_file' : exportZipFile
+                        },
                     }
                 }, {headers: this.authService.headers},
             ).pipe(

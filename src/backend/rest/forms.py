@@ -14,8 +14,7 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-
-import json
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask import Blueprint, request, make_response, jsonify
 from src.backend.import_controllers import auth
@@ -90,7 +89,7 @@ def update_form(form_id):
 @auth.token_required
 def update_form_display(form_id):
     display = request.json
-    res = forms.update_form_settings({"display": json.dumps(display)}, form_id)
+    res = forms.update_form(form_id, {"settings": {"display": display}})
     return make_response(jsonify(res[0])), res[1]
 
 

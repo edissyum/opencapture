@@ -153,22 +153,28 @@ def update_form(form_id, args):
             if not error and default_form['id'] != form_id:
                 forms.update_form({'set': {'default_form': False}, 'form_id': default_form['id']})
 
-        form_old_settings = form['settings']
-        for key in args['settings']:
-            form_old_settings[key] = args['settings'][key]
+        # form_old_settings = form['settings']
+        # for key in args['settings']:
+        #     form_old_settings[key] = args['settings'][key]
+        # args['settings'] = json.dumps(form_old_settings)
 
-        args['settings'] = json.dumps(form_old_settings)
+        for setting in args['settings']:
+            try:
+                if type(args['settings'][setting]) is bool:
+                    forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + str(args['settings'][setting]).lower() + "')"}, 'form_id': form_id})
+                elif args['settings'][setting] and type(eval(args['settings'][setting])) is dict:
+                    forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + str(args['settings'][setting]) + "')"}, 'form_id': form_id})
+                else:
+                    forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '\"" + str(args['settings'][setting]) + "\"')"}, 'form_id': form_id})
+            except Exception:
+                forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '\"" + str(args['settings'][setting]) + "\"')"}, 'form_id': form_id})
 
-        res, error = forms.update_form({'set': args, 'form_id': form_id})
+        if error is None:
+            return '', 200
 
-        if res:
-            response = {
-                "res": res
-            }
-            return response, 200
         else:
             response = {
-                "errors": gettext("FORMS_ERROR"),
+                "errors": gettext('UPDATE_FORMS_FIELDS_ERROR'),
                 "message": error
             }
             return response, 401

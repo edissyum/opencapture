@@ -139,20 +139,6 @@ def update_form_fields(args):
     return res, error
 
 
-def add_form_settings(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
-    args = {
-        'table': 'form_models_settings',
-        'columns': {
-            'form_id': str(args),
-        }
-    }
-    database.insert(args)
-    return '', False
-
-
 def add_form_fields(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)

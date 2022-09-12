@@ -101,7 +101,7 @@
                 </div>
                 <mat-form-field>
                     <mat-label>{{ "HEADER.choose_metadata_method" | translate }}</mat-label>
-                    <mat-select [formControl]="this.form['metadata_method'].control">
+                    <mat-select [formControl]="this.formSettings['metadata_method'].control">
                         <mat-option *ngFor="let option of this.metadataMethods" value="{{ option.id }}">
                             {{ option.label }}
                         </mat-option>
@@ -127,7 +127,7 @@
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>{{ "FORMS.export_zip_file" | translate }}</mat-label>
-                    <input matInput [formControl]="this.form['export_zip_file'].control">
+                    <input matInput [formControl]="this.formSettings['export_zip_file'].control">
                     <mat-hint>{{ "FORMS.export_zip_file_hint" | translate }}</mat-hint>
                 </mat-form-field>
             </div>
