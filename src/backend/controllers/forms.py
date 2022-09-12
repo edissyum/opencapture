@@ -153,11 +153,6 @@ def update_form(form_id, args):
             if not error and default_form['id'] != form_id:
                 forms.update_form({'set': {'default_form': False}, 'form_id': default_form['id']})
 
-        # form_old_settings = form['settings']
-        # for key in args['settings']:
-        #     form_old_settings[key] = args['settings'][key]
-        # args['settings'] = json.dumps(form_old_settings)
-
         for setting in args['settings']:
             try:
                 if type(args['settings'][setting]) is bool:
