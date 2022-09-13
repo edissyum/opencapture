@@ -159,7 +159,8 @@ def update_form(form_id, args):
                 if type(args['settings'][setting]) is bool:
                     forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + str(args['settings'][setting]).lower() + "')"}, 'form_id': form_id})
                 elif args['settings'][setting] and type(args['settings'][setting]) is dict:
-                    forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + json.dumps(args['settings'][setting]) + "')"}, 'form_id': form_id})
+                    settings_data = json.dumps(args['settings'][setting]).replace("'", "''")
+                    forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + settings_data + "')"}, 'form_id': form_id})
                 else:
                     forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '\"" + str(args['settings'][setting]) + "\"')"}, 'form_id': form_id})
             except Exception:

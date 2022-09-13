@@ -271,6 +271,7 @@
 		"supplier": "Supplier",
 		"supplier_verif": "Supplication verification",
 		"supplier_verif_hint": "verification via API for SIRET / SIREN / TVA INTRA",
+		"update_label": "Update field label",
 		"updated": "Form updated successfully",
 		"validate": "Validate"
 	},

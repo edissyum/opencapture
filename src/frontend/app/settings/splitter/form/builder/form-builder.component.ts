@@ -73,6 +73,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         marker('TYPES.select'),
         marker('VERIFIER.field_settings'),
         marker('FORMS.delete_field'),
+        marker('FORMS.update_label')
     ];
     fieldCategories         : any []    = [
         {

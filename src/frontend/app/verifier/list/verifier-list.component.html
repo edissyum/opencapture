@@ -155,7 +155,7 @@
 
                     <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
 
-                    <div *ngIf="this.invoices.length == 0" class="m-4">
+                    <div *ngIf="this.invoices.length === 0" class="m-4">
                         {{ 'SPLITTER.no_batch_found' | translate }}
                     </div>
 
@@ -219,7 +219,7 @@
                                     </mat-card-title>
                                     <mat-card-subtitle class="mt-2 -mb-1">
                                         <div class="-mb-1 text-ellipsis overflow-hidden w-full inline-block"
-                                             *ngFor="let subtitles of invoice.display['subtitles'];">
+                                             *ngFor="let subtitles of invoice.display['subtitles']">
                                             <strong>{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
                                         </div>
                                     </mat-card-subtitle>

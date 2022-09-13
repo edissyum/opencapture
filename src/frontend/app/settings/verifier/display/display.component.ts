@@ -31,9 +31,6 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import {
-    getParsedCommandLineOfConfigFile
-} from "@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript";
 
 @Component({
     selector: 'app-display-list',
@@ -167,13 +164,14 @@ export class VerifierDisplayComponent implements OnInit {
     }
 
     updateDisplay() {
-       this.currentForm.settings.display.subtitles.forEach((element: any) => {
+        this.currentForm.settings.display.subtitles.forEach((element: any) => {
             delete element['updateMode'];
         });
+
         this.http.put(environment['url'] + '/ws/forms/updateDisplay/' + this.currentForm.id, this.currentForm.settings.display,
             {headers: this.authService.headers}).pipe(
             tap(() => {
-                this.historyService.addHistory('verifier', 'update_form_display', this.translate.instant('HISTORY-DESC.update_form_display', {'form': this.currentForm.label}))
+                this.historyService.addHistory('verifier', 'update_form_display', this.translate.instant('HISTORY-DESC.update_form_display', {'form': this.currentForm.label}));
                 this.notify.success(this.translate.instant('FORMS.display_updated_success'));
             }),
             catchError((err: any) => {

@@ -16,13 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
-import sys
 import time
 import tempfile
 from kuyruk import Kuyruk
+from src.backend.functions import recursive_delete, get_custom_array
+from src.backend.import_classes import _Files, _Log, _SeparatorQR, _Mail
 from src.backend.main import create_classes_from_custom_id, check_file, timer, str2bool
-from src.backend.functions import recursive_delete, get_custom_array, retrieve_config_from_custom_id
-from src.backend.import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet, _SMTP, _Mail
 
 custom_array = get_custom_array()
 

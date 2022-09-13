@@ -73,7 +73,7 @@ ALTER TABLE "form_models" DROP COLUMN automatic_validation_data;
 ALTER TABLE "form_models" DROP COLUMN metadata_method;
 ALTER TABLE "form_models" DROP COLUMN export_zip_file;
 ALTER TABLE "form_models" DROP COLUMN display;
-ALTER TABLE "form_models" ADD  COLUMN settings JSONB DEFAULT '{}';
+ALTER TABLE "form_models" ADD COLUMN settings JSONB DEFAULT '{}';
 
 CREATE TABLE "form_model_settings"
 (
@@ -88,7 +88,7 @@ INSERT INTO "form_model_settings" ("setting_id", "module", "settings") VALUES (1
             {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
             {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
             {"id": "date", "label": "VERIFIER.register_date"},
-            {"id": "original_file", "label": "VERIFIER.original_file"},
+            {"id": "original_filename", "label": "VERIFIER.original_file"},
             {"id": "form_label", "label": "ACCOUNTS.form"}
         ]
     },
@@ -102,5 +102,3 @@ INSERT INTO "form_model_settings" ("setting_id", "module", "settings") VALUES (2
     "export_zip_file": ""
 }');
 
-UPDATE form_models SET module_settings_id = 1 WHERE module = 'verifier';
-UPDATE form_models SET module_settings_id = 2 WHERE module = 'splitter';

@@ -55,7 +55,7 @@ export class FormBuilderComponent implements OnInit {
             'control': new FormControl(),
         }
     };
-    formSettings           : any       = {
+    formSettings            : any       = {
         'allow_automatic_validation': {
             'control': new FormControl(),
         },
@@ -665,8 +665,8 @@ export class FormBuilderComponent implements OnInit {
         this.formId = this.route.snapshot.params['id'];
 
         this.http.get(environment['url'] + '/ws/outputs/list?module=verifier', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.outputs = data.outputs;
+            tap((res_outputs: any) => {
+                this.outputs = res_outputs.outputs;
                 if (this.formId) {
                     this.creationMode = false;
                     this.http.get(environment['url'] + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(

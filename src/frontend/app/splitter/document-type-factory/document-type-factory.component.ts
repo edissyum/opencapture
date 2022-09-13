@@ -357,7 +357,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 this.treeDataObj.loading = true;
                 this.http.get(environment['url'] + '/ws/doctypes/clone/' + sourceFormId + '/' + destFormId,
                     {headers: this.authService.headers}).pipe(
-                    tap((data: any) => {
+                    tap(() => {
                         this.treeDataObj.retrieveDocTypes(this.selectFormControl.value);
                         this.notify.success(this.translate.instant('DOCTYPE.doctypes_clone_success'));
                     }),
