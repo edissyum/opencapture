@@ -184,6 +184,8 @@
                                         </button>
                                     </span>
                                     <input class="cursor-pointer" matInput type="text" readonly>
+                                    <input id="{{ field.id }}_checkbox" type="checkbox"
+                                           class="accent-green-400 checkBox_list cursor-pointer absolute -top-0.5 -right-0.5">
                                     <div class="absolute top-0 -right-4" *ngIf="!field.edit_name">
                                         <button mat-button [matMenuTriggerFor]="menu" matTooltipPosition="above"
                                                 [matTooltip]="this.translate.instant('VERIFIER.field_settings')">

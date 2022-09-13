@@ -58,7 +58,7 @@
         "@types/node": "^18.7.17",
         "@typescript-eslint/eslint-plugin": "5.37.0",
         "@typescript-eslint/parser": "5.37.0",
-        "autoprefixer": "^10.4.9",
+        "autoprefixer": "^10.4.10",
         "eslint": "^8.23.1",
         "eslint-plugin-import": "latest",
         "eslint-plugin-jsdoc": "latest",
