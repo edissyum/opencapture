@@ -70,10 +70,10 @@ def get_form_by_account_id(supplier_id):
     return make_response(jsonify(_form[0])), _form[1]
 
 
-@bp.route('forms/getDefault', methods=['GET'])
+@bp.route('forms/getDefault/<string:module>', methods=['GET'])
 @auth.token_required
-def get_default_form():
-    _form = forms.get_default_form_by_module()
+def get_default_form(module):
+    _form = forms.get_default_form_by_module(module)
     return make_response(jsonify(_form[0])), _form[1]
 
 
