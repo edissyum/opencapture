@@ -26,7 +26,7 @@
             </span>
             <span class="col-span-1 text-right">
                 <i *ngIf="task.status === 'in_progress'" class="fas fa-circle-notch fa-spin fa-lg my-4"></i>
-                <i *ngIf="task.status === 'error'" class="fas fa-xmark fa-lg my-4 cursor-pointer"
+                <i *ngIf="task.status === 'error'" class="fas fa-triangle-exclamation fa-lg my-4 text-amber-500 cursor-pointer"
                     matTooltip="{{ 'GLOBAL.task_error' | translate }} : {{ task.error}}"></i>
                 <i *ngIf="task.status === 'done'" class="fa-solid fa-check fa-lg my-4"
                    matTooltip="{{ 'GLOBAL.end_time' | translate }} {{ task.endTime}}"></i>
