@@ -55,7 +55,7 @@ export class FormBuilderComponent implements OnInit {
             'control': new FormControl(),
         }
     };
-    formSettings           : any       = {
+    formSettings            : any       = {
         'allow_automatic_validation': {
             'control': new FormControl(),
         },
