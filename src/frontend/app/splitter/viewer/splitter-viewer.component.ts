@@ -651,7 +651,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     getFormFieldsValues() {
         for (const field of this.fieldsCategories['batch_metadata']) {
-            if (this.batchForm.get(field.label_short) && !this.batchMetadataValues.hasOwnProperty(field.label_short)) {
+            if (this.batchForm.get(field.label_short)) {
                 this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
                 if (field.type === 'date') {
                     this.batchMetadataValues[field.label_short] = moment(this.batchMetadataValues[field.label_short]).format('L');
