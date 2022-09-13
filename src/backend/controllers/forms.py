@@ -61,7 +61,7 @@ def add_form(args):
     form_id, error = forms.add_form(args)
     if form_id:
         if 'default_form' in args and args['default_form'] is True:
-            default_form, error = forms.get_default_form({})
+            default_form, error = forms.get_default_form_by_module({'module': args['module']})
             if not error and default_form['id'] != form_id:
                 forms.update_form({
                     'set': {'default_form': False},
@@ -106,10 +106,10 @@ def get_form_fields_by_supplier_id(supplier_id):
         if error is None:
             return form_info, 200
         else:
-            form_info = get_default_form()
+            form_info = get_default_form_by_module('verifier')
             return form_info[0], form_info[1]
     else:
-        return get_default_form()
+        return get_default_form_by_module('verifier')
 
 
 def get_form_fields_by_form_id(form_id):
@@ -127,8 +127,8 @@ def get_form_fields_by_form_id(form_id):
         return response, 401
 
 
-def get_default_form():
-    form_id, error = forms.get_default_form({'select': ['id']})
+def get_default_form_by_module(module):
+    form_id, error = forms.get_default_form_by_module({'select': ['id'], 'module': module})
     if error is None:
         form_info, error = forms.get_fields({
             'form_id': form_id['id']
@@ -149,7 +149,7 @@ def update_form(form_id, args):
     if error is None:
         # Remove previous default form is the updated one is set to default
         if 'default_form' in args and args['default_form'] is True:
-            default_form, error = forms.get_default_form({})
+            default_form, error = forms.get_default_form_by_module({'module': form['module']})
             if not error and default_form['id'] != form_id:
                 forms.update_form({'set': {'default_form': False}, 'form_id': default_form['id']})
 
