@@ -82,7 +82,7 @@ CREATE TABLE "form_model_settings"
     "settings"   JSONB       DEFAULT '{}'
 );
 
-INSERT INTO "form_model_settings" ("setting_id", "module", "settings") VALUES (1, 'verifier', '{
+INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verifier', '{
     "display": {
         "subtitles": [
             {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
@@ -97,7 +97,7 @@ INSERT INTO "form_model_settings" ("setting_id", "module", "settings") VALUES (1
     "allow_automatic_validation": false,
     "delete_documents_after_outputs": false
 }');
-INSERT INTO "form_model_settings" ("setting_id", "module", "settings") VALUES (2, 'splitter', '{
+INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (2, 'splitter', '{
     "metadata_method": "",
     "export_zip_file": ""
 }');
