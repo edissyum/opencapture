@@ -950,8 +950,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.getFormFieldsValues();
         for(const field of this.fieldsCategories['batch_metadata']) {
             if(field.validationMask) {
-                console.log(this.batchMetadataValues[field.label_short]);
-                console.log(field.validationMask);
                 if(!this.batchMetadataValues[field.label_short].match(field.validationMask)) {
                     this.notify.error(this.translate.instant('SPLITTER.field_form_not_respected', {'field': field.label}));
                     this.loading = false;
