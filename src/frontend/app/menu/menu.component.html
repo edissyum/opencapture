@@ -76,7 +76,7 @@
                     <div [class.hidden]="!this.profileDropdownCurrentState" class="origin-top-right absolute md:right-0 mt-2 w-56 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
                          role="menu" aria-orientation="vertical" aria-labelledby="user-menu" *ngIf="this.userService.user">
                         <span class="block text-center mb-2 text-gray-900">
-                            <b>{{ this.userService.user['lastname'] }}</b> {{ this.userService.user['firstname'] }} ({{ this.userService.user['username'] }})
+                            <strong>{{ this.userService.user['lastname'] }}</strong> {{ this.userService.user['firstname'] }} ({{ this.userService.user['username'] }})
                             <i *ngIf="this.userService.user['role']">{{ this.userService.user['role']['label'] }}</i>
                             <hr>
                         </span>
@@ -149,7 +149,7 @@
                 </div>
                 <div class="ml-6 relative">
                     <span class="text-gray-600" *ngIf="this.userService.user">
-                        <b>{{ this.userService.user['lastname'] }}</b>
+                        <strong>{{ this.userService.user['lastname'] }}</strong>
                         {{ this.userService.user['firstname'] }} ({{ this.userService.user['username'] }})
                     </span>
                 </div>
