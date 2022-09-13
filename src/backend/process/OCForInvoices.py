@@ -56,20 +56,19 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
         })
 
     if args.get('isMail') is None or args.get('isMail') is False:
-        if 'input_id' in args:
-            if input_settings:
-                if input_settings['purchase_or_sale']:
-                    invoice_data.update({
-                        'purchase_or_sale': input_settings['purchase_or_sale']
-                    })
-                if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
-                    invoice_data.update({
-                        'form_id': input_settings['default_form_id']
-                    })
-                if input_settings['customer_id']:
-                    invoice_data.update({
-                        'customer_id': input_settings['customer_id']
-                    })
+        if 'input_id' in args and input_settings:
+            if input_settings['purchase_or_sale']:
+                invoice_data.update({
+                    'purchase_or_sale': input_settings['purchase_or_sale']
+                })
+            if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
+                invoice_data.update({
+                    'form_id': input_settings['default_form_id']
+                })
+            if input_settings['customer_id']:
+                invoice_data.update({
+                    'customer_id': input_settings['customer_id']
+                })
     else:
         if 'customer_id' in args and args['customer_id']:
             invoice_data.update({
@@ -467,8 +466,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     if form_id:
         form_settings = database.select({
             'select': ['settings'],
-            'table': ['form_models', 'form_model_settings'],
-            'left_join': ['form_models.module_settings_id = form_model_settings.setting_id'],
+            'table': ['form_models'],
             'where': ['id = %s'],
             'data': [form_id]
         })
@@ -480,10 +478,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     column = column.strip()
                     if column == 'supplier':
                         column = 'name'
-                    elif column == 'footer':
-                        if footer:
-                            allow_auto = True
-                            continue
+                    elif column == 'footer' and footer:
+                        allow_auto = True
+                        continue
                     if column in datas and datas[column]:
                         allow_auto = True
                     else:
