@@ -77,9 +77,9 @@ ALTER TABLE "form_models" ADD COLUMN settings JSONB DEFAULT '{}';
 
 CREATE TABLE "form_model_settings"
 (
-    "setting_id" SERIAL      UNIQUE PRIMARY KEY,
-    "module"     VARCHAR(10),
-    "settings"   JSONB       DEFAULT '{}'
+    "id"        SERIAL      UNIQUE PRIMARY KEY,
+    "module"    VARCHAR(10),
+    "settings"  JSONB       DEFAULT '{}'
 );
 
 INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verifier', '{
