@@ -433,7 +433,7 @@ export class VerifierViewerComponent implements OnInit {
         if (this.invoice.supplier_id)
             return await this.http.get(environment['url'] + '/ws/forms/fields/getBySupplierId/' + this.invoice.supplier_id, {headers: this.authService.headers}).toPromise();
         else
-            return await this.http.get(environment['url'] + '/ws/forms/getDefault', {headers: this.authService.headers}).toPromise();
+            return await this.http.get(environment['url'] + '/ws/forms/getDefault/verifier', {headers: this.authService.headers}).toPromise();
     }
 
     async getAllForm(): Promise<any> {

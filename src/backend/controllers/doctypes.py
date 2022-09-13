@@ -180,14 +180,12 @@ def clone_form_doctypes(src_form_id, dest_form_id):
         args = {
             'code': '.'.join(indexes),
             'form_id': dest_form_id,
+            'is_default': doctype['is_default'],
             'status': doctype['status'],
-            'expand': doctype['expand'],
             'label': doctype['label'],
             'type': doctype['type'],
             'key': doctype['key'],
-            'is_default': False,
         }
-        print(args)
         doctypes.add_doctype(args)
 
     return {'OK': True}, 200
