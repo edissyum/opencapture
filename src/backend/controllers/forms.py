@@ -158,8 +158,8 @@ def update_form(form_id, args):
             try:
                 if type(args['settings'][setting]) is bool:
                     forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + str(args['settings'][setting]).lower() + "')"}, 'form_id': form_id})
-                elif args['settings'][setting] and type(eval(args['settings'][setting])) is dict:
-                    forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + str(args['settings'][setting]) + "')"}, 'form_id': form_id})
+                elif args['settings'][setting] and type(args['settings'][setting]) is dict:
+                    forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + json.dumps(args['settings'][setting]) + "')"}, 'form_id': form_id})
                 else:
                     forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '\"" + str(args['settings'][setting]) + "\"')"}, 'form_id': form_id})
             except Exception:
@@ -167,7 +167,8 @@ def update_form(form_id, args):
 
         # Update form other database columns
         del args['settings']
-        res, error = forms.update_form({'set': args, 'form_id': form_id})
+        if args:
+            res, error = forms.update_form({'set': args, 'form_id': form_id})
 
         if error is None:
             return '', 200
