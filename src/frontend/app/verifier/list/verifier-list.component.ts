@@ -36,9 +36,8 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { ConfigService } from "../../../services/config.service";
 import { HistoryService } from "../../../services/history.service";
 import { FormControl } from "@angular/forms";
-import {writeErrorToLogFile} from "@angular/cli/src/utilities/log-file";
 
-interface accountsNode {
+interface AccountsNode {
     name: string
     id: number
     parent_id: any
@@ -49,7 +48,7 @@ interface accountsNode {
     children: any
 }
 
-interface flatNode {
+interface FlatNode {
     expandable: boolean
     name: string
     id: number
@@ -109,14 +108,14 @@ export class VerifierListComponent implements OnInit {
     allowedSuppliers        : any []            = [];
     purchaseOrSale          : string            = '';
     search                  : string            = '';
-    TREE_DATA               : accountsNode[]    = [];
+    TREE_DATA               : AccountsNode[]    = [];
     expanded                : boolean           = false;
     invoiceToDeleteSelected : boolean           = false;
     totalChecked            : number            = 0;
     customerFilterEmpty     : boolean           = false;
     customerFilter                              = new FormControl('');
 
-    private _transformer = (node: accountsNode, level: number) => ({
+    private _transformer = (node: AccountsNode, level: number) => ({
         expandable: !!node.children && node.children.length > 0,
         name: node.name,
         supplier_id: node.supplier_id,
@@ -129,7 +128,7 @@ export class VerifierListComponent implements OnInit {
         children: node.children
     });
 
-    treeControl = new FlatTreeControl<flatNode>(
+    treeControl = new FlatTreeControl<FlatNode>(
         node => node.level, node => node.expandable);
 
     treeFlattener = new MatTreeFlattener(
@@ -151,10 +150,10 @@ export class VerifierListComponent implements OnInit {
         private localStorageService: LocalStorageService
     ) {}
 
-    hasChild = (_: number, node: flatNode) => node.expandable;
-    isLevelOne = (_: number, node: flatNode) => node.level === 1;
-    isLevelTwo = (_: number, node: flatNode) => node.level === 2;
-    isNotLevelOne = (_: number, node: flatNode) => node.level !== 1;
+    hasChild = (_: number, node: FlatNode) => node.expandable;
+    isLevelOne = (_: number, node: FlatNode) => node.level === 1;
+    isLevelTwo = (_: number, node: FlatNode) => node.level === 2;
+    isNotLevelOne = (_: number, node: FlatNode) => node.level !== 1;
 
     async ngOnInit() {
         if (!this.authService.headersExists) {
@@ -251,9 +250,9 @@ export class VerifierListComponent implements OnInit {
                 });
                 this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
                 this.http.get(environment['url'] + '/ws/users/getCustomersByUserId/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
-                    tap((data: any) => {
+                    tap((data_customers_by_id: any) => {
                         customers.forEach((customer: any) => {
-                            data.forEach((customer_id: any) => {
+                            data_customers_by_id.forEach((customer_id: any) => {
                                 if (customer_id === customer.id) {
                                     this.allowedCustomers.push(customer.id);
                                     this.TREE_DATA.push({
@@ -269,7 +268,7 @@ export class VerifierListComponent implements OnInit {
                                 }
                             });
                         });
-                        this.loadInvoices();
+                        this.loadInvoices().then();
                     }),
                     finalize(() => this.loadingCustomers = false),
                     catchError((err: any) => {
@@ -293,7 +292,7 @@ export class VerifierListComponent implements OnInit {
         this.loading = true;
         this.loadingCustomers = true;
         this.invoices = [];
-        await this.loadForms();
+        this.loadForms();
         let url = environment['url'] + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id;
         if (this.currentForm !== '') {
             url = environment['url'] + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;
@@ -400,13 +399,13 @@ export class VerifierListComponent implements OnInit {
                 /*
                 * RESET the TREE DATA before re populate it
                 */
-                this.TREE_DATA.forEach((data: any, index: number) => {
+                this.TREE_DATA.forEach((_data: any, index: number) => {
                     this.TREE_DATA[index].display = true;
                     this.TREE_DATA[index].count = 0;
                     this.TREE_DATA[index].children = [];
                 });
 
-                this.TREE_DATA.forEach((data: any, index: number) => {
+                this.TREE_DATA.forEach((_data: any, index: number) => {
                     customersSaleToKeep.forEach((customer1: any) => {
                         if (data.id === customer1) {
                             let childExists = false;
@@ -453,16 +452,6 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-    }
-
-    getFormInfo(form_id: number) {
-        let form: any;
-        this.forms.forEach((element: any) => {
-            if (element.id === form_id) {
-                form = element;
-            }
-        });
-        return form;
     }
 
     fillChildren(parentId: any , parent: any, childName: any, supplierName: any, supplierId: any, id: any, purchaseOrSale: any) {

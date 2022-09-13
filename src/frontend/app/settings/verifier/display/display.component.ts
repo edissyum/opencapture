@@ -167,8 +167,7 @@ export class VerifierDisplayComponent implements OnInit {
         this.currentForm.settings.display.subtitles.forEach((element: any) => {
             delete element['updateMode'];
         });
-        console.log(this.currentForm.settings.display);
-        console.log(typeof this.currentForm.settings.display);
+
         this.http.put(environment['url'] + '/ws/forms/updateDisplay/' + this.currentForm.id, this.currentForm.settings.display,
             {headers: this.authService.headers}).pipe(
             tap(() => {
