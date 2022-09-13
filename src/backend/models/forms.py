@@ -81,7 +81,7 @@ def get_form_settings_by_module(args):
     return form, error
 
 
-def get_default_form(args):
+def get_default_form_by_module(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     database = _vars[0]
@@ -90,7 +90,7 @@ def get_default_form(args):
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['form_models'],
         'where': ['default_form = %s', 'status <> %s', 'module = %s'],
-        'data': [True, 'DEL', 'verifier']
+        'data': [True, 'DEL', args['module']]
     })
 
     if not form:
@@ -158,8 +158,8 @@ def add_form(args):
     _vars = create_classes_from_custom_id(custom_id)
     database = _vars[0]
     forms_exists, error = get_forms({
-        'where': ['label = %s', 'status <> %s'],
-        'data': [args['label'], 'DEL']
+        'where': ['label = %s', 'status <> %s', 'module = %s'],
+        'data': [args['label'], 'DEL', args['module']]
     })
 
     if not forms_exists:
