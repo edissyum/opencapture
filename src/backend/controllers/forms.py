@@ -217,7 +217,7 @@ def duplicate_form(form_id):
             'default_form': False,
             'outputs': form_info['outputs'],
             'module': form_info['module'],
-            'supplier_verif': form_info['supplier_verif']
+            'settings': json.dumps(form_info['settings'])
         }
         res, error = forms.add_form(args)
         if error is None:
