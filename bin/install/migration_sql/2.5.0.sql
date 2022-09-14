@@ -102,23 +102,3 @@ INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (2, 'split
     "metadata_method": "",
     "export_zip_file": ""
 }');
-
-UPDATE form_models SET settings = '{
-    "display": {
-        "subtitles": [
-            {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-            {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
-            {"id": "date", "label": "VERIFIER.register_date"},
-            {"id": "original_filename", "label": "VERIFIER.original_file"},
-            {"id": "form_label", "label": "ACCOUNTS.form"}
-        ]
-    },
-    "supplier_verif": false,
-    "automatic_validation_data": "",
-    "allow_automatic_validation": false,
-    "delete_documents_after_outputs": false
-}' WHERE module = 'verifier';
-UPDATE form_models SET settings = '{
-    "metadata_method": "",
-    "export_zip_file": ""
-}' WHERE module = 'splitter';
