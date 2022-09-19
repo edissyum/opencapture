@@ -599,6 +599,7 @@ export class VerifierViewerComponent implements OnInit {
         $('.trigger').show();
         const _this = this;
         this.lastId = event.target.id;
+        console.log(event.target.id);
         this.lastLabel = event.target.labels[0].textContent.replace('*', '').trim();
         this.lastColor = color;
         const imageContainer = $('.image-container');
@@ -637,7 +638,7 @@ export class VerifierViewerComponent implements OnInit {
                         }
                     }
                 },
-                onDeleted(img: any, cpt: any) {
+                onDeleted(_img: any, cpt: any) {
                     const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
                     if (inputId) {
                         _this.updateFormValue(inputId, '');
@@ -705,7 +706,7 @@ export class VerifierViewerComponent implements OnInit {
                 }
             }
             // End write
-
+            console.log($('#select-area-label_' + cpt).attr('class'));
             const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
             $('#' + inputId).focus();
 
@@ -730,6 +731,8 @@ export class VerifierViewerComponent implements OnInit {
                     }, {headers: this.authService.headers})
                     .pipe(
                         tap((data: any) => {
+                            console.log(data);
+                            console.log(inputId);
                             this.isOCRRunning = false;
                             let oldPosition = {
                                 x: 0,
