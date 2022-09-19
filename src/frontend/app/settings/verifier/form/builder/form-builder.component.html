@@ -156,10 +156,7 @@
                             <div *ngFor="let field of this.fields[category['id']]; let index = index" [class]="field.class"
                                  class="flex items-center px-3 overflow-hidden" [ngSortGridItems]="fields[category['id']]"
                                  [ngSortGridGroup]="category['id']" ngSortgridItem (sorted)="storeNewOrder($event, category['id'])">
-                                <mat-form-field class="right-0 w-full form-builder px-4 mt-1 rounded-md"
-                                                [class.bg-gray-900]="field.selected"
-                                                [class.bg-opacity-30]="field.selected"
-                                                (click)="selectForLine($event, this.fields[category['id']][index])">
+                                <mat-form-field class="right-0 w-full form-builder">
                                     <i cdkDrag class="fa-solid fa-trash z-10 text-red-500"
                                        *ngIf="!field.edit_name" (click)="deleteField(index, category['id'], field.unit)"
                                        [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
@@ -187,7 +184,7 @@
                                         </button>
                                     </span>
                                     <input class="cursor-pointer" matInput type="text" readonly>
-                                    <div class="absolute top-0 -right-4 z-10" *ngIf="!field.edit_name">
+                                    <div class="absolute top-0 -right-4" *ngIf="!field.edit_name">
                                         <button mat-button [matMenuTriggerFor]="menu" matTooltipPosition="above"
                                                 [matTooltip]="this.translate.instant('VERIFIER.field_settings')">
                                             <mat-icon class="field_settings text-md">more_vert</mat-icon>
@@ -255,14 +252,6 @@
                                         </mat-menu>
                                     </div>
                                 </mat-form-field>
-                                <div *ngIf="field.fullSize">
-                                    <button mat-button matTooltipPosition="above" class="-m-2"
-                                            [matTooltip]="this.translate.instant('VERIFIER.create_line')">
-                                        <i class="fa-solid fa-layer-group"></i>
-                                    </button>
-                                    <button>
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     </div>
