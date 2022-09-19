@@ -102,3 +102,4 @@ INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (2, 'split
     "metadata_method": "",
     "export_zip_file": ""
 }');
+
