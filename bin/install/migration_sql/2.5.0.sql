@@ -97,8 +97,8 @@ INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verif
     "allow_automatic_validation": false,
     "delete_documents_after_outputs": false
 }');
+
 INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (2, 'splitter', '{
     "metadata_method": "",
     "export_zip_file": ""
 }');
-
