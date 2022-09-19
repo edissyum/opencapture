@@ -980,8 +980,8 @@ export class FormBuilderComponent implements OnInit {
 
     selectForLine(event: any, field: any) {
         if (event.ctrlKey) {
-            field.selected = !field.selected;
-            if (field.selected) {
+            field.lineSelected = !field.lineSelected;
+            if (field.lineSelected) {
                 this.selectedFields.push({'id': field.id, 'class': field.class});
             } else {
                 this.selectedFields.forEach((element: any, index: number) => {
@@ -1001,10 +1001,11 @@ export class FormBuilderComponent implements OnInit {
                     size = 1;
                 }
             });
-            if (Math.round((size * 2)) / 2 % 1 === 0 && field.selected) field.fullSize = true;
+            if (Math.round((size * 10)) / 10 % 1 === 0 && field.lineSelected) {
+                field.fullSize = true;
+            }
         }
     }
-
 
     createForm() {
         const label = this.form.label.control.value;

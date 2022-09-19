@@ -153,12 +153,15 @@
                     <div class="border-green-400 border rounded-lg mx-6 my-7">
                         <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" [id]="category['id']"
                              class="flex flex-wrap cursor-pointer w-full my-3" style="min-height: 50px;">
-                            <div *ngFor="let field of this.fields[category['id']]; let index = index" [class]="field.class"
-                                 class="flex items-center px-3 overflow-hidden" [ngSortGridItems]="fields[category['id']]"
-                                 [ngSortGridGroup]="category['id']" ngSortgridItem (sorted)="storeNewOrder($event, category['id'])">
-                                <mat-form-field class="right-0 w-full form-builder px-4 mt-1 rounded-md"
-                                                [class.bg-gray-900]="field.selected"
-                                                [class.bg-opacity-30]="field.selected"
+                            <div *ngFor="let field of this.fields[category['id']]; let index = index"
+                                 class="flex items-center px-3 overflow-hidden" [class]="field.class"
+                                 [ngSortGridItems]="fields[category['id']]" ngSortgridItem
+                                 [ngSortGridGroup]="category['id']" (sorted)="storeNewOrder($event, category['id'])">
+                                <mat-form-field class="right-0 w-full form-builder mt-1 rounded-md"
+                                                [class.bg-opacity-30]="field.lineSelected"
+                                                [class.px-6]="field.lineSelected"
+                                                [ngClass]="{'w-11/12': field.fullSize}"
+                                                [class.bg-gray-900]="field.lineSelected"
                                                 (click)="selectForLine($event, this.fields[category['id']][index])">
                                     <i cdkDrag class="fa-solid fa-trash z-10 text-red-500"
                                        *ngIf="!field.edit_name" (click)="deleteField(index, category['id'], field.unit)"
@@ -256,12 +259,11 @@
                                     </div>
                                 </mat-form-field>
                                 <div *ngIf="field.fullSize">
-                                    <button mat-button matTooltipPosition="above" class="-m-2"
-                                            [matTooltip]="this.translate.instant('VERIFIER.create_line')">
-                                        <i class="fa-solid fa-layer-group"></i>
-                                    </button>
-                                    <button>
-                                    </button>
+                                    <i class="fa-solid fa-layer-group -m-2 -right-4 relative"
+                                       [class.text-green-400]="field.fullSizeSelected" matTooltipPosition="above"
+                                       [matTooltip]="field.fullSizeSelected ? ('VERIFIER.full_line' | translate) :
+                                                                              ('VERIFIER.make_line' | translate)"
+                                       (click)="field.fullSizeSelected = !field.fullSizeSelected"></i>
                                 </div>
                             </div>
                         </div>
