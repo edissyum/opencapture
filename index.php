@@ -42,9 +42,16 @@
             $customs = array_values(array_diff(scandir($customsDir), array('..', '.', 'custom.ini', 'custom.ini.default')));
             if (count($customs) == 1) {
                 echo '<script>';
-                echo 'location.href = "' . $customs[0] . '/dist"';
+                echo 'let currentUrl = window.location.href.split("/").filter(elem => elem);';
+                echo 'let lastUrlElement = currentUrl[currentUrl.length - 1];';
+                echo 'if (lastUrlElement !== "' . $customs[0] . '") {';
+                echo '    location.href = "' . $customs[0] . '/dist";';
+                echo '} else {';
+                echo '    location.href = "dist";';
+                echo '}';
                 echo '</script>';
             }
+            exit();
         ?>
         <div class="instances_title">
             <h2>Liste des instances installées :</h2>
