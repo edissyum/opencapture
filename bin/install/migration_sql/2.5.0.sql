@@ -118,6 +118,7 @@ UPDATE form_models SET settings = '{
     "allow_automatic_validation": false,
     "delete_documents_after_outputs": false
 }' WHERE module = 'verifier';
+
 UPDATE form_models SET settings = '{
     "metadata_method": "",
     "export_zip_file": ""
