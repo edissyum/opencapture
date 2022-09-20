@@ -152,15 +152,17 @@
                     </div>
                     <div class="border-green-400 border rounded-lg mx-6 my-7">
                         <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" [id]="category['id']"
-                             class="flex flex-wrap cursor-pointer w-full my-3" style="min-height: 50px;">
+                             class="flex flex-wrap cursor-pointer w-full my-3 px-2" style="min-height: 50px;">
                             <div *ngFor="let field of this.fields[category['id']]; let index = index"
-                                 class="flex items-center px-3 overflow-hidden" [class]="field.class"
+                                 class="flex items-center overflow-hidden" [class]="field.class"
                                  [ngSortGridItems]="fields[category['id']]" ngSortgridItem
                                  [ngSortGridGroup]="category['id']" (sorted)="storeNewOrder($event, category['id'])">
-                                <mat-form-field class="right-0 w-full form-builder mt-1 rounded-md"
+                                <mat-form-field class="right-0 form-builder mt-1 rounded-md"
                                                 [class.bg-opacity-30]="field.lineSelected"
+                                                [class.px-3]="!field.lineSelected"
                                                 [class.px-6]="field.lineSelected"
-                                                [ngClass]="{'w-11/12': field.fullSize}"
+                                                [ngClass]="{'w-full': !field.lineSelected,
+                                                            'w-11/12': field.lineSelected}"
                                                 [class.bg-gray-900]="field.lineSelected"
                                                 (click)="selectForLine($event, this.fields[category['id']][index])">
                                     <i cdkDrag class="fa-solid fa-trash z-10 text-red-500"

@@ -19,7 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
+import { catchError, map, startWith, tap } from "rxjs/operators";
 import { Observable, of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
@@ -74,6 +74,7 @@ export class VerifierViewerComponent implements OnInit {
     imgSrc                  : SafeUrl     = '';
     ratio                   : number      = 0;
     currentPage             : number      = 1;
+    accountingPlan          : any         = {};
     formSettings            : any         = {};
     formList                : any         = {};
     currentFormFields       : any         = {};
@@ -474,7 +475,9 @@ export class VerifierViewerComponent implements OnInit {
                     display_icon: field.display_icon,
                     class_label: field.class_label,
                     cpt: 0,
-                    values: ''
+                    values: '',
+                    lineSelected: field.lineSelected,
+                    fullSizeSelected: field.fullSizeSelected
                 });
 
                 const _field = this.form[category][this.form[category].length - 1];
@@ -486,11 +489,11 @@ export class VerifierViewerComponent implements OnInit {
                     if (this.accountingPlanEmpty) {
                         array = await this.retrieveDefaultAccountingPlan();
                     }
-                    array = this.sortArray(array);
+                    this.accountingPlan = this.sortArray(array);
                     this.form[category][cpt].values = this.form[category][cpt].control.valueChanges
                         .pipe(
                             startWith(''),
-                            map(option => option ? this._filter_accounting(array, option) : array)
+                            map(option => option ? this._filter_accounting(this.accountingPlan, option) : this.accountingPlan)
                         );
                 }
                 if (this.invoice.datas[field.id]) {
@@ -599,7 +602,6 @@ export class VerifierViewerComponent implements OnInit {
         $('.trigger').show();
         const _this = this;
         this.lastId = event.target.id;
-        console.log(event.target.id);
         this.lastLabel = event.target.labels[0].textContent.replace('*', '').trim();
         this.lastColor = color;
         const imageContainer = $('.image-container');
@@ -706,7 +708,6 @@ export class VerifierViewerComponent implements OnInit {
                 }
             }
             // End write
-            console.log($('#select-area-label_' + cpt).attr('class'));
             const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
             $('#' + inputId).focus();
 
@@ -731,8 +732,6 @@ export class VerifierViewerComponent implements OnInit {
                     }, {headers: this.authService.headers})
                     .pipe(
                         tap((data: any) => {
-                            console.log(data);
-                            console.log(inputId);
                             this.isOCRRunning = false;
                             let oldPosition = {
                                 x: 0,
@@ -907,11 +906,11 @@ export class VerifierViewerComponent implements OnInit {
                 supplierData['address_id'] = data.id;
                 this.http.post(environment['url'] + '/ws/accounts/suppliers/create', {'args': supplierData}, {headers: this.authService.headers},
                 ).pipe(
-                    tap(async (data: any) => {
+                    tap(async (supplier_data: any) => {
                         this.historyService.addHistory('accounts', 'create_supplier', this.translate.instant('HISTORY-DESC.create-supplier', {supplier: supplierData['name']}));
                         this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
-                        this.updateInvoice({'supplier_id': data['id']});
-                        this.invoice.supplier_id = data['id'];
+                        this.updateInvoice({'supplier_id': supplier_data['id']});
+                        this.invoice.supplier_id = supplier_data['id'];
                         this.suppliers = await this.retrieveSuppliers();
                         this.suppliers = this.suppliers.suppliers;
                     }),
@@ -1046,10 +1045,48 @@ export class VerifierViewerComponent implements OnInit {
         return pattern;
     }
 
+    duplicateLine(fieldId: any, categoryId: any) {
+        for (const category in this.form) {
+            if (category === categoryId) {
+                this.form[category].forEach((field: any, cpt: number) => {
+                    if (field.id.trim() === fieldId.trim()) {
+                        const numberOfField = field.class.replace('w-1/', '');
+                        if (numberOfField !== 'full') {
+                            for (let i = cpt - numberOfField + 1; i <= cpt; i++) {
+                                const newField = Object.assign({}, this.form[category][i]);
+                                this.form[category][i].cpt += 1;
+                                newField.id = newField.id + '_' + this.form[category][i].cpt;
+                                newField.cpt = this.form[category][i].cpt;
+                                newField.display = 'simple';
+                                newField.deleteLine = this.form[category][i].fullSizeSelected;
+                                newField.lineSelected = true;
+                                newField.fullSizeSelected = false;
+                                newField.control = new FormControl();
+                                if (this.form[category][i].cpt > 1 ) {
+                                    this.form[category].splice(i + (parseInt(numberOfField) * parseInt(this.form[category][i].cpt)), 0, newField);
+                                } else {
+                                    this.form[category].splice(i + parseInt(numberOfField), 0, newField);
+                                }
+                                if (newField.id === 'accounting_plan') {
+                                    this.form[category][cpt + field.cpt].values = this.form[category][cpt].control.valueChanges
+                                        .pipe(
+                                            startWith(''),
+                                            map(option => option ? this._filter_accounting(this.accountingPlan, option) : this.accountingPlan)
+                                        );
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        console.log(this.form[categoryId])
+    }
+
     duplicateField(fieldId: any, categoryId: any) {
         for (const category in this.form) {
             if (category === categoryId) {
-                this.form[category].forEach((field: any, cpt:number) => {
+                this.form[category].forEach((field: any, cpt: number) => {
                     if (field.id.trim() === fieldId.trim()) {
                         const newField = Object.assign({}, field);
                         newField.id = newField.id + '_' + field.cpt;
@@ -1064,6 +1101,10 @@ export class VerifierViewerComponent implements OnInit {
                 });
             }
         }
+    }
+
+    removeDuplicateLine(fieldId: any, categoryId: any) {
+
     }
 
     removeDuplicateField(fieldId: any, categoryId: any) {
