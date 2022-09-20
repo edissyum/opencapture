@@ -51,7 +51,6 @@
                 echo '}';
                 echo '</script>';
             }
-            exit();
         ?>
         <div class="instances_title">
             <h2>Liste des instances installées :</h2>
