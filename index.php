@@ -41,9 +41,18 @@
             $customsDir = 'custom/';
             $customs = array_values(array_diff(scandir($customsDir), array('..', '.', 'custom.ini', 'custom.ini.default')));
             if (count($customs) == 1) {
-                echo '<script>';
-                echo 'location.href = "' . $customs[0] . '/dist"';
-                echo '</script>';
+            ?>
+                <script>
+                    let currentUrl = window.location.href.split("/").filter(elem => elem);
+                    let lastUrlElement = currentUrl[currentUrl.length - 1];
+                    const currentCustom = '<?php echo $customs[0]; ?>';
+                    if (lastUrlElement !== currentCustom) {
+                        location.href = currentCustom + '/dist';
+                    } else {
+                        location.href = "dist";
+                    }
+                </script>
+            <?php
             }
         ?>
         <div class="instances_title">
