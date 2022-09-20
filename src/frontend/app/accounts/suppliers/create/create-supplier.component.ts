@@ -200,7 +200,7 @@ export class CreateSupplierComponent implements OnInit {
         this.supplierForm.forEach((element: any) => {
             if (element.id === 'vat_number' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban') {
                 element.control.valueChanges.subscribe((value: any) => {
-                    if (value.includes(' ')) {
+                    if (value && value.includes(' ')) {
                         element.control.setValue(value.replace(' ', ''));
                     }
                 });
