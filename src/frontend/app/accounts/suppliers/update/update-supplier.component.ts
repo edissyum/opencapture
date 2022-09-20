@@ -238,14 +238,14 @@ export class UpdateSupplierComponent implements OnInit {
                                         if (this.addressId) {
                                             this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
                                                 tap((address: any) => {
-                                                    for (const field in address) {
-                                                        if (address.hasOwnProperty(field)) {
-                                                            this.addressForm.forEach(element => {
-                                                                if (element.id === field) {
-                                                                    if (field === 'country') {
-                                                                        this.defaultValue.name = address[field];
+                                                    for (const adr_field in address) {
+                                                        if (address.hasOwnProperty(adr_field)) {
+                                                            this.addressForm.forEach(adr_element => {
+                                                                if (adr_element.id === adr_field) {
+                                                                    if (adr_field === 'country') {
+                                                                        this.defaultValue.name = address[adr_field];
                                                                     }
-                                                                    element.control.setValue(address[field]);
+                                                                    adr_element.control.setValue(address[adr_field]);
                                                                 }
                                                             });
                                                         }
