@@ -83,6 +83,27 @@ def delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id):
             return response, 401
 
 
+def delete_invoice_page_by_supplier_id(supplier_id, field_id, form_id):
+    supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
+    if error is None:
+        _set = {}
+        supplier_positions = supplier_info['pages']
+        form_id = str(form_id)
+        if form_id in supplier_positions:
+            if field_id in supplier_positions[form_id]:
+                del supplier_positions[form_id][field_id]
+        _, error = accounts.update_supplier(
+            {'set': {"pages": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_SUPPLIER_PAGES_ERROR'),
+                "message": error
+            }
+            return response, 401
+
+
 def update_supplier(supplier_id, data):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)

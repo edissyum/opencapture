@@ -109,24 +109,45 @@ def export_maarch(invoice_id):
 @bp.route('verifier/invoices/<int:invoice_id>/deleteData', methods=['PUT'])
 @auth.token_required
 def delete_invoice_data(invoice_id):
-    field_id = request.json['args']
-    res = verifier.delete_invoice_data_by_invoice_id(invoice_id, field_id)
+    args = request.json['args']
+    res = '', 200
+    if 'multiple' in args:
+        fields = args['fields']
+        for field in fields:
+            res = verifier.delete_invoice_data_by_invoice_id(invoice_id, field)
+    else:
+        field_id = args
+        res = verifier.delete_invoice_data_by_invoice_id(invoice_id, field_id)
     return make_response(res[0], res[1])
 
 
 @bp.route('verifier/invoices/<int:invoice_id>/deletePosition', methods=['PUT'])
 @auth.token_required
 def delete_invoice_position(invoice_id):
-    field_id = request.json['args']
-    res = verifier.delete_invoice_position_by_invoice_id(invoice_id, field_id)
+    args = request.json['args']
+    res = '', 200
+    if 'multiple' in args:
+        fields = args['fields']
+        for field in fields:
+            res = verifier.delete_invoice_position_by_invoice_id(invoice_id, field)
+    else:
+        field_id = args
+        res = verifier.delete_invoice_position_by_invoice_id(invoice_id, field_id)
     return make_response(res[0], res[1])
 
 
 @bp.route('verifier/invoices/<int:invoice_id>/deletePage', methods=['PUT'])
 @auth.token_required
 def delete_invoice_page(invoice_id):
-    field_id = request.json['args']
-    res = verifier.delete_invoice_page_by_invoice_id(invoice_id, field_id)
+    args = request.json['args']
+    res = '', 200
+    if 'multiple' in args:
+        fields = args['fields']
+        for field in fields:
+            res = verifier.delete_invoice_page_by_invoice_id(invoice_id, field)
+    else:
+        field_id = args
+        res = verifier.delete_invoice_page_by_invoice_id(invoice_id, field_id)
     return make_response(res[0], res[1])
 
 

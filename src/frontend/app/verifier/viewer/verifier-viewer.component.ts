@@ -986,10 +986,16 @@ export class VerifierViewerComponent implements OnInit {
         return _field;
     }
 
-    deleteData(fieldId: any) {
+    deleteData(fieldId: any, multiple: boolean = false) {
+        let args: any;
+        if (multiple) {
+            args = {'fields': fieldId, 'multiple': true};
+        } else {
+            args = fieldId.trim();
+        }
+
         this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deleteData',
-            {'args': fieldId.trim()},
-            {headers: this.authService.headers}).pipe(
+            {'args': args}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('INVOICES.data_deleted', {"input": this.lastLabel}));
             }),
@@ -1001,10 +1007,16 @@ export class VerifierViewerComponent implements OnInit {
         ).subscribe();
     }
 
-    deletePosition(fieldId: any) {
+    deletePosition(fieldId: any, multiple: boolean = false) {
+        let args: any;
+        if (multiple) {
+            args = {'fields': fieldId, 'multiple': true};
+        } else {
+            args = fieldId.trim();
+        }
+
         this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deletePosition',
-            {'args': fieldId.trim()},
-            {headers: this.authService.headers}).pipe(
+            {'args': args}, {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -1012,27 +1024,55 @@ export class VerifierViewerComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.invoice.supplier_id + '/deletePosition',
-            {'args': {'field_id': fieldId.trim(), 'form_id' : this.invoice.form_id}},
-            {headers: this.authService.headers}).pipe(
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+        if (this.invoice.supplier_id) {
+            if (multiple) {
+                args = {'fields': fieldId, 'multiple': true, 'form_id' : this.invoice.form_id};
+            } else {
+                args = {'field_id': fieldId.trim(), 'form_id' : this.invoice.form_id};
+            }
+            this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.invoice.supplier_id + '/deletePosition',
+                {'args': args}, {headers: this.authService.headers}).pipe(
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
     }
 
-    deletePage(fieldId: any) {
+    deletePage(fieldId: any, multiple: boolean = false) {
+        let args: any;
+        if (multiple) {
+            args = {'fields': fieldId, 'multiple': true};
+        } else {
+            args = fieldId.trim();
+        }
+
         this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deletePage',
-            {'args': fieldId.trim()},
-            {headers: this.authService.headers}).pipe(
+            {'args': args}, {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();
+
+        if (this.invoice.supplier_id) {
+            if (multiple) {
+                args = {'fields': fieldId, 'multiple': true, 'form_id' : this.invoice.form_id};
+            } else {
+                args = {'field_id': fieldId.trim(), 'form_id' : this.invoice.form_id};
+            }
+            this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.invoice.supplier_id + '/deletePage',
+                {'args': args}, {headers: this.authService.headers}).pipe(
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
     }
 
     getPattern(format: any) {
@@ -1046,41 +1086,49 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     duplicateLine(fieldId: any, categoryId: any) {
-        for (const category in this.form) {
-            if (category === categoryId) {
-                this.form[category].forEach((field: any, cpt: number) => {
-                    if (field.id.trim() === fieldId.trim()) {
-                        const numberOfField = field.class.replace('w-1/', '');
-                        if (numberOfField !== 'full') {
-                            for (let i = cpt - numberOfField + 1; i <= cpt; i++) {
-                                const newField = Object.assign({}, this.form[category][i]);
-                                this.form[category][i].cpt += 1;
-                                newField.id = newField.id + '_' + this.form[category][i].cpt;
-                                newField.cpt = this.form[category][i].cpt;
-                                newField.display = 'simple';
-                                newField.deleteLine = this.form[category][i].fullSizeSelected;
-                                newField.lineSelected = true;
-                                newField.fullSizeSelected = false;
-                                newField.control = new FormControl();
-                                if (this.form[category][i].cpt > 1 ) {
-                                    this.form[category].splice(i + (parseInt(numberOfField) * parseInt(this.form[category][i].cpt)), 0, newField);
-                                } else {
-                                    this.form[category].splice(i + parseInt(numberOfField), 0, newField);
-                                }
-                                if (newField.id === 'accounting_plan') {
-                                    this.form[category][cpt + field.cpt].values = this.form[category][cpt].control.valueChanges
-                                        .pipe(
-                                            startWith(''),
-                                            map(option => option ? this._filter_accounting(this.accountingPlan, option) : this.accountingPlan)
-                                        );
-                                }
-                            }
+        const listOfNewField: any = {};
+        this.form[categoryId].forEach((field: any, cpt: number) => {
+            if (field.id.trim() === fieldId.trim()) {
+                const numberOfField = field.class.replace('w-1/', '');
+                if (numberOfField !== 'full') {
+                    for (let i = cpt - numberOfField + 1; i <= cpt; i++) {
+                        const newField = Object.assign({}, this.form[categoryId][i]);
+                        this.form[categoryId][i].cpt += 1;
+                        newField.id = newField.id + '_' + this.form[categoryId][i].cpt;
+                        newField.cpt = this.form[categoryId][i].cpt;
+                        newField.display = 'simple';
+                        newField.deleteLine = this.form[categoryId][i].fullSizeSelected;
+                        newField.lineSelected = true;
+                        newField.fullSizeSelected = false;
+                        newField.control = new FormControl();
+
+                        if (this.form[categoryId][i].cpt > 1 ) {
+                            this.form[categoryId].splice(i + (parseInt(numberOfField) * parseInt(this.form[categoryId][i].cpt)), 0, newField);
+                        } else {
+                            this.form[categoryId].splice(i + parseInt(numberOfField), 0, newField);
+                        }
+
+                        listOfNewField[newField.id] = '';
+
+                        if (newField.id === 'accounting_plan') {
+                            this.form[categoryId][cpt + field.cpt].values = this.form[categoryId][cpt].control.valueChanges.pipe(
+                                startWith(''),
+                                map(option => option ? this._filter_accounting(this.accountingPlan, option) : this.accountingPlan)
+                            );
                         }
                     }
-                });
+                }
             }
-        }
-        console.log(this.form[categoryId])
+        });
+
+        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+            {'args': listOfNewField}, {headers: this.authService.headers}).pipe(
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     duplicateField(fieldId: any, categoryId: any) {
@@ -1104,24 +1152,41 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     removeDuplicateLine(fieldId: any, categoryId: any) {
-
+        const listOfFieldToDelete: any[] = [];
+        this.form[categoryId].forEach((field: any, cpt: number) => {
+            if (field.id.trim() === fieldId.trim()) {
+                const numberOfField = field.class.replace('w-1/', '');
+                if (numberOfField !== 'full') {
+                    for (let i = cpt - numberOfField + 1; i <= cpt; i++) {
+                        const parentId = this.form[categoryId][i].id.split('_').slice(0,-1).join('_');
+                        listOfFieldToDelete.push(this.form[categoryId][i].id);
+                        this.form[categoryId].forEach((parent_field: any) => {
+                            if (parent_field.id.trim() === parentId.trim()) {
+                                parent_field.cpt = parent_field.cpt - 1;
+                            }
+                        });
+                    }
+                    this.form[categoryId].splice((cpt + 1) - numberOfField, numberOfField);
+                }
+            }
+        });
+        this.deleteData(listOfFieldToDelete, true);
+        this.deletePosition(listOfFieldToDelete, true);
+        this.deletePage(listOfFieldToDelete, true);
     }
 
     removeDuplicateField(fieldId: any, categoryId: any) {
         const parentId = fieldId.split('_').slice(0,-1).join('_');
-        for (const category in this.form) {
-            if (category === categoryId) {
-                this.form[category].forEach((field: any, cpt:number) => {
-                    if (field.id.trim() === fieldId.trim()) {
-                        this.deleteData(field.id);
-                        this.deletePosition(field.id);
-                        this.form[category].splice(cpt, 1);
-                    } else if (field.id.trim() === parentId.trim()) {
-                        field.cpt = field.cpt - 1;
-                    }
-                });
+        this.form[categoryId].forEach((field: any, cpt:number) => {
+            if (field.id.trim() === fieldId.trim()) {
+                this.deleteData(field.id);
+                this.deletePosition(field.id);
+                this.deletePage(field.id);
+                this.form[categoryId].splice(cpt, 1);
+            } else if (field.id.trim() === parentId.trim()) {
+                field.cpt = field.cpt - 1;
             }
-        }
+        });
     }
 
     isChildField(fieldId: any) {

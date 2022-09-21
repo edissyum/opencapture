@@ -204,6 +204,7 @@ def update_invoice_data_by_invoice_id(invoice_id, args):
             invoice_data.update({
                 column: value
             })
+
         _, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
