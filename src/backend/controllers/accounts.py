@@ -68,7 +68,7 @@ def delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id):
         _set = {}
         supplier_positions = supplier_info['positions']
         form_id = str(form_id)
-        if form_id in supplier_positions:
+        if form_id in supplier_positions:Improve error detection while loading supplier from interface
             if field_id in supplier_positions[form_id]:
                 del supplier_positions[form_id][field_id]
         _, error = accounts.update_supplier(
@@ -461,7 +461,7 @@ def import_suppliers(file):
     if err.decode('utf-8'):
         response = {
             "errors": gettext('LOAD_SUPPLIER_REFERENCIAL_ERROR'),
-            "message": err
+            "message": err.decode('utf-8')
         }
         return response, 401
 
