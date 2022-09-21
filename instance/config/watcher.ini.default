@@ -14,12 +14,12 @@ working_directory=/
 [verifier_default_input]
 watch=/var/share/entrant/verifier/
 events=close,move
-include_extensions=pdf
+include_extensions=pdf,PDF
 command=/var/www/html/opencapture/bin/scripts/verifier_inputs/default_input.sh $filename
 
 [splitter_default_input]
 watch=/var/share/entrant/splitter/
 events=close,move
-include_extensions=pdf
+include_extensions=pdf,PDF
 command=/var/www/html/opencapture/bin/scripts/splitter_inputs/default_input.sh $filename
 
