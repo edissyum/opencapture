@@ -138,7 +138,7 @@ class Spreadsheet:
         if not content_sheet.empty:
             content_sheet = content_sheet.drop(0)
             # Drop empty rows
-            content_sheet = content_sheet.dropna(axis=0, how='all', thresh=None, subset=None)
+            content_sheet = content_sheet.dropna(axis=0, how='all', subset=None)
 
         return content_sheet
 
