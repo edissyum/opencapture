@@ -461,7 +461,7 @@ def import_suppliers(file):
     if err.decode('utf-8'):
         response = {
             "errors": gettext('LOAD_SUPPLIER_REFERENCIAL_ERROR'),
-            "message": err
+            "message": err.decode('utf-8')
         }
         return response, 401
 
