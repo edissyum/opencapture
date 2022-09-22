@@ -3,7 +3,7 @@ INSERT INTO "languages" ("language_id", "label", "lang_code", "moment_lang_code"
 INSERT INTO "languages" ("language_id", "label", "lang_code", "moment_lang_code", "date_format") VALUES ('en', 'English', 'eng', 'en-GB', '%m %d %Y');
 
 -- REGEX creation (fra)
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('email', 'global', 'Adresse email', '([A-Za-z0-9]+[.\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.(fr|com|org|eu|law))+');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('email', 'global', 'Adresse email', '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('siret', 'global', 'Numéro de SIRET', '[0-9]{14}');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('siren', 'global', 'Numéro de SIREN', '[0-9]{9}');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('iban', 'global', 'Numéro d''IBAN', '[A-Z]{2}(?:[ ]?[0-9]){18,25}');

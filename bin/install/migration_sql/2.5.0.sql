@@ -55,6 +55,9 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_e
 -- Improve VAT Number REGEX
 UPDATE "regex" SET content = '(EU|SI|HU|D(K|E)|PL|CHE|(F|H)R|B(E|G)(0)?)[0-9A-Z]{2}[0-9]{6,9}' WHERE regex_id = 'vat_number';
 
+-- Improve EMAIL REGEX
+UPDATE "regex" SET content = '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+' WHERE regex_id = 'email';
+
 -- Create tasks watcher
 create table tasks_watcher
 (
