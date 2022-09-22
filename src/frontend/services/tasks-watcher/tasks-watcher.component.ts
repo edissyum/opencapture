@@ -54,7 +54,7 @@ export class TasksWatcherComponent implements OnInit {
     ngOnInit(): void {
         this.minimizeDisplay = this.localStorageService.get('task_watcher_minimize_display') === 'true';
         interval(4000).subscribe(() => {
-            if (this.authorizedUrl.includes(this.router.url) && !this.getTaskRunning) {
+            if (this.authorizedUrl.includes(this.router.url) && !this.getTaskRunning && !this.minimizeDisplay) {
                 this.getLastTasks();
             }
         });
@@ -62,6 +62,9 @@ export class TasksWatcherComponent implements OnInit {
 
     changeDisplayMode(minimizeDisplay: boolean) {
         this.minimizeDisplay = minimizeDisplay;
+        if (!this.minimizeDisplay) {
+            this.getLastTasks();
+        }
         this.localStorageService.save('task_watcher_minimize_display', minimizeDisplay ? 'true': 'false');
     }
 
