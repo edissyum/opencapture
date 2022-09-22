@@ -199,7 +199,9 @@ export class VerifierViewerComponent implements OnInit {
             }
         }, true);
         await this.fillForm(this.currentFormFields);
-        if (this.invoice.supplier_id) this.getSupplierInfo(this.invoice.supplier_id, false, true);
+        if (this.invoice.supplier_id) {
+            this.getSupplierInfo(this.invoice.supplier_id, false, true);
+        }
         setTimeout(() => {
             this.drawPositions();
             this.convertAutocomplete();

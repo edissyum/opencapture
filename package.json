@@ -38,7 +38,7 @@
         "ng2-datepicker": "^12.0.0",
         "ngx-file-drag-drop": "^6.0.0",
         "ngx-mat-select-search": "^4.2.1",
-        "remove-accents": "^0.4.3",
+        "remove-accents": "^0.4.2",
         "rxjs": "~7.5.6",
         "svg-country-flags": "^1.2.10"
     },
