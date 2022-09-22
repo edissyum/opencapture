@@ -379,7 +379,6 @@ export class VerifierViewerComponent implements OnInit {
                 const field = this.getFieldInfo(fieldId);
                 let cpt = '0';
                 if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1])) && !fieldId.includes('custom_')) {
-                    console.log(field.id, field.cpt);
                     cpt = splittedFieldId[splittedFieldId.length - 1];
                 }
                 if (field) {
@@ -1172,7 +1171,6 @@ export class VerifierViewerComponent implements OnInit {
                 Object.keys(listOfNewFieldData).forEach((newFieldId: any) => {
                     this.form[categoryId].forEach((element: any, cpt: number) => {
                         if (newFieldId === element.id) {
-                            // console.log(newFieldId, this.form[categoryId][cpt].id)
                             const parentId = element.id.split('_').slice(0,-1).join('_');
                             this.form[categoryId].splice(cpt, 1);
                             this.form[categoryId].forEach((parent_field: any) => {
