@@ -69,6 +69,7 @@ export class CreateOutputComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        this.serviceSettings.init();
         this.http.get(environment['url'] + '/ws/outputs/getOutputsTypes?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputsTypes = data.outputs_types;

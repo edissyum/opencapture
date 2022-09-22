@@ -18,6 +18,8 @@
 import os
 import json
 import datetime
+import shutil
+
 import pandas as pd
 from xml.dom import minidom
 from flask_babel import gettext
@@ -72,6 +74,39 @@ def export_xml(data, log, regex, invoice_info):
 
         response = {
             "errors": gettext('XML_DESTINATION_FOLDER_DOESNT_EXISTS'),
+            "message": folder_out
+        }
+        return response, 401
+
+
+def export_pdf(data, log, regex, invoice_info):
+    folder_out = separator = filename = ''
+    parameters = data['options']['parameters']
+    for setting in parameters:
+        if setting['id'] == 'folder_out':
+            folder_out = setting['value']
+        elif setting['id'] == 'separator':
+            separator = setting['value']
+        elif setting['id'] == 'filename':
+            filename = setting['value']
+
+    # Create the PDF filename
+    _data = construct_with_var(filename, invoice_info, regex, separator)
+    filename = separator.join(str(x) for x in _data) + '.pdf'
+    filename = filename.replace('/', '-').replace(' ', '_')
+    # END create the PDF filename
+
+    if os.path.isdir(folder_out):
+        file = invoice_info['path'] + '/' + invoice_info['filename']
+        if os.path.isfile(file):
+            shutil.copy(file, folder_out + '/' + filename)
+        return '', 200
+    else:
+        if log:
+            log.error(gettext('PDF_DESTINATION_FOLDER_DOESNT_EXISTS') + ' : ' + folder_out)
+
+        response = {
+            "errors": gettext('PDF_DESTINATION_FOLDER_DOESNT_EXISTS'),
             "message": folder_out
         }
         return response, 401

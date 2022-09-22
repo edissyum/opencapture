@@ -74,7 +74,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Dossier de sortie",
                 "required": "true",
-                "placeholder": "/var/share/sortant"
+                "placeholder": "/var/share/export/verifier/"
             },
             {
                 "id": "separator",
@@ -257,12 +257,42 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
         ]
     }
 }');
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (3, 'export_pdf', 'Export PDF', 'verifier', '{
+    "options": {
+        "auth": [],
+        "parameters": [
+            {
+                "id": "folder_out",
+                "type": "text",
+                "label": "Dossier de sortie",
+                "required": "true",
+                "placeholder": "/var/share/export/verifier/"
+            },
+            {
+                "id": "separator",
+                "type": "text",
+                "label": "Séparateur",
+                "required": "true",
+                "placeholder": "_"
+            },
+            {
+                "id": "filename",
+                "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "type": "text",
+                "label": "Nom du fichier",
+                "required": "true",
+                "placeholder": "invoice_number#quotation_number#supplier_name"
+            }
+        ]
+    }
+}');
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (1, 'export_xml', 'Export XML par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#invoice_date_year#vat_number"}, {"id": "extension", "type": "text", "value": "xml"}]}}');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_maarch', 'Export Maarch par défaut', 'verifier');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (3, 'export_pdf', 'Export PDF par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#invoice_date_year#vat_number"}]}}');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE SPLITTER
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (3, 'export_pdf', 'Export PDF', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (4, 'export_pdf', 'Export PDF', '{
   "options": {
     "auth": [],
     "parameters": [
@@ -307,7 +337,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (4, 'export_xml', 'Export XML', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (5, 'export_xml', 'Export XML', '{
   "options": {
     "auth": [],
     "parameters": [
@@ -352,7 +382,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (5, 'export_cmis', 'Export CMIS','{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (6, 'export_cmis', 'Export CMIS','{
   "options": {
     "auth": [
       {
@@ -413,11 +443,11 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
   }
 }', 'splitter');
 
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (3, 'export_pdf', 'Export vers Vérificateur', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/entrant/verifier/"}, {"id": "filename", "type": "textarea", "value": "PDF#doctype#date#random"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "pdf"}]}}', 'splitter');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (4, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "XML#date"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "xml"}]}}', 'splitter');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (5, 'export_alfresco', 'Export Alfresco par défaut', '{"options": {"auth": [{"id": "cmis_ws", "type": "text", "value": ""}, {"id": "folder", "type": "text", "value": ""}, {"id": "login", "type": "text", "value": ""}, {"id": "password", "type": "password", "value": ""}], "parameters": [{"id": "pdf_filename", "type": "textarea", "value": "#doctype#date"}, {"id": "xml_filename", "type": "textarea", "value": "#random#date"}, {"id": "separator", "type": "textarea", "value": "_"}]}}', 'splitter');
-ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 6;
-ALTER SEQUENCE "outputs_id_seq" RESTART WITH 6;
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (4, 'export_pdf', 'Export vers Vérificateur', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/entrant/verifier/"}, {"id": "filename", "type": "textarea", "value": "PDF#doctype#date#random"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "pdf"}]}}', 'splitter');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (5, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "XML#date"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "xml"}]}}', 'splitter');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (6, 'export_alfresco', 'Export Alfresco par défaut', '{"options": {"auth": [{"id": "cmis_ws", "type": "text", "value": ""}, {"id": "folder", "type": "text", "value": ""}, {"id": "login", "type": "text", "value": ""}, {"id": "password", "type": "password", "value": ""}], "parameters": [{"id": "pdf_filename", "type": "textarea", "value": "#doctype#date"}, {"id": "xml_filename", "type": "textarea", "value": "#random#date"}, {"id": "separator", "type": "textarea", "value": "_"}]}}', 'splitter');
+ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 7;
+ALTER SEQUENCE "outputs_id_seq" RESTART WITH 7;
 
 -- CRÉATION DES TEMPLATES DES PARAMETRES DES FORMULAIRE
 INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verifier', '{

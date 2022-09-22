@@ -94,7 +94,7 @@
                     </mat-form-field>
                     <mat-form-field *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [id]="field.id" [(ngModel)]="field.control.value" [required]="field.required">
+                        <mat-select [id]="field.id" [name]="field.id" [(ngModel)]="field.control.value" [required]="field.required">
                             <mat-option *ngFor="let option of outputsTypes" [value]="option.output_type_id">
                                 {{ option.output_type_label }}
                             </mat-option>
