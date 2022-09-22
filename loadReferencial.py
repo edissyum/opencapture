@@ -78,9 +78,9 @@ if __name__ == '__main__':
                 }
 
                 address_id = database.insert(args)
-
                 GET_ONLY_RAW_FOOTER = True
-                if spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']].lower() == 'true':
+                if spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']] and \
+                        spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']].lower() == 'true':
                     GET_ONLY_RAW_FOOTER = False
 
                 args = {
