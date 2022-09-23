@@ -86,20 +86,20 @@
         </div>
         <div *ngIf="!loading" class="flex justify-center items-center">
             <form class="grid grid-cols-2 gap-12 w-full m-10 text-center">
-                <ng-container *ngFor="let field of outputForm">
+                <ng-container *ngFor="let field of this.outputForm">
                     <mat-form-field *ngIf="field.type === 'text'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, this.outputForm) }}</mat-error>
                     </mat-form-field>
                     <mat-form-field *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <mat-select [id]="field.id" [name]="field.id" [(ngModel)]="field.control.value" [required]="field.required">
-                            <mat-option *ngFor="let option of outputsTypes" [value]="option.output_type_id">
+                            <mat-option *ngFor="let option of this.outputsTypes" [value]="option.output_type_id">
                                 {{ option.output_type_label }}
                             </mat-option>
                         </mat-select>
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, this.outputForm) }}</mat-error>
                     </mat-form-field>
                 </ng-container>
             </form>
