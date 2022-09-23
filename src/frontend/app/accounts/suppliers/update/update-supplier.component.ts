@@ -180,6 +180,13 @@ export class UpdateSupplierComponent implements OnInit {
         }
         this.supplierId = this.route.snapshot.params['id'];
         this.supplierForm.forEach((element: any) => {
+            if (element.id === 'vat_number' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    if (value && value.includes(' ')) {
+                        element.control.setValue(value.replace(' ', ''));
+                    }
+                });
+            }
             if (element.id === 'document_lang') {
                 if (this.localeService.langs.length === 0) {
                     this.http.get(environment['url'] + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
@@ -231,14 +238,14 @@ export class UpdateSupplierComponent implements OnInit {
                                         if (this.addressId) {
                                             this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
                                                 tap((address: any) => {
-                                                    for (const field in address) {
-                                                        if (address.hasOwnProperty(field)) {
-                                                            this.addressForm.forEach(element => {
-                                                                if (element.id === field) {
-                                                                    if (field === 'country') {
-                                                                        this.defaultValue.name = address[field];
+                                                    for (const adr_field in address) {
+                                                        if (address.hasOwnProperty(adr_field)) {
+                                                            this.addressForm.forEach(adr_element => {
+                                                                if (adr_element.id === adr_field) {
+                                                                    if (adr_field === 'country') {
+                                                                        this.defaultValue.name = address[adr_field];
                                                                     }
-                                                                    element.control.setValue(address[field]);
+                                                                    adr_element.control.setValue(address[adr_field]);
                                                                 }
                                                             });
                                                         }

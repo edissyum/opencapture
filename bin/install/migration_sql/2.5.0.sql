@@ -52,6 +52,12 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_c
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_xml_comment', 'eng', 'Tech comments in Splitter XML output', '\s?<!--[\s\S\n]*?-->\s');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_empty_line', 'eng', 'Empty line in Splitter XML output', '^\s*$');
 
+-- Improve VAT Number REGEX
+UPDATE "regex" SET content = '(EU|SI|HU|D(K|E)|PL|CHE|(F|H)R|B(E|G)(0)?)[0-9A-Z]{2}[0-9]{6,9}' WHERE regex_id = 'vat_number';
+
+-- Improve EMAIL REGEX
+UPDATE "regex" SET content = '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+' WHERE regex_id = 'email';
+
 -- Create tasks watcher
 create table tasks_watcher
 (
@@ -124,3 +130,33 @@ UPDATE form_models SET settings = '{
     "export_zip_file": ""
 }' WHERE module = 'splitter';
 
+-- Add Verifier PDF export
+INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "data") VALUES ('export_pdf', 'Export PDF', 'verifier', '{
+    "options": {
+        "auth": [],
+        "parameters": [
+            {
+                "id": "folder_out",
+                "type": "text",
+                "label": "Dossier de sortie",
+                "required": "true",
+                "placeholder": "/var/share/sortant"
+            },
+            {
+                "id": "separator",
+                "type": "text",
+                "label": "Séparateur",
+                "required": "true",
+                "placeholder": "_"
+            },
+            {
+                "id": "filename",
+                "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "type": "text",
+                "label": "Nom du fichier",
+                "required": "true",
+                "placeholder": "invoice_number#quotation_number#supplier_name"
+            }
+        ]
+    }
+}');
