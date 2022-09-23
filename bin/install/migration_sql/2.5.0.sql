@@ -160,3 +160,4 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "d
         ]
     }
 }');
+
