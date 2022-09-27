@@ -460,7 +460,6 @@ def ldap_synchronization_users():
                                 "errors": gettext('LDAP_SYNCHRO_ERROR'),
                                 "message": gettext('LDAP_SYNCHRO_INFOS_ERROR')
                             }, 401]
-
                     else:
                         res = [{
                             "errors": gettext('LDAP_SYNCHRO_ERROR'),

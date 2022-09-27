@@ -74,7 +74,7 @@
                 </ng-container>
                 <ng-container matColumnDef="history_desc">
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HISTORY.history_desc' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element" [innerHTML]="'<span>' + element.history_desc + '</span>'"></mat-cell>
+                    <mat-cell class="p-0.5" *matCellDef="let element" [innerHTML]="'<span>' + element.history_desc + '</span>'"></mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="user_ip">
                     <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 350px !important"> {{ 'HISTORY.user_ip' | translate }} </mat-header-cell>
