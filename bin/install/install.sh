@@ -203,7 +203,7 @@ fi
 
 echo ""
 echo "Postgres installation....."
-apt-get update
+apt-get update >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 apt-get install -y postgresql >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
