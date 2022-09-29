@@ -203,6 +203,7 @@ fi
 
 echo ""
 echo "Postgres installation....."
+apt-get update
 apt-get install -y postgresql >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
@@ -313,7 +314,7 @@ databaseName="opencapture_$customId"
 if [[ "$customId" = *"opencapture_"* ]]; then
     databaseName="$customId"
 fi
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName" postgres >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName WITH template=template0 encoding='UTF8'" postgres >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -519,8 +520,11 @@ touch /var/log/watcher/daemon.log
 chmod -R 775 /var/log/watcher/
 cp $defaultPath/instance/config/watcher.ini.default $defaultPath/instance/config/watcher.ini
 
-crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input watch /var/share/"$customId"/
-crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input watch /var/share/"$customId"/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input watch /var/share/"$customId"/entrant/verifier/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input command /var/www/html/opencapture/custom/"$customId"/bin/scripts/verifier_inputs/default_input.sh $filename
+
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input watch /var/share/"$customId"/entrant/splitter/
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input command /var/www/html/opencapture/custom/"$customId"/bin/scripts/splitter_inputs/default_input.sh $filename
 
 sed -i "s#verifier_default_input#verifier_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"
 sed -i "s#splitter_default_input_#splitter_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"

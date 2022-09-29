@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2022-09-08 11:38+0200\n"
+"POT-Creation-Date: 2022-09-23 11:11+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -17,25 +17,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: src/backend/verifier_exports.py:71 src/backend/verifier_exports.py:74
+#: src/backend/verifier_exports.py:73 src/backend/verifier_exports.py:76
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier de destination XML n'existe pas"
 
+#: src/backend/verifier_exports.py:106 src/backend/verifier_exports.py:109
+msgid "PDF_DESTINATION_FOLDER_DOESNT_EXISTS"
+msgstr "Le dossier de destination PDF n'existe pas"
+
 #: src/backend/controllers/splitter.py:282
-#: src/backend/controllers/splitter.py:288 src/backend/verifier_exports.py:219
-#: src/backend/verifier_exports.py:225 src/backend/verifier_exports.py:231
+#: src/backend/controllers/splitter.py:288 src/backend/verifier_exports.py:254
+#: src/backend/verifier_exports.py:260 src/backend/verifier_exports.py:266
 msgid "EXPORT_MAARCH_ERROR"
 msgstr "Erreur lors de l'export vers Maarch"
 
-#: src/backend/verifier_exports.py:226
+#: src/backend/verifier_exports.py:261
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "Le fichier PDF est introuvable"
 
-#: src/backend/verifier_exports.py:237
+#: src/backend/verifier_exports.py:272
 msgid "MAARCH_WS_INFO_WRONG"
 msgstr "Les informations de connexion à Maarch sont erronées"
 
-#: src/backend/controllers/splitter.py:294 src/backend/verifier_exports.py:243
+#: src/backend/controllers/splitter.py:294 src/backend/verifier_exports.py:278
 msgid "MAARCH_WS_INFO_EMPTY"
 msgstr "Les informations de connexion à Maarch sont vides"
 
@@ -52,70 +56,71 @@ msgid "GET_ADDRESS_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de l'adresse"
 
 #: src/backend/controllers/accounts.py:80
-#: src/backend/controllers/accounts.py:138
+#: src/backend/controllers/accounts.py:159
 msgid "UPDATE_SUPPLIER_POSITIONS_ERROR"
 msgstr "Erreur lors de la mise à jour des positions du compte fournisseur"
 
 #: src/backend/controllers/accounts.py:101
-#: src/backend/controllers/accounts.py:107
-msgid "UPDATE_SUPPLIER_ERROR"
-msgstr "Erreur lors de la mise à jour du fournisseur"
-
-#: src/backend/controllers/accounts.py:169
+#: src/backend/controllers/accounts.py:190
 msgid "UPDATE_SUPPLIER_PAGES_ERROR"
 msgstr "Erreur lors de la mise à jour des pages du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:193
-#: src/backend/controllers/accounts.py:199
-#: src/backend/controllers/accounts.py:223
-#: src/backend/controllers/accounts.py:229 src/backend/models/accounts.py:115
+#: src/backend/controllers/accounts.py:122
+#: src/backend/controllers/accounts.py:128
+msgid "UPDATE_SUPPLIER_ERROR"
+msgstr "Erreur lors de la mise à jour du fournisseur"
+
+#: src/backend/controllers/accounts.py:214
+#: src/backend/controllers/accounts.py:220
+#: src/backend/controllers/accounts.py:244
+#: src/backend/controllers/accounts.py:250 src/backend/models/accounts.py:115
 msgid "UPDATE_ADDRESS_ERROR"
 msgstr "Erreur lors de la mise à jour de l'adresse"
 
-#: src/backend/controllers/accounts.py:253 src/backend/models/accounts.py:132
+#: src/backend/controllers/accounts.py:274 src/backend/models/accounts.py:132
 msgid "CREATE_ADDRESS_ERROR"
 msgstr "Erreur lors de la création de l'adresse"
 
-#: src/backend/controllers/accounts.py:290
-#: src/backend/controllers/accounts.py:296 src/backend/models/accounts.py:149
+#: src/backend/controllers/accounts.py:311
+#: src/backend/controllers/accounts.py:317 src/backend/models/accounts.py:149
 msgid "CREATE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la création du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:297
+#: src/backend/controllers/accounts.py:318
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "Un compte fournisseur existe déjà avec ce numéro de TVA"
 
-#: src/backend/controllers/accounts.py:317 src/backend/controllers/user.py:118
+#: src/backend/controllers/accounts.py:338 src/backend/controllers/user.py:118
 #: src/backend/models/accounts.py:204 src/backend/models/accounts.py:224
 #: src/backend/models/accounts.py:240 src/backend/models/user.py:162
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du compte client"
 
-#: src/backend/controllers/accounts.py:357
-#: src/backend/controllers/accounts.py:363 src/backend/models/accounts.py:259
+#: src/backend/controllers/accounts.py:378
+#: src/backend/controllers/accounts.py:384 src/backend/models/accounts.py:259
 msgid "UPDATE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la mise à jour du compte client"
 
-#: src/backend/controllers/accounts.py:391
-#: src/backend/controllers/accounts.py:397 src/backend/models/accounts.py:276
+#: src/backend/controllers/accounts.py:412
+#: src/backend/controllers/accounts.py:418 src/backend/models/accounts.py:276
 msgid "CREATE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la création du compte client"
 
-#: src/backend/controllers/accounts.py:398
+#: src/backend/controllers/accounts.py:419
 msgid "CUSTOMER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "Un compte client existe déjà avec ce numéro de TVA"
 
-#: src/backend/controllers/accounts.py:412
-#: src/backend/controllers/accounts.py:418 src/backend/models/accounts.py:295
+#: src/backend/controllers/accounts.py:433
+#: src/backend/controllers/accounts.py:439 src/backend/models/accounts.py:295
 msgid "DELETE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la suppression du compte client"
 
-#: src/backend/controllers/accounts.py:433
-#: src/backend/controllers/accounts.py:439 src/backend/models/accounts.py:168
+#: src/backend/controllers/accounts.py:454
+#: src/backend/controllers/accounts.py:460 src/backend/models/accounts.py:168
 msgid "DELETE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la suppression du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:463
+#: src/backend/controllers/accounts.py:484
 msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
 msgstr "Erreur lors du chargement du référentiel fournisseur"
 
@@ -212,8 +217,8 @@ msgid "CUSTOM_FIELDS_DELETE_ERROR"
 msgstr "Erreur lors de la suppression du champ personnalisé"
 
 #: src/backend/controllers/doctypes.py:35
-#: src/backend/controllers/doctypes.py:77 src/backend/models/doctypes.py:118
-#: src/backend/models/doctypes.py:121
+#: src/backend/controllers/doctypes.py:77 src/backend/models/doctypes.py:119
+#: src/backend/models/doctypes.py:122
 msgid "SET_DEFAULT_DOCTYPE_ERROR"
 msgstr "Erreur lors de la modification du type de document par défaut"
 
@@ -224,7 +229,8 @@ msgstr "Erreur lors de l'ajout d'un type de document"
 #: src/backend/controllers/doctypes.py:61
 #: src/backend/controllers/doctypes.py:97
 #: src/backend/controllers/doctypes.py:110
-#: src/backend/controllers/doctypes.py:141
+#: src/backend/controllers/doctypes.py:142
+#: src/backend/controllers/doctypes.py:171
 msgid "DOCTYPE_ERROR"
 msgstr "Erreur sur les types de documents"
 
@@ -240,50 +246,50 @@ msgstr "SEPARATEUR DE DOCUMENT / DOCUMENT SEPARATOR"
 msgid "BUNDLESEPARATOR"
 msgstr "SEPARATEUR DE LOT / BUNDLE SEPARATOR"
 
-#: src/backend/controllers/forms.py:41 src/backend/controllers/forms.py:61
-#: src/backend/controllers/forms.py:149 src/backend/controllers/forms.py:155
+#: src/backend/controllers/forms.py:41 src/backend/controllers/forms.py:51
+#: src/backend/controllers/forms.py:77 src/backend/controllers/forms.py:185
 msgid "FORMS_ERROR"
 msgstr "Erreur sur les formulaires"
 
-#: src/backend/controllers/forms.py:76 src/backend/controllers/forms.py:125
-#: src/backend/models/forms.py:59
+#: src/backend/controllers/forms.py:92 src/backend/controllers/forms.py:141
+#: src/backend/models/forms.py:57
 msgid "GET_FORM_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du formulaire"
 
-#: src/backend/controllers/forms.py:108
+#: src/backend/controllers/forms.py:124
 msgid "GET_FORM_FIELDS_BY_FORM_ID_ERROR"
 msgstr "Erreur lors de la récupération des champs du formulaire"
 
-#: src/backend/controllers/forms.py:169 src/backend/controllers/forms.py:175
+#: src/backend/controllers/forms.py:179 src/backend/controllers/forms.py:307
+#: src/backend/controllers/forms.py:313
+msgid "UPDATE_FORMS_FIELDS_ERROR"
+msgstr "Erreur lors de la mise à jour des champs du formulaire"
+
+#: src/backend/controllers/forms.py:199 src/backend/controllers/forms.py:205
 msgid "DELETE_FORM_ERROR"
 msgstr "Erreur lors de la suppression du formulaire"
 
-#: src/backend/controllers/forms.py:184 src/backend/controllers/inputs.py:66
+#: src/backend/controllers/forms.py:214 src/backend/controllers/inputs.py:66
 #: src/backend/controllers/outputs.py:54
 #: src/backend/controllers/positions_masks.py:159
 msgid "COPY_OF"
 msgstr "Copie de"
 
-#: src/backend/controllers/forms.py:201 src/backend/controllers/forms.py:207
+#: src/backend/controllers/forms.py:231 src/backend/controllers/forms.py:237
 msgid "DUPLICATE_FORM_ERROR"
 msgstr "Erreur lors de la duplication du formulaire"
 
-#: src/backend/controllers/forms.py:221 src/backend/controllers/forms.py:227
+#: src/backend/controllers/forms.py:251 src/backend/controllers/forms.py:257
 msgid "DISABLE_FORM_ERROR"
 msgstr "Erreur lors de la désactivation du formulaire"
 
-#: src/backend/controllers/forms.py:241 src/backend/controllers/forms.py:247
+#: src/backend/controllers/forms.py:271 src/backend/controllers/forms.py:277
 msgid "ENABLE_FORM_ERROR"
 msgstr "Erreur lors de l'activation du formulaire"
 
-#: src/backend/controllers/forms.py:263
+#: src/backend/controllers/forms.py:293
 msgid "GET_FORMS_FIELDS_ERROR"
 msgstr "Erreur lors de la récupération des champs du formulaire"
-
-#: src/backend/controllers/forms.py:277 src/backend/controllers/forms.py:283
-#: src/backend/controllers/forms.py:307 src/backend/controllers/forms.py:313
-msgid "UPDATE_FORMS_FIELDS_ERROR"
-msgstr "Erreur lors de la mise à jour des champs du formulaire"
 
 #: src/backend/controllers/history.py:28
 msgid "ADD_HISTORY_ERROR"
@@ -529,7 +535,7 @@ msgid "CMIS_CONNECTION_ERROR"
 msgstr "Erreur lors de la connexion CMIS"
 
 #: src/backend/controllers/splitter.py:717
-#: src/backend/controllers/verifier.py:537 src/backend/models/splitter.py:423
+#: src/backend/controllers/verifier.py:550 src/backend/models/splitter.py:423
 #: src/backend/models/verifier.py:153
 msgid "GET_TOTALS_ERROR"
 msgstr "Erreur lors de la récupération des totaux"
@@ -598,48 +604,48 @@ msgid "GET_INVOICE_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de la facture"
 
 #: src/backend/controllers/verifier.py:167
-#: src/backend/controllers/verifier.py:268
+#: src/backend/controllers/verifier.py:269
 msgid "UPDATE_INVOICE_POSITIONS_ERROR"
 msgstr "Erreur lors de la mise à jour des positions de la facture"
 
 #: src/backend/controllers/verifier.py:190
-#: src/backend/controllers/verifier.py:286
+#: src/backend/controllers/verifier.py:287
 msgid "UPDATE_INVOICE_PAGES_ERROR"
 msgstr "Erreur lors de la mise à jour des pages de la facture"
 
-#: src/backend/controllers/verifier.py:212
-#: src/backend/controllers/verifier.py:230
+#: src/backend/controllers/verifier.py:213
+#: src/backend/controllers/verifier.py:231
 msgid "UPDATE_INVOICE_DATA_ERROR"
 msgstr "Erreur lors de la mise à jour des données de la facture"
 
-#: src/backend/controllers/verifier.py:300
-#: src/backend/controllers/verifier.py:306
+#: src/backend/controllers/verifier.py:301
+#: src/backend/controllers/verifier.py:307
 msgid "DELETE_INVOICE_ERROR"
 msgstr "Erreur lors de la suppression de la facture"
 
-#: src/backend/controllers/verifier.py:321
-#: src/backend/controllers/verifier.py:327
+#: src/backend/controllers/verifier.py:322
+#: src/backend/controllers/verifier.py:328
 msgid "UPDATE_INVOICE_ERROR"
 msgstr "Erreur lors de la mise à jour de la facture"
 
-#: src/backend/controllers/verifier.py:344
+#: src/backend/controllers/verifier.py:345
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Erreur lors de la suppression du verrou sur la facture"
 
-#: src/backend/controllers/verifier.py:445
-#: src/backend/controllers/verifier.py:448
-#: src/backend/controllers/verifier.py:465
-#: src/backend/controllers/verifier.py:484
-#: src/backend/controllers/verifier.py:485
+#: src/backend/controllers/verifier.py:458
+#: src/backend/controllers/verifier.py:461
+#: src/backend/controllers/verifier.py:478
+#: src/backend/controllers/verifier.py:497
+#: src/backend/controllers/verifier.py:498
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Erreur lors de la connexion à l'api de l'INSEE"
 
-#: src/backend/controllers/verifier.py:509
+#: src/backend/controllers/verifier.py:522
 msgid "VAT_NOT_VALID"
 msgstr "Numéro de TVA invalide"
 
-#: src/backend/controllers/verifier.py:514
-#: src/backend/controllers/verifier.py:515
+#: src/backend/controllers/verifier.py:527
+#: src/backend/controllers/verifier.py:528
 msgid "VAT_API_ERROR"
 msgstr "Impossible de joindre l'API de vérification du numéro de TVA"
 
@@ -701,35 +707,31 @@ msgstr "Erreur lors de la suppression du champ custom"
 msgid "DOCTYPE_ALREADY_EXIST"
 msgstr "Le type de document existe déjà"
 
-#: src/backend/models/doctypes.py:90
+#: src/backend/models/doctypes.py:91
 msgid "UPDATE_DOCTYPE_ERROR"
 msgstr "Erreur lors de la mise à jour du type de document"
 
-#: src/backend/models/forms.py:79
+#: src/backend/models/forms.py:77
 msgid "GET_FORM_SETTINGS_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération des paramètres du formulaire"
 
-#: src/backend/models/forms.py:99
+#: src/backend/models/forms.py:97
 msgid "GET_DEFAULT_FORM_ERROR"
 msgstr "Erreur lors de la récupération du formulaire par défaut"
 
-#: src/backend/models/forms.py:120
+#: src/backend/models/forms.py:118
 msgid "UPDATE_FORM_ERROR"
 msgstr "Erreur lors de la mise à jour du formulaire"
 
-#: src/backend/models/forms.py:139
+#: src/backend/models/forms.py:137
 msgid "UPDATE_FORM_FIELDS_ERROR"
 msgstr "Erreur lors de la mise à jour des champs du formulaire"
 
-#: src/backend/models/forms.py:158
-msgid "UPDATE_FORM_SETTINGS_ERROR"
-msgstr "Erreur lors de la mise à jour des paramètres du formulaire"
-
-#: src/backend/models/forms.py:211
+#: src/backend/models/forms.py:187
 msgid "ADD_FORM_ERROR"
 msgstr "Erreur lors de la création du formulaire"
 
-#: src/backend/models/forms.py:214
+#: src/backend/models/forms.py:190
 msgid "FORM_LABEL_ALREADY_EXIST"
 msgstr "Le libellé de formulaire existe déjà"
 
@@ -903,4 +905,7 @@ msgstr "Erreur lors du chargement des méthodes d'authentification"
 #: src/backend/rest/splitter.py:38 src/backend/rest/verifier.py:37
 msgid "UNKNOW_ERROR"
 msgstr "Erreur inconnue"
+
+#~ msgid "UPDATE_FORM_SETTINGS_ERROR"
+#~ msgstr "Erreur lors de la mise à jour des paramètres du formulaire"
 
