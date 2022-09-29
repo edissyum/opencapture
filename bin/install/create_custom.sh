@@ -354,6 +354,18 @@ sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 
 ####################
+# Fill the watcher.ini
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId watch /var/share/"$customId"/entrant/verifier/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId include_extensions pdf,PDF
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh \$filename"
+
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId watch /var/share/"$customId"/entrant/splitter/
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId include_extensions pdf,PDF
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId command "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh \$filename"
+
+####################
 # Fix the rights after root launch to avoid permissions issues
 chmod -R 775 $defaultPath
 chmod -R g+s $defaultPath
