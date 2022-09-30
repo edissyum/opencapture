@@ -61,8 +61,13 @@ UPDATE "regex" SET content = '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[
 -- Improve english invoice number REGEX
 UPDATE "regex" SET content = '(INVOICE\s*(NUMBER|#)\s*(:)?).*' WHERE regex_id = 'invoice_number' AND lang = 'eng';
 
--- Improve english invoice number REGEX
+-- Improve english due date REGEX
 UPDATE "regex" SET content = 'DUE\s*DATE\s*(:)?\s*' WHERE regex_id = 'due_date' AND lang = 'eng';
+
+-- Improve english footer REGEX
+UPDATE "regex" SET content = 'UNTAXED\s*(TOTAL)?' WHERE regex_id = 'no_rates' AND lang = 'eng';
+UPDATE "regex" SET content = '(VAT\s*(?!.*NUMBER)(AMOUNT\s*)?|TOTAL\s*TAXES)(\$|£|€|EUROS|EUR|CAD|USD)?\s*.*' WHERE regex_id = 'vat_amount' AND lang = 'eng';
+UPDATE "regex" SET content = '(?P<r1>TOTAL|^(TOTAL)?\s*(AMOUNT|DUE)(\s*PAID)?)?\s*(:\s*)?(\$|£|€|EUROS|EUR|CAD|USD)?\s*(?(r1)()|(T(.)?T(.)?C|\(VAT\s*INCLUDE(D)?\))){1}\s*(:|(\$|£|€|EUROS|EUR|CAD|USD))?\s*([0-9]*(\.?\,?\|?\s?)[0-9]+((\.?\,?\s?)[0-9])+|[0-9]+)\s*(\$|£|€|EUROS|EUR|CAD|USD)?' WHERE regex_id = 'all_rates' AND lang = 'eng';
 
 -- Create tasks watcher
 create table tasks_watcher
