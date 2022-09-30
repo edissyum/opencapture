@@ -26,7 +26,7 @@ from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, 
 
 
 def insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status,
-           nb_pages, docservers, input_settings, log, regex, form_settings):
+           nb_pages, docservers, input_settings, log, regex, form_settings, supplier_lang_different, current_lang):
     try:
         filename = os.path.splitext(files.custom_file_name)
         improved_img = filename[0] + '_improved' + filename[1]
@@ -97,10 +97,23 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                     'data': [output_id]
                 })
                 if output_info:
+                    if supplier_lang_different:
+                        _regex = database.select({
+                            'select': ['regex_id', 'content'],
+                            'table': ['regex'],
+                            'where': ["lang in ('global', %s)"],
+                            'data': [current_lang],
+                        })
+
+                        for _r in _regex:
+                            regex[_r['regex_id']] = _r['content']
+
                     if output_info[0]['output_type_id'] == 'export_xml':
                         verifier_exports.export_xml(output_info[0]['data'], log, regex, invoice_data)
                     elif output_info[0]['output_type_id'] == 'export_maarch':
                         verifier_exports.export_maarch(output_info[0]['data'], invoice_data, log, regex, database)
+                    elif output_info[0]['output_type_id'] == 'export_pdf':
+                        verifier_exports.export_pdf(output_info[0]['data'], log, regex, invoice_data)
 
                     if 'delete_documents_after_outputs' in form_settings and form_settings['delete_documents_after_outputs']:
                         delete_documents(docservers, invoice_data['path'], invoice_data['filename'], full_jpg_filename)
@@ -195,8 +208,11 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 supplier[4]: supplier[3]
             })
 
+        supplier_lang_different = False
+
         if 'document_lang' in supplier[2] and supplier[2]['document_lang'] and \
                 configurations['locale'] != supplier[2]['document_lang']:
+            supplier_lang_different = True
             regex = {}
             _regex = database.select({
                 'select': ['regex_id', 'content'],
@@ -490,10 +506,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
         log.info('All the usefull informations are found. Execute outputs action and end process')
         insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
-               'END', nb_pages, docservers, input_settings, log, regex, form_settings)
+               'END', nb_pages, docservers, input_settings, log, regex, form_settings, supplier_lang_different, configurations['locale'])
     else:
         insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
-               'NEW', nb_pages, docservers, input_settings, log, regex, form_settings)
+               'NEW', nb_pages, docservers, input_settings, log, regex, form_settings, supplier_lang_different, configurations['locale'])
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')
