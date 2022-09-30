@@ -32,10 +32,10 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('due_date',
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('invoice_number', 'eng', 'Invoice number', '(INVOICE\s*(NUMBER|#)\s*(:)?).*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('delivery_number', 'eng', 'Delivery number', '(DELIVERY\s*NUMBER\s*(:)?).*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('quotation_number', 'eng', 'Quotation number', '((QUOT(E|ATION)|ORDER)\s*NUMBER\s*(:)?).*');
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('no_rates', 'eng', 'No rates amount', '');
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('all_rates', 'eng', 'All rates amount', '(?P<r1>TOTAL|^(TOTAL)?\s*AMOUNT(\s*PAID)?)?\s*(:\s*)?(\$|£|€|EUROS|EUR|CAD|USD)?\s*(?(r1)()|(T(.)?T(.)?C|\(VAT\s*INCLUDE(D)?\))){1}\s*(:|(\$|£|€|EUROS|EUR|CAD|USD))?\s*([0-9]*(\.?\,?\|?\s?)[0-9]+((\.?\,?\s?)[0-9])+|[0-9]+)\s*(\$|£|€|EUROS|EUR|CAD|USD)?');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('no_rates', 'eng', 'No rates amount', 'UNTAXED\s*(TOTAL)?');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('all_rates', 'eng', 'All rates amount', '(?P<r1>TOTAL|^(TOTAL)?\s*(AMOUNT|DUE)(\s*PAID)?)?\s*(:\s*)?(\$|£|€|EUROS|EUR|CAD|USD)?\s*(?(r1)()|(T(.)?T(.)?C|\(VAT\s*INCLUDE(D)?\))){1}\s*(:|(\$|£|€|EUROS|EUR|CAD|USD))?\s*([0-9]*(\.?\,?\|?\s?)[0-9]+((\.?\,?\s?)[0-9])+|[0-9]+)\s*(\$|£|€|EUROS|EUR|CAD|USD)?');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_rate', 'eng', 'VAT rate', '(20|5)%\s*(VAT)?');
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_amount', 'eng', 'VAT amount', '(VAT\s*(AMOUNT\s*)?)(\$|£|€|EUROS|EUR|CAD|USD)?\s*.*');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_amount', 'eng', 'VAT amount', '(VAT\s*(?!.*NUMBER)(AMOUNT\s*)?|TOTAL\s*TAXES)(\$|£|€|EUROS|EUR|CAD|USD)?\s*.*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_rate_list', 'eng', 'VAT rate list', '[20, 5,0]');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('format_date', 'eng', 'Final date format', '%m/%d/%Y');
 

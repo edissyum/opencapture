@@ -15,8 +15,8 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask_babel import gettext
 from flask import request
+from flask_babel import gettext
 from src.backend.import_models import user, accounts
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
