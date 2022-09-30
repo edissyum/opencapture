@@ -58,6 +58,12 @@ UPDATE "regex" SET content = '(EU|SI|HU|D(K|E)|PL|CHE|(F|H)R|B(E|G)(0)?)[0-9A-Z]
 -- Improve EMAIL REGEX
 UPDATE "regex" SET content = '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+' WHERE regex_id = 'email';
 
+-- Improve english invoice number REGEX
+UPDATE "regex" SET content = '(INVOICE\s*(NUMBER|#)\s*(:)?).*' WHERE regex_id = 'invoice_number' AND lang = 'eng';
+
+-- Improve english invoice number REGEX
+UPDATE "regex" SET content = 'DUE\s*DATE\s*(:)?\s*' WHERE regex_id = 'due_date' AND lang = 'eng';
+
 -- Create tasks watcher
 create table tasks_watcher
 (
