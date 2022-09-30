@@ -40,6 +40,10 @@
     <?php
         $customsDir = 'custom/';
         $customs = array_values(array_diff(scandir($customsDir), array('..', '.', 'custom.ini', 'custom.ini.default')));
+        if (in_array('.noindex', $customs)) {
+            header('HTTP/1.0 403 Forbidden', true, 403);
+            die('403 Forbidden');
+        }
         if (count($customs) == 1) {
     ?>
             <script>
