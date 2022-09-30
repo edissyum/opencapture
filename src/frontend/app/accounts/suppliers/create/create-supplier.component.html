@@ -23,6 +23,7 @@
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessageSupplier(field.id) }}</mat-error>
+                        <mat-hint *ngIf="field.hint">{{ field.hint | translate }}</mat-hint>
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
