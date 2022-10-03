@@ -55,7 +55,7 @@
         "@bartholomej/ngx-translate-extract": "^8.0.2",
         "@types/d3-scale": "^4.0.2",
         "@types/d3-selection": "^3.0.3",
-        "@types/node": "^18.7.23",
+        "@types/node": "^18.8.0",
         "@typescript-eslint/eslint-plugin": "5.38.1",
         "@typescript-eslint/parser": "5.38.1",
         "autoprefixer": "^10.4.12",

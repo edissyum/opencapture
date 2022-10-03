@@ -70,7 +70,7 @@ UPDATE "regex" SET content = '(VAT\s*(?!.*NUMBER)(AMOUNT\s*)?|TOTAL\s*TAXES)(\$|
 UPDATE "regex" SET content = '(?P<r1>TOTAL|^(TOTAL)?\s*(AMOUNT|DUE)(\s*PAID)?)?\s*(:\s*)?(\$|£|€|EUROS|EUR|CAD|USD)?\s*(?(r1)()|(T(.)?T(.)?C|\(VAT\s*INCLUDE(D)?\))){1}\s*(:|(\$|£|€|EUROS|EUR|CAD|USD))?\s*([0-9]*(\.?\,?\|?\s?)[0-9]+((\.?\,?\s?)[0-9])+|[0-9]+)\s*(\$|£|€|EUROS|EUR|CAD|USD)?' WHERE regex_id = 'all_rates' AND lang = 'eng';
 
 -- Create tasks watcher
-create table tasks_watcher
+CREATE TABLE tasks_watcher
 (
     "id"                SERIAL      UNIQUE PRIMARY KEY,
     "title"             VARCHAR(255),
@@ -78,7 +78,7 @@ create table tasks_watcher
     "module"            VARCHAR(10),
     "status"            VARCHAR(10),
     "error_description" TEXT,
-    "creation_date"     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "creation_date"     TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
     "end_date"          TIMESTAMP
 );
 
