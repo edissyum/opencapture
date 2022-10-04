@@ -570,8 +570,8 @@ if ! test -f "$defaultScriptFile"; then
     mkdir -p "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
     cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
     sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
-    sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
-    sed -i "s#§§LOG_PATH§§#$defaultPath#g" $defaultScriptFile
+    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+    sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile0
     sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 fi
