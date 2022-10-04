@@ -1,5 +1,5 @@
 -- Add MailCollect settings interface
-INSERT INTO "privileges" ("id", "label", "parent") VALUES ('mailcollect', 'general');
+INSERT INTO "privileges" ("label", "parent") VALUES ('mailcollect', 'general');
 
 ALTER TABLE "configurations" ADD COLUMN display BOOLEAN default true;
 INSERT INTO "configurations" (label, data, display) VALUES ('mailCollectGeneral', '{
@@ -56,7 +56,7 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_e
 UPDATE "regex" SET content = '(EU|SI|HU|D(K|E)|PL|CHE|(F|H)R|B(E|G)(0)?)[0-9A-Z]{2}[0-9]{6,9}' WHERE regex_id = 'vat_number';
 
 -- Improve EMAIL REGEX
-UPDATE "regex" SET content = '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+' WHERE regex_id = 'email';
+UPDATE "regex" SET content = '([A-Za-z0-9]+[.\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+' WHERE regex_id = 'email';
 
 -- Improve english invoice number REGEX
 UPDATE "regex" SET content = '(INVOICE\s*(NUMBER|#)\s*(:)?).*' WHERE regex_id = 'invoice_number' AND lang = 'eng';
