@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2022-09-23 11:11+0200\n"
+"POT-Creation-Date: 2022-09-30 16:09+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -861,7 +861,7 @@ msgstr "Erreur lors de la connexion à la base de donnée"
 
 #: src/backend/rest/auth.py:89 src/backend/rest/auth.py:254
 #: src/backend/rest/auth.py:268 src/backend/rest/auth.py:277
-#: src/backend/rest/auth.py:282 src/backend/rest/auth.py:473
+#: src/backend/rest/auth.py:282 src/backend/rest/auth.py:472
 msgid "LDAP_CONNECTION_ERROR"
 msgstr "Impossible de se connecter au serveur LDAP"
 
@@ -878,27 +878,27 @@ msgstr "Information(s) incorrecte(s)"
 msgid "NOT_COMPLETE_CONNECTION_INFOS"
 msgstr "Il manque une ou plusieurs informations pour établir la connexion"
 
-#: src/backend/rest/auth.py:288 src/backend/rest/auth.py:478
-#: src/backend/rest/auth.py:484
+#: src/backend/rest/auth.py:288 src/backend/rest/auth.py:477
+#: src/backend/rest/auth.py:483
 msgid "INFOS_LDAP_NOT_COMPLETE"
 msgstr "Informations non complètes"
 
-#: src/backend/rest/auth.py:460 src/backend/rest/auth.py:466
-#: src/backend/rest/auth.py:472 src/backend/rest/auth.py:477
-#: src/backend/rest/auth.py:483
+#: src/backend/rest/auth.py:460 src/backend/rest/auth.py:465
+#: src/backend/rest/auth.py:471 src/backend/rest/auth.py:476
+#: src/backend/rest/auth.py:482
 msgid "LDAP_SYNCHRO_ERROR"
 msgstr "Erreur lors de la synchronisation LDAP"
 
-#: src/backend/rest/auth.py:461 src/backend/rest/auth.py:467
+#: src/backend/rest/auth.py:461 src/backend/rest/auth.py:466
 msgid "LDAP_SYNCHRO_INFOS_ERROR"
 msgstr "Information(s) de synchronisation incorrecte(s)"
 
-#: src/backend/rest/auth.py:496 src/backend/rest/auth.py:523
-#: src/backend/rest/auth.py:537
+#: src/backend/rest/auth.py:495 src/backend/rest/auth.py:522
+#: src/backend/rest/auth.py:536
 msgid "REQUEST_MODIFS_ERROR"
 msgstr "Erreur base de données impossible d'exécuter la requête"
 
-#: src/backend/rest/auth.py:509
+#: src/backend/rest/auth.py:508
 msgid "RETRIEVE_LOGIN_METHODS_ERROR"
 msgstr "Erreur lors du chargement des méthodes d'authentification"
 

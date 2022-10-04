@@ -33,6 +33,7 @@
 		"get_only_raw_footer": "Get only raw footer",
 		"iban": "IBAN",
 		"import_suppliers": "Import suppliers",
+		"only_one_email": "Only one email is accepted",
 		"positions_deleted": "Supplier positions deleted",
 		"search_customer": "Search customer",
 		"search_supplier": "Search supplier",
