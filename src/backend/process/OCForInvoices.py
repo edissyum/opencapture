@@ -186,7 +186,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         convert(file, files, ocr, tmp_nb_pages, True)
         supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
         i += 1
-
+    supplier_lang_different = False
     if supplier:
         datas.update({
             'name': supplier[2]['name'],
@@ -207,8 +207,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             pages.update({
                 supplier[4]: supplier[3]
             })
-
-        supplier_lang_different = False
 
         if 'document_lang' in supplier[2] and supplier[2]['document_lang'] and \
                 configurations['locale'] != supplier[2]['document_lang']:
