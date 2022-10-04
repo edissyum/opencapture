@@ -536,8 +536,8 @@ Description=filesystem watcher
 After=basic.target
 
 [Service]
-ExecStart=/usr/local/bin/watcher -c $defaultPath/instance/config/watcher.ini start
-ExecStop=/usr/local/bin/watcher -c $defaultPath/instance/config/watcher.ini stop
+ExecStart=/home/$user/python-venv/opencapture/bin/watcher -c $defaultPath/instance/config/watcher.ini start
+ExecStop=/home/$user/python-venv/opencapture/bin/watcher -c $defaultPath/instance/config/watcher.ini stop
 Type=simple
 Restart=always
 RestartSec=5
