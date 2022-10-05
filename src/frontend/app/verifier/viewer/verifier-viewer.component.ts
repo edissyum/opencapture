@@ -188,7 +188,7 @@ export class VerifierViewerComponent implements OnInit {
         /*
         * Enable library to draw rectangle on load (OCR ON FLY)
         */
-        this.imageInvoice = $('#invoice_image');
+        this.imageInvoice = $('#document_image');
         this.ratio = this.invoice.img_width / this.imageInvoice.width();
         this.ocr({
             'target' : {

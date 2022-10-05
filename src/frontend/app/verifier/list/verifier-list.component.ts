@@ -335,7 +335,7 @@ export class VerifierListComponent implements OnInit {
                             invoice.display = {
                                 "subtitles": [
                                     {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-                                    {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+                                    {"id": "document_date", "label": "FACTURATION.document_date"},
                                     {"id": "date", "label": "VERIFIER.register_date"},
                                     {"id": "original_filename", "label": "VERIFIER.original_file"},
                                     {"id": "form_label", "label": "VERIFIER.form"}
@@ -355,7 +355,7 @@ export class VerifierListComponent implements OnInit {
                             invoice.display = {
                                 "subtitles": [
                                     {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-                                    {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+                                    {"id": "document_date", "label": "FACTURATION.document_date"},
                                     {"id": "date", "label": "VERIFIER.register_date"},
                                     {"id": "original_filename", "label": "VERIFIER.original_file"},
                                     {"id": "form_label", "label": "VERIFIER.form"}

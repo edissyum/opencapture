@@ -312,8 +312,8 @@ export class FormBuilderComponent implements OnInit {
                     display_icon:'fa-solid fa-print',
                 },
                 {
-                    id: 'invoice_date',
-                    label: marker('FACTURATION.invoice_date'),
+                    id: 'document_date',
+                    label: marker('FACTURATION.document_date'),
                     unit: 'facturation',
                     type: 'date',
                     required: true,
@@ -327,8 +327,8 @@ export class FormBuilderComponent implements OnInit {
                     display_icon:'fa-solid file-alt',
                 },
                 {
-                    id: 'invoice_due_date',
-                    label: marker('FACTURATION.invoice_due_date'),
+                    id: 'document_due_date',
+                    label: marker('FACTURATION.document_due_date'),
                     unit: 'facturation',
                     type: 'date',
                     required: false,
@@ -634,8 +634,8 @@ export class FormBuilderComponent implements OnInit {
             'label': 'FACTURATION.quotation_number'
         },
         {
-            "id": 'invoice_date',
-            'label': marker('FACTURATION.invoice_date')
+            "id": 'document_date',
+            'label': marker('FACTURATION.document_date')
         },
         {
             "id": 'footer',
