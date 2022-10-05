@@ -32,7 +32,7 @@ if __name__ == '__main__':
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, regex, files, ocr, log, _, spreadsheet, smtp, docservers, configurations = create_classes_from_custom_id(args['custom_id'])
+    database, config, _, _, _, log, _, spreadsheet, _, _, _, _ = create_classes_from_custom_id(args['custom_id'])
 
     file = spreadsheet.referencialSuppplierSpreadsheet
     if args['file']:
@@ -78,9 +78,9 @@ if __name__ == '__main__':
                 }
 
                 address_id = database.insert(args)
-
                 GET_ONLY_RAW_FOOTER = True
-                if spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']].lower() == 'true':
+                if spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']] and \
+                        spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']].lower() == 'true':
                     GET_ONLY_RAW_FOOTER = False
 
                 args = {

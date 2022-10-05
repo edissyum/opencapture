@@ -31,13 +31,12 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { MatDialog } from "@angular/material/dialog";
 import { DocumentTypeComponent } from "../document-type/document-type.component";
-import {remove } from 'remove-accents';
+import { remove } from 'remove-accents';
 import { HistoryService } from "../../../services/history.service";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import { formatDate } from '@angular/common';
+import { marker} from "@biesbjerg/ngx-translate-extract-marker";
 import * as moment from "moment";
-import {LocaleService} from "../../../services/locale.service";
+import { LocaleService } from "../../../services/locale.service";
 
 export interface Field {
     id              : number

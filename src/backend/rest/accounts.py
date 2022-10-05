@@ -162,9 +162,32 @@ def delete_supplier_positions(supplier_id):
 @bp.route('accounts/suppliers/<int:supplier_id>/deletePosition', methods=['PUT'])
 @auth.token_required
 def delete_supplier_position(supplier_id):
-    field_id = request.json['args']['field_id']
     form_id = request.json['args']['form_id']
-    res = accounts.delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id)
+    args = request.json['args']
+    res = '', 200
+    if 'multiple' in args:
+        fields = args['fields']
+        for field in fields:
+            res = accounts.delete_invoice_position_by_supplier_id(supplier_id, field, form_id)
+    else:
+        field_id = request.json['args']['field_id']
+        res = accounts.delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('accounts/suppliers/<int:supplier_id>/deletePage', methods=['PUT'])
+@auth.token_required
+def delete_supplier_page(supplier_id):
+    form_id = request.json['args']['form_id']
+    args = request.json['args']
+    res = '', 200
+    if 'multiple' in args:
+        fields = args['fields']
+        for field in fields:
+            res = accounts.delete_invoice_page_by_supplier_id(supplier_id, field, form_id)
+    else:
+        field_id = request.json['args']['field_id']
+        res = accounts.delete_invoice_page_by_supplier_id(supplier_id, field_id, form_id)
     return make_response(jsonify(res[0])), res[1]
 
 

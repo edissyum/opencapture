@@ -90,6 +90,7 @@ export class CreateSupplierComponent implements OnInit {
             id: 'email',
             label: marker('FORMATS.email'),
             type: 'text',
+            hint: marker('ACCOUNTS.only_one_email'),
             control: new FormControl('', Validators.email),
             required: false
         },
@@ -198,6 +199,13 @@ export class CreateSupplierComponent implements OnInit {
         ).subscribe();
 
         this.supplierForm.forEach((element: any) => {
+            if (element.id === 'vat_number' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    if (value && value.includes(' ')) {
+                        element.control.setValue(value.replace(' ', ''));
+                    }
+                });
+            }
             if (element.id === 'document_lang') {
                 if (this.localeService.langs.length === 0) {
                     this.http.get(environment['url'] + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(

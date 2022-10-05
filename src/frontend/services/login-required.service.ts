@@ -47,13 +47,12 @@ export class LoginRequiredService implements CanActivate {
         private routerExtService: LastUrlService,
     ) {}
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    canActivate(): boolean {
         const token = this.authService.getToken();
-
         if (!token) {
             this.translate.get('AUTH.not_connected').subscribe((translated: string) => {
                 const currentUrl = this.routerExtService.getCurrentUrl();
-                if (currentUrl !== '/logout' && currentUrl !== '/login') {
+                if (currentUrl !== '/logout' && currentUrl !== '/login' && currentUrl !== '/500') {
                     this.authService.setCachedUrl(currentUrl.replace(/^\//g, ''));
                 }
                 this.notify.error(translated);

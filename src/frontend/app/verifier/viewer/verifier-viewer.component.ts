@@ -19,7 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
+import { catchError, map, startWith, tap } from "rxjs/operators";
 import { Observable, of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
@@ -74,6 +74,7 @@ export class VerifierViewerComponent implements OnInit {
     imgSrc                  : SafeUrl     = '';
     ratio                   : number      = 0;
     currentPage             : number      = 1;
+    accountingPlan          : any         = {};
     formSettings            : any         = {};
     formList                : any         = {};
     currentFormFields       : any         = {};
@@ -101,11 +102,11 @@ export class VerifierViewerComponent implements OnInit {
         other         : []
     };
     pattern                 : any         = {
-        alphanum                        : '^[0-9a-zA-Z\\s\']*$',
-        alphanum_extended               : '^[0-9a-zA-Z-/#,\\.\'\\s]*$',
-        alphanum_extended_with_accent   : '^[0-9a-zA-Z\\u00C0-\\u017F-/#,\'\\.\\s]*$',
-        number_int                      : '^[0-9]*$',
-        number_float                    : '^[0-9]*([.][0-9]*)*$',
+        alphanum                        : '^[(\\-)?0-9a-zA-Z\\s\']*$',
+        alphanum_extended               : '^[(\\-)?0-9a-zA-Z-/#,\\.\'\\s]*$',
+        alphanum_extended_with_accent   : '^[(\\-)?0-9a-zA-Z\\u00C0-\\u017F-/#,\'\\.\\s]*$',
+        number_int                      : '^[(\\-)?0-9]*$',
+        number_float                    : '^[(\\-)?0-9]*([.][0-9]*)*$',
         char                            : '^[A-Za-z\\s]*$',
         email                           : '^[a-zA-Z0-9_\\.\\+-]+@[a-zA-Z0-9-]+\\.(fr|com|org|eu|law)+$'
     };
@@ -198,7 +199,9 @@ export class VerifierViewerComponent implements OnInit {
             }
         }, true);
         await this.fillForm(this.currentFormFields);
-        if (this.invoice.supplier_id) this.getSupplierInfo(this.invoice.supplier_id, false, true);
+        if (this.invoice.supplier_id) {
+            this.getSupplierInfo(this.invoice.supplier_id, false, true);
+        }
         setTimeout(() => {
             this.drawPositions();
             this.convertAutocomplete();
@@ -360,8 +363,8 @@ export class VerifierViewerComponent implements OnInit {
 
     getFieldInfo(fieldId: any) {
         for (const parent in this.fields) {
-            for (const cpt in this.currentFormFields.fields[parent]) {
-                const field = this.currentFormFields.fields[parent][cpt];
+            for (const cpt in this.form[parent]) {
+                const field = this.form[parent][cpt];
                 if (field.id === fieldId) {
                     return field;
                 }
@@ -375,24 +378,23 @@ export class VerifierViewerComponent implements OnInit {
             const position = this.invoice.positions[fieldId];
             if (position && parseInt(String(page)) === parseInt(String(this.currentPage))) {
                 const splittedFieldId = fieldId.split('_');
-                let field = this.getFieldInfo(fieldId);
+                const field = this.getFieldInfo(fieldId);
+                let cpt = '0';
                 if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1])) && !fieldId.includes('custom_')) {
-                    const cpt = splittedFieldId[splittedFieldId.length - 1];
-                    const tmpFieldId = splittedFieldId.join('_').replace('_' + cpt, '');
-                    field = this.getFieldInfo(tmpFieldId);
+                    cpt = splittedFieldId[splittedFieldId.length - 1];
                 }
-
                 if (field) {
-                    this.drawPositionByField(field, position);
+                    this.drawPositionByField(field, position, cpt);
                     $('#' + field.id).blur();
                 }
             }
         }
     }
 
-    drawPositionByField(field: any, position: any) {
+    drawPositionByField(field: any, position: any, cpt = '0') {
         this.lastId = field.id;
         this.lastLabel = this.translate.instant(field.label).trim();
+        if (cpt !== '0') this.lastLabel += ' ' + parseInt(cpt);
         this.lastColor = field.color;
         this.disableOCR = true;
         const newArea = {
@@ -474,7 +476,9 @@ export class VerifierViewerComponent implements OnInit {
                     display_icon: field.display_icon,
                     class_label: field.class_label,
                     cpt: 0,
-                    values: ''
+                    values: '',
+                    lineSelected: field.lineSelected,
+                    fullSizeSelected: field.fullSizeSelected
                 });
 
                 const _field = this.form[category][this.form[category].length - 1];
@@ -486,13 +490,14 @@ export class VerifierViewerComponent implements OnInit {
                     if (this.accountingPlanEmpty) {
                         array = await this.retrieveDefaultAccountingPlan();
                     }
-                    array = this.sortArray(array);
+                    this.accountingPlan = this.sortArray(array);
                     this.form[category][cpt].values = this.form[category][cpt].control.valueChanges
                         .pipe(
                             startWith(''),
-                            map(option => option ? this._filter_accounting(array, option) : array)
+                            map(option => option ? this._filter_accounting(this.accountingPlan, option) : this.accountingPlan)
                         );
                 }
+
                 if (this.invoice.datas[field.id]) {
                     let value = this.invoice.datas[field.id];
                     if (field.format === 'date' && field.id !== '' && field.id !== undefined && value) {
@@ -510,8 +515,19 @@ export class VerifierViewerComponent implements OnInit {
                     if (field.id === 'vat_number') this.checkVAT(field.id, value);
                 }
 
-                if (field.id === 'name' && category === 'supplier') this.supplierNamecontrol = this.form[category][cpt].control;
-                this.findChildren(field.id, _field, category);
+                if (field.id === 'name' && category === 'supplier') {
+                    this.supplierNamecontrol = this.form[category][cpt].control;
+                }
+
+                if (!field.lineSelected && !field.fullSizeSelected) {
+                    this.findChildren(field.id, _field, category);
+                } else if (field.fullSizeSelected) {
+                    for (const field_data in this.invoice.datas) {
+                        if (field_data.includes(field.id + '_')) {
+                            this.duplicateLine(field.id, category, true);
+                        }
+                    }
+                }
             }
         }
     }
@@ -637,7 +653,7 @@ export class VerifierViewerComponent implements OnInit {
                         }
                     }
                 },
-                onDeleted(img: any, cpt: any) {
+                onDeleted(_img: any, cpt: any) {
                     const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
                     if (inputId) {
                         _this.updateFormValue(inputId, '');
@@ -668,12 +684,14 @@ export class VerifierViewerComponent implements OnInit {
     scrollToElement() {
         if (this.invoice.positions[this.lastId]) {
             const currentHeight = window.innerHeight;
-            const position = document.getElementsByClassName('input_' + this.lastId)[0]!.getBoundingClientRect().top;
-            if (position >= currentHeight || position <= currentHeight) {
-                document.getElementById('image')!.scrollTo({
-                    top: position - 200,
-                    behavior: 'smooth'
-                });
+            if (document.getElementsByClassName('input_' + this.lastId).length > 0) {
+                const position = document.getElementsByClassName('input_' + this.lastId)![0]!.getBoundingClientRect().top;
+                if (position >= currentHeight || position <= currentHeight) {
+                    document.getElementById('image')!.scrollTo({
+                        top: position - 200,
+                        behavior: 'smooth'
+                    });
+                }
             }
         }
     }
@@ -705,7 +723,6 @@ export class VerifierViewerComponent implements OnInit {
                 }
             }
             // End write
-
             const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
             $('#' + inputId).focus();
 
@@ -904,11 +921,11 @@ export class VerifierViewerComponent implements OnInit {
                 supplierData['address_id'] = data.id;
                 this.http.post(environment['url'] + '/ws/accounts/suppliers/create', {'args': supplierData}, {headers: this.authService.headers},
                 ).pipe(
-                    tap(async (data: any) => {
+                    tap(async (supplier_data: any) => {
                         this.historyService.addHistory('accounts', 'create_supplier', this.translate.instant('HISTORY-DESC.create-supplier', {supplier: supplierData['name']}));
                         this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
-                        this.updateInvoice({'supplier_id': data['id']});
-                        this.invoice.supplier_id = data['id'];
+                        this.updateInvoice({'supplier_id': supplier_data['id']});
+                        this.invoice.supplier_id = supplier_data['id'];
                         this.suppliers = await this.retrieveSuppliers();
                         this.suppliers = this.suppliers.suppliers;
                     }),
@@ -984,10 +1001,16 @@ export class VerifierViewerComponent implements OnInit {
         return _field;
     }
 
-    deleteData(fieldId: any) {
+    deleteData(fieldId: any, multiple: boolean = false) {
+        let args: any;
+        if (multiple) {
+            args = {'fields': fieldId, 'multiple': true};
+        } else {
+            args = fieldId.trim();
+        }
+
         this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deleteData',
-            {'args': fieldId.trim()},
-            {headers: this.authService.headers}).pipe(
+            {'args': args}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('INVOICES.data_deleted', {"input": this.lastLabel}));
             }),
@@ -999,10 +1022,16 @@ export class VerifierViewerComponent implements OnInit {
         ).subscribe();
     }
 
-    deletePosition(fieldId: any) {
+    deletePosition(fieldId: any, multiple: boolean = false) {
+        let args: any;
+        if (multiple) {
+            args = {'fields': fieldId, 'multiple': true};
+        } else {
+            args = fieldId.trim();
+        }
+
         this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deletePosition',
-            {'args': fieldId.trim()},
-            {headers: this.authService.headers}).pipe(
+            {'args': args}, {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -1010,27 +1039,55 @@ export class VerifierViewerComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.invoice.supplier_id + '/deletePosition',
-            {'args': {'field_id': fieldId.trim(), 'form_id' : this.invoice.form_id}},
-            {headers: this.authService.headers}).pipe(
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+        if (this.invoice.supplier_id) {
+            if (multiple) {
+                args = {'fields': fieldId, 'multiple': true, 'form_id' : this.invoice.form_id};
+            } else {
+                args = {'field_id': fieldId.trim(), 'form_id' : this.invoice.form_id};
+            }
+            this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.invoice.supplier_id + '/deletePosition',
+                {'args': args}, {headers: this.authService.headers}).pipe(
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
     }
 
-    deletePage(fieldId: any) {
+    deletePage(fieldId: any, multiple: boolean = false) {
+        let args: any;
+        if (multiple) {
+            args = {'fields': fieldId, 'multiple': true};
+        } else {
+            args = fieldId.trim();
+        }
+
         this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deletePage',
-            {'args': fieldId.trim()},
-            {headers: this.authService.headers}).pipe(
+            {'args': args}, {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();
+
+        if (this.invoice.supplier_id) {
+            if (multiple) {
+                args = {'fields': fieldId, 'multiple': true, 'form_id' : this.invoice.form_id};
+            } else {
+                args = {'field_id': fieldId.trim(), 'form_id' : this.invoice.form_id};
+            }
+            this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.invoice.supplier_id + '/deletePage',
+                {'args': args}, {headers: this.authService.headers}).pipe(
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
     }
 
     getPattern(format: any) {
@@ -1043,10 +1100,97 @@ export class VerifierViewerComponent implements OnInit {
         return pattern;
     }
 
+    duplicateLine(fieldId: any, categoryId: any, neededValue: boolean = false) {
+        const listOfNewField: any = {};
+        const listOfNewFieldData: any = {};
+        this.form[categoryId].forEach((field: any, cpt: number) => {
+            if (field.id.trim() === fieldId.trim()) {
+                const numberOfField = field.class.replace('w-1/', '');
+                if (numberOfField !== 'full') {
+                    for (let i = cpt - numberOfField + 1; i <= cpt; i++) {
+                        const newField = Object.assign({}, this.form[categoryId][i]);
+                        this.form[categoryId][i].cpt += 1;
+                        newField.id = newField.id + '_' + this.form[categoryId][i].cpt;
+                        newField.cpt = this.form[categoryId][i].cpt;
+                        newField.display = 'simple';
+                        newField.deleteLine = this.form[categoryId][i].fullSizeSelected;
+                        newField.lineSelected = true;
+                        newField.fullSizeSelected = false;
+                        newField.control = new FormControl();
+                        if (this.invoice.datas[newField.id]) {
+                            let value = this.invoice.datas[newField.id];
+                            if (newField.format === 'date' && newField.id !== '' && newField.id !== undefined && value) {
+                                value = value.replaceAll('.', '/');
+                                value = value.replaceAll(',', '/');
+                                value = value.replaceAll(' ', '/');
+                                const format = moment().localeData().longDateFormat('L');
+                                value = moment(value, format);
+                                value = new Date(value._d);
+                            }
+                            newField.control.setValue(value);
+                            newField.control.markAsTouched();
+                            listOfNewFieldData[newField.id] = value;
+                        } else {
+                            listOfNewField[newField.id] = '';
+                            listOfNewFieldData[newField.id] = '';
+                        }
+
+                        if (this.form[categoryId][i].cpt > 1 ) {
+                            this.form[categoryId].splice(i + (parseInt(numberOfField) * parseInt(this.form[categoryId][i].cpt)), 0, newField);
+                        } else {
+                            this.form[categoryId].splice(i + parseInt(numberOfField), 0, newField);
+                        }
+
+                        if (newField.id === 'accounting_plan') {
+                            this.form[categoryId][cpt + field.cpt].values = this.form[categoryId][cpt].control.valueChanges.pipe(
+                                startWith(''),
+                                map(option => option ? this._filter_accounting(this.accountingPlan, option) : this.accountingPlan)
+                            );
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!neededValue) {
+            this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+                {'args': listOfNewField}, {headers: this.authService.headers}).pipe(
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        } else {
+            let lineEmpty = true;
+            Object.keys(listOfNewFieldData).forEach((newFieldId: any) => {
+                if (listOfNewFieldData[newFieldId]) {
+                    lineEmpty = false;
+                }
+            });
+
+            if (lineEmpty) {
+                Object.keys(listOfNewFieldData).forEach((newFieldId: any) => {
+                    this.form[categoryId].forEach((element: any, cpt: number) => {
+                        if (newFieldId === element.id) {
+                            const parentId = element.id.split('_').slice(0,-1).join('_');
+                            this.form[categoryId].splice(cpt, 1);
+                            this.form[categoryId].forEach((parent_field: any) => {
+                                if (parent_field.id.trim() === parentId.trim()) {
+                                    parent_field.cpt = parent_field.cpt - 1;
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+        }
+    }
+
     duplicateField(fieldId: any, categoryId: any) {
         for (const category in this.form) {
             if (category === categoryId) {
-                this.form[category].forEach((field: any, cpt:number) => {
+                this.form[category].forEach((field: any, cpt: number) => {
                     if (field.id.trim() === fieldId.trim()) {
                         const newField = Object.assign({}, field);
                         newField.id = newField.id + '_' + field.cpt;
@@ -1063,21 +1207,42 @@ export class VerifierViewerComponent implements OnInit {
         }
     }
 
+    removeDuplicateLine(fieldId: any, categoryId: any) {
+        const listOfFieldToDelete: any[] = [];
+        this.form[categoryId].forEach((field: any, cpt: number) => {
+            if (field.id.trim() === fieldId.trim()) {
+                const numberOfField = field.class.replace('w-1/', '');
+                if (numberOfField !== 'full') {
+                    for (let i = cpt - numberOfField + 1; i <= cpt; i++) {
+                        const parentId = this.form[categoryId][i].id.split('_').slice(0,-1).join('_');
+                        listOfFieldToDelete.push(this.form[categoryId][i].id);
+                        this.form[categoryId].forEach((parent_field: any) => {
+                            if (parent_field.id.trim() === parentId.trim()) {
+                                parent_field.cpt = parent_field.cpt - 1;
+                            }
+                        });
+                    }
+                    this.form[categoryId].splice((cpt + 1) - numberOfField, numberOfField);
+                }
+            }
+        });
+        this.deleteData(listOfFieldToDelete, true);
+        this.deletePosition(listOfFieldToDelete, true);
+        this.deletePage(listOfFieldToDelete, true);
+    }
+
     removeDuplicateField(fieldId: any, categoryId: any) {
         const parentId = fieldId.split('_').slice(0,-1).join('_');
-        for (const category in this.form) {
-            if (category === categoryId) {
-                this.form[category].forEach((field: any, cpt:number) => {
-                    if (field.id.trim() === fieldId.trim()) {
-                        this.deleteData(field.id);
-                        this.deletePosition(field.id);
-                        this.form[category].splice(cpt, 1);
-                    } else if (field.id.trim() === parentId.trim()) {
-                        field.cpt = field.cpt - 1;
-                    }
-                });
+        this.form[categoryId].forEach((field: any, cpt:number) => {
+            if (field.id.trim() === fieldId.trim()) {
+                this.deleteData(field.id);
+                this.deletePosition(field.id);
+                this.deletePage(field.id);
+                this.form[categoryId].splice(cpt, 1);
+            } else if (field.id.trim() === parentId.trim()) {
+                field.cpt = field.cpt - 1;
             }
-        }
+        });
     }
 
     isChildField(fieldId: any) {

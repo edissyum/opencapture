@@ -74,7 +74,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Dossier de sortie",
                 "required": "true",
-                "placeholder": "/var/share/sortant"
+                "placeholder": "/var/share/export/verifier/"
             },
             {
                 "id": "separator",
@@ -257,12 +257,42 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
         ]
     }
 }');
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (3, 'export_pdf', 'Export PDF', 'verifier', '{
+    "options": {
+        "auth": [],
+        "parameters": [
+            {
+                "id": "folder_out",
+                "type": "text",
+                "label": "Dossier de sortie",
+                "required": "true",
+                "placeholder": "/var/share/export/verifier/"
+            },
+            {
+                "id": "separator",
+                "type": "text",
+                "label": "Séparateur",
+                "required": "true",
+                "placeholder": "_"
+            },
+            {
+                "id": "filename",
+                "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "type": "text",
+                "label": "Nom du fichier",
+                "required": "true",
+                "placeholder": "invoice_number#quotation_number#supplier_name"
+            }
+        ]
+    }
+}');
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (1, 'export_xml', 'Export XML par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#invoice_date_year#vat_number"}, {"id": "extension", "type": "text", "value": "xml"}]}}');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_maarch', 'Export Maarch par défaut', 'verifier');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (3, 'export_pdf', 'Export PDF par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#invoice_date_year#vat_number"}]}}');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE SPLITTER
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (3, 'export_pdf', 'Export PDF', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (4, 'export_pdf', 'Export PDF', '{
   "options": {
     "auth": [],
     "parameters": [
@@ -307,7 +337,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (4, 'export_xml', 'Export XML', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (5, 'export_xml', 'Export XML', '{
   "options": {
     "auth": [],
     "parameters": [
@@ -352,7 +382,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (5, 'export_cmis', 'Export CMIS','{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (6, 'export_cmis', 'Export CMIS','{
   "options": {
     "auth": [
       {
@@ -413,11 +443,11 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
   }
 }', 'splitter');
 
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (3, 'export_pdf', 'Export vers Vérificateur', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/entrant/verifier/"}, {"id": "filename", "type": "textarea", "value": "PDF#doctype#date#random"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "pdf"}]}}', 'splitter');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (4, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "XML#date"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "xml"}]}}', 'splitter');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (5, 'export_alfresco', 'Export Alfresco par défaut', '{"options": {"auth": [{"id": "cmis_ws", "type": "text", "value": ""}, {"id": "folder", "type": "text", "value": ""}, {"id": "login", "type": "text", "value": ""}, {"id": "password", "type": "password", "value": ""}], "parameters": [{"id": "pdf_filename", "type": "textarea", "value": "#doctype#date"}, {"id": "xml_filename", "type": "textarea", "value": "#random#date"}, {"id": "separator", "type": "textarea", "value": "_"}]}}', 'splitter');
-ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 6;
-ALTER SEQUENCE "outputs_id_seq" RESTART WITH 6;
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (4, 'export_pdf', 'Export vers Vérificateur', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/entrant/verifier/"}, {"id": "filename", "type": "textarea", "value": "PDF#doctype#date#random"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "pdf"}]}}', 'splitter');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (5, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "XML#date"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "xml"}]}}', 'splitter');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (6, 'export_alfresco', 'Export Alfresco par défaut', '{"options": {"auth": [{"id": "cmis_ws", "type": "text", "value": ""}, {"id": "folder", "type": "text", "value": ""}, {"id": "login", "type": "text", "value": ""}, {"id": "password", "type": "password", "value": ""}], "parameters": [{"id": "pdf_filename", "type": "textarea", "value": "#doctype#date"}, {"id": "xml_filename", "type": "textarea", "value": "#random#date"}, {"id": "separator", "type": "textarea", "value": "_"}]}}', 'splitter');
+ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 7;
+ALTER SEQUENCE "outputs_id_seq" RESTART WITH 7;
 
 -- CRÉATION DES TEMPLATES DES PARAMETRES DES FORMULAIRE
 INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verifier', '{
@@ -460,7 +490,7 @@ INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "
 INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{"other": [], "supplier": [{"id": "name", "type": "text", "unit": "supplier", "class": "w-full", "color": "white", "label": "ACCOUNTS.supplier_name", "format": "alphanum", "display": "simple", "required": true, "class_label": "1", "format_icon": "fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "address1", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_1", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fas fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "address2", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_2", "format": "alphanum_extended_with_accent", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fas fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "postal_code", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.postal_code", "format": "number_int", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "city", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.city", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-font", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "country", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.country", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-font", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_number", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "olive", "label": "ACCOUNTS.vat_number", "format": "alphanum", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fas fa-hashtag", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star"}, {"id": "siren", "type": "text", "unit": "supplier", "class": "w-1/6", "color": "lime", "label": "ACCOUNTS.siren", "format": "number_int", "display": "simple", "required": false, "class_label": "1/6", "format_icon": "fas fa-calculator", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star"}, {"id": "siret", "type": "text", "unit": "supplier", "class": "w-1/6", "color": "green", "label": "ACCOUNTS.siret", "format": "number_int", "display": "simple", "required": false, "class_label": "1/6", "format_icon": "fas fa-calculator", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star"}, {"id": "email", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "green", "label": "FORMATS.email", "format": "email", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fa-solid fa-at", "autocomplete": "none", "display_icon": "fa-solid file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}], "facturation": [{"id": "invoice_number", "type": "text", "unit": "facturation", "class": "w-1/2", "color": "red", "label": "FACTURATION.invoice_number", "format": "alphanum_extended", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fas fa-level-up-alt", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "quotation_number", "type": "text", "unit": "facturation", "class": "w-1/2", "color": "orange", "label": "FACTURATION.quotation_number", "format": "alphanum_extended", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-print", "required_icon": "fa-solid fa-star"}, {"id": "delivery_number", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "orange", "label": "FACTURATION.delivery_number", "format": "alphanum_extended", "display": "multi", "required": false, "class_label": "1/33", "format_icon": "fas fa-hashtag fa-level-up-alt", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "invoice_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "aqua", "label": "FACTURATION.invoice_date", "format": "date", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calendar-day", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "invoice_due_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "blue", "label": "FACTURATION.invoice_due_date", "format": "date", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fas fa-calendar-day", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_rate", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "pink", "label": "FACTURATION.vat_rate", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "no_rate_amount", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "fuchsia", "label": "FACTURATION.no_rate_amount", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_amount", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "purple", "label": "FACTURATION.vat_amount", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "accounting_plan", "type": "select", "unit": "facturation", "class": "w-1/4", "label": "FACTURATION.accounting_plan", "required": false, "class_label": "1/4", "autocomplete": "none", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_vat", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "", "label": "FACTURATION.total_vat", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_ttc", "type": "text", "unit": "facturation", "class": "w-1/3", "label": "FACTURATION.total_ttc", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_ht", "type": "text", "unit": "facturation", "class": "w-1/3", "label": "FACTURATION.total_ht", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}]}');
 
 -- CRÉATION DU FORMULAIRE SPLITTER PAR DÉFAUT
-INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "settings") VALUES (2, 'Formulaire par défaut', true, '{3}', 'splitter', '{
+INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "settings") VALUES (2, 'Formulaire par défaut', true, '{4}', 'splitter', '{
     "metadata_method": "",
     "export_zip_file": ""
 }');

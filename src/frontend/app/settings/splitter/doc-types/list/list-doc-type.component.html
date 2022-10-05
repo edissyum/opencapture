@@ -28,7 +28,7 @@
                                         <button mat-button [class.text-green-400]="this.router.url === setting['route']"
                                                 class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                                routerLink="{{ setting['route'] }}">
+                                                [routerLink]="setting['route']">
                                             <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm">
                                                 {{ setting['label'] | translate }}
                                             </p>
@@ -45,7 +45,7 @@
                                                 [class.text-green-400]="this.router.url.includes(action['route'])"
                                                 class="font-normal w-full h-12 ml-8 flex items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                                routerLink="{{ action['route'] }}"
+                                                [routerLink]="action['route']"
                                                 [class.disable_link]="action['showOnlyIfActive']">
                                             <em class="absolute -mt-2.5 2xl:-mt-2 text-lg w-10 h-10 rounded-full flex items-center justify-center {{ action['icon'] }}"></em>
                                             <p class="m-0 ml-10 2xl:ml-12 text-xs 2xl:text-sm" style="margin-top: 2.5px!important">
@@ -61,7 +61,7 @@
                                     mat-button [class.text-green-400]="this.router.url === setting['route']"
                                     class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
                                     (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                    routerLink="{{ setting['route'] }}">
+                                    [routerLink]="setting['route']">
                                 <em class="absolute -mt-2.5 2xl:-mt-2 left-4 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{ setting['icon'] }}"></em>
                                 <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm">
                                     {{ setting['label'] | translate }}

@@ -199,6 +199,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
     ) { }
 
     async ngOnInit(): Promise<void> {
+        this.serviceSettings.init();
         this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.forms = data.forms;

@@ -204,6 +204,7 @@ def update_invoice_data_by_invoice_id(invoice_id, args):
             invoice_data.update({
                 column: value
             })
+
         _, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
@@ -365,6 +366,18 @@ def export_xml(invoice_id, data):
             _vars = create_classes_from_custom_id(custom_id)
             regex = _vars[2]
         return verifier_exports.export_xml(data, None, regex, invoice_info)
+
+
+def export_pdf(invoice_id, data):
+    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    if not error:
+        if 'regex' in session:
+            regex = json.loads(session['regex'])
+        else:
+            custom_id = retrieve_custom_from_url(request)
+            _vars = create_classes_from_custom_id(custom_id)
+            regex = _vars[2]
+        return verifier_exports.export_pdf(data, None, regex, invoice_info)
 
 
 def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):

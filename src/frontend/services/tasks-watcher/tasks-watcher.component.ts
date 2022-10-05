@@ -54,7 +54,7 @@ export class TasksWatcherComponent implements OnInit {
     ngOnInit(): void {
         this.minimizeDisplay = this.localStorageService.get('task_watcher_minimize_display') === 'true';
         interval(4000).subscribe(() => {
-            if (this.authorizedUrl.includes(this.router.url) && !this.getTaskRunning) {
+            if (this.authorizedUrl.includes(this.router.url) && !this.getTaskRunning && !this.minimizeDisplay) {
                 this.getLastTasks();
             }
         });
@@ -62,46 +62,51 @@ export class TasksWatcherComponent implements OnInit {
 
     changeDisplayMode(minimizeDisplay: boolean) {
         this.minimizeDisplay = minimizeDisplay;
+        if (!this.minimizeDisplay) {
+            this.getLastTasks();
+        }
         this.localStorageService.save('task_watcher_minimize_display', minimizeDisplay ? 'true': 'false');
     }
 
     getLastTasks() {
         this.getTaskRunning = true;
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
-        this.http.get(environment['url'] + '/ws/tasks/progress?module=' + splitterOrVerifier,
-            {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                if(this.displayedTasksData !== data.tasks) {
-                    this.loading = true;
-                    this.tasks = [];
-                    let cpt = 1;
-                    for(const task of data.tasks) {
-                        this.tasks.push({
-                            'id'            : cpt,
-                            'type'          : task.type,
-                            'fileName'      : task.title,
-                            'module'        : task.module,
-                            'beginTime'     : task.begin_time,
-                            'endTime'       : task.end_time,
-                            'error'         : task.error_description ? task.error_description : false,
-                            'status'        : task.status ? task.status : 'in_progress',
-                            'age'           : task.age !== 0 ?
-                                this.translate.instant("GLOBAL.n_minutes_ago", {'minutes': task.age}):
-                                this.translate.instant("GLOBAL.few_seconds_ago")
-                        });
-                        cpt++;
+        if (splitterOrVerifier) {
+            this.http.get(environment['url'] + '/ws/tasks/progress?module=' + splitterOrVerifier,
+                {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    if(this.displayedTasksData !== data.tasks) {
+                        this.loading = true;
+                        this.tasks = [];
+                        let cpt = 1;
+                        for(const task of data.tasks) {
+                            this.tasks.push({
+                                'id'            : cpt,
+                                'type'          : task.type,
+                                'fileName'      : task.title,
+                                'module'        : task.module,
+                                'beginTime'     : task.begin_time,
+                                'endTime'       : task.end_time,
+                                'error'         : task.error_description ? task.error_description : false,
+                                'status'        : task.status ? task.status : 'in_progress',
+                                'age'           : task.age !== 0 ?
+                                    this.translate.instant("GLOBAL.n_minutes_ago", {'minutes': task.age}):
+                                    this.translate.instant("GLOBAL.few_seconds_ago")
+                            });
+                            cpt++;
+                        }
                     }
-                }
-                this.displayedTasksData = data.tasks;
-                this.loading            = false;
-            }),
-            finalize(() => this.getTaskRunning = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+                    this.displayedTasksData = data.tasks;
+                    this.loading            = false;
+                }),
+                finalize(() => this.getTaskRunning = false),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
     }
 
     showError(error: any) {
