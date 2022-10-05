@@ -62,8 +62,8 @@ export class VerifierDisplayComponent implements OnInit {
             'label': 'FACTURATION.quotation_number'
         },
         {
-            "id": 'invoice_date',
-            'label': marker('FACTURATION.invoice_date')
+            "id": 'document_date',
+            'label': marker('FACTURATION.document_date')
         },
         {
             "id": 'date',

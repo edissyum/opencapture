@@ -227,10 +227,10 @@ def export_maarch(data, invoice_info, log, regex, database):
                             'fileContent': file.read(),
                         })
 
-                    if 'invoice_date' in invoice_info['datas'] and invoice_info['datas']['invoice_date']:
-                        invoice_date = pd.to_datetime(invoice_info['datas']['invoice_date'], format=regex['format_date'])
+                    if 'document_date' in invoice_info['datas'] and invoice_info['datas']['document_date']:
+                        document_date = pd.to_datetime(invoice_info['datas']['document_date'], format=regex['format_date'])
                         args.update({
-                            'documentDate': str(invoice_date.date())
+                            'documentDate': str(document_date.date())
                         })
 
                     res, message = _ws.insert_with_args(args)
@@ -299,12 +299,12 @@ def construct_with_var(data, invoice_info, regex, separator=False):
                 _data.append(invoice_info[column].replace(' ', separator))
             else:
                 _data.append(invoice_info[column])
-        elif column == 'invoice_date_year':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], regex['format_date']).year)
-        elif column == 'invoice_date_month':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], regex['format_date']).month)
-        elif column == 'invoice_date_day':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], regex['format_date']).day)
+        elif column == 'document_date_year':
+            _data.append(datetime.datetime.strptime(invoice_info['datas']['document_date'], regex['format_date']).year)
+        elif column == 'document_date_month':
+            _data.append(datetime.datetime.strptime(invoice_info['datas']['document_date'], regex['format_date']).month)
+        elif column == 'document_date_day':
+            _data.append(datetime.datetime.strptime(invoice_info['datas']['document_date'], regex['format_date']).day)
         elif column == 'register_date_year':
             _data.append(datetime.datetime.strptime(invoice_info['register_date'], regex['format_date']).year)
         elif column == 'register_date_month':
@@ -315,6 +315,6 @@ def construct_with_var(data, invoice_info, regex, separator=False):
             if separator:
                 _data.append(column.replace(' ', separator))
             else:
-                if column not in ['quotation_number', 'invoice_number', 'delivery_number', 'invoice_date_']:
+                if column not in ['quotation_number', 'invoice_number', 'delivery_number', 'document_date_']:
                     _data.append(column)
     return _data
