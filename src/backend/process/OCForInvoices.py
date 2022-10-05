@@ -325,16 +325,16 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     date = date_class.run()
 
     if date:
-        datas.update({'invoice_date': date[0]})
+        datas.update({'document_date': date[0]})
         if date[1]:
-            positions.update({'invoice_date': files.reformat_positions(date[1])})
+            positions.update({'document_date': files.reformat_positions(date[1])})
         if date[2]:
-            pages.update({'invoice_date': date[2]})
+            pages.update({'document_date': date[2]})
         if len(date) > 3 and date[3]:
-            datas.update({'invoice_due_date': date[3][0]})
-            pages.update({'invoice_due_date': date[2]})
+            datas.update({'document_due_date': date[3][0]})
+            pages.update({'document_due_date': date[2]})
             if len(date[3]) > 1:
-                positions.update({'invoice_due_date': files.reformat_positions(date[3][1])})
+                positions.update({'document_due_date': files.reformat_positions(date[3][1])})
 
         # Find quotation number
     quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,

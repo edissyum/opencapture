@@ -103,7 +103,7 @@ INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verif
     "display": {
         "subtitles": [
             {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-            {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+            {"id": "document_date", "label": "FACTURATION.document_date"},
             {"id": "date", "label": "VERIFIER.register_date"},
             {"id": "original_filename", "label": "VERIFIER.original_file"},
             {"id": "form_label", "label": "ACCOUNTS.form"}
@@ -124,7 +124,7 @@ UPDATE form_models SET settings = '{
     "display": {
         "subtitles": [
             {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-            {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+            {"id": "document_date", "label": "FACTURATION.document_date"},
             {"id": "date", "label": "VERIFIER.register_date"},
             {"id": "original_filename", "label": "VERIFIER.original_file"},
             {"id": "form_label", "label": "ACCOUNTS.form"}
