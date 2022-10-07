@@ -380,7 +380,7 @@ def export_pdf(invoice_id, data):
         return verifier_exports.export_pdf(data, None, regex, invoice_info)
 
 
-def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
+def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     _files = _vars[3]
@@ -392,12 +392,12 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
     if positions_masks:
         path = docservers['VERIFIER_POSITIONS_MASKS'] + '/' + file_name
 
-    text = _files.ocr_on_fly(path, selection, _ocr, thumb_size)
+    text = _files.ocr_on_fly(path, selection, _ocr, thumb_size, lang=lang)
     if text:
         return text
     else:
         _files.improve_image_detection(path)
-        text = _files.ocr_on_fly(path, selection, _ocr, thumb_size)
+        text = _files.ocr_on_fly(path, selection, _ocr, thumb_size, lang=lang)
         return text
 
 
