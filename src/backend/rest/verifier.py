@@ -181,7 +181,7 @@ def ocr_on_fly():
     positions_masks = False
     if 'positionsMasks' in data:
         positions_masks = data['positionsMasks']
-    result = verifier.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'], positions_masks)
+    result = verifier.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'], positions_masks, data['lang'])
     return make_response({'result': result}, 200)
 
 

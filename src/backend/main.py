@@ -128,7 +128,7 @@ def create_classes_from_custom_id(custom_id):
 
     spreadsheet = _Spreadsheet(log, docservers, config)
     filename = docservers['TMP_PATH']
-    files = _Files(filename, log, docservers, configurations, regex, languages)
+    files = _Files(filename, log, docservers, configurations, regex, languages, database)
     ocr = _PyTesseract(configurations['locale'], log, config, docservers)
 
     return database, config.cfg, regex, files, ocr, log, config_file, spreadsheet, smtp, docservers, configurations, languages

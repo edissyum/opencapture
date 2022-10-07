@@ -32,6 +32,7 @@ import { ConfigService } from "../../../services/config.service";
 import * as moment from 'moment';
 import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
+import {LocaleService} from "../../../services/locale.service";
 declare const $: any;
 
 
@@ -79,6 +80,7 @@ export class VerifierViewerComponent implements OnInit {
     formList                : any         = {};
     currentFormFields       : any         = {};
     suppliers               : any         = [];
+    currentSupplier         : any         = {};
     outputsLabel            : any         = [];
     outputs                 : any         = [];
     imgArray                : any         = {};
@@ -122,6 +124,7 @@ export class VerifierViewerComponent implements OnInit {
         private userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private localeService: LocaleService,
         private configService: ConfigService,
         private historyService: HistoryService,
         private localStorageService: LocalStorageService
@@ -154,18 +157,21 @@ export class VerifierViewerComponent implements OnInit {
         this.formList = this.formList.forms;
         this.suppliers = await this.retrieveSuppliers();
         this.suppliers = this.suppliers.suppliers;
-        if (Object.keys(this.currentFormFields).length === 0) {
-            let supplierFormFound = false;
-            let defaultFormFound = false;
-            if (this.invoice.supplier_id) {
-                for (const element of this.suppliers) {
-                    if (element.id === this.invoice.supplier_id) {
-                        if (element.form_id) {
-                            supplierFormFound = element.form_id;
-                        }
+
+        let supplierFormFound = false;
+        if (this.invoice.supplier_id) {
+            for (const element of this.suppliers) {
+                if (element.id === this.invoice.supplier_id) {
+                    this.currentSupplier = element;
+                    if (element.form_id) {
+                        supplierFormFound = element.form_id;
                     }
                 }
             }
+        }
+
+        if (Object.keys(this.currentFormFields).length === 0) {
+            let defaultFormFound = false;
             if (supplierFormFound) {
                 await this.generateOutputs(supplierFormFound);
             } else {
@@ -739,10 +745,14 @@ export class VerifierViewerComponent implements OnInit {
             }
             if (!this.isOCRRunning && !this.loading && this.saveInfo) {
                 this.isOCRRunning = true;
+                let lang = this.localeService.currentLang;
+                if (this.currentSupplier) {
+                    lang = this.currentSupplier.document_lang;
+                }
                 this.http.post(environment['url'] + '/ws/verifier/ocrOnFly',
                     {
                         selection: this.getSelectionByCpt(selection, cpt),
-                        fileName: this.currentFilename,
+                        fileName: this.currentFilename, lang: lang,
                         thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height}
                     }, {headers: this.authService.headers})
                     .pipe(
@@ -928,6 +938,11 @@ export class VerifierViewerComponent implements OnInit {
                         this.invoice.supplier_id = supplier_data['id'];
                         this.suppliers = await this.retrieveSuppliers();
                         this.suppliers = this.suppliers.suppliers;
+                        for (const element of this.suppliers) {
+                            if (element.id === this.invoice.supplier_id) {
+                                this.currentSupplier = element;
+                            }
+                        }
                     }),
                     catchError((err: any) => {
                         console.debug(err);
@@ -1281,6 +1296,11 @@ export class VerifierViewerComponent implements OnInit {
                                 {headers: this.authService.headers}).pipe(
                                 tap(() => {
                                     this.invoice.supplier_id = supplierId;
+                                    for (const element of this.suppliers) {
+                                        if (element.id === this.invoice.supplier_id) {
+                                            this.currentSupplier = element;
+                                        }
+                                    }
                                     if (showNotif) {
                                         this.notify.success(this.translate.instant('INVOICES.supplier_infos_updated'));
                                     }

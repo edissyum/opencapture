@@ -47,9 +47,10 @@ else:
 
 
 class Files:
-    def __init__(self, img_name, log, docservers, configurations, regex, languages):
+    def __init__(self, img_name, log, docservers, configurations, regex, languages, database):
         self.log = log
         self.img = None
+        self.database = database
         self.regex = regex
         self.height_ratio = ''
         self.resolution = 300
@@ -95,6 +96,7 @@ class Files:
                 target = self.custom_file_name
             else:
                 target = self.jpg_name
+
             self.save_img_with_wand(pdf_name, target)
             if open_img:
                 self.img = Image.open(target)
@@ -274,7 +276,7 @@ class Files:
                 else:
                     continue
 
-    def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex=None, remove_line=False):
+    def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex=None, remove_line=False, lang='fra'):
         rand = str(uuid.uuid4())
         if thumb_size is not None:
             with Image.open(img) as image:
@@ -313,6 +315,7 @@ class Files:
 
         cropped_image = Image.open('/tmp/cropped_' + rand + extension)
         text = ocr.text_builder(cropped_image)
+        tmp_text = text
         is_number = False
         if not text or text == '' or text.isspace():
             self.improve_image_detection('/tmp/cropped_' + rand + extension)
@@ -340,20 +343,24 @@ class Files:
         except (ValueError, SyntaxError, TypeError):
             pass
 
+        if is_number and re.match(r'[A-Z]', text, flags=re.IGNORECASE):
+            is_number = False
+
         if not is_number:
-            date_file = self.docservers['LOCALE_PATH'] + '/' + self.configurations['locale'] + '.json'
-            with open(date_file, encoding='UTF-8') as file:
-                _fp = json.load(file)
-                date_convert = _fp['dateConvert'] if 'dateConvert' in _fp else ''
-            for key in date_convert:
-                for month in date_convert[key]:
-                    if month.lower() in text.lower():
-                        text = (text.lower().replace(month.lower(), key))
-                        break
-
-            for res in re.finditer(r"" + self.regex['date'] + "", text):
-
-                date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '',
+            regex_dict = self.regex
+            if lang != self.configurations['locale']:
+                _regex = self.database.select({
+                    'select': ['regex_id', 'content'],
+                    'table': ['regex'],
+                    'where': ["lang in ('global', %s)"],
+                    'data': [lang],
+                })
+                if _regex:
+                    regex_dict = {}
+                    for _r in _regex:
+                        regex_dict[_r['regex_id']] = _r['content']
+            for res in re.finditer(r"" + regex_dict['date'] + "", tmp_text):
+                date_class = FindDate('', self.log, regex_dict, self.configurations, self, ocr, '', '', '', '',
                                       self.docservers, self.languages, None)
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
                 if date:
