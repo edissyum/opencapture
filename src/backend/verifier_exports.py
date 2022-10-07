@@ -194,7 +194,14 @@ def export_maarch(data, invoice_info, log, regex, database):
                         _data['id']: value
                     })
 
-                    if _data['id'] == 'priority':
+                    if 'document_due_date' in invoice_info['datas'] and invoice_info['datas']['document_due_date']:
+                        document_due_date = pd.to_datetime(invoice_info['datas']['document_due_date'], format=regex['format_date'])
+                        if document_due_date.date() > datetime.date.today():
+                            args.update({
+                                'processLimitDate': str(document_due_date.date())
+                            })
+
+                    if _data['id'] == 'priority' and 'processLimitDate' not in args:
                         priority = _ws.retrieve_priority(value)
                         if priority:
                             delays = priority['priority']['delays']
