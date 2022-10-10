@@ -276,7 +276,7 @@ class Files:
                 else:
                     continue
 
-    def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex=None, remove_line=False, lang='fra'):
+    def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex_name=None, remove_line=False, lang='fra'):
         rand = str(uuid.uuid4())
         if thumb_size is not None:
             with Image.open(img) as image:
@@ -366,8 +366,8 @@ class Files:
                 if date:
                     text = date[0]
 
-        if regex:
-            for res in re.finditer(r"" + regex, text):
+        if regex_name:
+            for res in re.finditer(r"" + self.regex[regex_name], text):
                 os.remove('/tmp/cropped_' + rand + extension)
                 if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
                     os.remove('/tmp/cropped_' + rand + '_improved' + extension)
