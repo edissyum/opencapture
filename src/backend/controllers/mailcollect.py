@@ -14,6 +14,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
+import ssl
 import imap_tools
 from socket import gaierror
 from imaplib import IMAP4_SSL
@@ -136,7 +137,7 @@ def retrieve_folders(args):
             conn = MailBox(host=args['hostname'], port=args['port'])
         else:
             conn = MailBoxUnencrypted(host=args['hostname'], port=args['port'])
-    except (gaierror, IMAP4_SSL.error) as e:
+    except (gaierror, IMAP4_SSL.error, ssl.SSLError) as e:
         response = {
             "errors": gettext("MAILCOLLECT_ERROR"),
             "message": str(e)
