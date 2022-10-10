@@ -37,7 +37,7 @@
         "ng-sortgrid": "^14.0.0",
         "ng2-datepicker": "^12.0.0",
         "ngx-file-drag-drop": "^6.0.0",
-        "ngx-mat-select-search": "^4.2.1",
+        "ngx-mat-select-search": "^5.0.0",
         "remove-accents": "^0.4.3",
         "rxjs": "~7.5.7",
         "svg-country-flags": "^1.2.10"
@@ -59,7 +59,7 @@
         "@typescript-eslint/eslint-plugin": "5.39.0",
         "@typescript-eslint/parser": "5.39.0",
         "autoprefixer": "^10.4.12",
-        "eslint": "^8.24.0",
+        "eslint": "^8.25.0",
         "eslint-plugin-import": "latest",
         "eslint-plugin-jsdoc": "latest",
         "eslint-plugin-prefer-arrow": "latest",

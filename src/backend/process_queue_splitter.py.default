@@ -57,7 +57,7 @@ def launch(args):
     except OSError:
         pass
 
-    files = _Files(filename, log, docservers, configurations, regex, languages)
+    files = _Files(filename, log, docservers, configurations, regex, languages, database)
 
     remove_blank_pages = False
     if 'input_id' in args:
