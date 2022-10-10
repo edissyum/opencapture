@@ -180,7 +180,6 @@ def search_by_positions(supplier, index, ocr, files, database, form_id):
     pages = positions_mask[0]['pages'][index] if index in positions_mask[0]['pages'] else False
     regex = positions_mask[0]['regex'][index] if index in positions_mask[0]['regex'] else False
     file = files.jpg_name
-
     if positions:
         positions['ocr_from_user'] = True
         data = search(positions, regex, files, ocr, file)
@@ -191,6 +190,7 @@ def search_by_positions(supplier, index, ocr, files, database, form_id):
 
 def search(position, regex, files, ocr, target_file):
     data = files.ocr_on_fly(target_file, position, ocr, None, regex)
+
     if not data:
         target_file_improved = files.improve_image_detection(target_file)
         data = files.ocr_on_fly(target_file_improved, position, ocr, None, regex)
