@@ -28,24 +28,14 @@ scriptName="launch_$script.sh"
 scriptName=${scriptName:0:31}${spaces:0:$((31-${#scriptName}))}
 
 OCPath="§§OC_PATH§§"
-config_mail_file="$OCPath"/custom/§§CUSTOM_ID§§/config/mail.ini
-logFile="$OCPath"/bin/data/log/OpenCapture.log
+logFile="§§LOG_PATH§§"
 PID=/tmp/securite-$script-$$.pid
 
 if ! test -e $PID;
 then
   touch $PID
   echo $$ > $PID
-
-  # Retrieve all the processes and launch them instead of copy/paste X lines
-  while read -r process ; do
-    if [ "$process" != '[GLOBAL]' ];
-    then
-      process_name="${process//[][]/}"
-      python3 "$OCPath"/launch_worker_mail.py -c "§§CUSTOM_ID§§" -cm "$config_mail_file" --process "$process_name"
-    fi
-  done < <(grep -o '^\[[^][]*]' "$config_mail_file")
-
+  python3 "$OCPath"/launch_worker_mail.py -c "§§CUSTOM_ID§§"
   rm -f $PID
 else
   echo "[$name] [$scriptName] $(date +"%d-%m-%Y %T") WARNING MAIL capture is already active : PID exists : $PID" >> "$logFile"
