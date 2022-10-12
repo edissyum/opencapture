@@ -107,7 +107,7 @@ class FindInvoiceNumber:
         for _date in re.finditer(r"" + self.regex['date'] + "", data):
             if _date.group():
                 date = self.format_date(_date.group(), (('', ''), ('', '')), True)
-                if date[0] is not False:
+                if date and date[0]:
                     invoice_res = data.replace(_date.group(), '')
 
         # Delete the invoice keyword
