@@ -746,7 +746,7 @@ export class VerifierViewerComponent implements OnInit {
             if (!this.isOCRRunning && !this.loading && this.saveInfo) {
                 this.isOCRRunning = true;
                 let lang = this.localeService.currentLang;
-                if (this.currentSupplier) {
+                if (Object.keys(this.currentSupplier).length !== 0) {
                     lang = this.currentSupplier.document_lang;
                 }
                 this.http.post(environment['url'] + '/ws/verifier/ocrOnFly',
