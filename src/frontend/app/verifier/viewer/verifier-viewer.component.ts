@@ -749,7 +749,6 @@ export class VerifierViewerComponent implements OnInit {
                 if (this.currentSupplier) {
                     lang = this.currentSupplier.document_lang;
                 }
-                console.log(lang);
                 this.http.post(environment['url'] + '/ws/verifier/ocrOnFly',
                     {
                         selection: this.getSelectionByCpt(selection, cpt),
