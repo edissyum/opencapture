@@ -175,20 +175,20 @@ else
     port="$choice"
 fi
 
-printf "Username [%s] : " "${bold}edissyum${normal}"
+printf "Username [%s] : " "${bold}$customId${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databaseUsername="edissyum"
+    databaseUsername="$customId"
 else
     databaseUsername="$choice"
 fi
 
-printf "Password [%s] : " "${bold}edissyum${normal}"
+printf "Password [%s] : " "${bold}$customId${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databasePassword="edissyum"
+    databasePassword="$customId"
 else
     databasePassword="$choice"
 fi
