@@ -110,7 +110,7 @@ export class VerifierViewerComponent implements OnInit {
         number_int                      : '^[(\\-)?0-9]*$',
         number_float                    : '^[(\\-)?0-9]*([.][0-9]*)*$',
         char                            : '^[A-Za-z\\s]*$',
-        email                           : '^[a-zA-Z0-9_\\.\\+-]+@[a-zA-Z0-9-]+\\.(fr|com|org|eu|law)+$'
+        email                           : '^([A-Za-z0-9]+[\\.\\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\\.[A-Z|a-z]{2,})+$'
     };
     supplierNamecontrol     : FormControl =  new FormControl();
     filteredOptions         : Observable<any> | any;
@@ -488,7 +488,6 @@ export class VerifierViewerComponent implements OnInit {
                 });
 
                 const _field = this.form[category][this.form[category].length - 1];
-
                 if (field.id === 'accounting_plan') {
                     let array : any = {};
                     array = await this.retrieveAccountingPlan();
@@ -497,7 +496,7 @@ export class VerifierViewerComponent implements OnInit {
                         array = await this.retrieveDefaultAccountingPlan();
                     }
                     this.accountingPlan = this.sortArray(array);
-                    this.form[category][cpt].values = this.form[category][cpt].control.valueChanges
+                    _field.values = this.form[category][cpt].control.valueChanges
                         .pipe(
                             startWith(''),
                             map(option => option ? this._filter_accounting(this.accountingPlan, option) : this.accountingPlan)
