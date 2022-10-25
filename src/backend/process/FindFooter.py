@@ -63,8 +63,12 @@ class FindFooter:
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
+
                 if regex == self.regex['vat_amount']:
-                    data = re.sub(r"" + self.regex['vat_amount'][:-2] + "", '', res.group())  # Delete the delivery number keyword
+                    data = re.sub(r"" + self.regex['vat_amount'][:-2] + "", '', data)  # Delete the vat amount keyword
+
+                if regex != self.regex['vat_rate']:
+                    data = re.sub(r"" + self.regex['vat_rate'] + "", '', data)
 
                 tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
@@ -376,7 +380,8 @@ class FindFooter:
             if (total and total_ttc and total_ttc[0]) and (float(total) == float(total_ttc[0])):
                 self.log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
                 return [total_ht, total_ttc, vat_rate, self.nb_pages, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
-            elif (total_ttc and total_ttc[0]) and float(total_ttc[0]) == float("%.2f" % float(float(vat_amount[0]) + float(total_ht[0]))):
+            elif (total_ttc and total_ttc[0] and vat_amount and vat_amount[0] and total_ht and total_ht[0]) \
+                    and float(total_ttc[0]) == float("%.2f" % float(float(vat_amount[0]) + float(total_ht[0]))):
                 self.log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
                 return [total_ht, total_ttc, vat_rate, self.nb_pages, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
             else:

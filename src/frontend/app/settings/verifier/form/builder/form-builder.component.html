@@ -114,7 +114,7 @@
                 <mat-form-field *ngIf="this.openAvailableField" [class.z-50]="this.modalOpen">
                     <mat-label>{{ "FORMS.automatic_validation_data" | translate }}</mat-label>
                     <input matInput [formControl]="this.formSettings['automatic_validation_data'].control" required
-                           placeholder="supplier,footer,invoice_number,invoice_date">
+                           placeholder="supplier,footer,invoice_number,document_date">
                     <mat-hint (click)="this.modalOpen = true" class="cursor-pointer">
                         {{ 'FORMS.automatic_validation_data_hint' | translate }}
                     </mat-hint>

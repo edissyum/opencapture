@@ -120,22 +120,22 @@
                     </mat-select>
                 </mat-form-field>
                 <span class="cursor-pointer text-sm col-span-3 flex justify-center m-auto w-1/6 -mt-8"
-                      *ngIf="invoiceImageSrc" (click)="deleteImage()">
+                      *ngIf="documentImageSrc" (click)="deleteImage()">
                     {{ 'POSITIONS-MASKS.reset_image' | translate }}
                 </span>
             </div>
-            <div id="invoice_image">
+            <div id="document_image">
                 <div class="absolute text-xl left-6" style="top: 13.5rem">
-                    <ng-container *ngIf="!this.loading && this.invoiceImageSrc && this.invoiceImageNbPages> 1">
+                    <ng-container *ngIf="!this.loading && this.documentImageSrc && this.documentImageNbPages> 1">
                         <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
                         {{ 'VERIFIER.page' | translate }}
                         {{ currentPage }}
                         {{ 'VERIFIER.on' | translate }}
-                        {{ this.invoiceImageNbPages }}
+                        {{ this.documentImageNbPages }}
                         <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()"></i>
                     </ng-container>
                 </div>
-                <div *ngIf="!invoiceImageSrc">
+                <div *ngIf="!documentImageSrc">
                     <ngx-file-drag-drop
                             [formControl]="fileControl"
                             [activeBorderColor]="'#97BF3D'"
@@ -147,8 +147,8 @@
                             (valueChanged)="checkFile($event)">
                     </ngx-file-drag-drop>
                 </div>
-                <div class="image-container px-4" [class.hidden]="!this.imageInvoice">
-                    <img id="invoice_image_src" [src]="invoiceImageSrc" alt="Open-Capture Verifier image">
+                <div class="image-container px-4" [class.hidden]="!this.imageDocument">
+                    <img id="document_image_src" [src]="documentImageSrc" alt="Open-Capture Verifier image">
                 </div>
             </div>
         </div>

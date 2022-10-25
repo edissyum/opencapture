@@ -57,9 +57,9 @@ export class LocalStorageService {
         if (expMinutes !== 0) {
             d.setMinutes(d.getMinutes() + expMinutes);
             const expires = "expires=" + d.toUTCString();
-            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;SameSite=Strict";
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;";
         } else {
-            document.cookie = cname + "=" + cvalue + ";path=/;SameSite=Strict";
+            document.cookie = cname + "=" + cvalue + ";path=/;";
         }
     }
 

@@ -109,8 +109,8 @@ export class UpdateOutputComponent implements OnInit {
             'label': 'FACTURATION.quotation_number'
         },
         {
-            "id": 'invoice_date_year',
-            'label': marker('FACTURATION.invoice_date_year')
+            "id": 'document_date_year',
+            'label': marker('FACTURATION.document_date_year')
         },
         {
             "id": 'total_ht',
@@ -125,12 +125,12 @@ export class UpdateOutputComponent implements OnInit {
             'label': marker('FACTURATION.total_vat')
         },
         {
-            "id": 'invoice_date_month',
-            'label': marker('FACTURATION.invoice_date_month')
+            "id": 'document_date_month',
+            'label': marker('FACTURATION.document_date_month')
         },
         {
-            "id": 'invoice_date_day',
-            'label': marker('FACTURATION.invoice_date_day')
+            "id": 'document_date_day',
+            'label': marker('FACTURATION.document_date_day')
         },
         {
             "id": 'register_date_year',

@@ -183,26 +183,27 @@ else
     port="$choice"
 fi
 
-printf "Username [%s] : " "${bold}edissyum${normal}"
+printf "Username [%s] : " "${bold}$customId${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databaseUsername="edissyum"
+    databaseUsername="$customId"
 else
     databaseUsername="$choice"
 fi
 
-printf "Password [%s] : " "${bold}edissyum${normal}"
+printf "Password [%s] : " "${bold}$customId${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databasePassword="edissyum"
+    databasePassword="$customId"
 else
     databasePassword="$choice"
 fi
 
 echo ""
 echo "Postgres installation....."
+apt-get update >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 apt-get install -y postgresql >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
@@ -313,7 +314,7 @@ databaseName="opencapture_$customId"
 if [[ "$customId" = *"opencapture_"* ]]; then
     databaseName="$customId"
 fi
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName" postgres >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName WITH template=template0 encoding='UTF8'" postgres >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -519,8 +520,11 @@ touch /var/log/watcher/daemon.log
 chmod -R 775 /var/log/watcher/
 cp $defaultPath/instance/config/watcher.ini.default $defaultPath/instance/config/watcher.ini
 
-crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input watch /var/share/"$customId"/
-crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input watch /var/share/"$customId"/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input watch /var/share/"$customId"/entrant/verifier/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input command /var/www/html/opencapture/custom/"$customId"/bin/scripts/verifier_inputs/default_input.sh $filename
+
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input watch /var/share/"$customId"/entrant/splitter/
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input command /var/www/html/opencapture/custom/"$customId"/bin/scripts/splitter_inputs/default_input.sh $filename
 
 sed -i "s#verifier_default_input#verifier_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"
 sed -i "s#splitter_default_input_#splitter_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"
@@ -532,8 +536,8 @@ Description=filesystem watcher
 After=basic.target
 
 [Service]
-ExecStart=/usr/local/bin/watcher -c $defaultPath/instance/config/watcher.ini start
-ExecStop=/usr/local/bin/watcher -c $defaultPath/instance/config/watcher.ini stop
+ExecStart=/home/$user/python-venv/opencapture/bin/watcher -c $defaultPath/instance/config/watcher.ini start
+ExecStop=/home/$user/python-venv/opencapture/bin/watcher -c $defaultPath/instance/config/watcher.ini stop
 Type=simple
 Restart=always
 RestartSec=5
@@ -562,12 +566,13 @@ echo "$secret" > $customPath/config/secret_key
 ####################
 # Create default verifier input script (based on default input created in data_fr.sql)
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh"
+touch $defaultPath/custom/$customId/bin/data/log/OpenCapture.log
 if ! test -f "$defaultScriptFile"; then
     mkdir -p "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
     cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
     sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
-    sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
-    sed -i "s#§§LOG_PATH§§#$defaultPath#g" $defaultScriptFile
+    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+    sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
     sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 fi
@@ -581,6 +586,7 @@ if ! test -f "$defaultScriptFile"; then
     cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh $defaultScriptFile
     sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+    sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
     sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 fi
@@ -590,6 +596,7 @@ fi
 cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§OC_PATH§§#$defaultPath#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
+sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 
 ####################
 # Create default LDAP script and config

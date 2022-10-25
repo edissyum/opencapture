@@ -117,6 +117,7 @@ class FindDate:
 
     def process_due_date(self, line, position):
         regex = self.regex['due_date'] + self.regex['date']
+        line = re.sub(r",", '', line)
         for _date in re.finditer(r"" + regex + "", line):
             for res in re.finditer(r"" + self.regex['date'] + "", line):
                 date = self.format_date(res.group(), position, True)
@@ -128,23 +129,23 @@ class FindDate:
     def run(self):
         date, due_date = None, None
         if self.supplier:
-            date = search_by_positions(self.supplier, 'invoice_date', self.ocr, self.files, self.database, self.form_id)
-            due_date = search_by_positions(self.supplier, 'invoice_due_date', self.ocr, self.files, self.database, self.form_id)
+            date = search_by_positions(self.supplier, 'document_date', self.ocr, self.files, self.database, self.form_id)
+            due_date = search_by_positions(self.supplier, 'document_due_date', self.ocr, self.files, self.database, self.form_id)
 
         if self.supplier:
             position = self.database.select({
                 'select': [
-                    "positions -> '" + str(self.form_id) + "' -> 'invoice_date' as invoice_date_position",
-                    "positions -> '" + str(self.form_id) + "' -> 'invoice_due_date' as invoice_due_date_position",
-                    "pages -> '" + str(self.form_id) + "' -> 'invoice_date' as invoice_date_page",
-                    "pages -> '" + str(self.form_id) + "' -> 'invoice_due_date' as invoice_due_date_page"
+                    "positions -> '" + str(self.form_id) + "' -> 'document_date' as document_date_position",
+                    "positions -> '" + str(self.form_id) + "' -> 'document_due_date' as document_due_date_position",
+                    "pages -> '" + str(self.form_id) + "' -> 'document_date' as document_date_page",
+                    "pages -> '" + str(self.form_id) + "' -> 'document_due_date' as document_due_date_page"
                 ],
                 'table': ['accounts_supplier'],
                 'where': ['vat_number = %s', 'status <> %s'],
                 'data': [self.supplier[0], 'DEL']
             })[0]
-            if position and position['invoice_due_date_position'] not in [False, 'NULL', '', None]:
-                data = {'position': position['invoice_due_date_position'], 'regex': None, 'target': 'full', 'page': position['invoice_due_date_page']}
+            if position and position['document_due_date_position'] not in [False, 'NULL', '', None]:
+                data = {'position': position['document_due_date_position'], 'regex': None, 'target': 'full', 'page': position['document_due_date_page']}
                 _text, _position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
                 try:
                     _position = json.loads(_position)
@@ -176,20 +177,20 @@ class FindDate:
                     break
 
         if self.supplier:
-            if position and position['invoice_date_position'] not in [False, 'NULL', '', None]:
-                data = {'position': position['invoice_date_position'], 'regex': None, 'target': 'full', 'page': position['invoice_date_page']}
+            if position and position['document_date_position'] not in [False, 'NULL', '', None]:
+                data = {'position': position['document_date_position'], 'regex': None, 'target': 'full', 'page': position['document_date_page']}
                 text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
                 if text != '':
                     res = self.format_date(text, position, True)
                     if res:
                         self.date = res[0]
-                        self.log.info('Invoice date found using position : ' + str(res[0]))
+                        self.log.info('Document date found using position : ' + str(res[0]))
                         return [self.date, position, data['page'], due_date]
 
         for line in self.text:
             res = self.process(line.content.upper(), line.position)
             if res:
-                self.log.info('Invoice date found : ' + res[0])
+                self.log.info('Document date found : ' + res[0])
                 return [res[0], res[1], self.nb_pages, due_date]
 
         for line in self.text:

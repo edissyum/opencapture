@@ -154,7 +154,7 @@ export class ListDocTypeComponent implements OnInit {
                 this.updateDoctype(updateValue);
                 this.form.reset();
                 Object.keys(this.form.controls).forEach(key => {
-                    this.form.controls[key].setErrors(null) ;
+                    this.form.controls[key].setErrors(null);
                 });
             }
         });

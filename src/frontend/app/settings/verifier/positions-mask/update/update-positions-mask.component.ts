@@ -49,8 +49,8 @@ export class UpdatePositionsMaskComponent implements OnInit {
     ratio                   : any;
     positionMaskId          : any;
     positionsMask           : any;
-    invoiceImageWidth       : any;
-    invoiceImageNbPages     : any;
+    documentImageWidth      : any;
+    documentImageNbPages     : any;
     currentPage             : number    = 1;
     suppliers               : any       = [];
     filteredOptions         : Observable<any> | undefined;
@@ -97,16 +97,16 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     regex: ''
                 },
                 {
-                    id: 'invoice_date',
-                    label: marker('FACTURATION.invoice_date'),
+                    id: 'document_date',
+                    label: marker('FACTURATION.document_date'),
                     unit: 'facturation',
                     type: 'date',
                     color: 'yellow',
                     regex: '',
                 },
                 {
-                    id: 'invoice_due_date',
-                    label: marker('FACTURATION.invoice_due_date'),
+                    id: 'document_due_date',
+                    label: marker('FACTURATION.document_due_date'),
                     unit: 'facturation',
                     type: 'date',
                     color: 'blue',
@@ -168,9 +168,9 @@ export class UpdatePositionsMaskComponent implements OnInit {
             'values': []
         },
     ];
-    imageInvoice            : any;
-    invoiceImageSrc         : any;
-    invoiceImageName        : any;
+    imageDocument           : any;
+    documentImageSrc        : any;
+    documentImageName       : any;
     lastId                  : any;
     lastColor               : string    = '';
     lastLabel               : string    = '';
@@ -199,6 +199,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
     ) { }
 
     async ngOnInit(): Promise<void> {
+        this.serviceSettings.init();
         this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.forms = data.forms;
@@ -224,17 +225,17 @@ export class UpdatePositionsMaskComponent implements OnInit {
             });
         }
         if (this.positionsMask.filename) {
-            this.invoiceImageName = this.positionsMask.filename;
-            this.invoiceImageNbPages = this.positionsMask.nb_pages;
-            this.invoiceImageWidth = this.positionsMask.width;
-            this.imageInvoice = $('#invoice_image_src');
+            this.documentImageName = this.positionsMask.filename;
+            this.documentImageNbPages = this.positionsMask.nb_pages;
+            this.documentImageWidth = this.positionsMask.width;
+            this.imageDocument = $('#document_image_src');
             const thumbB64 : any = await this.getThumb(this.positionsMask.filename);
-            this.invoiceImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + thumbB64.file);
+            this.documentImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + thumbB64.file);
         }
         this.suppliers = await this.retrieveSuppliers();
         this.suppliers = this.suppliers.suppliers;
-        if (this.imageInvoice) {
-            this.ratio = this.invoiceImageWidth / this.imageInvoice.width();
+        if (this.imageDocument) {
+            this.ratio = this.documentImageWidth / this.imageDocument.width();
             this.ocr({
                 'target' : {
                     'id': ''
@@ -331,7 +332,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     $('#' + field).focus();
 
                     if (this.ratio === Infinity) {
-                        this.ratio = this.invoiceImageWidth / this.imageInvoice.width();
+                        this.ratio = this.documentImageWidth / this.imageDocument.width();
                     }
 
                     const newArea = {
@@ -424,14 +425,14 @@ export class UpdatePositionsMaskComponent implements OnInit {
 
                     this.http.post(environment['url'] + '/ws/positions_masks/getImageFromPdf/' + this.positionMaskId, formData, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
-                            this.invoiceImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
-                            this.invoiceImageName = data.filename;
-                            this.invoiceImageWidth = data.width;
-                            this.imageInvoice = $('#invoice_image_src');
+                            this.documentImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
+                            this.documentImageName = data.filename;
+                            this.documentImageWidth = data.width;
+                            this.imageDocument = $('#document_image_src');
                             setTimeout(() => {
-                                this.ratio = this.invoiceImageWidth / this.imageInvoice.width();
+                                this.ratio = this.documentImageWidth / this.imageDocument.width();
                             }, 500);
-                            this.invoiceImageNbPages = data.nb_pages;
+                            this.documentImageNbPages = data.nb_pages;
                             this.fileControl.setValue([]);
                             this.ocr({
                                 'target' : {
@@ -451,8 +452,8 @@ export class UpdatePositionsMaskComponent implements OnInit {
     }
 
     deleteImage() {
-        this.invoiceImageSrc = '';
-        this.imageInvoice = undefined;
+        this.documentImageSrc = '';
+        this.imageDocument = undefined;
         this.positionsMask.positions = {};
         this.positionsMask.pages = {};
         for (const cpt in this.availableFieldsParent) {
@@ -500,16 +501,16 @@ export class UpdatePositionsMaskComponent implements OnInit {
         resizeArea.addClass('pointer-events-auto');
         imageContainer.addClass('pointer-events-none');
         imageContainer.addClass('cursor-auto');
-        if (enable && this.imageInvoice) {
+        if (enable && this.imageDocument) {
             $('.outline_' + _this.lastId).toggleClass('animate');
             if (removeClass) {
                 imageContainer.removeClass('pointer-events-none');
                 imageContainer.removeClass('cursor-auto');
             }
-            this.imageInvoice.selectAreas({
+            this.imageDocument.selectAreas({
                 allowNudge: false,
                 minSize: [20, 20],
-                maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
+                maxSize: [this.imageDocument.width(), this.imageDocument.height() / 8],
                 onChanged(img: any, cpt: any, selection: any) {
                     if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
                         _this.ocr_process(img, cpt, selection);
@@ -567,7 +568,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 $('.select-areas-resize-handler_' + cptToDelete).remove();
             }
 
-            if (this.imageInvoice && !this.launchOnInit) {
+            if (this.imageDocument && !this.launchOnInit) {
                 const _selection = this.getSelectionByCpt(selection, cpt);
                 this.savePosition(_selection);
                 this.savePage(this.currentPage);
@@ -696,11 +697,11 @@ export class UpdatePositionsMaskComponent implements OnInit {
     }
 
     async nextPage() {
-        if (this.currentPage < this.invoiceImageNbPages) {
+        if (this.currentPage < this.documentImageNbPages) {
             this.currentPage = this.currentPage + 1;
             await this.changeImage(this.currentPage, this.currentPage - 1);
         } else {
-            await this.changeImage(1, this.invoiceImageNbPages);
+            await this.changeImage(1, this.documentImageNbPages);
         }
     }
 
@@ -709,20 +710,20 @@ export class UpdatePositionsMaskComponent implements OnInit {
             this.currentPage = this.currentPage - 1;
             await this.changeImage(this.currentPage, this.currentPage + 1);
         } else {
-            await this.changeImage(this.invoiceImageNbPages, this.currentPage);
+            await this.changeImage(this.documentImageNbPages, this.currentPage);
         }
     }
 
     async changeImage(pageToShow: number, oldPage: number) {
         if (pageToShow) {
-            const extension = this.invoiceImageName.split('.').pop();
+            const extension = this.documentImageName.split('.').pop();
             const oldCpt = ('000' + oldPage).substr(-3);
             const newCpt = ('000' + pageToShow).substr(-3);
 
-            const newFilename = this.invoiceImageName.replace(oldCpt + '.' + extension, newCpt + '.' + extension);
-            this.invoiceImageName = newFilename;
+            const newFilename = this.documentImageName.replace(oldCpt + '.' + extension, newCpt + '.' + extension);
+            this.documentImageName = newFilename;
             const thumbB64: any = await this.getThumb(newFilename);
-            this.invoiceImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + thumbB64.file);
+            this.documentImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + thumbB64.file);
             this.currentPage = pageToShow;
             for (const parentCpt in this.availableFieldsParent) {
                 for (const cpt in this.availableFieldsParent[parentCpt]['values']) {

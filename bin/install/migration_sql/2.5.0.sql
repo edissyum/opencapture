@@ -1,5 +1,5 @@
 -- Add MailCollect settings interface
-INSERT INTO "privileges" ("id", "label", "parent") VALUES ('mailcollect', 'general');
+INSERT INTO "privileges" ("label", "parent") VALUES ('mailcollect', 'general');
 
 ALTER TABLE "configurations" ADD COLUMN display BOOLEAN default true;
 INSERT INTO "configurations" (label, data, display) VALUES ('mailCollectGeneral', '{
@@ -40,6 +40,7 @@ CREATE TABLE mailcollect (
     "verifier_customer_id"          INTEGER,
     "verifier_form_id"              INTEGER
 );
+INSERT INTO "mailcollect" ("name", "hostname", "port", "login", "password", "secured_connection", "folder_to_crawl", "folder_destination", "folder_trash", "action_after_process") VALUES ('MAIL_1', '', '993', '', '', True, '', '', '', 'move');
 
 -- Add regex for Splitter XML output
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_doc_loop', 'fra', 'Boucle des documents dans la sortie XML du Splitter', '<!-- %BEGIN-DOCUMENT-LOOP -->(.*?)<!-- %END-DOCUMENT-LOOP -->');
@@ -56,10 +57,21 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_e
 UPDATE "regex" SET content = '(EU|SI|HU|D(K|E)|PL|CHE|(F|H)R|B(E|G)(0)?)[0-9A-Z]{2}[0-9]{6,9}' WHERE regex_id = 'vat_number';
 
 -- Improve EMAIL REGEX
-UPDATE "regex" SET content = '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+' WHERE regex_id = 'email';
+UPDATE "regex" SET content = '([A-Za-z0-9]+[.\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+' WHERE regex_id = 'email';
+
+-- Improve english invoice number REGEX
+UPDATE "regex" SET content = '(INVOICE\s*(NUMBER|#)\s*(:)?).*' WHERE regex_id = 'invoice_number' AND lang = 'eng';
+
+-- Improve english due date REGEX
+UPDATE "regex" SET content = 'DUE\s*DATE\s*(:)?\s*' WHERE regex_id = 'due_date' AND lang = 'eng';
+
+-- Improve english footer REGEX
+UPDATE "regex" SET content = 'UNTAXED\s*(TOTAL)?' WHERE regex_id = 'no_rates' AND lang = 'eng';
+UPDATE "regex" SET content = '(VAT\s*(?!.*NUMBER)(AMOUNT\s*)?|TOTAL\s*TAXES)(\$|£|€|EUROS|EUR|CAD|USD)?\s*.*' WHERE regex_id = 'vat_amount' AND lang = 'eng';
+UPDATE "regex" SET content = '(?P<r1>TOTAL|^(TOTAL)?\s*(AMOUNT|DUE)(\s*PAID)?)?\s*(:\s*)?(\$|£|€|EUROS|EUR|CAD|USD)?\s*(?(r1)()|(T(.)?T(.)?C|\(VAT\s*INCLUDE(D)?\))){1}\s*(:|(\$|£|€|EUROS|EUR|CAD|USD))?\s*([0-9]*(\.?\,?\|?\s?)[0-9]+((\.?\,?\s?)[0-9])+|[0-9]+)\s*(\$|£|€|EUROS|EUR|CAD|USD)?' WHERE regex_id = 'all_rates' AND lang = 'eng';
 
 -- Create tasks watcher
-create table tasks_watcher
+CREATE TABLE tasks_watcher
 (
     "id"                SERIAL      UNIQUE PRIMARY KEY,
     "title"             VARCHAR(255),
@@ -67,7 +79,7 @@ create table tasks_watcher
     "module"            VARCHAR(10),
     "status"            VARCHAR(10),
     "error_description" TEXT,
-    "creation_date"     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "creation_date"     TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
     "end_date"          TIMESTAMP
 );
 
@@ -92,7 +104,7 @@ INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verif
     "display": {
         "subtitles": [
             {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-            {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+            {"id": "document_date", "label": "FACTURATION.document_date"},
             {"id": "date", "label": "VERIFIER.register_date"},
             {"id": "original_filename", "label": "VERIFIER.original_file"},
             {"id": "form_label", "label": "ACCOUNTS.form"}
@@ -113,7 +125,7 @@ UPDATE form_models SET settings = '{
     "display": {
         "subtitles": [
             {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-            {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+            {"id": "document_date", "label": "FACTURATION.document_date"},
             {"id": "date", "label": "VERIFIER.register_date"},
             {"id": "original_filename", "label": "VERIFIER.original_file"},
             {"id": "form_label", "label": "ACCOUNTS.form"}

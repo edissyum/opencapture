@@ -335,7 +335,7 @@ export class VerifierListComponent implements OnInit {
                             invoice.display = {
                                 "subtitles": [
                                     {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-                                    {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+                                    {"id": "document_date", "label": "FACTURATION.document_date"},
                                     {"id": "date", "label": "VERIFIER.register_date"},
                                     {"id": "original_filename", "label": "VERIFIER.original_file"},
                                     {"id": "form_label", "label": "VERIFIER.form"}
@@ -355,7 +355,7 @@ export class VerifierListComponent implements OnInit {
                             invoice.display = {
                                 "subtitles": [
                                     {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-                                    {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+                                    {"id": "document_date", "label": "FACTURATION.document_date"},
                                     {"id": "date", "label": "VERIFIER.register_date"},
                                     {"id": "original_filename", "label": "VERIFIER.original_file"},
                                     {"id": "form_label", "label": "VERIFIER.form"}
@@ -389,10 +389,12 @@ export class VerifierListComponent implements OnInit {
                 const customersSaleToKeep : any = [];
                 this.allowedCustomers.forEach((customer: any) => {
                     this.invoices.forEach((invoice:any) => {
-                        if (invoice.purchase_or_sale === 'purchase' && !customersPurchaseToKeep.includes(customer))
+                        if (invoice.purchase_or_sale === 'purchase' && !customersPurchaseToKeep.includes(customer)) {
                             customersPurchaseToKeep.push(customer);
-                        if (invoice.purchase_or_sale === 'sale' && !customersSaleToKeep.includes(customer))
+                        }
+                        if (invoice.purchase_or_sale === 'sale' && !customersSaleToKeep.includes(customer)) {
                             customersSaleToKeep.push(customer);
+                        }
                     });
                 });
 
@@ -407,11 +409,12 @@ export class VerifierListComponent implements OnInit {
 
                 this.TREE_DATA.forEach((_data: any, index: number) => {
                     customersSaleToKeep.forEach((customer1: any) => {
-                        if (data.id === customer1) {
+                        if (_data.id === customer1) {
                             let childExists = false;
                             this.TREE_DATA[index].children.forEach((child: any) => {
-                                if (child.id === 0)
+                                if (child.id === 0) {
                                     childExists = true;
+                                }
                             });
                             if (!childExists) {
                                 this.TREE_DATA[index].children.push(
@@ -422,12 +425,13 @@ export class VerifierListComponent implements OnInit {
                         }
                     });
                     customersPurchaseToKeep.forEach((customer2: any) => {
-                        if (data.id === customer2) {
+                        if (_data.id === customer2) {
                             if (this.TREE_DATA[index]) {
                                 let childExists = false;
                                 this.TREE_DATA[index].children.forEach((child: any) => {
-                                    if (child.id === 1)
+                                    if (child.id === 1) {
                                         childExists = true;
+                                    }
                                 });
                                 if (!childExists) {
                                     this.TREE_DATA[index].children.push(
@@ -454,7 +458,7 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    fillChildren(parentId: any , parent: any, childName: any, supplierName: any, supplierId: any, id: any, purchaseOrSale: any) {
+    fillChildren(parentId: any, parent: any, childName: any, supplierName: any, supplierId: any, id: any, purchaseOrSale: any) {
         let childNameExists = false;
         parent.forEach((child: any) => {
             if (child.name === childName) {

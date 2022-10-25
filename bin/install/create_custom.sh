@@ -175,20 +175,20 @@ else
     port="$choice"
 fi
 
-printf "Username [%s] : " "${bold}edissyum${normal}"
+printf "Username [%s] : " "${bold}$customId${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databaseUsername="edissyum"
+    databaseUsername="$customId"
 else
     databaseUsername="$choice"
 fi
 
-printf "Password [%s] : " "${bold}edissyum${normal}"
+printf "Password [%s] : " "${bold}$customId${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databasePassword="edissyum"
+    databasePassword="$customId"
 else
     databasePassword="$choice"
 fi
@@ -215,7 +215,7 @@ fi
 
 ####################
 # Create database using custom_id
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName" postgres
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName WITH template=template0 encoding='UTF8'" postgres
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName"
@@ -331,6 +331,7 @@ echo ""
 cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§OC_PATH§§#$defaultPath#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
+sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 
 ####################
 # Move defaults scripts to new custom location
@@ -352,6 +353,18 @@ sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture
 sed -i "s#§§LOG_PATH§§#$defaultPath#g" $defaultScriptFile
 sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
+
+####################
+# Fill the watcher.ini
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId watch /var/share/"$customId"/entrant/verifier/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId include_extensions pdf,PDF
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh \$filename"
+
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId watch /var/share/"$customId"/entrant/splitter/
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId include_extensions pdf,PDF
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId command "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh \$filename"
 
 ####################
 # Fix the rights after root launch to avoid permissions issues
