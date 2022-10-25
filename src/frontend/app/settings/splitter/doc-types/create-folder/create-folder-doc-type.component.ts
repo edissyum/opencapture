@@ -123,7 +123,7 @@ export class CreateFolderDocTypeComponent implements OnInit {
                 this.form.reset();
                 this.form.controls['folder'].setValue(this.noMasterFolder);
                 Object.keys(this.form.controls).forEach(key => {
-                    this.form.controls[key].setErrors(null) ;
+                    this.form.controls[key].setErrors(null);
                 });
                 if (this.selectedFormId)
                     this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);

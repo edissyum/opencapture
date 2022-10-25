@@ -231,7 +231,7 @@ export class LoginMethodsComponent implements OnInit {
 
                 this.http.get(environment['url'] + '/ws/auth/retrieveLdapConfigurations', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
-                        const configs : any = data.ldap_configurations ;
+                        const configs : any = data.ldap_configurations;
                         this.connectionFormGroup.forEach(element => {
                             for (const config of configs) {
                                 if (element.type !== 'password') {
@@ -285,7 +285,7 @@ export class LoginMethodsComponent implements OnInit {
 
     changedLdapMethod(loginMethodName: any): void {
         if (!this.isLdapChecked) {
-            this.isLdapChecked = true ;
+            this.isLdapChecked = true;
         } else if (this.isLdapChecked) {
             this.disableLoginMethod(loginMethodName);
         }
@@ -317,10 +317,10 @@ export class LoginMethodsComponent implements OnInit {
         this.http.post(environment['url'] + '/ws/auth/disableLoginMethodName', loginMethodName, {headers: this.authService.headers}).pipe(
             tap(() => {
                 if (loginMethodName['method_name'] === 'default') {
-                    this.isDefaultChecked = false ;
+                    this.isDefaultChecked = false;
                 }
                 if (loginMethodName['method_name'] === 'ldap') {
-                    this.isLdapChecked = false ;
+                    this.isLdapChecked = false;
                 }
                 this.notify.success(this.translate.instant('LOGIN-METHODS.login_method_disabled'));
             }),
