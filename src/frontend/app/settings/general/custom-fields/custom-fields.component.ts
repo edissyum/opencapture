@@ -44,7 +44,7 @@ export class CustomFieldsComponent implements OnInit {
     activeFields        : any[]     = [];
     selectOptions       : any[]     = [];
     inactiveOrActive    : string    = '';
-    updateCustomId      : any ;
+    updateCustomId      : any;
     form!               : FormGroup;
     parent              : any[]     = [
         {
