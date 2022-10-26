@@ -29,6 +29,7 @@ import { LocaleService } from "./locale.service";
 import { ConfigService } from "./config.service";
 import { HistoryService } from "./history.service";
 import {LastUrlService} from "./last-url.service";
+import {LocalStorageService} from "./local-storage.service";
 
 @Injectable({
     providedIn: 'root'
@@ -46,6 +47,7 @@ export class LoginRequiredService implements CanActivate {
         private localeService: LocaleService,
         private historyService: HistoryService,
         private routerExtService: LastUrlService,
+        private localStorage: LocalStorageService
     ) {}
 
     login(token: string, route: any) {
@@ -70,6 +72,7 @@ export class LoginRequiredService implements CanActivate {
                     this.configService.readConfig().then(() => {
                         this.historyService.addHistory('general', 'login', this.translate.instant('HISTORY-DESC.login_with_token'));
                         if (route) {
+                            this.localStorage.save('task_watcher_minimize_display', 'true');
                             this.router.navigate([route]).then();
                         }
                     });
