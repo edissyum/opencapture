@@ -55,7 +55,7 @@ def export_xml(data, log, regex, invoice_info):
             xml_datas = Et.SubElement(root, 'DATAS')
 
             for technical in invoice_info:
-                if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale']:
+                if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale', 'original_filename']:
                     new_field = Et.SubElement(xml_technical, technical)
                     new_field.text = str(invoice_info[technical])
 
