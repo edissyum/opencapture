@@ -40,7 +40,7 @@ def encode_auth_token(user_id):
         }
         return jwt.encode(
             payload,
-            current_app.config.get('SECRET_KEY'),
+            current_app.config['SECRET_KEY'].replace("\n", ""),
             algorithm='HS512'
         ), minutes_before_exp
     except Exception as _e:
@@ -148,7 +148,7 @@ def token_required(view):
         if 'Authorization' in request.headers:
             token = request.headers['Authorization'].split('Bearer')[1].lstrip()
             try:
-                token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
+                token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
             except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
                     jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
                 return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
