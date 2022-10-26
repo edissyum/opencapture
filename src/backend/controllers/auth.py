@@ -109,7 +109,7 @@ def login_with_token(token, lang):
     error = None
 
     try:
-        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
+        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
