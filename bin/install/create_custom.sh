@@ -341,16 +341,16 @@ cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh "$defaul
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh"
 cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
 sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
-sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
-sed -i "s#§§LOG_PATH§§#$defaultPath#g" $defaultScriptFile
+sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
 sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh"
 cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh $defaultScriptFile
 sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
-sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
-sed -i "s#§§LOG_PATH§§#$defaultPath#g" $defaultScriptFile
+sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
 sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 
