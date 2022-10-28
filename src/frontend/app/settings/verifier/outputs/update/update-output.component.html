@@ -97,11 +97,20 @@
                             <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
                         </mat-form-field>
-                        <mat-form-field *ngIf="field.type === 'select'">
+                        <mat-form-field *ngIf="field.type === 'select' && field.id === 'output_type_id'">
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value" (selectionChange)="changeOutputType($event)">
                                 <mat-option *ngFor="let option of outputsTypes" [value]="option.output_type_id">
                                     {{ option.output_type_label }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
+                        </mat-form-field>
+                        <mat-form-field *ngIf="field.type === 'select' && field.id === 'compress_type' && this.selectedOutputType === 'export_pdf'">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value">
+                                <mat-option *ngFor="let option of field.values" [value]="option.id">
+                                    {{ option.label | translate }}
                                 </mat-option>
                             </mat-select>
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>

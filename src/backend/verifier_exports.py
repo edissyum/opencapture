@@ -19,6 +19,7 @@ import os
 import json
 import datetime
 import shutil
+import subprocess
 
 import pandas as pd
 from xml.dom import minidom
@@ -79,7 +80,15 @@ def export_xml(data, log, regex, invoice_info):
         return response, 401
 
 
-def export_pdf(data, log, regex, invoice_info):
+def compress_pdf(input_file, output_file, compress_id):
+    gs_command = 'gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/%s#-dNOPAUSE#-dQUIET#-o#%s#%s' \
+                 % (compress_id, output_file, input_file)
+
+    gs_args = gs_command.split('#')
+    subprocess.check_call(gs_args)
+
+
+def export_pdf(data, log, regex, invoice_info, compress_type):
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
     for setting in parameters:
@@ -98,8 +107,17 @@ def export_pdf(data, log, regex, invoice_info):
 
     if os.path.isdir(folder_out):
         file = invoice_info['path'] + '/' + invoice_info['filename']
-        if os.path.isfile(file):
-            shutil.copy(file, folder_out + '/' + filename)
+
+        if compress_type:
+            compressed_file_path = '/tmp/min_' + invoice_info['filename']
+            compress_pdf(file, compressed_file_path, compress_type)
+            try:
+                shutil.move(compressed_file_path, folder_out + '/' + filename)
+            except shutil.Error as e:
+                log.error('Moving file ' + compressed_file_path + ' error : ' + str(e))
+        else:
+            if os.path.isfile(file):
+                shutil.copy(file, folder_out + '/' + filename)
         return '', 200
     else:
         if log:

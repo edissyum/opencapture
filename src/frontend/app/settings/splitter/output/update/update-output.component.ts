@@ -96,7 +96,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 }
             ],
             required: false,
-        },
+        }
     ];
     availableFields       : any           = [
         {
@@ -188,11 +188,15 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     if (data.hasOwnProperty(field)) {
                         this.outputForm.forEach(element => {
                             if (element.id === field) {
-                                if (element.id === 'output_type_id') this.selectedOutputType = this.originalOutputType = data[field];
+                                if (element.id === 'output_type_id') {
+                                    this.selectedOutputType = this.originalOutputType = data[field];
+                                }
                                 element.control.setValue(data[field]);
-                                if (element.id === 'compress_type')
-                                    if (data[field] === null || data[field] === undefined)
+                                if (element.id === 'compress_type') {
+                                    if (data[field] === null || data[field] === undefined) {
                                         element.control.setValue('');
+                                    }
+                                }
                             }
                         });
                     }

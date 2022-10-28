@@ -29,6 +29,7 @@ import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { HistoryService } from "../../../../../services/history.service";
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-output-create',
@@ -38,6 +39,7 @@ import { HistoryService } from "../../../../../services/history.service";
 export class CreateOutputComponent implements OnInit {
     loading             : boolean       = true;
     outputsTypes        : any[]         = [];
+    selectedOutputType  : any;
     outputForm          : any[]         = [
         {
             id: 'output_type_id',
@@ -53,7 +55,40 @@ export class CreateOutputComponent implements OnInit {
             type: 'text',
             control: new FormControl(),
             required: true,
-        }
+        },
+        {
+            id: 'compress_type',
+            label: this.translate.instant('OUTPUT.compress_type'),
+            type: 'select',
+            control: new FormControl(),
+            values: [
+                {
+                    'id': '',
+                    'label': marker('OUTPUT.no_compress')
+                },
+                {
+                    'id': 'screen',
+                    'label': marker('OUTPUT.compress_screen')
+                },
+                {
+                    'id': 'ebook',
+                    'label': marker('OUTPUT.compress_ebook')
+                },
+                {
+                    'id': 'prepress',
+                    'label': marker('OUTPUT.compress_prepress')
+                },
+                {
+                    'id': 'printer',
+                    'label': marker('OUTPUT.compress_printer')
+                },
+                {
+                    'id': 'default',
+                    'label': marker('OUTPUT.compress_default')
+                }
+            ],
+            required: false,
+        },
     ];
 
     constructor(
@@ -70,6 +105,13 @@ export class CreateOutputComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
+
+        this.outputForm.forEach((element: any) => {
+            if (element.id === 'compress_type') {
+                element.control.setValue('');
+            }
+        });
+
         this.http.get(environment['url'] + '/ws/outputs/getOutputsTypes?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputsTypes = data.outputs_types;
@@ -99,11 +141,13 @@ export class CreateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputForm)) {
             const outputTypeId = this.getValueFromForm(this.outputForm, 'output_type_id');
             const outputLabel = this.getValueFromForm(this.outputForm, 'output_label');
+            const compressType = this.getValueFromForm(this.outputForm, 'compress_type');
             this.http.post(environment['url'] + '/ws/outputs/create',
                 {'args': {
                     'output_type_id': outputTypeId,
-                    'output_label': outputLabel,
-                    'module': 'verifier',
+                    'output_label'  : outputLabel,
+                    'compress_type' : compressType,
+                    'module'        : 'verifier',
                 }}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
@@ -142,4 +186,7 @@ export class CreateOutputComponent implements OnInit {
         return error;
     }
 
+    changeOutputType(event: any) {
+        this.selectedOutputType = event.value;
+    }
 }
