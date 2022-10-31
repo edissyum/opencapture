@@ -18,8 +18,9 @@
 import sys
 import argparse
 from src.backend import app
-from src.backend.main import launch
+from flask_babel import gettext
 from src.backend.functions import retrieve_config_from_custom_id
+from src.backend.main import launch, create_classes_from_custom_id
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-f", "--file", required=True, help="Path to file")
@@ -35,3 +36,16 @@ if not retrieve_config_from_custom_id(args['custom_id']):
 
 with app.app_context():
     launch(args)
+    _vars = create_classes_from_custom_id(args['custom_id'])
+    database = _vars[0]
+    args = {
+        'table': 'history',
+        'columns': {
+            'history_submodule': 'upload_file',
+            'history_module': 'verifier',
+            'user_info': 'fs-watcher',
+            'history_desc': gettext('FILE_UPLOADED') + '&nbsp<strong>' + args['input_id'] + '</strong>',
+            'user_ip': '0.0.0.0',
+        }
+    }
+    database.insert(args)
