@@ -35,6 +35,9 @@ export class ConfigService {
     ) {}
 
     readConfig() {
+        if (!this.authService.headersExists) {
+            this.authService.generateHeaders();
+        }
         return new Promise((resolve) => {
             this.http.get(environment['url'] + '/ws/config/readConfig', {headers: this.authService.headers}).pipe(
                 tap((data: any) => {

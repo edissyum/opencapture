@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2022-09-30 16:09+0200\n"
+"POT-Creation-Date: 2022-10-31 10:52+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -17,29 +17,33 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: src/backend/verifier_exports.py:73 src/backend/verifier_exports.py:76
+#: launch_worker.py:47
+msgid "FILE_UPLOADED"
+msgstr "File uploaded successfully via fs-watcher with input"
+
+#: src/backend/verifier_exports.py:76 src/backend/verifier_exports.py:79
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Destination folder for XML doesn't exists"
 
-#: src/backend/verifier_exports.py:106 src/backend/verifier_exports.py:109
+#: src/backend/verifier_exports.py:163 src/backend/verifier_exports.py:166
 msgid "PDF_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Destination folder for PDF doesn't exists"
 
 #: src/backend/controllers/splitter.py:282
-#: src/backend/controllers/splitter.py:288 src/backend/verifier_exports.py:254
-#: src/backend/verifier_exports.py:260 src/backend/verifier_exports.py:266
+#: src/backend/controllers/splitter.py:288 src/backend/verifier_exports.py:318
+#: src/backend/verifier_exports.py:324 src/backend/verifier_exports.py:330
 msgid "EXPORT_MAARCH_ERROR"
 msgstr "Error during Maarch export"
 
-#: src/backend/verifier_exports.py:261
+#: src/backend/verifier_exports.py:325
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "PDF file not found"
 
-#: src/backend/verifier_exports.py:272
+#: src/backend/verifier_exports.py:336
 msgid "MAARCH_WS_INFO_WRONG"
 msgstr "Maarch informations are wrong"
 
-#: src/backend/controllers/splitter.py:294 src/backend/verifier_exports.py:278
+#: src/backend/controllers/splitter.py:294 src/backend/verifier_exports.py:342
 msgid "MAARCH_WS_INFO_EMPTY"
 msgstr "Maarch informations are empty"
 
@@ -348,35 +352,35 @@ msgstr "Script sample doesn't exists"
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Script folder doesn't exists"
 
-#: src/backend/controllers/mailcollect.py:35
+#: src/backend/controllers/mailcollect.py:36
 msgid "RETRIEVE_PROCESSES_ERROR"
 msgstr "Error while retrieving MailCollect processes"
 
-#: src/backend/controllers/mailcollect.py:51
+#: src/backend/controllers/mailcollect.py:52
 msgid "UPDATE_PROCESS_ERROR"
 msgstr "Error while updating MailCollect process"
 
-#: src/backend/controllers/mailcollect.py:67
+#: src/backend/controllers/mailcollect.py:68
 msgid "CREATE_PROCESS_ERROR"
 msgstr "Error while creating MailCollect process"
 
-#: src/backend/controllers/mailcollect.py:81
-#: src/backend/controllers/mailcollect.py:87
+#: src/backend/controllers/mailcollect.py:82
+#: src/backend/controllers/mailcollect.py:88
 msgid "DELETE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Error while deleting MailCollect process"
 
-#: src/backend/controllers/mailcollect.py:101
-#: src/backend/controllers/mailcollect.py:107
+#: src/backend/controllers/mailcollect.py:102
+#: src/backend/controllers/mailcollect.py:108
 msgid "ENABLE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Error while enabling MailCollect process"
 
-#: src/backend/controllers/mailcollect.py:121
-#: src/backend/controllers/mailcollect.py:127
+#: src/backend/controllers/mailcollect.py:122
+#: src/backend/controllers/mailcollect.py:128
 msgid "DISABLE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Error while disabling MailCollect process"
 
-#: src/backend/controllers/mailcollect.py:141
-#: src/backend/controllers/mailcollect.py:151
+#: src/backend/controllers/mailcollect.py:142
+#: src/backend/controllers/mailcollect.py:152
 msgid "MAILCOLLECT_ERROR"
 msgstr "MailCollect error"
 
@@ -384,24 +388,24 @@ msgstr "MailCollect error"
 msgid "DUPLICATE_OUTPUT_ERROR"
 msgstr "Error while duplicate ouput"
 
-#: src/backend/controllers/outputs.py:91 src/backend/controllers/outputs.py:97
+#: src/backend/controllers/outputs.py:92 src/backend/controllers/outputs.py:98
 msgid "UPDATE_OUTPUT_ERROR"
 msgstr "Error while updating output"
 
-#: src/backend/controllers/outputs.py:120
+#: src/backend/controllers/outputs.py:122
 msgid "CREATE_OUTPUT_ERROR"
 msgstr "Error while creating output"
 
-#: src/backend/controllers/outputs.py:133
+#: src/backend/controllers/outputs.py:135
 msgid "GET_OUTPUT_BY_ID_ERROR"
 msgstr "Error while retrieving output"
 
-#: src/backend/controllers/outputs.py:146
+#: src/backend/controllers/outputs.py:148
 msgid "GET_OUTPUT_TYPE_BY_ID_ERROR"
 msgstr "Error while retrieving output type"
 
-#: src/backend/controllers/outputs.py:160
-#: src/backend/controllers/outputs.py:166
+#: src/backend/controllers/outputs.py:162
+#: src/backend/controllers/outputs.py:168
 msgid "DELETE_OUTPUT_ERROR"
 msgstr "Error while deleting output"
 
@@ -535,7 +539,7 @@ msgid "CMIS_CONNECTION_ERROR"
 msgstr "Errur while connecting to CMIS"
 
 #: src/backend/controllers/splitter.py:717
-#: src/backend/controllers/verifier.py:550 src/backend/models/splitter.py:423
+#: src/backend/controllers/verifier.py:557 src/backend/models/splitter.py:423
 #: src/backend/models/verifier.py:153
 msgid "GET_TOTALS_ERROR"
 msgstr "Error while retrievings totals"
@@ -632,20 +636,20 @@ msgstr "Error while updating invoice"
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Error while removing lock on invoice"
 
-#: src/backend/controllers/verifier.py:458
-#: src/backend/controllers/verifier.py:461
-#: src/backend/controllers/verifier.py:478
-#: src/backend/controllers/verifier.py:497
-#: src/backend/controllers/verifier.py:498
+#: src/backend/controllers/verifier.py:465
+#: src/backend/controllers/verifier.py:468
+#: src/backend/controllers/verifier.py:485
+#: src/backend/controllers/verifier.py:504
+#: src/backend/controllers/verifier.py:505
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Error while connecting to INSEE API"
 
-#: src/backend/controllers/verifier.py:522
+#: src/backend/controllers/verifier.py:529
 msgid "VAT_NOT_VALID"
 msgstr "VAT number not valid"
 
-#: src/backend/controllers/verifier.py:527
-#: src/backend/controllers/verifier.py:528
+#: src/backend/controllers/verifier.py:534
+#: src/backend/controllers/verifier.py:535
 msgid "VAT_API_ERROR"
 msgstr "API for VAT number unreachable"
 
