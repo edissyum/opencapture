@@ -77,6 +77,56 @@ export class UpdateOutputComponent implements OnInit {
             type: 'text',
             control: new FormControl(),
             required: true,
+        },
+        {
+            id: 'compress_type',
+            label: this.translate.instant('OUTPUT.compress_type'),
+            type: 'select',
+            control: new FormControl(),
+            values: [
+                {
+                    'id': '',
+                    'label': marker('OUTPUT.no_compress')
+                },
+                {
+                    'id': 'screen',
+                    'label': marker('OUTPUT.compress_screen')
+                },
+                {
+                    'id': 'ebook',
+                    'label': marker('OUTPUT.compress_ebook')
+                },
+                {
+                    'id': 'prepress',
+                    'label': marker('OUTPUT.compress_prepress')
+                },
+                {
+                    'id': 'printer',
+                    'label': marker('OUTPUT.compress_printer')
+                },
+                {
+                    'id': 'default',
+                    'label': marker('OUTPUT.compress_default')
+                }
+            ],
+            required: false,
+        },
+        {
+            id: 'ocrise',
+            label: this.translate.instant('OUTPUT.enable_ocr'),
+            type: 'select',
+            control: new FormControl(),
+            values: [
+                {
+                    'id': true,
+                    'label': marker('OUTPUT.ocr_enabled')
+                },
+                {
+                    'id': false,
+                    'label': marker('OUTPUT.ocr_disabled')
+                },
+            ],
+            required: false,
         }
     ];
     availableFields         : any           = [
@@ -195,8 +245,20 @@ export class UpdateOutputComponent implements OnInit {
                     if (data.hasOwnProperty(field)) {
                         this.outputForm.forEach(element => {
                             if (element.id === field) {
-                                if (element.id === 'output_type_id') this.selectedOutputType = this.originalOutputType = data[field];
+                                if (element.id === 'output_type_id') {
+                                    this.selectedOutputType = this.originalOutputType = data[field];
+                                }
                                 element.control.setValue(data[field]);
+                                if (element.id === 'compress_type') {
+                                    if (data[field] === null || data[field] === undefined) {
+                                        element.control.setValue('');
+                                    }
+                                }
+                                if (element.id === 'ocrise') {
+                                    if (data[field] === null || data[field] === undefined) {
+                                        element.control.setValue('');
+                                    }
+                                }
                             }
                         });
                     }

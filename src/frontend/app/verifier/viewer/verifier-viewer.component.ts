@@ -1440,7 +1440,8 @@ export class VerifierViewerComponent implements OnInit {
                                 }
                             });
                         }
-                        this.http.post(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data.data},{headers: this.authService.headers}).pipe(
+
+                        this.http.post(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data},{headers: this.authService.headers}).pipe(
                             tap(() => {
                                 /* Actions à effectuer après le traitement des chaînes sortantes */
                                 if (cpt + 1 === this.formSettings.outputs.length) {

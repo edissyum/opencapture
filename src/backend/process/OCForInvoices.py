@@ -91,7 +91,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
         if outputs:
             for output_id in outputs[0]['outputs']:
                 output_info = database.select({
-                    'select': ['output_type_id', 'data'],
+                    'select': ['output_type_id', 'data', 'compress_type', 'ocrise'],
                     'table': ['outputs'],
                     'where': ['id = %s'],
                     'data': [output_id]
@@ -113,7 +113,8 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                     elif output_info[0]['output_type_id'] == 'export_maarch':
                         verifier_exports.export_maarch(output_info[0]['data'], invoice_data, log, regex, database)
                     elif output_info[0]['output_type_id'] == 'export_pdf':
-                        verifier_exports.export_pdf(output_info[0]['data'], log, regex, invoice_data)
+                        verifier_exports.export_pdf(output_info[0]['data'], log, regex, invoice_data, current_lang,
+                                                    output_info[0]['compress_type'], output_info[0]['ocrise'])
 
                     if 'delete_documents_after_outputs' in form_settings and form_settings['delete_documents_after_outputs']:
                         delete_documents(docservers, invoice_data['path'], invoice_data['filename'], full_jpg_filename)
