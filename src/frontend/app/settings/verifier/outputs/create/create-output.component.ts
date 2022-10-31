@@ -89,6 +89,23 @@ export class CreateOutputComponent implements OnInit {
             ],
             required: false,
         },
+        {
+            id: 'ocrise',
+            label: this.translate.instant('OUTPUT.enable_ocr'),
+            type: 'select',
+            control: new FormControl(),
+            values: [
+                {
+                    'id': true,
+                    'label': marker('OUTPUT.ocr_enabled')
+                },
+                {
+                    'id': false,
+                    'label': marker('OUTPUT.ocr_disabled')
+                },
+            ],
+            required: false,
+        }
     ];
 
     constructor(
@@ -142,11 +159,13 @@ export class CreateOutputComponent implements OnInit {
             const outputTypeId = this.getValueFromForm(this.outputForm, 'output_type_id');
             const outputLabel = this.getValueFromForm(this.outputForm, 'output_label');
             const compressType = this.getValueFromForm(this.outputForm, 'compress_type');
+            const ocrise = this.getValueFromForm(this.outputForm, 'ocrise');
             this.http.post(environment['url'] + '/ws/outputs/create',
                 {'args': {
                     'output_type_id': outputTypeId,
                     'output_label'  : outputLabel,
                     'compress_type' : compressType,
+                    'ocrise'        : ocrise,
                     'module'        : 'verifier',
                 }}, {headers: this.authService.headers},
             ).pipe(

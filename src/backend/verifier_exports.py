@@ -16,11 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
+import uuid
 import json
-import datetime
 import shutil
+import datetime
+import ocrmypdf
 import subprocess
-
 import pandas as pd
 from xml.dom import minidom
 from flask_babel import gettext
@@ -88,7 +89,23 @@ def compress_pdf(input_file, output_file, compress_id):
     subprocess.check_call(gs_args)
 
 
-def export_pdf(data, log, regex, invoice_info, compress_type):
+def generate_searchable_pdf(pdf, tmp_filename, lang, log):
+    """
+    Start from standard PDF, with no OCR, and create a searchable PDF, with OCR. Thanks to ocrmypdf python lib
+
+    :param pdf: Path to original pdf (not searchable, without OCR)
+    :param tmp_path: Path to store the final pdf, searchable with OCR
+    :param separator: Class Separator instance
+    """
+    try:
+        res = ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', skip_text=True, language=lang, progress_bar=False)
+        if res.value != 0:
+            ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', force_ocr=True, language=lang, progress_bar=False)
+    except ocrmypdf.exceptions.PriorOcrFoundError as e:
+        log.error(e)
+
+
+def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
     for setting in parameters:
@@ -118,6 +135,27 @@ def export_pdf(data, log, regex, invoice_info, compress_type):
         else:
             if os.path.isfile(file):
                 shutil.copy(file, folder_out + '/' + filename)
+
+        if ocrise:
+            check_ocr = os.popen('pdffonts ' + file, 'r')
+            tmp = ''
+            for line in check_ocr:
+                tmp += line
+
+            if len(tmp.split('\n')) > 3:
+                is_ocr = True
+            else:
+                is_ocr = False
+
+            if not is_ocr:
+                tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
+                log.info('Start OCR on document...')
+                generate_searchable_pdf(file, tmp_filename, lang, log)
+                try:
+                    shutil.move(tmp_filename, folder_out + '/' + filename)
+                except shutil.Error as e:
+                    log.error('Moving file ' + tmp_filename + ' error : ' + str(e))
+
         return '', 200
     else:
         if log:

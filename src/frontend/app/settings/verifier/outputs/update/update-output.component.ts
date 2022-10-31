@@ -110,6 +110,23 @@ export class UpdateOutputComponent implements OnInit {
                 }
             ],
             required: false,
+        },
+        {
+            id: 'ocrise',
+            label: this.translate.instant('OUTPUT.enable_ocr'),
+            type: 'select',
+            control: new FormControl(),
+            values: [
+                {
+                    'id': true,
+                    'label': marker('OUTPUT.ocr_enabled')
+                },
+                {
+                    'id': false,
+                    'label': marker('OUTPUT.ocr_disabled')
+                },
+            ],
+            required: false,
         }
     ];
     availableFields         : any           = [
@@ -233,6 +250,11 @@ export class UpdateOutputComponent implements OnInit {
                                 }
                                 element.control.setValue(data[field]);
                                 if (element.id === 'compress_type') {
+                                    if (data[field] === null || data[field] === undefined) {
+                                        element.control.setValue('');
+                                    }
+                                }
+                                if (element.id === 'ocrise') {
                                     if (data[field] === null || data[field] === undefined) {
                                         element.control.setValue('');
                                     }

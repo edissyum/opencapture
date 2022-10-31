@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2022-09-30 16:09+0200\n"
+"POT-Creation-Date: 2022-10-31 10:52+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -17,29 +17,33 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: src/backend/verifier_exports.py:73 src/backend/verifier_exports.py:76
+#: launch_worker.py:47
+msgid "FILE_UPLOADED"
+msgstr "Fichier téléversé via fs-watcher avec la chaîne entrante"
+
+#: src/backend/verifier_exports.py:76 src/backend/verifier_exports.py:79
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier de destination XML n'existe pas"
 
-#: src/backend/verifier_exports.py:106 src/backend/verifier_exports.py:109
+#: src/backend/verifier_exports.py:163 src/backend/verifier_exports.py:166
 msgid "PDF_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier de destination PDF n'existe pas"
 
 #: src/backend/controllers/splitter.py:282
-#: src/backend/controllers/splitter.py:288 src/backend/verifier_exports.py:254
-#: src/backend/verifier_exports.py:260 src/backend/verifier_exports.py:266
+#: src/backend/controllers/splitter.py:288 src/backend/verifier_exports.py:318
+#: src/backend/verifier_exports.py:324 src/backend/verifier_exports.py:330
 msgid "EXPORT_MAARCH_ERROR"
 msgstr "Erreur lors de l'export vers Maarch"
 
-#: src/backend/verifier_exports.py:261
+#: src/backend/verifier_exports.py:325
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "Le fichier PDF est introuvable"
 
-#: src/backend/verifier_exports.py:272
+#: src/backend/verifier_exports.py:336
 msgid "MAARCH_WS_INFO_WRONG"
 msgstr "Les informations de connexion à Maarch sont erronées"
 
-#: src/backend/controllers/splitter.py:294 src/backend/verifier_exports.py:278
+#: src/backend/controllers/splitter.py:294 src/backend/verifier_exports.py:342
 msgid "MAARCH_WS_INFO_EMPTY"
 msgstr "Les informations de connexion à Maarch sont vides"
 
@@ -348,35 +352,35 @@ msgstr "Le script d'exemple n'existe pas"
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier des scripts n'existe pas"
 
-#: src/backend/controllers/mailcollect.py:35
+#: src/backend/controllers/mailcollect.py:36
 msgid "RETRIEVE_PROCESSES_ERROR"
 msgstr "Erreur lors de la récupération des processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:51
+#: src/backend/controllers/mailcollect.py:52
 msgid "UPDATE_PROCESS_ERROR"
 msgstr "Erreur lors de la mise à jour du processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:67
+#: src/backend/controllers/mailcollect.py:68
 msgid "CREATE_PROCESS_ERROR"
 msgstr "Erreur lors de la création d'un processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:81
-#: src/backend/controllers/mailcollect.py:87
+#: src/backend/controllers/mailcollect.py:82
+#: src/backend/controllers/mailcollect.py:88
 msgid "DELETE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Erreur lors de la suppression d'un processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:101
-#: src/backend/controllers/mailcollect.py:107
+#: src/backend/controllers/mailcollect.py:102
+#: src/backend/controllers/mailcollect.py:108
 msgid "ENABLE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Erreur lors de l'activation d'un processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:121
-#: src/backend/controllers/mailcollect.py:127
+#: src/backend/controllers/mailcollect.py:122
+#: src/backend/controllers/mailcollect.py:128
 msgid "DISABLE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Erreur lors de la désactivation d'un processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:141
-#: src/backend/controllers/mailcollect.py:151
+#: src/backend/controllers/mailcollect.py:142
+#: src/backend/controllers/mailcollect.py:152
 msgid "MAILCOLLECT_ERROR"
 msgstr "Erreur MailCollect"
 
@@ -384,24 +388,24 @@ msgstr "Erreur MailCollect"
 msgid "DUPLICATE_OUTPUT_ERROR"
 msgstr "Erreur lors de la duplication de la chaîne sortante"
 
-#: src/backend/controllers/outputs.py:91 src/backend/controllers/outputs.py:97
+#: src/backend/controllers/outputs.py:92 src/backend/controllers/outputs.py:98
 msgid "UPDATE_OUTPUT_ERROR"
 msgstr "Erreur lors de mise à jour de la chaîne sortante"
 
-#: src/backend/controllers/outputs.py:120
+#: src/backend/controllers/outputs.py:122
 msgid "CREATE_OUTPUT_ERROR"
 msgstr "Erreur lors de la création de la chaîne sortante"
 
-#: src/backend/controllers/outputs.py:133
+#: src/backend/controllers/outputs.py:135
 msgid "GET_OUTPUT_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de la chaîne sortante"
 
-#: src/backend/controllers/outputs.py:146
+#: src/backend/controllers/outputs.py:148
 msgid "GET_OUTPUT_TYPE_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération des types de chaîne sortante"
 
-#: src/backend/controllers/outputs.py:160
-#: src/backend/controllers/outputs.py:166
+#: src/backend/controllers/outputs.py:162
+#: src/backend/controllers/outputs.py:168
 msgid "DELETE_OUTPUT_ERROR"
 msgstr "Erreur lors de la suppression de la chaîne sortante"
 
@@ -535,7 +539,7 @@ msgid "CMIS_CONNECTION_ERROR"
 msgstr "Erreur lors de la connexion CMIS"
 
 #: src/backend/controllers/splitter.py:717
-#: src/backend/controllers/verifier.py:550 src/backend/models/splitter.py:423
+#: src/backend/controllers/verifier.py:557 src/backend/models/splitter.py:423
 #: src/backend/models/verifier.py:153
 msgid "GET_TOTALS_ERROR"
 msgstr "Erreur lors de la récupération des totaux"
@@ -632,20 +636,20 @@ msgstr "Erreur lors de la mise à jour de la facture"
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Erreur lors de la suppression du verrou sur la facture"
 
-#: src/backend/controllers/verifier.py:458
-#: src/backend/controllers/verifier.py:461
-#: src/backend/controllers/verifier.py:478
-#: src/backend/controllers/verifier.py:497
-#: src/backend/controllers/verifier.py:498
+#: src/backend/controllers/verifier.py:465
+#: src/backend/controllers/verifier.py:468
+#: src/backend/controllers/verifier.py:485
+#: src/backend/controllers/verifier.py:504
+#: src/backend/controllers/verifier.py:505
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Erreur lors de la connexion à l'api de l'INSEE"
 
-#: src/backend/controllers/verifier.py:522
+#: src/backend/controllers/verifier.py:529
 msgid "VAT_NOT_VALID"
 msgstr "Numéro de TVA invalide"
 
-#: src/backend/controllers/verifier.py:527
-#: src/backend/controllers/verifier.py:528
+#: src/backend/controllers/verifier.py:534
+#: src/backend/controllers/verifier.py:535
 msgid "VAT_API_ERROR"
 msgstr "Impossible de joindre l'API de vérification du numéro de TVA"
 
