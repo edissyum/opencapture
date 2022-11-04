@@ -142,10 +142,9 @@ def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
             for line in check_ocr:
                 tmp += line
 
+            is_ocr = False
             if len(tmp.split('\n')) > 3:
                 is_ocr = True
-            else:
-                is_ocr = False
 
             if not is_ocr:
                 tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
