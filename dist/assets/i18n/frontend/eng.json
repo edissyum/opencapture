@@ -797,8 +797,10 @@
 		"diagram_pie_chart": "Pie chart diagram",
 		"diagram_pie_grid": "Pie grid diagram",
 		"diagram_vertical_bar": "Vertical bar diagram",
-		"verifier_documents_validated_per_form": "Documents validated per form (verifier)",
-		"verifier_documents_validated_per_user": "Documents validated per user (verifier)"
+		"splitter_documents_uploaded": "Uploaded documents for this year",
+		"verifier_documents_uploaded": "Uploaded documents for this year",
+		"verifier_documents_validated_per_form": "Documents validated per form",
+		"verifier_documents_validated_per_user": "Documents validated per user"
 	},
 	"STATUS": {
 		"list": "List of status"

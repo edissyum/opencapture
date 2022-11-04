@@ -1,6 +1,6 @@
 {
     "name": "opencapture",
-    "version": "2.5.1",
+    "version": "2.6.0",
     "scripts": {
         "lint": "ng lint",
         "check-update": "ncu",
