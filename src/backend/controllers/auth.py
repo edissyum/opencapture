@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+
 import jwt
 import datetime
 import functools
@@ -40,7 +41,7 @@ def encode_auth_token(user_id):
         }
         return jwt.encode(
             payload,
-            current_app.config.get('SECRET_KEY'),
+            current_app.config['SECRET_KEY'].replace("\n", ""),
             algorithm='HS512'
         ), minutes_before_exp
     except Exception as _e:
@@ -109,7 +110,7 @@ def login_with_token(token, lang):
     error = None
 
     try:
-        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
+        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
@@ -148,7 +149,7 @@ def token_required(view):
         if 'Authorization' in request.headers:
             token = request.headers['Authorization'].split('Bearer')[1].lstrip()
             try:
-                token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
+                token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
             except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
                     jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
                 return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
@@ -271,3 +272,64 @@ def enable_login_method(method_name):
             "message": error
         }
         return response, 401
+
+
+def ldap_connection_bind(ldap_configs, data):
+    ldap_configurations = ldap_configs[0]['ldap_configurations']
+    data_ldap_configs = ldap_configurations[0]['data']
+
+    type_AD = data_ldap_configs['typeAD']
+    domain_ldap = data_ldap_configs['host']
+    port_ldap = data_ldap_configs['port']
+    username_ldap_admin = data_ldap_configs['loginAdmin']
+    password_ldap_admin = data_ldap_configs['passwordAdmin']
+    base_DN = data_ldap_configs['baseDN']
+    suffix = data_ldap_configs['suffix'] if 'suffix' in data_ldap_configs else ''
+    prefix = data_ldap_configs['prefix'] if 'prefix' in data_ldap_configs else ''
+    usernameAttribute = data_ldap_configs['attributSourceUser']
+    user_connection_status = check_user_connection(type_AD, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_DN, suffix, prefix, usernameAttribute, data['username'], data['password'])
+    if user_connection_status:
+        res = login(data['username'], None, data['lang'], 'ldap')
+    else:
+        res = [{
+            "errors": gettext('LDAP_CONNECTION_ERROR'),
+            "message": gettext('LOGIN_LDAP_ERROR')
+        }, 401]
+
+    return res
+
+
+def check_user_connection(type_AD, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_DN, suffix, prefix, username_attribute, username, password):
+    response =  auth.check_user_connection(type_AD, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_DN, suffix, prefix, username_attribute, username, password)
+    return response
+
+
+def verify_ldap_server_connection(server_ldap_data):
+
+    type_AD = server_ldap_data['typeAD']
+    domain_ldap = server_ldap_data['host']
+    port_ldap = server_ldap_data['port']
+    username_ldap_admin = server_ldap_data['loginAdmin']
+    password_ldap_admin = server_ldap_data['passwordAdmin']
+    base_DN = server_ldap_data['baseDN']
+    suffix = server_ldap_data['suffix'] if 'suffix' in server_ldap_data else ''
+    prefix = server_ldap_data['prefix'] if 'prefix' in server_ldap_data else ''
+
+    ldap_connection_status, error = auth.verify_ldap_server_connection(type_AD, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_DN, suffix, prefix)
+    if error is None:
+       response = ['', 200]
+    else:
+        response = [error, 401]
+
+    return response
+
+
+def synchronization_ldap_users(ldap_synchronization_data):
+    ldap_synchronization_result, error = auth.synchronization_ldap_users(ldap_synchronization_data)
+
+    if error is None:
+        response = [ldap_synchronization_result, 200]
+    else:
+        response = [error, 401]
+
+    return response

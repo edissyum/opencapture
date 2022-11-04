@@ -16,10 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
+import uuid
 import json
-import datetime
 import shutil
-
+import datetime
+import ocrmypdf
+import subprocess
 import pandas as pd
 from xml.dom import minidom
 from flask_babel import gettext
@@ -55,7 +57,7 @@ def export_xml(data, log, regex, invoice_info):
             xml_datas = Et.SubElement(root, 'DATAS')
 
             for technical in invoice_info:
-                if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale']:
+                if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale', 'original_filename']:
                     new_field = Et.SubElement(xml_technical, technical)
                     new_field.text = str(invoice_info[technical])
 
@@ -79,7 +81,31 @@ def export_xml(data, log, regex, invoice_info):
         return response, 401
 
 
-def export_pdf(data, log, regex, invoice_info):
+def compress_pdf(input_file, output_file, compress_id):
+    gs_command = 'gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/%s#-dNOPAUSE#-dQUIET#-o#%s#%s' \
+                 % (compress_id, output_file, input_file)
+
+    gs_args = gs_command.split('#')
+    subprocess.check_call(gs_args)
+
+
+def generate_searchable_pdf(pdf, tmp_filename, lang, log):
+    """
+    Start from standard PDF, with no OCR, and create a searchable PDF, with OCR. Thanks to ocrmypdf python lib
+
+    :param pdf: Path to original pdf (not searchable, without OCR)
+    :param tmp_path: Path to store the final pdf, searchable with OCR
+    :param separator: Class Separator instance
+    """
+    try:
+        res = ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', skip_text=True, language=lang, progress_bar=False)
+        if res.value != 0:
+            ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', force_ocr=True, language=lang, progress_bar=False)
+    except ocrmypdf.exceptions.PriorOcrFoundError as e:
+        log.error(e)
+
+
+def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
     for setting in parameters:
@@ -98,8 +124,38 @@ def export_pdf(data, log, regex, invoice_info):
 
     if os.path.isdir(folder_out):
         file = invoice_info['path'] + '/' + invoice_info['filename']
-        if os.path.isfile(file):
-            shutil.copy(file, folder_out + '/' + filename)
+
+        if compress_type:
+            compressed_file_path = '/tmp/min_' + invoice_info['filename']
+            compress_pdf(file, compressed_file_path, compress_type)
+            try:
+                shutil.move(compressed_file_path, folder_out + '/' + filename)
+            except shutil.Error as e:
+                log.error('Moving file ' + compressed_file_path + ' error : ' + str(e))
+        else:
+            if os.path.isfile(file):
+                shutil.copy(file, folder_out + '/' + filename)
+
+        if ocrise:
+            check_ocr = os.popen('pdffonts ' + file, 'r')
+            tmp = ''
+            for line in check_ocr:
+                tmp += line
+
+            if len(tmp.split('\n')) > 3:
+                is_ocr = True
+            else:
+                is_ocr = False
+
+            if not is_ocr:
+                tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
+                log.info('Start OCR on document...')
+                generate_searchable_pdf(file, tmp_filename, lang, log)
+                try:
+                    shutil.move(tmp_filename, folder_out + '/' + filename)
+                except shutil.Error as e:
+                    log.error('Moving file ' + tmp_filename + ' error : ' + str(e))
+
         return '', 200
     else:
         if log:
@@ -194,7 +250,14 @@ def export_maarch(data, invoice_info, log, regex, database):
                         _data['id']: value
                     })
 
-                    if _data['id'] == 'priority':
+                    if 'document_due_date' in invoice_info['datas'] and invoice_info['datas']['document_due_date']:
+                        document_due_date = pd.to_datetime(invoice_info['datas']['document_due_date'], format=regex['format_date'])
+                        if document_due_date.date() > datetime.date.today():
+                            args.update({
+                                'processLimitDate': str(document_due_date.date())
+                            })
+
+                    if _data['id'] == 'priority' and 'processLimitDate' not in args:
                         priority = _ws.retrieve_priority(value)
                         if priority:
                             delays = priority['priority']['delays']

@@ -353,7 +353,7 @@ def export_maarch(invoice_id, data):
     _vars = create_classes_from_custom_id(custom_id)
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if not error:
-        return verifier_exports.export_maarch(data, invoice_info, _vars[5], _vars[2], _vars[0])
+        return verifier_exports.export_maarch(data['data'], invoice_info, _vars[5], _vars[2], _vars[0])
 
 
 def export_xml(invoice_id, data):
@@ -365,22 +365,29 @@ def export_xml(invoice_id, data):
             custom_id = retrieve_custom_from_url(request)
             _vars = create_classes_from_custom_id(custom_id)
             regex = _vars[2]
-        return verifier_exports.export_xml(data, None, regex, invoice_info)
+        return verifier_exports.export_xml(data['data'], None, regex, invoice_info)
 
 
 def export_pdf(invoice_id, data):
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    log = _vars[5]
     if not error:
         if 'regex' in session:
             regex = json.loads(session['regex'])
         else:
-            custom_id = retrieve_custom_from_url(request)
-            _vars = create_classes_from_custom_id(custom_id)
             regex = _vars[2]
-        return verifier_exports.export_pdf(data, None, regex, invoice_info)
+
+        if 'configurations' in session:
+            configurations = json.loads(session['configurations'])
+        else:
+            configurations = _vars[10]
+        return verifier_exports.export_pdf(data['data'], log, regex, invoice_info, configurations['locale'],
+                                           data['compress_type'], data['ocrise'])
 
 
-def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
+def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     _files = _vars[3]
@@ -392,12 +399,12 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
     if positions_masks:
         path = docservers['VERIFIER_POSITIONS_MASKS'] + '/' + file_name
 
-    text = _files.ocr_on_fly(path, selection, _ocr, thumb_size)
+    text = _files.ocr_on_fly(path, selection, _ocr, thumb_size, lang=lang)
     if text:
         return text
     else:
         _files.improve_image_detection(path)
-        text = _files.ocr_on_fly(path, selection, _ocr, thumb_size)
+        text = _files.ocr_on_fly(path, selection, _ocr, thumb_size, lang=lang)
         return text
 
 

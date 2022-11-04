@@ -175,20 +175,20 @@ else
     port="$choice"
 fi
 
-printf "Username [%s] : " "${bold}edissyum${normal}"
+printf "Username [%s] : " "${bold}$customId${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databaseUsername="edissyum"
+    databaseUsername="$customId"
 else
     databaseUsername="$choice"
 fi
 
-printf "Password [%s] : " "${bold}edissyum${normal}"
+printf "Password [%s] : " "${bold}$customId${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databasePassword="edissyum"
+    databasePassword="$customId"
 else
     databasePassword="$choice"
 fi
@@ -331,6 +331,7 @@ echo ""
 cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§OC_PATH§§#$defaultPath#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
+sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 
 ####################
 # Move defaults scripts to new custom location
@@ -340,16 +341,16 @@ cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh "$defaul
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh"
 cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
 sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
-sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
-sed -i "s#§§LOG_PATH§§#$defaultPath#g" $defaultScriptFile
+sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
 sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh"
 cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh $defaultScriptFile
 sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
-sed -i "s#§§OC_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
-sed -i "s#§§LOG_PATH§§#$defaultPath#g" $defaultScriptFile
+sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
 sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 

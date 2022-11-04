@@ -88,13 +88,13 @@
                     </span>
                     <span *ngIf="!this.loading && this.lastVersion > this.currentVersion && this.isProd">
                         | {{ 'ABOUT-US.new_version_available' | translate }} (<strong>
-                                <a [href]="'https://github.com/edissyum/opencaptureforinvoices/releases/tag/' + this.lastVersion"
+                                <a [href]="'https://github.com/edissyum/opencapture/releases/tag/' + this.lastVersion"
                                     target="_blank">{{ this.lastVersion }}</a>
                             </strong>)
                     </span>
                     <span *ngIf="!this.loading && this.lastVersion < this.currentVersion && this.isProd">
                         | {{ 'ABOUT-US.are_you_in_future' | translate }} ({{ 'ABOUT-US.last_official_version' | translate }} : <strong>
-                                <a [href]="'https://github.com/edissyum/opencaptureforinvoices/releases/tag/' + this.lastVersion"
+                                <a [href]="'https://github.com/edissyum/opencapture/releases/tag/' + this.lastVersion"
                                     target="_blank">{{ this.lastVersion }}</a>
                             </strong>)
                     </span>
@@ -122,7 +122,7 @@
                     <div class="text-left" style="width: 200%">
                         {{ 'ABOUT-US.official_website' | translate }} : <a class="text-green-400" href="https://kutt.it/OpenCaptureWebSite">open-capture.com</a><br>
                         Documentation : <a class="text-green-400" href="https://kutt.it/DocumentationV2">edissyum.gitbook.io/open-capture-for-invoices-v2</a> <br>
-                        Support : <a class="text-green-400" href="https://kutt.it/OCForInvoices_ISSUES">github.com/edissyum/opencaptureforinvoices</a>
+                        Support : <a class="text-green-400" href="https://kutt.it/OCForInvoices_ISSUES">github.com/edissyum/opencapture</a>
                     </div>
                 </div>
             </div>

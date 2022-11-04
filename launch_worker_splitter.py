@@ -17,6 +17,10 @@
 
 import sys
 import argparse
+
+from flask_babel import gettext
+
+from src.backend import create_classes_from_custom_id
 from src.backend.main_splitter import launch
 from src.backend.functions import retrieve_config_from_custom_id
 
@@ -34,3 +38,16 @@ if not retrieve_config_from_custom_id(args['custom_id']):
     sys.exit('Custom config file couldn\'t be found')
 
 launch(args)
+_vars = create_classes_from_custom_id(args['custom_id'])
+database = _vars[0]
+args = {
+    'table': 'history',
+    'columns': {
+        'history_submodule': 'upload_file',
+        'history_module': 'splitter',
+        'user_info': 'fs-watcher',
+        'history_desc': gettext('FILE_UPLOADED') + '&nbsp<strong>' + args['input_id'] + '</strong>',
+        'user_ip': '0.0.0.0',
+    }
+}
+database.insert(args)

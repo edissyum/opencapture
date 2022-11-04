@@ -183,20 +183,20 @@ else
     port="$choice"
 fi
 
-printf "Username [%s] : " "${bold}edissyum${normal}"
+printf "Username [%s] : " "${bold}$customId${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databaseUsername="edissyum"
+    databaseUsername="$customId"
 else
     databaseUsername="$choice"
 fi
 
-printf "Password [%s] : " "${bold}edissyum${normal}"
+printf "Password [%s] : " "${bold}$customId${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databasePassword="edissyum"
+    databasePassword="$customId"
 else
     databasePassword="$choice"
 fi
@@ -596,6 +596,7 @@ fi
 cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§OC_PATH§§#$defaultPath#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
+sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 
 ####################
 # Create default LDAP script and config

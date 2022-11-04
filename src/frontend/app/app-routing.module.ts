@@ -31,6 +31,7 @@ import { HasPrivilegeService } from "../services/has-privilege.service";
 import { StatisticsComponent } from "./statistics/statistics.component";
 import { LoginRedirectService } from '../services/login-redirect.service';
 import { LoginRequiredService } from '../services/login-required.service';
+import { Error500Component } from "./errors/error-500/error-500.component";
 import { VerifierListComponent } from './verifier/list/verifier-list.component';
 import { SplitterListComponent } from "./splitter/list/splitter-list.component";
 import { SplitterViewerComponent } from "./splitter/viewer/splitter-viewer.component";
@@ -41,7 +42,6 @@ import { UpdateSupplierComponent } from "./accounts/suppliers/update/update-supp
 import { CreateSupplierComponent } from "./accounts/suppliers/create/create-supplier.component";
 import { UpdateCustomerComponent } from "./accounts/customers/update/update-customer.component";
 import { CreateCustomerComponent } from "./accounts/customers/create/create-customer.component";
-import { Error500Component } from "./errors/error-500/error-500.component";
 
 const routes: Routes = [
     { path: '500', component: Error500Component },
