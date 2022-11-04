@@ -64,6 +64,9 @@ def get_history():
     if 'module' in request.args and request.args['module']:
         where.append('history_module = %s')
         data.append(request.args['module'])
+    if 'year' in request.args and request.args['year']:
+        where.append('extract(year from history_date) = %s')
+        data.append(request.args['year'])
 
     if where:
         args.update({'where': where, 'data': data})
