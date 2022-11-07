@@ -278,7 +278,7 @@ class SeparatorQR:
              'text': '', 'priority': 2, },
             {'name': 'label', 'type': 'T', 'x1': 15.00, 'y1': 80.0, 'x2': 200, 'y2': 85.0, 'font': 'Arial',
              'size': 16.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
-             'text': '', 'priority': 2, },
+             'text': '', 'priority': 2, 'multiline': True},
             {'name': 'code_qr', 'type': 'I', 'x1': 80.0, 'y1': 120.0, 'x2': 140.0, 'y2': 120.0, 'font': None,
              'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
              'text': 'logo', 'priority': 2, },
