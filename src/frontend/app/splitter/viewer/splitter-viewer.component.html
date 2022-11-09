@@ -63,16 +63,28 @@
                 <mat-expansion-panel class="my-10 bg-gray-20" [expanded]="true" (opened)="batchMetadataOpenState = true"
                                      (closed)="batchMetadataOpenState = false" #batchMetadata>
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            <span>
-                                {{ 'SPLITTER.batch_metadata' | translate }}
-                            </span>
-                            <div (click)="batchMetadata.toggle()" class="mx-1" *ngIf="fieldsCategories['batch_metadata'].length !== 0">
-                                <mat-slide-toggle [checked]="inputMode === 'Auto'" (change)="changeInputMode($event);">
-                                    {{ 'SPLITTER.auto_complete' | translate }}
-                                </mat-slide-toggle>
+                        <mat-panel-title class="grid grid-cols-3 gap-3">
+                            <div class="grid grid-cols-2 gap-2">
+                                <span>
+                                    {{ 'SPLITTER.batch_metadata' | translate }}
+                                </span>
+                                <div (click)="batchMetadata.toggle()" class="mx-1" *ngIf="fieldsCategories['batch_metadata'].length !== 0">
+                                    <mat-slide-toggle [checked]="inputMode === 'Auto'" (change)="changeInputMode($event);">
+                                        {{ 'SPLITTER.auto_complete' | translate }}
+                                    </mat-slide-toggle>
+                                </div>
                             </div>
-                            <div class="text-gray-400 absolute right-12 divide-x-2">
+                            <div class="text-center">
+                                <i class="fa-regular fa-rectangle-list"></i>
+                                <mat-form-field id="form-select-field" (click)="$event.stopPropagation()" matTooltip="{{ 'SPLITTER.edit_used_form' | translate }}">
+                                    <mat-select [(ngModel)]="currentBatch.formId">
+                                        <mat-option [value]="currentBatch.formId" *ngFor="let form of this.forms;">
+                                            {{ form.label }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="text-right text-gray-400">
                                 <span class="mx-2" matTooltip="{{ 'HEADER.status' | translate }}">
                                     <i class="fa-solid fa-flag"></i>
                                     {{ getStatusLabel(currentBatch.status) }}

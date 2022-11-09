@@ -749,6 +749,7 @@
 		"document_separator": "Document separator",
 		"doubleClickToSelectDoctype": "Double click to select a document type",
 		"drop_document_in_position": "Drop document in wanted position",
+		"edit_used_form": "Edit used form",
 		"error_autocomplete_value": "No autocomplete item is selected",
 		"error_empty_document_metadata": "Please fill document metadata",
 		"error_no_doc_type": "Please choose document types",

@@ -77,13 +77,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     batchMetadataOpenState      : boolean       = true;
     documentMetadataOpenState   : boolean       = false;
     batchForm                   : FormGroup     = new FormGroup({});
-    batches                     : any[]       = [];
+    batches                     : any[]         = [];
+    forms                       : any[]         = [];
     status                      : any[]         = [];
-    outputs                     : any           = [];
+    outputs                     : any[]         = [];
     metadata                    : any[]         = [];
-    documents                   : any           = [];
+    documents                   : any[]         = [];
     movedPages                  : any[]         = [];
-    pagesImageUrls              : any           = [];
+    pagesImageUrls              : any[]         = [];
     deletedPagesIds             : number[]      = [];
     deletedDocumentsIds         : number[]      = [];
     DropListDocumentsIds        : string[]      = [];
@@ -194,6 +195,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         displayOrder    : -1,
                     }
                 };
+                this.loadForms();
                 this.loadBatches();
                 this.loadStatus();
                 this.loadFormFields();
@@ -574,6 +576,21 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
+    }
+
+    loadForms() {
+        this.forms = [];
+        this.http.get(environment['url'] + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
+            tap((forms: any) => {
+                this.forms = forms.forms;
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     loadFormFields() {

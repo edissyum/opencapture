@@ -66,6 +66,15 @@ a:hover {
 .mat-select-placeholder{
     width: calc(100% - 250px) !important;
 }
+
+::ng-deep #form-select-field .mat-form-field-outline {
+    display: none !important;
+}
+
+::ng-deep #form-select-field .mat-select-arrow-wrapper {
+    display: none !important;
+}
+
 /* documents list */
 
 .document{
