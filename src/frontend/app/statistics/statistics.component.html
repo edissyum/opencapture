@@ -15,7 +15,12 @@
                     <mat-select (selectionChange)="changeStatistic($event)"
                                 [disabled]="this.loading"
                                 [placeholder]="'STATISTICS.choose_statistic_report' | translate">
-                        <mat-option *ngFor="let option of options" [value]="option['id']">{{ option['label'] | translate }}</mat-option>
+                        <mat-option *ngFor="let option of options" [value]="option['id']">
+                            {{ option['label'] | translate }}
+                            <span style="font-size: 12px;" class="text-green-400 ml-1 mt-2">
+                               {{ option['module'] }}
+                            </span>
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field class="ml-4 w-1/4">

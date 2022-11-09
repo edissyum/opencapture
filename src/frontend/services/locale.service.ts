@@ -40,14 +40,16 @@ export class LocaleService {
     constructor(
         private http: HttpClient,
         private authService: AuthService,
-        private dateAdapter: DateAdapter<any>,
         private translate: TranslateService,
         private notify: NotificationService,
+        private dateAdapter: DateAdapter<any>,
         private historyService: HistoryService
     ) {
         this.dateAdapter.setLocale('fr-FR');
         moment.updateLocale('fr-FR', {
             monthsShort : 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
+            months : 'Janvier_Février_Mars_Avril_Mai_Juin_Juillet_Août_Septembre_Octobre_Novembre_Décembre'.split('_'),
+            weekdays : 'Dimanche_Lundi_Mardi_Mercredi_Jeudi_Vendredi_Samedi'.split('_'),
             weekdaysMin : 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
             longDateFormat : {
                 LT : 'HH:mm',

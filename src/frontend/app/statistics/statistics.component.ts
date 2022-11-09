@@ -15,16 +15,17 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import {Component, OnInit} from '@angular/core';
-import { environment } from  "../env";
-import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
+import { environment } from  "../env";
+import * as moment from "moment/moment";
 import { HttpClient } from "@angular/common/http";
-import { AuthService } from "../../services/auth.service";
-import { NotificationService } from "../../services/notifications/notifications.service";
-import { SettingsService } from "../../services/settings.service";
+import { Component, OnInit } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
+import { AuthService } from "../../services/auth.service";
+import { catchError, finalize, tap } from "rxjs/operators";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { SettingsService } from "../../services/settings.service";
+import { NotificationService } from "../../services/notifications/notifications.service";
 
 @Component({
     selector: 'app-statistics',
@@ -40,12 +41,28 @@ export class StatisticsComponent implements OnInit {
             'id': 'verifier_documents_validated_per_user',
             'label': this.translate.instant('STATISTICS.verifier_documents_validated_per_user'),
             'function': 'this.getUsersProcessDocument',
+            'module': 'verifier',
             'data': []
         },
         {
             'id': 'verifier_documents_validated_per_form',
             'label': this.translate.instant('STATISTICS.verifier_documents_validated_per_form'),
             'function': 'this.getFormsProcessDocument',
+            'module': 'verifier',
+            'data': []
+        },
+        {
+            'id': 'verifier_documents_uploaded',
+            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded'),
+            'function': 'this.getDocumentsUploadedVerifier',
+            'module': 'verifier',
+            'data': []
+        },
+        {
+            'id': 'splitter_documents_uploaded',
+            'label': this.translate.instant('STATISTICS.splitter_documents_uploaded'),
+            'function': 'this.getDocumentsUploadedSplitter',
+            'module': 'splitter',
             'data': []
         }
     ];
@@ -82,6 +99,68 @@ export class StatisticsComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+    }
+
+    getDocumentsUploadedVerifier(cpt: number) {
+        const currentYear = moment().format('Y');
+        this.http.get(environment['url'] + '/ws/history/list?module=verifier&submodule=upload_file&year=' + currentYear, {headers: this.authService.headers}).pipe(
+            tap((submodules: any) => {
+                const historyCpt: any = {};
+                moment.months().forEach((month: any) => {
+                    historyCpt[month] = 0;
+                });
+                submodules.history.forEach((_submodule: any) => {
+                    const format = moment().localeData().longDateFormat('L');
+                    const value: any = moment(_submodule.date, format);
+                    const month = value.format('MMMM');
+                    historyCpt[month] += 1;
+                });
+                Object.keys(historyCpt).forEach((month: any) => {
+                    this.options[cpt].data.push({
+                        'name': month + ' ' + currentYear,
+                        'value': historyCpt[month]
+                    });
+                });
+                this.currentData = this.options[cpt].data;
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getDocumentsUploadedSplitter(cpt: number) {
+        const currentYear = moment().format('Y');
+        this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=upload_file&year=' + currentYear, {headers: this.authService.headers}).pipe(
+            tap((submodules: any) => {
+                const historyCpt: any = {};
+                moment.months().forEach((month: any) => {
+                    historyCpt[month] = 0;
+                });
+                submodules.history.forEach((_submodule: any) => {
+                    const format = moment().localeData().longDateFormat('L');
+                    const value: any = moment(_submodule.date, format);
+                    const month = value.format('MMMM');
+                    historyCpt[month] += 1;
+                });
+                Object.keys(historyCpt).forEach((month: any) => {
+                    this.options[cpt].data.push({
+                        'name': month + ' ' + currentYear,
+                        'value': historyCpt[month]
+                    });
+                });
+                this.currentData = this.options[cpt].data;
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     getFormsProcessDocument(cpt: number) {
