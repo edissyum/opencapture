@@ -798,8 +798,10 @@
 		"diagram_pie_chart": "Diagramme circulaire",
 		"diagram_pie_grid": "Diagramme circulaire en grille",
 		"diagram_vertical_bar": "Diagramme en bâton",
-		"verifier_documents_validated_per_form": "Documents validés par formulaire (verifier)",
-		"verifier_documents_validated_per_user": "Documents validés par utilisateur (verifier)"
+		"splitter_documents_uploaded": "Documents uploadés sur l'année",
+		"verifier_documents_uploaded": "Documents uploadés sur l'année",
+		"verifier_documents_validated_per_form": "Documents validés par formulaire",
+		"verifier_documents_validated_per_user": "Documents validés par utilisateur"
 	},
 	"STATUS": {
 		"list": "Liste des statuts"

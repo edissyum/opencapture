@@ -56,6 +56,13 @@ done
 oldCustomId=$customId
 customId=${customId//[\.\-]/_}
 
+if [[ "$customId" =~ [[:upper:]] ]]; then
+    echo "##########################################################################"
+    echo "             Custom id could'nt include uppercase characters              "
+    echo "##########################################################################"
+    exit 1
+fi
+
 if [ -z "$customId" ]; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
@@ -69,14 +76,14 @@ if [ "$customId" == 'custom' ] ; then
     echo "              Please do not create a custom called 'custom'"
     echo "      Exemple of command line call : sudo ./install.sh -c edissyum"
     echo "##########################################################################"
-    exit 2
+    exit 3
 fi
 
 if [ -L "$defaultPath/$customId" ] && [ -e "$defaultPath/$customId" ]; then
     echo "######################################################"
     echo "      Custom id \"$customId\" already exists"
     echo "######################################################"
-    exit 3
+    exit 4
 fi
 
 ####################
@@ -521,10 +528,10 @@ chmod -R 775 /var/log/watcher/
 cp $defaultPath/instance/config/watcher.ini.default $defaultPath/instance/config/watcher.ini
 
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input watch /var/share/"$customId"/entrant/verifier/
-crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input command /var/www/html/opencapture/custom/"$customId"/bin/scripts/verifier_inputs/default_input.sh $filename
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input command "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh \$filename"
 
 crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input watch /var/share/"$customId"/entrant/splitter/
-crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input command /var/www/html/opencapture/custom/"$customId"/bin/scripts/splitter_inputs/default_input.sh $filename
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input command "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh \$filename"
 
 sed -i "s#verifier_default_input#verifier_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"
 sed -i "s#splitter_default_input_#splitter_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"
