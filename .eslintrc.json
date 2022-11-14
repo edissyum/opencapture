@@ -70,6 +70,10 @@
                 "no-fallthrough": "off",
                 "object-shorthand": "off",
                 "no-underscore-dangle": "off",
+                "space-before-blocks": "error",
+                "semi-spacing": ["error", {"before": false, "after": false}],
+                "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }],
+
                 "jsdoc/check-alignment": "off",
                 "jsdoc/newline-after-description": "off",
                 "prefer-arrow/prefer-arrow-functions": "off"
