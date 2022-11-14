@@ -281,6 +281,8 @@
 		"batches": "Batches",
 		"cancel": "Cancel",
 		"confirm": "Confirm",
+		"confirm_form_change": "The filled data can be deleted. Please confirm the modification of the form.",
+		"confirm_modification": "Confirm modification",
 		"current_tasks": "Current tasks",
 		"delete": "Delete",
 		"delete_all_checked": "Delete all checked batches",
@@ -331,6 +333,7 @@
 		"value": "Value"
 	},
 	"HISTORY-DESC": {
+		"change_batch_form": "The selected form for batch <strong>{{ batch_id }}</strong> has been changed to form <strong>{{ form_id }}</strong>",
 		"create-customer": "New customer created&nbsp;<strong>{{ customer }}</strong>",
 		"create-form": "New form created&nbsp;<strong>{{ form }}</strong>",
 		"create-input": "New input created&nbsp;<strong>{{ input }}</strong>",
@@ -723,6 +726,7 @@
 		"add_document": "Add document",
 		"all_batches_checked_deleted": "All checked batches was successfully deleted",
 		"auto_complete": "Autocomplete",
+		"barch_form_change_success": "Batch form changed with success",
 		"batch_deleted": "Batch deleted",
 		"batch_identifier": "Batch identifier",
 		"batch_metadata": "Batch metadata",
