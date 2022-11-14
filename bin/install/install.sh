@@ -56,6 +56,13 @@ done
 oldCustomId=$customId
 customId=${customId//[\.\-]/_}
 
+if [[ "$customId" =~ [[:upper:]] ]]; then
+    echo "##########################################################################"
+    echo "             Custom id could'nt include uppercase characters              "
+    echo "##########################################################################"
+    exit 1
+fi
+
 if [ -z "$customId" ]; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
@@ -69,14 +76,14 @@ if [ "$customId" == 'custom' ] ; then
     echo "              Please do not create a custom called 'custom'"
     echo "      Exemple of command line call : sudo ./install.sh -c edissyum"
     echo "##########################################################################"
-    exit 2
+    exit 3
 fi
 
 if [ -L "$defaultPath/$customId" ] && [ -e "$defaultPath/$customId" ]; then
     echo "######################################################"
     echo "      Custom id \"$customId\" already exists"
     echo "######################################################"
-    exit 3
+    exit 4
 fi
 
 ####################

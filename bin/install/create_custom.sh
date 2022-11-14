@@ -49,6 +49,13 @@ done
 oldCustomId=$customId
 customId=${customId//[\.\-]/_}
 
+if [[ "$customId" =~ [[:upper:]] ]]; then
+    echo "##########################################################################"
+    echo "             Custom id could'nt include uppercase characters              "
+    echo "##########################################################################"
+    exit 1
+fi
+
 if [ -z "$customId" ]; then
     echo "###############################################################################################"
     echo "                       Custom id is needed to run the installation"
@@ -63,7 +70,7 @@ if [ -z "$pythonVenv" ]; then
     echo "                          Possible values are 'true' or 'false'"
     echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd -p true"
     echo "###############################################################################################"
-    exit 2
+    exit 3
 fi
 
 if [ "$customId" == 'custom' ]; then
@@ -71,7 +78,7 @@ if [ "$customId" == 'custom' ]; then
     echo "                     Please do not create a custom called 'custom'"
     echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis -t systemd -p true      "
     echo "##############################################################################################"
-    exit 2
+    exit 4
 fi
 
 if [ "$pythonVenv" != 'true' ] && [ "$pythonVenv" != 'false' ]; then
@@ -79,7 +86,7 @@ if [ "$pythonVenv" != 'true' ] && [ "$pythonVenv" != 'false' ]; then
     echo "               Possible values for -p argument are 'true' or 'false'"
     echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis -t systemd -p true"
     echo "##############################################################################################"
-    exit 2
+    exit 5
 fi
 
 if [ "$pythonVenv" == 'true' ] && [ ! -f "/home/$user/python-venv/opencapture/bin/python3" ]; then
@@ -102,7 +109,7 @@ if [ "$installationType" == '' ] || { [ "$installationType" != 'systemd' ] && [ 
     echo "       Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd -p true"
     echo "      Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t supervisor-p true"
     echo "#######################################################################################################"
-    exit 2
+    exit 6
 fi
 
 if [ "$installationType" == 'supervisor' ]; then
@@ -126,7 +133,7 @@ if [ -L "$defaultPath/$customId" ] && [ -e "$defaultPath/$customId" ]; then
     echo "######################################################"
     echo "      Custom id \"$customId\" already exists"
     echo "######################################################"
-    exit 3
+    exit 7
 fi
 
 customIniFile=$defaultPath/custom/custom.ini
@@ -140,7 +147,7 @@ for custom_name in ${SECTIONS[@]}; do # Do not double quote it
        echo "######################################################"
        echo "      Custom id \"$customId\" already exists"
        echo "######################################################"
-       exit 4
+       exit 8
     fi
 done
 
