@@ -77,8 +77,8 @@
                             <div class="text-center">
                                 <i class="fa-regular fa-rectangle-list"></i>
                                 <mat-form-field id="form-select-field" (click)="$event.stopPropagation()" matTooltip="{{ 'SPLITTER.edit_used_form' | translate }}">
-                                    <mat-select [(ngModel)]="currentBatch.formId">
-                                        <mat-option [value]="currentBatch.formId" *ngFor="let form of this.forms;">
+                                    <mat-select (selectionChange)="onFormChange($event.value)" [(ngModel)]="currentBatch.formId">
+                                        <mat-option [value]="form.id" *ngFor="let form of this.forms;">
                                             {{ form.label }}
                                         </mat-option>
                                     </mat-select>
