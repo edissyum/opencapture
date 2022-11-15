@@ -93,6 +93,18 @@ def create_document():
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('splitter/changeForm', methods=['POST'])
+@auth.token_required
+def change_form():
+    data = request.data
+    data = json.loads(data)
+    response, status = splitter.change_form({
+        'form_id': data['formId'],
+        'batch_id': data['batchId'],
+    })
+    return make_response(jsonify(response)), status
+
+
 @bp.route('splitter/saveInfo', methods=['POST'])
 @auth.token_required
 def save_info():

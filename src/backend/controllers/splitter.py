@@ -161,6 +161,15 @@ def change_status(args):
         return res, 401
 
 
+def change_form(args):
+    res = splitter.change_form(args)
+
+    if res:
+        return res, 200
+    else:
+        return res, 401
+
+
 def retrieve_documents(batch_id):
     res_documents = []
 

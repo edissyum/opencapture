@@ -593,6 +593,50 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
+    onFormChange(newFormId: number){
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('GLOBAL.confirm_form_change'),
+                confirmButton       : this.translate.instant('GLOBAL.confirm_modification'),
+                confirmButtonColor  : "green",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.loading = true;
+                this.http.post(environment['url'] + '/ws/splitter/changeForm',
+                    {
+                        'batchId'               : this.currentBatch.id,
+                        'formId'                : newFormId,
+                    },
+                    {headers: this.authService.headers}).pipe(
+                    tap(() => {
+                        this.notify.success(this.translate.instant('SPLITTER.barch_form_change_success'));
+                        this.translate.get('HISTORY-DESC.change_batch_form',
+                            {
+                                batch_id : this.currentBatch.id,
+                                form_id  : newFormId
+                            })
+                            .subscribe((translated: string) => {
+                            this.historyService.addHistory('splitter', 'viewer', translated);
+                        });
+                        this.loadSelectedBatch();
+                    }),
+                    catchError((err: any) => {
+                        this.loading = false;
+                        this.notify.handleErrors(err);
+                        console.debug(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+        });
+    }
+
     loadFormFields() {
         this.http.get(environment['url'] + '/ws/forms/fields/getByFormId/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
