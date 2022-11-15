@@ -175,6 +175,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadSelectedBatch(): void {
+        this.defaultDoctype = {};
         this.documents      = [];
         this.loadBatchById();
     }
