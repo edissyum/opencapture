@@ -19,3 +19,4 @@ tesseract-ocr-eng
 libmagickwand-dev
 python3-pyinotify
 libapache2-mod-wsgi-py3
+crudini
