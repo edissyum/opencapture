@@ -116,9 +116,9 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                         verifier_exports.export_pdf(output_info[0]['data'], log, regex, invoice_data, current_lang,
                                                     output_info[0]['compress_type'], output_info[0]['ocrise'])
 
-                    if 'delete_documents_after_outputs' in form_settings and form_settings['delete_documents_after_outputs']:
-                        delete_documents(docservers, invoice_data['path'], invoice_data['filename'], full_jpg_filename)
-                        insert_invoice = False
+            if 'delete_documents_after_outputs' in form_settings and form_settings['delete_documents_after_outputs']:
+                delete_documents(docservers, invoice_data['path'], invoice_data['filename'], full_jpg_filename)
+                insert_invoice = False
 
     if insert_invoice:
         invoice_data['datas'] = json.dumps(datas)
@@ -478,6 +478,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     allow_auto = False
     form_settings = None
+    only_ocr = False
+
     if form_id:
         form_settings = database.select({
             'select': ['settings'],
@@ -491,6 +493,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             if form_settings['allow_automatic_validation'] and form_settings['automatic_validation_data']:
                 for column in form_settings['automatic_validation_data'].split(','):
                     column = column.strip()
+                    if column == 'only_ocr':
+                        only_ocr = True
+                        break
+
                     if column == 'supplier':
                         column = 'name'
                     elif column == 'footer' and footer:
@@ -502,7 +508,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                         allow_auto = False
                         break
 
-    if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
+    if (supplier and not supplier[2]['skip_auto_validate'] and allow_auto) or only_ocr:
         log.info('All the usefull informations are found. Execute outputs action and end process')
         insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
                'END', nb_pages, docservers, input_settings, log, regex, form_settings, supplier_lang_different, configurations['locale'])
