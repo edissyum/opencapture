@@ -622,6 +622,10 @@ export class FormBuilderComponent implements OnInit {
             'label': 'HEADER.label'
         },
         {
+            "id": 'only_ocr',
+            'label': marker('FORMS.only_ocr')
+        },
+        {
             "id": 'supplier',
             'label': 'ACCOUNTS.supplier'
         },

@@ -265,6 +265,7 @@
 		"modify": "Modify",
 		"modify_display": "Modify display linked to form",
 		"no_form_available": "No form available",
+		"only_ocr": "Just OCRise document",
 		"other": "Other",
 		"output_settings": "Outputs",
 		"output_type_mandatory": "Output type is mandatory",
