@@ -418,7 +418,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
       {
         "id": "pdf_filename",
         "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
-        "type": "textarea",
+        "type": "text",
         "label": "Nom du fichier PDF",
         "required": "true",
         "placeholder": "doctype#random"
@@ -426,7 +426,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
       {
         "id": "xml_filename",
         "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
-        "type": "textarea",
+        "type": "text",
         "label": "Nom du fichier XML",
         "required": "true",
         "placeholder": "#random"
@@ -434,7 +434,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
       {
         "id": "separator",
         "hint": "",
-        "type": "textarea",
+        "type": "text",
         "label": "Séparateur",
         "required": "true",
         "placeholder": "_"
