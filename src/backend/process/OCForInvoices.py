@@ -34,13 +34,13 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
         os.remove(improved_img)
     except FileNotFoundError:
         pass
-    path = docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename.replace('-%03d', '-001')
+    path = docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename + '-001.jpg'
 
     invoice_data = {
         'filename': os.path.basename(file),
         'path': os.path.dirname(file),
         'img_width': str(files.get_width(path)),
-        'full_jpg_filename': full_jpg_filename.replace('-%03d', '-001'),
+        'full_jpg_filename': full_jpg_filename + '-001.jpg',
         'original_filename': original_file,
         'positions': json.dumps(positions),
         'datas': json.dumps(datas),
@@ -137,20 +137,20 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
             os.remove(improved_img)
         except FileNotFoundError:
             pass
-        files.pdf_to_jpg(file + '[' + str(int(nb_pages - 1)) + ']', open_img=False, is_custom=True)
+        files.pdf_to_jpg(file, nb_pages, open_img=False, is_custom=True)
     else:
-        files.pdf_to_jpg(file + '[0]', True, True, 'header')
+        files.pdf_to_jpg(file, 1, True, True, 'header')
         ocr.header_text = ocr.line_box_builder(files.img)
-        files.pdf_to_jpg(file + '[0]', True, True, 'footer')
+        files.pdf_to_jpg(file, 1, True, True, 'footer')
         ocr.footer_text = ocr.line_box_builder(files.img)
-        files.pdf_to_jpg(file + '[0]')
+        files.pdf_to_jpg(file, 1)
         ocr.text = ocr.line_box_builder(files.img)
         if nb_pages > 1:
-            files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'header', True)
+            files.pdf_to_jpg(file, nb_pages, True, True, 'header', True)
             ocr.header_last_text = ocr.line_box_builder(files.img)
-            files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'footer', True)
+            files.pdf_to_jpg(file, nb_pages, True, True, 'footer', True)
             ocr.footer_last_text = ocr.line_box_builder(files.img)
-            files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', last_image=True)
+            files.pdf_to_jpg(file, nb_pages, last_image=True)
             ocr.last_text = ocr.line_box_builder(files.img)
 
 
@@ -470,11 +470,11 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             pages.update({'delivery_number': delivery_number[2]})
 
     file_name = str(uuid.uuid4())
-    full_jpg_filename = 'full_' + file_name + '-%03d.jpg'
+    full_jpg_filename = 'full_' + file_name
     file = files.move_to_docservers(docservers, file)
     # Convert all the pages to JPG (used to full web interface)
-    files.save_img_with_wand(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
-    files.save_img_with_wand_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
+    files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename, None, True)
+    files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
 
     allow_auto = False
     form_settings = None

@@ -30,13 +30,9 @@ import subprocess
 import numpy as np
 from PIL import Image
 from zipfile import ZipFile
-from wand.color import Color
-from wand.api import library
-from wand.image import Image as Img
 from pdf2image import convert_from_path
 from werkzeug.utils import secure_filename
 from src.backend.functions import get_custom_array
-from wand.exceptions import PolicyError, CacheError
 
 custom_array = get_custom_array()
 
@@ -68,14 +64,13 @@ class Files:
         self.jpg_name_last_footer = img_name + '_last_footer.jpg'
 
     # Convert the first page of PDF to JPG and open the image
-    def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False,
-                   convert_module='wand'):
+    def pdf_to_jpg(self, pdf_name, page, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
         if crop:
             if zone_to_crop == 'header':
                 if is_custom:
-                    self.crop_image_header(pdf_name, last_image, self.custom_file_name)
+                    self.crop_image_header(pdf_name, last_image, page, self.custom_file_name)
                 else:
-                    self.crop_image_header(pdf_name, last_image)
+                    self.crop_image_header(pdf_name, last_image, page)
                 if open_img:
                     if last_image:
                         self.img = Image.open(self.jpg_name_last_header)
@@ -83,9 +78,9 @@ class Files:
                         self.img = Image.open(self.jpg_name_header)
             elif zone_to_crop == 'footer':
                 if is_custom:
-                    self.crop_image_footer(pdf_name, last_image, self.custom_file_name)
+                    self.crop_image_footer(pdf_name, last_image, page, self.custom_file_name)
                 else:
-                    self.crop_image_footer(pdf_name, last_image)
+                    self.crop_image_footer(pdf_name, last_image, page)
                 if open_img:
                     if last_image:
                         self.img = Image.open(self.jpg_name_last_footer)
@@ -99,10 +94,7 @@ class Files:
             else:
                 target = self.jpg_name
 
-            if convert_module == 'wand':
-                self.save_img_with_wand(pdf_name, target)
-            else:
-                self.save_img_with_pdf2image(pdf_name, target)
+            self.save_img_with_pdf2image(pdf_name, target, page)
 
             if open_img:
                 self.img = Image.open(target)
@@ -111,79 +103,68 @@ class Files:
     def open_img(self, img):
         self.img = Image.open(img)
 
-    # Save pdf with one or more pages into JPG file
-    def save_img_with_wand(self, pdf_name, output):
-        try:
-            with Img(filename=pdf_name, resolution=self.resolution) as pic:
-                library.MagickResetIterator(pic.wand)
-                pic.scene = 1  # Start cpt of filename at 1 instead of 0
-                pic.compression_quality = self.compression_quality
-                pic.background_color = Color("white")
-                pic.alpha_channel = 'remove'
-                pic.save(filename=output)
-        except (PolicyError, CacheError) as file_error:
-            self.log.error('Error during WAND conversion : ' + str(file_error))
-
-    def save_img_with_pdf2image(self, pdf_name, output):
+    def save_img_with_pdf2image(self, pdf_name, output, page=None, save_to_docservers=False):
         try:
             output = os.path.splitext(output)[0]
-            images = convert_from_path(pdf_name)
+            bck_output = os.path.splitext(output)[0]
+            if save_to_docservers:
+                images = convert_from_path(pdf_name, first_page=page, last_page=page, fmt='jpeg', jpegopt={"quality": 80})
+            else:
+                images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=self.resolution)
+            cpt = 1
             for i in range(len(images)):
-                cpt = i + 1
-                images[i].save(output + "-" + str(cpt) + '.jpg', 'JPEG')
+                if not page:
+                    output = bck_output + '-' + str(cpt).zfill(3)
+                images[i].save(output + '.jpg', 'JPEG')
+                cpt = cpt + 1
         except Exception as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
 
-    def save_img_with_wand_min(self, pdf_name, output):
+    def save_img_with_pdf2image_min(self, pdf_name, output):
         try:
-            with Img(filename=pdf_name + '[0]', resolution=200) as pic:
-                library.MagickResetIterator(pic.wand)
-                pic.scene = 1
-                pic.transform(resize='x1080')
-                pic.compression_quality = 60
-                pic.background_color = Color("white")
-                pic.alpha_channel = 'remove'
-                pic.save(filename=output)
-        except (PolicyError, CacheError) as file_error:
-            self.log.error('Error during WAND conversion : ' + str(file_error))
+            output = os.path.splitext(output)[0]
+            images = convert_from_path(pdf_name, single_file=True, size=(None, 720))
+            images[0].save(output + '-001.jpg', 'JPEG')
+        except Exception as error:
+            self.log.error('Error during pdf2image conversion : ' + str(error))
 
     # Crop the file to get the header
     # 1/3 + 10% is the ratio we used
-    def crop_image_header(self, pdf_name, last_image, output_name=None):
+    def crop_image_header(self, pdf_name, last_image, page, output_name=None):
         try:
-            with Img(filename=pdf_name, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compression_quality
-                pic.background_color = Color("white")
-                pic.alpha_channel = 'remove'
-                self.height_ratio = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.height_ratio), gravity='north')
-                if output_name:
-                    pic.save(filename=output_name)
-                if last_image:
-                    pic.save(filename=self.jpg_name_last_header)
-                else:
-                    pic.save(filename=self.jpg_name_header)
-        except (PolicyError, CacheError) as file_error:
-            self.log.error('Error during WAND conversion : ' + str(file_error))
+            if output_name:
+                output = output_name
+            if last_image:
+                output = self.jpg_name_last_header
+            else:
+                output = self.jpg_name_header
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=self.resolution)
+            for i in range(len(images)):
+                self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
+                crop_ratio = (0, 0, images[i].width, int(images[i].height - self.height_ratio))
+                im = images[i].crop(crop_ratio)
+                im.save(output, 'JPEG')
+        except Exception as error:
+            self.log.error('Error during pdf2image conversion : ' + str(error))
 
     # Crop the file to get the footer
     # 1/3 + 10% is the ratio we used
-    def crop_image_footer(self, img, last_image=False, output_name=None):
+    def crop_image_footer(self, pdf_name, last_image, page, output_name=None):
         try:
-            with Img(filename=img, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compression_quality
-                pic.background_color = Color("white")
-                pic.alpha_channel = 'remove'
-                self.height_ratio = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.height_ratio), gravity='south')
-                if output_name:
-                    pic.save(filename=output_name)
-                if last_image:
-                    pic.save(filename=self.jpg_name_last_footer)
-                else:
-                    pic.save(filename=self.jpg_name_footer)
-        except (PolicyError, CacheError) as file_error:
-            self.log.error('Error during WAND conversion : ' + str(file_error))
+            if output_name:
+                output = output_name
+            if last_image:
+                output = self.jpg_name_last_footer
+            else:
+                output = self.jpg_name_footer
+            images = convert_from_path(pdf_name, first_page=page, last_page=page)
+            for i in range(len(images)):
+                self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
+                crop_ratio = (0, self.height_ratio, images[i].width, images[i].height)
+                im = images[i].crop(crop_ratio)
+                im.save(output, 'JPEG')
+        except Exception as error:
+            self.log.error('Error during pdf2image conversion : ' + str(error))
 
     # When we crop footer we need to rearrange the position of founded text
     # So we add the height_ratio we used (by default 1/3 + 10% of the full image)
