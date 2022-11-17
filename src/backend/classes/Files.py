@@ -33,6 +33,7 @@ from zipfile import ZipFile
 from wand.color import Color
 from wand.api import library
 from wand.image import Image as Img
+from pdf2image import convert_from_path
 from werkzeug.utils import secure_filename
 from src.backend.functions import get_custom_array
 from wand.exceptions import PolicyError, CacheError
@@ -67,7 +68,8 @@ class Files:
         self.jpg_name_last_footer = img_name + '_last_footer.jpg'
 
     # Convert the first page of PDF to JPG and open the image
-    def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
+    def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False,
+                   convert_module='wand'):
         if crop:
             if zone_to_crop == 'header':
                 if is_custom:
@@ -97,7 +99,11 @@ class Files:
             else:
                 target = self.jpg_name
 
-            self.save_img_with_wand(pdf_name, target)
+            if convert_module == 'wand':
+                self.save_img_with_wand(pdf_name, target)
+            else:
+                self.save_img_with_pdf2image(pdf_name, target)
+
             if open_img:
                 self.img = Image.open(target)
 
@@ -117,6 +123,16 @@ class Files:
                 pic.save(filename=output)
         except (PolicyError, CacheError) as file_error:
             self.log.error('Error during WAND conversion : ' + str(file_error))
+
+    def save_img_with_pdf2image(self, pdf_name, output):
+        try:
+            output = os.path.splitext(output)[0]
+            images = convert_from_path(pdf_name)
+            for i in range(len(images)):
+                cpt = i + 1
+                images[i].save(output + "-" + str(cpt) + '.jpg', 'JPEG')
+        except Exception as error:
+            self.log.error('Error during pdf2image conversion : ' + str(error))
 
     def save_img_with_wand_min(self, pdf_name, output):
         try:
