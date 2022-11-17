@@ -31,8 +31,7 @@ def process(args, file, log, splitter, files, tmp_folder, config, docservers, oc
     """
     log.info('Processing file for separation : ' + file)
 
-    # Get the OCR of the file as a list of line content and position
-    files.pdf_to_jpg(file, open_img=False)
+    files.pdf_to_jpg(file, open_img=False, convert_module='pdf2jpg')
     list_files = files.sorted_file(tmp_folder, 'jpg')
     blank_pages = []
 
