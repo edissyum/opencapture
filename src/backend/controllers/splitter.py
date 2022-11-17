@@ -32,7 +32,7 @@ from src.backend.import_models import splitter, doctypes
 from src.backend.import_controllers import forms, outputs
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from src.backend.import_classes import _Files, _Splitter, _CMIS, _MaarchWebServices
+from src.backend.import_classes import _Files, _Splitter, _CMIS, _MaarchWebServices, _OpenADS
 
 
 def handle_uploaded_file(files, input_id):
@@ -508,19 +508,15 @@ def test_cmis_connection(args):
 
 
 def test_openads_connection(args):
-    try:
-        res = requests.get(args['openads_api'] + "/status", auth=(args['login'], args['password']))
-        res = res.json()
-        if res['msg'] != 'Running':
-            return {'status': True}, 401
-
-    except Exception as e:
+    _openads = _OpenADS(args['openads_api'], args['login'], args['password'])
+    res = _openads.test_openads_connection()
+    if not res['status']:
         response = {
             'status': False,
             "errors": gettext('OPENADS_CONNECTION_ERROR'),
-            "message": str(e)
+            "message": res['message']
         }
-        return response, 200
+        return response, 401
     return {'status': True}, 200
 
 
@@ -652,13 +648,13 @@ def validate(args):
                     Export to Maarch
                 """
                 if output[0]['output_type_id'] in ['export_maarch']:
-                    cmis_params = get_output_parameters(output[0]['data']['options']['parameters'])
+                    maarch_params = get_output_parameters(output[0]['data']['options']['parameters'])
                     maarch_auth = get_output_parameters(output[0]['data']['options']['auth'])
                     pdf_export_parameters = {
                         'filename': 'TMP_PDF_EXPORT_TO_MAARCH',
                         'extension': 'pdf',
-                        'separator': cmis_params['separator'],
-                        'file_name': cmis_params['filename'],
+                        'separator': maarch_params['separator'],
+                        'file_name': maarch_params['filename'],
                     }
                     res_export_pdf = export_pdf(batch, args['documents'], pdf_export_parameters, pages, now,
                                                 output[0]['compress_type'])
@@ -676,6 +672,40 @@ def validate(args):
                         res_export_maarch = export_maarch(maarch_auth, file_path, parameters, batch)
                         if res_export_maarch[1] != 200:
                             return res_export_maarch
+                """
+                    Export to OpenADS
+                """
+                if output[0]['output_type_id'] in ['export_openads']:
+                    openads_auth = get_output_parameters(output[0]['data']['options']['auth'])
+                    openads_params = get_output_parameters(output[0]['data']['options']['parameters'])
+                    _openads = _OpenADS(openads_auth['openads_api'], openads_auth['login'], openads_auth['password'])
+
+                    """
+                        Export for OpenADS
+                    """
+                    pdf_export_parameters = {
+                        'extension': 'pdf',
+                        'folder_out': docservers['TMP_PATH'],
+                        'separator': openads_params['separator'],
+                        'filename': openads_params['pdf_filename'],
+                    }
+                    res_export_pdf = export_pdf(batch, args['documents'], pdf_export_parameters, pages, now,
+                                                output[0]['compress_type'])
+                    if res_export_pdf[1] != 200:
+                        return res_export_pdf
+
+                    folder_id_mask = {
+                        'mask': openads_params['folder_id'],
+                        'separator': '',
+                    }
+                    folder_id = _Splitter.get_mask_result(None, args['batchMetadata'], now, folder_id_mask)
+                    openads_res = _openads.check_folder_by_id(folder_id)
+                    if not openads_res['status']:
+                        response = {
+                            "errors": gettext('CHECK_FOLDER_ERROR'),
+                            "message": openads_res['error']
+                        }
+                        return response, 500
 
         """
             Zip all exported files if enabled
