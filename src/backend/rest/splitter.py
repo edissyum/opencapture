@@ -173,8 +173,17 @@ def get_totals(status):
 
 @bp.route('splitter/cmis/testConnection', methods=['POST'])
 @auth.token_required
-def test_connection():
+def test_cmis_connection():
     data = request.data
     data = json.loads(data)
     response, status = splitter.test_cmis_connection(data['args'])
+    return make_response(jsonify(response)), status
+
+
+@bp.route('splitter/openads/testConnection', methods=['POST'])
+@auth.token_required
+def test_openads_connection():
+    data = request.data
+    data = json.loads(data)
+    response, status = splitter.test_openads_connection(data['args'])
     return make_response(jsonify(response)), status

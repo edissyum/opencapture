@@ -563,6 +563,8 @@
 		"no_parameters_necessary": "Pas de paramètres de spécifiques nécessaire",
 		"ocr_disabled": "Désactivée",
 		"ocr_enabled": "Activée",
+		"openads_connection_ko": "Erreur lors de la connexion à OpenAds",
+		"openads_connection_ok": "Connexion à OpenAds réalisée avec succès",
 		"output_deleted": "Chaîne sortante supprimée avec succès",
 		"output_duplicated": "Chaîne sortante dupliquée avec succès",
 		"output_settings_list": "Paramètres de la chaîne sortante",

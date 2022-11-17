@@ -22,6 +22,7 @@ import PyPDF2
 import shutil
 import os.path
 import datetime
+import requests
 import pandas as pd
 from flask import current_app
 from flask_babel import gettext
@@ -500,6 +501,23 @@ def test_cmis_connection(args):
         response = {
             'status': False,
             "errors": gettext('CMIS_CONNECTION_ERROR'),
+            "message": str(e)
+        }
+        return response, 200
+    return {'status': True}, 200
+
+
+def test_openads_connection(args):
+    try:
+        res = requests.get(args['openads_api'] + "/status", auth=(args['login'], args['password']))
+        res = res.json()
+        if res['msg'] != 'Running':
+            return {'status': True}, 401
+
+    except Exception as e:
+        response = {
+            'status': False,
+            "errors": gettext('OPENADS_CONNECTION_ERROR'),
             "message": str(e)
         }
         return response, 200
