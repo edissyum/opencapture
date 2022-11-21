@@ -368,7 +368,7 @@ CREATE TABLE mailcollect (
      "port"                          INTEGER      NOT NULL,
      "login"                         VARCHAR(255) NOT NULL,
      "password"                      VARCHAR(255) NOT NULL,
-     "secured_connection"            VARCHAR(255) NOT NULL,
+     "secured_connection"            BOOLEAN      DEFAULT True,
      "status"                        VARCHAR(10)  DEFAULT 'OK',
      "is_splitter"                   BOOLEAN      DEFAULT False,
      "enabled"                       BOOLEAN      DEFAULT True,

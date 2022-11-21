@@ -5,3 +5,6 @@ INSERT INTO "form_models" ("label", "default_form", "outputs", "module", "settin
     "delete_documents_after_outputs": true
 }');
 INSERT INTO "form_models_field" ("form_id", "fields") VALUES (2, '{"other": [], "supplier": []}');
+
+ALTER TABLE mailcollect ALTER COLUMN secured_connection TYPE BOOLEAN USING(secured_connection::boolean);
+ALTER TABLE mailcollect ALTER COLUMN secured_connection SET DEFAULT true;
