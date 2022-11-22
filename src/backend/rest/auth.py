@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Essaid MEGHELLET <essaid.meghellet@edissyum.com>
+
 import json
 import ldap3
 import psycopg2
