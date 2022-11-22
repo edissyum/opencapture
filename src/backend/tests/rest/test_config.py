@@ -1,5 +1,5 @@
 # This file is part of Open-Capture.
-import base64
+
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -16,6 +16,7 @@ import base64
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import base64
 import unittest
 import warnings
 from src.backend import app
