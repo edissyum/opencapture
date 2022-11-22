@@ -15,9 +15,6 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-import json
-from src.backend.functions import retrieve_custom_from_url
-from src.backend.main import create_classes_from_custom_id
 from src.backend.import_controllers import mailcollect, auth
 from flask import Blueprint, jsonify, make_response, request
 
