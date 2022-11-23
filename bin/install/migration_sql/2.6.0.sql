@@ -8,3 +8,5 @@ INSERT INTO "form_models_field" ("form_id", "fields") VALUES (2, '{"other": [], 
 
 ALTER TABLE mailcollect ALTER COLUMN secured_connection TYPE BOOLEAN USING(secured_connection::boolean);
 ALTER TABLE mailcollect ALTER COLUMN secured_connection SET DEFAULT true;
+
+ALTER TABLE addresses ALTER COLUMN postal_code TYPE VARCHAR(50);
