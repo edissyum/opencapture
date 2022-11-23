@@ -1,5 +1,5 @@
 <div class="flex relative justify-center items-center gap-8" style="height: 85vh">
-    <mat-card [class.disabled]="!this.privilegesService.hasPrivilege('access_splitter')"
+    <mat-card *ngIf="this.privilegesService.hasPrivilege('access_splitter')"
               class="text-center w-full 2xl:w-1/5 lg:w-1/3 sm:w-1/2 shadow-lg transition duration-500 ease-in-out
                      transform hover:-translate-y-1 hover:scale-110 hover:shadow-2xl">
         <a routerLink="/splitter/list" class="block" (click)="setValue('splitter')">
@@ -9,7 +9,7 @@
             {{ 'HOME.splitter' | translate }}
         </mat-card-subtitle>
     </mat-card>
-    <mat-card [class.disabled]="!this.privilegesService.hasPrivilege('access_verifier')"
+    <mat-card *ngIf="this.privilegesService.hasPrivilege('access_verifier')"
               class="text-center w-full 2xl:w-1/5 lg:w-1/3 sm:w-1/2 shadow-lg transition duration-500 ease-in-out
                      transform hover:-translate-y-1 hover:scale-110 hover:shadow-2xl">
         <a routerLink="/verifier/list" class="block" (click)="setValue('verifier')">
