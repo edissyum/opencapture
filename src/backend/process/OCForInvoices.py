@@ -109,7 +109,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                             regex[_r['regex_id']] = _r['content']
 
                     if output_info[0]['output_type_id'] == 'export_xml':
-                        verifier_exports.export_xml(output_info[0]['data'], log, regex, invoice_data)
+                        verifier_exports.export_xml(output_info[0]['data'], log, regex, invoice_data, database)
                     elif output_info[0]['output_type_id'] == 'export_maarch':
                         verifier_exports.export_maarch(output_info[0]['data'], invoice_data, log, regex, database)
                     elif output_info[0]['output_type_id'] == 'export_pdf':

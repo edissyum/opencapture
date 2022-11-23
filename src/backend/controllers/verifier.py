@@ -359,13 +359,15 @@ def export_maarch(invoice_id, data):
 def export_xml(invoice_id, data):
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if not error:
-        if 'regex' in session:
+        if 'regex' in session and 'database' in session:
             regex = json.loads(session['regex'])
+            database = json.loads(session['database'])
         else:
             custom_id = retrieve_custom_from_url(request)
             _vars = create_classes_from_custom_id(custom_id)
+            database = _vars[0]
             regex = _vars[2]
-        return verifier_exports.export_xml(data['data'], None, regex, invoice_info)
+        return verifier_exports.export_xml(data['data'], None, regex, invoice_info, database)
 
 
 def export_pdf(invoice_id, data):
