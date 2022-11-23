@@ -58,5 +58,5 @@ class TaskWatcherTest(unittest.TestCase):
         self.assertEqual(dict, type(response.json))
         self.assertEqual(len(response.json['tasks']), 1)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         self.db.execute("TRUNCATE TABLE tasks_watcher")

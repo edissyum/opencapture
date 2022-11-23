@@ -126,7 +126,7 @@ class RolesTest(unittest.TestCase):
         self.assertTrue(response.json['editable'])
         self.assertTrue(response.json['enabled'])
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         self.db.execute("TRUNCATE TABLE roles_privileges")
         self.db.execute("DELETE FROM roles WHERE label_short = 'TEST'")
         self.db.execute("DELETE FROM roles WHERE label_short = 'TEST123'")

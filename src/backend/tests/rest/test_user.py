@@ -164,6 +164,6 @@ class UserTest(unittest.TestCase):
         new_customers = self.db.fetchall()
         self.assertEqual('[1, 2, 3]', new_customers[0]['customers_id']['data'])
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         self.db.execute("TRUNCATE TABLE users_customers")
         self.db.execute("DELETE FROM users WHERE username = 'test'")

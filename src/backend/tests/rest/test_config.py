@@ -105,7 +105,7 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
         self.assertEqual(list, type(response.json['regex']))
-        self.assertEqual(len(response.json['regex']), 2)
+        self.assertEqual(len(response.json['regex']), 1)
 
     def test_successful_get_regex_limit(self):
         response = self.app.get('/test/ws/config/getRegex?limit=5',
@@ -182,7 +182,7 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(str, type(response.json['git_latest']))
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         if os.path.isfile('/var/www/html/opencapture/custom/test/assets/imgs/login_image.png'):
             os.remove('/var/www/html/opencapture/custom/test/assets/imgs/login_image.png')
         self.db.execute("UPDATE regex "

@@ -54,7 +54,7 @@ class LocaleTest(unittest.TestCase):
         self.assertEqual('fra', response.json['lang'])
         self.assertEqual('fr-FR', response.json['moment_lang'])
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         self.db.execute('UPDATE configurations '
                         'SET data = \'{"type": "string", "value": "fra", "description": "Clé pour la sélection de la '
                         'langue (fra ou eng par défaut)"}\' '
