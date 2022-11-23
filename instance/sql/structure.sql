@@ -1,14 +1,15 @@
 CREATE TABLE "users"
 (
-    "id"            SERIAL      UNIQUE PRIMARY KEY,
-    "username"      VARCHAR(20) UNIQUE NOT NULL,
-    "firstname"     VARCHAR(255)       NOT NULL,
-    "lastname"      VARCHAR(255)       NOT NULL,
-    "password"      VARCHAR(255)       NOT NULL,
-    "enabled"       BOOLEAN     DEFAULT True,
-    "status"        VARCHAR(5)  DEFAULT 'OK',
-    "creation_date" TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
-    "role"          INTEGER     NOT NULL
+    "id"                SERIAL      UNIQUE PRIMARY KEY,
+    "username"          VARCHAR(20) UNIQUE NOT NULL,
+    "firstname"         VARCHAR(255)       NOT NULL,
+    "lastname"          VARCHAR(255)       NOT NULL,
+    "password"          VARCHAR(255)       NOT NULL,
+    "enabled"           BOOLEAN     DEFAULT True,
+    "status"            VARCHAR(5)  DEFAULT 'OK',
+    "creation_date"     TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
+    "last_connection"   TIMESTAMP,
+    "role"              INTEGER     NOT NULL
 );
 
 CREATE TABLE "form_models"

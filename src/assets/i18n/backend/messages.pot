@@ -8,42 +8,42 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-10-31 10:52+0100\n"
+"POT-Creation-Date: 2022-11-23 16:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.11.0\n"
 
-#: launch_worker.py:47
+#: launch_worker.py:47 launch_worker_splitter.py:49
 msgid "FILE_UPLOADED"
 msgstr ""
 
-#: src/backend/verifier_exports.py:76 src/backend/verifier_exports.py:79
+#: src/backend/verifier_exports.py:85 src/backend/verifier_exports.py:88
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/verifier_exports.py:163 src/backend/verifier_exports.py:166
+#: src/backend/verifier_exports.py:171 src/backend/verifier_exports.py:174
 msgid "PDF_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:282
-#: src/backend/controllers/splitter.py:288 src/backend/verifier_exports.py:318
-#: src/backend/verifier_exports.py:324 src/backend/verifier_exports.py:330
+#: src/backend/controllers/splitter.py:291
+#: src/backend/controllers/splitter.py:297 src/backend/verifier_exports.py:326
+#: src/backend/verifier_exports.py:332 src/backend/verifier_exports.py:338
 msgid "EXPORT_MAARCH_ERROR"
 msgstr ""
 
-#: src/backend/verifier_exports.py:325
+#: src/backend/verifier_exports.py:333
 msgid "PDF_FILE_NOT_FOUND"
 msgstr ""
 
-#: src/backend/verifier_exports.py:336
+#: src/backend/verifier_exports.py:344
 msgid "MAARCH_WS_INFO_WRONG"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:294 src/backend/verifier_exports.py:342
+#: src/backend/controllers/splitter.py:303 src/backend/verifier_exports.py:350
 msgid "MAARCH_WS_INFO_EMPTY"
 msgstr ""
 
@@ -128,40 +128,55 @@ msgstr ""
 msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:58 src/backend/controllers/auth.py:97
-#: src/backend/controllers/auth.py:139 src/backend/controllers/auth.py:183
-#: src/backend/controllers/auth.py:194 src/backend/controllers/auth.py:204
-#: src/backend/controllers/auth.py:231 src/backend/rest/auth.py:99
+#: src/backend/controllers/auth.py:59 src/backend/controllers/auth.py:99
+#: src/backend/controllers/auth.py:141 src/backend/controllers/auth.py:188
+#: src/backend/controllers/auth.py:199 src/backend/controllers/auth.py:209
+#: src/backend/controllers/auth.py:236 src/backend/rest/auth.py:74
 msgid "LOGIN_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:115 src/backend/controllers/auth.py:154
-#: src/backend/controllers/auth.py:162 src/backend/controllers/auth.py:164
+#: src/backend/controllers/auth.py:117 src/backend/controllers/auth.py:156
+#: src/backend/controllers/auth.py:164 src/backend/controllers/auth.py:167
+#: src/backend/controllers/auth.py:169
 msgid "JWT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:195
+#: src/backend/controllers/auth.py:164
+msgid "ACCOUNT_ALREADY_LOGGED"
+msgstr ""
+
+#: src/backend/controllers/auth.py:200
 msgid "SEVERAL_AUTH_METHODS_ENABLED"
 msgstr ""
 
-#: src/backend/controllers/auth.py:219
+#: src/backend/controllers/auth.py:224
 msgid "LDAP_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:220 src/backend/models/auth.py:125
+#: src/backend/controllers/auth.py:225 src/backend/models/auth.py:133
 msgid "NO_LDAP_CONFIGURATIONS_FOUND"
 msgstr ""
 
-#: src/backend/controllers/auth.py:246
+#: src/backend/controllers/auth.py:251
 msgid "LOADING_METHODS_AUTH_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:258
+#: src/backend/controllers/auth.py:263
 msgid "DISABLE_LOGIN_METHOD_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:270
+#: src/backend/controllers/auth.py:275
 msgid "ENABLE_LOGIN_METHOD_ERROR"
+msgstr ""
+
+#: src/backend/controllers/auth.py:299 src/backend/models/auth.py:321
+#: src/backend/models/auth.py:338 src/backend/models/auth.py:347
+#: src/backend/models/auth.py:353 src/backend/models/auth.py:559
+msgid "LDAP_CONNECTION_ERROR"
+msgstr ""
+
+#: src/backend/controllers/auth.py:300
+msgid "LOGIN_LDAP_ERROR"
 msgstr ""
 
 #: src/backend/controllers/config.py:62
@@ -501,45 +516,45 @@ msgstr ""
 msgid "FORM_UNDEFINED"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:231
+#: src/backend/controllers/splitter.py:240
 msgid "ADD_DOCUMENT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:350
-#: src/backend/controllers/splitter.py:595
+#: src/backend/controllers/splitter.py:359
+#: src/backend/controllers/splitter.py:604
 msgid "EXPORT_PDF_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:372
-#: src/backend/controllers/splitter.py:619
+#: src/backend/controllers/splitter.py:381
+#: src/backend/controllers/splitter.py:628
 msgid "EXPORT_XML_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:388
+#: src/backend/controllers/splitter.py:397
 msgid "UPDATE_BATCH_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:400
+#: src/backend/controllers/splitter.py:409
 msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:413
+#: src/backend/controllers/splitter.py:422
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:428
-#: src/backend/controllers/splitter.py:449
-#: src/backend/controllers/splitter.py:464
-#: src/backend/controllers/splitter.py:479
+#: src/backend/controllers/splitter.py:437
+#: src/backend/controllers/splitter.py:458
+#: src/backend/controllers/splitter.py:473
+#: src/backend/controllers/splitter.py:488
 msgid "UPDATE_PAGES_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:493
+#: src/backend/controllers/splitter.py:502
 msgid "CMIS_CONNECTION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:717
-#: src/backend/controllers/verifier.py:557 src/backend/models/splitter.py:423
+#: src/backend/controllers/splitter.py:726
+#: src/backend/controllers/verifier.py:559 src/backend/models/splitter.py:441
 #: src/backend/models/verifier.py:153
 msgid "GET_TOTALS_ERROR"
 msgstr ""
@@ -636,20 +651,20 @@ msgstr ""
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:465
-#: src/backend/controllers/verifier.py:468
-#: src/backend/controllers/verifier.py:485
-#: src/backend/controllers/verifier.py:504
-#: src/backend/controllers/verifier.py:505
+#: src/backend/controllers/verifier.py:467
+#: src/backend/controllers/verifier.py:470
+#: src/backend/controllers/verifier.py:487
+#: src/backend/controllers/verifier.py:506
+#: src/backend/controllers/verifier.py:507
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:529
+#: src/backend/controllers/verifier.py:531
 msgid "VAT_NOT_VALID"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:534
-#: src/backend/controllers/verifier.py:535
+#: src/backend/controllers/verifier.py:536
+#: src/backend/controllers/verifier.py:537
 msgid "VAT_API_ERROR"
 msgstr ""
 
@@ -657,38 +672,62 @@ msgstr ""
 msgid "SUPPLIER_UPDATE_ERROR"
 msgstr ""
 
-#: src/backend/models/auth.py:40 src/backend/models/auth.py:92
-#: src/backend/models/user.py:40 src/backend/rest/auth.py:100
+#: src/backend/models/auth.py:48 src/backend/models/auth.py:100
+#: src/backend/models/user.py:40 src/backend/rest/auth.py:75
 msgid "BAD_USERNAME"
 msgstr ""
 
-#: src/backend/models/auth.py:42 src/backend/models/user.py:42
+#: src/backend/models/auth.py:50 src/backend/models/user.py:42
 msgid "BAD_PASSWORD"
 msgstr ""
 
-#: src/backend/models/auth.py:44
+#: src/backend/models/auth.py:52
 msgid "USER_DELETED"
 msgstr ""
 
-#: src/backend/models/auth.py:46
+#: src/backend/models/auth.py:54
 msgid "USER_DISABLED"
 msgstr ""
 
-#: src/backend/models/auth.py:64 src/backend/models/auth.py:74
+#: src/backend/models/auth.py:72 src/backend/models/auth.py:82
 #: src/backend/models/roles.py:54
 msgid "ROLE_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/models/auth.py:147
+#: src/backend/models/auth.py:155
 msgid "UPDATE_LOGIN_METHOD_ERROR"
 msgstr ""
 
-#: src/backend/models/auth.py:187
+#: src/backend/models/auth.py:195
 msgid "DISABLE_LOGIN_METHOD_DATA_ERROR"
 msgstr ""
 
-#: src/backend/models/auth.py:206
+#: src/backend/models/auth.py:214
 msgid "ENABLE_LOGIN_METHOD_DATA_ERROR"
+msgstr ""
+
+#: src/backend/models/auth.py:319 src/backend/models/auth.py:336
+#: src/backend/models/auth.py:345
+msgid "BAD_CONNECTION_LDAP_INFOS"
+msgstr ""
+
+#: src/backend/models/auth.py:357 src/backend/rest/auth.py:148
+msgid "NOT_COMPLETE_CONNECTION_INFOS"
+msgstr ""
+
+#: src/backend/models/auth.py:359 src/backend/models/auth.py:565
+#: src/backend/models/auth.py:572 src/backend/rest/auth.py:150
+msgid "INFOS_LDAP_NOT_COMPLETE"
+msgstr ""
+
+#: src/backend/models/auth.py:545 src/backend/models/auth.py:552
+msgid "LDAP_SYNCRO_INFOS_ERROR"
+msgstr ""
+
+#: src/backend/models/auth.py:547 src/backend/models/auth.py:554
+#: src/backend/models/auth.py:561 src/backend/models/auth.py:567
+#: src/backend/models/auth.py:574
+msgid "LDAP_SYNCRO_ERROR"
 msgstr ""
 
 #: src/backend/models/custom_fields.py:52
@@ -859,50 +898,16 @@ msgstr ""
 msgid "INVOICE_UPDATE_ERROR"
 msgstr ""
 
-#: src/backend/rest/auth.py:53 src/backend/rest/auth.py:104
+#: src/backend/rest/auth.py:50 src/backend/rest/auth.py:79
 msgid "PGSQL_ERROR"
 msgstr ""
 
-#: src/backend/rest/auth.py:89 src/backend/rest/auth.py:254
-#: src/backend/rest/auth.py:268 src/backend/rest/auth.py:277
-#: src/backend/rest/auth.py:282 src/backend/rest/auth.py:472
-msgid "LDAP_CONNECTION_ERROR"
-msgstr ""
-
-#: src/backend/rest/auth.py:90
-msgid "LOGIN_LDAP_ERROR"
-msgstr ""
-
-#: src/backend/rest/auth.py:252 src/backend/rest/auth.py:266
-#: src/backend/rest/auth.py:275
-msgid "BAD_CONNECTION_LDAP_INFOS"
-msgstr ""
-
-#: src/backend/rest/auth.py:286
-msgid "NOT_COMPLETE_CONNECTION_INFOS"
-msgstr ""
-
-#: src/backend/rest/auth.py:288 src/backend/rest/auth.py:477
-#: src/backend/rest/auth.py:483
-msgid "INFOS_LDAP_NOT_COMPLETE"
-msgstr ""
-
-#: src/backend/rest/auth.py:460 src/backend/rest/auth.py:465
-#: src/backend/rest/auth.py:471 src/backend/rest/auth.py:476
-#: src/backend/rest/auth.py:482
-msgid "LDAP_SYNCHRO_ERROR"
-msgstr ""
-
-#: src/backend/rest/auth.py:461 src/backend/rest/auth.py:466
-msgid "LDAP_SYNCHRO_INFOS_ERROR"
-msgstr ""
-
-#: src/backend/rest/auth.py:495 src/backend/rest/auth.py:522
-#: src/backend/rest/auth.py:536
+#: src/backend/rest/auth.py:211 src/backend/rest/auth.py:238
+#: src/backend/rest/auth.py:252
 msgid "REQUEST_MODIFS_ERROR"
 msgstr ""
 
-#: src/backend/rest/auth.py:508
+#: src/backend/rest/auth.py:224
 msgid "RETRIEVE_LOGIN_METHODS_ERROR"
 msgstr ""
 
