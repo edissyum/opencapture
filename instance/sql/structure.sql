@@ -125,7 +125,7 @@ CREATE TABLE "addresses"
     "id"            SERIAL          UNIQUE PRIMARY KEY,
     "address1"      VARCHAR(255),
     "address2"      VARCHAR(255),
-    "postal_code"   VARCHAR(10),
+    "postal_code"   VARCHAR(50),
     "city"          VARCHAR(50),
     "country"       VARCHAR(50),
     "creation_date" TIMESTAMP       DEFAULT (CURRENT_TIMESTAMP)
