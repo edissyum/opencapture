@@ -31,7 +31,6 @@ from ldap3.core.exceptions import LDAPException
 from werkzeug.security import generate_password_hash
 
 
-
 def login(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
@@ -214,6 +213,7 @@ def enable_login_method(method_name):
         error = gettext('ENABLE_LOGIN_METHOD_DATA_ERROR')
     return login_method_data, error
 
+
 def check_user_ldap_connection(type_AD, domain_ldap, port_ldap, user_DN, user_password):
     if not user_DN and not user_password:
         return False
@@ -272,7 +272,7 @@ def check_user_connection(type_AD, domain_ldap, port_ldap, username_ldap_admin, 
                         else:
                             return True
 
-    except LDAPException :
+    except LDAPException:
         return False
 
 
@@ -297,8 +297,7 @@ def connection_ldap(type_AD, domain_ldap, port_ldap, username_ldap_admin, passwo
                     return {'status_server_ldap': False, 'connection_object': None}
                 else:
                     return {'status_server_ldap': True, 'connection_object': connection}
-
-    except LDAPException :
+    except LDAPException:
         return {'status_server_ldap': False, 'connection_object': None}
 
 
@@ -314,7 +313,6 @@ def verify_ldap_server_connection(type_AD, domain_ldap, port_ldap, username_ldap
 
                 with ldap3.Connection(server, user=username_admin, password=password_ldap_admin, auto_bind=True,
                                       receive_timeout=10) as connection:
-
                     if not connection.bind():
                         error_message = gettext('BAD_CONNECTION_LDAP_INFOS')
                         error = {
@@ -332,7 +330,6 @@ def verify_ldap_server_connection(type_AD, domain_ldap, port_ldap, username_ldap
                 with ldap3.Connection(server, user=username_ldap_admin, password=password_ldap_admin, auto_bind=True,
                                       receive_timeout=10) as connection:
                     if not connection.bind():
-
                         error_message = gettext('BAD_CONNECTION_LDAP_INFOS')
                         error = {
                             "errors": gettext('LDAP_CONNECTION_ERROR'),
@@ -340,7 +337,6 @@ def verify_ldap_server_connection(type_AD, domain_ldap, port_ldap, username_ldap
                         }
                     else:
                         ldap_connection_status = True
-
         except ldap3.core.exceptions.LDAPInvalidServerError:
             error_message = gettext('BAD_CONNECTION_LDAP_INFOS')
             error = {
@@ -376,7 +372,6 @@ def get_ldap_users(connection, classUser, objectClass, users_DN, base_DN):
             return {'status_search': True, 'ldap_users': connection.entries}
         else:
             return {'status_search': False, 'ldap_users': ""}
-
     except LDAPException:
         return False
 
@@ -404,7 +399,6 @@ def get_ldap_users_data(ldap_users_dict, user_id_attribut, firstname_attribut, l
 
 
 def check_database_users(ldap_users_data, default_role):
-
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     database = _vars[0]
@@ -574,4 +568,4 @@ def synchronization_ldap_users(ldap_synchronization_data):
                 "errors": gettext('LDAP_SYNCRO_ERROR'),
                 "message": error_message
             }
-    return result_synchro , error
+    return result_synchro, error
