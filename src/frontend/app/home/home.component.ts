@@ -16,10 +16,9 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
-import { LocalStorageService } from "../../services/local-storage.service";
 import { PrivilegesService } from "../../services/privileges.service";
+import { LocalStorageService } from "../../services/local-storage.service";
 
 @Component({
     selector: 'app-home',
@@ -31,8 +30,7 @@ export class HomeComponent implements OnInit {
         private userService: UserService,
         public privilegesService: PrivilegesService,
         private localStorageService: LocalStorageService
-    ) {
-    }
+    ) {}
 
     ngOnInit() {
         this.setValue('');
