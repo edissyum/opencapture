@@ -132,12 +132,13 @@ class Files:
     # 1/3 + 10% is the ratio we used
     def crop_image_header(self, pdf_name, last_image, page, output_name=None):
         try:
-            if output_name:
-                output = output_name
             if last_image:
                 output = self.jpg_name_last_header
             else:
                 output = self.jpg_name_header
+
+            if output_name:
+                output = output_name
             images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=self.resolution)
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
@@ -151,12 +152,12 @@ class Files:
     # 1/3 + 10% is the ratio we used
     def crop_image_footer(self, pdf_name, last_image, page, output_name=None):
         try:
-            if output_name:
-                output = output_name
             if last_image:
                 output = self.jpg_name_last_footer
             else:
                 output = self.jpg_name_footer
+            if output_name:
+                output = output_name
             images = convert_from_path(pdf_name, first_page=page, last_page=page)
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
