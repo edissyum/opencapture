@@ -160,7 +160,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     pages = {}
     positions = {}
 
-    files.resolution = int(configurations['resolution'])
     files.compression_quality = int(configurations['compressionQuality'])
 
     nb_pages = files.get_pages(docservers, file)

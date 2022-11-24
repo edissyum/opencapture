@@ -50,7 +50,6 @@ class Files:
         self.database = database
         self.regex = regex
         self.height_ratio = ''
-        self.resolution = 300
         self.languages = languages
         self.docservers = docservers
         self.compression_quality = 100
@@ -107,7 +106,7 @@ class Files:
         try:
             output = os.path.splitext(output)[0]
             bck_output = os.path.splitext(output)[0]
-            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=self.resolution)
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
             cpt = 1
             for i in range(len(images)):
                 if not page:
@@ -137,7 +136,7 @@ class Files:
             if output_name:
                 output = output_name
 
-            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=self.resolution)
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, 0, images[i].width, int(images[i].height - self.height_ratio))
@@ -158,7 +157,7 @@ class Files:
             if output_name:
                 output = output_name
 
-            images = convert_from_path(pdf_name, first_page=page, last_page=page)
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, self.height_ratio, images[i].width, images[i].height)
@@ -181,7 +180,6 @@ class Files:
         else:
             position[0][1] = line.position[0][1]
             position[1][1] = line.position[1][1]
-
         return position
 
     def get_pages(self, docservers, file):
