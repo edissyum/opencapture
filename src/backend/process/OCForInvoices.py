@@ -473,7 +473,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     full_jpg_filename = 'full_' + file_name
     file = files.move_to_docservers(docservers, file)
     # Convert all the pages to JPG (used to full web interface)
-    files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename, None, True)
+    files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
     files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
 
     allow_auto = False
