@@ -21,6 +21,18 @@ The functionnalities of Open-Capture are :
    - SIRET/SIREN & VAT number verification (Only FR for now, could be disabled in form settings)
    - Complex locale REGEX used. Easy to improve and modify
 
+# Launch Python unit tests
+
+Make sure you have a test custom installed using the following command : 
+
+    cd /var/www/html/opencapture/bin/install/
+    sudo ./create_custom.sh -c test -p false -t systemd
+    
+Then, go the the tests folder and launch the following command
+
+    cd /var/www/html/opencapture/
+    python3 -m unittest discover src/backend/tests/
+
 # LICENSE
 
 Open-Capture is released under the GPL v3.

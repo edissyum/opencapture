@@ -384,7 +384,7 @@ export class MailCollectComponent implements OnInit {
 
         this.globalForm.forEach((element: any) => {
             data['value'][element.id] = element.control.value;
-        })
+        });
 
         this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + this.mailCollectConfigId, {'data': data}, {headers: this.authService.headers}).pipe(
             tap(() => {
@@ -715,19 +715,7 @@ export class MailCollectComponent implements OnInit {
                     element.control.setValue(element_child.control.value);
                 }
             });
-        })
-
-        // this.http.post(environment['url'] + '/ws/mailcollect/createProcess', data, {headers: this.authService.headers}).pipe(
-        //     tap(() => {
-        //         this.notify.success(this.translate.instant('MAILCOLLECT.process_created'));
-        //     }),
-        //     finalize(() => this.processLoading = false),
-        //     catchError((err: any) => {
-        //         console.debug(err);
-        //         this.notify.handleErrors(err);
-        //         return of(false);
-        //     })
-        // ).subscribe();
+        });
     }
 
     disableConfirmDialog(process: any) {

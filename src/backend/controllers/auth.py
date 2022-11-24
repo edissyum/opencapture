@@ -73,7 +73,15 @@ def login(username, password, lang, method='default'):
         user_info, error = user.get_user_by_username({"select": ['users.id', 'users.username'], "username": username})
 
     if error is None:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[10]
+
         encoded_token = encode_auth_token(user_info['username'])
+        if configurations['allowUserMultipleLogin'] is not True:
+            last_connection = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            user.update_user({'set': {'last_connection': last_connection}, 'user_id': user_info['id']})
+
         returned_user = user.get_user_by_id({
             'select': ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
             'user_id': user_info['id']
@@ -155,9 +163,12 @@ def token_required(view):
                 return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
 
             user_info, _ = user.get_user_by_username({
-                'select': ['users.id'],
+                'select': ['users.id', 'last_connection'],
                 'username': token['sub']
             })
+
+            if user_info['last_connection'] and token['iat'] < datetime.datetime.timestamp(user_info['last_connection']):
+                return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('ACCOUNT_ALREADY_LOGGED')}), 500
 
             if not user_info:
                 return jsonify({"errors": gettext("JWT_ERROR"), "message": "User doesn't exist"}), 500
@@ -236,10 +247,10 @@ def update_login_method(login_method_name , server_data):
 
 
 def retrieve_login_methods():
-    login_methods_data, error = auth.retrieve_login_methods()
+    login_methods, error = auth.retrieve_login_methods()
     if error is None:
         response = {
-            "login_methods_data": login_methods_data
+            "login_methods": login_methods
         }
         return response, 200
 

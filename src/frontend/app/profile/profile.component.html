@@ -7,9 +7,14 @@
         <mat-card-content>
             <form (ngSubmit)="onSubmit()">
                 <ng-container *ngFor="let field of profileForm">
-                    <mat-form-field class="block" *ngIf="field.type !== 'select'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                    <mat-form-field class="block" *ngIf="field.type !== 'select'"
+                                    [class.pointer-events-none]="field.type === 'password' && this.disablePasswordModification">
+                        <mat-label [class.text-gray-400]="field.type === 'password' && this.disablePasswordModification">
+                            {{ field.label | translate }}
+                        </mat-label>
+                        <input [readonly]="field.type === 'password' && this.disablePasswordModification" matInput
+                               [formControl]="field.control" [type]="field.type" [required]="field.required"
+                               placeholder="{{ field.label | translate }}">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.type === 'select'">

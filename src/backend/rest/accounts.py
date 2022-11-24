@@ -19,11 +19,10 @@ import os
 import json
 import base64
 import mimetypes
-from flask import Blueprint, request, make_response, jsonify, session
-
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from src.backend.import_controllers import auth, accounts, verifier
+from flask import Blueprint, request, make_response, jsonify, session
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
 

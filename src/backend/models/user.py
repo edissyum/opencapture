@@ -63,7 +63,7 @@ def create_user(args):
             }
         })
 
-        return True, error
+        return user_id, error
     else:
         return False, error
 

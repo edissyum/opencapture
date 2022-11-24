@@ -828,6 +828,7 @@
 		"upload_success": "Fichier(s) téléversé(s) avec succès"
 	},
 	"USER": {
+		"already_logged_in": "Votre compte est déjà connecté sur un autre poste. Une seule connexion est autorisée par utilisateur",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur <strong>{{ user }}</strong> ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver l'utilisateur <strong>{{ user }}</strong> ?",
 		"confirm_enable": "Êtes vous sûr de vouloir ré-activer l'utilisateur <strong>{{ user }}</strong> ?",

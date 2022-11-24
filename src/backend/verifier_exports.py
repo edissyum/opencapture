@@ -29,7 +29,7 @@ import xml.etree.ElementTree as Et
 from src.backend.import_classes import _MaarchWebServices
 
 
-def export_xml(data, log, regex, invoice_info):
+def export_xml(data, log, regex, invoice_info, database):
     folder_out = separator = filename = extension = ''
     parameters = data['options']['parameters']
     for setting in parameters:
@@ -62,7 +62,17 @@ def export_xml(data, log, regex, invoice_info):
                     new_field.text = str(invoice_info[technical])
 
             for invoice_data in invoice_info['datas']:
-                new_field = Et.SubElement(xml_datas, invoice_data)
+                value = invoice_data
+                if 'custom_' in invoice_data:
+                    custom_field = database.select({
+                        'select': ['label_short'],
+                        'table': ['custom_fields'],
+                        'where': ['id = %s', 'module = %s'],
+                        'data': [invoice_data.replace('custom_', ''), 'verifier']
+                    })
+                    if custom_field and custom_field[0]:
+                        value = 'custom_' + custom_field[0]['label_short']
+                new_field = Et.SubElement(xml_datas, value)
                 new_field.text = str(invoice_info['datas'][invoice_data])
 
             xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
