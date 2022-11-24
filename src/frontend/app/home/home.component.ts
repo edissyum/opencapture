@@ -17,8 +17,8 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 import { Component, OnInit } from '@angular/core';
 import { UserService } from "../../services/user.service";
-import { PrivilegesService } from "../../services/privileges.service";
 import { LocalStorageService } from "../../services/local-storage.service";
+import { PrivilegesService } from "../../services/privileges.service";
 
 @Component({
     selector: 'app-home',
