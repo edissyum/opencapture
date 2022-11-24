@@ -52,7 +52,6 @@ class Files:
         self.height_ratio = ''
         self.languages = languages
         self.docservers = docservers
-        self.compression_quality = 100
         self.configurations = configurations
         self.jpg_name = img_name + '.jpg'
         self.jpg_name_last = img_name + '_last.jpg'
