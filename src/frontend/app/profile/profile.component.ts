@@ -36,12 +36,12 @@ import { HistoryService } from "../../services/history.service";
     styleUrls: ['./profile.component.scss']
 })
 export class UserProfileComponent implements OnInit {
-    loading         : boolean       = true;
-    userId          : any;
-    profile         : any;
-    headers         : HttpHeaders   = this.authService.headers;
-    roles           : any[]         = [];
-    profileForm     : any[]         = [
+    headers                     : HttpHeaders   = this.authService.headers;
+    loading                     : boolean       = true;
+    userId                      : any;
+    profile                     : any;
+    roles                       : any[]         = [];
+    profileForm                 : any[]         = [
         {
             id: 'firstname',
             label: this.translate.instant('USER.firstname'),
@@ -79,6 +79,7 @@ export class UserProfileComponent implements OnInit {
             required: false
         }
     ];
+    disablePasswordModification : boolean       = false;
 
     constructor(
         private http: HttpClient,
@@ -98,12 +99,35 @@ export class UserProfileComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
-        this.userId = this.route.snapshot.params['id'];
+        this.http.get(environment['url'] + '/ws/auth/retrieveLoginMethodName').pipe(
+            tap((data: any) => {
+                data.login_methods.forEach((method: any) => {
+                    if (method.enabled) {
+                        if (method.method_name !== 'default') {
+                            this.disablePasswordModification = true;
+                        }
+                    }
+                });
+            }),
+            catchError ((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of (false);
+            })
+        ).subscribe();
 
-        if (parseInt(this.userId) !== parseInt(this.userService.user.id)) {
+        this.userId = parseInt(this.route.snapshot.params['id']);
+        let loggedUserId = this.userService.user.id;
+        if (loggedUserId === undefined) {
+            loggedUserId = this.userService.getUserFromLocal().id;
+        }
+
+        if (this.userId !== parseInt(loggedUserId)) {
             if (!this.privilegeService.hasPrivilege('update_user')) {
-                this.notify.error(this.translate.instant('ERROR.unauthorized'));
-                this.router.navigateByUrl('/home').then();
+                this.translate.get('ERROR.unauthorized').subscribe((translated: string) => {
+                    this.notify.error(translated);
+                    this.router.navigateByUrl('/home').then();
+                });
             }
         }
 
@@ -164,6 +188,7 @@ export class UserProfileComponent implements OnInit {
 
     onSubmit() {
         if (this.isValidForm()) {
+            this.loading = true;
             const user : any = {};
             this.profileForm.forEach(element => {
                 user[element.id] = element.control.value;
@@ -178,9 +203,9 @@ export class UserProfileComponent implements OnInit {
                     this.notify.success(this.translate.instant('USER.profile_updated'));
                     if (this.userId === this.userService.user.id) {
                         this.userService.setUser(data.user);
-                        this.authService.setTokenUser(btoa(JSON.stringify(this.userService.getUser())), data.minutes_before_exp);
                     }
                 }),
+                finalize(() => this.loading = false),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);

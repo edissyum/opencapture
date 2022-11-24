@@ -29,7 +29,6 @@ import { FormBuilder, FormControl } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
-
 @Component({
   selector: 'app-login-methods',
   templateUrl: './login-methods.component.html',
@@ -43,14 +42,13 @@ export class LoginMethodsComponent implements OnInit {
     showPassword            : boolean   = false;
     isLdapChecked           : boolean   = false;
     isDefaultChecked        : boolean   = false;
-    connexion_server_status : boolean   = false;
-    synchro_users_status    : boolean   = false;
-    typeAd                  : string    = '';
+    connexionServerStatus   : boolean   = false;
+    synchroUsersStatus      : boolean   = false;
     label                   : any[]     = [
         marker ('LOGIN-METHODS.ldap'),
         marker ('LOGIN-METHODS.default'),
     ];
-    login_methods_data      : any[]     = [
+    loginMethods      : any[]     = [
         {
             login_method_name : '',
             enabled :''
@@ -202,10 +200,10 @@ export class LoginMethodsComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
-        this.http.post(environment['url'] + '/ws/auth/retrieveLoginMethodName', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/auth/retrieveLoginMethodName').pipe(
             tap((data: any) => {
-                this.login_methods_data = data.login_methods_data;
-                for ( const login_method_name of this.login_methods_data ) {
+                this.loginMethods = data.login_methods;
+                for ( const login_method_name of this.loginMethods ) {
                     if (login_method_name['method_name'] === 'default') {
                         this.isDefaultChecked = !!login_method_name['enabled'];
                     }
@@ -356,12 +354,12 @@ export class LoginMethodsComponent implements OnInit {
             });
             this.http.post(environment['url'] + '/ws/auth/connectionLdap', server_data,{headers: this.authService.headers}).pipe(
             tap(() => {
-                this.connexion_server_status = true;
+                this.connexionServerStatus = true;
                 this.notify.success(this.translate.instant('LOGIN-METHODS.server_ldap_connection'));
             }),
             catchError ((err: any) => {
                 this.isSaveBtnDisabled = true;
-                this.connexion_server_status = false;
+                this.connexionServerStatus = false;
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of (false);
@@ -384,13 +382,13 @@ export class LoginMethodsComponent implements OnInit {
             tap((data: any) => {
                 this.isSaveBtnDisabled = false;
                 this.isLaunchBtnDisabled = false;
-                this.synchro_users_status = true;
+                this.synchroUsersStatus = true;
                 this.notify.success(this.translate.instant('LOGIN-METHODS.result_synchronization_operation', {'users_added':data['create_users'],'users_updated':data['update_users'],'users_disabled':data['disabled_users']}));
             }),
             catchError ((err: any) => {
                 this.isSaveBtnDisabled = true;
                 this.isLaunchBtnDisabled = false;
-                this.synchro_users_status = false;
+                this.synchroUsersStatus = false;
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of (false);
@@ -401,7 +399,7 @@ export class LoginMethodsComponent implements OnInit {
 
     saveLoginMethodConfigs(): void {
         if (this.isValidSynchronizationForm() && this.isValidConnexionForm()) {
-            if (this.connexion_server_status && this.synchro_users_status) {
+            if (this.connexionServerStatus && this.synchroUsersStatus) {
                 const methodDataToSave : any = {};
                 this.connectionFormGroup.forEach(element => {
                     methodDataToSave[element.id] = element.control.value;

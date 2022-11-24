@@ -247,10 +247,10 @@ def update_login_method(login_method_name , server_data):
 
 
 def retrieve_login_methods():
-    login_methods_data, error = auth.retrieve_login_methods()
+    login_methods, error = auth.retrieve_login_methods()
     if error is None:
         response = {
-            "login_methods_data": login_methods_data
+            "login_methods": login_methods
         }
         return response, 200
 

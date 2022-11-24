@@ -216,7 +216,7 @@ def save_login_method():
     return make_response(res[0], res[1])
 
 
-@bp.route('auth/retrieveLoginMethodName', methods=['POST'])
+@bp.route('auth/retrieveLoginMethodName', methods=['GET'])
 def get_login_methods_name():
     res = auth.retrieve_login_methods()
     if not res:
@@ -230,6 +230,7 @@ def get_login_methods_name():
 
 
 @bp.route('auth/disableLoginMethodName', methods=['POST'])
+@auth.token_required
 def disable_login_method():
     login_method_name = json.loads(request.data.decode("utf8"))
     res = auth.disable_login_method(login_method_name['method_name'])
