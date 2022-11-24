@@ -15,7 +15,7 @@ ALTER TABLE users ADD COLUMN "last_connection" TIMESTAMP;
 
 INSERT INTO configurations ("label", "data") VALUES ('allowUserMultipleLogin', '{"type": "bool", "value": true, "description": "Autoriser un utilisateur à être connecté sur plusieurs machines simultanément"}');
 
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (7, 'export_openads', 'Export OpenADS','{
+INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "data", "module") VALUES ('export_openads', 'Export OpenADS','{
   "options": {
     "auth": [
       {
@@ -68,4 +68,3 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 8;
