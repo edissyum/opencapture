@@ -265,6 +265,7 @@
 		"modify": "Modifier le formulaire",
 		"modify_display": "Modifier l'affichage lié au formulaire",
 		"no_form_available": "Aucun formulaire n'est disponible",
+		"only_ocr": "OCRiser simplement le document",
 		"other": "Autres",
 		"output_settings": "Chaînes sortantes",
 		"output_type_mandatory": "Le type de chaîne sortante est obligatoire",

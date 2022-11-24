@@ -24,6 +24,8 @@ fi
 ####################
 # Put the default paths.
 # Modify them if needed
+bold=$(tput bold)
+normal=$(tput sgr0)
 currentDate=$(date +%m%d%Y-%H%M%S)
 OpenCapturePath="/var/www/html/opencapture/"
 backupPath="/var/www/html/opencapture.$currentDate"
