@@ -15,8 +15,8 @@
 
 # @dev : Oussama Brich <oussaba.brich@edissyum.com>
 
-from src.backend.import_controllers import auth, tasks_watcher
 from flask import Blueprint, make_response, jsonify, request
+from src.backend.import_controllers import auth, tasks_watcher
 
 bp = Blueprint('task_watcher', __name__, url_prefix='/ws/')
 

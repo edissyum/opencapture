@@ -27,8 +27,9 @@ import { environment } from  "../../app/env";
     templateUrl: 'notification.service.html',
     styleUrls: ['notification.service.scss'],
 })
+
 export class CustomSnackbarComponent {
-    constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) { }
+    constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) {}
 
     dismiss() {
         this.data.close();
@@ -38,32 +39,87 @@ export class CustomSnackbarComponent {
 @Injectable()
 export class NotificationService {
     constructor(
-        public translate: TranslateService,
         private router: Router,
-        public snackBar: MatSnackBar)
-    { }
+        public snackBar: MatSnackBar,
+        public translate: TranslateService
+    ) {}
 
     success(message: string, _duration?: number) {
         const duration = _duration ? this.getMessageDuration(message, _duration):
             this.getMessageDuration(message, 2000);
-        const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
-            duration: duration,
-            panelClass: ['success-snackbar', 'mt-20', 'mr-3'],
-            verticalPosition : 'top',
-            horizontalPosition: 'right',
-            data: { message: message, icon: 'info-circle', close: () => {snackBar.dismiss();} }
-        });
+
+        if (this.snackBar._openedSnackBarRef) {
+            if (!this.snackBar._openedSnackBarRef.instance.data.message.includes(this.translate.instant('USER.already_logged_in'))) {
+                setTimeout(() => {
+                    const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
+                        duration: duration,
+                        panelClass: ['success-snackbar', 'mt-20', 'mr-3'],
+                        verticalPosition : 'top',
+                        horizontalPosition: 'right',
+                        data: {
+                            message: message,
+                            icon: 'info-circle',
+                            close: () => {
+                                snackBar.dismiss();
+                            }
+                        }
+                    });
+                }, duration);
+            }
+        } else {
+            const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
+                duration: duration,
+                panelClass: ['success-snackbar', 'mt-20', 'mr-3'],
+                verticalPosition : 'top',
+                horizontalPosition: 'right',
+                data: {
+                    message: message,
+                    icon: 'info-circle',
+                    close: () => {
+                        snackBar.dismiss();
+                    }
+                }
+            });
+        }
     }
 
     error(message: string, url: any = null) {
-        const duration = this.getMessageDuration(message, 8000);
-        const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
-            duration: duration,
-            panelClass: ['error-snackbar', 'mt-20', 'mr-3'],
-            verticalPosition : 'top',
-            horizontalPosition: 'right',
-            data: { url: url, message: message, icon: 'exclamation-triangle', close: () => {snackBar.dismiss();} }
-        });
+        const duration = this.getMessageDuration(message, 6000);
+        if (this.snackBar._openedSnackBarRef) {
+            if (!this.snackBar._openedSnackBarRef.instance.data.message.includes(this.translate.instant('USER.already_logged_in'))) {
+                setTimeout(() => {
+                    const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
+                        duration: duration,
+                        panelClass: ['error-snackbar', 'mt-20', 'mr-3'],
+                        verticalPosition : 'top',
+                        horizontalPosition: 'right',
+                        data: {
+                            url: url,
+                            message: message,
+                            icon: 'exclamation-triangle',
+                            close: () => {
+                                snackBar.dismiss();
+                            }
+                        }
+                    });
+                }, duration / 3.5);
+            }
+        } else {
+            const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
+                duration: duration,
+                panelClass: ['error-snackbar', 'mt-20', 'mr-3'],
+                verticalPosition : 'top',
+                horizontalPosition: 'right',
+                data: {
+                    url: url,
+                    message: message,
+                    icon: 'exclamation-triangle',
+                    close: () => {
+                        snackBar.dismiss();
+                    }
+                }
+            });
+        }
     }
 
     handleErrors(err: any, route='') {

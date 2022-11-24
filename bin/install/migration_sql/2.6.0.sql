@@ -5,3 +5,12 @@ INSERT INTO "form_models" ("label", "default_form", "outputs", "module", "settin
     "delete_documents_after_outputs": true
 }');
 INSERT INTO "form_models_field" ("form_id", "fields") VALUES (2, '{"other": [], "supplier": []}');
+
+ALTER TABLE mailcollect ALTER COLUMN secured_connection TYPE BOOLEAN USING(secured_connection::boolean);
+ALTER TABLE mailcollect ALTER COLUMN secured_connection SET DEFAULT true;
+
+ALTER TABLE addresses ALTER COLUMN postal_code TYPE VARCHAR(50);
+
+ALTER TABLE users ADD COLUMN "last_connection" TIMESTAMP;
+
+INSERT INTO configurations ("label", "data") VALUES ('allowUserMultipleLogin', '{"type": "bool", "value": true, "description": "Autoriser un utilisateur à être connecté sur plusieurs machines simultanément"}');

@@ -105,7 +105,7 @@ def get_customers_by_user_id(user_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('users/customers/update/<int:user_id>', methods=['put'])
+@bp.route('users/customers/update/<int:user_id>', methods=['PUT'])
 @auth.token_required
 def update_customers_by_user_id(user_id):
     customers = request.json['customers']

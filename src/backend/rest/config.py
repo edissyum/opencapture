@@ -122,7 +122,8 @@ def get_login_image():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('config/updateLoginimage', methods=['PUT'])
+@bp.route('config/updateLoginImage', methods=['PUT'])
+@auth.token_required
 def update_login_image():
     image_content = request.json['args']['image_content']
     res = config.update_login_image(image_content)

@@ -24,10 +24,10 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 
 def create_user(args):
-    _, error = user.create_user(args)
+    res, error = user.create_user(args)
 
     if error is None:
-        return '', 200
+        return {'id': res}, 200
     else:
         response = {
             "errors": gettext('CREATE_USER_ERROR'),

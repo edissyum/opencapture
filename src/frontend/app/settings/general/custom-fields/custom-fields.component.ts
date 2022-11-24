@@ -31,6 +31,7 @@ import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
+import { remove } from "remove-accents";
 
 @Component({
     selector: 'app-custom-fields',
@@ -137,6 +138,18 @@ export class CustomFieldsComponent implements OnInit {
         this.serviceSettings.init();
         this.retrieveCustomFields();
         this.form = this.toFormGroup();
+        this.addFieldInputs.forEach((element: any) => {
+            if (element.field_id === 'label_short') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    if (value.match(/[\u00C0-\u017F]/g) !== null) {
+                        element.control.setValue(remove(value));
+                    }
+                    if (value.match(/[^\u00C0-\u017Fa-zA-Z]/g) !== null) {
+                        element.control.setValue(value.replace(/[^\u00C0-\u017Fa-zA-Z]/g, ""));
+                    }
+                });
+            }
+        });
     }
 
     dropCustomField(event: CdkDragDrop<string[]>) {

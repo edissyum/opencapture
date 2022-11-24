@@ -830,6 +830,7 @@
 		"upload_success": "File upload successfully"
 	},
 	"USER": {
+		"already_logged_in": "Your account is already log in another machine. Only one connection is allowed per account",
 		"confirm_delete": "Are you sure you want to delete user <strong>{{ user }}</strong> ?",
 		"confirm_disable": "Are you sure you want to delete user <strong>{{ user }}</strong> ?",
 		"confirm_enable": "Are you sure you want to delete user <strong>{{ user }}</strong> ?",

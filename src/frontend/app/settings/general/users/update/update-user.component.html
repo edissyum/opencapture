@@ -96,9 +96,13 @@
         <div class="flex justify-center items-center align-middle">
             <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
                 <ng-container *ngFor="let field of userForm">
-                    <mat-form-field class="block" *ngIf="field.type !== 'select'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [readonly]="field.id === 'username'" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                    <mat-form-field class="block" *ngIf="field.type !== 'select'"
+                                    [class.pointer-events-none]="field.type === 'password' && this.disablePasswordModification">
+                        <mat-label [class.text-gray-400]="field.type === 'password' && this.disablePasswordModification">
+                            {{ field.label | translate }}
+                        </mat-label>
+                        <input matInput [readonly]="field.id === 'username' || (field.type === 'password' && this.disablePasswordModification)"
+                               [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.type === 'select'">

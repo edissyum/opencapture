@@ -37,13 +37,13 @@ import { HistoryService } from "../../../../../services/history.service";
 })
 
 export class UpdateUserComponent implements OnInit {
-    headers         : HttpHeaders = this.authService.headers;
-    loading         : boolean = true;
-    loadingCustomers: boolean = true;
-    userId          : any;
-    user            : any;
-    roles           : any[] = [];
-    userForm        : any[] = [
+    headers                     : HttpHeaders   = this.authService.headers;
+    loading                     : boolean       = true;
+    loadingCustomers            : boolean       = true;
+    userId                      : any;
+    user                        : any;
+    roles                       : any[]         = [];
+    userForm                    : any[]         = [
         {
             id: 'username',
             label: this.translate.instant('USER.username'),
@@ -88,8 +88,9 @@ export class UpdateUserComponent implements OnInit {
             required: true
         }
     ];
-    customers       : any[] = [];
-    usersCustomers  : any[] = [];
+    customers                   : any[]         = [];
+    usersCustomers              : any[]         = [];
+    disablePasswordModification : boolean       = false;
 
     constructor(
         public router: Router,
@@ -109,6 +110,23 @@ export class UpdateUserComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         this.userId = this.route.snapshot.params['id'];
+
+        this.http.get(environment['url'] + '/ws/auth/retrieveLoginMethodName').pipe(
+            tap((data: any) => {
+                data.login_methods.forEach((method: any) => {
+                    if (method.enabled) {
+                        if (method.method_name !== 'default') {
+                            this.disablePasswordModification = true;
+                        }
+                    }
+                });
+            }),
+            catchError ((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of (false);
+            })
+        ).subscribe();
 
         this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
