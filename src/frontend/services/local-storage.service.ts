@@ -79,14 +79,17 @@ export class LocalStorageService {
     }
 
     setCookie(cname: string, cvalue: string, expMinutes: number) {
-        console.log(this.browser)
+        let sameSitePolicy = '';
+        if (this.browser === 'Chrome') {
+            sameSitePolicy = 'SameSite=None;Secure';
+        }
         const d = new Date();
         if (expMinutes !== 0) {
             d.setMinutes(d.getMinutes() + expMinutes);
             const expires = "expires=" + d.toUTCString();
-            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;SameSite=None;Secure";
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;" + sameSitePolicy;
         } else {
-            document.cookie = cname + "=" + cvalue + ";path=/;SameSite=None;Secure";
+            document.cookie = cname + "=" + cvalue + ";path=/;" + sameSitePolicy;
         }
     }
 
