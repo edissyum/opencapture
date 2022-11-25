@@ -33,6 +33,9 @@ def process(args, file, log, splitter, files, tmp_folder, config, docservers, oc
     :return: N/A
     """
     log.info('Processing file for separation : ' + file)
+    files.save_img_with_pdf2image(file, tmp_folder + "page")
+    list_files = files.sorted_file(tmp_folder, 'jpg')
+    blank_pages = []
 
     regex_content = {
         'invoice_number': regex['invoice_number'],
@@ -41,11 +44,6 @@ def process(args, file, log, splitter, files, tmp_folder, config, docservers, oc
         'siren': regex['siren'],
         'iban': regex['iban'],
     }
-
-    # Get the OCR of the file as a list of line content and position
-    files.pdf_to_jpg(file, open_img=False)
-    list_files = files.sorted_file(tmp_folder, 'jpg')
-    blank_pages = []
 
     # Remove blank pages
     if splitter.separator_qr.remove_blank_pages:

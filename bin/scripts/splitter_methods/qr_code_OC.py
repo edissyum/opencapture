@@ -30,8 +30,7 @@ def process(args, file, log, splitter, files, tmp_folder, config, docservers, oc
     :return: N/A
     """
     log.info('Processing file for separation : ' + file)
-
-    files.pdf_to_jpg(file, open_img=False, convert_module='pdf2jpg')
+    files.save_img_with_pdf2image(file, tmp_folder + "page")
     list_files = files.sorted_file(tmp_folder, 'jpg')
     blank_pages = []
 
