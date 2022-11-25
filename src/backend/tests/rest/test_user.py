@@ -42,7 +42,7 @@ class UserTest(unittest.TestCase):
 
         return self.app.post('/test/ws/users/new', headers={"Content-Type": "application/json"}, data=payload)
 
-    def test_successful_new_user(self):
+    def test_successful_create_user(self):
         user = self.create_user()
         self.assertEqual(int, type(user.json['id']))
         self.assertEqual(200, user.status_code)
