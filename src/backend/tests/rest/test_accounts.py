@@ -248,6 +248,102 @@ class UserTest(unittest.TestCase):
         self.assertEqual(dict, type(new_supplier[0]['pages']))
         self.assertEqual({'1': {'invoice_number': 1}}, new_supplier[0]['pages'])
 
+    def test_successful_delete_supplier(self):
+        supplier = self.create_supplier()
+        response = self.app.delete('/test/ws/accounts/suppliers/delete/' + str(supplier.json['id']),
+                                   headers={"Content-Type": "application/json",
+                                            'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+    
+        self.db.execute("SELECT status FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
+        new_user = self.db.fetchall()
+        self.assertEqual("DEL", new_user[0]['status'])
+
+    def test_successful_delete_supplier_positions(self):
+        supplier = self.create_supplier()
+        payload = {
+            "form_id": 1,
+            "invoice_number": {
+                "x": 467.72950819672127,
+                "y": 221.1547131147541,
+                "width": 343.171106557377,
+                "height": 88.9702868852459,
+                "ocr_from_user": True
+            }
+        }
+        self.app.put('/test/ws/accounts/supplier/' + str(supplier.json['id']) + '/updatePosition',
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
+                                json={'args': payload})
+        response = self.app.delete('/test/ws/accounts/suppliers/deletePositions/' + str(supplier.json['id']),
+                                   headers={"Content-Type": "application/json",
+                                            'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+
+        self.db.execute("SELECT positions FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
+        new_supplier = self.db.fetchall()
+        self.assertEqual({}, new_supplier[0]['positions'])
+
+    def test_successful_delete_supplier_position(self):
+        supplier = self.create_supplier()
+        payload = {
+            "form_id": 1,
+            "invoice_number": {
+                "x": 467.72950819672127,
+                "y": 221.1547131147541,
+                "width": 343.171106557377,
+                "height": 88.9702868852459,
+                "ocr_from_user": True
+            }
+        }
+        self.app.put('/test/ws/accounts/supplier/' + str(supplier.json['id']) + '/updatePosition',
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
+                                json={'args': payload})
+        payload = {
+            "form_id": 1,
+            "field_id": 'invoice_number'
+        }
+        response = self.app.put('/test/ws/accounts/suppliers/' + str(supplier.json['id']) + '/deletePosition',
+                                   headers={"Content-Type": "application/json",
+                                            'Authorization': 'Bearer ' + self.token}, json={'args': payload})
+        self.assertEqual(200, response.status_code)
+
+        self.db.execute("SELECT positions FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
+        new_supplier = self.db.fetchall()
+        self.assertEqual({'1': {}}, new_supplier[0]['positions'])
+
+    def test_successful_delete_supplier_page(self):
+        supplier = self.create_supplier()
+        payload = {
+            "form_id": 1,
+            "invoice_number": 1
+        }
+        self.app.put('/test/ws/accounts/supplier/' + str(supplier.json['id']) + '/updatePage',
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
+                                json={'args': payload})
+        payload = {
+            "form_id": 1,
+            "field_id": 'invoice_number'
+        }
+        response = self.app.put('/test/ws/accounts/suppliers/' + str(supplier.json['id']) + '/deletePage',
+                                   headers={"Content-Type": "application/json",
+                                            'Authorization': 'Bearer ' + self.token}, json={'args': payload})
+        self.assertEqual(200, response.status_code)
+
+        self.db.execute("SELECT pages FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
+        new_supplier = self.db.fetchall()
+        self.assertEqual({'1': {}}, new_supplier[0]['pages'])
+
+    def test_successful_update_supplier_skip_autovalidate(self):
+        supplier = self.create_supplier()
+        response = self.app.put('/test/ws/accounts/suppliers/skipAutoValidate/' + str(supplier.json['id']),
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+
+        self.db.execute("SELECT skip_auto_validate FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
+        new_supplier = self.db.fetchall()
+        self.assertTrue(new_supplier[0]['skip_auto_validate'])
+        self.assertEqual(200, supplier.status_code)
+
     def tearDown(self) -> None:
         self.db.execute("TRUNCATE TABLE accounts_supplier")
         self.db.execute("TRUNCATE TABLE addresses")
