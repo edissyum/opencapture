@@ -50,10 +50,8 @@ class Files:
         self.database = database
         self.regex = regex
         self.height_ratio = ''
-        self.resolution = 300
         self.languages = languages
         self.docservers = docservers
-        self.compression_quality = 100
         self.configurations = configurations
         self.jpg_name = img_name + '.jpg'
         self.jpg_name_last = img_name + '_last.jpg'
@@ -103,14 +101,11 @@ class Files:
     def open_img(self, img):
         self.img = Image.open(img)
 
-    def save_img_with_pdf2image(self, pdf_name, output, page=None, save_to_docservers=False):
+    def save_img_with_pdf2image(self, pdf_name, output, page=None):
         try:
             output = os.path.splitext(output)[0]
             bck_output = os.path.splitext(output)[0]
-            if save_to_docservers:
-                images = convert_from_path(pdf_name, first_page=page, last_page=page, fmt='jpeg', jpegopt={"quality": 80})
-            else:
-                images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=self.resolution)
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
             cpt = 1
             for i in range(len(images)):
                 if not page:
@@ -139,7 +134,8 @@ class Files:
 
             if output_name:
                 output = output_name
-            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=self.resolution)
+
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, 0, images[i].width, int(images[i].height - self.height_ratio))
@@ -156,9 +152,11 @@ class Files:
                 output = self.jpg_name_last_footer
             else:
                 output = self.jpg_name_footer
+
             if output_name:
                 output = output_name
-            images = convert_from_path(pdf_name, first_page=page, last_page=page)
+
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, self.height_ratio, images[i].width, images[i].height)
@@ -181,7 +179,6 @@ class Files:
         else:
             position[0][1] = line.position[0][1]
             position[1][1] = line.position[1][1]
-
         return position
 
     def get_pages(self, docservers, file):

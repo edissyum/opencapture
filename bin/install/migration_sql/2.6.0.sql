@@ -14,3 +14,6 @@ ALTER TABLE addresses ALTER COLUMN postal_code TYPE VARCHAR(50);
 ALTER TABLE users ADD COLUMN "last_connection" TIMESTAMP;
 
 INSERT INTO configurations ("label", "data") VALUES ('allowUserMultipleLogin', '{"type": "bool", "value": true, "description": "Autoriser un utilisateur à être connecté sur plusieurs machines simultanément"}');
+
+DELETE FROM configurations WHERE "label" = 'compressionQuality';
+DELETE FROM configurations WHERE "label" = 'resolution';
