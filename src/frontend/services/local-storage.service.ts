@@ -21,8 +21,34 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 export class LocalStorageService {
+    browser: string = '';
 
-    constructor() {}
+    constructor() {
+        if (this.browser === '') {
+            this.browser = this.detectBrowserVersion();
+        }
+    }
+
+    detectBrowserVersion() {
+        let tem;
+        const userAgent = navigator.userAgent;
+        let matchTest = userAgent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+
+        if(/trident/i.test(matchTest[1])) {
+            tem =  /\brv[ :]+(\d+)/g.exec(userAgent) || [];
+            return 'IE '+(tem[1] || '');
+        }
+
+        if(matchTest[1]=== 'Chrome') {
+            tem = userAgent.match(/\b(OPR|Edge)\/(\d+)/);
+            if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+        }
+        matchTest= matchTest[2]? [matchTest[1]] : [navigator.appName];
+        if ((tem = userAgent.match(/version\/(\d+)/i)) != null) {
+            matchTest.splice(1, 1, tem[1]);
+        }
+        return matchTest.join(' ');
+    }
 
     save(id: string, content: any) {
         localStorage.setItem(id, content);
@@ -53,13 +79,14 @@ export class LocalStorageService {
     }
 
     setCookie(cname: string, cvalue: string, expMinutes: number) {
+        console.log(this.browser)
         const d = new Date();
         if (expMinutes !== 0) {
             d.setMinutes(d.getMinutes() + expMinutes);
             const expires = "expires=" + d.toUTCString();
-            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;";
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;SameSite=None;Secure";
         } else {
-            document.cookie = cname + "=" + cvalue + ";path=/;";
+            document.cookie = cname + "=" + cvalue + ";path=/;SameSite=None;Secure";
         }
     }
 
