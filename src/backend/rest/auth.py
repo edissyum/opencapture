@@ -84,7 +84,6 @@ def logout():
 
 
 @bp.route('auth/getEnabledLoginMethod', methods=['GET'])
-@auth.token_required
 def get_enabled_login_method():
     res = auth.get_enabled_login_method()
     return make_response(res[0], res[1])
@@ -140,7 +139,6 @@ def save_login_method():
 
 
 @bp.route('auth/retrieveLoginMethodName', methods=['GET'])
-@auth.token_required
 def get_login_methods_name():
     res = auth.retrieve_login_methods()
     if not res:
