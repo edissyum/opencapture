@@ -14,8 +14,6 @@ import { FormControl } from '@angular/forms';
 import { Sort } from "@angular/material/sort";
 import { MatDialog } from "@angular/material/dialog";
 import { HistoryService } from "../../../../services/history.service";
-import { LastUrlService } from "../../../../services/last-url.service";
-import { LocalStorageService } from "../../../../services/local-storage.service";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
 
 @Component({
