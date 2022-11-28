@@ -629,7 +629,7 @@ export class VerifierListComponent implements OnInit {
 
     deleteConfirmDialog(invoiceId: number) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('VERIFIER.confirm_delete_document'),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -650,7 +650,7 @@ export class VerifierListComponent implements OnInit {
 
     displayInvoiceLocked(lockedBy: any) {
         this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('VERIFIER.document_locked'),
                 confirmText         : this.translate.instant('VERIFIER.document_locked_by', {'locked_by': lockedBy}),
                 confirmButton       : this.translate.instant('GLOBAL.confirm'),
@@ -662,7 +662,7 @@ export class VerifierListComponent implements OnInit {
 
     deleteAllConfirmDialog() {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('VERIFIER.confirm_delete_all_documents'),
                 confirmButton       : this.translate.instant('GLOBAL.delete_all_checked'),

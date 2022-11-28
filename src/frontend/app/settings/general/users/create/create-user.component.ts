@@ -18,7 +18,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, FormControl } from "@angular/forms";
+import {FormBuilder, FormControl, Validators} from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -44,7 +44,7 @@ export class CreateUserComponent implements OnInit {
             id: 'username',
             label: this.translate.instant('USER.username'),
             type: 'text',
-            control: new FormControl(),
+            control: new FormControl('', Validators.maxLength(50)),
             required: true,
         },
         {
@@ -60,6 +60,13 @@ export class CreateUserComponent implements OnInit {
             type: 'text',
             control: new FormControl(),
             required: true
+        },
+        {
+            id: 'email',
+            label: this.translate.instant('USER.email'),
+            type: 'text',
+            control: new FormControl('', Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")),
+            required: false
         },
         {
             id: 'password',

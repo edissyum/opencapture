@@ -314,7 +314,7 @@ export class CustomFieldsComponent implements OnInit {
                 tap((data: any) => {
                     if (data) {
                         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-                            data:{
+                            data: {
                                 confirmTitle        : this.translate.instant('CUSTOM-FIELDS.custom_exists'),
                                 confirmText         : this.translate.instant('CUSTOM-FIELDS.confirm_delete'),
                                 confirmButton       : this.translate.instant('GLOBAL.delete'),

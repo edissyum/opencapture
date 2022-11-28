@@ -75,96 +75,42 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button
-                    (click)="sidenav.toggle();" class="absolute left-2 top-2">
+            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-2">
                 <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened"
                    class="fa-solid fa-stream text-2xl text-gray-900"></i>
             </button>
             <h3 class="text-center">{{ this.serviceSettings.getTitle() }}</h3>
-            <div class="absolute right-4 top-0">
-                <mat-form-field appearance="outline">
-                    <mat-label>{{ 'USER.search_user' | translate }}</mat-label>
-                    <input matInput type="text" [disabled]="this.loading" (keyup)="searchUser($event)">
-                </mat-form-field>
-            </div>
             <hr class="border-green-400">
         </div>
-        <mat-table matSort [dataSource]="users" (matSortChange)="sortData($event)" class="w-full">
-            <ng-container matColumnDef="id">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="username">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.username' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.username }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="firstname">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.firstname' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.firstname }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="lastname">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.lastname' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.lastname }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="role">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.role' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.role_label }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="status">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                    <span *ngIf="element.enabled "> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.active' | translate }}</span>
-                    <span *ngIf="!element.enabled"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.inactive' | translate }}</span>
-                </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="actions">
-                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                    <button *ngIf="element.enabled"
-                            (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.username)"
-                            matTooltip="{{ 'USER.disable' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="fa-solid fa-pause fa-lg"></i>
-                    </button>
-                    <button *ngIf="!element.enabled"
-                            (click)="$event.stopPropagation();enableConfirmDialog(element.id, element.username)"
-                            matTooltip="{{ 'USER.enable' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="fa-solid fa-play fa-lg"></i>
-                    </button>
-                    <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.username)"
-                            matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="fa-solid fa-trash fa-lg"></i>
-                    </button>
-                </mat-cell>
-            </ng-container>
-            <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                     routerLink="/settings/general/users/update/{{ row.id }}"
-                     class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
-        </mat-table>
-        <mat-paginator showFirstLastButtons
-                       [length]="this.total"
-                       [pageSize]="pageSize"
-                       [pageIndex]="pageIndex"
-                       [pageSizeOptions]="[5, 10, 15, 20, 50]"
-                       (page)="onPageChange($event)">
-        </mat-paginator>
-        <div *ngIf="this.userQuotaConfig.enabled" class="text-center">
-            <hr class="border-green-400 w-1/3 mx-auto my-2">
-            <span class="text-xl">
-                {{ 'USER-QUOTA.informations' | translate }}
-                <span class="cursor-default relative top-7 text-green-400 text-8xl"
-                      [class.text-green-400] = "this.activeUser < this.userQuotaConfig.quota"
-                      [class.text-red-400] = "this.activeUser > this.userQuotaConfig.quota"
-                      [class.text-orange-400] = "this.activeUser === this.userQuotaConfig.quota">&bull;</span>
-            </span>
-            <div class="m-2 mt-8 text-base">
-                {{ 'USER-QUOTA.quota_number' | translate }} : {{ this.userQuotaConfig.quota }}
+        <div *ngIf="!this.loading" class="w-full overflow-auto" style="height: calc(100% - 64px)">
+            <app-hint [message]="'USER-QUOTA.description' | translate"></app-hint>
+            <hr class="border-green-400 w-1/3 mx-auto my-4">
+            <div class="w-1/3 mx-auto my-10 text-center">
+                <mat-checkbox [(ngModel)]="quotaEnabled" matTooltip="{{ 'USER-QUOTA.enabled' | translate }}">
+                    {{ 'USER-QUOTA.enabled' | translate }}
+                </mat-checkbox>
             </div>
-            <div class="m-2 text-base">
-                {{ 'USER.enabled' | translate }} : {{ this.activeUser }}
+            <div class="flex justify-center items-center align-middle">
+                <mat-form-field class="block p-4 w-1/3">
+                    <mat-label>{{ 'USER-QUOTA.quota_number' | translate }}</mat-label>
+                    <input matInput type="number" [(ngModel)]="quotaNumber"/>
+                </mat-form-field>
+                <mat-form-field class="block p-4 w-1/3">
+                    <mat-label>{{ 'USER-QUOTA.filtered_users' | translate }}</mat-label>
+                    <mat-select [formControl]="usersControlSelect" [multiple]="true" [value]="this.quotaUsersfiltered">
+                        <mat-option *ngFor="let option of this.usersList" [value]="option['id']">{{ option['lastname'] + ' ' + option['firstname'] }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="block p-4 w-1/3">
+                    <mat-label>{{ 'USER-QUOTA.email_dest' | translate }}</mat-label>
+                    <input matInput type="text" [formControl]="this.quotaEmailDestControl"/>
+                </mat-form-field>
+            </div>
+            <div class="flex justify-center m-6">
+                <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition
+                                duration-300" type="submit" mat-button (click)="updateQuotaNumber()">
+                    {{ 'USER-QUOTA.update' | translate }}
+                </button>
             </div>
         </div>
     </mat-sidenav-content>

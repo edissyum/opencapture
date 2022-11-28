@@ -41,6 +41,16 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('mailCollectGe
     },
     "description": "Paramétrage par défaut du MailCollect"
 }', false);
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('userQuota', '{
+    "type": "json",
+    "value": {
+        "enabled": false,
+        "quota": 20,
+        "users_filtered": ["admin", "admin_fct"],
+        "email_dest": ""
+    },
+    "description": ""
+}', false);
 
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture', '/var/www/html/opencapture/');
@@ -625,9 +635,10 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'ad
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'login_methods', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (54, 'verifier_display', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (55, 'mailcollect', 'general');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 55;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (53, 'verifier_display', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (54, 'mailcollect', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (55, 'user_quota', 'general');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 56;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

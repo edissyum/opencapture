@@ -41,7 +41,7 @@ class RolesTest(unittest.TestCase):
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                              data=payload)
 
-    def test_successful_new_role(self):
+    def test_successful_create_role(self):
         role = self.create_role()
         self.assertEqual(int, type(role.json['id']))
         self.assertEqual(200, role.status_code)

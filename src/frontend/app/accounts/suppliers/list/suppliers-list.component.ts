@@ -142,7 +142,7 @@ export class SuppliersListComponent implements OnInit {
 
     deleteConfirmDialog(supplierId: number, supplier: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('ACCOUNTS.confirm_delete_supplier', {"supplier": supplier}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -162,7 +162,7 @@ export class SuppliersListComponent implements OnInit {
 
     deletePositionsConfirmDialog(supplierId: number, supplier: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('ACCOUNTS.confirm_delete_supplier_positions', {"supplier": supplier}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -218,7 +218,7 @@ export class SuppliersListComponent implements OnInit {
 
     skipAutoValidate(supplierId: number) {
         if (supplierId !== undefined) {
-            this.http.delete(environment['url'] + '/ws/accounts/suppliers/skipAutoValidate/' + supplierId, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/accounts/suppliers/skipAutoValidate/' + supplierId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('ACCOUNTS.skip_validated_success'));
                 }),

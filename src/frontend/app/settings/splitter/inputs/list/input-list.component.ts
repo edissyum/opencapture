@@ -138,7 +138,7 @@ export class SplitterInputListComponent implements OnInit {
 
     duplicateConfirmDialog(inputId: number, input: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('INPUT.confirm_duplicate', {"input": input}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),

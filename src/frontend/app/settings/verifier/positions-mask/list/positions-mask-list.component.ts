@@ -121,7 +121,7 @@ export class PositionsMaskListComponent implements OnInit {
 
     deleteConfirmDialog(positionMaskId: number, positionsMask: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_delete', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -141,7 +141,7 @@ export class PositionsMaskListComponent implements OnInit {
 
     duplicateConfirmDialog(positionMaskId: number, positionsMask: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_duplicate', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
@@ -161,7 +161,7 @@ export class PositionsMaskListComponent implements OnInit {
 
     disableConfirmDialog(positionsMaskId: number, positionsMask: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_disable', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
@@ -180,7 +180,7 @@ export class PositionsMaskListComponent implements OnInit {
 
     enableConfirmDialog(positionsMaskId: number, positionsMask: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_enable', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),

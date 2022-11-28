@@ -144,7 +144,7 @@ export class OutputsListComponent implements OnInit {
 
     duplicateConfirmDialog(outputId: number, output: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('OUTPUT.confirm_duplicate', {"output": output}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
