@@ -264,21 +264,11 @@ export class MailCollectComponent implements OnInit {
         private notify: NotificationService,
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
     ) { }
 
     ngOnInit(): void {
         this.serviceSettings.init();
-
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/general/mailcollect') || lastUrl === '/') {
-            if (this.localStorageService.get('mailCollectPageIndex'))
-                this.pageIndex = parseInt(this.localStorageService.get('mailCollectPageIndex') as string);
-            this.offset = this.pageSize * (this.pageIndex);
-        } else
-            this.localStorageService.remove('mailCollectPageIndex');
 
         this.http.get(environment['url'] + '/ws/config/getConfiguration/mailCollectGeneral', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -389,6 +379,7 @@ export class MailCollectComponent implements OnInit {
         this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + this.mailCollectConfigId, {'data': data}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('MAILCOLLECT.general_settings_updated'));
+                this.historyService.addHistory('general', 'mailcollect', this.translate.instant('HISTORY-DESC.mailcollect_general_settings_updated'));
             }),
             finalize(() => this.processLoading = false),
             catchError((err: any) => {
@@ -931,19 +922,6 @@ export class MailCollectComponent implements OnInit {
         } else {
             return array;
         }
-    }
-
-    searchProcess(event: any) {
-        this.search = event.target.value;
-        this.loadProcess();
-    }
-
-    onPageChange(event: any) {
-        this.pageSize = event.pageSize;
-        this.offset = this.pageSize * (event.pageIndex);
-        this.pageIndex = event.pageIndex;
-        this.localStorageService.save('mailCollectPageIndex', event.pageIndex);
-        this.loadProcess();
     }
 
     sortData(sort: Sort) {
