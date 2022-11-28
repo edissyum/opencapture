@@ -678,7 +678,7 @@ export class MailCollectComponent implements OnInit {
     duplicateConfirmDialog(process: any) {
         const processName = this.getNameOfProcess(process);
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_duplicate_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
@@ -710,7 +710,7 @@ export class MailCollectComponent implements OnInit {
     disableConfirmDialog(process: any) {
         const processName = this.getNameOfProcess(process);
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_disable_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
@@ -749,7 +749,7 @@ export class MailCollectComponent implements OnInit {
     enableConfirmDialog(process: any) {
         const processName = this.getNameOfProcess(process);
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_enable_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
@@ -788,7 +788,7 @@ export class MailCollectComponent implements OnInit {
     deleteConfirmDialog(process: any) {
         const processName = this.getNameOfProcess(process);
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_delete_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),

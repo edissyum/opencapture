@@ -596,7 +596,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     onFormChange(newFormId: number): void{
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('GLOBAL.confirm_form_change'),
                 confirmButton       : this.translate.instant('GLOBAL.confirm_modification'),
@@ -813,7 +813,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             this.translate.instant('SPLITTER.confirm_delete_document_empty');
 
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : confirmMessage,
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -855,7 +855,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             return;
 
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('SPLITTER.confirm_delete_pages', {"pagesCount": this.currentBatch.selectedPagesCount}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -963,7 +963,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     cancel(): void {
         if (this.isDataEdited) {
             const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-                data:{
+                data: {
                     confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                     confirmText         : this.translate.instant('SPLITTER.quit_without_saving_modifications'),
                     confirmButton       : this.translate.instant('SPLITTER.quit_without_saving'),
@@ -1020,7 +1020,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
 
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('SPLITTER.confirm_validate'),
                 confirmButton       : this.translate.instant('SPLITTER.validate_batch'),

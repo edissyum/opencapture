@@ -142,7 +142,7 @@ export class SuppliersListComponent implements OnInit {
 
     deleteConfirmDialog(supplierId: number, supplier: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('ACCOUNTS.confirm_delete_supplier', {"supplier": supplier}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -162,7 +162,7 @@ export class SuppliersListComponent implements OnInit {
 
     deletePositionsConfirmDialog(supplierId: number, supplier: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('ACCOUNTS.confirm_delete_supplier_positions', {"supplier": supplier}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),

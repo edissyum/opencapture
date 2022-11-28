@@ -185,7 +185,7 @@ export class UsersListComponent implements OnInit {
 
     deleteConfirmDialog(userId: number, user: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('USER.confirm_delete', {"user": user}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -205,7 +205,7 @@ export class UsersListComponent implements OnInit {
 
     disableConfirmDialog(userId: number, user: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('USER.confirm_disable', {"user": user}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
@@ -225,7 +225,7 @@ export class UsersListComponent implements OnInit {
 
     enableConfirmDialog(userId: number, user: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('USER.confirm_enable', {"user": user}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),

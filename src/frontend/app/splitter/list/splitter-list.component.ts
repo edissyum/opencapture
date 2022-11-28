@@ -168,7 +168,7 @@ export class SplitterListComponent implements OnInit {
 
     mergeAllConfirmDialog(parentId: number) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('SPLITTER.confirm_merge_all_checked_batches'),
                 confirmButton       : this.translate.instant('SPLITTER.merge'),
@@ -240,7 +240,7 @@ export class SplitterListComponent implements OnInit {
 
     deleteAllConfirmDialog() {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('SPLITTER.confirm_delete_all_batches'),
                 confirmButton       : this.translate.instant('GLOBAL.delete_all_checked'),

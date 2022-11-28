@@ -132,7 +132,7 @@ export class FormListComponent implements OnInit {
                 inputListLabel.push(input.input_label);
             });
             const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-                data:{
+                data: {
                     confirmTitle        : this.translate.instant('GLOBAL.new_input_link'),
                     confirmText         : this.translate.instant('FORMS.inputs_list_already_linked', {"inputsList": inputListLabel.join('<br>')}),
                     selectValues        : forms,
@@ -153,7 +153,7 @@ export class FormListComponent implements OnInit {
             });
         } else {
             const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-                data:{
+                data: {
                     confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                     confirmText         : this.translate.instant('FORMS.confirm_delete', {"form": form}),
                     confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -174,7 +174,7 @@ export class FormListComponent implements OnInit {
 
     duplicateConfirmDialog(formId: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('FORMS.confirm_duplicate', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
@@ -194,7 +194,7 @@ export class FormListComponent implements OnInit {
 
     disableConfirmDialog(formId: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('FORMS.confirm_disable', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
@@ -214,7 +214,7 @@ export class FormListComponent implements OnInit {
 
     enableConfirmDialog(formId: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('FORMS.confirm_enable', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
