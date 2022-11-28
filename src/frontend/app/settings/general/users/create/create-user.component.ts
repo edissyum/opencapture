@@ -44,7 +44,7 @@ export class CreateUserComponent implements OnInit {
             id: 'username',
             label: this.translate.instant('USER.username'),
             type: 'text',
-            control: new FormControl('', Validators.maxLength(20)),
+            control: new FormControl('', Validators.maxLength(50)),
             required: true,
         },
         {

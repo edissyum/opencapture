@@ -32,3 +32,5 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('userQuota', '
     },
     "description": ""
 }', false);
+
+ALTER TABLE "users" ALTER COLUMN "username" TYPE VARCHAR(50);
