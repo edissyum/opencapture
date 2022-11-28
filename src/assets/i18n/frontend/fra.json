@@ -836,6 +836,7 @@
 		"created": "Utilisateur créé avec succès",
 		"customers_updated": "Liste des comptes clients de l'utilisateur mis à jour",
 		"disable": "Désactiver l'utilisateur",
+		"email": "Adresse email",
 		"enable": "Activer l'utilisateur",
 		"firstname": "Prénom",
 		"lastname": "Nom de famille",

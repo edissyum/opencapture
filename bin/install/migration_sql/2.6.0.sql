@@ -17,3 +17,5 @@ INSERT INTO configurations ("label", "data") VALUES ('allowUserMultipleLogin', '
 
 DELETE FROM configurations WHERE "label" = 'compressionQuality';
 DELETE FROM configurations WHERE "label" = 'resolution';
+
+ALTER TABLE users ADD COLUMN email TEXT;

@@ -5,6 +5,7 @@ CREATE TABLE "users"
     "firstname"         VARCHAR(255)       NOT NULL,
     "lastname"          VARCHAR(255)       NOT NULL,
     "password"          VARCHAR(255)       NOT NULL,
+    "email"             TEXT,
     "enabled"           BOOLEAN     DEFAULT True,
     "status"            VARCHAR(5)  DEFAULT 'OK',
     "creation_date"     TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
@@ -14,14 +15,14 @@ CREATE TABLE "users"
 
 CREATE TABLE "form_models"
 (
-    "id"                             SERIAL        UNIQUE PRIMARY KEY,
-    "label"                          VARCHAR(50),
-    "default_form"                   BOOLEAN       DEFAULT False,
-    "enabled"                        BOOLEAN       DEFAULT True,
-    "outputs"                        TEXT[],
-    "module"                         VARCHAR(10),
-    "status"                         VARCHAR(5)    DEFAULT 'OK',
-    "settings"                       JSONB         DEFAULT '{}'
+    "id"            SERIAL        UNIQUE PRIMARY KEY,
+    "label"         VARCHAR(50),
+    "default_form"  BOOLEAN       DEFAULT False,
+    "enabled"       BOOLEAN       DEFAULT True,
+    "outputs"       TEXT[],
+    "module"        VARCHAR(10),
+    "status"        VARCHAR(5)    DEFAULT 'OK',
+    "settings"      JSONB         DEFAULT '{}'
 );
 
 CREATE TABLE "form_model_settings"

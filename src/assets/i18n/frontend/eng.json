@@ -836,6 +836,7 @@
 		"created": "User created successfully",
 		"customers_updated": "Customers list of the user updated successfully",
 		"disable": "Disable user",
+		"email": "Email address",
 		"enable": "Enable user",
 		"firstname": "Firstname",
 		"lastname": "Lastname",

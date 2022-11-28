@@ -55,7 +55,7 @@ def get_users_full(args):
 
 
 def get_user_by_id(user_id, get_password=False):
-    _select = ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled']
+    _select = ['users.id', 'username', 'firstname', 'email', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled']
     if get_password:
         _select.append('password')
 
@@ -145,6 +145,7 @@ def update_user(user_id, data):
         _set = {
             'firstname': data['firstname'],
             'lastname': data['lastname'],
+            'email': data['email'],
             'role': data['role']
         }
 
