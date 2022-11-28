@@ -833,6 +833,7 @@
 	},
 	"USER-QUOTA": {
 		"description": "The user quota allows you to limit user creation to a certain number (useful for shared installations on a VPS for example)",
+		"email_dest": "",
 		"enabled": "Enable user quota",
 		"filtered_users": "List of users not to count in the quota",
 		"informations": "Informations about user quota",

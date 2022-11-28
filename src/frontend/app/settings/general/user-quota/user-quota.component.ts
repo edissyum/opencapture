@@ -3,15 +3,13 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {MatDialog} from "@angular/material/dialog";
 import {UserService} from "../../../../services/user.service";
-import {FormBuilder, FormControl} from "@angular/forms";
+import {FormBuilder, FormControl, Validators} from "@angular/forms";
 import {AuthService} from "../../../../services/auth.service";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
 import {HistoryService} from "../../../../services/history.service";
 import {SettingsService} from "../../../../services/settings.service";
-import {LastUrlService} from "../../../../services/last-url.service";
 import {PrivilegesService} from "../../../../services/privileges.service";
-import {LocalStorageService} from "../../../../services/local-storage.service";
 import {environment} from "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
@@ -22,14 +20,15 @@ import {of} from "rxjs";
     styleUrls: ['./user-quota.component.scss']
 })
 export class UserQuotaComponent implements OnInit {
-    headers             : HttpHeaders = this.authService.headers;
-    loading             : boolean     = true;
-    quotaNumber         : number      = 0;
-    quotaEnabled        : boolean     = false;
-    quotaUsersfiltered  : any[]       = [];
-    usersControlSelect  : FormControl =  new FormControl();
-    usersList           : any[]       = [];
-    userQuotaConfigId   : number      = 0;
+    headers                 : HttpHeaders = this.authService.headers;
+    loading                 : boolean     = true;
+    quotaNumber             : number      = 0;
+    quotaEnabled            : boolean     = false;
+    quotaUsersfiltered      : any[]       = [];
+    usersControlSelect      : FormControl = new FormControl();
+    quotaEmailDestControl   : FormControl = new FormControl('', Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"));
+    usersList               : any[]       = [];
+    userQuotaConfigId       : number      = 0;
 
     constructor(
         public router: Router,
@@ -58,6 +57,7 @@ export class UserQuotaComponent implements OnInit {
                         if (data.configuration.length === 1) {
                             this.quotaEnabled = data.configuration[0].data.value.enabled;
                             this.quotaNumber = data.configuration[0].data.value.quota;
+                            this.quotaEmailDestControl.setValue(data.configuration[0].data.value.email_dest);
                             data.configuration[0].data.value.users_filtered.forEach((elem: any) => {
                                 this.usersList.forEach((user: any) => {
                                     if (user['username'] === elem.trim()) {
@@ -90,9 +90,11 @@ export class UserQuotaComponent implements OnInit {
             'value': {
                 'enabled': this.quotaEnabled,
                 'quota': this.quotaNumber,
-                'users_filtered': []
+                'users_filtered': [],
+                'email_dest': this.quotaEmailDestControl.value
             }
         };
+
         this.usersControlSelect.value.forEach((user_id: any) => {
             this.usersList.forEach((user: any) => {
                if (user['id'] === user_id) {

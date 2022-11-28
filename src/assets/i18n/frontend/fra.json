@@ -833,6 +833,7 @@
 	},
 	"USER-QUOTA": {
 		"description": "Le quota utilisateur permet de limiter la création d'utilisateur à un certains nombres (utile pour des installations mutualisés sur un VPS par exemple)",
+		"email_dest": "Adresse email de l'administrateur recevant les notifications si le quota est dépassé",
 		"enabled": "Activer le quota utilisateur",
 		"filtered_users": "Liste des utilisateurs à ne pas compter dans le quota",
 		"informations": "Informations sur le quota d'utilisateur",

@@ -27,7 +27,8 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('userQuota', '
     "value": {
         "enabled": false,
         "quota": 20,
-        "users_filtered":  ["admin", "admin_fct"]
+        "users_filtered":  ["admin", "admin_fct"],
+        "email_dest": ""
     },
     "description": ""
 }', false);

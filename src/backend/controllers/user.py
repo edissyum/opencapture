@@ -1,4 +1,5 @@
 # This file is part of Open-Capture.
+import json
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +16,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import request
+from flask import request, session
 from flask_babel import gettext
 from src.backend.import_models import user, accounts
 from src.backend.functions import retrieve_custom_from_url
@@ -27,6 +28,33 @@ def create_user(args):
     res, error = user.create_user(args)
 
     if error is None:
+        if 'configurations' in session:
+            configurations = json.loads(session['configurations'])
+        else:
+            custom_id = retrieve_custom_from_url(request)
+            _vars = create_classes_from_custom_id(custom_id)
+            configurations = _vars[10]
+
+        if configurations['userQuota']['enabled'] is True:
+            quota = configurations['userQuota']['quota']
+            user_filtered = configurations['userQuota']['users_filtered']
+            email_dest = configurations['userQuota']['email_dest']
+            active_users, _ = user.get_users({
+                'select': ['id', 'username', 'count(*) OVER() as total'],
+                'where': ['status NOT IN (%s)', "role <> 1"],
+                'data': ['DEL']
+            })
+            total_active_users = active_users[0]['total']
+            for _user in active_users:
+                if _user['username'] in user_filtered:
+                    total_active_users -= 1
+
+            if quota <= total_active_users:
+                custom_id = retrieve_custom_from_url(request)
+                _vars = create_classes_from_custom_id(custom_id)
+                smtp = _vars[8]
+                if email_dest and smtp.is_up:
+                    smtp.send_user_quota_notifications(email_dest, custom_id)
         return {'id': res}, 200
     else:
         response = {

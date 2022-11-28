@@ -22,7 +22,7 @@ bp = Blueprint('users', __name__, url_prefix='/ws/')
 
 
 @bp.route('users/new', methods=['POST'])
-def register():
+def create_user():
     data = request.json
     res = user.create_user(data)
     return make_response(jsonify(res[0])), res[1]
