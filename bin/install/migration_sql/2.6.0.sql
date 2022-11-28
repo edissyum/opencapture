@@ -19,3 +19,15 @@ DELETE FROM configurations WHERE "label" = 'compressionQuality';
 DELETE FROM configurations WHERE "label" = 'resolution';
 
 ALTER TABLE users ADD COLUMN email TEXT;
+
+INSERT INTO "privileges" ("label", "parent") VALUES ('user_quota', 'general');
+
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('userQuota', '{
+    "type": "json",
+    "value": {
+        "enabled": false,
+        "quota": 20,
+        "users_filtered":  ["admin", "admin_fct"]
+    },
+    "description": ""
+}', false);

@@ -108,6 +108,7 @@ import { MatSelectCountryModule } from "@angular-material-extensions/select-coun
 import { MiddlewareComponent } from "./middleware.component";
 import { VerifierDisplayComponent } from './settings/verifier/display/display.component';
 import { MailCollectComponent } from './settings/general/mailcollect/mailcollect.component';
+import { UserQuotaComponent } from './settings/general/user-quota/user-quota.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -179,7 +180,8 @@ export function createTranslateLoader(http: HttpClient) {
         Error500Component,
         LoginMethodsComponent,
         VerifierDisplayComponent,
-        MailCollectComponent
+        MailCollectComponent,
+        UserQuotaComponent
     ],
     imports: [
         BrowserModule,

@@ -57,6 +57,7 @@ export class UsersListComponent implements OnInit {
     total           : number      = 0;
     offset          : number      = 0;
     search          : string      = '';
+    userQuotaConfig : any         = {};
 
     constructor(
         public router: Router,
@@ -74,7 +75,6 @@ export class UsersListComponent implements OnInit {
         public privilegesService: PrivilegesService,
         private localStorageService: LocalStorageService,
     ) {}
-
 
     ngOnInit(): void {
         this.serviceSettings.init();
@@ -105,6 +105,17 @@ export class UsersListComponent implements OnInit {
                         this.loadUsers();
                     }),
                     finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+
+                this.http.get(environment['url'] + '/ws/config/getConfiguration/userQuota', {headers: this.authService.headers}).pipe(
+                    tap((config: any) => {
+                        this.userQuotaConfig = config.configuration[0].data.value;
+                    }),
                     catchError((err: any) => {
                         console.debug(err);
                         this.notify.handleErrors(err);
