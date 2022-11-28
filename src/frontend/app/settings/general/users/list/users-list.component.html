@@ -156,15 +156,15 @@
             <span class="text-xl">
                 {{ 'USER-QUOTA.informations' | translate }}
                 <span class="cursor-default relative top-7 text-green-400 text-8xl"
-                      [class.text-green-400] = "this.allUsers.length < this.userQuotaConfig.quota"
-                      [class.text-red-400] = "this.allUsers.length > this.userQuotaConfig.quota"
-                      [class.text-orange-400] = "this.userQuotaConfig.quota === this.allUsers.length">&bull;</span>
+                      [class.text-green-400] = "this.activeUser < this.userQuotaConfig.quota"
+                      [class.text-red-400] = "this.activeUser > this.userQuotaConfig.quota"
+                      [class.text-orange-400] = "this.activeUser === this.userQuotaConfig.quota">&bull;</span>
             </span>
             <div class="m-2 mt-8 text-base">
                 {{ 'USER-QUOTA.quota_number' | translate }} : {{ this.userQuotaConfig.quota }}
             </div>
             <div class="m-2 text-base">
-                {{ 'USER.enabled' | translate }} : {{ this.allUsers.length }}
+                {{ 'USER.enabled' | translate }} : {{ this.activeUser }}
             </div>
         </div>
     </mat-sidenav-content>

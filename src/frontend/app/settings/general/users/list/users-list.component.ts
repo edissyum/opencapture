@@ -54,6 +54,7 @@ export class UsersListComponent implements OnInit {
     roles           : any         = [];
     pageSize        : number      = 10;
     pageIndex       : number      = 0;
+    activeUser      : number      = 0;
     total           : number      = 0;
     offset          : number      = 0;
     search          : string      = '';
@@ -115,6 +116,8 @@ export class UsersListComponent implements OnInit {
                 this.http.get(environment['url'] + '/ws/config/getConfiguration/userQuota', {headers: this.authService.headers}).pipe(
                     tap((config: any) => {
                         this.userQuotaConfig = config.configuration[0].data.value;
+                        this.activeUser = this.allUsers.length;
+                        this.getUserQuotaFiltered();
                     }),
                     catchError((err: any) => {
                         console.debug(err);
@@ -134,6 +137,14 @@ export class UsersListComponent implements OnInit {
     searchUser(event: any) {
         this.search = event.target.value;
         this.loadUsers();
+    }
+
+    getUserQuotaFiltered() {
+        this.allUsers.forEach((user: any) => {
+            if (this.userQuotaConfig.users_filtered.includes(user['username'])) {
+                this.activeUser -= 1;
+            }
+        });
     }
 
     onPageChange(event: any) {
