@@ -191,16 +191,16 @@ class Files:
                 shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                 return 1
         except PyPDF2.utils.PdfReadError:
-            pdf_read_rewrite = PyPDF2.PdfFileReader(file, strict=False)
-            pdfwrite = PyPDF2.PdfFileWriter()
-            for page_count in range(pdf_read_rewrite.numPages):
-                pages = pdf_read_rewrite.getPage(page_count)
-                pdfwrite.addPage(pages)
+            pdf_read_rewrite = PyPDF2.PdfReader(file, strict=False)
+            pdfwrite = PyPDF2.PdfWriter()
+            for page_count in range(len(pdf_read_rewrite.pages)):
+                pages = pdf_read_rewrite.pages[page_count]
+                pdfwrite.add_page(pages)
 
             with open(file, 'wb') as fileobjfix:
                 pdfwrite.write(fileobjfix)
             fileobjfix.close()
-            return pdf_read_rewrite.getNumPages()
+            return len(pdf_read_rewrite.pages)
 
     @staticmethod
     def is_blank_page(image):
@@ -480,18 +480,18 @@ class Files:
 
     @staticmethod
     def export_pdf(pages_lists, documents, input_file, output_file, compress_type, reduce_index=0):
-        pdf_writer = PyPDF2.PdfFileWriter()
+        pdf_writer = PyPDF2.PdfWriter()
         paths = []
         try:
             for index, pages in enumerate(pages_lists):
-                pdf_reader = PyPDF2.PdfFileReader(input_file, strict=False)
+                pdf_reader = PyPDF2.PdfReader(input_file, strict=False)
                 if not pages:
                     continue
                 for page in pages:
-                    pdf_page = pdf_reader.getPage(page['source_page'] - reduce_index)
+                    pdf_page = pdf_reader.pages[page['source_page'] - reduce_index]
                     if page['rotation'] != 0:
                         pdf_page.rotateCounterClockwise(-page['rotation'])
-                    pdf_writer.addPage(pdf_page)
+                    pdf_writer.add_page(pdf_page)
                 file_path = output_file + '/' + documents[index]['fileName']
 
                 if compress_type:
@@ -499,7 +499,7 @@ class Files:
                     with open(tmp_filename, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
-                    pdf_writer = PyPDF2.PdfFileWriter()
+                    pdf_writer = PyPDF2.PdfWriter()
                     compressed_file_path = '/tmp/min_' + documents[index]['fileName']
                     compress_pdf(tmp_filename, compressed_file_path, compress_type)
                     shutil.move(compressed_file_path, file_path)
@@ -507,8 +507,9 @@ class Files:
                     with open(file_path, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
-                    pdf_writer = PyPDF2.PdfFileWriter()
+                    pdf_writer = PyPDF2.PdfWriter()
         except Exception as err:
+            print('aaaa')
             return False, str(err)
         return paths
 
