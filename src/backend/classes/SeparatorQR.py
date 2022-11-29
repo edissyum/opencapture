@@ -103,7 +103,7 @@ class SeparatorQR:
         for i in range(nb_pages):
             if i % 2 == 0:
                 output = PyPDF2.PdfWriter()
-                output.addPage(pdf.pages[i])
+                output.add_page(pdf.pages[i])
                 if i + 1 < nb_pages:
                     output.add_page(pdf.pages[i + 1])
                 newname = path + '/' + file_without_extention + "-" + str(cpt) + ".pdf"
