@@ -73,7 +73,9 @@ class Spreadsheet:
                                 'table': ['addresses'],
                                 'where': ['id = %s'],
                                 'data': [address_id],
-                            })[0]
+                            })
+                            if address:
+                                address = address[0]
 
                         positions_mask_id = database.select({
                             'select': ['id'],
