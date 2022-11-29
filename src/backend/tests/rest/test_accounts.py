@@ -424,8 +424,6 @@ class UserTest(unittest.TestCase):
         self.assertEqual("1234567891012", new_customer[0]['siret'])
         self.assertEqual("FR123456788", new_customer[0]['vat_number'])
         self.assertEqual("Test Customer updated", new_customer[0]['name'])
-        self.assertEqual(int, type(customer.json['id']))
-        self.assertEqual(200, customer.status_code)
 
     def test_successful_delete_customer(self):
         customer = self.create_customer()
