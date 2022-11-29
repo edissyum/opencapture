@@ -23,12 +23,12 @@ The functionnalities of Open-Capture are :
 
 # Launch Python unit tests
 
-Make sure you have a test custom installed using the following command : 
+Make sure you have a test custom installed using the following commands : 
 
     cd /var/www/html/opencapture/bin/install/
     sudo ./create_custom.sh -c test -p false -t systemd
     
-Then, go the the tests folder and launch the following command
+Then, go the the tests folder and launch the following commands
 
     cd /var/www/html/opencapture/
     python3 -m unittest discover src/backend/tests/
