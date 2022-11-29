@@ -757,7 +757,7 @@ def merge_batches(parent_id, batches):
         batches_info.append(batch_info)
         pdf = PyPDF2.PdfReader(docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
         for page in range(len(pdf.pages)):
-            merged_pdf.addPage(pdf.pages[page])
+            merged_pdf.add_page(pdf.pages[page])
 
         documents = splitter.get_documents({'id': batch})
         cpt = 0
