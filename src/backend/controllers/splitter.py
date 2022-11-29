@@ -748,7 +748,7 @@ def merge_batches(parent_id, batches):
     parent_pdf = PyPDF2.PdfReader(parent_filename)
     merged_pdf = PyPDF2.PdfWriter()
     for page in range(len(parent_pdf.pages)):
-        merged_pdf.addPage(parent_pdf.pages[page])
+        merged_pdf.add_page(parent_pdf.pages[page])
 
     batches_info = []
     for batch in batches:
