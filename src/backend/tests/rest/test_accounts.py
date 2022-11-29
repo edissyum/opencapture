@@ -17,6 +17,7 @@
 
 
 import base64
+import shutil
 import unittest
 import warnings
 from src.backend import app
@@ -455,6 +456,8 @@ class UserTest(unittest.TestCase):
         self.assertEqual(default_reference_file, response.json['file'])
 
     def tearDown(self) -> None:
+        shutil.copy('/var/www/html/opencapture/instance/referencial/default_referencial_supplier.ods.default',
+                    '/var/www/html/opencapture/custom/test/instance/referencial//default_referencial_supplier.ods')
         self.db.execute("TRUNCATE TABLE addresses")
         self.db.execute("TRUNCATE TABLE accounts_supplier")
         self.db.execute("TRUNCATE TABLE accounts_customer")
