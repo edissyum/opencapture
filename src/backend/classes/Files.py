@@ -183,14 +183,13 @@ class Files:
 
     def get_pages(self, docservers, file):
         try:
-            with open(file, 'rb') as doc:
-                pdf = PyPDF2.PdfFileReader(doc)
-                try:
-                    return pdf.getNumPages()
-                except ValueError as file_error:
-                    self.log.error(file_error)
-                    shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
-                    return 1
+            pdf = PyPDF2.PdfReader(file)
+            try:
+                return len(pdf.pages)
+            except ValueError as file_error:
+                self.log.error(file_error)
+                shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                return 1
         except PyPDF2.utils.PdfReadError:
             pdf_read_rewrite = PyPDF2.PdfFileReader(file, strict=False)
             pdfwrite = PyPDF2.PdfFileWriter()
@@ -246,30 +245,29 @@ class Files:
     def check_file_integrity(file, docservers):
         is_full = False
         while not is_full:
-            with open(file, 'rb') as doc:
-                size = os.path.getsize(file)
-                time.sleep(1)
-                size2 = os.path.getsize(file)
-                if size2 == size:
-                    if file.lower().endswith(".pdf"):
-                        try:
-                            PyPDF2.PdfFileReader(doc)
-                        except PyPDF2.utils.PdfReadError:
-                            shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
-                            return False
-                        else:
-                            return True
-                    elif file.lower().endswith(tuple(['.jpg'])):
-                        try:
-                            Image.open(file)
-                        except OSError:
-                            return False
-                        else:
-                            return True
-                    else:
+            size = os.path.getsize(file)
+            time.sleep(1)
+            size2 = os.path.getsize(file)
+            if size2 == size:
+                if file.lower().endswith(".pdf"):
+                    try:
+                        PyPDF2.PdfReader(file)
+                    except PyPDF2.utils.PdfReadError:
+                        shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         return False
+                    else:
+                        return True
+                elif file.lower().endswith(tuple(['.jpg'])):
+                    try:
+                        Image.open(file)
+                    except OSError:
+                        return False
+                    else:
+                        return True
                 else:
-                    continue
+                    return False
+            else:
+                continue
 
     def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex_name=None, remove_line=False, lang='fra'):
         rand = str(uuid.uuid4())
