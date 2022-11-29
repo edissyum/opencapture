@@ -740,24 +740,24 @@ def merge_batches(parent_id, batches):
     parent_info = splitter.get_batch_by_id({'id': parent_id})[0]
     parent_filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + parent_info['file_path']
     parent_batch_pages = int(parent_info['page_number'])
-    batch_folder = docservers['SPLITTER_BATCHES'] + '/' +  parent_info['batch_folder']
+    batch_folder = docservers['SPLITTER_BATCHES'] + '/' + parent_info['batch_folder']
     parent_document_id = splitter.get_documents({'id': parent_id})[0][0]['id']
     parent_max_split_index = splitter.get_documents_max_split_index({'id': parent_id})[0][0]['split_index']
     parent_max_source_page = splitter.get_max_source_page({'id': parent_document_id})[0][0]['source_page']
 
-    parent_pdf = PyPDF2.PdfFileReader(parent_filename)
-    merged_pdf = PyPDF2.PdfFileWriter()
-    for page in range(parent_pdf.numPages):
-        merged_pdf.addPage(parent_pdf.getPage(page))
+    parent_pdf = PyPDF2.PdfReader(parent_filename)
+    merged_pdf = PyPDF2.PdfWriter()
+    for page in range(len(parent_pdf.pages)):
+        merged_pdf.add_page(parent_pdf.pages[page])
 
     batches_info = []
     for batch in batches:
         batch_info = splitter.get_batch_by_id({'id': batch})[0]
         parent_batch_pages += batch_info['page_number']
         batches_info.append(batch_info)
-        pdf = PyPDF2.PdfFileReader(docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
-        for page in range(pdf.numPages):
-            merged_pdf.addPage(pdf.getPage(page))
+        pdf = PyPDF2.PdfReader(docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
+        for page in range(len(pdf.pages)):
+            merged_pdf.addPage(pdf.pages[page])
 
         documents = splitter.get_documents({'id': batch})
         cpt = 0

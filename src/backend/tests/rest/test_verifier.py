@@ -17,6 +17,7 @@
 
 
 import base64
+import os
 import shutil
 import urllib3
 import unittest
@@ -190,6 +191,29 @@ class VerifierTest(unittest.TestCase):
         invoice = self.db.fetchall()
         self.assertEqual('DEL', invoice[0]['status'])
 
+    def test_successful_delete_invoice_data(self):
+        self.create_supplier()
+        self.create_invoice()
+        self.db.execute("SELECT id FROM invoices")
+        invoice = self.db.fetchall()
+        response = self.app.put('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/deleteData',
+                                json={'args': 'invoice_number'},
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.db.execute("SELECT datas FROM invoices")
+        invoice = self.db.fetchall()
+        self.assertTrue('invoice_number' not in invoice[0]['datas'])
+
+    def test_successful_delete_invoice_document(self):
+        self.create_supplier()
+        self.create_invoice()
+        self.db.execute("SELECT id, path, filename FROM invoices")
+        invoice = self.db.fetchall()
+        response = self.app.get('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/deleteDocuments',
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.assertFalse(os.path.isfile(invoice[0]['path'] + '/' + invoice[0]['filename']))
+
     def test_successful_delete_invoice_position(self):
         self.create_supplier()
         self.create_invoice()
@@ -224,6 +248,103 @@ class VerifierTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, response.json['totals']['today'])
 
+    def test_successful_get_thumb(self):
+        self.create_supplier()
+        self.create_invoice()
+        self.db.execute("SELECT full_jpg_filename FROM invoices")
+        invoice = self.db.fetchall()
+        response = self.app.post('/test/ws/verifier/getThumb',
+                                 json={'args': {'type': 'full', 'filename': invoice[0]['full_jpg_filename']}},
+                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(str, type(response.json['file']))
+
+    def test_successful_ocr_on_fly(self):
+        self.create_supplier()
+        self.create_invoice()
+        self.db.execute("SELECT full_jpg_filename FROM invoices")
+        invoice = self.db.fetchall()
+        data = {
+            'selection': {
+                'id': 8,
+                'x': 226,
+                'y': 110,
+                'z': 100,
+                'height': 43,
+                'width': 151
+            },
+            'fileName': invoice[0]['full_jpg_filename'],
+            'lang': 'fra',
+            'thumbSize': {
+                'width': 1228,
+                'height': 1736
+            }
+        }
+        response = self.app.post('/test/ws/verifier/ocrOnFly', json=data,
+                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('INV-001510', response.json['result'])
+
+    def test_successful_update(self):
+        self.create_supplier()
+        self.create_invoice()
+        self.db.execute("SELECT id FROM invoices")
+        invoice = self.db.fetchall()
+        new_data = {
+            "locked": True
+        }
+        response = self.app.put('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/update',
+                                json={"args": new_data},
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.db.execute("SELECT locked FROM invoices")
+        invoice = self.db.fetchall()
+        self.assertTrue(invoice[0]['locked'])
+
+    def test_successful_remove_lock_by_user_id(self):
+        self.create_supplier()
+        self.create_invoice()
+        self.db.execute("SELECT id FROM invoices")
+        invoice = self.db.fetchall()
+        new_data = {
+            "locked": True,
+            "locked_by": "admin"
+        }
+        self.app.put('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/update', json={"args": new_data},
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        response = self.app.put('/test/ws/verifier/invoices/removeLockByUserId/admin',
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.db.execute("SELECT * FROM invoices")
+        invoice = self.db.fetchall()
+        self.assertFalse(invoice[0]['locked'])
+
+    def test_successful_export_xml(self):
+        self.create_supplier()
+        self.create_invoice()
+        self.db.execute("SELECT id FROM invoices")
+        invoice = self.db.fetchall()
+        self.db.execute("SELECT * FROM outputs WHERE output_type_id = 'export_xml'")
+        output = self.db.fetchall()
+        response = self.app.post('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/export_xml',
+                                 json={'args': output[0]},
+                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(os.path.isfile('/var/share/test/export/verifier/INV-001510_F_15-12-2016_FR04493811251.xml'))
+
+    def test_successful_export_pdf(self):
+        self.create_supplier()
+        self.create_invoice()
+        self.db.execute("SELECT id FROM invoices")
+        invoice = self.db.fetchall()
+        self.db.execute("SELECT * FROM outputs WHERE output_type_id = 'export_pdf'")
+        output = self.db.fetchall()
+        response = self.app.post('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/export_pdf',
+                                 json={'args': output[0]},
+                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(os.path.isfile('/var/share/test/export/verifier/INV-001510_F_15-12-2016_FR04493811251.pdf'))
+
     def tearDown(self) -> None:
         file = './custom/test/src/backend/process_queue_verifier.py'
         text_to_search = r"# @kuyruk.task(queue='verifier_test')"
@@ -238,3 +359,11 @@ class VerifierTest(unittest.TestCase):
 
         self.db.execute("TRUNCATE TABLE invoices")
         self.db.execute("TRUNCATE TABLE accounts_supplier")
+        shutil.rmtree('/var/share/test/export/verifier/')
+        shutil.rmtree('/var/docservers/opencapture/test/verifier/full')
+        shutil.rmtree('/var/docservers/opencapture/test/verifier/thumbs')
+        shutil.rmtree('/var/docservers/opencapture/test/verifier/original_pdf')
+        os.mkdir('/var/share/test/export/verifier/')
+        os.mkdir('/var/docservers/opencapture/test/verifier/full/')
+        os.mkdir('/var/docservers/opencapture/test/verifier/thumbs/')
+        os.mkdir('/var/docservers/opencapture/test/verifier/original_pdf/')
