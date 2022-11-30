@@ -15,21 +15,23 @@
 
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
+import json
 import requests
+from base64 import b64encode
+from requests.auth import HTTPBasicAuth
 
 
 class OpenADS:
     def __init__(self, api, login, password):
         self.api = api
-        self.login = login
-        self.password = password
+        self.auth = HTTPBasicAuth(login, password)
 
-    def test_openads_connection(self):
+    def test_connection(self):
         try:
-            res = requests.get(self.api + "/status", auth=(self.login, self.password))
+            res = requests.get(self.api + "/status", auth=self.auth)
             res = res.json()
             if res['msg'] != "Running":
-                return {'status': True}, 401
+                return {'status': False}
 
         except Exception as e:
             response = {
@@ -41,11 +43,33 @@ class OpenADS:
 
     def check_folder_by_id(self, folder_id):
         try:
-            res = requests.get(self.api + "/dossier/" + folder_id + "/existe", auth=(self.login, self.password))
+            res = requests.get(self.api + "/dossier/" + folder_id + "/existe", auth=self.auth)
             res = res.json()
             if 'errors' in res:
                 return {'status': False, "error": res['errors'][0]['description']}
 
+        except Exception as e:
+            response = {'status': False, 'error': str(e)}
+            return response
+
+        return {'status': True}
+
+    def create_documents(self, folder_id, documents):
+        try:
+            for document in documents:
+                with open(document, 'rb') as f:
+                    b64 = str(b64encode(f.read()), 'utf-8')
+                data = [
+                    {
+                        'b64_content': b64,
+                        "content_type": "application/pdf",
+                        "filename": "test.pdf",
+                        "piece_type": 5,
+                    },
+                ]
+                response = requests.post(self.api + "/dossier/" + folder_id + "/pieces", data=json.dumps(data), auth=self.auth)
+                if 'errors' in response:
+                    return {'status': False, "error": response['errors'][0]['description']}
         except Exception as e:
             response = {'status': False, 'error': str(e)}
             return response

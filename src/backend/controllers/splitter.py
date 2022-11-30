@@ -509,7 +509,7 @@ def test_cmis_connection(args):
 
 def test_openads_connection(args):
     _openads = _OpenADS(args['openads_api'], args['login'], args['password'])
-    res = _openads.test_openads_connection()
+    res = _openads.test_connection()
     if not res['status']:
         response = {
             'status': False,
@@ -706,7 +706,13 @@ def validate(args):
                             "message": openads_res['error']
                         }
                         return response, 500
-
+                    openads_res = _openads.create_documents(folder_id, res_export_pdf[0]['paths'])
+                    if not openads_res['status']:
+                        response = {
+                            "errors": gettext('OPENADS_ADD_DOC_ERROR'),
+                            "message": openads_res['error']
+                        }
+                        return response, 500
         """
             Zip all exported files if enabled
         """
@@ -729,7 +735,7 @@ def validate(args):
         """
         splitter.change_status({
             'id': args['batchMetadata']['id'],
-            'status': 'END'
+            'status': 'NEW'
         })
 
     return {"OK": True}, 200
