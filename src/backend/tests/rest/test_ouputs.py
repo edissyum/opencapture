@@ -125,7 +125,33 @@ class OutputsTest(unittest.TestCase):
             'compress_type': None,
             'ocrise': False,
             'output_label': 'Test export',
-            'data': {}
+            'data': {
+                "options": {
+                    "auth": [],
+                    "parameters": [
+                        {
+                            "id": "folder_out",
+                            "type": "text",
+                            "value": "/var/share/test/export/verifier/"
+                        },
+                        {
+                            "id": "separator",
+                            "type": "text",
+                            "value": "_"
+                        },
+                        {
+                            "id": "filename",
+                            "type": "text",
+                            "value": "invoice_number#F#document_date#vat_number"
+                        },
+                        {
+                            "id": "extension",
+                            "type": "text",
+                            "value": "xml"
+                        }
+                    ]
+                }
+            },
         }
         response = self.app.put('/test/ws/outputs/update/1',
                                 json={"args": payload},
