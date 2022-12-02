@@ -15,10 +15,12 @@
 
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-import json
 import requests
-from base64 import b64encode
 from requests.auth import HTTPBasicAuth
+
+import os
+import json
+from base64 import b64encode
 
 
 class OpenADS:
@@ -54,17 +56,18 @@ class OpenADS:
 
         return {'status': True}
 
-    def create_documents(self, folder_id, documents):
+    def create_documents(self, folder_id, paths, metadata):
         try:
-            for document in documents:
-                with open(document, 'rb') as f:
+            for index, path in enumerate(paths):
+                with open(path, 'rb') as f:
                     b64 = str(b64encode(f.read()), 'utf-8')
+                filename = os.path.basename(path)
                 data = [
                     {
                         'b64_content': b64,
+                        "filename": filename,
                         "content_type": "application/pdf",
-                        "filename": "test.pdf",
-                        "piece_type": 5,
+                        "piece_type": int(metadata[index]['documentTypeKey'])
                     },
                 ]
                 response = requests.post(self.api + "/dossier/" + folder_id + "/pieces", data=json.dumps(data), auth=self.auth)

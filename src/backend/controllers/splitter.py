@@ -680,9 +680,6 @@ def validate(args):
                     openads_params = get_output_parameters(output[0]['data']['options']['parameters'])
                     _openads = _OpenADS(openads_auth['openads_api'], openads_auth['login'], openads_auth['password'])
 
-                    """
-                        Export for OpenADS
-                    """
                     pdf_export_parameters = {
                         'extension': 'pdf',
                         'folder_out': docservers['TMP_PATH'],
@@ -700,13 +697,16 @@ def validate(args):
                     }
                     folder_id = _Splitter.get_mask_result(None, args['batchMetadata'], now, folder_id_mask)
                     openads_res = _openads.check_folder_by_id(folder_id)
+                    print("args['documents'] : ")
+                    print(args['documents'])
                     if not openads_res['status']:
                         response = {
                             "errors": gettext('CHECK_FOLDER_ERROR'),
                             "message": openads_res['error']
                         }
                         return response, 500
-                    openads_res = _openads.create_documents(folder_id, res_export_pdf[0]['paths'])
+
+                    openads_res = _openads.create_documents(folder_id, res_export_pdf[0]['paths'], args['documents'])
                     if not openads_res['status']:
                         response = {
                             "errors": gettext('OPENADS_ADD_DOC_ERROR'),
@@ -735,7 +735,7 @@ def validate(args):
         """
         splitter.change_status({
             'id': args['batchMetadata']['id'],
-            'status': 'END'
+            'status': 'NEW'
         })
 
     return {"OK": True}, 200
