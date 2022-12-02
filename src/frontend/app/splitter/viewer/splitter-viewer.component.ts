@@ -291,7 +291,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.documentsLoading = true;
         this.http.get(environment['url'] + '/ws/splitter/documents/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                for (let documentIndex = 0; documentIndex < data['documents'].length; documentIndex++) {
+                for (let documentIndex = 0;documentIndex < data['documents'].length;documentIndex++) {
                     // -- Add documents metadata --
                     this.documents[documentIndex] = {
                         id                  : "document-" + data['documents'][documentIndex]['id'],
@@ -594,14 +594,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    onFormChange(newFormId: number): void{
+    onFormChange(newFormId: number): void {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
-                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('GLOBAL.confirm_form_change'),
-                confirmButton       : this.translate.instant('GLOBAL.confirm_modification'),
-                confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                confirmTitle       : this.translate.instant('GLOBAL.confirm'),
+                confirmText        : this.translate.instant('GLOBAL.confirm_form_change'),
+                confirmButton      : this.translate.instant('GLOBAL.confirm_modification'),
+                confirmButtonColor : "green",
+                cancelButton       : this.translate.instant('GLOBAL.cancel'),
             },
             width: "600px",
         });
@@ -611,8 +611,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.loading = true;
                 this.http.post(environment['url'] + '/ws/splitter/changeForm',
                     {
-                        'batchId'               : this.currentBatch.id,
-                        'formId'                : newFormId,
+                        'batchId' : this.currentBatch.id,
+                        'formId'  : newFormId,
                     },
                     {headers: this.authService.headers}).pipe(
                     tap(() => {
@@ -868,7 +868,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 for (const document of this.documents) {
-                    for (let pageIndex = 0; pageIndex < document.pages.length; pageIndex++) {
+                    for (let pageIndex = 0;pageIndex < document.pages.length;pageIndex++) {
                         if (document.pages[pageIndex].checkBox) {
                             this.deletedPagesIds.push(document.pages[pageIndex].id);
                             document.pages = this.deleteItemFromList(document.pages, pageIndex);
@@ -916,8 +916,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     rotateSelectedPages(): void {
-        for (let documentIndex = 0; documentIndex < this.documents.length; documentIndex++) {
-            for (let pageIndex = 0; pageIndex < this.documents[documentIndex].pages.length; pageIndex++) {
+        for (let documentIndex = 0;documentIndex < this.documents.length;documentIndex++) {
+            for (let pageIndex = 0;pageIndex < this.documents[documentIndex].pages.length;pageIndex++) {
                 if (this.documents[documentIndex].pages[pageIndex].checkBox) {
                     this.rotatePage(documentIndex, pageIndex);
                 }
@@ -932,7 +932,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
         const selectedDocIndex = this.documents.indexOf(selectedDoc[0]);
         for (const document of this.documents) {
-            for (let i = document.pages.length - 1; i >= 0; i--) {
+            for (let i = document.pages.length - 1;i >= 0;i--) {
                 if (document.pages[i].checkBox) {
                     const newPosition = this.documents[selectedDocIndex].pages.length;
                     transferArrayItem(document.pages,
@@ -1005,8 +1005,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.notify.error(this.translate.instant('SPLITTER.error_no_doc_type'));
                 this.loading = false;
                 return;
-            } else
+            } else {
                 document.class = "";
+            }
         }
         this.getFormFieldsValues();
         for(const field of this.fieldsCategories['batch_metadata']) {
@@ -1046,16 +1047,26 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         batchMetadata['userLastName']   = this.userService.user['lastname'];
         batchMetadata['userFirstName']  = this.userService.user['firstname'];
 
-        // Add metadata arguments and Remove unnecessary ones
-        const _documents = [];
+        // Build documents metadata arguments
+        const _documents: any[] = [];
         for (const document of this.documents) {
-            const _document = Object.assign({}, document);
-            _document['metadata'] = document.form.getRawValue();
-            delete _document.class;
-            delete _document.form;
+            const _document: any = {
+                id               : document['id'],
+                displayOrder     : document['displayOrder'],
+                documentTypeKey  : document['documentTypeKey'],
+                documentTypeName : document['documentTypeName'],
+                metadata         : document.form.getRawValue(),
+                pages            : []
+            };
+            for (const page of document.pages) {
+                _document.pages.push({
+                    id         : page['id'],
+                    rotation   : page['rotation'],
+                    sourcePage : page['sourcePage']
+                });
+            }
             _documents.push(_document);
         }
-
         this.http.post(environment['url'] + '/ws/splitter/validate',
             {
                 'formId'                : this.currentBatch.formId,
