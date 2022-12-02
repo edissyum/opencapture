@@ -107,8 +107,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     };
     currentBatch                : any           = {
         id                  : -1,
-        inputId             : -1,
         formId              : -1,
+        inputId             : -1,
+        previousFormId      : -1,
         status              : '',
         maxSplitIndex       : 0,
         selectedPagesCount  : 0,
@@ -187,6 +188,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.currentBatch = {
                     id                  : data.batches[0]['id'],
                     formId              : data.batches[0]['form_id'],
+                    previousFormId      : data.batches[0]['form_id'],
                     status              : data.batches[0]['status'],
                     customFieldsValues  : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
                     selectedPagesCount  : 0,
@@ -634,6 +636,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         return of(false);
                     })
                 ).subscribe();
+            } else {
+                this.currentBatch.formId = this.currentBatch.previousFormId;
             }
         });
     }
@@ -1069,13 +1073,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
         this.http.post(environment['url'] + '/ws/splitter/validate',
             {
-                'formId'                : this.currentBatch.formId,
-                'batchId'               : this.currentBatch.id,
-                'documents'             : _documents,
-                'movedPages'            : this.movedPages,
-                'deletedPagesIds'       : this.deletedPagesIds,
-                'deletedDocumentsIds'   : this.deletedDocumentsIds,
-                'batchMetadata'         : batchMetadata,
+                'documents'           : _documents,
+                'batchMetadata'       : batchMetadata,
+                'movedPages'          : this.movedPages,
+                'batchId'             : this.currentBatch.id,
+                'deletedPagesIds'     : this.deletedPagesIds,
+                'deletedDocumentsIds' : this.deletedDocumentsIds,
+                'formId'              : this.currentBatch.formId,
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {
@@ -1110,12 +1114,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
         this.http.post(environment['url'] + '/ws/splitter/saveInfo',
             {
-                'documents'             : _documents,
-                'movedPages'            : this.movedPages,
-                'batchId'               : this.currentBatch.id,
-                'deletedPagesIds'       : this.deletedPagesIds,
-                'batchMetadata'         : this.batchMetadataValues,
-                'deletedDocumentsIds'   : this.deletedDocumentsIds,
+                'documents'           : _documents,
+                'movedPages'          : this.movedPages,
+                'batchId'             : this.currentBatch.id,
+                'deletedPagesIds'     : this.deletedPagesIds,
+                'batchMetadata'       : this.batchMetadataValues,
+                'deletedDocumentsIds' : this.deletedDocumentsIds,
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {
