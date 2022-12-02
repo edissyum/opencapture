@@ -85,14 +85,14 @@ class InputsTest(unittest.TestCase):
         self.assertEqual(list, type(response.json))
         self.assertEqual(1, len(response.json))
 
-    def test_successful_duplicate_outputs(self):
+    def test_successful_duplicate_input(self):
         response = self.app.post('/test/ws/inputs/duplicate/1',
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.db.execute("SELECT * FROM inputs WHERE input_label ILIKE '%Copie de%' OR input_label ILIKE '%Copy of%'"
                         " ORDER BY id desc LIMIT 1")
-        new_output = self.db.fetchall()
-        self.assertEqual(1, len(new_output))
+        new_input = self.db.fetchall()
+        self.assertEqual(1, len(new_input))
 
     def test_successful_update_input(self):
         payload = {
@@ -109,7 +109,7 @@ class InputsTest(unittest.TestCase):
         new_input = self.db.fetchall()
         self.assertEqual(1, len(new_input))
 
-    def test_successful_delete_output(self):
+    def test_successful_delete_input(self):
         input = self.create_input()
         response = self.app.delete('/test/ws/inputs/delete/' + str(input.json['id']),
                                    headers={"Content-Type": "application/json",
