@@ -401,16 +401,17 @@ def save_infos(args):
         return response, 401
 
     for document in args['documents']:
-        res = splitter.update_document({
-            'id': document['id'].split('-')[-1],
-            'display_order': document['displayOrder'],
-        })[0]
-        if not res:
-            response = {
-                "errors": gettext('UPDATE_DOCUMENTS_ERROR'),
-                "message": ''
-            }
-            return response, 401
+        if document['displayOrder']:
+            res = splitter.update_document({
+                'id': document['id'].split('-')[-1],
+                'display_order': document['displayOrder'],
+            })[0]
+            if not res:
+                response = {
+                    "errors": gettext('UPDATE_DOCUMENTS_ERROR'),
+                    "message": ''
+                }
+                return response, 401
 
         document['id'] = document['id'].split('-')[-1]
         res = splitter.update_document({
