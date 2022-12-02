@@ -1,5 +1,4 @@
 # This file is part of Open-Capture.
-import json
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,8 +15,9 @@ import json
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import request, session
+import json
 from flask_babel import gettext
+from flask import request, session
 from src.backend.import_models import user, accounts
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id

@@ -42,7 +42,7 @@ def add_field():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('customFields/update', methods=['POST'])
+@bp.route('customFields/update', methods=['PUT'])
 @auth.token_required
 def update_custom_field():
     data = json.loads(request.data)

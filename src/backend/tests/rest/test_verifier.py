@@ -324,7 +324,7 @@ class VerifierTest(unittest.TestCase):
         self.create_invoice()
         self.db.execute("SELECT id FROM invoices")
         invoice = self.db.fetchall()
-        self.db.execute("SELECT * FROM outputs WHERE output_type_id = 'export_xml'")
+        self.db.execute("SELECT * FROM outputs WHERE output_type_id = 'export_xml' AND module = 'verifier'")
         output = self.db.fetchall()
         response = self.app.post('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/export_xml',
                                  json={'args': output[0]},
