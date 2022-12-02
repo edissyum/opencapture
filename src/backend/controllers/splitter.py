@@ -697,8 +697,6 @@ def validate(args):
                     }
                     folder_id = _Splitter.get_mask_result(None, args['batchMetadata'], now, folder_id_mask)
                     openads_res = _openads.check_folder_by_id(folder_id)
-                    print("args['documents'] : ")
-                    print(args['documents'])
                     if not openads_res['status']:
                         response = {
                             "errors": gettext('CHECK_FOLDER_ERROR'),
@@ -735,7 +733,7 @@ def validate(args):
         """
         splitter.change_status({
             'id': args['batchMetadata']['id'],
-            'status': 'NEW'
+            'status': 'END'
         })
 
     return {"OK": True}, 200
