@@ -1,5 +1,5 @@
 # This file is part of Open-Capture.
-import os.path
+
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -15,11 +15,11 @@ import os.path
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import os.path
 import unittest
 import warnings
-from configparser import ConfigParser
-
 from src.backend import app
+from configparser import ConfigParser
 from src.backend.tests import get_db, get_token
 
 
