@@ -245,7 +245,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                                     }
                                 });
                             });
-                            this.testConnection();
+                            // this.testConnection();
                         }
                     }),
                     finalize(() => {this.loading = false;}),
@@ -430,6 +430,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
         };
     }
 
+    /**** OpenADS Webservices call ****/
     testOpenadsConnection() {
         const args = this.getOpenadsConnectionInfo();
         this.http.post(environment['url'] + '/ws/splitter/openads/testConnection', {'args': args}, {headers: this.authService.headers},
