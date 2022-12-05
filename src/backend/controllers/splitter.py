@@ -718,17 +718,6 @@ def validate(args):
                     openads_params = get_output_parameters(output[0]['data']['options']['parameters'])
                     _openads = _OpenADS(openads_auth['openads_api'], openads_auth['login'], openads_auth['password'])
 
-                    pdf_export_parameters = {
-                        'extension': 'pdf',
-                        'folder_out': docservers['TMP_PATH'],
-                        'separator': openads_params['separator'],
-                        'filename': openads_params['pdf_filename'],
-                    }
-                    res_export_pdf = export_pdf(batch, args['documents'], pdf_export_parameters, pages, now,
-                                                output[0]['compress_type'])
-                    if res_export_pdf[1] != 200:
-                        return res_export_pdf
-
                     folder_id_mask = {
                         'mask': openads_params['folder_id'],
                         'separator': '',
@@ -741,6 +730,17 @@ def validate(args):
                             "message": openads_res['error']
                         }
                         return response, 500
+
+                    pdf_export_parameters = {
+                        'extension': 'pdf',
+                        'folder_out': docservers['TMP_PATH'],
+                        'separator': openads_params['separator'],
+                        'filename': openads_params['pdf_filename'],
+                    }
+                    res_export_pdf = export_pdf(batch, args['documents'], pdf_export_parameters, pages, now,
+                                                output[0]['compress_type'])
+                    if res_export_pdf[1] != 200:
+                        return res_export_pdf
 
                     openads_res = _openads.create_documents(folder_id, res_export_pdf[0]['paths'], args['documents'])
                     if not openads_res['status']:
