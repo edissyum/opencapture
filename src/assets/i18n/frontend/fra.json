@@ -373,6 +373,7 @@
 		"login": "Connexion de l'utilisateur",
 		"login_with_token": "Connexion de l'utilisateur via token (application tierce)",
 		"logout": "Déconnexion de l'utilisateur",
+		"mailcollect_general_settings_updated": "Modification des paramétres globaux du MailCollect",
 		"profile-updated": "Modification du profil <strong>{{ user }}</strong>",
 		"skip-auto-validate": "Activation de l'outrepassage de la validation automatique pour le compte fournisseur&nbsp;<strong>{{ supplier }}</strong>",
 		"update-customer": "Mise à jour du compte client&nbsp;<strong>{{ customer }}</strong>",
@@ -390,6 +391,7 @@
 		"update_mailcollect": "Mise à jour du processus MailCollect&nbsp;<strong>{{ process }}</strong>",
 		"update_mailcollect_name": "Mise à jour du nom du processus MailCollect&nbsp;<strong>{{ process }}</strong>",
 		"update_regex": "Mise à jour de la regex&nbsp;<strong>{{ regex }}</strong>",
+		"user_quota_updated": "Modification des paramètres du quota d'utilisateurs",
 		"validate_splitter": "Validation du lot n°<strong>{{ batch_id }}</strong>",
 		"viewer": "Visualisation du document n°<strong>{{ document_id }}</strong>",
 		"viewer_splitter": "Visualisation du lot n°<strong>{{ batch_id }}</strong>"
@@ -669,6 +671,7 @@
 		"update_supplier": "Modifier un fournisseur",
 		"update_user": "Modifier un utilisateur",
 		"upload": "Téléverser des fichiers",
+		"user_quota": "Quota d'utilisateurs",
 		"users_list": "Visualiser la liste des utilisateurs",
 		"verifier": "Open-Capture Vérificateur",
 		"verifier_display": "Paramétrage des l'affichage des documents",
@@ -720,6 +723,7 @@
 		"update_doc_type": "Modifier le type de document",
 		"update_input": "Modifier une chaîne entrante",
 		"update_output": "Modifier une chaîne sortante",
+		"user_quota": "Quota d'utilisateurs",
 		"users_list": "Liste des utilisateurs",
 		"verifier": "Paramètres du Vérificateur",
 		"verifier_display": "Affichage des lots"
@@ -829,6 +833,16 @@
 		"upload_file": "Téléverser le fichier",
 		"upload_success": "Fichier(s) téléversé(s) avec succès"
 	},
+	"USER-QUOTA": {
+		"description": "Le quota utilisateur permet de limiter la création d'utilisateur à un certains nombres (utile pour des installations mutualisés sur un VPS par exemple)",
+		"email_dest": "Adresse email de l'administrateur recevant les notifications si le quota est dépassé",
+		"enabled": "Activer le quota utilisateur",
+		"filtered_users": "Liste des utilisateurs à ne pas compter dans le quota",
+		"informations": "Informations sur le quota d'utilisateur",
+		"quota_number": "Limite du nombre d'utilisateurs",
+		"update": "Mettre à jour le quota utilisateur",
+		"updated": "Quota d'utilisateur mis à jour"
+	},
 	"USER": {
 		"already_logged_in": "Votre compte est déjà connecté sur un autre poste. Une seule connexion est autorisée par utilisateur",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur <strong>{{ user }}</strong> ?",
@@ -838,7 +852,9 @@
 		"created": "Utilisateur créé avec succès",
 		"customers_updated": "Liste des comptes clients de l'utilisateur mis à jour",
 		"disable": "Désactiver l'utilisateur",
+		"email": "Adresse email",
 		"enable": "Activer l'utilisateur",
+		"enabled": "Nombre d'utilisateur actifs",
 		"firstname": "Prénom",
 		"lastname": "Nom de famille",
 		"modify": "Modifier",

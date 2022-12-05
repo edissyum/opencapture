@@ -109,7 +109,7 @@ export class SplitterFormListComponent implements OnInit {
 
     deleteConfirmDialog(formId: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('FORMS.confirm_delete', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -129,7 +129,7 @@ export class SplitterFormListComponent implements OnInit {
 
     duplicateConfirmDialog(formId: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('FORMS.confirm_duplicate', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
@@ -149,7 +149,7 @@ export class SplitterFormListComponent implements OnInit {
 
     disableConfirmDialog(formId: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('FORMS.confirm_disable', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
@@ -169,7 +169,7 @@ export class SplitterFormListComponent implements OnInit {
 
     enableConfirmDialog(formId: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('FORMS.confirm_enable', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),

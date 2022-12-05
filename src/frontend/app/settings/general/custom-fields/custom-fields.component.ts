@@ -314,7 +314,7 @@ export class CustomFieldsComponent implements OnInit {
                 tap((data: any) => {
                     if (data) {
                         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-                            data:{
+                            data: {
                                 confirmTitle        : this.translate.instant('CUSTOM-FIELDS.custom_exists'),
                                 confirmText         : this.translate.instant('CUSTOM-FIELDS.confirm_delete'),
                                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -355,7 +355,7 @@ export class CustomFieldsComponent implements OnInit {
             'metadata_key': updatedField['metadata_key']
         };
 
-        this.http.post(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
             tap(() => {
                 transferArrayItem(
                     oldList,
@@ -397,7 +397,7 @@ export class CustomFieldsComponent implements OnInit {
             updatedField['enabled'] = false;
         }
 
-        this.http.post(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_updated'));
                 this.resetForm();

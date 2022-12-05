@@ -17,6 +17,8 @@
 
 
 import jwt
+import json
+import psycopg2
 import datetime
 import functools
 from . import privileges
@@ -25,6 +27,29 @@ from src.backend.import_models import auth, user, roles
 from flask import request, session, jsonify, current_app
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+
+
+def check_connection():
+    if 'config' in session:
+        config = json.loads(session['config'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        config = _vars[1]
+    db_user = config['DATABASE']['postgresuser']
+    db_host = config['DATABASE']['postgreshost']
+    db_port = config['DATABASE']['postgresport']
+    db_pwd = config['DATABASE']['postgrespassword']
+    db_name = config['DATABASE']['postgresdatabase']
+    try:
+        psycopg2.connect(
+            "dbname     =" + db_name +
+            " user      =" + db_user +
+            " password  =" + db_pwd +
+            " host      =" + db_host +
+            " port      =" + db_port)
+    except (psycopg2.OperationalError, psycopg2.ProgrammingError) as _e:
+        return str(_e).split('\n', maxsplit=1)[0]
 
 
 def encode_auth_token(user_id):

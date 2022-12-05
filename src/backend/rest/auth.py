@@ -17,14 +17,9 @@
 # @dev : Essaid MEGHELLET <essaid.meghellet@edissyum.com>
 
 import json
-import ldap3
-import psycopg2
 from flask_babel import gettext
-from ldap3.core.exceptions import LDAPException
-from src.backend.functions import retrieve_custom_from_url
-from src.backend.main import create_classes_from_custom_id
-from flask import Blueprint, request, make_response, session
-from src.backend.import_controllers import auth, user as user_controller
+from flask import Blueprint, request, make_response
+from src.backend.import_controllers import auth
 
 bp = Blueprint('auth', __name__, url_prefix='/ws/')
 
@@ -33,7 +28,7 @@ bp = Blueprint('auth', __name__, url_prefix='/ws/')
 def login():
     login_method = auth.get_enabled_login_method()
     enabled_login_method_name = login_method[0]['login_method_name']
-    res = check_connection()
+    res = auth.check_connection()
     data = request.json
     if enabled_login_method_name and enabled_login_method_name[0]['method_name'] == 'default':
         if res is None:
@@ -88,43 +83,6 @@ def logout():
     return {}, 200
 
 
-def check_connection():
-    if 'config' in session:
-        config = json.loads(session['config'])
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        config = _vars[1]
-    db_user = config['DATABASE']['postgresuser']
-    db_host = config['DATABASE']['postgreshost']
-    db_port = config['DATABASE']['postgresport']
-    db_pwd = config['DATABASE']['postgrespassword']
-    db_name = config['DATABASE']['postgresdatabase']
-    try:
-        psycopg2.connect(
-            "dbname     =" + db_name +
-            " user      =" + db_user +
-            " password  =" + db_pwd +
-            " host      =" + db_host +
-            " port      =" + db_port)
-    except (psycopg2.OperationalError, psycopg2.ProgrammingError) as _e:
-        return str(_e).split('\n', maxsplit=1)[0]
-
-
-def check_user_ldap_account(connection, username, username_attribute, base_dn):
-    ldap_user_login = username.strip()
-    try:
-        status = connection.search(search_base=base_dn, search_filter=f'({username_attribute}={ldap_user_login})',
-                                   search_scope='SUBTREE',
-                                   attributes=['*'])
-        if status:
-            return {'status_search': True, 'username_ldap': connection.entries[0][username_attribute]}
-        else:
-            return {'status_search': False, 'username_ldap': ""}
-    except LDAPException:
-        return False
-
-
 @bp.route('auth/getEnabledLoginMethod', methods=['GET'])
 def get_enabled_login_method():
     res = auth.get_enabled_login_method()
@@ -132,12 +90,14 @@ def get_enabled_login_method():
 
 
 @bp.route('auth/retrieveLdapConfigurations', methods=['GET'])
+@auth.token_required
 def retrieve_ldap_configurations():
     res = auth.get_ldap_configurations()
     return make_response(res[0], res[1])
 
 
 @bp.route('auth/connectionLdap', methods=['POST'])
+@auth.token_required
 def check_connection_ldap_server():
     server_ldap_data = json.loads(request.data.decode("utf8"))
     if not server_ldap_data:
@@ -154,47 +114,8 @@ def check_connection_ldap_server():
     return make_response(res[0], res[1])
 
 
-def get_ldap_users(connection, class_user, object_class, users_dn, base_dn):
-    try:
-        if not users_dn:
-            status = connection.search(search_base=base_dn, search_filter=f'({class_user}={object_class})',
-                                       search_scope='SUBTREE',
-                                       attributes=['*'])
-        else:
-            status = connection.search(search_base=users_dn, search_filter=f'({class_user}={object_class})',
-                                       search_scope='SUBTREE',
-                                       attributes=['*'])
-        if connection and status:
-            return {'status_search': True, 'ldap_users': connection.entries}
-        else:
-            return {'status_search': False, 'ldap_users': ""}
-    except LDAPException:
-        return False
-
-
-def get_ldap_users_data(ldap_users_dict, user_id_attribut, firstname_attribut, lastname_attribut):
-    try:
-        if ldap_users_dict and ldap_users_dict['status_search'] is True:
-            list_users_ldap = ldap_users_dict['ldap_users']
-            ldap_users_data = []
-            for i in range(len(list_users_ldap)):
-                user_data = []
-                user_id = list_users_ldap[i][user_id_attribut][0] if user_id_attribut in list_users_ldap[i] else ''
-                givenname = list_users_ldap[i][firstname_attribut][0] if firstname_attribut in list_users_ldap[i] else ''
-                lastname = list_users_ldap[i][lastname_attribut][0] if lastname_attribut in list_users_ldap[i] else ''
-                if user_id and givenname and lastname :
-                    user_data.append(user_id)
-                    user_data.append(givenname)
-                    user_data.append(lastname)
-                    ldap_users_data.append(user_data)
-            return {'status_search': True, 'ldap_users_data': ldap_users_data}
-        else:
-            return False
-    except ldap3.core.exceptions.LDAPKeyError:
-        return False
-
-
 @bp.route('auth/ldapSynchronization', methods=['POST'])
+@auth.token_required
 def ldap_synchronization_users():
     ldap_synchronization_data = json.loads(request.data.decode("utf8"))
     res = auth.synchronization_ldap_users(ldap_synchronization_data)
@@ -202,6 +123,7 @@ def ldap_synchronization_users():
 
 
 @bp.route('auth/saveLoginMethodConfigs', methods=['POST'])
+@auth.token_required
 def save_login_method():
     data = request.json
     login_method_name = 'ldap'
@@ -245,6 +167,7 @@ def disable_login_method():
 
 
 @bp.route('auth/enableLoginMethodName', methods=['POST'])
+@auth.token_required
 def enable_login_method():
     login_method_name = json.loads(request.data.decode("utf8"))
     res = auth.enable_login_method(login_method_name['method_name'])

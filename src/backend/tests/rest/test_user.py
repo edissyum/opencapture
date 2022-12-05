@@ -36,13 +36,14 @@ class UserTest(unittest.TestCase):
             "firstname": "Test",
             "lastname": "Test",
             "password": "test",
+            "email": "test@test.fr",
             "role": "2",
             "customers": [1]
         })
 
         return self.app.post('/test/ws/users/new', headers={"Content-Type": "application/json"}, data=payload)
 
-    def test_successful_new_user(self):
+    def test_successful_create_user(self):
         user = self.create_user()
         self.assertEqual(int, type(user.json['id']))
         self.assertEqual(200, user.status_code)
@@ -84,6 +85,7 @@ class UserTest(unittest.TestCase):
             "firstname": "Test",
             "lastname": "Test123",
             "password": "test123",
+            "email": "test123@tttt.fr",
             "role": "1",
         }
         response = self.app.put('/test/ws/users/update/' + str(user.json['id']),
@@ -92,11 +94,12 @@ class UserTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
 
-        self.db.execute("SELECT firstname, lastname, password, role FROM users WHERE id = " + str(user.json['id']))
+        self.db.execute("SELECT firstname, lastname, password, role, email FROM users WHERE id = " + str(user.json['id']))
         new_user = self.db.fetchall()
         self.assertEqual(1, new_user[0]['role'])
         self.assertEqual("Test", new_user[0]['firstname'])
         self.assertEqual("Test123", new_user[0]['lastname'])
+        self.assertEqual("test123@tttt.fr", new_user[0]['email'])
         self.assertTrue(check_password_hash(new_user[0]['password'], 'test123'))
 
     def test_successful_get_users_list(self):

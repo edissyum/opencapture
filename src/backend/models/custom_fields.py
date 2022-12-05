@@ -43,7 +43,7 @@ def add_custom_field(args):
                 'metadata_key': args['metadata_key'],
             }
         }
-        if args['options']:
+        if 'options' in args and args['options']:
             _args['columns']['settings'] = json.dumps({'options': args['options']})
 
         res = database.insert(_args)
@@ -53,7 +53,6 @@ def add_custom_field(args):
         return res, error
     else:
         error = gettext('CUSTOM_FIELD_ALREADY_EXIST')
-
     return '', error
 
 
@@ -90,7 +89,7 @@ def update(args):
         'where': ['id = %s'],
         'data': [args['id']]
     }
-    if args['options']:
+    if 'options' in args and args['options']:
         _args['set']['settings'] = json.dumps({'options': args['options']})
 
     res = database.update(_args)

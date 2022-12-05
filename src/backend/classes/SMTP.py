@@ -164,3 +164,41 @@ class SMTP:
                 last_notif.close()
         except smtplib.SMTPException as smtp_error:
             print('Erreur lors de l\'envoi du mail : ' + str(smtp_error))
+
+    def send_user_quota_notifications(self, dest, custom_id):
+        file = 'last_mail_quota.lock'
+        diff_minutes = False
+        if os.path.exists('custom/' + custom_id + '/' + file) and pathlib.Path('custom/' + custom_id + '/' + file).stat().st_size != 0:
+            with open('custom/' + custom_id + '/' + file, 'r', encoding='UTF-8') as last_notif:
+                last_mail_send = datetime.strptime(last_notif.read(), '%d/%m/%Y %H:%M')
+            last_notif.close()
+
+            now = datetime.strptime(datetime.now().strftime('%d/%m/%Y %H:%M'), '%d/%m/%Y %H:%M')
+            diff = now - last_mail_send
+            diff_minutes = (diff.days * 1440 + diff.seconds / 60)
+
+        msg = MIMEMultipart()
+        msg['To'] = dest
+        if self.from_mail:
+            msg['From'] = self.from_mail
+        else:
+            msg['From'] = 'MailCollect@OpenCapture.com'
+
+        msg['Subject'] = '[OpenCapture - User Quota] Le quota utilisateur est dépassé'
+        message = 'Le quota utilisateur de l\'instance ' + custom_id + ' vient de dépasser son quota d\'utilisateurs autorisés'
+        if self.delay != 0:
+            message += '\n\n Attention, durant les ' + str(self.delay) + \
+                       ' dernières minutes, d\'autres erreurs ont pu arriver sans notifications.'
+
+        msg.attach(MIMEText(message))
+
+        try:
+            if diff_minutes is not False and self.delay != 0 and diff_minutes < self.delay:
+                pass
+            else:
+                self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
+                with open('custom/' + custom_id + '/' + file, 'w', encoding='UTF-8') as last_notif:
+                    last_notif.write(datetime.now().strftime('%d/%m/%Y %H:%M'))
+                last_notif.close()
+        except smtplib.SMTPException as smtp_error:
+            print('Erreur lors de l\'envoi du mail : ' + str(smtp_error))

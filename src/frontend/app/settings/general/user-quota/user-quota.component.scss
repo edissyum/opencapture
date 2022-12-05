@@ -1,0 +1,7 @@
+.mat-option {
+    background: transparent!important;
+}
+
+::ng-deep .mat-pseudo-checkbox-checked {
+    @apply bg-green-400 #{!important};
+}

@@ -81,11 +81,11 @@ class SeparatorQR:
                     pass
 
         if blank_page_exists:
-            infile = PyPDF2.PdfFileReader(file)
-            output = PyPDF2.PdfFileWriter()
+            infile = PyPDF2.PdfReader(file)
+            output = PyPDF2.PdfWriter()
             for i in self.sorted_files(pages_to_keep):
-                _page = infile.getPage(int(i) - 1)
-                output.addPage(_page)
+                _page = infile.pages[int(i) - 1]
+                output.add_page(_page)
 
             with open(file, 'wb') as binary_f:
                 output.write(binary_f)
@@ -95,17 +95,17 @@ class SeparatorQR:
         path = os.path.dirname(file)
         file_without_extention = os.path.splitext(os.path.basename(file))[0]
 
-        pdf = PyPDF2.PdfFileReader(open(file, 'rb'), strict=False)
-        nb_pages = pdf.getNumPages()
+        pdf = PyPDF2.PdfReader(file, strict=False)
+        nb_pages = len(pdf.pages)
 
         array_of_files = []
         cpt = 1
         for i in range(nb_pages):
             if i % 2 == 0:
-                output = PyPDF2.PdfFileWriter()
-                output.addPage(pdf.getPage(i))
+                output = PyPDF2.PdfWriter()
+                output.add_page(pdf.pages[i])
                 if i + 1 < nb_pages:
-                    output.addPage(pdf.getPage(i + 1))
+                    output.add_page(pdf.pages[i + 1])
                 newname = path + '/' + file_without_extention + "-" + str(cpt) + ".pdf"
                 with open(newname, 'wb') as outputStream:
                     output.write(outputStream)
@@ -118,8 +118,8 @@ class SeparatorQR:
         self.log.info('Start page separation using QR CODE')
         self.pages = []
         try:
-            pdf = PyPDF2.PdfFileReader(open(file, 'rb'))
-            self.nb_pages = pdf.getNumPages()
+            pdf = PyPDF2.PdfReader(file)
+            self.nb_pages = len(pdf.pages)
             self.get_xml_qr_code(file)
 
             if self.splitter_or_verifier == 'verifier':
@@ -235,11 +235,11 @@ class SeparatorQR:
 
     @staticmethod
     def split_pdf(input_path, output_path, pages):
-        input_pdf = PyPDF2.PdfFileReader(open(input_path, "rb"))
-        output_pdf = PyPDF2.PdfFileWriter()
+        input_pdf = PyPDF2.PdfReader(input_path)
+        output_pdf = PyPDF2.PdfWriter()
 
         for page in pages:
-            output_pdf.addPage(input_pdf.getPage(page - 1))
+            output_pdf.add_page(input_pdf.pages[page - 1])
 
         with open(output_path, 'wb') as stream:
             output_pdf.write(stream)
@@ -324,7 +324,7 @@ class SeparatorQR:
         try:
             with open(file_path, 'rb') as pdf_file:
                 encoded_file = base64.b64encode(pdf_file.read()).decode('utf-8')
-            pages = pdf2image.convert_from_path(file_path, db_config['resolution'])
+            pages = pdf2image.convert_from_path(file_path, dpi=300)
 
             buffered = BytesIO()
             pages[0].save(buffered, format="JPEG")

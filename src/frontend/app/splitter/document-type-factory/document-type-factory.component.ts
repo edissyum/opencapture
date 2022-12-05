@@ -343,7 +343,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
 
     cloneFormDoctypes(sourceFormId: number, destFormId: number) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('DOCTYPE.confirm_doctypes_clone'),
                 confirmButton       : this.translate.instant('DOCTYPE.clone_doctypes'),

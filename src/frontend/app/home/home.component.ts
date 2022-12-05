@@ -19,6 +19,8 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from "../../services/user.service";
 import { LocalStorageService } from "../../services/local-storage.service";
 import { PrivilegesService } from "../../services/privileges.service";
+import {Router} from "@angular/router";
+import {LastUrlService} from "../../services/last-url.service";
 
 @Component({
     selector: 'app-home',
@@ -27,7 +29,9 @@ import { PrivilegesService } from "../../services/privileges.service";
 })
 export class HomeComponent implements OnInit {
     constructor(
+        private router: Router,
         private userService: UserService,
+        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
         private localStorageService: LocalStorageService
     ) {}
@@ -35,6 +39,16 @@ export class HomeComponent implements OnInit {
     ngOnInit() {
         this.setValue('');
         this.localStorageService.save('task_watcher_minimize_display', 'true');
+        const splitter = this.privilegesService.hasPrivilege('access_splitter');
+        const verifier = this.privilegesService.hasPrivilege('access_verifier');
+        const lastUrl = this.routerExtService.getPreviousUrl();
+        if (lastUrl === '/login') {
+            if (verifier && !splitter) {
+                this.router.navigate(['/verifier/list']).then();
+            } else if (splitter && !verifier) {
+                this.router.navigate(['/splitter/list']).then();
+            }
+        }
     }
 
     setValue(value: string) {

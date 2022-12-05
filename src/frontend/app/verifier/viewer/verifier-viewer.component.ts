@@ -1450,7 +1450,7 @@ export class VerifierViewerComponent implements OnInit {
                                     this.router.navigate(['/verifier']).then();
                                     this.loadingSubmit = false;
                                     if (this.formSettings.delete_documents_after_outputs) {
-                                        this.http.get(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/delete_documents', {headers: this.authService.headers}).pipe(
+                                        this.http.get(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deleteDocuments', {headers: this.authService.headers}).pipe(
                                             catchError((err: any) => {
                                                 console.debug(err);
                                                 this.notify.handleErrors(err);

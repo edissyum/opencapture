@@ -53,10 +53,8 @@ class Files:
         self.database = database
         self.regex = regex
         self.height_ratio = ''
-        self.resolution = 300
         self.languages = languages
         self.docservers = docservers
-        self.compression_quality = 100
         self.configurations = configurations
         self.jpg_name = img_name + '.jpg'
         self.jpg_name_last = img_name + '_last.jpg'
@@ -106,14 +104,11 @@ class Files:
     def open_img(self, img):
         self.img = Image.open(img)
 
-    def save_img_with_pdf2image(self, pdf_name, output, page=None, save_to_docservers=False):
+    def save_img_with_pdf2image(self, pdf_name, output, page=None):
         try:
             output = os.path.splitext(output)[0]
             bck_output = os.path.splitext(output)[0]
-            if save_to_docservers:
-                images = convert_from_path(pdf_name, first_page=page, last_page=page, fmt='jpeg', jpegopt={"quality": 80})
-            else:
-                images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=self.resolution)
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
             cpt = 1
             for i in range(len(images)):
                 if not page:
@@ -148,7 +143,8 @@ class Files:
 
             if output_name:
                 output = output_name
-            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=self.resolution)
+
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, 0, images[i].width, int(images[i].height - self.height_ratio))
@@ -165,9 +161,11 @@ class Files:
                 output = self.jpg_name_last_footer
             else:
                 output = self.jpg_name_footer
+
             if output_name:
                 output = output_name
-            images = convert_from_path(pdf_name, first_page=page, last_page=page)
+
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, self.height_ratio, images[i].width, images[i].height)
@@ -190,30 +188,28 @@ class Files:
         else:
             position[0][1] = line.position[0][1]
             position[1][1] = line.position[1][1]
-
         return position
 
     def get_pages(self, docservers, file):
         try:
-            with open(file, 'rb') as doc:
-                pdf = PyPDF2.PdfFileReader(doc)
-                try:
-                    return pdf.getNumPages()
-                except ValueError as file_error:
-                    self.log.error(file_error)
-                    shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
-                    return 1
+            pdf = PyPDF2.PdfReader(file)
+            try:
+                return len(pdf.pages)
+            except ValueError as file_error:
+                self.log.error(file_error)
+                shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                return 1
         except PyPDF2.utils.PdfReadError:
-            pdf_read_rewrite = PyPDF2.PdfFileReader(file, strict=False)
-            pdfwrite = PyPDF2.PdfFileWriter()
-            for page_count in range(pdf_read_rewrite.numPages):
-                pages = pdf_read_rewrite.getPage(page_count)
-                pdfwrite.addPage(pages)
+            pdf_read_rewrite = PyPDF2.PdfReader(file, strict=False)
+            pdfwrite = PyPDF2.PdfWriter()
+            for page_count in range(len(pdf_read_rewrite.pages)):
+                pages = pdf_read_rewrite.pages[page_count]
+                pdfwrite.add_page(pages)
 
             with open(file, 'wb') as fileobjfix:
                 pdfwrite.write(fileobjfix)
             fileobjfix.close()
-            return pdf_read_rewrite.getNumPages()
+            return len(pdf_read_rewrite.pages)
 
     @staticmethod
     def is_blank_page(image):
@@ -258,30 +254,29 @@ class Files:
     def check_file_integrity(file, docservers):
         is_full = False
         while not is_full:
-            with open(file, 'rb') as doc:
-                size = os.path.getsize(file)
-                time.sleep(1)
-                size2 = os.path.getsize(file)
-                if size2 == size:
-                    if file.lower().endswith(".pdf"):
-                        try:
-                            PyPDF2.PdfFileReader(doc)
-                        except PyPDF2.utils.PdfReadError:
-                            shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
-                            return False
-                        else:
-                            return True
-                    elif file.lower().endswith(tuple(['.jpg'])):
-                        try:
-                            Image.open(file)
-                        except OSError:
-                            return False
-                        else:
-                            return True
-                    else:
+            size = os.path.getsize(file)
+            time.sleep(1)
+            size2 = os.path.getsize(file)
+            if size2 == size:
+                if file.lower().endswith(".pdf"):
+                    try:
+                        PyPDF2.PdfReader(file)
+                    except PyPDF2.utils.PdfReadError:
+                        shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         return False
+                    else:
+                        return True
+                elif file.lower().endswith(tuple(['.jpg'])):
+                    try:
+                        Image.open(file)
+                    except OSError:
+                        return False
+                    else:
+                        return True
                 else:
-                    continue
+                    return False
+            else:
+                continue
 
     def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex_name=None, remove_line=False, lang='fra'):
         rand = str(uuid.uuid4())
@@ -494,18 +489,18 @@ class Files:
 
     @staticmethod
     def export_pdf(pages_lists, documents, input_file, output_file, compress_type, reduce_index=0):
-        pdf_writer = PyPDF2.PdfFileWriter()
+        pdf_writer = PyPDF2.PdfWriter()
         paths = []
         try:
             for index, pages in enumerate(pages_lists):
-                pdf_reader = PyPDF2.PdfFileReader(input_file, strict=False)
+                pdf_reader = PyPDF2.PdfReader(input_file, strict=False)
                 if not pages:
                     continue
                 for page in pages:
-                    pdf_page = pdf_reader.getPage(page['source_page'] - reduce_index)
+                    pdf_page = pdf_reader.pages[page['source_page'] - reduce_index]
                     if page['rotation'] != 0:
                         pdf_page.rotateCounterClockwise(-page['rotation'])
-                    pdf_writer.addPage(pdf_page)
+                    pdf_writer.add_page(pdf_page)
                 file_path = output_file + '/' + documents[index]['fileName']
 
                 if compress_type:
@@ -513,7 +508,7 @@ class Files:
                     with open(tmp_filename, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
-                    pdf_writer = PyPDF2.PdfFileWriter()
+                    pdf_writer = PyPDF2.PdfWriter()
                     compressed_file_path = '/tmp/min_' + documents[index]['fileName']
                     compress_pdf(tmp_filename, compressed_file_path, compress_type)
                     shutil.move(compressed_file_path, file_path)
@@ -521,8 +516,9 @@ class Files:
                     with open(file_path, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
-                    pdf_writer = PyPDF2.PdfFileWriter()
+                    pdf_writer = PyPDF2.PdfWriter()
         except Exception as err:
+            print('aaaa')
             return False, str(err)
         return paths
 

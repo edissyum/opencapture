@@ -18,8 +18,6 @@ INSERT INTO "mailcollect" ("name", "hostname", "port", "login", "password", "sec
 -- CRÉATION DES PARAMÈTRES
 INSERT INTO "configurations" ("label", "data") VALUES ('jwtExpiration', '{"type": "int", "value": "1440", "description": "Délai avant expiration du token d''authentification (en minutes)"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('timeDelta', '{"type": "int", "value": "-1", "description": "Delta maximum pour remonter une date de facture, en jours. -1 pour désactiver"}');
-INSERT INTO "configurations" ("label", "data") VALUES ('resolution', '{"type": "int", "value": "300", "description": "Résolution utilisée pour la conversion PDF en JPG. En DPI"}');
-INSERT INTO "configurations" ("label", "data") VALUES ('compressionQuality', '{"type": "int", "value": "100", "description": "Qualité de compression utilisée pour la conversion PDF en JPG. En pourcentage"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('locale', '{"type": "string", "value": "fra", "description": "Clé pour la sélection de la langue (fra ou eng par défaut)"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('invoiceSizeMin', '{"type": "int", "value": "6", "description": "Taille minimale pour un numéro de facture"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('devisSizeMin', '{"type": "int", "value": "3", "description": "Taille minimale pour un numéro de devis"}');
@@ -42,6 +40,16 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('mailCollectGe
         "smtpDelay": "30"
     },
     "description": "Paramétrage par défaut du MailCollect"
+}', false);
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('userQuota', '{
+    "type": "json",
+    "value": {
+        "enabled": false,
+        "quota": 20,
+        "users_filtered": ["admin", "admin_fct"],
+        "email_dest": ""
+    },
+    "description": ""
 }', false);
 
 -- CRÉATION DES DOCSERVERS
@@ -627,9 +635,10 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'ad
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'login_methods', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (54, 'verifier_display', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (55, 'mailcollect', 'general');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 55;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (53, 'verifier_display', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (54, 'mailcollect', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (55, 'user_quota', 'general');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 56;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

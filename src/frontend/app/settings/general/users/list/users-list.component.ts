@@ -54,9 +54,11 @@ export class UsersListComponent implements OnInit {
     roles           : any         = [];
     pageSize        : number      = 10;
     pageIndex       : number      = 0;
+    activeUser      : number      = 0;
     total           : number      = 0;
     offset          : number      = 0;
     search          : string      = '';
+    userQuotaConfig : any         = {};
 
     constructor(
         public router: Router,
@@ -74,7 +76,6 @@ export class UsersListComponent implements OnInit {
         public privilegesService: PrivilegesService,
         private localStorageService: LocalStorageService,
     ) {}
-
 
     ngOnInit(): void {
         this.serviceSettings.init();
@@ -111,6 +112,19 @@ export class UsersListComponent implements OnInit {
                         return of(false);
                     })
                 ).subscribe();
+
+                this.http.get(environment['url'] + '/ws/config/getConfiguration/userQuota', {headers: this.authService.headers}).pipe(
+                    tap((config: any) => {
+                        this.userQuotaConfig = config.configuration[0].data.value;
+                        this.activeUser = this.allUsers.length;
+                        this.getUserQuotaFiltered();
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -123,6 +137,14 @@ export class UsersListComponent implements OnInit {
     searchUser(event: any) {
         this.search = event.target.value;
         this.loadUsers();
+    }
+
+    getUserQuotaFiltered() {
+        this.allUsers.forEach((user: any) => {
+            if (this.userQuotaConfig.users_filtered.includes(user['username'])) {
+                this.activeUser -= 1;
+            }
+        });
     }
 
     onPageChange(event: any) {
@@ -163,7 +185,7 @@ export class UsersListComponent implements OnInit {
 
     deleteConfirmDialog(userId: number, user: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('USER.confirm_delete', {"user": user}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -183,7 +205,7 @@ export class UsersListComponent implements OnInit {
 
     disableConfirmDialog(userId: number, user: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('USER.confirm_disable', {"user": user}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
@@ -203,7 +225,7 @@ export class UsersListComponent implements OnInit {
 
     enableConfirmDialog(userId: number, user: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('USER.confirm_enable', {"user": user}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
