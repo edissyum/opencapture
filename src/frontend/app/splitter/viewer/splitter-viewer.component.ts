@@ -109,6 +109,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         id                  : -1,
         formId              : -1,
         inputId             : -1,
+        pageIdInLoad          : -1,
         previousFormId      : -1,
         status              : '',
         maxSplitIndex       : 0,
@@ -274,7 +275,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                             inputId     : batch.input_id,
                             fileName    : batch.file_name,
                             date        : batch.batch_date,
-                            pageNumber  : batch.page_number,
+                            pageNumber  : batch.documents_count,
                             thumbnail   : this.sanitize(batch.thumbnail),
                         }
                     )
@@ -429,13 +430,26 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     getZoomPage(page: any) {
-        this.showZoomPage = true;
-        this.zoomPage = {
-            pageId      : page.id,
-            thumbnail   : page.thumbnail,
-            rotation    : page.rotation,
-        };
+        this.currentBatch.pageIdInLoad = page.id;
+        this.http.get(environment['url'] + '/ws/splitter/pages/' + (page.id).toString() + '/fullThumbnail', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.showZoomPage = true;
+                this.zoomPage = {
+                    pageId      : page.id,
+                    rotation    : page.rotation,
+                    thumbnail   : this.sanitize(data['fullThumbnail']),
+                };
+                this.currentBatch.pageIdInLoad = -1;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.currentBatch.pageIdInLoad = -1;
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
+
     /* -- Metadata -- */
     loadDefaultDocType() {
         this.loading      = true;

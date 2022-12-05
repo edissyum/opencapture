@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Open-Capture.  If not, see <https://www.gnu.org/licenses/>.
 
+# @dev : Oussama Bich <oussama.brich@edissyum.com>
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
@@ -20,6 +21,7 @@ import os
 import sys
 import json
 import random
+import pathlib
 from xml.dom import minidom
 from unidecode import unidecode
 from src.backend.classes.Files import Files
@@ -73,7 +75,6 @@ class Splitter:
 
     def save_documents(self, batch_folder, file, input_id, original_filename):
         for _, batch in enumerate(self.result_batches):
-            batch_name = os.path.basename(os.path.normpath(batch_folder))
             input_settings = self.db.select({
                 'select': ['*'],
                 'table': ['inputs'],
@@ -89,9 +90,9 @@ class Splitter:
                 'columns': {
                     'file_path': clean_path.replace(clean_ds, ''),
                     'file_name': os.path.basename(original_filename),
-                    'batch_folder': batch_name,
-                    'thumbnail': batch[0]['path'],
-                    'page_number': str(max((node['split_document'] for node in batch))),
+                    'batch_folder': batch_folder,
+                    'thumbnail': os.path.basename(batch[0]['path']),
+                    'documents_count': str(max((node['split_document'] for node in batch))),
                     'form_id': str(input_settings[0]['default_form_id'])
                 }
             }
@@ -161,17 +162,17 @@ class Splitter:
                     documents_id = self.db.insert(args)
 
                 previous_split_document = page['split_document']
-                image = Files.open_image_return(page['path'])
+                paths_elements = pathlib.Path(page['path'])
+                thumbnail = os.path.join(*paths_elements.parts[-2:])
                 args = {
                     'table': 'splitter_pages',
                     'columns': {
                         'document_id': str(documents_id),
-                        'thumbnail': page['path'],
+                        'thumbnail': thumbnail,
                         'source_page': page['source_page'],
                     }
                 }
                 self.db.insert(args)
-                image.save(page['path'], 'JPEG')
             self.db.conn.commit()
 
         return {'OK': True}

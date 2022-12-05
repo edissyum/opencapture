@@ -19,22 +19,27 @@ import re
 from PIL import Image
 
 
-def process(args, file, log, splitter, files, tmp_folder, config, docservers, ocr, regex):
+def process(args, file, log, splitter, files, batch_folder, config, docservers, ocr, regex):
     """
     :param args:
     :param file: File path to split
     :param log: log object
     :param splitter: Splitter object
     :param files: Files object
-    :param tmp_folder: tmp folder path
+    :param batch_folder: tmp folder path
     :param config: Config object
     :param ocr: PyTesseract object
     :param regex: regex content values
     :return: N/A
     """
     log.info('Processing file for separation : ' + file)
-    files.save_img_with_pdf2image(file, tmp_folder + "page")
-    list_files = files.sorted_file(tmp_folder, 'jpg')
+
+    batch_folder_path = f"{docservers['SPLITTER_BATCHES']}/{batch_folder}/"
+    batch_thumbs_path = f"{docservers['SPLITTER_THUMB']}/{batch_folder}/"
+    files.save_img_with_pdf2image(file, batch_folder_path + "page")
+    files.save_img_with_pdf2image_min(file, batch_thumbs_path + "page", single_file=False)
+
+    list_files = files.sorted_file(batch_folder, 'jpg')
     blank_pages = []
 
     regex_content = {
@@ -57,7 +62,7 @@ def process(args, file, log, splitter, files, tmp_folder, config, docservers, oc
     split(splitter, list_files, ocr, regex_content)
     original_file = file
     file = files.move_to_docservers(docservers, file, 'splitter')
-    splitter.save_documents(tmp_folder, file, args['input_id'], original_file)
+    splitter.save_documents(batch_folder, file, args['input_id'], original_file)
 
 
 def split(splitter, pages, ocr, regex_content):

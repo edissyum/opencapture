@@ -330,7 +330,8 @@
                                     <button mat-button class="page-header-btn float-right bg-gray-100"
                                             matTooltip="{{ 'SPLITTER.zoom' | translate }}"
                                             (click)="getZoomPage(page); $event.stopPropagation();">
-                                        <i class="fa-solid fa-search-plus"></i>
+                                        <i *ngIf="page.id !== this.currentBatch.pageIdInLoad" class="fa-solid fa-search-plus"></i>
+                                        <i *ngIf="page.id === this.currentBatch.pageIdInLoad" class="fas fa-circle-notch fa-spin fa-lg my-4"></i>
                                     </button>
                                 </div>
                                 <img [ngClass]="

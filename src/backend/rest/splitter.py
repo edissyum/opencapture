@@ -16,6 +16,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
+from time import sleep
 
 from flask import Blueprint, make_response, jsonify, request
 from flask_babel import gettext
@@ -102,6 +103,13 @@ def change_form():
         'form_id': data['formId'],
         'batch_id': data['batchId'],
     })
+    return make_response(jsonify(response)), status
+
+
+@bp.route('splitter/pages/<int:page_id>/fullThumbnail', methods=['GET'])
+@auth.token_required
+def get_page_full_thumbnail(page_id):
+    response, status = splitter.get_page_full_thumbnail(page_id)
     return make_response(jsonify(response)), status
 
 

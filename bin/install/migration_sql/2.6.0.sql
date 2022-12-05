@@ -68,3 +68,6 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "data", "mod
     ]
   }
 }', 'splitter');
+
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_THUMB', '[SPLITTER] Chemin pour le stockage des miniatures', '/var/docservers/opencapture/splitter/thumbs/');
+ALTER TABLE splitter_batches RENAME COLUMN page_number TO documents_count;

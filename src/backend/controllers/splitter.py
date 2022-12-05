@@ -22,7 +22,6 @@ import PyPDF2
 import shutil
 import os.path
 import datetime
-import requests
 import pandas as pd
 from flask import current_app
 from flask_babel import gettext
@@ -110,6 +109,10 @@ def retrieve_referential(form_id):
 
 
 def retrieve_batches(args):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    docservers = _vars[9]
+
     args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
     args['where'] = []
     args['data'] = []
@@ -134,7 +137,8 @@ def retrieve_batches(args):
             else:
                 batches[index]['form_label'] = gettext('FORM_UNDEFINED')
             try:
-                with open(batches[index]['thumbnail'], 'rb') as image_file:
+                thumbnail = f"{docservers['SPLITTER_THUMB']}/{batches[index]['batch_folder']}/{batches[index]['thumbnail']}"
+                with open(thumbnail, 'rb') as image_file:
                     encoded_string = base64.b64encode(image_file.read())
                     batches[index]['thumbnail'] = encoded_string.decode("utf-8")
             except IOError:
@@ -171,8 +175,41 @@ def change_form(args):
         return res, 401
 
 
+def get_page_full_thumbnail(page_id):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    docservers = _vars[9]
+
+    res, error = splitter.get_page_by_id({
+        'id': page_id
+    })
+    if not res:
+        response = {
+            "errors": "ERROR",
+            "message": error
+        }
+        return response, 401
+
+    try:
+        thumb_path = f"{docservers['SPLITTER_BATCHES']}/{res[0]['thumbnail']}"
+        with open(thumb_path, 'rb') as image_file:
+            encoded_string = base64.b64encode(image_file.read())
+            full_thumbnail = encoded_string.decode("utf-8")
+            return {'fullThumbnail': full_thumbnail}, 200
+    except Exception as e:
+        if not res:
+            response = {
+                "errors": "ERROR",
+                "message": str(e)
+            }
+        return response, 401
+
+
 def retrieve_documents(batch_id):
     res_documents = []
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    docservers = _vars[9]
 
     args = {
         'id': batch_id
@@ -190,17 +227,17 @@ def retrieve_documents(batch_id):
             pages, _ = splitter.get_documents_pages(args)
             if pages:
                 for page_index, _ in enumerate(pages):
-                    with open(pages[page_index]['thumbnail'], 'rb') as image_file:
+
+                    thumbnail = f"{docservers['SPLITTER_THUMB']}/{pages[page_index]['thumbnail']}"
+                    with open(thumbnail, 'rb') as image_file:
                         encoded_string = base64.b64encode(image_file.read())
                         pages[page_index]['thumbnail'] = encoded_string.decode("utf-8")
                         document_pages.append(pages[page_index])
 
-            dotypes = doctypes.retrieve_doctypes(
-                {
+            dotypes = doctypes.retrieve_doctypes({
                     'where': ['status = %s', 'key = %s'],
                     'data': ['OK', document['doctype_key']]
-                }
-            )[0]
+            })[0]
 
             if dotypes and len(dotypes[0]) > 0:
                 doctype_key = dotypes[0]['key'] if dotypes[0]['key'] else None
@@ -792,7 +829,7 @@ def merge_batches(parent_id, batches):
 
     parent_info = splitter.get_batch_by_id({'id': parent_id})[0]
     parent_filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + parent_info['file_path']
-    parent_batch_pages = int(parent_info['page_number'])
+    parent_batch_documents = int(parent_info['documents_count'])
     batch_folder = docservers['SPLITTER_BATCHES'] + '/' +  parent_info['batch_folder']
     parent_document_id = splitter.get_documents({'id': parent_id})[0][0]['id']
     parent_max_split_index = splitter.get_documents_max_split_index({'id': parent_id})[0][0]['split_index']
@@ -806,7 +843,7 @@ def merge_batches(parent_id, batches):
     batches_info = []
     for batch in batches:
         batch_info = splitter.get_batch_by_id({'id': batch})[0]
-        parent_batch_pages += batch_info['page_number']
+        parent_batch_documents += batch_info['documents_count']
         batches_info.append(batch_info)
         pdf = PyPDF2.PdfFileReader(docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
         for page in range(pdf.numPages):
@@ -849,6 +886,6 @@ def merge_batches(parent_id, batches):
                 cpt += 1
         parent_max_split_index += 1
 
-    splitter.update_batch_page_number({'id': parent_id, 'number': parent_batch_pages})
+    splitter.update_batch_documents_count({'id': parent_id, 'number': parent_batch_documents})
     with open(parent_filename, 'wb') as file:
         merged_pdf.write(file)
