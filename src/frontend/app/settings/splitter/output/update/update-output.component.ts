@@ -245,7 +245,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                                     }
                                 });
                             });
-                            // this.testConnection();
+                            this.testConnection();
                         }
                     }),
                     finalize(() => {this.loading = false;}),
