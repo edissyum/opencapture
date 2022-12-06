@@ -31,8 +31,8 @@ def get_last_tasks(module):
                    "to_char(end_date, 'HH24:MI:SS') as end_time",
                    '(Extract(epoch FROM (CURRENT_TIMESTAMP - creation_date))/60)::INTEGER as age'],
         'table': ['tasks_watcher'],
-        'where': ['module = %s', '(status IS NULL OR status = %s)', "creation_date > NOW() - INTERVAL %s"],
-        'data': [module, 'done', '1 hour'],
+        'where': ['module = %s', "(status IS NULL OR status = ('%s','%s')", "creation_date > NOW() - INTERVAL %s"],
+        'data': [module, 'done', 'error', '1 hour'],
         'order_by': ["id desc"],
     })
 
