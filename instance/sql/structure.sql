@@ -252,16 +252,16 @@ CREATE TABLE "status"
 
 CREATE TABLE "splitter_batches"
 (
-    "id"            SERIAL          UNIQUE PRIMARY KEY,
-    "file_path"     VARCHAR(255),
-    "file_name"     VARCHAR(255),
-    "thumbnail"     VARCHAR(255),
-    "batch_folder"  VARCHAR(255),
-    "creation_date" TIMESTAMP       DEFAULT (CURRENT_TIMESTAMP),
-    "status"        VARCHAR(20)     DEFAULT 'NEW',
-    "page_number"   INTEGER,
-    "form_id"       INTEGER,
-    "data"          JSON            DEFAULT '{}'::json
+    "id"                SERIAL          UNIQUE PRIMARY KEY,
+    "file_path"         VARCHAR(255),
+    "file_name"         VARCHAR(255),
+    "thumbnail"         VARCHAR(255),
+    "batch_folder"      VARCHAR(255),
+    "creation_date"     TIMESTAMP       DEFAULT (CURRENT_TIMESTAMP),
+    "status"            VARCHAR(20)     DEFAULT 'NEW',
+    "documents_count"   INTEGER,
+    "form_id"           INTEGER,
+    "data"              JSON            DEFAULT '{}'::json
 );
 
 CREATE TABLE "splitter_documents"

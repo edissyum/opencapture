@@ -16,6 +16,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
+from time import sleep
 
 from flask import Blueprint, make_response, jsonify, request
 from flask_babel import gettext
@@ -105,6 +106,13 @@ def change_form():
     return make_response(jsonify(response)), status
 
 
+@bp.route('splitter/pages/<int:page_id>/fullThumbnail', methods=['GET'])
+@auth.token_required
+def get_page_full_thumbnail(page_id):
+    response, status = splitter.get_page_full_thumbnail(page_id)
+    return make_response(jsonify(response)), status
+
+
 @bp.route('splitter/saveInfo', methods=['POST'])
 @auth.token_required
 def save_info():
@@ -173,8 +181,17 @@ def get_totals(status):
 
 @bp.route('splitter/cmis/testConnection', methods=['POST'])
 @auth.token_required
-def test_connection():
+def test_cmis_connection():
     data = request.data
     data = json.loads(data)
     response, status = splitter.test_cmis_connection(data['args'])
+    return make_response(jsonify(response)), status
+
+
+@bp.route('splitter/openads/testConnection', methods=['POST'])
+@auth.token_required
+def test_openads_connection():
+    data = request.data
+    data = json.loads(data)
+    response, status = splitter.test_openads_connection(data['args'])
     return make_response(jsonify(response)), status
