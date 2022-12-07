@@ -19,11 +19,10 @@ import os
 import json
 import base64
 import mimetypes
-from flask import Blueprint, request, make_response, jsonify, session
-
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from src.backend.import_controllers import auth, accounts, verifier
+from flask import Blueprint, request, make_response, jsonify, session
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
 
@@ -191,7 +190,7 @@ def delete_supplier_page(supplier_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/suppliers/skipAutoValidate/<int:supplier_id>', methods=['DELETE'])
+@bp.route('accounts/suppliers/skipAutoValidate/<int:supplier_id>', methods=['PUT'])
 @auth.token_required
 def skip_auto_validate(supplier_id):
     res = accounts.update_supplier(supplier_id, {'skip_auto_validate': True})

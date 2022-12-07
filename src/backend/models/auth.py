@@ -31,7 +31,6 @@ from ldap3.core.exceptions import LDAPException
 from werkzeug.security import generate_password_hash
 
 
-
 def login(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
@@ -214,14 +213,15 @@ def enable_login_method(method_name):
         error = gettext('ENABLE_LOGIN_METHOD_DATA_ERROR')
     return login_method_data, error
 
-def check_user_ldap_connection(type_AD, domain_ldap, port_ldap, user_DN, user_password):
+
+def check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_DN, user_password):
     if not user_DN and not user_password:
         return False
     ldsp_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
     try:
-        if type_AD == 'openLDAP':
+        if type_ad == 'openLDAP':
             server = Server(ldsp_server, get_info=ALL, use_ssl=True)
-        elif type_AD == 'adLDAP':
+        elif type_ad == 'adLDAP':
             server = Server(ldsp_server, get_info=ALL)
         with ldap3.Connection(server, authentication="SIMPLE", user=user_DN, password=user_password, auto_bind=True) as connection:
             if connection.bind() and connection.result["description"] == 'success':
@@ -233,27 +233,27 @@ def check_user_ldap_connection(type_AD, domain_ldap, port_ldap, user_DN, user_pa
         return False
 
 
-def check_user_connection(type_AD, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_DN, suffix, prefix, username_attribute, username, password):
+def check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix, username_attribute, username, password):
     ldsp_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
     try:
-        if type_AD == 'openLDAP':
-            username_admin = f'cn={username_ldap_admin},{base_DN}'
+        if type_ad == 'openLDAP':
+            username_admin = f'cn={username_ldap_admin},{base_dn}'
             server = Server(ldsp_server, get_info=ALL, use_ssl=True)
             with ldap3.Connection(server, user=username_admin, password=password_ldap_admin, auto_bind=True) as connection:
                 if not connection.bind():
                     return False
                 else:
-                    status = connection.search(search_base=base_DN, search_filter=f'({username_attribute}={username})',
+                    status = connection.search(search_base=base_dn, search_filter=f'({username_attribute}={username})',
                                                search_scope='SUBTREE',
                                                attributes=['*'])
                     user_dn = connection.response[0]['dn']
                     if status and user_dn:
-                        connection_status = check_user_ldap_connection(type_AD, domain_ldap, port_ldap, user_dn, password)
+                        connection_status = check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, password)
                         if not connection_status :
                             return False
                         else:
                             return True
-        elif type_AD == 'adLDAP':
+        elif type_ad == 'adLDAP':
             server = Server(ldsp_server, get_info=ALL)
             if prefix or suffix :
                 username_ldap_admin = f'{prefix}{username_ldap_admin}{suffix}'
@@ -261,33 +261,33 @@ def check_user_connection(type_AD, domain_ldap, port_ldap, username_ldap_admin, 
                 if not connection.bind():
                     return False
                 else:
-                    status = connection.search(search_base=base_DN, search_filter=f'({username_attribute}={username})',
+                    status = connection.search(search_base=base_dn, search_filter=f'({username_attribute}={username})',
                                                search_scope='SUBTREE',
                                                attributes=['*'])
                     user_dn = connection.response[0]['dn']
                     if status and user_dn:
-                        connection_status = check_user_ldap_connection(type_AD, domain_ldap, port_ldap, user_dn, password)
+                        connection_status = check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, password)
                         if not connection_status:
                             return False
                         else:
                             return True
 
-    except LDAPException :
+    except LDAPException:
         return False
 
 
-def connection_ldap(type_AD, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_DN, suffix, prefix):
+def connection_ldap(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix):
     ldsp_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
     try:
-        if type_AD == 'openLDAP':
-            username_admin = f'cn={username_ldap_admin},{base_DN}'
+        if type_ad == 'openLDAP':
+            username_admin = f'cn={username_ldap_admin},{base_dn}'
             server = Server(ldsp_server, get_info=ALL, use_ssl=True)
             with ldap3.Connection(server, user=username_admin, password=password_ldap_admin, auto_bind=True) as connection:
                 if not connection.bind():
                     return {'status_server_ldap': False, 'connection_object': None}
                 else:
                     return {'status_server_ldap': True, 'connection_object': connection}
-        elif type_AD == 'adLDAP':
+        elif type_ad == 'adLDAP':
             server = Server(ldsp_server, get_info=ALL)
             if suffix or prefix:
                 username_ldap_admin = f'{prefix}{username_ldap_admin}{suffix}'
@@ -297,24 +297,22 @@ def connection_ldap(type_AD, domain_ldap, port_ldap, username_ldap_admin, passwo
                     return {'status_server_ldap': False, 'connection_object': None}
                 else:
                     return {'status_server_ldap': True, 'connection_object': connection}
-
-    except LDAPException :
+    except LDAPException:
         return {'status_server_ldap': False, 'connection_object': None}
 
 
-def verify_ldap_server_connection(type_AD, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_DN, suffix, prefix):
+def verify_ldap_server_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix):
     error = None
     ldap_connection_status = False
-    if type_AD and domain_ldap and port_ldap and username_ldap_admin and password_ldap_admin and base_DN:
+    if type_ad and domain_ldap and port_ldap and username_ldap_admin and password_ldap_admin and base_dn:
         ldsp_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
         try:
-            if type_AD == 'openLDAP':
-                username_admin = f'cn={username_ldap_admin},{base_DN}'
+            if type_ad == 'openLDAP':
+                username_admin = f'cn={username_ldap_admin},{base_dn}'
                 server = Server(ldsp_server, get_info=ALL, use_ssl=True)
 
                 with ldap3.Connection(server, user=username_admin, password=password_ldap_admin, auto_bind=True,
                                       receive_timeout=10) as connection:
-
                     if not connection.bind():
                         error_message = gettext('BAD_CONNECTION_LDAP_INFOS')
                         error = {
@@ -323,8 +321,7 @@ def verify_ldap_server_connection(type_AD, domain_ldap, port_ldap, username_ldap
                         }
                     else:
                         ldap_connection_status = True
-
-            elif type_AD == 'adLDAP':
+            elif type_ad == 'adLDAP':
                 server = Server(ldsp_server, get_info=ALL)
                 if prefix or suffix:
                     username_ldap_admin = f'{prefix}{username_ldap_admin}{suffix}'
@@ -332,7 +329,6 @@ def verify_ldap_server_connection(type_AD, domain_ldap, port_ldap, username_ldap
                 with ldap3.Connection(server, user=username_ldap_admin, password=password_ldap_admin, auto_bind=True,
                                       receive_timeout=10) as connection:
                     if not connection.bind():
-
                         error_message = gettext('BAD_CONNECTION_LDAP_INFOS')
                         error = {
                             "errors": gettext('LDAP_CONNECTION_ERROR'),
@@ -340,7 +336,6 @@ def verify_ldap_server_connection(type_AD, domain_ldap, port_ldap, username_ldap
                         }
                     else:
                         ldap_connection_status = True
-
         except ldap3.core.exceptions.LDAPInvalidServerError:
             error_message = gettext('BAD_CONNECTION_LDAP_INFOS')
             error = {
@@ -362,21 +357,20 @@ def verify_ldap_server_connection(type_AD, domain_ldap, port_ldap, username_ldap
     return ldap_connection_status , error
 
 
-def get_ldap_users(connection, classUser, objectClass, users_DN, base_DN):
+def get_ldap_users(connection, class_user, object_class, users_dn, base_dn):
     try:
-        if not users_DN:
-            status = connection.search(search_base=base_DN, search_filter=f'({classUser}={objectClass})',
+        if not users_dn:
+            status = connection.search(search_base=base_dn, search_filter=f'({class_user}={object_class})',
                                        search_scope='SUBTREE',
                                        attributes=['*'])
         else:
-            status = connection.search(search_base=users_DN, search_filter=f'({classUser}={objectClass})',
+            status = connection.search(search_base=users_dn, search_filter=f'({class_user}={object_class})',
                                        search_scope='SUBTREE',
                                        attributes=['*'])
         if connection and status:
             return {'status_search': True, 'ldap_users': connection.entries}
         else:
             return {'status_search': False, 'ldap_users': ""}
-
     except LDAPException:
         return False
 
@@ -404,7 +398,6 @@ def get_ldap_users_data(ldap_users_dict, user_id_attribut, firstname_attribut, l
 
 
 def check_database_users(ldap_users_data, default_role):
-
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     database = _vars[0]
@@ -416,7 +409,7 @@ def check_database_users(ldap_users_data, default_role):
 
     users_list = database.select({
         'select': ['*'],
-        'table' :['users'],
+        'table': ['users'],
         'where': ['status <> %s'],
         'data': ['DEL']
     })
@@ -513,48 +506,45 @@ def synchronization_ldap_users(ldap_synchronization_data):
     error = None
     result_synchro = None
     if ldap_synchronization_data :
-        attributSourceUser = ldap_synchronization_data['attributSourceUser']
-        classObject = ldap_synchronization_data['classObject']
-        classUser = ldap_synchronization_data['classUser']
-        attributFirstName = ldap_synchronization_data['attributFirstName']
-        attributLastName = ldap_synchronization_data['attributLastName']
-        attributRoleDefault = ldap_synchronization_data['attributRoleDefault']
-        users_DN = ldap_synchronization_data['usersDN'] if 'usersDN' in ldap_synchronization_data else ''
+        attribut_source_user = ldap_synchronization_data['attributSourceUser']
+        class_object = ldap_synchronization_data['classObject']
+        class_user = ldap_synchronization_data['classUser']
+        attribut_first_name = ldap_synchronization_data['attributFirstName']
+        attribut_last_name = ldap_synchronization_data['attributLastName']
+        attribut_role_default = ldap_synchronization_data['attributRoleDefault']
+        users_dn = ldap_synchronization_data['usersDN'] if 'usersDN' in ldap_synchronization_data else ''
 
-        type_AD = ldap_synchronization_data['typeAD']
+        type_ad = ldap_synchronization_data['typeAD']
         domain_ldap = ldap_synchronization_data['host']
         port_ldap = ldap_synchronization_data['port']
         username_ldap_admin = ldap_synchronization_data['loginAdmin']
         password_ldap_admin = ldap_synchronization_data['passwordAdmin']
-        base_DN = ldap_synchronization_data['baseDN']
+        base_dn = ldap_synchronization_data['baseDN']
         suffix = ldap_synchronization_data['suffix'] if 'suffix' in ldap_synchronization_data else ''
         prefix = ldap_synchronization_data['prefix'] if 'prefix' in ldap_synchronization_data else ''
-        if type_AD and domain_ldap and port_ldap and username_ldap_admin and password_ldap_admin and base_DN:
-            ldap_connection = connection_ldap(type_AD, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_DN, suffix, prefix)
-            if attributSourceUser and classUser and classObject and attributFirstName and attributLastName and attributRoleDefault:
+        if type_ad and domain_ldap and port_ldap and username_ldap_admin and password_ldap_admin and base_dn:
+            ldap_connection = connection_ldap(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix)
+            if attribut_source_user and class_user and class_object and attribut_first_name and attribut_last_name and attribut_role_default:
                 if ldap_connection['status_server_ldap']:
-                    list_ldap_users = get_ldap_users(ldap_connection['connection_object'], classUser, classObject, users_DN,
-                                                     base_DN)
-                    if list_ldap_users and list_ldap_users['status_search'] == True:
-                        ldap_users_data = get_ldap_users_data(list_ldap_users, attributSourceUser, attributFirstName,
-                                                              attributLastName)
+                    list_ldap_users = get_ldap_users(ldap_connection['connection_object'], class_user, class_object, users_dn,
+                                                     base_dn)
+                    if list_ldap_users and list_ldap_users['status_search'] is True:
+                        ldap_users_data = get_ldap_users_data(list_ldap_users, attribut_source_user, attribut_first_name,
+                                                              attribut_last_name)
                         if ldap_users_data and ldap_users_data['status_search']:
-                            result_synchro = check_database_users(ldap_users_data['ldap_users_data'], attributRoleDefault)
-
+                            result_synchro = check_database_users(ldap_users_data['ldap_users_data'], attribut_role_default)
                         else:
                             error_message = gettext('LDAP_SYNCRO_INFOS_ERROR')
                             error = {
                                 "errors": gettext('LDAP_SYNCRO_ERROR'),
                                 "message": error_message
                             }
-
                     else:
                         error_message = gettext('LDAP_SYNCRO_INFOS_ERROR')
                         error = {
                             "errors": gettext('LDAP_SYNCRO_ERROR'),
                             "message": error_message
                         }
-
                 else:
                     error_message = gettext('LDAP_CONNECTION_ERROR')
                     error = {
@@ -567,11 +557,10 @@ def synchronization_ldap_users(ldap_synchronization_data):
                     "errors": gettext('LDAP_SYNCRO_ERROR'),
                     "message": error_message
                 }
-
         else:
             error_message = gettext('INFOS_LDAP_NOT_COMPLETE')
             error = {
                 "errors": gettext('LDAP_SYNCRO_ERROR'),
                 "message": error_message
             }
-    return result_synchro , error
+    return result_synchro, error

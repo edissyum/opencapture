@@ -21,11 +21,11 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+group=www-data
 bold=$(tput bold)
 normal=$(tput sgr0)
-defaultPath=/var/www/html/opencapture
 user=$(who am i | awk '{print $1}')
-group=www-data
+defaultPath=/var/www/html/opencapture
 
 ####################
 # Check if custom name is set and doesn't exists already
@@ -49,6 +49,13 @@ done
 oldCustomId=$customId
 customId=${customId//[\.\-]/_}
 
+if [[ "$customId" =~ [[:upper:]] ]]; then
+    echo "##########################################################################"
+    echo "             Custom id could'nt include uppercase characters              "
+    echo "##########################################################################"
+    exit 1
+fi
+
 if [ -z "$customId" ]; then
     echo "###############################################################################################"
     echo "                       Custom id is needed to run the installation"
@@ -63,7 +70,7 @@ if [ -z "$pythonVenv" ]; then
     echo "                          Possible values are 'true' or 'false'"
     echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd -p true"
     echo "###############################################################################################"
-    exit 2
+    exit 3
 fi
 
 if [ "$customId" == 'custom' ]; then
@@ -71,7 +78,7 @@ if [ "$customId" == 'custom' ]; then
     echo "                     Please do not create a custom called 'custom'"
     echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis -t systemd -p true      "
     echo "##############################################################################################"
-    exit 2
+    exit 4
 fi
 
 if [ "$pythonVenv" != 'true' ] && [ "$pythonVenv" != 'false' ]; then
@@ -79,7 +86,7 @@ if [ "$pythonVenv" != 'true' ] && [ "$pythonVenv" != 'false' ]; then
     echo "               Possible values for -p argument are 'true' or 'false'"
     echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis -t systemd -p true"
     echo "##############################################################################################"
-    exit 2
+    exit 5
 fi
 
 if [ "$pythonVenv" == 'true' ] && [ ! -f "/home/$user/python-venv/opencapture/bin/python3" ]; then
@@ -102,7 +109,7 @@ if [ "$installationType" == '' ] || { [ "$installationType" != 'systemd' ] && [ 
     echo "       Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd -p true"
     echo "      Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t supervisor-p true"
     echo "#######################################################################################################"
-    exit 2
+    exit 6
 fi
 
 if [ "$installationType" == 'supervisor' ]; then
@@ -126,7 +133,7 @@ if [ -L "$defaultPath/$customId" ] && [ -e "$defaultPath/$customId" ]; then
     echo "######################################################"
     echo "      Custom id \"$customId\" already exists"
     echo "######################################################"
-    exit 3
+    exit 7
 fi
 
 customIniFile=$defaultPath/custom/custom.ini
@@ -140,7 +147,7 @@ for custom_name in ${SECTIONS[@]}; do # Do not double quote it
        echo "######################################################"
        echo "      Custom id \"$customId\" already exists"
        echo "######################################################"
-       exit 4
+       exit 8
     fi
 done
 
@@ -298,6 +305,7 @@ cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/cust
 cp $defaultPath/src/backend/process_queue_splitter.py.default "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
 cp $defaultPath/bin/scripts/OCVerifier_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 cp $defaultPath/bin/scripts/OCSplitter_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
+cp $defaultPath/bin/scripts/load_referencial.sh.default "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
 cp $defaultPath/bin/scripts/MailCollect/clean.sh.default "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
@@ -305,14 +313,17 @@ sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/back
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/bin/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
 if [ $pythonVenv = 'true' ]; then
+    sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
     sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
     sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 else
     sed -i "s#§§PYTHON_VENV§§##g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
     sed -i "s#§§PYTHON_VENV§§##g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
+    sed -i "s#§§PYTHON_VENV§§#python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
 fi
 
 confFile="$defaultPath/custom/$customId/config/config.ini"

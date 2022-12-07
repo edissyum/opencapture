@@ -102,6 +102,13 @@ export class SettingsService {
                 ]
             },
             {
+                "id"        : "user-quota",
+                "label"     : this.translate.instant("SETTINGS.user_quota"),
+                "icon"      : "fa-solid fa-user-gear",
+                "route"     : '/settings/general/user-quota',
+                "privilege" : "user_quota",
+            },
+            {
                 "id"        : "roles",
                 "label"     : this.translate.instant("SETTINGS.roles_list"),
                 "icon"      : "fa-solid fa-users",

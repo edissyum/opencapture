@@ -57,6 +57,7 @@ import { UpdatePositionsMaskComponent } from "./verifier/positions-mask/update/u
 import { CreateFolderDocTypeComponent } from "./splitter/doc-types/create-folder/create-folder-doc-type.component";
 import { LoginMethodsComponent } from "./general/login-methods/login-methods.component";
 import { VerifierDisplayComponent } from "./verifier/display/display.component";
+import { UserQuotaComponent } from "./general/user-quota/user-quota.component";
 
 const routes: Routes = [
     {
@@ -85,6 +86,11 @@ const routes: Routes = [
     {
         path: 'settings/general/mailcollect', component: MailCollectComponent,
         data: {title: 'SETTINGS.mailcollect', privileges: ['settings', 'mailcollect']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'settings/general/user-quota', component: UserQuotaComponent,
+        data: {title: 'SETTINGS.user_quota', privileges: ['settings', 'user_quota']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {

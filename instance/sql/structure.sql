@@ -1,26 +1,28 @@
 CREATE TABLE "users"
 (
-    "id"            SERIAL      UNIQUE PRIMARY KEY,
-    "username"      VARCHAR(20) UNIQUE NOT NULL,
-    "firstname"     VARCHAR(255)       NOT NULL,
-    "lastname"      VARCHAR(255)       NOT NULL,
-    "password"      VARCHAR(255)       NOT NULL,
-    "enabled"       BOOLEAN     DEFAULT True,
-    "status"        VARCHAR(5)  DEFAULT 'OK',
-    "creation_date" TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
-    "role"          INTEGER     NOT NULL
+    "id"                SERIAL      UNIQUE PRIMARY KEY,
+    "username"          VARCHAR(50) UNIQUE NOT NULL,
+    "firstname"         VARCHAR(255)       NOT NULL,
+    "lastname"          VARCHAR(255)       NOT NULL,
+    "password"          VARCHAR(255)       NOT NULL,
+    "email"             TEXT,
+    "enabled"           BOOLEAN     DEFAULT True,
+    "status"            VARCHAR(5)  DEFAULT 'OK',
+    "creation_date"     TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
+    "last_connection"   TIMESTAMP,
+    "role"              INTEGER     NOT NULL
 );
 
 CREATE TABLE "form_models"
 (
-    "id"                             SERIAL        UNIQUE PRIMARY KEY,
-    "label"                          VARCHAR(50),
-    "default_form"                   BOOLEAN       DEFAULT False,
-    "enabled"                        BOOLEAN       DEFAULT True,
-    "outputs"                        TEXT[],
-    "module"                         VARCHAR(10),
-    "status"                         VARCHAR(5)    DEFAULT 'OK',
-    "settings"                       JSONB         DEFAULT '{}'
+    "id"            SERIAL        UNIQUE PRIMARY KEY,
+    "label"         VARCHAR(50),
+    "default_form"  BOOLEAN       DEFAULT False,
+    "enabled"       BOOLEAN       DEFAULT True,
+    "outputs"       TEXT[],
+    "module"        VARCHAR(10),
+    "status"        VARCHAR(5)    DEFAULT 'OK',
+    "settings"      JSONB         DEFAULT '{}'
 );
 
 CREATE TABLE "form_model_settings"
@@ -125,7 +127,7 @@ CREATE TABLE "addresses"
     "id"            SERIAL          UNIQUE PRIMARY KEY,
     "address1"      VARCHAR(255),
     "address2"      VARCHAR(255),
-    "postal_code"   VARCHAR(10),
+    "postal_code"   VARCHAR(50),
     "city"          VARCHAR(50),
     "country"       VARCHAR(50),
     "creation_date" TIMESTAMP       DEFAULT (CURRENT_TIMESTAMP)
@@ -250,16 +252,16 @@ CREATE TABLE "status"
 
 CREATE TABLE "splitter_batches"
 (
-    "id"            SERIAL          UNIQUE PRIMARY KEY,
-    "file_path"     VARCHAR(255),
-    "file_name"     VARCHAR(255),
-    "thumbnail"     VARCHAR(255),
-    "batch_folder"  VARCHAR(255),
-    "creation_date" TIMESTAMP       DEFAULT (CURRENT_TIMESTAMP),
-    "status"        VARCHAR(20)     DEFAULT 'NEW',
-    "page_number"   INTEGER,
-    "form_id"       INTEGER,
-    "data"          JSON            DEFAULT '{}'::json
+    "id"                SERIAL          UNIQUE PRIMARY KEY,
+    "file_path"         VARCHAR(255),
+    "file_name"         VARCHAR(255),
+    "thumbnail"         VARCHAR(255),
+    "batch_folder"      VARCHAR(255),
+    "creation_date"     TIMESTAMP       DEFAULT (CURRENT_TIMESTAMP),
+    "status"            VARCHAR(20)     DEFAULT 'NEW',
+    "documents_count"   INTEGER,
+    "form_id"           INTEGER,
+    "data"              JSON            DEFAULT '{}'::json
 );
 
 CREATE TABLE "splitter_documents"
@@ -368,7 +370,7 @@ CREATE TABLE mailcollect (
      "port"                          INTEGER      NOT NULL,
      "login"                         VARCHAR(255) NOT NULL,
      "password"                      VARCHAR(255) NOT NULL,
-     "secured_connection"            VARCHAR(255) NOT NULL,
+     "secured_connection"            BOOLEAN      DEFAULT True,
      "status"                        VARCHAR(10)  DEFAULT 'OK',
      "is_splitter"                   BOOLEAN      DEFAULT False,
      "enabled"                       BOOLEAN      DEFAULT True,

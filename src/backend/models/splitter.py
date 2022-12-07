@@ -80,7 +80,7 @@ def add_batch(args):
         'columns': {
             'batch_folder': args['batch_folder'],
             'creation_date': args['creation_date'],
-            'page_number': args['page_number'],
+            'documents_count': args['documents_count'],
             'thumbnail': args['thumbnail'],
             'file_name': args['file_name'],
             'form_id': args['form_id'],
@@ -215,6 +215,25 @@ def get_batch_documents(args):
     return pages, error
 
 
+def get_page_by_id(args):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    error = None
+
+    pages = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['splitter_pages'],
+        'where': ['id = %s'],
+        'data': [args['id']],
+    })
+
+    if not pages:
+        error = gettext('GET_PAGES_ERROR')
+
+    return pages, error
+
+
 def get_documents_pages(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
@@ -311,6 +330,24 @@ def change_status(args):
     return res
 
 
+def change_form(args):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+
+    args = {
+        'table': ['splitter_batches'],
+        'set': {
+            'form_id': args['form_id']
+        },
+        'where': ['id = %s'],
+        'data': [args['batch_id']]
+    }
+    res = database.update(args)
+
+    return res
+
+
 def update_document(data):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
@@ -375,7 +412,7 @@ def update_batch(args):
     return res
 
 
-def update_batch_page_number(args):
+def update_batch_documents_count(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     database = _vars[0]
@@ -383,7 +420,7 @@ def update_batch_page_number(args):
     args = {
         'table': ['splitter_batches'],
         'set': {
-            'page_number': args['number']
+            'documents_count': args['number']
         },
         'where': ['id = %s'],
         'data': [args['id']]

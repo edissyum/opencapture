@@ -31,6 +31,7 @@ import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
+import { remove } from "remove-accents";
 
 @Component({
     selector: 'app-custom-fields',
@@ -137,6 +138,18 @@ export class CustomFieldsComponent implements OnInit {
         this.serviceSettings.init();
         this.retrieveCustomFields();
         this.form = this.toFormGroup();
+        this.addFieldInputs.forEach((element: any) => {
+            if (element.field_id === 'label_short') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    if (value.match(/[\u00C0-\u017F]/g) !== null) {
+                        element.control.setValue(remove(value));
+                    }
+                    if (value.match(/[^\u00C0-\u017Fa-zA-Z]/g) !== null) {
+                        element.control.setValue(value.replace(/[^\u00C0-\u017Fa-zA-Z]/g, ""));
+                    }
+                });
+            }
+        });
     }
 
     dropCustomField(event: CdkDragDrop<string[]>) {
@@ -301,7 +314,7 @@ export class CustomFieldsComponent implements OnInit {
                 tap((data: any) => {
                     if (data) {
                         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-                            data:{
+                            data: {
                                 confirmTitle        : this.translate.instant('CUSTOM-FIELDS.custom_exists'),
                                 confirmText         : this.translate.instant('CUSTOM-FIELDS.confirm_delete'),
                                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -342,7 +355,7 @@ export class CustomFieldsComponent implements OnInit {
             'metadata_key': updatedField['metadata_key']
         };
 
-        this.http.post(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
             tap(() => {
                 transferArrayItem(
                     oldList,
@@ -384,7 +397,7 @@ export class CustomFieldsComponent implements OnInit {
             updatedField['enabled'] = false;
         }
 
-        this.http.post(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_updated'));
                 this.resetForm();

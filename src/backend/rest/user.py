@@ -22,7 +22,7 @@ bp = Blueprint('users', __name__, url_prefix='/ws/')
 
 
 @bp.route('users/new', methods=['POST'])
-def register():
+def create_user():
     data = request.json
     res = user.create_user(data)
     return make_response(jsonify(res[0])), res[1]
@@ -105,7 +105,7 @@ def get_customers_by_user_id(user_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('users/customers/update/<int:user_id>', methods=['put'])
+@bp.route('users/customers/update/<int:user_id>', methods=['PUT'])
 @auth.token_required
 def update_customers_by_user_id(user_id):
     customers = request.json['customers']

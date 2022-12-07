@@ -14,8 +14,6 @@ import { FormControl } from '@angular/forms';
 import { Sort } from "@angular/material/sort";
 import { MatDialog } from "@angular/material/dialog";
 import { HistoryService } from "../../../../services/history.service";
-import { LastUrlService } from "../../../../services/last-url.service";
-import { LocalStorageService } from "../../../../services/local-storage.service";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
 
 @Component({
@@ -264,21 +262,11 @@ export class MailCollectComponent implements OnInit {
         private notify: NotificationService,
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
     ) { }
 
     ngOnInit(): void {
         this.serviceSettings.init();
-
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/general/mailcollect') || lastUrl === '/') {
-            if (this.localStorageService.get('mailCollectPageIndex'))
-                this.pageIndex = parseInt(this.localStorageService.get('mailCollectPageIndex') as string);
-            this.offset = this.pageSize * (this.pageIndex);
-        } else
-            this.localStorageService.remove('mailCollectPageIndex');
 
         this.http.get(environment['url'] + '/ws/config/getConfiguration/mailCollectGeneral', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -384,11 +372,12 @@ export class MailCollectComponent implements OnInit {
 
         this.globalForm.forEach((element: any) => {
             data['value'][element.id] = element.control.value;
-        })
+        });
 
         this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + this.mailCollectConfigId, {'data': data}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('MAILCOLLECT.general_settings_updated'));
+                this.historyService.addHistory('general', 'mailcollect', this.translate.instant('HISTORY-DESC.mailcollect_general_settings_updated'));
             }),
             finalize(() => this.processLoading = false),
             catchError((err: any) => {
@@ -689,7 +678,7 @@ export class MailCollectComponent implements OnInit {
     duplicateConfirmDialog(process: any) {
         const processName = this.getNameOfProcess(process);
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_duplicate_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
@@ -715,25 +704,13 @@ export class MailCollectComponent implements OnInit {
                     element.control.setValue(element_child.control.value);
                 }
             });
-        })
-
-        // this.http.post(environment['url'] + '/ws/mailcollect/createProcess', data, {headers: this.authService.headers}).pipe(
-        //     tap(() => {
-        //         this.notify.success(this.translate.instant('MAILCOLLECT.process_created'));
-        //     }),
-        //     finalize(() => this.processLoading = false),
-        //     catchError((err: any) => {
-        //         console.debug(err);
-        //         this.notify.handleErrors(err);
-        //         return of(false);
-        //     })
-        // ).subscribe();
+        });
     }
 
     disableConfirmDialog(process: any) {
         const processName = this.getNameOfProcess(process);
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_disable_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
@@ -772,7 +749,7 @@ export class MailCollectComponent implements OnInit {
     enableConfirmDialog(process: any) {
         const processName = this.getNameOfProcess(process);
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_enable_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
@@ -811,7 +788,7 @@ export class MailCollectComponent implements OnInit {
     deleteConfirmDialog(process: any) {
         const processName = this.getNameOfProcess(process);
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_delete_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -943,19 +920,6 @@ export class MailCollectComponent implements OnInit {
         } else {
             return array;
         }
-    }
-
-    searchProcess(event: any) {
-        this.search = event.target.value;
-        this.loadProcess();
-    }
-
-    onPageChange(event: any) {
-        this.pageSize = event.pageSize;
-        this.offset = this.pageSize * (event.pageIndex);
-        this.pageIndex = event.pageIndex;
-        this.localStorageService.save('mailCollectPageIndex', event.pageIndex);
-        this.loadProcess();
     }
 
     sortData(sort: Sort) {

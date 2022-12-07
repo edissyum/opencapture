@@ -34,13 +34,13 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
         os.remove(improved_img)
     except FileNotFoundError:
         pass
-    path = docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename.replace('-%03d', '-001')
+    path = docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename + '-001.jpg'
 
     invoice_data = {
         'filename': os.path.basename(file),
         'path': os.path.dirname(file),
         'img_width': str(files.get_width(path)),
-        'full_jpg_filename': full_jpg_filename.replace('-%03d', '-001'),
+        'full_jpg_filename': full_jpg_filename + '-001.jpg',
         'original_filename': original_file,
         'positions': json.dumps(positions),
         'datas': json.dumps(datas),
@@ -109,16 +109,16 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                             regex[_r['regex_id']] = _r['content']
 
                     if output_info[0]['output_type_id'] == 'export_xml':
-                        verifier_exports.export_xml(output_info[0]['data'], log, regex, invoice_data)
+                        verifier_exports.export_xml(output_info[0]['data'], log, regex, invoice_data, database)
                     elif output_info[0]['output_type_id'] == 'export_maarch':
                         verifier_exports.export_maarch(output_info[0]['data'], invoice_data, log, regex, database)
                     elif output_info[0]['output_type_id'] == 'export_pdf':
                         verifier_exports.export_pdf(output_info[0]['data'], log, regex, invoice_data, current_lang,
                                                     output_info[0]['compress_type'], output_info[0]['ocrise'])
 
-                    if 'delete_documents_after_outputs' in form_settings and form_settings['delete_documents_after_outputs']:
-                        delete_documents(docservers, invoice_data['path'], invoice_data['filename'], full_jpg_filename)
-                        insert_invoice = False
+            if 'delete_documents_after_outputs' in form_settings and form_settings['delete_documents_after_outputs']:
+                delete_documents(docservers, invoice_data['path'], invoice_data['filename'], full_jpg_filename)
+                insert_invoice = False
 
     if insert_invoice:
         invoice_data['datas'] = json.dumps(datas)
@@ -137,20 +137,20 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
             os.remove(improved_img)
         except FileNotFoundError:
             pass
-        files.pdf_to_jpg(file + '[' + str(int(nb_pages - 1)) + ']', open_img=False, is_custom=True)
+        files.pdf_to_jpg(file, nb_pages, open_img=False, is_custom=True)
     else:
-        files.pdf_to_jpg(file + '[0]', True, True, 'header')
+        files.pdf_to_jpg(file, 1, True, True, 'header')
         ocr.header_text = ocr.line_box_builder(files.img)
-        files.pdf_to_jpg(file + '[0]', True, True, 'footer')
+        files.pdf_to_jpg(file, 1, True, True, 'footer')
         ocr.footer_text = ocr.line_box_builder(files.img)
-        files.pdf_to_jpg(file + '[0]')
+        files.pdf_to_jpg(file, 1)
         ocr.text = ocr.line_box_builder(files.img)
         if nb_pages > 1:
-            files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'header', True)
+            files.pdf_to_jpg(file, nb_pages, True, True, 'header', True)
             ocr.header_last_text = ocr.line_box_builder(files.img)
-            files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'footer', True)
+            files.pdf_to_jpg(file, nb_pages, True, True, 'footer', True)
             ocr.footer_last_text = ocr.line_box_builder(files.img)
-            files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', last_image=True)
+            files.pdf_to_jpg(file, nb_pages, last_image=True)
             ocr.last_text = ocr.line_box_builder(files.img)
 
 
@@ -159,9 +159,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     datas = {}
     pages = {}
     positions = {}
-
-    files.resolution = int(configurations['resolution'])
-    files.compression_quality = int(configurations['compressionQuality'])
 
     nb_pages = files.get_pages(docservers, file)
     splitted_file = os.path.basename(file).split('_')
@@ -470,14 +467,16 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             pages.update({'delivery_number': delivery_number[2]})
 
     file_name = str(uuid.uuid4())
-    full_jpg_filename = 'full_' + file_name + '-%03d.jpg'
+    full_jpg_filename = 'full_' + file_name
     file = files.move_to_docservers(docservers, file)
     # Convert all the pages to JPG (used to full web interface)
-    files.save_img_with_wand(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
-    files.save_img_with_wand_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
+    files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
+    files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
 
     allow_auto = False
     form_settings = None
+    only_ocr = False
+
     if form_id:
         form_settings = database.select({
             'select': ['settings'],
@@ -491,6 +490,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             if form_settings['allow_automatic_validation'] and form_settings['automatic_validation_data']:
                 for column in form_settings['automatic_validation_data'].split(','):
                     column = column.strip()
+                    if column == 'only_ocr':
+                        only_ocr = True
+                        break
+
                     if column == 'supplier':
                         column = 'name'
                     elif column == 'footer' and footer:
@@ -502,7 +505,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                         allow_auto = False
                         break
 
-    if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
+    if (supplier and not supplier[2]['skip_auto_validate'] and allow_auto) or only_ocr:
         log.info('All the usefull informations are found. Execute outputs action and end process')
         insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
                'END', nb_pages, docservers, input_settings, log, regex, form_settings, supplier_lang_different, configurations['locale'])

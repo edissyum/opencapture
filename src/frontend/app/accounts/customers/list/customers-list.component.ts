@@ -126,7 +126,7 @@ export class CustomersListComponent implements OnInit {
 
     deleteConfirmDialog(customerId: number, customer: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('ACCOUNTS.confirm_delete_customer', {"customer": customer}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),

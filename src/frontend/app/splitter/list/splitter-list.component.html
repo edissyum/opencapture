@@ -66,8 +66,8 @@
                                             {{ batch['file_name'] }}
                                         </span>
                                         <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
-                                              [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + batch['page_number']">
-                                            {{ batch['page_number'] }}<i class="far fa-file-alt ml-1"></i>
+                                              [matTooltip]="this.translate.instant('OUTPUT.documents_count') + ' : ' + batch['documents_count']">
+                                            {{ batch['documents_count'] }}<i class="far fa-file-alt ml-1"></i>
                                         </span>
                                     </mat-card-title>
                                     <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">

@@ -14,6 +14,7 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import os
 import re
@@ -25,17 +26,16 @@ import string
 import random
 import shutil
 import PyPDF2
+import pathlib
 import datetime
 import subprocess
 import numpy as np
 from PIL import Image
 from zipfile import ZipFile
-from wand.color import Color
-from wand.api import library
-from wand.image import Image as Img
+from pdf2image import convert_from_path
 from werkzeug.utils import secure_filename
 from src.backend.functions import get_custom_array
-from wand.exceptions import PolicyError, CacheError
+from io import BytesIO
 
 custom_array = get_custom_array()
 
@@ -53,10 +53,8 @@ class Files:
         self.database = database
         self.regex = regex
         self.height_ratio = ''
-        self.resolution = 300
         self.languages = languages
         self.docservers = docservers
-        self.compression_quality = 100
         self.configurations = configurations
         self.jpg_name = img_name + '.jpg'
         self.jpg_name_last = img_name + '_last.jpg'
@@ -67,13 +65,13 @@ class Files:
         self.jpg_name_last_footer = img_name + '_last_footer.jpg'
 
     # Convert the first page of PDF to JPG and open the image
-    def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
+    def pdf_to_jpg(self, pdf_name, page, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
         if crop:
             if zone_to_crop == 'header':
                 if is_custom:
-                    self.crop_image_header(pdf_name, last_image, self.custom_file_name)
+                    self.crop_image_header(pdf_name, last_image, page, self.custom_file_name)
                 else:
-                    self.crop_image_header(pdf_name, last_image)
+                    self.crop_image_header(pdf_name, last_image, page)
                 if open_img:
                     if last_image:
                         self.img = Image.open(self.jpg_name_last_header)
@@ -81,9 +79,9 @@ class Files:
                         self.img = Image.open(self.jpg_name_header)
             elif zone_to_crop == 'footer':
                 if is_custom:
-                    self.crop_image_footer(pdf_name, last_image, self.custom_file_name)
+                    self.crop_image_footer(pdf_name, last_image, page, self.custom_file_name)
                 else:
-                    self.crop_image_footer(pdf_name, last_image)
+                    self.crop_image_footer(pdf_name, last_image, page)
                 if open_img:
                     if last_image:
                         self.img = Image.open(self.jpg_name_last_footer)
@@ -97,7 +95,8 @@ class Files:
             else:
                 target = self.jpg_name
 
-            self.save_img_with_wand(pdf_name, target)
+            self.save_img_with_pdf2image(pdf_name, target, page)
+
             if open_img:
                 self.img = Image.open(target)
 
@@ -105,69 +104,75 @@ class Files:
     def open_img(self, img):
         self.img = Image.open(img)
 
-    # Save pdf with one or more pages into JPG file
-    def save_img_with_wand(self, pdf_name, output):
+    def save_img_with_pdf2image(self, pdf_name, output, page=None):
         try:
-            with Img(filename=pdf_name, resolution=self.resolution) as pic:
-                library.MagickResetIterator(pic.wand)
-                pic.scene = 1  # Start cpt of filename at 1 instead of 0
-                pic.compression_quality = self.compression_quality
-                pic.background_color = Color("white")
-                pic.alpha_channel = 'remove'
-                pic.save(filename=output)
-        except (PolicyError, CacheError) as file_error:
-            self.log.error('Error during WAND conversion : ' + str(file_error))
+            output = os.path.splitext(output)[0]
+            bck_output = os.path.splitext(output)[0]
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
+            cpt = 1
+            for i in range(len(images)):
+                if not page:
+                    output = bck_output + '-' + str(cpt).zfill(3)
+                images[i].save(output + '.jpg', 'JPEG')
+                cpt = cpt + 1
+        except Exception as error:
+            self.log.error('Error during pdf2image conversion : ' + str(error))
 
-    def save_img_with_wand_min(self, pdf_name, output):
+    def save_img_with_pdf2image_min(self, pdf_name, output, single_file=True):
         try:
-            with Img(filename=pdf_name + '[0]', resolution=200) as pic:
-                library.MagickResetIterator(pic.wand)
-                pic.scene = 1
-                pic.transform(resize='x1080')
-                pic.compression_quality = 60
-                pic.background_color = Color("white")
-                pic.alpha_channel = 'remove'
-                pic.save(filename=output)
-        except (PolicyError, CacheError) as file_error:
-            self.log.error('Error during WAND conversion : ' + str(file_error))
+            output = os.path.splitext(output)[0]
+            images = convert_from_path(pdf_name, single_file=single_file, size=(None, 720))
+            if single_file:
+                images[0].save(output + '-001.jpg', 'JPEG')
+            else:
+                cpt = 1
+                for i in range(len(images)):
+                    images[i].save(output + '-' + str(cpt).zfill(3) + '.jpg', 'JPEG')
+                    cpt = cpt + 1
+        except Exception as error:
+            self.log.error('Error during pdf2image conversion : ' + str(error))
 
     # Crop the file to get the header
     # 1/3 + 10% is the ratio we used
-    def crop_image_header(self, pdf_name, last_image, output_name=None):
+    def crop_image_header(self, pdf_name, last_image, page, output_name=None):
         try:
-            with Img(filename=pdf_name, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compression_quality
-                pic.background_color = Color("white")
-                pic.alpha_channel = 'remove'
-                self.height_ratio = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.height_ratio), gravity='north')
-                if output_name:
-                    pic.save(filename=output_name)
-                if last_image:
-                    pic.save(filename=self.jpg_name_last_header)
-                else:
-                    pic.save(filename=self.jpg_name_header)
-        except (PolicyError, CacheError) as file_error:
-            self.log.error('Error during WAND conversion : ' + str(file_error))
+            if last_image:
+                output = self.jpg_name_last_header
+            else:
+                output = self.jpg_name_header
+
+            if output_name:
+                output = output_name
+
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
+            for i in range(len(images)):
+                self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
+                crop_ratio = (0, 0, images[i].width, int(images[i].height - self.height_ratio))
+                im = images[i].crop(crop_ratio)
+                im.save(output, 'JPEG')
+        except Exception as error:
+            self.log.error('Error during pdf2image conversion : ' + str(error))
 
     # Crop the file to get the footer
     # 1/3 + 10% is the ratio we used
-    def crop_image_footer(self, img, last_image=False, output_name=None):
+    def crop_image_footer(self, pdf_name, last_image, page, output_name=None):
         try:
-            with Img(filename=img, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compression_quality
-                pic.background_color = Color("white")
-                pic.alpha_channel = 'remove'
-                self.height_ratio = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.height_ratio), gravity='south')
-                if output_name:
-                    pic.save(filename=output_name)
-                if last_image:
-                    pic.save(filename=self.jpg_name_last_footer)
-                else:
-                    pic.save(filename=self.jpg_name_footer)
-        except (PolicyError, CacheError) as file_error:
-            self.log.error('Error during WAND conversion : ' + str(file_error))
+            if last_image:
+                output = self.jpg_name_last_footer
+            else:
+                output = self.jpg_name_footer
+
+            if output_name:
+                output = output_name
+
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
+            for i in range(len(images)):
+                self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
+                crop_ratio = (0, self.height_ratio, images[i].width, images[i].height)
+                im = images[i].crop(crop_ratio)
+                im.save(output, 'JPEG')
+        except Exception as error:
+            self.log.error('Error during pdf2image conversion : ' + str(error))
 
     # When we crop footer we need to rearrange the position of founded text
     # So we add the height_ratio we used (by default 1/3 + 10% of the full image)
@@ -183,30 +188,28 @@ class Files:
         else:
             position[0][1] = line.position[0][1]
             position[1][1] = line.position[1][1]
-
         return position
 
     def get_pages(self, docservers, file):
         try:
-            with open(file, 'rb') as doc:
-                pdf = PyPDF2.PdfFileReader(doc)
-                try:
-                    return pdf.getNumPages()
-                except ValueError as file_error:
-                    self.log.error(file_error)
-                    shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
-                    return 1
+            pdf = PyPDF2.PdfReader(file)
+            try:
+                return len(pdf.pages)
+            except ValueError as file_error:
+                self.log.error(file_error)
+                shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                return 1
         except PyPDF2.utils.PdfReadError:
-            pdf_read_rewrite = PyPDF2.PdfFileReader(file, strict=False)
-            pdfwrite = PyPDF2.PdfFileWriter()
-            for page_count in range(pdf_read_rewrite.numPages):
-                pages = pdf_read_rewrite.getPage(page_count)
-                pdfwrite.addPage(pages)
+            pdf_read_rewrite = PyPDF2.PdfReader(file, strict=False)
+            pdfwrite = PyPDF2.PdfWriter()
+            for page_count in range(len(pdf_read_rewrite.pages)):
+                pages = pdf_read_rewrite.pages[page_count]
+                pdfwrite.add_page(pages)
 
             with open(file, 'wb') as fileobjfix:
                 pdfwrite.write(fileobjfix)
             fileobjfix.close()
-            return pdf_read_rewrite.getNumPages()
+            return len(pdf_read_rewrite.pages)
 
     @staticmethod
     def is_blank_page(image):
@@ -251,30 +254,29 @@ class Files:
     def check_file_integrity(file, docservers):
         is_full = False
         while not is_full:
-            with open(file, 'rb') as doc:
-                size = os.path.getsize(file)
-                time.sleep(1)
-                size2 = os.path.getsize(file)
-                if size2 == size:
-                    if file.lower().endswith(".pdf"):
-                        try:
-                            PyPDF2.PdfFileReader(doc)
-                        except PyPDF2.utils.PdfReadError:
-                            shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
-                            return False
-                        else:
-                            return True
-                    elif file.lower().endswith(tuple(['.jpg'])):
-                        try:
-                            Image.open(file)
-                        except OSError:
-                            return False
-                        else:
-                            return True
-                    else:
+            size = os.path.getsize(file)
+            time.sleep(1)
+            size2 = os.path.getsize(file)
+            if size2 == size:
+                if file.lower().endswith(".pdf"):
+                    try:
+                        PyPDF2.PdfReader(file)
+                    except PyPDF2.utils.PdfReadError:
+                        shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         return False
+                    else:
+                        return True
+                elif file.lower().endswith(tuple(['.jpg'])):
+                    try:
+                        Image.open(file)
+                    except OSError:
+                        return False
+                    else:
+                        return True
                 else:
-                    continue
+                    return False
+            else:
+                continue
 
     def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex_name=None, remove_line=False, lang='fra'):
         rand = str(uuid.uuid4())
@@ -487,18 +489,18 @@ class Files:
 
     @staticmethod
     def export_pdf(pages_lists, documents, input_file, output_file, compress_type, reduce_index=0):
-        pdf_writer = PyPDF2.PdfFileWriter()
+        pdf_writer = PyPDF2.PdfWriter()
         paths = []
         try:
             for index, pages in enumerate(pages_lists):
-                pdf_reader = PyPDF2.PdfFileReader(input_file, strict=False)
+                pdf_reader = PyPDF2.PdfReader(input_file, strict=False)
                 if not pages:
                     continue
                 for page in pages:
-                    pdf_page = pdf_reader.getPage(page['source_page'] - reduce_index)
+                    pdf_page = pdf_reader.pages[page['source_page'] - reduce_index]
                     if page['rotation'] != 0:
                         pdf_page.rotateCounterClockwise(-page['rotation'])
-                    pdf_writer.addPage(pdf_page)
+                    pdf_writer.add_page(pdf_page)
                 file_path = output_file + '/' + documents[index]['fileName']
 
                 if compress_type:
@@ -506,7 +508,7 @@ class Files:
                     with open(tmp_filename, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
-                    pdf_writer = PyPDF2.PdfFileWriter()
+                    pdf_writer = PyPDF2.PdfWriter()
                     compressed_file_path = '/tmp/min_' + documents[index]['fileName']
                     compress_pdf(tmp_filename, compressed_file_path, compress_type)
                     shutil.move(compressed_file_path, file_path)
@@ -514,8 +516,9 @@ class Files:
                     with open(file_path, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
-                    pdf_writer = PyPDF2.PdfFileWriter()
+                    pdf_writer = PyPDF2.PdfWriter()
         except Exception as err:
+            print('aaaa')
             return False, str(err)
         return paths
 
@@ -525,7 +528,7 @@ class Files:
 
     @staticmethod
     def get_random_string(length):
-        letters = string.ascii_uppercase
+        letters = string.ascii_uppercase + string.digits
         return ''.join(random.choice(letters) for i in range(length))
 
     @staticmethod

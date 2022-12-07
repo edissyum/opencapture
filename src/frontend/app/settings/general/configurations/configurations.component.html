@@ -131,8 +131,8 @@
                             <mat-form-field appearance="outline" *ngIf="element.data.type === 'bool'">
                                 <mat-select class="relative -top-2" [(ngModel)]="element.data.value"
                                             (selectionChange)="updateValue($event, element.id, element.label)">
-                                    <mat-option [value]="'True'">True</mat-option>
-                                    <mat-option [value]="'False'">False</mat-option>
+                                    <mat-option [value]="true">Activer</mat-option>
+                                    <mat-option [value]="false">Désactiver</mat-option>
                                 </mat-select>
                             </mat-form-field>
                             <mat-form-field appearance="outline" class="w-full"

@@ -50,6 +50,7 @@ def create_user(args):
                 'username': args['username'],
                 'firstname': args['firstname'],
                 'lastname': args['lastname'],
+                'email': args['email'],
                 'role': args['role'],
                 'password': generate_password_hash(args['password']),
             }
@@ -63,7 +64,7 @@ def create_user(args):
             }
         })
 
-        return True, error
+        return user_id, error
     else:
         return False, error
 
