@@ -572,7 +572,7 @@ ALTER SEQUENCE "form_models_field_id_seq" RESTART WITH 4;
 
 -- CRÉATION DES CHAINES ENTRANTES
 INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder", "module", "splitter_method_id") VALUES (1, 'default_input', 'Chaîne entrante par défaut', 1, '/var/share/entrant/verifier/', 'verifier', 'no_sep');
-INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder", "module", "splitter_method_id") VALUES (3, 'default_input', 'Chaîne entrante par défaut', 2, '/var/share/entrant/splitter/', 'splitter', 'qr_code_OC');
+INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder", "module", "splitter_method_id") VALUES (2, 'default_input', 'Chaîne entrante par défaut', 3, '/var/share/entrant/splitter/', 'splitter', 'qr_code_OC');
 ALTER SEQUENCE "inputs_id_seq" RESTART WITH 3;
 
 -- CRÉATION DES CHAMPS CUSTOMS pour le SPLITTER
