@@ -453,7 +453,7 @@ def save_infos(args):
         document['id'] = document['id'].split('-')[-1]
         res = splitter.update_document({
             'id': document['id'].split('-')[-1],
-            'doctype_key': document['documentTypeKey'],
+            'doctype_key': document['documentTypeKey'] if 'documentTypeKey' in document else None,
             'document_metadata': document['metadata'],
         })[0]
         if not res:
@@ -500,7 +500,7 @@ def save_infos(args):
             return response, 401
 
     """
-        Delete documents
+        Deleted documents
     """
     for deleted_documents_id in args['deleted_documents_ids']:
         res = splitter.update_document({
@@ -515,12 +515,12 @@ def save_infos(args):
         return response, 401
 
     """
-        Delete pages
+        Deleted pages
     """
     for deleted_pages_id in args['deleted_pages_ids']:
         res = splitter.update_page({
             'page_id': deleted_pages_id,
-            'status': 'NEW',
+            'status': 'DEL',
         })[0]
         if not res:
             response = {
