@@ -23,7 +23,7 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "data", "mod
         "type": "text",
         "label": "OpenAds api",
         "required": "true",
-        "placeholder": "https://example.com/demo/openads\n"
+        "placeholder": "https://example.com/demo/openads"
       },
       {
         "id": "login",
