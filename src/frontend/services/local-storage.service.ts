@@ -78,9 +78,13 @@ export class LocalStorageService {
         return "";
     }
 
+    isValidFQDN(str: string) {
+        return /(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}$)/g.test(str);
+    }
+
     setCookie(cname: string, cvalue: string, expMinutes: number) {
         let sameSitePolicy = '';
-        if (this.browser === 'Chrome') {
+        if (this.browser.toLowerCase() === 'chrome' && this.isValidFQDN(window.location.host)) {
             sameSitePolicy = 'SameSite=None;Secure';
         }
         const d = new Date();
