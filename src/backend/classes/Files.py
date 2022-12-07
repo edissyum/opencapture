@@ -14,6 +14,7 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import os
 import re
@@ -25,6 +26,7 @@ import string
 import random
 import shutil
 import PyPDF2
+import pathlib
 import datetime
 import subprocess
 import numpy as np
@@ -33,6 +35,7 @@ from zipfile import ZipFile
 from pdf2image import convert_from_path
 from werkzeug.utils import secure_filename
 from src.backend.functions import get_custom_array
+from io import BytesIO
 
 custom_array = get_custom_array()
 
@@ -115,11 +118,17 @@ class Files:
         except Exception as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
 
-    def save_img_with_pdf2image_min(self, pdf_name, output):
+    def save_img_with_pdf2image_min(self, pdf_name, output, single_file=True):
         try:
             output = os.path.splitext(output)[0]
-            images = convert_from_path(pdf_name, single_file=True, size=(None, 720))
-            images[0].save(output + '-001.jpg', 'JPEG')
+            images = convert_from_path(pdf_name, single_file=single_file, size=(None, 720))
+            if single_file:
+                images[0].save(output + '-001.jpg', 'JPEG')
+            else:
+                cpt = 1
+                for i in range(len(images)):
+                    images[i].save(output + '-' + str(cpt).zfill(3) + '.jpg', 'JPEG')
+                    cpt = cpt + 1
         except Exception as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
 
@@ -519,7 +528,7 @@ class Files:
 
     @staticmethod
     def get_random_string(length):
-        letters = string.ascii_uppercase
+        letters = string.ascii_uppercase + string.digits
         return ''.join(random.choice(letters) for i in range(length))
 
     @staticmethod

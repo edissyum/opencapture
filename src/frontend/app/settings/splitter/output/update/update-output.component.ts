@@ -157,6 +157,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
         },
     ];
     testConnectionMapping : any           = {
+        'export_openads'   : "testOpenadsConnection()",
         'export_maarch' : "testMaarchConnection()",
         'export_cmis'   : "testCmisConnection()"
     };
@@ -410,6 +411,38 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 }
                 else {
                     this.notify.error(this.translate.instant('OUTPUT.maarch_connection_ko') + ' : ' + status[1]);
+                    this.connection = false;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getOpenadsConnectionInfo() {
+        return {
+            'openads_api': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'openads_api'),
+            'login': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'login'),
+            'password': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'password'),
+        };
+    }
+
+    /**** OpenADS Webservices call ****/
+    testOpenadsConnection() {
+        const args = this.getOpenadsConnectionInfo();
+        this.http.post(environment['url'] + '/ws/splitter/openads/testConnection', {'args': args}, {headers: this.authService.headers},
+        ).pipe(
+            tap((data: any) => {
+                const status = data.status;
+                if (status === true) {
+                    this.notify.success(this.translate.instant('OUTPUT.openads_connection_ok'));
+                    this.connection = true;
+                }
+                else {
+                    this.notify.error(this.translate.instant('OUTPUT.openads_connection_ko') + ' : ' + data.message);
                     this.connection = false;
                 }
             }),

@@ -76,11 +76,17 @@ elif 'classes' in custom_array['Splitter']['path']:
     _Splitter = getattr(__import__(custom_array['Splitter']['path'] + '.' + custom_array['Splitter']['module'],
                                    fromlist=[custom_array['Splitter']['module']]), custom_array['Splitter']['module'])
 
-if 'CMIS' not in custom_array or 'CMIS' not in custom_array['SeparatorQR']['path']:
+if 'CMIS' not in custom_array or 'CMIS' not in custom_array['CMIS']['path']:
     from src.backend.classes.CMIS import CMIS as _CMIS
 else:
     _CMIS = getattr(__import__(custom_array['CMIS']['path'] + '.' + custom_array['CMIS']['module'],
                                    fromlist=[custom_array['CMIS']['module']]), custom_array['CMIS']['module'])
+
+if 'OpenADS' not in custom_array or 'OpenADS' not in custom_array['OpenADS']['path']:
+    from src.backend.classes.OpenADS import OpenADS as _OpenADS
+else:
+    _OpenADS = getattr(__import__(custom_array['OpenADS']['path'] + '.' + custom_array['OpenADS']['module'],
+                               fromlist=[custom_array['OpenADS']['module']]), custom_array['OpenADS']['module'])
 
 if 'SeparatorQR' or 'classes' not in custom_array['SeparatorQR']['path']:
     from .classes.SeparatorQR import SeparatorQR as _SeparatorQR

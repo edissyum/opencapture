@@ -566,6 +566,8 @@
 		"no_parameters_necessary": "No specific parameters necessary",
 		"ocr_disabled": "Disabled",
 		"ocr_enabled": "Enabled",
+		"openads_connection_ko": "Error while connecting to OpenAds",
+		"openads_connection_ok": "Connected to OpenAds successfully",
 		"output_deleted": "Output deleted successfully",
 		"output_duplicated": "Output duplicated successfully",
 		"output_settings_list": "Settings of outputs",

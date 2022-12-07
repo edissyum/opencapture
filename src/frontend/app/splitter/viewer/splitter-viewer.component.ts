@@ -107,8 +107,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     };
     currentBatch                : any           = {
         id                  : -1,
-        inputId             : -1,
         formId              : -1,
+        inputId             : -1,
+        pageIdInLoad        : -1,
+        previousFormId      : -1,
         status              : '',
         maxSplitIndex       : 0,
         selectedPagesCount  : 0,
@@ -187,13 +189,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.currentBatch = {
                     id                  : data.batches[0]['id'],
                     formId              : data.batches[0]['form_id'],
+                    previousFormId      : data.batches[0]['form_id'],
                     status              : data.batches[0]['status'],
                     customFieldsValues  : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
                     selectedPagesCount  : 0,
                     maxSplitIndex       : 0,
                     selectedDocument    : {
-                        id              : '',
-                        displayOrder    : -1,
+                        id           : '',
+                        displayOrder : -1,
                     }
                 };
                 this.loadForms();
@@ -268,12 +271,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 data.batches.forEach((batch: any) =>
                     this.batches.push(
                         {
-                            id          : batch.id,
-                            inputId     : batch.input_id,
-                            fileName    : batch.file_name,
-                            date        : batch.batch_date,
-                            pageNumber  : batch.page_number,
-                            thumbnail   : this.sanitize(batch.thumbnail),
+                            id         : batch.id,
+                            inputId    : batch.input_id,
+                            fileName   : batch.file_name,
+                            date       : batch.batch_date,
+                            pageNumber : batch.documents_count,
+                            thumbnail  : this.sanitize(batch.thumbnail),
                         }
                     )
                 );
@@ -291,18 +294,18 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.documentsLoading = true;
         this.http.get(environment['url'] + '/ws/splitter/documents/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                for (let documentIndex = 0; documentIndex < data['documents'].length; documentIndex++) {
+                for (let documentIndex = 0;documentIndex < data['documents'].length;documentIndex++) {
                     // -- Add documents metadata --
                     this.documents[documentIndex] = {
-                        id                  : "document-" + data['documents'][documentIndex]['id'],
-                        documentTypeName    : data['documents'][documentIndex]['doctype_label'] ? data['documents'][documentIndex]['doctype_label'] : (this.defaultDoctype.label || ""),
-                        documentTypeKey     : data['documents'][documentIndex]['doctype_key'] ? data['documents'][documentIndex]['doctype_key'] : (this.defaultDoctype.label || ""),
-                        status              : data['documents'][documentIndex]['status'],
-                        splitIndex          : data['documents'][documentIndex]['split_index'],
-                        displayOrder        : data['documents'][documentIndex]['display_order'],
-                        pages               : [],
-                        class               : "",
-                        customFieldsValues  : {},
+                        id                 : "document-" + data['documents'][documentIndex]['id'],
+                        documentTypeName   : data['documents'][documentIndex]['doctype_label'] ? data['documents'][documentIndex]['doctype_label'] : (this.defaultDoctype.label || ""),
+                        documentTypeKey    : data['documents'][documentIndex]['doctype_key'] ? data['documents'][documentIndex]['doctype_key'] : (this.defaultDoctype.label || ""),
+                        status             : data['documents'][documentIndex]['status'],
+                        splitIndex         : data['documents'][documentIndex]['split_index'],
+                        displayOrder       : data['documents'][documentIndex]['display_order'],
+                        pages              : [],
+                        class              : "",
+                        customFieldsValues : {},
                     };
                     // -- Get max split index, used when adding a new document --
                     if (this.documents[documentIndex].splitIndex > this.currentBatch.maxSplitIndex) {
@@ -316,12 +319,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     // -- Add documents pages --
                     for (const page of data['documents'][documentIndex]['pages']) {
                         this.documents[documentIndex].pages.push({
-                            id              : page['id'],
-                            sourcePage      : page['source_page'],
-                            thumbnail       : this.sanitize(page['thumbnail']),
-                            showZoomButton  : false,
-                            checkBox        : false,
-                            rotation        : page['rotation'],
+                            id             : page['id'],
+                            sourcePage     : page['source_page'],
+                            thumbnail      : this.sanitize(page['thumbnail']),
+                            showZoomButton : false,
+                            checkBox       : false,
+                            rotation       : page['rotation'],
                         });
                     }
                 }
@@ -374,15 +377,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             tap((data: any) => {
                 const newId = `document-${data.newDocumentId}`;
                 this.documents.push({
-                    id                  : newId,
-                    documentTypeName    : this.defaultDoctype.label,
-                    documentTypeKey     : this.defaultDoctype.key,
-                    splitIndex          : this.currentBatch.maxSplitIndex + 1,
-                    displayOrder        : this.currentBatch.selectedDocument.displayOrder + 1,
-                    status              : "NEW",
-                    pages               : [],
-                    customFieldsValues  : {},
-                    class               : "",
+                    id                 : newId,
+                    documentTypeName   : this.defaultDoctype.label,
+                    documentTypeKey    : this.defaultDoctype.key,
+                    splitIndex         : this.currentBatch.maxSplitIndex + 1,
+                    displayOrder       : this.currentBatch.selectedDocument.displayOrder + 1,
+                    status             : "NEW",
+                    pages              : [],
+                    customFieldsValues : {},
+                    class              : "",
                 });
                 this.documents[this.documents.length - 1].form = this.getFormForDocument(this.documents.length - 1);
                 this.sortDocumentsByDisplayOrder();
@@ -427,24 +430,37 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     getZoomPage(page: any) {
-        this.showZoomPage = true;
-        this.zoomPage = {
-            pageId      : page.id,
-            thumbnail   : page.thumbnail,
-            rotation    : page.rotation,
-        };
+        this.currentBatch.pageIdInLoad = page.id;
+        this.http.get(environment['url'] + '/ws/splitter/pages/' + (page.id).toString() + '/fullThumbnail', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.showZoomPage = true;
+                this.zoomPage = {
+                    pageId    : page.id,
+                    rotation  : page.rotation,
+                    thumbnail : this.sanitize(data['fullThumbnail']),
+                };
+                this.currentBatch.pageIdInLoad = -1;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.currentBatch.pageIdInLoad = -1;
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
+
     /* -- Metadata -- */
     loadDefaultDocType() {
         this.loading      = true;
         this.http.get(environment['url'] + '/ws/doctypes/list/' + (this.currentBatch.formId).toString(), {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.doctypes.forEach((doctype: {
-                        id          : any
-                        key         : string
-                        type        : string
-                        label       : string
-                        is_default  : boolean
+                        id         : any
+                        key        : string
+                        type       : string
+                        label      : string
+                        is_default : boolean
                     }) => {
                         if (doctype.is_default && doctype.type === 'document') {
                             this.defaultDoctype = {
@@ -594,14 +610,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    onFormChange(newFormId: number): void{
+    onFormChange(newFormId: number): void {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data: {
-                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('GLOBAL.confirm_form_change'),
-                confirmButton       : this.translate.instant('GLOBAL.confirm_modification'),
-                confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            data:{
+                confirmTitle       : this.translate.instant('GLOBAL.confirm'),
+                confirmText        : this.translate.instant('GLOBAL.confirm_form_change'),
+                confirmButton      : this.translate.instant('GLOBAL.confirm_modification'),
+                confirmButtonColor : "green",
+                cancelButton       : this.translate.instant('GLOBAL.cancel'),
             },
             width: "600px",
         });
@@ -611,8 +627,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.loading = true;
                 this.http.post(environment['url'] + '/ws/splitter/changeForm',
                     {
-                        'batchId'               : this.currentBatch.id,
-                        'formId'                : newFormId,
+                        'batchId' : this.currentBatch.id,
+                        'formId'  : newFormId,
                     },
                     {headers: this.authService.headers}).pipe(
                     tap(() => {
@@ -634,6 +650,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         return of(false);
                     })
                 ).subscribe();
+            } else {
+                this.currentBatch.formId = this.currentBatch.previousFormId;
             }
         });
     }
@@ -646,17 +664,17 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     if (data.fields.hasOwnProperty(fieldCategory)) {
                         data.fields[fieldCategory].forEach((field: Field) => {
                             this.fieldsCategories[fieldCategory].push({
-                                'id'                : field.id,
-                                'type'              : field.type,
-                                'label'             : field.label,
-                                'class'             : field.class,
-                                'settings'          : field.settings,
-                                'required'          : field.required,
-                                'searchMask'        : field.searchMask,
-                                'resultMask'        : field.resultMask,
-                                'label_short'       : field.label_short,
-                                'metadata_key'      : field.metadata_key,
-                                'validationMask'    : field.validationMask,
+                                'id'             : field.id,
+                                'type'           : field.type,
+                                'label'          : field.label,
+                                'class'          : field.class,
+                                'settings'       : field.settings,
+                                'required'       : field.required,
+                                'searchMask'     : field.searchMask,
+                                'resultMask'     : field.resultMask,
+                                'label_short'    : field.label_short,
+                                'metadata_key'   : field.metadata_key,
+                                'validationMask' : field.validationMask,
                             });
                             if (field.metadata_key && fieldCategory === 'batch_metadata') {
                                 this.inputMode = 'Auto';
@@ -813,12 +831,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             this.translate.instant('SPLITTER.confirm_delete_document_empty');
 
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data: {
-                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : confirmMessage,
-                confirmButton       : this.translate.instant('GLOBAL.delete'),
-                confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            data:{
+                confirmTitle       : this.translate.instant('GLOBAL.confirm'),
+                confirmText        : confirmMessage,
+                confirmButton      : this.translate.instant('GLOBAL.delete'),
+                confirmButtonColor : "warn",
+                cancelButton       : this.translate.instant('GLOBAL.cancel'),
             },
             width: "600px",
         });
@@ -855,12 +873,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             return;
 
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data: {
-                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('SPLITTER.confirm_delete_pages', {"pagesCount": this.currentBatch.selectedPagesCount}),
-                confirmButton       : this.translate.instant('GLOBAL.delete'),
-                confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            data:{
+                confirmTitle       : this.translate.instant('GLOBAL.confirm'),
+                confirmText        : this.translate.instant('SPLITTER.confirm_delete_pages', {"pagesCount": this.currentBatch.selectedPagesCount}),
+                confirmButton      : this.translate.instant('GLOBAL.delete'),
+                confirmButtonColor : "warn",
+                cancelButton       : this.translate.instant('GLOBAL.cancel'),
             },
             width: "600px",
         });
@@ -868,7 +886,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 for (const document of this.documents) {
-                    for (let pageIndex = 0; pageIndex < document.pages.length; pageIndex++) {
+                    for (let pageIndex = 0;pageIndex < document.pages.length;pageIndex++) {
                         if (document.pages[pageIndex].checkBox) {
                             this.deletedPagesIds.push(document.pages[pageIndex].id);
                             document.pages = this.deleteItemFromList(document.pages, pageIndex);
@@ -916,8 +934,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     rotateSelectedPages(): void {
-        for (let documentIndex = 0; documentIndex < this.documents.length; documentIndex++) {
-            for (let pageIndex = 0; pageIndex < this.documents[documentIndex].pages.length; pageIndex++) {
+        for (let documentIndex = 0;documentIndex < this.documents.length;documentIndex++) {
+            for (let pageIndex = 0;pageIndex < this.documents[documentIndex].pages.length;pageIndex++) {
                 if (this.documents[documentIndex].pages[pageIndex].checkBox) {
                     this.rotatePage(documentIndex, pageIndex);
                 }
@@ -932,7 +950,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
         const selectedDocIndex = this.documents.indexOf(selectedDoc[0]);
         for (const document of this.documents) {
-            for (let i = document.pages.length - 1; i >= 0; i--) {
+            for (let i = document.pages.length - 1;i >= 0;i--) {
                 if (document.pages[i].checkBox) {
                     const newPosition = this.documents[selectedDocIndex].pages.length;
                     transferArrayItem(document.pages,
@@ -963,12 +981,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     cancel(): void {
         if (this.isDataEdited) {
             const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-                data: {
-                    confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                    confirmText         : this.translate.instant('SPLITTER.quit_without_saving_modifications'),
-                    confirmButton       : this.translate.instant('SPLITTER.quit_without_saving'),
-                    confirmButtonColor  : "warn",
-                    cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                data:{
+                    confirmTitle       : this.translate.instant('GLOBAL.confirm'),
+                    confirmText        : this.translate.instant('SPLITTER.quit_without_saving_modifications'),
+                    confirmButton      : this.translate.instant('SPLITTER.quit_without_saving'),
+                    confirmButtonColor : "warn",
+                    cancelButton       : this.translate.instant('GLOBAL.cancel'),
                 },
                 width: "600px",
             });
@@ -1005,8 +1023,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.notify.error(this.translate.instant('SPLITTER.error_no_doc_type'));
                 this.loading = false;
                 return;
-            } else
+            } else {
                 document.class = "";
+            }
         }
         this.getFormFieldsValues();
         for(const field of this.fieldsCategories['batch_metadata']) {
@@ -1020,12 +1039,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
 
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data: {
-                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('SPLITTER.confirm_validate'),
-                confirmButton       : this.translate.instant('SPLITTER.validate_batch'),
-                confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            data:{
+                confirmTitle       : this.translate.instant('GLOBAL.confirm'),
+                confirmText        : this.translate.instant('SPLITTER.confirm_validate'),
+                confirmButton      : this.translate.instant('SPLITTER.validate_batch'),
+                confirmButtonColor : "green",
+                cancelButton       : this.translate.instant('GLOBAL.cancel'),
             },
             width: "600px",
         });
@@ -1046,25 +1065,35 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         batchMetadata['userLastName']   = this.userService.user['lastname'];
         batchMetadata['userFirstName']  = this.userService.user['firstname'];
 
-        // Add metadata arguments and Remove unnecessary ones
-        const _documents = [];
+        // Build documents metadata arguments
+        const _documents: any[] = [];
         for (const document of this.documents) {
-            const _document = Object.assign({}, document);
-            _document['metadata'] = document.form.getRawValue();
-            delete _document.class;
-            delete _document.form;
+            const _document: any = {
+                id               : document['id'],
+                displayOrder     : document['displayOrder'],
+                documentTypeKey  : document['documentTypeKey'],
+                documentTypeName : document['documentTypeName'],
+                metadata         : document.form.getRawValue(),
+                pages            : []
+            };
+            for (const page of document.pages) {
+                _document.pages.push({
+                    id         : page['id'],
+                    rotation   : page['rotation'],
+                    sourcePage : page['sourcePage']
+                });
+            }
             _documents.push(_document);
         }
-
         this.http.post(environment['url'] + '/ws/splitter/validate',
             {
-                'formId'                : this.currentBatch.formId,
-                'batchId'               : this.currentBatch.id,
-                'documents'             : _documents,
-                'movedPages'            : this.movedPages,
-                'deletedPagesIds'       : this.deletedPagesIds,
-                'deletedDocumentsIds'   : this.deletedDocumentsIds,
-                'batchMetadata'         : batchMetadata,
+                'documents'           : _documents,
+                'batchMetadata'       : batchMetadata,
+                'movedPages'          : this.movedPages,
+                'batchId'             : this.currentBatch.id,
+                'deletedPagesIds'     : this.deletedPagesIds,
+                'deletedDocumentsIds' : this.deletedDocumentsIds,
+                'formId'              : this.currentBatch.formId,
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {
@@ -1099,12 +1128,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
         this.http.post(environment['url'] + '/ws/splitter/saveInfo',
             {
-                'documents'             : _documents,
-                'movedPages'            : this.movedPages,
-                'batchId'               : this.currentBatch.id,
-                'deletedPagesIds'       : this.deletedPagesIds,
-                'batchMetadata'         : this.batchMetadataValues,
-                'deletedDocumentsIds'   : this.deletedDocumentsIds,
+                'documents'           : _documents,
+                'movedPages'          : this.movedPages,
+                'batchId'             : this.currentBatch.id,
+                'deletedPagesIds'     : this.deletedPagesIds,
+                'batchMetadata'       : this.batchMetadataValues,
+                'deletedDocumentsIds' : this.deletedDocumentsIds,
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {
