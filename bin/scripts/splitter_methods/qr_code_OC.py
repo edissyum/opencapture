@@ -23,7 +23,7 @@ def process(args, file, log, splitter, files, batch_folder, config, docservers, 
     :param log: log object
     :param splitter: Splitter object
     :param files: Files object
-    :param batch_folder: tmp folder path
+    :param batch_folder: batch folder path
     :param config: Config object
     :param ocr: PyTesseract object
     :param regex: regex content values
