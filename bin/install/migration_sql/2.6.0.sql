@@ -91,3 +91,4 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('userQuota', '
 }', false);
 
 ALTER TABLE "users" ALTER COLUMN "username" TYPE VARCHAR(50);
+DELETE FROM docservers WHERE docserver_id = 'SPLITTER_OUTPUT';
