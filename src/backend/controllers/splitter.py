@@ -227,7 +227,6 @@ def retrieve_documents(batch_id):
             pages, _ = splitter.get_documents_pages(args)
             if pages:
                 for page_index, _ in enumerate(pages):
-
                     thumbnail = f"{docservers['SPLITTER_THUMB']}/{pages[page_index]['thumbnail']}"
                     with open(thumbnail, 'rb') as image_file:
                         encoded_string = base64.b64encode(image_file.read())
@@ -479,7 +478,7 @@ def save_infos(args):
                 return response, 401
 
     """
-        move pages
+        moved pages
     """
     for moved_page in args['moved_pages']:
         """ Check if page is added in a new document """
