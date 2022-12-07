@@ -14,10 +14,10 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
-from datetime import datetime
-import json
 
+import json
 import requests
+from datetime import datetime
 from requests.auth import HTTPBasicAuth
 
 
