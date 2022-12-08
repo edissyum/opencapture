@@ -34,8 +34,8 @@ import { NotificationService } from "../notifications/notifications.service";
 
 export class TasksWatcherComponent implements OnInit {
     minimizeDisplay     : boolean = false;
+    isFirstCallDone     : boolean = false;
     getTaskRunning      : boolean = false;
-    loading             : boolean = true;
     tasks               : any[]   = [];
     displayedTasksData  : any[]   = [];
     authorizedUrl       : any[]   = ['/verifier/list', '/splitter/list', '/upload'];
@@ -51,7 +51,6 @@ export class TasksWatcherComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.getLastTasks();
         this.minimizeDisplay = this.localStorageService.get('task_watcher_minimize_display') === 'true';
         interval(4000).subscribe(() => {
             if (this.authorizedUrl.includes(this.router.url) && !this.getTaskRunning && !this.minimizeDisplay) {
@@ -69,14 +68,14 @@ export class TasksWatcherComponent implements OnInit {
     }
 
     getLastTasks() {
-        this.getTaskRunning = true;
+        this.isFirstCallDone = true;
+        this.getTaskRunning  = true;
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier) {
             this.http.get(environment['url'] + '/ws/tasks/progress?module=' + splitterOrVerifier,
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if(this.displayedTasksData !== data.tasks) {
-                        this.loading = true;
                         this.tasks = [];
                         let cpt = 1;
                         for(const task of data.tasks) {
@@ -97,7 +96,6 @@ export class TasksWatcherComponent implements OnInit {
                         }
                     }
                     this.displayedTasksData = data.tasks;
-                    this.loading            = false;
                 }),
                 finalize(() => this.getTaskRunning = false),
                 catchError((err: any) => {
