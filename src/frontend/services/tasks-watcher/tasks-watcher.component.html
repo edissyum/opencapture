@@ -8,7 +8,11 @@
     </span>
     </mat-card-title>
     <div  class="mx-4 h-20 overflow-y-auto bg-slate-100">
-        <div class="text-gray-400 my-4 text-center w-full" *ngIf="tasks.length === 0 && !loading">
+        <div class="text-gray-400 my-4 text-center w-full" *ngIf="tasks.length === 0 && !isFirstCallDone">
+            <i class="block fa-solid fa-list-check fa-2x"></i>
+            <span class="block">{{ 'GLOBAL.loading' | translate }}</span>
+        </div>
+        <div class="text-gray-400 my-4 text-center w-full" *ngIf="tasks.length === 0 && !getTaskRunning && isFirstCallDone">
             <i class="block fa-solid fa-check fa-2x"></i>
             <span class="block">{{ 'GLOBAL.no_task_to_show' | translate }}</span>
         </div>
