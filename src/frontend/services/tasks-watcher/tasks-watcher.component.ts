@@ -48,10 +48,10 @@ export class TasksWatcherComponent implements OnInit {
         private notify: NotificationService,
         private localStorageService: LocalStorageService
     ) {
-        this.getLastTasks();
     }
 
     ngOnInit(): void {
+        this.getLastTasks();
         this.minimizeDisplay = this.localStorageService.get('task_watcher_minimize_display') === 'true';
         interval(4000).subscribe(() => {
             if (this.authorizedUrl.includes(this.router.url) && !this.getTaskRunning && !this.minimizeDisplay) {
