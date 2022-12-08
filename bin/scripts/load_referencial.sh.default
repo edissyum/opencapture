@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ ! -z "$1" ]; then
+    §§PYTHON_VENV§§ /var/www/html/opencapture/loadReferencial.py -c §§CUSTOM_ID§§ -f "$1"
+else
+    §§PYTHON_VENV§§ /var/www/html/opencapture/loadReferencial.py -c §§CUSTOM_ID§§
+fi

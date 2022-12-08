@@ -25,6 +25,7 @@
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
                         "allowedCommonJsDependencies": [
+                            "rfdc",
                             "moment",
                             "clone-deep",
                             "remove-accents"

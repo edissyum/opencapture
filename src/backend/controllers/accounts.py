@@ -20,11 +20,10 @@ import os
 import json
 import subprocess
 from flask_babel import gettext
-from flask import current_app, request, session
-
-from src.backend.functions import retrieve_custom_from_url
 from src.backend.import_classes import _Files
 from src.backend.import_models import accounts
+from flask import current_app, request, session
+from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
@@ -472,9 +471,7 @@ def import_suppliers(file):
         docservers = _vars[9]
 
     filename = _Files.save_uploaded_file(file, current_app.config['UPLOAD_FOLDER'])
-    cmd = 'python3 ' + docservers['PROJECT_PATH'] + "/loadReferencial.py -f " + filename
-    if custom_id:
-        cmd += " -c " + custom_id
+    cmd = 'bash ' + docservers['PROJECT_PATH'] + '/custom/' + custom_id + '/bin/scripts/load_referencial.sh ' + filename
 
     with subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as res:
         _, err = res.communicate()
