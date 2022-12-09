@@ -94,18 +94,13 @@ export class AuthService {
 
     setTokens(token: string, user_token: string, minutesBeforeExp: number) {
         const tokenNames = this.getTokenName();
-        this.localStorage.setCookie(tokenNames['tokenJwt'], token, minutesBeforeExp);
-        this.localStorage.setCookie(tokenNames['userToken'], user_token, minutesBeforeExp);
-    }
-
-    setTokenUser(user_token: string, minutesBeforeExp: number) {
-        const tokenNames = this.getTokenName();
+        this.localStorage.save(tokenNames['tokenJwt'], token);
         this.localStorage.setCookie(tokenNames['userToken'], user_token, minutesBeforeExp);
     }
 
     getToken() {
         const tokenNames = this.getTokenName();
-        return this.localStorage.getCookie(tokenNames['tokenJwt']);
+        return this.localStorage.get(tokenNames['tokenJwt']);
     }
 
     logout() {
@@ -117,7 +112,7 @@ export class AuthService {
         this.localStorage.remove('selectedParentSettings');
         this.localStorage.remove('selectedParentSettings');
         this.localStorage.remove('task_watcher_minimize_display');
-        this.localStorage.deleteCookie(tokenNames['tokenJwt']);
+        this.localStorage.remove(tokenNames['tokenJwt']);
         this.localStorage.deleteCookie(tokenNames['userToken']);
         this.http.get(environment['url'] + '/ws/auth/logout').pipe(
             catchError((err: any) => {

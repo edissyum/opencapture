@@ -347,7 +347,10 @@ class FindFooter:
                 ttc = total_ttc[0]
             if 'from_position' in vat_rate and vat_rate['from_position']:
                 percentage = vat_rate[0]
-            total_ht = [float("%.2f" % (float(ttc) / float(1 + (float(percentage) / 100)))), (('', ''), ('', ''))]
+            try:
+                total_ht = [float("%.2f" % (float(ttc) / float(1 + (float(percentage) / 100)))), (('', ''), ('', ''))]
+            except ValueError:
+                pass
 
         # Test all amounts. If some are false, try to search them with position. If not, pass
         if self.test_amount(total_ht, total_ttc, vat_rate, vat_amount) is not False:
