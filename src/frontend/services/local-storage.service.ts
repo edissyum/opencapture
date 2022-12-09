@@ -21,34 +21,8 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 export class LocalStorageService {
-    browser: string = '';
 
-    constructor() {
-        if (this.browser === '') {
-            this.browser = this.detectBrowserVersion();
-        }
-    }
-
-    detectBrowserVersion() {
-        let tem;
-        const userAgent = navigator.userAgent;
-        let matchTest = userAgent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-
-        if(/trident/i.test(matchTest[1])) {
-            tem =  /\brv[ :]+(\d+)/g.exec(userAgent) || [];
-            return 'IE '+(tem[1] || '');
-        }
-
-        if(matchTest[1]=== 'Chrome') {
-            tem = userAgent.match(/\b(OPR|Edge)\/(\d+)/);
-            if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
-        }
-        matchTest= matchTest[2]? [matchTest[1]] : [navigator.appName];
-        if ((tem = userAgent.match(/version\/(\d+)/i)) != null) {
-            matchTest.splice(1, 1, tem[1]);
-        }
-        return matchTest.join(' ');
-    }
+    constructor() {}
 
     save(id: string, content: any) {
         localStorage.setItem(id, content);
@@ -78,22 +52,14 @@ export class LocalStorageService {
         return "";
     }
 
-    isValidFQDN(str: string) {
-        return /(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}$)/g.test(str);
-    }
-
     setCookie(cname: string, cvalue: string, expMinutes: number) {
-        let sameSitePolicy = '';
-        if (this.browser.toLowerCase() === 'chrome' && this.isValidFQDN(window.location.host)) {
-            sameSitePolicy = 'SameSite=None;Secure';
-        }
         const d = new Date();
         if (expMinutes !== 0) {
             d.setMinutes(d.getMinutes() + expMinutes);
             const expires = "expires=" + d.toUTCString();
-            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;" + sameSitePolicy;
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;";
         } else {
-            document.cookie = cname + "=" + cvalue + ";path=/;" + sameSitePolicy;
+            document.cookie = cname + "=" + cvalue + ";path=/;";
         }
     }
 
