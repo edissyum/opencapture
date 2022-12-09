@@ -64,7 +64,7 @@ export class LoginRequiredService implements CanActivate {
             ).pipe(
                 tap((data: any) => {
                     this.userService.setUser(data.body.user);
-                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())), data.body.minutes_before_exp);
+                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())));
                     if (!this.authService.headersExists) {
                         this.authService.generateHeaders();
                     }

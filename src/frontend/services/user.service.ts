@@ -62,6 +62,6 @@ export class UserService {
         } else if (environment['fqdn']) {
             userTokenName += '_' + environment['fqdn'];
         }
-        return this.localStorage.getCookie(userTokenName);
+        return this.localStorage.get(userTokenName);
     }
 }

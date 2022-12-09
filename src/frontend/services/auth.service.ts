@@ -92,10 +92,10 @@ export class AuthService {
         };
     }
 
-    setTokens(token: string, user_token: string, minutesBeforeExp: number) {
+    setTokens(token: string, user_token: string) {
         const tokenNames = this.getTokenName();
         this.localStorage.save(tokenNames['tokenJwt'], token);
-        this.localStorage.setCookie(tokenNames['userToken'], user_token, minutesBeforeExp);
+        this.localStorage.save(tokenNames['userToken'], user_token);
     }
 
     getToken() {
@@ -109,9 +109,9 @@ export class AuthService {
         this.localStorage.remove('login_image_b64');
         this.localStorage.remove('selectedSettings');
         this.localStorage.remove(tokenNames['tokenJwt']);
+        this.localStorage.remove(tokenNames['userToken']);
         this.localStorage.remove('splitter_or_verifier');
         this.localStorage.remove('selectedParentSettings');
-        this.localStorage.deleteCookie(tokenNames['userToken']);
         this.localStorage.remove('task_watcher_minimize_display');
         this.http.get(environment['url'] + '/ws/auth/logout').pipe(
             catchError((err: any) => {
