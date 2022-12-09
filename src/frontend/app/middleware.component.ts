@@ -63,7 +63,7 @@ export class MiddlewareComponent implements HttpInterceptor {
                         if (environment.production) {
                             environment['url'] = '../' + environment['url'];
                         }
-                        const token = this.localStorage.getCookie('OpenCaptureToken_' + customId);
+                        const token = this.localStorage.get('OpenCaptureToken_' + customId);
                         if (currentCustom && customId !== currentCustom) {
                             this.router.navigate(['/logout']).then();
                         }

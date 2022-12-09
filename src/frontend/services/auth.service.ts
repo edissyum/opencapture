@@ -108,12 +108,11 @@ export class AuthService {
         this.userService.setUser({});
         this.localStorage.remove('login_image_b64');
         this.localStorage.remove('selectedSettings');
+        this.localStorage.remove(tokenNames['tokenJwt']);
         this.localStorage.remove('splitter_or_verifier');
         this.localStorage.remove('selectedParentSettings');
-        this.localStorage.remove('selectedParentSettings');
-        this.localStorage.remove('task_watcher_minimize_display');
-        this.localStorage.remove(tokenNames['tokenJwt']);
         this.localStorage.deleteCookie(tokenNames['userToken']);
+        this.localStorage.remove('task_watcher_minimize_display');
         this.http.get(environment['url'] + '/ws/auth/logout').pipe(
             catchError((err: any) => {
                 console.debug(err);
