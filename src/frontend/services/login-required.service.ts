@@ -91,7 +91,6 @@ export class LoginRequiredService implements CanActivate {
 
     canActivate(): boolean {
         const token = this.authService.getToken();
-        const tokenRouteStatic = this.authService.getTokenCustom('tokenRouteStatic');
         let route = '';
         if (!token) {
             const params = new URLSearchParams(window.location.href);
@@ -115,7 +114,7 @@ export class LoginRequiredService implements CanActivate {
             });
             return false;
         }
-        this.login(token, tokenRouteStatic);
+        this.login(token, null);
         return true;
     }
 }
