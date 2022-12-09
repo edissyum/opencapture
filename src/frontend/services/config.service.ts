@@ -15,13 +15,13 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Injectable } from '@angular/core';
+import { of } from "rxjs";
 import { environment } from  "../app/env";
-import { HttpClient } from "@angular/common/http";
-import { NotificationService } from "./notifications/notifications.service";
+import { Injectable } from '@angular/core';
 import { AuthService } from "./auth.service";
 import { catchError, tap } from "rxjs/operators";
-import { of } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { NotificationService } from "./notifications/notifications.service";
 
 @Injectable({
     providedIn: 'root'
@@ -55,10 +55,10 @@ export class ConfigService {
     }
 
     setConfig(config: any) {
-        this.authService.setTokenCustom('OpenCaptureConfig', btoa(JSON.stringify(config)));
+        this.authService.setTokenConfig(btoa(JSON.stringify(config)));
     }
 
     getConfig() {
-        return JSON.parse(atob(this.authService.getTokenCustom('OpenCaptureConfig') as string));
+        return JSON.parse(atob(this.authService.getTokenConfig() as string));
     }
 }

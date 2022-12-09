@@ -64,7 +64,7 @@ export class LoginRequiredService implements CanActivate {
             ).pipe(
                 tap((data: any) => {
                     this.userService.setUser(data.body.user);
-                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())), data.body.minutes_before_exp);
+                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())));
                     if (!this.authService.headersExists) {
                         this.authService.generateHeaders();
                     }
@@ -91,7 +91,6 @@ export class LoginRequiredService implements CanActivate {
 
     canActivate(): boolean {
         const token = this.authService.getToken();
-        const tokenRouteStatic = this.authService.getTokenCustom('tokenRouteStatic');
         let route = '';
         if (!token) {
             const params = new URLSearchParams(window.location.href);
@@ -115,7 +114,7 @@ export class LoginRequiredService implements CanActivate {
             });
             return false;
         }
-        this.login(token, tokenRouteStatic);
+        this.login(token, null);
         return true;
     }
 }
