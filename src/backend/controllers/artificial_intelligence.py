@@ -106,6 +106,7 @@ def launch_train(data, model_name):
     :param model_name: The name of model
     :return: N/A
     """
+
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     _docservers = _vars[9]
@@ -155,6 +156,7 @@ def launch_train_model(model_name, csv_file, model_id):
     :param csv_file: the csv that contains image read text
     :return: N/A
     """
+
     dataset = pd.read_csv(csv_file)
 
     # split dataset in two parts, training and testing
@@ -208,6 +210,7 @@ def save_model(model, filename):
     :param filename: the model path (.sav format)
     :return: N/A
     """
+
     pickle.dump(model, open(filename, 'wb'))
 
 
@@ -283,6 +286,7 @@ def add_to_csv(csv_file, data_list):
     :param data_list: list containing data we want to add to the csv
     :return: N/A
     """
+
     with open(csv_file, 'a') as f:
         writer = csv.writer(f)
         for val in data_list:
@@ -295,6 +299,7 @@ def create_csv(csv_file):
     :param csv_file: path of the csv file we want to create
     :return: N/A
     """
+
     header = ['Filename', 'Text', 'Doctype']
     with open(csv_file, 'w') as f:
         writer = csv.writer(f)
@@ -307,6 +312,7 @@ def word_cleaning(text):
     :param text: string text we want to clean
     :return: list of clean words
     """
+
     words = word_tokenize(text, language='french')  # Creates a list with separated words one by one
     words_no_punc = []
     for word in words:
@@ -337,6 +343,7 @@ def stemming(clean_text):
     :param clean_text: list of words
     :return: list of stemmed words
     """
+
     stem = [SnowballStemmer("french").stem(word) for word in clean_text]
     return stem
 
@@ -357,15 +364,13 @@ def launch_pred(mname, data):
     if os.path.exists(model_name):
         csv_file = _docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
         store_one_file(path, csv_file)
-
         return model_testing(model_name, csv_file)
 
-    else:
-        response = {
-            "errors": gettext('GET_IA_MODEL_BY_ID_ERROR'),
-            "message": gettext('IA_MODEL_DOESNT_EXISTS')
-        }
-        return response, 401
+    response = {
+        "errors": gettext('GET_IA_MODEL_BY_ID_ERROR'),
+        "message": gettext('IA_MODEL_DOESNT_EXISTS')
+    }
+    return response, 401
 
 
 def model_testing(model, csv_file):
@@ -375,6 +380,7 @@ def model_testing(model, csv_file):
     :param csv_file: csv file containing test data
     :return: N/A
     """
+
     dataset = pd.read_csv(csv_file)
     x_test = dataset["Text"].values
 
@@ -397,6 +403,7 @@ def store_one_file(file_path, csv_file):
     :param csv_file: path of csv file which will get the data
     :return: N/A
     """
+
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     _files = _vars[3]
@@ -429,6 +436,7 @@ def rename_model(new_name, model_id):
     :param model_id: unique model's database id
     :return: N/A
     """
+
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     _doc_servers = _vars[9]
