@@ -534,33 +534,33 @@ def synchronization_ldap_users(ldap_synchronization_data):
                         if ldap_users_data and ldap_users_data['status_search']:
                             result_synchro = check_database_users(ldap_users_data['ldap_users_data'], attribut_role_default)
                         else:
-                            error_message = gettext('LDAP_SYNCRO_INFOS_ERROR')
+                            error_message = gettext('LDAP_SYNCHRO_INFOS_ERROR')
                             error = {
-                                "errors": gettext('LDAP_SYNCRO_ERROR'),
+                                "errors": gettext('LDAP_SYNCHRO_ERROR'),
                                 "message": error_message
                             }
                     else:
-                        error_message = gettext('LDAP_SYNCRO_INFOS_ERROR')
+                        error_message = gettext('LDAP_SYNCHRO_INFOS_ERROR')
                         error = {
-                            "errors": gettext('LDAP_SYNCRO_ERROR'),
+                            "errors": gettext('LDAP_SYNCHRO_ERROR'),
                             "message": error_message
                         }
                 else:
                     error_message = gettext('LDAP_CONNECTION_ERROR')
                     error = {
-                        "errors": gettext('LDAP_SYNCRO_ERROR'),
+                        "errors": gettext('LDAP_SYNCHRO_ERROR'),
                         "message": error_message
                     }
             else:
                 error_message = gettext('INFOS_LDAP_NOT_COMPLETE')
                 error = {
-                    "errors": gettext('LDAP_SYNCRO_ERROR'),
+                    "errors": gettext('LDAP_SYNCHRO_ERROR'),
                     "message": error_message
                 }
         else:
             error_message = gettext('INFOS_LDAP_NOT_COMPLETE')
             error = {
-                "errors": gettext('LDAP_SYNCRO_ERROR'),
+                "errors": gettext('LDAP_SYNCHRO_ERROR'),
                 "message": error_message
             }
     return result_synchro, error

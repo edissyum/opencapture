@@ -385,3 +385,15 @@ CREATE TABLE mailcollect (
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;
 COMMENT ON SEQUENCE splitter_referential_call_count IS 'Splitter referential demand number count';
+
+CREATE TABLE ai_models
+(
+    "id"                    SERIAL       PRIMARY KEY,
+    "model_path"            VARCHAR(50),
+    "type"                  VARCHAR(15),
+    "train_time"            REAL,
+    "accuracy_score"        REAL,
+    "min_proba"             INTEGER,
+    "status"                VARCHAR(10)  DEFAULT 'OK',
+    "documents"             JSONB        DEFAULT '{}'
+);

@@ -72,6 +72,8 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITT
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_ORIGINAL_PDF', '[SPLITTER] Chemin vers le dossier contenant les PDF originaux', '/var/docservers/opencapture/splitter/original_pdf/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_METHODS_PATH', '[SPLITTER] Chemin vers le dossier contenant les différents scripts de séparation', '/var/www/html/opencapture/bin/scripts/splitter_methods/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_METADATA_PATH', '[SPLITTER] Chemin vers le dossier contenant les différents scripts de récupération de métadonnées', '/var/www/html/opencapture/bin/scripts/splitter_metadata/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_TRAIN_PATH_FILES', '[SPLITTER] Chemin vers le dossier contenant les données d''entraînement', '/var/www/html/opencapture/bin/scripts/ai/splitter/train_data');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_AI_MODEL_PATH', '[SPLITTER] Chemin vers le dossier contenant le modèle de prédiction', '/var/www/html/opencapture/bin/scripts/ai/splitter/models/');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE VERIFIER
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (1, 'export_xml', 'Export XML', 'verifier', '{
@@ -575,7 +577,7 @@ INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input
 INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder", "module", "splitter_method_id") VALUES (2, 'default_input', 'Chaîne entrante par défaut', 3, '/var/share/entrant/splitter/', 'splitter', 'qr_code_OC');
 ALTER SEQUENCE "inputs_id_seq" RESTART WITH 3;
 
--- CRÉATION DES CHAMPS CUSTOMS pour le SPLITTER
+-- CRÉATION DES CHAMPS CUSTOMS POUR LE SPLITTER
 INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (1, 'nom_usage', 'nom_usage', 'Nom d''usage', 'text', 'splitter');
 INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (2, 'prenom', 'prenom', 'Prénom', 'text', 'splitter');
 INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (3, 'contrat', 'contrat', 'Contrat', 'text', 'splitter');

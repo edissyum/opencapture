@@ -541,6 +541,24 @@ class Files:
                     if delete_zipped_files:
                         os.remove(input_path['input_path'])
 
+    @staticmethod
+    def adjust_image(image_path):
+        """
+        Preprocessing of a given image and reading of its text
+        :param image_path: path of the image we want to use ocr on
+        :return: the text extracted from the image in lowercase (string)
+        """
+        img = cv2.imread(image_path)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        blur = cv2.bilateralFilter(gray, 5, 75, 75)
+        _, black_and_white_image = cv2.threshold(blur, 127, 255, cv2.THRESH_BINARY)
+        return black_and_white_image
+
+    @staticmethod
+    def normalize(file_name):
+        normalized = file_name.replace(' ', '_')
+        return normalized
+
 
 def compress_pdf(input_file, output_file, compress_id):
     gs_command = 'gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/%s#-dNOPAUSE#-dQUIET#-o#%s#%s' \

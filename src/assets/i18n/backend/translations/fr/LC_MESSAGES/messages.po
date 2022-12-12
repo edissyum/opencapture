@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2022-12-05 16:11+0100\n"
+"POT-Creation-Date: 2022-12-12 11:48+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.1\n"
+"Generated-By: Babel 2.11.0\n"
 
 #: launch_worker.py:47 launch_worker_splitter.py:49
 msgid "FILE_UPLOADED"
@@ -29,8 +29,8 @@ msgstr "Le dossier de destination XML n'existe pas"
 msgid "PDF_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier de destination PDF n'existe pas"
 
-#: src/backend/controllers/splitter.py:329
-#: src/backend/controllers/splitter.py:335 src/backend/verifier_exports.py:326
+#: src/backend/controllers/splitter.py:328
+#: src/backend/controllers/splitter.py:334 src/backend/verifier_exports.py:326
 #: src/backend/verifier_exports.py:332 src/backend/verifier_exports.py:338
 msgid "EXPORT_MAARCH_ERROR"
 msgstr "Erreur lors de l'export vers Maarch"
@@ -43,7 +43,7 @@ msgstr "Le fichier PDF est introuvable"
 msgid "MAARCH_WS_INFO_WRONG"
 msgstr "Les informations de connexion à Maarch sont erronées"
 
-#: src/backend/controllers/splitter.py:341 src/backend/verifier_exports.py:350
+#: src/backend/controllers/splitter.py:340 src/backend/verifier_exports.py:350
 msgid "MAARCH_WS_INFO_EMPTY"
 msgstr "Les informations de connexion à Maarch sont vides"
 
@@ -51,82 +51,100 @@ msgstr "Les informations de connexion à Maarch sont vides"
 msgid "HOST_NOT_FOUND"
 msgstr "L'URL de l'hôte n'existe pas"
 
-#: src/backend/controllers/accounts.py:46 src/backend/models/accounts.py:55
+#: src/backend/controllers/accounts.py:45 src/backend/models/accounts.py:55
 msgid "GET_SUPPLIER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:59 src/backend/models/accounts.py:75
+#: src/backend/controllers/accounts.py:58 src/backend/models/accounts.py:75
 msgid "GET_ADDRESS_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de l'adresse"
 
-#: src/backend/controllers/accounts.py:80
-#: src/backend/controllers/accounts.py:159
+#: src/backend/controllers/accounts.py:79
+#: src/backend/controllers/accounts.py:158
 msgid "UPDATE_SUPPLIER_POSITIONS_ERROR"
 msgstr "Erreur lors de la mise à jour des positions du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:101
-#: src/backend/controllers/accounts.py:190
+#: src/backend/controllers/accounts.py:100
+#: src/backend/controllers/accounts.py:189
 msgid "UPDATE_SUPPLIER_PAGES_ERROR"
 msgstr "Erreur lors de la mise à jour des pages du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:122
-#: src/backend/controllers/accounts.py:128
+#: src/backend/controllers/accounts.py:121
+#: src/backend/controllers/accounts.py:127
 msgid "UPDATE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la mise à jour du fournisseur"
 
-#: src/backend/controllers/accounts.py:214
-#: src/backend/controllers/accounts.py:220
-#: src/backend/controllers/accounts.py:244
-#: src/backend/controllers/accounts.py:250 src/backend/models/accounts.py:115
+#: src/backend/controllers/accounts.py:213
+#: src/backend/controllers/accounts.py:219
+#: src/backend/controllers/accounts.py:243
+#: src/backend/controllers/accounts.py:249 src/backend/models/accounts.py:115
 msgid "UPDATE_ADDRESS_ERROR"
 msgstr "Erreur lors de la mise à jour de l'adresse"
 
-#: src/backend/controllers/accounts.py:274 src/backend/models/accounts.py:132
+#: src/backend/controllers/accounts.py:273 src/backend/models/accounts.py:132
 msgid "CREATE_ADDRESS_ERROR"
 msgstr "Erreur lors de la création de l'adresse"
 
-#: src/backend/controllers/accounts.py:311
-#: src/backend/controllers/accounts.py:317 src/backend/models/accounts.py:149
+#: src/backend/controllers/accounts.py:310
+#: src/backend/controllers/accounts.py:316 src/backend/models/accounts.py:149
 msgid "CREATE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la création du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:318
+#: src/backend/controllers/accounts.py:317
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "Un compte fournisseur existe déjà avec ce numéro de TVA"
 
-#: src/backend/controllers/accounts.py:338 src/backend/controllers/user.py:146
+#: src/backend/controllers/accounts.py:337 src/backend/controllers/user.py:146
 #: src/backend/models/accounts.py:204 src/backend/models/accounts.py:224
 #: src/backend/models/accounts.py:240 src/backend/models/user.py:163
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du compte client"
 
-#: src/backend/controllers/accounts.py:378
-#: src/backend/controllers/accounts.py:384 src/backend/models/accounts.py:259
+#: src/backend/controllers/accounts.py:377
+#: src/backend/controllers/accounts.py:383 src/backend/models/accounts.py:259
 msgid "UPDATE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la mise à jour du compte client"
 
-#: src/backend/controllers/accounts.py:412
-#: src/backend/controllers/accounts.py:418 src/backend/models/accounts.py:276
+#: src/backend/controllers/accounts.py:411
+#: src/backend/controllers/accounts.py:417 src/backend/models/accounts.py:276
 msgid "CREATE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la création du compte client"
 
-#: src/backend/controllers/accounts.py:419
+#: src/backend/controllers/accounts.py:418
 msgid "CUSTOMER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "Un compte client existe déjà avec ce numéro de TVA"
 
-#: src/backend/controllers/accounts.py:433
-#: src/backend/controllers/accounts.py:439 src/backend/models/accounts.py:295
+#: src/backend/controllers/accounts.py:432
+#: src/backend/controllers/accounts.py:438 src/backend/models/accounts.py:295
 msgid "DELETE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la suppression du compte client"
 
-#: src/backend/controllers/accounts.py:454
-#: src/backend/controllers/accounts.py:460 src/backend/models/accounts.py:168
+#: src/backend/controllers/accounts.py:453
+#: src/backend/controllers/accounts.py:459 src/backend/models/accounts.py:168
 msgid "DELETE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la suppression du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:484
+#: src/backend/controllers/accounts.py:481
 msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
 msgstr "Erreur lors du chargement du référentiel fournisseur"
+
+#: src/backend/controllers/artificial_intelligence.py:63
+#: src/backend/controllers/artificial_intelligence.py:365
+msgid "GET_IA_MODEL_BY_ID_ERROR"
+msgstr "Erreur lors de la récupération du modèle d'apprentissage"
+
+#: src/backend/controllers/artificial_intelligence.py:85
+msgid "CREATE_IA_MODEL_ERROR"
+msgstr "Erreur lors de la création du modèle d'apprentissage"
+
+#: src/backend/controllers/artificial_intelligence.py:96
+msgid "UPDATE_IA_MODEL_ERROR"
+msgstr "Erreur lors de la mise à jour du modèle d'apprentissage"
+
+#: src/backend/controllers/artificial_intelligence.py:363
+#: src/backend/models/artificial_intelligence.py:52
+msgid "IA_MODEL_DOESNT_EXISTS"
+msgstr "Le modèle d'apprentissage n'existe pas"
 
 #: src/backend/controllers/auth.py:84 src/backend/controllers/auth.py:131
 #: src/backend/controllers/auth.py:173 src/backend/controllers/auth.py:220
@@ -518,56 +536,56 @@ msgstr "à"
 msgid "FORM_UNDEFINED"
 msgstr "Formulaire non défini"
 
-#: src/backend/controllers/splitter.py:278
+#: src/backend/controllers/splitter.py:277
 msgid "ADD_DOCUMENT_ERROR"
 msgstr "Erreur lors de l'ajout d'un document"
 
-#: src/backend/controllers/splitter.py:397
-#: src/backend/controllers/splitter.py:656
+#: src/backend/controllers/splitter.py:396
+#: src/backend/controllers/splitter.py:655
 msgid "EXPORT_PDF_ERROR"
 msgstr "Erreur lors de l'export PDF"
 
-#: src/backend/controllers/splitter.py:419
-#: src/backend/controllers/splitter.py:680
+#: src/backend/controllers/splitter.py:418
+#: src/backend/controllers/splitter.py:679
 msgid "EXPORT_XML_ERROR"
 msgstr "Erreur lors de l'export XML"
 
-#: src/backend/controllers/splitter.py:435
+#: src/backend/controllers/splitter.py:434
 msgid "UPDATE_BATCH_ERROR"
 msgstr "Erreur lors de la mise à jour du lot"
 
-#: src/backend/controllers/splitter.py:448
+#: src/backend/controllers/splitter.py:447
 msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
-#: src/backend/controllers/splitter.py:461
+#: src/backend/controllers/splitter.py:460
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
-#: src/backend/controllers/splitter.py:476
-#: src/backend/controllers/splitter.py:497
-#: src/backend/controllers/splitter.py:512
-#: src/backend/controllers/splitter.py:527
+#: src/backend/controllers/splitter.py:475
+#: src/backend/controllers/splitter.py:496
+#: src/backend/controllers/splitter.py:511
+#: src/backend/controllers/splitter.py:526
 msgid "UPDATE_PAGES_ERROR"
 msgstr "Erreur lors de la modification des pages"
 
-#: src/backend/controllers/splitter.py:541
+#: src/backend/controllers/splitter.py:540
 msgid "CMIS_CONNECTION_ERROR"
 msgstr "Erreur lors de la connexion CMIS"
 
-#: src/backend/controllers/splitter.py:554
+#: src/backend/controllers/splitter.py:553
 msgid "OPENADS_CONNECTION_ERROR"
 msgstr "Erreur lors de la connexion OpenADS"
 
-#: src/backend/controllers/splitter.py:740
+#: src/backend/controllers/splitter.py:728
 msgid "CHECK_FOLDER_ERROR"
 msgstr "Erreur lors de la vérification du dossier"
 
-#: src/backend/controllers/splitter.py:748
+#: src/backend/controllers/splitter.py:747
 msgid "OPENADS_ADD_DOC_ERROR"
 msgstr "Erreur lors de l'envoi de document à OpenADS"
 
-#: src/backend/controllers/splitter.py:816
+#: src/backend/controllers/splitter.py:815
 #: src/backend/controllers/verifier.py:559 src/backend/models/splitter.py:460
 #: src/backend/models/verifier.py:153
 msgid "GET_TOTALS_ERROR"
@@ -686,6 +704,14 @@ msgstr "Impossible de joindre l'API de vérification du numéro de TVA"
 msgid "SUPPLIER_UPDATE_ERROR"
 msgstr "Erreur lors de la mise à jour du fournisseur"
 
+#: src/backend/models/artificial_intelligence.py:70
+msgid "IA_MODEL_CREATE_ERROR"
+msgstr "Erreur lors de la création du modèle d'apprentissage"
+
+#: src/backend/models/artificial_intelligence.py:88
+msgid "IA_MODEL_UPDATE_ERROR"
+msgstr "Erreur lors de la modification du modèle d'apprentissage"
+
 #: src/backend/models/auth.py:47 src/backend/models/auth.py:99
 #: src/backend/models/user.py:40 src/backend/rest/auth.py:70
 msgid "BAD_USERNAME"
@@ -735,14 +761,14 @@ msgid "INFOS_LDAP_NOT_COMPLETE"
 msgstr "Informations non complètes"
 
 #: src/backend/models/auth.py:537 src/backend/models/auth.py:543
-msgid "LDAP_SYNCRO_INFOS_ERROR"
-msgstr ""
+msgid "LDAP_SYNCHRO_INFOS_ERROR"
+msgstr "Information(s) de synchronisation incorrecte(s)"
 
 #: src/backend/models/auth.py:539 src/backend/models/auth.py:545
 #: src/backend/models/auth.py:551 src/backend/models/auth.py:557
 #: src/backend/models/auth.py:563
-msgid "LDAP_SYNCRO_ERROR"
-msgstr ""
+msgid "LDAP_SYNCHRO_ERROR"
+msgstr "Erreur lors de la synchronisation LDAP"
 
 #: src/backend/models/custom_fields.py:52
 msgid "ADD_CUSTOM_FIELD_ERROR"
@@ -928,13 +954,4 @@ msgstr "Erreur lors du chargement des méthodes d'authentification"
 #: src/backend/rest/splitter.py:39 src/backend/rest/verifier.py:37
 msgid "UNKNOW_ERROR"
 msgstr "Erreur inconnue"
-
-#~ msgid "UPDATE_FORM_SETTINGS_ERROR"
-#~ msgstr "Erreur lors de la mise à jour des paramètres du formulaire"
-
-#~ msgid "LDAP_SYNCHRO_ERROR"
-#~ msgstr "Erreur lors de la synchronisation LDAP"
-
-#~ msgid "LDAP_SYNCHRO_INFOS_ERROR"
-#~ msgstr "Information(s) de synchronisation incorrecte(s)"
 

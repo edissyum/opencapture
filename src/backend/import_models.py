@@ -108,3 +108,8 @@ if 'tasks_watcher' or 'models' not in custom_array['tasks_watcher']['path']:
     from .models import tasks_watcher
 elif 'tasks_watcher' in custom_array['tasks_watcher']['path']:
     tasks_watcher = getattr(__import__(custom_array['tasks_watcher']['path'], fromlist=[custom_array['tasks_watcher']['module']]), custom_array['tasks_watcher']['module'])
+
+if 'artificial_intelligence' or 'models' not in custom_array['artificial_intelligence']['path']:
+    from .models import artificial_intelligence
+elif 'models' in custom_array['artificial_intelligence']['path']:
+    artificial_intelligence = getattr(__import__(custom_array['artificial_intelligence']['path'], fromlist=[custom_array['artificial_intelligence']['module']]), custom_array['artificial_intelligence']['module'])
