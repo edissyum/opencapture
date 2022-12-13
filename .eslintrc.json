@@ -33,6 +33,7 @@
                         "default": "array"
                     }
                 ],
+                "space-infix-ops": "error",
                 "@typescript-eslint/dot-notation": "off",
                 "@typescript-eslint/prefer-for-of": "off",
                 "@angular-eslint/component-selector": "off",
