@@ -64,38 +64,45 @@ export class AuthService {
         return this.localStorage.remove(tokenNames['cachedUrlName']);
     }
 
-    setTokenCustom(name: string, token: string) {
-        this.localStorage.save(name, token);
+    setTokenConfig(config: any) {
+        const tokenNames = this.getTokenName();
+        this.localStorage.save(tokenNames['configName'], config);
     }
 
-    getTokenCustom(name: string) {
-        return this.localStorage.get(name);
+    getTokenConfig() {
+        const tokenNames = this.getTokenName();
+        return this.localStorage.get(tokenNames['configName']);
     }
 
     getTokenName() {
         let tokenName = 'OpenCaptureToken';
-        let userTokenName = 'OpenCaptureToken_user';
+        let userDataName = 'OpenCaptureUserData';
         let cachedUrlName = 'OpenCaptureCachedUrl';
+        let configName = 'OpenCaptureConfig';
         if (environment['customId']) {
             tokenName += '_' + environment['customId'];
-            userTokenName += '_' + environment['customId'];
+            userDataName += '_' + environment['customId'];
             cachedUrlName += '_' + environment['customId'];
+            configName += '_' + environment['customId'];
         } else if (environment['fqdn']) {
             tokenName += '_' + environment['fqdn'];
-            userTokenName += '_' + environment['fqdn'];
+            userDataName += '_' + environment['fqdn'];
             cachedUrlName += '_' + environment['fqdn'];
+            configName += '_' + environment['fqdn'];
         }
+
         return {
             'tokenJwt': tokenName,
-            'userToken': userTokenName,
+            'configName': configName,
+            'userData': userDataName,
             'cachedUrlName': cachedUrlName
         };
     }
 
-    setTokens(token: string, user_token: string, minutesBeforeExp: number) {
+    setTokens(token: string, user_token: string) {
         const tokenNames = this.getTokenName();
         this.localStorage.save(tokenNames['tokenJwt'], token);
-        this.localStorage.setCookie(tokenNames['userToken'], user_token, minutesBeforeExp);
+        this.localStorage.save(tokenNames['userData'], user_token);
     }
 
     getToken() {
@@ -109,9 +116,9 @@ export class AuthService {
         this.localStorage.remove('login_image_b64');
         this.localStorage.remove('selectedSettings');
         this.localStorage.remove(tokenNames['tokenJwt']);
+        this.localStorage.remove(tokenNames['userData']);
         this.localStorage.remove('splitter_or_verifier');
         this.localStorage.remove('selectedParentSettings');
-        this.localStorage.deleteCookie(tokenNames['userToken']);
         this.localStorage.remove('task_watcher_minimize_display');
         this.http.get(environment['url'] + '/ws/auth/logout').pipe(
             catchError((err: any) => {

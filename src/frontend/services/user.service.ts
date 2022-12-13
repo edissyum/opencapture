@@ -45,7 +45,7 @@ export class UserService {
     }
 
     getUserFromLocal() {
-        const token = this.getTokenUser();
+        const token = this.getUserData();
         if (token) {
             return JSON.parse(atob(token as string));
         } else {
@@ -55,13 +55,13 @@ export class UserService {
         }
     }
 
-    getTokenUser() {
-        let userTokenName = 'OpenCaptureToken_user';
+    getUserData() {
+        let userTokenName = 'OpenCaptureUserData';
         if (environment['customId']) {
             userTokenName += '_' + environment['customId'];
         } else if (environment['fqdn']) {
             userTokenName += '_' + environment['fqdn'];
         }
-        return this.localStorage.getCookie(userTokenName);
+        return this.localStorage.get(userTokenName);
     }
 }
