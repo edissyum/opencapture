@@ -57,6 +57,13 @@ export class UserProfileComponent implements OnInit {
             required: true
         },
         {
+            id: 'email',
+            label: this.translate.instant('USER.email'),
+            type: 'text',
+            control: new FormControl(),
+            required: true
+        },
+        {
             id: 'old_password',
             label: this.translate.instant('USER.old_password'),
             type: 'password',
