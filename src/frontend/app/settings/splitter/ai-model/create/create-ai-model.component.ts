@@ -33,17 +33,17 @@ import { finalize } from "rxjs/operators";
 
 @Component({
   selector: 'app-create-model',
-  templateUrl: './create-model.component.html',
-  styleUrls: ['./create-model.component.scss']
+  templateUrl: './create-ai-model.component.html',
+  styleUrls: ['./create-ai-model.component.scss']
 })
 
 export class CreateAiModelComponent implements OnInit {
     loading         : boolean   = true;
     docs            : any = [];
-    doc_types       = Array();
-    docStatus       = Array();
-    formControls    : any = [];
-    formForm        : any = [];
+    doctypes        : any = [];
+    docStatus       : any = [];
+    controls        : any = [];
+    formControl     : FormControl = new FormControl('');
     listModels      : any = [];
     forms           : any = [];
     chosenForm      : any = [];
@@ -91,19 +91,18 @@ export class CreateAiModelComponent implements OnInit {
     }
 
     retrieveDoctypes() {
-        this.http.get(environment['url'] + '/ws/ai/getTrainDocuments', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/ai/splitter/getTrainDocuments', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.docs = data;
                 this.docStatus.splice(0);
                 for (const element of this.docs) {
                     this.docStatus.push({
-                        doc:element,
-                        isSelected:false,
-                        linked_doctype:"",
-                        linked_form:""
+                        doc: element,
+                        isSelected: false,
+                        linked_doctype: "",
+                        linked_form: ""
                     });
-                    this.formControls.push(new FormControl(''));
-                    this.formForm.push(new FormControl('',[Validators.required]));
+                    this.controls.push(new FormControl(''));
                 }
             }),
             catchError((err: any) => {
@@ -113,12 +112,13 @@ export class CreateAiModelComponent implements OnInit {
         ).subscribe();
     }
 
-    checkSelectedBatch() {
+    checkSelectedBatch(cpt: number, current_doc: any) {
         this.totalChecked = this.docStatus.filter((a: { isSelected: boolean }) => a.isSelected).length;
+        this.onFormSelect({value: this.forms[0].id}, cpt, current_doc);
     }
 
     retrieveOCDoctypes() {
-        this.doc_types = [];
+        this.doctypes = [];
         this.http.get(environment['url'] + '/ws/ai/list/' + 'document', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let newDoctype;
@@ -126,14 +126,14 @@ export class CreateAiModelComponent implements OnInit {
                     newDoctype = {
                         'id': doctype.id,
                         'key': doctype.key,
+                        'type': doctype.type,
                         'code': doctype.code,
                         'label': doctype.label,
-                        'type': doctype.type,
                         'status': doctype.status,
-                        'isDefault': doctype.is_default,
                         'formId': doctype.form_id,
+                        'isDefault': doctype.is_default,
                     };
-                    this.doc_types.push(newDoctype);
+                    this.doctypes.push(newDoctype);
                 });
             }),
             finalize(() => this.loading = false),
@@ -168,10 +168,10 @@ export class CreateAiModelComponent implements OnInit {
         for (const element of this.forms) {
             if (element.id === val) {
                 this.chosenForm[index] = element.id;
-                this.chosenDocs[index] = this.doc_types.filter((a: { formId: number }) => a.formId === this.chosenForm[index]);
+                this.chosenDocs[index] = this.doctypes.filter((a: { formId: number }) => a.formId === this.chosenForm[index]);
             }
         }
-        this.formControls[index].value = this.chosenDocs[index][0].id;
+        this.controls[index].value = this.chosenDocs[index][0].id;
         const match = this.docStatus.find((a: { doc: string }) => a.doc === doc);
         match.linked_doctype = this.chosenDocs[index][0].id;
         match.linked_form = this.chosenForm[index];
@@ -179,7 +179,7 @@ export class CreateAiModelComponent implements OnInit {
 
     createModel() {
         let start_training = true;
-        if (this.isValidForm(this.modelForm) && this.totalChecked > 1 && this.isValidForm2(this.formControls)) {
+        if (this.isValidForm(this.modelForm) && this.totalChecked > 1 && this.isValidForm2(this.controls)) {
             const doctypes = [];
             const minPred = this.getValueFromForm(this.modelForm, 'model_stop');
             const modelName = this.getValueFromForm(this.modelForm, 'model_label');
@@ -213,11 +213,10 @@ export class CreateAiModelComponent implements OnInit {
                 ).subscribe();
 
                 this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.created'));
-                this.historyService.addHistory('splitter', 'create_model', this.translate.instant('HISTORY-DESC.create-model', {model: modelName}));
-                this.router.navigate(['/settings/splitter/artificial-intelligence']).then();
+                this.historyService.addHistory('splitter', 'create_ai_model', this.translate.instant('HISTORY-DESC.create-ai-model', {model: modelName}));
+                this.router.navigate(['/settings/splitter/ai']).then();
             }
-        }
-        else {
+        } else {
             if(this.totalChecked < 2) {
                 this.notify.error(this.translate.instant('ARTIFICIAL-INTELLIGENCE.not_enough_checked'));
             }
@@ -282,6 +281,9 @@ export class CreateAiModelComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                this.forms = forms.forms;
+               if (this.forms.length === 1) {
+                   this.formControl.setValue(this.forms[0].id);
+               }
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {

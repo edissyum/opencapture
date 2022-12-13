@@ -75,8 +75,7 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle();"
-                    class="absolute left-2 top-2">
+            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-2">
                 <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
             </button>
             <div class="settings_title text-center">
@@ -88,9 +87,13 @@
             <form class="grid grid-cols-2 gap-6 m-10 w-full">
                 <ng-container *ngFor="let field of modelForm">
                     <mat-form-field *ngIf="field.type === 'text' && field.id === 'model_path'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <mat-label>
+                            {{ field.label | translate }}
+                        </mat-label>
                         <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
-                        <mat-error *ngIf="field.control.hasError('required')">{{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate}}</mat-error>
+                        <mat-error *ngIf="field.control.hasError('required')">
+                            {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
+                        </mat-error>
                         <mat-error *ngIf="field.control.hasError('pattern') && !field.control.hasError('required')">
                             {{ 'ARTIFICIAL-INTELLIGENCE.invalid_selection' | translate }}
                         </mat-error>
@@ -98,7 +101,7 @@
                     <mat-form-field *ngIf="field.type === 'text' && field.id === 'min_proba'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
-                        <mat-error *ngIf="field.control.hasError('required')">{{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate}}</mat-error>
+                        <mat-error *ngIf="field.control.hasError('required')">{{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}</mat-error>
                         <mat-error *ngIf="field.control.hasError('pattern') && !field.control.hasError('required')">
                             {{ 'ARTIFICIAL-INTELLIGENCE.invalid_selection' | translate }}
                         </mat-error>
@@ -107,11 +110,11 @@
 
                 <mat-table *ngIf="tableData[1]" [dataSource]="tableData" class="w-full">
                     <ng-container matColumnDef="Documents">
-                        <mat-header-cell *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.dcotypes' | translate }} </mat-header-cell>
+                        <mat-header-cell *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.doctypes' | translate }} </mat-header-cell>
                         <mat-cell *matCellDef="let element"> {{ element.Documents }} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="Formulaires">
-                        <mat-header-cell *matHeaderCellDef>{{'ARTIFICIAL-INTELLIGENCE.form' | translate }}</mat-header-cell>
+                        <mat-header-cell *matHeaderCellDef>{{ 'ARTIFICIAL-INTELLIGENCE.form' | translate }}</mat-header-cell>
                         <mat-cell *matCellDef="let element">
                             <mat-select [formControl]="formsFormControl[element.id]" (selectionChange)="onFormSelect($event, element.id)">
                                 <mat-option *ngFor="let item of forms" [value]="item.id">

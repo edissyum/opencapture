@@ -32,8 +32,8 @@ import { lastValueFrom, of } from "rxjs";
 
 @Component({
   selector: 'app-update-model',
-  templateUrl: './update-model.component.html',
-  styleUrls: ['./update-model.component.scss']
+  templateUrl: './update-ai-model.component.html',
+  styleUrls: ['./update-ai-model.component.scss']
 })
 
 export class UpdateAiModelComponent implements OnInit {
@@ -146,11 +146,15 @@ export class UpdateAiModelComponent implements OnInit {
                 });
             }
             if (this.modelId !== undefined) {
-                this.http.post(environment['url'] + '/ws/ai/update/' + this.modelId, {var1: model_name, var2:min_pred, var3: doctypes}, {headers: this.authService.headers}).pipe(
+                this.http.post(environment['url'] + '/ws/ai/update/' + this.modelId, {
+                    model_name: model_name,
+                    min_pred: min_pred,
+                    doctypes: doctypes
+                }, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.model_updated'));
-                        this.historyService.addHistory('splitter', 'update_model', this.translate.instant('HISTORY-DESC.update-model', {model: model_name}));
-                        this.router.navigate(['/settings/splitter/artificial-intelligence']).then();
+                        this.historyService.addHistory('splitter', 'update_ai_model', this.translate.instant('HISTORY-DESC.update-ai-model', {model: model_name}));
+                        this.router.navigate(['/settings/splitter/ai']).then();
                     }),
                     catchError((err: any) => {
                         console.debug(err);

@@ -19,7 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { FormBuilder, FormControl } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -32,47 +32,52 @@ import { Sort } from "@angular/material/sort";
 import { finalize } from "rxjs/operators";
 import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import { HistoryService } from "../../../../../services/history.service";
+import { FileValidators } from "ngx-file-drag-drop";
 
 @Component({
-  selector: 'app-artificial-intelligence',
-  templateUrl: './artificial-intelligence.component.html',
-  styleUrls: ['./artificial-intelligence.component.scss']
+  selector: 'app-list-ai',
+  templateUrl: './list-ai-model.component.html',
+  styleUrls: ['./list-ai-model.component.scss']
 })
 
 export class ListAiModelComponent implements OnInit {
-    loading             : boolean   = true;
-    modelsList          : any       = [];
-    showResponse        : boolean   = false;
-    DocToPredSelected   : boolean   = true;
-    isPredicting        : boolean   = false;
-    displayedColumns    : string[]  = ['id', 'model_path', 'train_time', 'type','accuracy_score','documents', 'min_proba', 'actions'];
-    offset              : number    = 0;
-    pageSize            : number    = 10;
-    pageIndex           : number    = 0;
-    total               : number    = 0;
-    clickedRow          : object    = {};
-    prediction          : any       = [];
-    uploadForm!         : FormGroup;
+    loading             : boolean     = true;
+    showResponse        : boolean     = false;
+    isPredicting        : boolean     = false;
+    modelsList          : any         = [];
+    displayedColumns    : string[]    = ['id', 'model_path', 'train_time', 'type','accuracy_score','documents', 'min_proba', 'actions'];
+    offset              : number      = 0;
+    pageIndex           : number      = 0;
+    total               : number      = 0;
+    pageSize            : number      = 10;
+    clickedRow          : object      = {};
+    prediction          : any         = [];
+    fileControl         : FormControl = new FormControl(
+        [],
+        [
+            FileValidators.required,
+            FileValidators.fileExtension(["png", "jpeg", "jpg", "jpe", "webp", "tiff", "tif", "bmp", "pdf"])
+        ]
+    );
 
     constructor(
+        public router: Router,
         private http: HttpClient,
         private dialog: MatDialog,
-        public router: Router,
         private route: ActivatedRoute,
+        public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        public userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
-        public serviceSettings: SettingsService,
         private historyService: HistoryService,
+        public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
     ) { }
 
     ngOnInit() {
         this.serviceSettings.init();
         this.retrieveModels();
-        this.uploadForm = this.formBuilder.group({file: ['']});
     }
 
     retrieveModels(offset?: number, size?: number) {
@@ -136,6 +141,20 @@ export class ListAiModelComponent implements OnInit {
         this.clickedRow = row;
     }
 
+    checkFile(data: any): void {
+        if (data && data.length !== 0) {
+            for (let i = 0; i < data.length; i++) {
+                const fileName = data[i].name;
+                const fileExtension = fileName.split('.').pop();
+                if (!["png", "jpeg", "jpg", "jpe", "webp", "tiff", "tif", "bmp", "pdf"].includes(fileExtension.toLowerCase())) {
+                    this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized',
+                        {count: data.length}));
+                    return;
+                }
+            }
+        }
+    }
+
     displaySelectedRowId() {
         const disp = Object.values(this.clickedRow)[2];
         if (disp) {
@@ -159,7 +178,7 @@ export class ListAiModelComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deleteOutput(modelId);
-                this.historyService.addHistory('splitter', 'delete_model', this.translate.instant('HISTORY-DESC.delete-model', {model: model}));
+                this.historyService.addHistory('splitter', 'delete_ai_model', this.translate.instant('HISTORY-DESC.delete-ai-model', {model: model}));
             }
         });
     }
@@ -186,36 +205,35 @@ export class ListAiModelComponent implements OnInit {
         this.retrieveModels(this.offset, this.pageSize);
     }
 
-    onFileSelect(event: Event) {
-        const target = event.target as HTMLInputElement;
-        if (target.files?.length) {
-            const file = target?.files[0];
-            this.uploadForm.get('file')?.setValue(file);
-            this.DocToPredSelected = true;
-        }
-    }
-
     onSubmit() {
         this.showResponse = false;
         const formData = new FormData();
         const disp = Object.values(this.clickedRow)[4];
-        if (this.uploadForm.get('file')?.value) {
-            this.isPredicting = true;
-            formData.append('file', this.uploadForm.get('file')?.value);
 
-            this.http.post<any>(environment['url'] + '/ws/ai/testModel/' + disp, formData, {headers: this.authService.headers}).pipe(
-                tap((res) => this.onResponse(res)),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.error(this.translate.instant('ARTIFICIAL-INTELLIGENCE.model_not_found'));
-                    this.isPredicting = false;
-                    return of(false);
-                })
-            ).subscribe();
+        if (this.fileControl.value!.length === 0) {
+            this.notify.handleErrors(this.translate.instant('UPLOAD.no_file'));
+            return;
         }
-        else {
-            this.DocToPredSelected = false;
+
+        for (let i = 0; i < this.fileControl.value!.length; i++) {
+            if (this.fileControl.status === 'VALID') {
+                formData.append(this.fileControl.value![i]['name'], this.fileControl.value![i]);
+            } else {
+                this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
+                return;
+            }
         }
+
+        this.isPredicting = true;
+        this.http.post(environment['url'] + '/ws/ai/testModel/' + disp, formData, {headers: this.authService.headers}).pipe(
+            tap((res) => this.onResponse(res)),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.error(this.translate.instant('ARTIFICIAL-INTELLIGENCE.model_not_found'));
+                this.isPredicting = false;
+                return of(false);
+            })
+        ).subscribe();
     }
 
     onResponse(res: any) {
