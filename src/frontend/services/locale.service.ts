@@ -20,7 +20,7 @@ import * as moment from 'moment';
 import { environment } from  "../app/env";
 import { Injectable } from '@angular/core';
 import { AuthService } from "./auth.service";
-import {catchError, finalize, tap} from "rxjs/operators";
+import { catchError, finalize, tap } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { HistoryService } from "./history.service";
 import { DateAdapter } from "@angular/material/core";

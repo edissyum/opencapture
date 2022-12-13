@@ -29,11 +29,23 @@ def get_train_documents():
     return make_response(jsonify(res)), 200
 
 
+@bp.route('ai/getAIModels', methods=['GET'])
+@auth.token_required
+def get_ai_models():
+    args = {
+        'select': ['*'],
+        'where': ["status = %s"],
+        'data': ['OK']
+    }
+    models = artificial_intelligence.get_models(args)
+    return make_response(jsonify(models[0])), models[1]
+
+
 @bp.route('ai/getById/<int:model_id>', methods=['GET'])
 @auth.token_required
-def get_output_by_id(model_id):
-    _model = artificial_intelligence.get_model_by_id(model_id)
-    return make_response(jsonify(_model[0])), _model[1]
+def get_model_by_id(model_id):
+    model = artificial_intelligence.get_model_by_id(model_id)
+    return make_response(jsonify(model[0])), model[1]
 
 
 @bp.route('ai/TrainModel/<string:model_name>', methods=['POST'])
@@ -41,8 +53,7 @@ def get_output_by_id(model_id):
 def train_model(model_name):
     data = json.loads(request.data)
     artificial_intelligence.launch_train(data, model_name)
-    res = "Model training started"
-    return make_response(jsonify(res)), 200
+    return make_response(''), 200
 
 
 @bp.route('ai/update/<int:model_id>', methods=['POST'])
@@ -51,13 +62,13 @@ def update_model(model_id):
     data = json.loads(request.data)
     args = {
         'set': {
-            'model_path': data["var1"],
-            'min_proba': data["var2"],
-            'documents': json.dumps(data["var3"])
+            'model_path': data['model_name'],
+            'min_proba': data['min_pred'],
+            'documents': json.dumps(data['doctypes'])
         },
         'model_id': model_id
     }
-    artificial_intelligence.rename_model(data["var1"], model_id)
+    artificial_intelligence.rename_model(data['model_name'], model_id)
     res = artificial_intelligence.update_model(args)
     return make_response(jsonify(res)), 200
 
@@ -73,8 +84,8 @@ def delete_model(model_id):
 @bp.route('ai/testModel/<string:model_name>', methods=['POST'])
 @auth.token_required
 def test_model(model_name):
-    data = request.files['file']
-    res = artificial_intelligence.launch_pred(model_name, data)
+    files = request.files
+    res = artificial_intelligence.launch_pred(model_name, files)
     return make_response(jsonify(res[0])), res[1]
 
 

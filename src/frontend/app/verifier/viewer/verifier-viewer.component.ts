@@ -32,7 +32,7 @@ import { ConfigService } from "../../../services/config.service";
 import * as moment from 'moment';
 import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
-import {LocaleService} from "../../../services/locale.service";
+import { LocaleService } from "../../../services/locale.service";
 declare const $: any;
 
 
@@ -318,7 +318,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async getThumb(filename:string) {
-        const cpt = filename.split('-')[filename.split('-').length -1].split('.')[0];
+        const cpt = filename.split('-')[filename.split('-').length - 1].split('.')[0];
         if (this.imgArray[cpt]) {
             this.imgSrc = this.imgArray[cpt];
         } else {

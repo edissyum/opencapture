@@ -28,7 +28,8 @@ def get_models(args):
     models = database.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["ai_models"],
-        'where': args['where'],
+        'where': [] if "where" not in args else args["where"],
+        'data': [] if "data" not in args else args["data"],
         'order_by': ["id ASC"],
         'limit': str(args['limit']) if 'limit' in args else [],
         'offset': str(args['offset']) if 'offset' in args else [],

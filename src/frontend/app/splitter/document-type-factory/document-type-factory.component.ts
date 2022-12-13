@@ -31,8 +31,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { PrivilegesService } from "../../../services/privileges.service";
 import { LocalStorageService } from "../../../services/local-storage.service";
-import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
+import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Injectable()
 export class ChecklistDatabase {

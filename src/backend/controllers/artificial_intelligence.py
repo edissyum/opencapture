@@ -39,7 +39,7 @@ def splitter_retrieve_documents():
     _docservers = _vars[9]
     data = []
     for file_name in os.listdir(_docservers.get('SPLITTER_TRAIN_PATH_FILES')):
-        if not file_name.endswith(".csv"):
+        if not file_name.endswith(".csv") and not file_name.endswith(".gitkeep"):
             data.append(file_name)
     return data
 
@@ -120,7 +120,7 @@ def launch_train(data, model_name):
     min_pred = data["min_pred"]
 
     path = _docservers.get('SPLITTER_TRAIN_PATH_FILES')
-    csv_file = path + 'data.csv'
+    csv_file = path + '/data.csv'
     model_name = _docservers.get('SPLITTER_AI_MODEL_PATH') + model_name
     start_time = time.time()
 
@@ -224,15 +224,16 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
 
     j = 0
     rows = []
-    image_format = [".png", ".jpeg", ".jpg", ".jpe", ".webp", ".tiff", ".tif", ".bmp", ".pdf"]  # Formats accepted for OCR
-    total_files = 0
     count = 0
-    # Count total train files number to calculate later progression percentage
+    total_files = 0
+    image_format = [".png", ".jpeg", ".jpg", ".jpe", ".webp", ".tiff", ".tif", ".bmp", ".pdf"]
+
     for dir_name in os.listdir(file_path):
         if dir_name in chosen_files:
             count += len([file_name for file_name in os.listdir(file_path + "/" + dir_name) if
                           file_name.lower().endswith(tuple(image_format))])
     percent = (100 / count)
+
     for dir_name in os.listdir(file_path):
         if dir_name in chosen_files:
             i = 0
@@ -247,15 +248,12 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
                     total_files += 1
                     if file_name.lower().endswith('.pdf'):
                         _files.jpg_name = _doc_servers.get('TMP_PATH') + Path(_files.normalize(file_name)).stem + '.jpg'
-                        _files.pdf_to_jpg(file_path + "/" + dir_name + "/" + file_name, open_img=False)
+                        _files.pdf_to_jpg(file_path + "/" + dir_name + "/" + file_name, 1, open_img=False)
                         filtered_image = _files.adjust_image(_files.jpg_name)
                     else:
                         filtered_image = _files.adjust_image(file_path + "/" + dir_name + "/" + file_name)
-                        # ocr
                     text = _ocr.text_builder(filtered_image).lower()
-                    # word cleaning
                     clean_words = word_cleaning(text)
-                    # stemming
                     text_stem = stemming(clean_words)
                     line = [file_name, text_stem, dir_name]
                     rows.append(line)
@@ -268,15 +266,9 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
                         'model_id': model_id
                     }
                     update_model(args)
-            else:
-                continue
-        else:
-            continue
 
     create_csv(csv_file)
     add_to_csv(csv_file, rows)
-    msg = "Text extraction complete"
-    _log.info(msg)
 
 
 def add_to_csv(csv_file, data_list):
@@ -348,23 +340,22 @@ def stemming(clean_text):
     return stem
 
 
-def launch_pred(mname, data):
+def launch_pred(mname, files):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _docservers = _vars[9]
     _files = _vars[3]
+    _docservers = _vars[9]
 
-    file_to_save = _files.normalize(data.filename)
-
-    path = _docservers.get('TMP_PATH') + file_to_save
-    data.save(path)
-
-    model_name = _docservers.get('SPLITTER_AI_MODEL_PATH') + mname
-
-    if os.path.exists(model_name):
-        csv_file = _docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
-        store_one_file(path, csv_file)
-        return model_testing(model_name, csv_file)
+    for file in files:
+        _f = files[file]
+        file_to_save = _files.normalize(_f.filename)
+        path = _docservers.get('TMP_PATH') + file_to_save
+        _f.save(path)
+        model_name = _docservers.get('SPLITTER_AI_MODEL_PATH') + mname
+        if os.path.exists(model_name):
+            csv_file = _docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
+            store_one_file(path, csv_file)
+            return model_testing(model_name, csv_file)
 
     response = {
         "errors": gettext('GET_IA_MODEL_BY_ID_ERROR'),
@@ -384,14 +375,11 @@ def model_testing(model, csv_file):
     dataset = pd.read_csv(csv_file)
     x_test = dataset["Text"].values
 
-    # load model
     loaded_model = pickle.load(open(model, 'rb'))
 
-    # make predictions
-    predicted = loaded_model.predict(x_test)  # result of the prediction
-    predicted_prob = loaded_model.predict_proba(x_test)  # probability of the prediction
+    predicted = loaded_model.predict(x_test)
+    predicted_prob = loaded_model.predict_proba(x_test)
 
-    # results
     values = [dataset.loc[0, 'Filename'], predicted[0], round(np.max(predicted_prob[0] * 100), 0)]
     return values, 200
 
@@ -413,7 +401,7 @@ def store_one_file(file_path, csv_file):
     rows = []
 
     _files.jpg_name = _doc_servers.get('TMP_PATH') + Path(_files.normalize(file_path)).stem + '.jpg'
-    _files.pdf_to_jpg(file_path, open_img=False)
+    _files.pdf_to_jpg(file_path, 1, open_img=False)
     if os.path.exists(_files.jpg_name):
         filtered_image = _files.adjust_image(_files.jpg_name)
     else:

@@ -30,7 +30,7 @@ import { LocaleService } from "../../services/locale.service";
 import { UserService } from "../../services/user.service";
 import { HistoryService } from "../../services/history.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import {LocalStorageService} from "../../services/local-storage.service";
+import { LocalStorageService } from "../../services/local-storage.service";
 
 @Component({
     selector: 'app-login',

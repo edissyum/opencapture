@@ -34,9 +34,9 @@ import { DocumentTypeComponent } from "../document-type/document-type.component"
 import { remove } from 'remove-accents';
 import { HistoryService } from "../../../services/history.service";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
-import { marker} from "@biesbjerg/ngx-translate-extract-marker";
-import * as moment from "moment";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { LocaleService } from "../../../services/locale.service";
+import * as moment from "moment";
 
 export interface Field {
     id              : number

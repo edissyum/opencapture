@@ -18,7 +18,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute, Router } from "@angular/router";
-import {FormBuilder, FormControl, Validators} from "@angular/forms";
+import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";

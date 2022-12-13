@@ -23,7 +23,7 @@ import { UserService } from "../../services/user.service";
 import { LocaleService } from "../../services/locale.service";
 import { PrivilegesService } from "../../services/privileges.service";
 import { LocalStorageService } from "../../services/local-storage.service";
-import {AuthService} from "../../services/auth.service";
+import { AuthService } from "../../services/auth.service";
 
 @Component({
     selector: 'app-menu',

@@ -640,7 +640,10 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'login_methods', 
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (53, 'verifier_display', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (54, 'mailcollect', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (55, 'user_quota', 'general');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 56;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (56, 'list_ai_model', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (57, 'create_ai_model', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (58, 'update_ai_model', 'splitter');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 59;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

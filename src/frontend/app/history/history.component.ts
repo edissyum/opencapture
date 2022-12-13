@@ -10,8 +10,8 @@ import { AuthService } from "../../services/auth.service";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { Sort } from "@angular/material/sort";
 import { DatePipe } from '@angular/common';
+import { UserService } from "../../services/user.service";
 import * as moment from "moment";
-import {UserService} from "../../services/user.service";
 
 @Component({
     selector: 'app-history',
