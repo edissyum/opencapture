@@ -388,12 +388,13 @@ COMMENT ON SEQUENCE splitter_referential_call_count IS 'Splitter referential dem
 
 CREATE TABLE ai_models
 (
-    "id"                    SERIAL       PRIMARY KEY,
-    "model_path"            VARCHAR(50),
-    "type"                  VARCHAR(15),
-    "train_time"            REAL,
-    "accuracy_score"        REAL,
-    "min_proba"             INTEGER,
-    "status"                VARCHAR(10)  DEFAULT 'OK',
-    "documents"             JSONB        DEFAULT '{}'
+    "id"                SERIAL       PRIMARY KEY,
+    "model_path"        VARCHAR(50),
+    "type"              VARCHAR(15),
+    "train_time"        REAL,
+    "accuracy_score"    REAL,
+    "min_proba"         INTEGER,
+    "status"            VARCHAR(10)  DEFAULT 'OK',
+    "documents"         JSONB        DEFAULT '{}',
+    "module"            VARCHAR(10)
 );
