@@ -92,7 +92,7 @@
                    class="fa-solid fa-stream text-xl text-gray-900"></i>
             </button>
         </div>
-        <div *ngIf="total > 0">
+        <div *ngIf="!this.loading">
             <mat-table [dataSource]="modelsList" matSort (matSortChange)="sortData($event)" class="w-full">
                 <ng-container matColumnDef="id">
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.id' | translate }} </mat-header-cell>
@@ -151,9 +151,6 @@
                            (page)="onPageChange($event)">
             </mat-paginator>
         </div>
-        <h3 *ngIf="total === 0" class="text-center font-bold py-3">
-            {{ 'ARTIFICIAL-INTELLIGENCE.no_model_to_display' | translate }}
-        </h3>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">
@@ -168,14 +165,14 @@
                 </mat-card-title>
                 <mat-card-actions>
                     <ngx-file-drag-drop
-                            [displayFileSize]="true"
-                            [formControl]="fileControl"
-                            [activeBorderColor]="'#97BF3D'"
-                            [class]="'max-w-3xl h-20 mt-12'"
-                            (valueChanged)="checkFile($event)"
-                            [class.disabled]="this.isPredicting"
-                            [class.pointer-events-none]="this.isPredicting"
-                            [emptyPlaceholder]="'ARTIFICIAL-INTELLIGENCE.choose_file' | translate">
+                        [displayFileSize]="true"
+                        [formControl]="fileControl"
+                        [activeBorderColor]="'#97BF3D'"
+                        [class]="'max-w-3xl h-20 mt-12'"
+                        (valueChanged)="checkFile($event)"
+                        [class.disabled]="this.isPredicting"
+                        [class.pointer-events-none]="this.isPredicting"
+                        [emptyPlaceholder]="'ARTIFICIAL-INTELLIGENCE.choose_file' | translate">
                     </ngx-file-drag-drop>
                     <div class="flex justify-center content-center">
                         <button mat-flat-button (click)="onSubmit()"
