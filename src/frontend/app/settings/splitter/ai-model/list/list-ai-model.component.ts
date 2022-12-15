@@ -45,7 +45,7 @@ export class ListAiModelComponent implements OnInit {
     showResponse        : boolean     = false;
     isPredicting        : boolean     = false;
     modelsList          : any         = [];
-    displayedColumns    : string[]    = ['id', 'model_path', 'train_time', 'type','accuracy_score','documents', 'min_proba', 'actions'];
+    displayedColumns    : string[]    = ['id', 'model_path', 'train_time', 'accuracy_score', 'documents', 'min_proba', 'actions'];
     offset              : number      = 0;
     pageIndex           : number      = 0;
     total               : number      = 0;
@@ -98,7 +98,7 @@ export class ListAiModelComponent implements OnInit {
                 if (offset !== undefined && size !== undefined) {
                     this.modelsList = this.modelsList.slice(offset, offset + size);
                 } else {
-                    this.modelsList = this.modelsList.slice(0,10);
+                    this.modelsList = this.modelsList.slice(0, 10);
                 }
             }),
             finalize(() => this.loading = false),
@@ -177,13 +177,13 @@ export class ListAiModelComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.deleteOutput(modelId);
+                this.deleteModel(modelId);
                 this.historyService.addHistory('splitter', 'delete_ai_model', this.translate.instant('HISTORY-DESC.delete-ai-model', {model: model}));
             }
         });
     }
 
-    deleteOutput(modelId: number) {
+    deleteModel(modelId: number) {
         if (modelId !== undefined) {
             this.http.delete(environment['url'] + '/ws/ai/delete/' + modelId, {headers: this.authService.headers}).pipe(
                 tap(() => {

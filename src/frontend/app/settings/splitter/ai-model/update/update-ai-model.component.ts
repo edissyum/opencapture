@@ -49,7 +49,7 @@ export class UpdateAiModelComponent implements OnInit {
     chosenDocs          : any       = [];
     documents           : any       = [];
     len                 : number    = 0;
-    displayedColumns    : string[]  = ['Documents','Formulaires','Doctypes'];
+    displayedColumns    : string[]  = ['Documents', 'Formulaires', 'Doctypes'];
     modelForm           : any[]     = [
         {
             id: 'model_path',
@@ -59,7 +59,7 @@ export class UpdateAiModelComponent implements OnInit {
             required: true,
         }, {
             id: 'min_proba',
-            label:  this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
+            label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
             type: 'text',
             control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
             required: true,
@@ -98,11 +98,11 @@ export class UpdateAiModelComponent implements OnInit {
                         }
                     }
 
-                    this.formById.push( (this.forms.find((a: { id: number }) => a.id === selectedFormId[i])).id );
+                    this.formById.push((this.forms.find((a: { id: number }) => a.id === selectedFormId[i])).id);
                     this.chosenDocs[i] = this.doc_types.filter((a: { formId: number }) => a.formId === selectedFormId[i]);
                     this.doctypesFormControl.push(new FormControl(this.documents[i].doctype, [Validators.required]));
                     this.formsFormControl.push(new FormControl(this.formById[i], [Validators.required]));
-                    this.tableData.push({Documents:this.documents[i].folder, Doctypes:this.documents[i].doctype,Formulaires: this.formById[i], id: i});
+                    this.tableData.push({Documents: this.documents[i].folder, Doctypes: this.documents[i].doctype, Formulaires: this.formById[i], id: i});
                 }
 
                 for (const field in data) {
@@ -124,7 +124,7 @@ export class UpdateAiModelComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
-                this.router.navigate(['/settings/splitter/outputs']).then();
+                this.router.navigate(['/settings/splitter/ai']).then();
                 return of(false);
             })
         ).subscribe();
@@ -140,9 +140,9 @@ export class UpdateAiModelComponent implements OnInit {
                 const fold = this.documents[i].folder;
                 const formid = this.formsFormControl[i].value;
                 doctypes.push({
-                    folder:fold,
-                    doctype:oc_targets,
-                    form:formid
+                    folder: fold,
+                    doctype: oc_targets,
+                    form: formid
                 });
             }
             if (this.modelId !== undefined) {

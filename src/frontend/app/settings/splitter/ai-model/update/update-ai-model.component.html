@@ -83,8 +83,8 @@
                 <hr class="border-green-400">
             </div>
         </div>
-        <div *ngIf="!loading" class="flex justify-center items-center ">
-            <form class="grid grid-cols-2 gap-6 m-10 w-full">
+        <div *ngIf="!loading">
+            <div class="grid grid-cols-2 gap-6 m-10 w-full">
                 <ng-container *ngFor="let field of modelForm">
                     <mat-form-field *ngIf="field.type === 'text' && field.id === 'model_path'">
                         <mat-label>
@@ -106,44 +106,37 @@
                             {{ 'ARTIFICIAL-INTELLIGENCE.invalid_selection' | translate }}
                         </mat-error>
                     </mat-form-field>
-                    </ng-container>
-
-                <mat-table *ngIf="tableData[1]" [dataSource]="tableData" class="w-full">
-                    <ng-container matColumnDef="Documents">
-                        <mat-header-cell *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.doctypes' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element"> {{ element.Documents }} </mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="Formulaires">
-                        <mat-header-cell *matHeaderCellDef>{{ 'ARTIFICIAL-INTELLIGENCE.form' | translate }}</mat-header-cell>
-                        <mat-cell *matCellDef="let element">
-                            <mat-select [formControl]="formsFormControl[element.id]" (selectionChange)="onFormSelect($event, element.id)">
-                                <mat-option *ngFor="let item of forms" [value]="item.id">
-                                    {{item.label}}
+                </ng-container>
+            </div>
+            <div class="mx-10 my-2 grid grid-cols-5 gap-4 place-items-stretch">
+                <div *ngFor="let item of this.tableData, let i=index" class="text-center">
+                    {{ item.Documents }}
+                    <div class="mt-4">
+                        <mat-form-field>
+                            <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.form" | translate }}</mat-label>
+                            <mat-select [formControl]="formsFormControl[item.id]"
+                                        (selectionChange)="onFormSelect($event, item.id)">
+                                <mat-option *ngFor="let option of forms" [value]="option.id">
+                                    {{ option.label }}
                                 </mat-option>
                             </mat-select>
-                        </mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="Doctypes">
-                        <mat-header-cell *matHeaderCellDef class=""> {{ 'ARTIFICIAL-INTELLIGENCE.doctype' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element" class="">
-                            <mat-select [formControl]="doctypesFormControl[element.id]">
-                                <mat-option *ngFor="let item of chosenDocs[element.id]" [value]="item.id">
-                                    {{item.label}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-cell>
-                    </ng-container>
-                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-                </mat-table>
-            </form>
+                        </mat-form-field>
+                    </div>
+                    <mat-form-field>
+                        <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.doctype" | translate }}</mat-label>
+                        <mat-select [formControl]="doctypesFormControl[item.id]">
+                            <mat-option *ngFor="let option of chosenDocs[i]" [value]="option.id">
+                                {{ option.label }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
         </div>
-        <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
         <div class="flex justify-center items-center mb-2">
             <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300 m-5">
                 <span class="block" (click)="updateModel()">{{ "ARTIFICIAL-INTELLIGENCE.update_model" | translate }}</span>
             </button>
         </div>
-
     </mat-sidenav-content>
 </mat-sidenav-container>

@@ -48,7 +48,7 @@ def get_model_by_id(model_id):
     return make_response(jsonify(model[0])), model[1]
 
 
-@bp.route('ai/TrainModel/<string:model_name>', methods=['POST'])
+@bp.route('ai/trainModel/<string:model_name>', methods=['POST'])
 @auth.token_required
 def train_model(model_name):
     data = json.loads(request.data)

@@ -137,7 +137,7 @@ export class SeparatorComponent implements OnInit {
 
     downloadSeparator() {
         const fileName = this.selectedSeparator + (this.selectedDocType ? '_' + this.selectedDocType.key: '');
-        this.downloadPdf(this.separator.fileUrl,fileName);
+        this.downloadPdf(this.separator.fileUrl, fileName);
     }
 
     downloadPdf(base64String: any, fileName:any) {

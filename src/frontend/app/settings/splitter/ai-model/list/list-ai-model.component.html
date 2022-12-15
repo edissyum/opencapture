@@ -106,17 +106,13 @@
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.train_time' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.train_time }} </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="type">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.type' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.type }} </mat-cell>
-                </ng-container>
                 <ng-container matColumnDef="accuracy_score">
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.accuracy' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.accuracy_score}} </mat-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.accuracy_score }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="documents">
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.doctypes' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.documents}} </mat-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.documents }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="min_proba">
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.min_proba' | translate }} </mat-header-cell>

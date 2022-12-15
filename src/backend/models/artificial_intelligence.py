@@ -79,7 +79,7 @@ def update_models(args):
     error = None
 
     models = database.update({
-        'table': ['AI_models'],
+        'table': ['ai_models'],
         'set': args['set'],
         'where': ['id = %s'],
         'data': [args['model_id']]

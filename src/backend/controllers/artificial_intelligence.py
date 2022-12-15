@@ -217,9 +217,9 @@ def save_model(model, filename):
 def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _files = _vars[3]
     _ocr = _vars[4]
     _log = _vars[5]
+    _files = _vars[3]
     _doc_servers = _vars[9]
 
     j = 0
@@ -279,7 +279,7 @@ def add_to_csv(csv_file, data_list):
     :return: N/A
     """
 
-    with open(csv_file, 'a') as f:
+    with open(csv_file, 'a', encoding='UTF-8') as f:
         writer = csv.writer(f)
         for val in data_list:
             writer.writerow(val)
@@ -293,7 +293,7 @@ def create_csv(csv_file):
     """
 
     header = ['Filename', 'Text', 'Doctype']
-    with open(csv_file, 'w') as f:
+    with open(csv_file, 'w', encoding='UTF-8') as f:
         writer = csv.writer(f)
         writer.writerow(header)
 

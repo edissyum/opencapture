@@ -87,7 +87,7 @@
 		"predict": "Lancer la prédiction",
 		"prediction": "Prédiction",
 		"probability": "Probabilité",
-		"test_model": "Tester un modèle",
+		"test_model": "Tester la prédiction d'un modèle",
 		"train_a_model": "Entraîner un modèle",
 		"train_time": "Temps d'entraînement",
 		"type": "Type",

@@ -187,6 +187,7 @@ export class CreateAiModelComponent implements OnInit {
             for (let i = 0; i < this.totalChecked; i = i + 1) {
                 const fold = matches[i].doc;
                 const formid = matches[i].linked_form;
+                console.log(formid)
                 const ocTarget = matches[i].linked_doctype;
                 doctypes.push({
                     form: formid,
@@ -204,7 +205,7 @@ export class CreateAiModelComponent implements OnInit {
                 }
             }
             if (start_training) {
-                this.http.post(environment['url'] + '/ws/ai/TrainModel/' + modelName,
+                this.http.post(environment['url'] + '/ws/ai/trainModel/' + modelName,
                     {docs: doctypes, min_pred: minPred}, {headers: this.authService.headers}).pipe(
                     catchError((err: any) => {
                         console.debug(err);
