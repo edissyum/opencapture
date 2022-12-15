@@ -24,32 +24,24 @@ export class CreateFolderDocTypeComponent implements OnInit {
     noMasterFolder      : string    = '_NO_MASTER';
     fields              : any       = [
         {
-            id      : 'key',
-            type    : 'text',
-            label   : this.translate.instant('HEADER.id'),
-            control : new FormControl(),
-            required: true,
-            disabled  : false,
+            id       : 'key',
+            type     : 'text',
+            label    : this.translate.instant('HEADER.id'),
+            control  : new FormControl(),
+            required : true,
+            disabled : false,
         },
         {
-            id      : 'label',
-            type    : 'text',
-            label   : this.translate.instant('HEADER.label'),
-            control : new FormControl(),
-            required: true,
-            disabled  : false,
-        },
-        {
-            id      : 'isDefault',
-            type    : 'slide',
-            label   : this.translate.instant('DOCTYPE.default_doctype'),
-            control : new FormControl(),
-            required: false,
-            disabled: true,
-        },
+            id       : 'label',
+            type     : 'text',
+            label    : this.translate.instant('HEADER.label'),
+            control  : new FormControl(),
+            required : true,
+            disabled : false,
+        }
     ];
     selectedFormId      : number | undefined;
-    form!: FormGroup;
+    form!               : FormGroup;
 
     constructor(
       private http: HttpClient,
