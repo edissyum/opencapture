@@ -300,19 +300,21 @@ if [ $pythonVenv = 'true' ]; then
     python3 -m venv "/home/$user/python-venv/opencapture"
     echo "source /home/$user/python-venv/opencapture/bin/activate" >> "/home/$user/.bashrc"
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install -- upgradewheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install -r "$defaultPath/bin/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     "/home/$user/python-venv/opencapture/bin/python3" -c "import nltk
-nltk.download('stopwords', download_dir='/home/$user/')
-nltk.download('punkt', download_dir='/home/$user/')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+nltk.download('stopwords', download_dir='/home/$user/nltk_data/')
+nltk.download('punkt', download_dir='/home/$user/nltk_data/')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 else
     echo "Python packages installation....."
     python3 -m pip install --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    python3 -m pip install --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     python3 -m pip install --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     python3 -m pip install -r pip-requirements.txt >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     python3 -c "import nltk
-nltk.download('stopwords', download_dir='/home/$user/')
-nltk.download('punkt', download_dir='/home/$user/')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+nltk.download('stopwords', download_dir='/home/$user/nltk_data/')
+nltk.download('punkt', download_dir='/home/$user/nltk_data/')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 fi
 
 cd $defaultPath || exit 1
