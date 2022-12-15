@@ -144,7 +144,7 @@ def check_file(files, path, log, docservers):
 def timer(start_time, end_time):
     hours, rem = divmod(end_time - start_time, 3600)
     minutes, seconds = divmod(rem, 60)
-    return "{:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), seconds)
+    return f"{int(hours):02d}:{int(minutes):02d}:{seconds:05.2f}"
 
 
 def str2bool(value):
@@ -163,7 +163,7 @@ def launch(args):
     path = retrieve_config_from_custom_id(args['custom_id']).replace('/config/config.ini', '')
     custom_array = get_custom_array([args['custom_id'], path])
     if 'process_queue_verifier' not in custom_array or not custom_array['process_queue_verifier'] and not custom_array['process_queue_verifier']['path']:
-        import src.backend.process_queue_verifier as process_queue_verifier
+        from src.backend import process_queue_verifier
     else:
         custom_array['process_queue_verifier']['path'] = 'custom.' + custom_array['process_queue_verifier']['path'].split('.custom.')[1]
         process_queue_verifier = getattr(__import__(custom_array['process_queue_verifier']['path'],

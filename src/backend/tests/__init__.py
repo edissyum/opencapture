@@ -35,9 +35,8 @@ def get_db():
 
 
 def get_token(user_id):
-    secret_key_file = open('/var/www/html/opencapture/custom/test/config/secret_key')
-    secret_key = secret_key_file.read().replace('\n', '')
-    secret_key_file.close()
+    with open('/var/www/html/opencapture/custom/test/config/secret_key', encoding='UTF-8') as secret_key_file:
+        secret_key = secret_key_file.read().replace('\n', '')
     try:
         payload = {
             'exp': datetime.utcnow() + timedelta(minutes=1440, seconds=0),
@@ -51,4 +50,3 @@ def get_token(user_id):
         )
     except Exception as _e:
         return str(_e)
-
