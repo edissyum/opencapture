@@ -644,7 +644,7 @@ chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/splitter_in
 # Create docservers
 mkdir -p $docserverPath/opencapture/"$customId"/{verifier,splitter}
 mkdir -p $docserverPath/opencapture/"$customId"/verifier/{original_pdf,full,thumbs,positions_masks}
-mkdir -p $docserverPath/opencapture/"$customId"/splitter/{original_pdf,batches,separated_pdf,error}
+mkdir -p $docserverPath/opencapture/"$customId"/splitter/{original_pdf,batches,thumbs,error}
 chmod -R 775 $docserverPath/opencapture/
 chmod -R g+s $docserverPath/opencapture/
 chown -R "$user":"$group" $docserverPath/opencapture/

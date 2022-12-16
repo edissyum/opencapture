@@ -245,7 +245,7 @@ fi
 
 mkdir -p /"$docserverDefaultPath"/"$customId"/{verifier,splitter}
 mkdir -p /"$docserverDefaultPath"/"$customId"/verifier/{original_pdf,full,thumbs,positions_masks}
-mkdir -p /"$docserverDefaultPath"/"$customId"/splitter/{original_pdf,batches,separated_pdf,error}
+mkdir -p /"$docserverDefaultPath"/"$customId"/splitter/{original_pdf,batches,thumbs,error}
 sudo chmod -R 775 /"$docserverDefaultPath"/"$customId"/
 sudo chown -R "$user":www-data /"$docserverDefaultPath"/"$customId"/
 
