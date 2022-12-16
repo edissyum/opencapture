@@ -187,6 +187,7 @@ CREATE TABLE "accounts_customer"
     "siren"          VARCHAR(20),
     "company_number" VARCHAR(10),
     "address_id"     INTEGER,
+    "module"         VARCHAR(10),
     "status"         VARCHAR(3)     DEFAULT 'OK',
     "creation_date"  TIMESTAMP      DEFAULT (CURRENT_TIMESTAMP)
 );

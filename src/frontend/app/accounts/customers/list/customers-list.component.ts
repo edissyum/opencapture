@@ -41,9 +41,9 @@ import { HistoryService } from "../../../../services/history.service";
     styleUrls: ['./customers-list.component.scss']
 })
 export class CustomersListComponent implements OnInit {
+    columnsToDisplay: string[]    = ['id', 'name', 'company_number', 'vat_number', 'siret', 'siren', 'module', 'actions'];
     headers         : HttpHeaders = this.authService.headers;
     loading         : boolean     = true;
-    columnsToDisplay: string[]    = ['id', 'name', 'company_number', 'vat_number', 'siret', 'siren', 'actions'];
     allCustomers    : any         = [];
     customers       : any         = [];
     pageSize        : number      = 10;

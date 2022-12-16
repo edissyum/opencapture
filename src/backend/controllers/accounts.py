@@ -367,6 +367,8 @@ def update_customer(customer_id, data):
             _set.update({'vat_number': data['vat_number']})
         if 'company_number' in data:
             _set.update({'company_number': data['company_number']})
+        if 'module' in data:
+            _set.update({'module': data['module']})
 
         _, error = accounts.update_customer({'set': _set, 'customer_id': customer_id})
 
@@ -393,7 +395,8 @@ def create_customer(data):
         'siren': data['siren'],
         'vat_number': data['vat_number'],
         'company_number': data['company_number'],
-        'address_id': data['address_id'],
+        'module': data['module'] if 'module' in data else 'verifier',
+        'address_id': data['address_id'] if 'address_id' in data else None,
     }
 
     customer = accounts.retrieve_customers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})

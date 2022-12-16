@@ -39,10 +39,11 @@ import { Country } from "@angular-material-extensions/select-country";
     styleUrls: ['./create-customer.component.scss']
 })
 export class CreateCustomerComponent implements OnInit {
-    headers     : HttpHeaders   = this.authService.headers;
-    loading     : boolean       = true;
-    customer    : any;
-    customerForm: any[]         = [
+    headers         : HttpHeaders   = this.authService.headers;
+    customer        : any;
+    loading         : boolean       = true;
+    currentModule   : string        = '';
+    customerForm    : any[]         = [
         {
             id: 'name',
             label: marker('ACCOUNTS.customer_name'),
@@ -78,8 +79,19 @@ export class CreateCustomerComponent implements OnInit {
             control: new FormControl(),
             required: false
         },
+        {
+            id: 'module',
+            label: marker('CUSTOM-FIELDS.module'),
+            type: 'select',
+            control: new FormControl(),
+            required: true,
+            values: [
+                {id: 'verifier', label: this.translate.instant('HOME.verifier')},
+                {id: 'splitter', label: this.translate.instant('HOME.splitter')}
+            ]
+        }
     ];
-    addressForm : any []        = [
+    addressForm     : any []        = [
         {
             id: 'address1',
             label: marker('ADDRESSES.address_1'),
@@ -116,8 +128,7 @@ export class CreateCustomerComponent implements OnInit {
             required: true,
         },
     ];
-
-    defaultValue: Country = {
+    defaultValue    : Country       = {
         name: 'France',
         alpha2Code: 'FR',
         alpha3Code: 'FRA',
@@ -155,6 +166,23 @@ export class CreateCustomerComponent implements OnInit {
         });
     }
 
+    updateRequired(field: any) {
+        let requiredFields: any = [];
+        this.currentModule = field.control.value;
+        if (field.control.value === 'splitter') {
+            requiredFields = ['name', 'module'];
+        } else {
+            requiredFields = ['name', 'vat_number', 'siret', 'siren', 'module', 'address1', 'postal_code', 'city'];
+        }
+
+        this.customerForm.forEach((element: any) => {
+            element.required = requiredFields.includes(element.id);
+        });
+        this.addressForm.forEach((element: any) => {
+            element.required = requiredFields.includes(element.id);
+        });
+    }
+
     isValidForm() {
         let state = true;
 
@@ -178,11 +206,13 @@ export class CreateCustomerComponent implements OnInit {
             this.addressForm.forEach(element => {
                 address[element.id] = element.control.value;
             });
-
+            address['module'] = this.currentModule;
             this.http.post(environment['url'] + '/ws/accounts/addresses/create', {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
-                    customer['address_id'] = data.id;
+                    if (data) {
+                        customer['address_id'] = data.id;
+                    }
                     this.http.post(environment['url'] + '/ws/accounts/customers/create', {'args': customer}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
