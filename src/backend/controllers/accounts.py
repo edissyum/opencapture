@@ -65,8 +65,8 @@ def delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id):
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
         _set = {}
-        supplier_positions = supplier_info['positions']
         form_id = str(form_id)
+        supplier_positions = supplier_info['positions']
         if form_id in supplier_positions:
             if field_id in supplier_positions[form_id]:
                 del supplier_positions[form_id][field_id]
