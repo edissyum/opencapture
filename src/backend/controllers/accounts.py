@@ -73,7 +73,7 @@ def delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id):
 
         _, error = accounts.update_supplier({
             'set': {
-                "positions": json.dumps(supplier_positions)
+                'positions': json.dumps(supplier_positions)
             },
             'supplier_id': supplier_id
         })
@@ -92,13 +92,19 @@ def delete_invoice_page_by_supplier_id(supplier_id, field_id, form_id):
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
         _set = {}
-        supplier_positions = supplier_info['pages']
         form_id = str(form_id)
+        supplier_positions = supplier_info['pages']
         if form_id in supplier_positions:
             if field_id in supplier_positions[form_id]:
                 del supplier_positions[form_id][field_id]
-        _, error = accounts.update_supplier(
-            {'set': {"pages": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
+
+        _, error = accounts.update_supplier({
+            'set': {
+                'pages': json.dumps(supplier_positions)
+            },
+            'supplier_id': supplier_id
+        })
+
         if error is None:
             return '', 200
         else:
