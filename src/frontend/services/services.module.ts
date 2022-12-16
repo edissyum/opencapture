@@ -24,7 +24,7 @@ import { AppMaterialModule } from '../app/app-material.module';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { TasksWatcherComponent } from './tasks-watcher/tasks-watcher.component';
 import { CustomSnackbarComponent, NotificationService } from './notifications/notifications.service';
-import {DragDropModule} from "@angular/cdk/drag-drop";
+import { DragDropModule } from "@angular/cdk/drag-drop";
 
 @NgModule({
     imports: [

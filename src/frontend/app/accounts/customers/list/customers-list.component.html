@@ -42,6 +42,10 @@
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.siren' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{ element.siren }} </mat-cell>
             </ng-container>
+            <ng-container matColumnDef="module">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'CUSTOM-FIELDS.module' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element.module }} </mat-cell>
+            </ng-container>
             <ng-container matColumnDef="actions">
                 <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                 <mat-cell *matCellDef="let element">

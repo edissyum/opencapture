@@ -33,6 +33,13 @@
                         "default": "array"
                     }
                 ],
+                "comma-spacing": [
+                    "error", {
+                        "before": false,
+                        "after": true
+                    }
+                ],
+                "space-infix-ops": "error",
                 "@typescript-eslint/dot-notation": "off",
                 "@typescript-eslint/prefer-for-of": "off",
                 "@angular-eslint/component-selector": "off",

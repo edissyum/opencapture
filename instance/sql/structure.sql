@@ -187,6 +187,7 @@ CREATE TABLE "accounts_customer"
     "siren"          VARCHAR(20),
     "company_number" VARCHAR(10),
     "address_id"     INTEGER,
+    "module"         VARCHAR(10),
     "status"         VARCHAR(3)     DEFAULT 'OK',
     "creation_date"  TIMESTAMP      DEFAULT (CURRENT_TIMESTAMP)
 );
@@ -385,3 +386,16 @@ CREATE TABLE mailcollect (
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;
 COMMENT ON SEQUENCE splitter_referential_call_count IS 'Splitter referential demand number count';
+
+CREATE TABLE ai_models
+(
+    "id"                SERIAL       PRIMARY KEY,
+    "model_path"        VARCHAR(50),
+    "type"              VARCHAR(15),
+    "train_time"        REAL,
+    "accuracy_score"    REAL,
+    "min_proba"         INTEGER,
+    "status"            VARCHAR(10)  DEFAULT 'OK',
+    "documents"         JSONB        DEFAULT '{}',
+    "module"            VARCHAR(10)
+);

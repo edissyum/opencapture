@@ -8,11 +8,11 @@
         <input matInput [(ngModel)]="searchText" (input)="filterChanged()">
     </mat-form-field>
     <button class="text-gray-400 ml-4 mx-2 my-4 hover:text-green-400 hover:cursor-pointer" (click)="treeControl.collapseAll()"
-            [matTooltip]=" 'DOCTYPE.minimize_tree' | translate">
+            [matTooltip]="'DOCTYPE.minimize_tree' | translate">
         <i class="fa-solid fa-minimize fa-lg"></i>
     </button>
     <button class="text-gray-400 mx-2 my-4 hover:text-green-400 hover:cursor-pointer" (click)="treeControl.expandAll()"
-            [matTooltip]=" 'DOCTYPE.maximize_tree' | translate">
+            [matTooltip]="'DOCTYPE.maximize_tree' | translate">
         <i class="fa-solid fa-maximize fa-lg"></i>
     </button>
     <mat-form-field *ngIf="!data.hasOwnProperty('formId')" class="absolute right-4 w-60">
@@ -20,7 +20,7 @@
         <mat-select id='folder' [formControl]="selectFormControl">
             <div *ngFor="let form of forms">
                 <mat-option [value]="form.id">
-                    <span class="">{{ form.label | translate }}</span>
+                    <span>{{ form.label | translate }}</span>
                     <button *ngIf="form.id !== selectFormControl.value" matTooltip="{{ 'DOCTYPE.clone_doctypes' | translate }}"
                         (click)="$event.stopPropagation(); cloneFormDoctypes(form.id, selectFormControl.value)"
                         class="hover:text-green-400 fa fa-clone text-xl absolute right-0 m-2"></button>

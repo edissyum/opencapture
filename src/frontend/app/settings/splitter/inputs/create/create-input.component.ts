@@ -56,6 +56,13 @@ export class SplitterCreateInputComponent implements OnInit {
             required: true,
         },
         {
+            id: 'customer_id',
+            label: this.translate.instant('INPUT.associated_customer'),
+            type: 'select',
+            control: new FormControl(),
+            required: true,
+        },
+        {
             id: 'splitter_method_id',
             label: this.translate.instant('INPUT.splitter_method'),
             type: 'select',

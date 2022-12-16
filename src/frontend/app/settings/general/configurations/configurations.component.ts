@@ -33,14 +33,14 @@ import { NotificationService } from "../../../../services/notifications/notifica
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import {HistoryService} from "../../../../services/history.service";
+import { HistoryService } from "../../../../services/history.service";
 
 @Component({
     selector: 'app-configurations',
     templateUrl: './configurations.component.html',
     styleUrls: ['./configurations.component.scss'],
     providers: [
-        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' }},
     ]
 })
 export class ConfigurationsComponent implements OnInit {

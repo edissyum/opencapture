@@ -17,19 +17,19 @@
 
 import { Injectable } from '@angular/core';
 import { AuthService } from "./auth.service";
-import {ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
+import { CanActivate, Router } from "@angular/router";
 import { NotificationService } from "./notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { UserService } from "./user.service";
 import { environment } from "../app/env";
-import {catchError, finalize, tap} from "rxjs/operators";
+import { catchError, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { LocaleService } from "./locale.service";
 import { ConfigService } from "./config.service";
 import { HistoryService } from "./history.service";
-import {LastUrlService} from "./last-url.service";
-import {LocalStorageService} from "./local-storage.service";
+import { LastUrlService } from "./last-url.service";
+import { LocalStorageService } from "./local-storage.service";
 
 @Injectable({
     providedIn: 'root'

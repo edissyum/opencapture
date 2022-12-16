@@ -75,8 +75,7 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle();"
-                    class="absolute left-2 top-2">
+            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-2">
                 <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
             </button>
             <div class="settings_title text-center">
@@ -104,7 +103,7 @@
             <ng-container matColumnDef="enabled">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element">
-                    <span *ngIf="element.enabled "> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.active' | translate }}</span>
+                    <span *ngIf="element.enabled"> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.active' | translate }}</span>
                     <span *ngIf="!element.enabled"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.inactive' | translate }}</span>
                 </mat-cell>
             </ng-container>

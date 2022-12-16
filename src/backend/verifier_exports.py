@@ -92,9 +92,8 @@ def export_xml(data, log, regex, invoice_info, database):
 
 
 def compress_pdf(input_file, output_file, compress_id):
-    gs_command = 'gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/%s#-dNOPAUSE#-dQUIET#-o#%s#%s' \
-                 % (compress_id, output_file, input_file)
-
+    gs_command = f"gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/{compress_id}#-dNOPAUSE#-dQUIET#-o" \
+                 f"#{output_file}#{input_file}"
     gs_args = gs_command.split('#')
     subprocess.check_call(gs_args)
 
@@ -111,8 +110,8 @@ def generate_searchable_pdf(pdf, tmp_filename, lang, log):
         res = ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', skip_text=True, language=lang, progress_bar=False)
         if res.value != 0:
             ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', force_ocr=True, language=lang, progress_bar=False)
-    except ocrmypdf.exceptions.PriorOcrFoundError as e:
-        log.error(e)
+    except ocrmypdf.exceptions.PriorOcrFoundError as _e:
+        log.error(_e)
 
 
 def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
@@ -140,20 +139,21 @@ def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
             compress_pdf(file, compressed_file_path, compress_type)
             try:
                 shutil.move(compressed_file_path, folder_out + '/' + filename)
-            except shutil.Error as e:
-                log.error('Moving file ' + compressed_file_path + ' error : ' + str(e))
+            except shutil.Error as _e:
+                log.error('Moving file ' + compressed_file_path + ' error : ' + str(_e))
         else:
             if os.path.isfile(file):
                 shutil.copy(file, folder_out + '/' + filename)
 
         if ocrise:
             check_ocr = os.popen('pdffonts ' + file, 'r')
-            tmp = ''
+            tmp = []
             for line in check_ocr:
-                tmp += line
+                tmp.append(line)
+            tmp = '\n'.join(tmp)
 
             is_ocr = False
-            if len(tmp.split('\n')) > 3:
+            if len(tmp.split('\n')) > 4:
                 is_ocr = True
 
             if not is_ocr:
@@ -162,8 +162,8 @@ def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
                 generate_searchable_pdf(file, tmp_filename, lang, log)
                 try:
                     shutil.move(tmp_filename, folder_out + '/' + filename)
-                except shutil.Error as e:
-                    log.error('Moving file ' + tmp_filename + ' error : ' + str(e))
+                except shutil.Error as _e:
+                    log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
 
         return '', 200
     else:

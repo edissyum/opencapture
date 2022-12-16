@@ -29,7 +29,7 @@ import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { Sort } from "@angular/material/sort";
-import {HistoryService} from "../../../../services/history.service";
+import { HistoryService } from "../../../../services/history.service";
 
 @Component({
     selector: 'app-regex',

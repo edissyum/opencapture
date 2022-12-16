@@ -132,6 +132,10 @@ def update_address_by_supplier_id(suplier_id):
 @auth.token_required
 def create_address():
     data = request.json['args']
+    module = data['module']
+    del data['module']
+    if all(data[x] is None for x in data) and module == 'splitter':
+        return make_response(''), 204
     res = accounts.create_address(data)
     return make_response(jsonify(res[0])), res[1]
 

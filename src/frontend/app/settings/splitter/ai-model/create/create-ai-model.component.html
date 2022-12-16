@@ -1,0 +1,171 @@
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
+    <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
+        <mat-divider class="border-green-400"></mat-divider>
+        <mat-nav-list class="pt-0 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 60px)">
+            <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
+                                 [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
+                <mat-expansion-panel-header class="settings_expansion">
+                    <mat-panel-title>
+                        {{ parent['label'] | translate }}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="w-full border-t-2 border-gray-600">
+                    <div *ngFor="let setting of this.serviceSettings.getSettings()[parent['id']];"
+                         [class.border-b]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
+                         [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'">
+                        <div *ngIf="this.serviceSettings.getSettingsAction(parent['id'], setting['id']) else noActions">
+                            <mat-expansion-panel *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
+                                                 [expanded]="this.router.url.includes(setting['route'])">
+                                <mat-expansion-panel-header class="font-normal w-full h-20">
+                                    <mat-panel-title class="font-normal justify-center items-center text-center">
+                                        <i [class.text-green-400]="this.router.url === setting['route']"
+                                           class="absolute text-lg left-4 w-10 h-10 rounded-full flex items-center justify-center {{ setting['icon'] }}">
+                                        </i>
+                                        <button mat-button [class.text-green-400]="this.router.url === setting['route']"
+                                                class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
+                                                (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
+                                                routerLink="{{ setting['route'] }}">
+                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm">
+                                                {{ setting['label'] | translate }}
+                                            </p>
+                                        </button>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div *ngFor="let action of this.serviceSettings.getSettingsAction(parent['id'], setting['id'])"
+                                     [class.border-gray-600]="!action['showOnlyIfActive']"
+                                     [class.border-t]="!action['showOnlyIfActive']"
+                                     [class.w-full]="!action['showOnlyIfActive']">
+                                    <div class="border-b border-gray-400"
+                                         *ngIf="(this.privilegesService.hasPrivilege(action['privilege']) || setting['privilege'] === '*') && (!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route'])))">
+                                        <button mat-button
+                                                [class.text-green-400]="this.router.url.includes(action['route'])"
+                                                class="font-normal w-full h-12 ml-2 2xl:ml-12 flex items-center text-center"
+                                                (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
+                                                routerLink="{{ action['route'] }}"
+                                                [class.disable_link]="action['showOnlyIfActive']">
+                                            <i class="absolute -mt-2.5 2xl:-mt-2 text-lg w-10 h-10 rounded-full flex items-center justify-center {{ action['icon'] }}"></i>
+                                            <p class="m-0 ml-10 2xl:ml-12 text-xs 2xl:text-sm" style="margin-top: 2.5px!important">
+                                                {{ action['label'] | translate }}
+                                            </p>
+                                        </button>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                        </div>
+                        <ng-template #noActions>
+                            <button *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
+                                    mat-button [class.text-green-400]="this.router.url === setting['route']"
+                                    class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
+                                    (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
+                                    routerLink="{{ setting['route'] }}">
+                                <i class="absolute -mt-2.5 2xl:-mt-2 left-4 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{ setting['icon'] }}"></i>
+                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm">
+                                    {{ setting['label'] | translate }}
+                                </p>
+                            </button>
+                        </ng-template>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content class="bg-white">
+        <div *ngIf="this.loading">
+            <app-loader></app-loader>
+        </div>
+        <div class="settings_header">
+            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-2">
+                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+            </button>
+            <div class="settings_title text-center">
+                <h3>{{ this.serviceSettings.getTitle() }}</h3>
+                <hr class="border-green-400">
+            </div>
+        </div>
+        <div *ngIf="!loading">
+            <div class="mx-10 mt-10 mb-5 grid grid-cols-2 gap-4 place-items-stretch">
+                <ng-container *ngFor="let field of modelForm">
+                    <mat-form-field *ngIf="field.type === 'text' && field.id === 'model_label'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type"
+                               placeholder="{{ field.placeholder }}" [required]="field.required">
+                        <mat-error *ngIf="field.control.hasError('required')">
+                            {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
+                        </mat-error>
+                        <mat-error *ngIf="field.control.hasError('pattern') && !field.control.hasError('required')">
+                            {{ 'ARTIFICIAL-INTELLIGENCE.invalid_selection' | translate }}, format : "model_name.sav"
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="field.type === 'select' && field.id === 'doc_type_id'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value" [required]="field.required">
+                            <mat-option *ngFor="let option of doctypes" [value]="option.key">
+                                {{ option.label }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, modelForm) }}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="field.type === 'text' && field.id === 'model_stop'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type"
+                               placeholder="{{ field.label | translate }}" [required]="field.required">
+                        <mat-error *ngIf="field.control.hasError('required')">
+                            {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
+                        </mat-error>
+                        <mat-error *ngIf="field.control.hasError('pattern') && !field.control.hasError('required')">
+                            {{ 'ARTIFICIAL-INTELLIGENCE.invalid_selection' | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </ng-container>
+            </div>
+            <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
+            <h2 class="text-center m-4">
+                {{ 'ARTIFICIAL-INTELLIGENCE.choose_documents' | translate }}
+            </h2>
+            <mat-list class="mx-10 my-2 grid grid-cols-5 gap-4 place-items-stretch">
+                <div *ngFor="let item of this.docStatus, let i=index">
+                    <mat-checkbox [(ngModel)]="item.isSelected" (change)="checkSelectedBatch(i, item.doc);"
+                                  [ngModelOptions]="{standalone: true}"
+                                  class="w-lg h-lg accent-green-400 checkBox_list cursor-pointer pr-4 pb-2">
+                        {{ item.doc }}
+                    </mat-checkbox>
+                    <div>
+                        <mat-form-field *ngIf="item.isSelected">
+                            <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.form" | translate }}</mat-label>
+                            <mat-select [formControl]="formControl"
+                                        (selectionChange)="onFormSelect($event, i, item.doc)">
+                                <mat-option *ngFor="let option of forms" [value]="option.id">
+                                    {{ option.label }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="formControl.hasError('required')">
+                                {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <mat-form-field *ngIf="displayDoctypes(formControl) && item.isSelected">
+                        <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.doctype" | translate }}</mat-label>
+                        <mat-select [formControl]="controls[i]"
+                                    (selectionChange)="changeOutputType($event, item.doc)">
+                            <mat-option *ngFor="let option of chosenDocs[i]" [value]="option.id">
+                                {{ option.label }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="controls[i].hasError('required')">
+                            {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </mat-list>
+        </div>
+        <div class="flex justify-center items-center mb-2 py-4">
+            <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                <span class="block" (click)="createModel()">
+                    {{ 'ARTIFICIAL-INTELLIGENCE.train_a_model' | translate }}
+                </span>
+            </button>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>
