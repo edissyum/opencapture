@@ -61,7 +61,7 @@ export class UserProfileComponent implements OnInit {
             label: this.translate.instant('USER.email'),
             type: 'text',
             control: new FormControl(),
-            required: true
+            required: false
         },
         {
             id: 'old_password',
