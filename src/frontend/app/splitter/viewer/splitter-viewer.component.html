@@ -296,17 +296,12 @@
                         </mat-accordion>
                     </mat-card-title>
                     <mat-card-content class="document-content">
-                        <div cdkDropListOrientation="horizontal"
-                             (click)="selectDocument(document)"
-                             class="drop-list"
+                        <div cdkDropListOrientation="horizontal" (click)="selectDocument(document)" class="drop-list"
                              [ngClass]="currentBatch.selectedDocument.id === document.id ? 'border-2 border-green-400':
                              'border-2 border-gray-200 hover:cursor-pointer'"
-                             style="
-                                background-image: url('assets/imgs/dots.jpg');
-                                width:100%;
-                                overflow:scroll!important;"
-                             (cdkDropListDropped)="dropPage($event, document)"
-                             cdkDropList id="{{ addDocumentIdToDropList(document['id']) }}" [cdkDropListData]="document['pages']"
+                             style="background-image: url('assets/imgs/dots.jpg'); width:100%; overflow:scroll!important;"
+                             (cdkDropListDropped)="dropPage($event, document)" cdkDropList
+                             id="{{ addDocumentIdToDropList(document['id']) }}" [cdkDropListData]="document['pages']"
                              [cdkDropListConnectedTo]="DropListDocumentsIds">
                             <div class="page m-1.5 bg-gray-200 rounded-md"
                                  *ngFor="let page of document['pages']; let pageIndex = index;"

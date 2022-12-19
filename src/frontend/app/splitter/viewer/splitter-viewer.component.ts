@@ -61,7 +61,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler($event: any) {
         if (this.isDataEdited) {
-            $event.returnValue =true;
+            $event.returnValue = true;
         }
     }
 
@@ -84,7 +84,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     metadata                    : any[]         = [];
     documents                   : any[]         = [];
     movedPages                  : any[]         = [];
-    pagesImageUrls              : any[]         = [];
     deletedPagesIds             : number[]      = [];
     deletedDocumentsIds         : number[]      = [];
     DropListDocumentsIds        : string[]      = [];
@@ -219,7 +218,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     getStatusLabel(statusId: string) {
         const statusFound = this.status.find(status => status.id === statusId);
-        return statusFound ? statusFound.label: undefined;
+        return statusFound ? statusFound.label : undefined;
     }
 
     loadStatus(): void {
@@ -294,7 +293,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.documentsLoading = true;
         this.http.get(environment['url'] + '/ws/splitter/documents/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                for (let documentIndex = 0;documentIndex < data['documents'].length;documentIndex++) {
+                for (let documentIndex = 0; documentIndex < data['documents'].length; documentIndex++) {
                     // -- Add documents metadata --
                     this.documents[documentIndex] = {
                         id                 : "document-" + data['documents'][documentIndex]['id'],
@@ -405,7 +404,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     getFormForDocument(documentIndex: number) {
         const newForm = new FormGroup({});
         for (const field of this.fieldsCategories['document_metadata']) {
-            const control = field.required ? new FormControl('', Validators.required): new FormControl('');
+            const control = field.required ? new FormControl('', Validators.required) : new FormControl('');
             const labelShort = field.label_short;
             if (this.documents[documentIndex]['customFieldsValues'].hasOwnProperty(labelShort))
                 control.setValue(this.documents[documentIndex]['customFieldsValues'][labelShort]);
@@ -419,14 +418,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }
         }
         return newForm;
-    }
-
-    getPageUrlById(pageId: number): any {
-        for (const pageImage of this.pagesImageUrls) {
-            if (pageImage.pageId === pageId)
-                return pageImage.url;
-        }
-        return "";
     }
 
     getZoomPage(page: any) {
@@ -488,13 +479,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         const maskVariables = mask ? mask.split('#') : [];
         const result        = [];
         for(const maskVariable of maskVariables!) {
-            result.push(metadata.hasOwnProperty(maskVariable) ? metadata[maskVariable]: maskVariable);
+            result.push(metadata.hasOwnProperty(maskVariable) ? metadata[maskVariable] : maskVariable);
         }
         return result.join(' ');
     }
 
     getPlaceholderFromSearchMask(mask: string, label: string) {
-        return mask ? mask.replace('#label', label):'';
+        return mask ? mask.replace('#label', label) : '';
     }
 
     changeInputMode($event: any) {
@@ -747,7 +738,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 new FormControl('', Validators.required) :
                 new FormControl('');
             if (this.currentBatch.customFieldsValues.hasOwnProperty(field.label_short)) {
-                const value = field.type !=='date' ? this.currentBatch.customFieldsValues[field.label_short]:
+                const value = field.type !== 'date' ? this.currentBatch.customFieldsValues[field.label_short] :
                     moment(this.currentBatch.customFieldsValues[field.label_short], format);
                 group[field.label_short].setValue(value);
             }
@@ -827,7 +818,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     deleteDocument(documentIndex: number): void {
         const pagesCount = this.documents[documentIndex].pages.length;
         const confirmMessage = pagesCount > 0 ?
-            this.translate.instant('SPLITTER.confirm_delete_document_not_empty', {"pagesCount": pagesCount}):
+            this.translate.instant('SPLITTER.confirm_delete_document_not_empty', {"pagesCount": pagesCount}) :
             this.translate.instant('SPLITTER.confirm_delete_document_empty');
 
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -886,7 +877,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 for (const document of this.documents) {
-                    for (let pageIndex = 0;pageIndex < document.pages.length;pageIndex++) {
+                    for (let pageIndex = 0; pageIndex < document.pages.length; pageIndex++) {
                         if (document.pages[pageIndex].checkBox) {
                             this.deletedPagesIds.push(document.pages[pageIndex].id);
                             document.pages = this.deleteItemFromList(document.pages, pageIndex);
@@ -934,8 +925,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     rotateSelectedPages(): void {
-        for (let documentIndex = 0;documentIndex < this.documents.length;documentIndex++) {
-            for (let pageIndex = 0;pageIndex < this.documents[documentIndex].pages.length;pageIndex++) {
+        for (let documentIndex = 0; documentIndex < this.documents.length; documentIndex++) {
+            for (let pageIndex = 0; pageIndex < this.documents[documentIndex].pages.length; pageIndex++) {
                 if (this.documents[documentIndex].pages[pageIndex].checkBox) {
                     this.rotatePage(documentIndex, pageIndex);
                 }
@@ -950,7 +941,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
         const selectedDocIndex = this.documents.indexOf(selectedDoc[0]);
         for (const document of this.documents) {
-            for (let i = document.pages.length - 1;i >= 0;i--) {
+            for (let i = document.pages.length - 1; i >= 0; i--) {
                 if (document.pages[i].checkBox) {
                     const newPosition = this.documents[selectedDocIndex].pages.length;
                     transferArrayItem(document.pages,
