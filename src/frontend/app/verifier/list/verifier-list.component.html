@@ -107,7 +107,7 @@
                 </ng-template>
                 <div class="verifier-container flex flex-col">
                     <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
-                        <mat-form-field class="left-4 w-1/2" appearance="outline">
+                        <mat-form-field class="relative mt-0.5 left-4 w-1/2" appearance="outline">
                             <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
                             <input matInput type="text" [(ngModel)]="search"
                                    [disabled]="this.total === 0"
@@ -202,7 +202,7 @@
                                      mat-card-image class="m-auto p-4"
                                      [src]="invoice.thumb" alt="Open-Capture Verifier image"
                                      (click)="invoice.locked ? displayInvoiceLocked(invoice.locked_by) : ''">
-                                <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4"
+                                <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-8 pr-8"
                                         [routerLink]="invoice.locked ? '/verifier/list' : '/verifier/viewer/' + invoice.invoice_id"
                                         (click)="invoice.locked ? displayInvoiceLocked(invoice.locked_by) : ''">
                                     <mat-card-title class="break-all">

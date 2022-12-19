@@ -99,7 +99,9 @@
                          (click)="onClick(logo)">
                     <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
                 </div>
-                <mat-hint class="relative top-2">{{ "CONFIGURATIONS.authorized_extensions" | translate }}</mat-hint>
+                <mat-hint class="text-gray-600 relative top-2">
+                    {{ "CONFIGURATIONS.authorized_extensions" | translate }}
+                </mat-hint>
             </div>
             <mat-divider class="border-green-400 mt-4 mb-4 w-3/4 m-auto"></mat-divider>
             <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>

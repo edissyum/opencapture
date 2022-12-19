@@ -1,0 +1,84 @@
+
+.mat-mdc-tab-header {
+    @apply z-20;
+    & .mat-mdc-tab-label-container .mat-mdc-tab-list .mat-mdc-tab-labels {
+        & .mdc-tab {
+            @apply w-1/3;
+            @apply h-16;
+        }
+        & .mdc-tab--active {
+            @apply opacity-100;
+            & .mdc-tab__text-label {
+                @apply text-gray-900;
+            }
+            & .mdc-tab-indicator__content {
+                @apply border-green-400 #{!important};
+            }
+        }
+    }
+}
+
+.mat-mdc-select-arrow svg {
+    @apply fill-green-400 #{!important};
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__trailing {
+    @apply border-green-400 #{!important};
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__notch {
+    @apply border-r-transparent #{!important};
+    @apply border-b-green-400 #{!important};
+    & .mat-mdc-floating-label mat-label {
+        @apply text-gray-900;
+    }
+}
+
+.mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text {
+    @apply text-green-400 #{!important};
+}
+
+.mat-selected,
+.mat-checkbox-checked .mat-accent .mat-checkbox-background,
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
+.mat-mdc-slide-toggle .mdc-switch:enabled .mdc-switch__track::after,
+.mat-calendar-body-selected {
+    @apply bg-green-400 #{!important};
+}
+
+.mat-mdc-slide-toggle .mdc-switch.mdc-switch--selected:enabled .mdc-switch__handle::after{
+    background: #97BF3D !important;
+    @apply opacity-80 #{!important};
+}
+
+.mat-mdc-slide-toggle .mdc-switch.mdc-switch--selected:enabled:active .mdc-switch__handle::after,
+.mat-mdc-slide-toggle .mdc-switch.mdc-switch--selected:enabled:hover .mdc-switch__handle::after {
+    background: #97BF3D !important;
+    @apply opacity-100 #{!important};
+}
+
+.mat-mdc-slide-toggle .mdc-switch:enabled .mdc-switch__track::before {
+    @apply bg-gray-600 #{!important};
+}
+
+.mat-selected .mat-option-text,
+.mat-form-field-label {
+    @apply text-gray-900 #{!important};
+}
+
+.mat-selected .mat-option-text span{
+    @apply text-gray-900 #{!important};
+}
+
+.mat-form-field-invalid .mat-input-element, .mat-warn .mat-input-element {
+    caret-color: red !important;
+}
+
+.mat-form-field.mat-form-field-invalid .mat-form-field-label {
+    color: red !important;
+}
+
+.mat-mdc-slide-toggle .mdc-form-field label{
+    @apply cursor-pointer;
+}

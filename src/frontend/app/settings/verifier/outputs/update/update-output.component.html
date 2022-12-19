@@ -120,7 +120,7 @@
             <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
             <h4 class="text-center mt-10 mb-5">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
             <div class="flex justify-center items-center mb-2">
-                <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                <button mat-button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
                     <span class="block" (click)="updateOutput()">{{ "OUTPUT.update" | translate }}</span>
                 </button>
             </div>
@@ -142,7 +142,7 @@
                                 </ng-container>
                             </div>
                             <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length !== 0"
-                                    mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                                    mat-button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
                                 <span (click)="testConnection()">{{ "OUTPUT.test_connection" | translate }}</span>
                             </button>
                         </mat-tab>

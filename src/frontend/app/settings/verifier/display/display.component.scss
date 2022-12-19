@@ -18,7 +18,7 @@
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-::ng-deep .mat-card-header-text {
+::ng-deep .mat-mdc-card-header-text {
     @apply w-full;
 }
 

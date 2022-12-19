@@ -142,12 +142,12 @@
                                         </ng-container>
                                     </form>
                                     <div class="mb-6 mt-4 grid grid-cols-2 gap-4 h-12 text-gray-900">
-                                        <button type="submit" mat-button class="border-solid border-green-400 border
+                                        <button type="submit" mat-button class="p-6 border-solid border-green-400 border
                                                         hover:bg-green-400 hover:text-white transition duration-300"
                                                 (click)="checkLdapConnexion()">
                                             {{ "LOGIN-METHODS.test_connection" | translate }}
                                         </button>
-                                        <button matStepperNext mat-button class="border-solid border-green-400 border
+                                        <button matStepperNext mat-button class="p-6 border-solid border-green-400 border
                                                 hover:bg-green-400 hover:text-white transition duration-300">
                                             {{ "LOGIN-METHODS.next" | translate }}
                                         </button>
@@ -177,11 +177,11 @@
                                         </ng-container>
                                     </div>
                                     <div class="mb-6 grid grid-cols-2 gap-4 h-12 text-gray-900">
-                                        <button matStepperPrevious mat-button class="border-solid border-red-400 border
+                                        <button matStepperPrevious mat-button class="p-6 border-solid border-red-400 border
                                                 hover:bg-red-400 hover:text-white transition duration-300">
                                             {{ "LOGIN-METHODS.return" | translate }}
                                         </button>
-                                        <button matStepperNext mat-button class="border-solid border-green-400 border
+                                        <button matStepperNext mat-button class="p-6 border-solid border-green-400 border
                                                 border-opacity-70 hover:bg-green-400 hover:bg-opacity-70
                                                 hover:text-white transition duration-300">
                                             {{ "LOGIN-METHODS.next" | translate }}
@@ -194,11 +194,11 @@
                                     </ng-template>
                                     <p>{{ "LOGIN-METHODS.end_ldap_setup" | translate }}</p>
                                     <div class="mb-6 grid grid-cols-3 gap-4 h-12 text-gray-900">
-                                        <button matStepperPrevious mat-button class="border-solid border-red-400 border
+                                        <button matStepperPrevious mat-button class="p-6 border-solid border-red-400 border
                                                 hover:bg-red-400 hover:text-white transition duration-300">
                                             {{ "LOGIN-METHODS.return" | translate }}
                                         </button>
-                                        <button type="submit" mat-button class="border-solid border-green-400 border
+                                        <button type="submit" mat-button class="p-6 border-solid border-green-400 border
                                                 hover:bg-green-400 hover:text-white transition duration-300"
                                                 (click)="ldapSynchronization()">
                                             <span *ngIf="!this.isLaunchBtnDisabled">
@@ -211,7 +211,7 @@
                                         <button (click)="saveLoginMethodConfigs()" mat-button
                                                 [disabled]="this.isSaveBtnDisabled"
                                                 [class.cursor-not-allowed]="this.isSaveBtnDisabled"
-                                                class="border-solid border-green-400 border hover:bg-green-400
+                                                class="p-6 border-solid border-green-400 border hover:bg-green-400
                                                        shover:text-white transition duration-300">
                                             {{ "LOGIN-METHODS.register" | translate }}
                                         </button>

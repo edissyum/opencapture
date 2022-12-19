@@ -121,11 +121,11 @@
             </div>
         </form>
         <div class="flex justify-center items-center">
-            <button (click)="onSubmit()" mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+            <button (click)="onSubmit()" mat-button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
                 <span>{{ "INPUT.create" | translate }}</span>
             </button>
         </div>
-        <div class="text-gray-400 text-sm mt-4 flex justify-center items-center">
+        <div class="text-gray-600 text-sm mt-4 flex justify-center items-center">
             <span class="w-1/3" [innerHTML]="'INPUT.create_hint' | translate"></span>
         </div>
     </mat-sidenav-content>

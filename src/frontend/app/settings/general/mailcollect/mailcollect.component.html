@@ -122,7 +122,7 @@
                         </ng-container>
                     </div>
                     <div class="w-full text-center mb-4">
-                        <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white
+                        <button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white
                                         transition duration-300" type="submit" mat-button (click)="updateGlobal()">
                             {{ 'MAILCOLLECT.update_global' | translate }}
                         </button>
@@ -268,14 +268,14 @@
                                         text-green-400" style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
                         </button>
                         <button *ngIf="process.exists"
-                                class="border-solid border-green-400 border hover:bg-green-400 hover:text-white
+                                class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white
                                     transition duration-300" mat-button (click)="updateProcess(process)">
                             <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.update_process' | translate }}</span>
                             <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin
                                         text-gray-900" style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
                         </button>
                         <button *ngIf="!process.exists"
-                                class="border-solid border-green-400 border hover:bg-green-400 hover:text-white
+                                class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white
                                     transition duration-300" mat-button (click)="createProcess(process)">
                             <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.create_process' | translate }}</span>
                             <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin
