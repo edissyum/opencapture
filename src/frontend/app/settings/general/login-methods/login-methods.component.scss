@@ -8,7 +8,7 @@
 
 ::ng-deep .login-methods-tab {
     & .mat-tab-header {
-        & .mat-tab-label-container > .mat-tab-list > .mat-tab-labels > .mat-tab-label {
+        & .mat-mdc-tab-label-container > .mat-tab-list > .mat-tab-labels > .mat-tab-label {
             @apply w-1/2;
         }
     }
