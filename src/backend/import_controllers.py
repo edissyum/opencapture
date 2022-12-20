@@ -117,4 +117,4 @@ elif 'controllers' in custom_array['tasks_watcher']['path']:
 if 'artificial_intelligence' or 'controllers' not in custom_array['artificial_intelligence']['path']:
     from .controllers import artificial_intelligence
 elif 'controllers' in custom_array['artificial_intelligence']['path']:
-    inputs = getattr(__import__(custom_array['artificial_intelligence']['path'], fromlist=[custom_array['artificial_intelligence']['module']]), custom_array['artificial_intelligence']['module'])
+    artificial_intelligence = getattr(__import__(custom_array['artificial_intelligence']['path'], fromlist=[custom_array['artificial_intelligence']['module']]), custom_array['artificial_intelligence']['module'])
