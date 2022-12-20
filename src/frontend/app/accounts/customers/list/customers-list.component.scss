@@ -5,3 +5,22 @@
 .mat-column-actions {
     flex: 0 0 5%;
 }
+
+::ng-deep .search_customer .mat-mdc-text-field-wrapper {
+    @apply top-2;
+    & .mat-mdc-form-field-flex {
+        @apply h-10;
+        & .mdc-notched-outline .mdc-notched-outline__notch {
+            & .mdc-floating-label--float-above {
+                @apply top-7 #{!important};
+            }
+            & .mdc-floating-label {
+                @apply top-5;
+            }
+            @apply top-5;
+        }
+        & .mat-mdc-form-field-infix {
+            padding-top: 10px !important;
+        }
+    }
+}

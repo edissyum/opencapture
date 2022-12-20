@@ -54,12 +54,12 @@
                             </mat-expansion-panel>
                         </div>
                         <ng-template #noActions>
+                            <i class="absolute mt-5 left-5 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{ setting['icon'] }}"></i>
                             <button *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
                                     mat-button [class.text-green-400]="this.router.url === setting['route']"
                                     class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
                                     (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                     [routerLink]="setting['route']">
-                                <i class="absolute -mt-2.5 2xl:-mt-2 left-4 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{ setting['icon'] }}"></i>
                                 <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm">
                                     {{ setting['label'] | translate }}
                                 </p>
@@ -137,7 +137,7 @@
             <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
             <mat-row *matRowDef="let row; columns: columnsToDisplay;"
                      routerLink="/settings/verifier/positions-mask/update/{{ row.id }}"
-                     class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
+                     class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
         </mat-table>
         <mat-paginator showFirstLastButtons
                        [length]="this.total"

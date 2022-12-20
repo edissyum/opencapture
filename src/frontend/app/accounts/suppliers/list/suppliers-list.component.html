@@ -4,7 +4,7 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <div class="absolute left-4 top-0">
+            <div class="absolute left-4 top-0 search_supplier">
                 <mat-form-field>
                     <mat-label>{{ 'ACCOUNTS.search_supplier' | translate }}</mat-label>
                     <input matInput type="text" [disabled]="this.loading" (keyup)="searchSupplier($event)">
@@ -28,38 +28,39 @@
                 <i class="fa-solid fa-file-import text-2xl ml-2"></i>
             </button>
         </div>
-        <mat-table matSort [dataSource]="suppliers" (matSortChange)="sortData($event)" class="w-full table relative -top-8">
+        <mat-table matSort [dataSource]="suppliers" (matSortChange)="sortData($event)"
+                   class="w-full table relative -top-8">
             <ng-container matColumnDef="id">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'HEADER.id' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.id }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="name">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.supplier_name' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.supplier_name' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.name }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="email">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'FORMATS.email' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.email }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'FORMATS.email' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.email }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="vat_number">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.vat_number' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.vat_number }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.vat_number' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.vat_number }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="siret">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.siret' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.siret }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.siret' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.siret }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="siren">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.siren' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.siren }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.siren' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.siren }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="iban">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.iban' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.iban }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.iban' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.iban }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="form_label">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.form' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.form_label }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.form' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.form_label }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="actions">
                 <mat-header-cell *matHeaderCellDef> </mat-header-cell>
@@ -84,7 +85,7 @@
             <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
             <mat-row *matRowDef="let row; columns: columnsToDisplay;"
                      routerLink="/accounts/suppliers/update/{{ row.id }}"
-                     class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
+                     class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
         </mat-table>
         <mat-paginator showFirstLastButtons
                        [length]="this.total"

@@ -79,6 +79,18 @@
     color: red !important;
 }
 
-.mat-mdc-slide-toggle .mdc-form-field label{
+.mat-mdc-slide-toggle .mdc-form-field label {
     @apply cursor-pointer;
 }
+
+.mdc-data-table__row {
+    @apply relative;
+    @apply z-30;
+    &:hover {
+        @apply z-50;
+        & mat-cell {
+            @apply text-green-400;
+        }
+    }
+}
+
