@@ -73,6 +73,13 @@ export class SplitterUpdateInputComponent implements OnInit {
             required: true,
         },
         {
+            id: 'customer_id',
+            label: this.translate.instant('INPUT.associated_customer'),
+            type: 'select',
+            control: new FormControl(),
+            required: true,
+        },
+        {
             id: 'splitter_method_id',
             label: this.translate.instant('INPUT.splitter_method'),
             type: 'select',
@@ -126,6 +133,18 @@ export class SplitterUpdateInputComponent implements OnInit {
                                     })
                                 ).subscribe();
                             }
+                        } else if (element.id === 'customer_id') {
+                            this.http.get(environment['url'] + '/ws/accounts/customers/list/splitter', {headers: this.authService.headers}).pipe(
+                                tap((customers: any) => {
+                                    element.values = customers.customers;
+                                }),
+                                finalize(() => this.loading = false),
+                                catchError((err: any) => {
+                                    console.debug(err);
+                                    this.notify.handleErrors(err);
+                                    return of(false);
+                                })
+                            ).subscribe();
                         }
                     });
                 }
