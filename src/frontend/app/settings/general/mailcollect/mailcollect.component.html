@@ -81,6 +81,10 @@
             <div class="settings_title text-center">
                 <h3>{{ this.serviceSettings.getTitle() }}</h3>
                 <hr class="border-green-400">
+                <button (click)="addProcess()" class="relative float-right -top-12 right-4 ml-4">
+                    <i class="fa-solid fa-plus text-2xl ml-2"></i>
+                    <span class="ml-2 relative -top-1">{{ 'MAILCOLLECT.add_process' | translate }}</span>
+                </button>
             </div>
         </div>
         <div *ngIf="!this.loading" class="w-full overflow-auto" style="height: calc(100% - 64px)">
@@ -100,7 +104,7 @@
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                                     <mat-icon matSuffix *ngIf="field.id === 'smtpPwd'" (click)="field.type === 'text' ? field.type = 'password' : field.type = 'text' "
-                                              class="text-green-400 relative cursor-pointer -top-1.5 text-base">
+                                              class="text-green-400 relative cursor-pointer -top-0.5 text-base">
                                         <i class="fa fa-1x" [class.fa-eye-slash]="field.type !== 'password'" [class.fa-eye]="field.type === 'password'"></i>
                                     </mat-icon>
                                     <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
@@ -158,7 +162,7 @@
                                (click)="duplicateConfirmDialog(process)"></i>
 
                             <div *ngIf="process.edit_name" class="grid grid-cols-5">
-                                <div class="change_process_name col-span-4">
+                                <div class="change_process_name settings_search col-span-4">
                                     <mat-form-field class="block">
                                         <input #new_process_name [value]="getNameOfProcess(process)" matInput
                                                (focusout)="updateProcessName(process, new_process_name.value)"
@@ -174,7 +178,7 @@
                         </span>
                         <ng-template #input>
                             <div class="grid grid-cols-5">
-                                <div class="change_process_name col-span-4">
+                                <div class="change_process_name settings_search col-span-4">
                                     <mat-form-field class="block">
                                         <input #new_process_name_input matInput type="text"
                                                (focusout)="updateProcessName(process, new_process_name_input.value)"
@@ -194,7 +198,7 @@
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                                     <mat-icon matSuffix *ngIf="field.id === 'password'" (click)="field.type === 'text' ? field.type = 'password' : field.type = 'text' "
-                                              class="text-green-400 relative cursor-pointer -top-1.5 text-base">
+                                              class="text-green-400 relative cursor-pointer -top-0.5 text-base">
                                         <i class="fa fa-1x" [class.fa-eye-slash]="field.type !== 'password'" [class.fa-eye]="field.type === 'password'"></i>
                                     </mat-icon>
                                     <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
@@ -208,7 +212,7 @@
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [formControl]="field.control" [required]="field.required"
                                            [type]="field.type" [matAutocomplete]="autocomplete">
-                                    <mat-hint *ngIf="field.hint">{{ field.hint | translate }}</mat-hint>
+                                    <mat-hint class="text-gray-600" *ngIf="field.hint">{{ field.hint | translate }}</mat-hint>
                                     <mat-autocomplete #autocomplete="matAutocomplete">
                                         <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option.id">
                                             <span [innerHTML]="option | highlight: toHighlight"></span>
@@ -261,7 +265,7 @@
                         </ng-container>
                     </div>
                     <div class="mb-6 grid grid-cols-6 gap-4 h-10 mt-8">
-                        <button class="border-solid border-gray-900 border hover:bg-gray-900 hover:text-white
+                        <button class="p-6 border-solid border-gray-900 border hover:bg-gray-900 hover:text-white
                                     transition duration-300 col-start-3" mat-button (click)="retrieveFolders(process)">
                             <span *ngIf="!this.folderLoading">{{ 'MAILCOLLECT.retrieve_folders' | translate }}</span>
                             <i *ngIf="this.folderLoading" class="fa-solid text-2xl fa-circle-notch fa-spin
@@ -282,13 +286,6 @@
                                         text-gray-900" style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
                         </button>
                     </div>
-                </mat-tab>
-                <mat-tab disabled class="opacity-100">
-                    <ng-template mat-tab-label>
-                        <button mat-icon-button class="relative -left-14" (click)="addProcess()">
-                            <i class="fas fa-plus text-gray-900"></i>
-                        </button>
-                    </ng-template>
                 </mat-tab>
             </mat-tab-group>
         </div>

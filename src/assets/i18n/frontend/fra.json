@@ -82,7 +82,6 @@
 		"model_path": "Nom du modèle",
 		"model_selected": "Modèle sélectionné : ",
 		"model_updated": "Modèle modifié avec succès",
-		"no_model_to_display": "Aucun modèle à afficher",
 		"not_enough_checked": "Selectionnez au moins 2 documents à prédire",
 		"predict": "Lancer la prédiction",
 		"prediction": "Prédiction",
@@ -90,7 +89,6 @@
 		"test_model": "Tester la prédiction d'un modèle",
 		"train_a_model": "Entraîner un modèle",
 		"train_time": "Temps d'entraînement",
-		"type": "Type",
 		"update_model": "Modifier le modèle"
 	},
 	"AUTH": {
@@ -518,6 +516,7 @@
 	},
 	"MAILCOLLECT": {
 		"action_after_process": "Action pour les email",
+		"add_process": "Créer un nouveau processus",
 		"batch_path": "Chemin de stockage des batchs",
 		"confirm_delete_process": "Êtes vous sûr de vouloir supprimer le processus <strong>{{ process }}</strong> ?",
 		"confirm_disable_process": "Êtes vous sûr de vouloir désactiver le processus <strong>{{ process }}</strong> ?",

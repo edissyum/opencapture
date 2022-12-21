@@ -82,7 +82,6 @@
 		"model_path": "Model name",
 		"model_selected": "Model selected : ",
 		"model_updated": "Model updated successfully",
-		"no_model_to_display": "No model to display",
 		"not_enough_checked": "Select at least 2 documents to predict",
 		"predict": "Predict",
 		"prediction": "Prediction",
@@ -90,7 +89,6 @@
 		"test_model": "Test a model",
 		"train_a_model": "Train a model",
 		"train_time": "Train time",
-		"type": "Type",
 		"update_model": "Update model"
 	},
 	"AUTH": {
@@ -518,6 +516,7 @@
 	},
 	"MAILCOLLECT": {
 		"action_after_process": "Action after process",
+		"add_process": "Add new process",
 		"batch_path": "Batch path",
 		"confirm_delete_process": "Are you sure you want to delete process <strong>{{ process }}</strong> ?",
 		"confirm_disable_process": "Are you sure you want to disable process <strong>{{ process }}</strong> ?",
