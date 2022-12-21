@@ -86,14 +86,14 @@
             <app-hint [message]="'USER-QUOTA.description' | translate"></app-hint>
             <hr class="border-green-400 w-1/3 mx-auto my-4">
             <div class="w-1/3 mx-auto my-10 text-center">
-                <mat-checkbox [(ngModel)]="quotaEnabled" matTooltip="{{ 'USER-QUOTA.enabled' | translate }}">
+                <mat-slide-toggle [(ngModel)]="this.quotaEnabled" matTooltip="{{ 'USER-QUOTA.enabled' | translate }}">
                     {{ 'USER-QUOTA.enabled' | translate }}
-                </mat-checkbox>
+                </mat-slide-toggle>
             </div>
             <div class="flex justify-center items-center align-middle">
                 <mat-form-field class="block p-4 w-1/3">
                     <mat-label>{{ 'USER-QUOTA.quota_number' | translate }}</mat-label>
-                    <input matInput type="number" [(ngModel)]="quotaNumber"/>
+                    <input matInput type="number" [(ngModel)]="this.quotaNumber"/>
                 </mat-form-field>
                 <mat-form-field class="block p-4 w-1/3">
                     <mat-label>{{ 'USER-QUOTA.filtered_users' | translate }}</mat-label>
