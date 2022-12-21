@@ -40,7 +40,9 @@
                                             {{ form['label'] }}
                                         </mat-option>
                                     </mat-select>
-                                    <mat-hint>{{ 'VERIFIER.outputs_list' | translate }} : {{ this.outputsLabel.join(', ') }}</mat-hint>
+                                    <mat-hint class="text-gray-500">
+                                        {{ 'VERIFIER.outputs_list' | translate }} : {{ this.outputsLabel.join(', ') }}
+                                    </mat-hint>
                                 </mat-form-field>
                             </mat-tab>
                         </mat-tab-group>
@@ -206,11 +208,12 @@
                                       class="absolute -top-2 -right-2.5 cursor-pointer text-red-500">
                                         <mat-icon class="text-xl">delete_forever</mat-icon>
                                     </span>
-                                    <input [id]="field.id" matInput type="text" [required]="field.required"
+                                    <input matInput [id]="field.id" type="text" [required]="field.required"
                                            [formControl]="field.control" [matAutocomplete]="accounting" [readonly]="this.invoice.status === 'END'">
-                                    <mat-hint *ngIf="accountingPlanEmpty" class="text-gray-600 mt-1 h-6">
-                                        {{ 'VERIFIER.accounting_plan_empty' | translate }}
-                                    </mat-hint>
+                                    <span *ngIf="accountingPlanEmpty" class="absolute text-gray-600 -top-0.5 cursor-help"
+                                          [matTooltip]="'VERIFIER.accounting_plan_empty' | translate">
+                                        <i class="fa-solid fa-circle-question text-xs"></i>
+                                    </span>
                                     <mat-autocomplete #accounting="matAutocomplete">
                                         <mat-option *ngFor="let option of field.values | async" [value]="option.compte_lib" [id]="option.compte_num">
                                             <span [innerHTML]="option.compte_num + ' - ' + option['compte_lib'] | highlight: toHighlightAccounting"></span>
@@ -229,13 +232,13 @@
                                 </mat-form-field>
                             </ng-container>
                             <span *ngIf="field.fullSizeSelected" (click)="duplicateLine(field.id, category['id'])"
-                                  class="relative -right-1.5 cursor-pointer text-gray-900"
+                                  class="relative -right-1.5 cursor-pointer text-gray-900 -top-2.5"
                                   [matTooltip]="'VERIFIER.duplicate_line' | translate" matTooltipPosition="above">
                                 <mat-icon class="text-lg">add_circle</mat-icon>
                             </span>
                             <span *ngIf="field.deleteLine" (click)="removeDuplicateLine(field.id, category['id'])"
-                                  class="relative -right-1.5 cursor-pointer text-red-500"
-                                  [matTooltip]="'VERIFIER.duplicate_line' | translate" matTooltipPosition="above">
+                                  class="relative -right-1.5 cursor-pointer text-red-500 -top-2.5"
+                                  [matTooltip]="'VERIFIER.remove_duplicated_line' | translate" matTooltipPosition="above">
                                 <mat-icon class="text-lg">remove_circle</mat-icon>
                             </span>
                         </div>

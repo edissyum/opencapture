@@ -35,6 +35,7 @@
     @apply border-b-green-400 #{!important};
     @apply border-t-green-400 #{!important};
     @apply border-r-transparent #{!important};
+    @apply pr-1 #{!important};
     & .mat-mdc-floating-label mat-label {
         @apply text-gray-900;
     }

@@ -21,7 +21,7 @@
                        [readonly]="this.loadingCustomers || this.dataSource.data.length === 0">
                 <button matSuffix class="text-gray-900 cursor-pointer" (click)="resetSearchCustomer()"
                         *ngIf="this.customerFilter.value">
-                    <i class="fa-solid fa-sync-alt text-xl relative" style="top: -.3rem"
+                    <i class="fa-solid fa-sync-alt text-xl relative mr-4"
                        [matTooltip]="'VERIFIER.reset_customers_search' | translate"></i>
                 </button>
             </mat-form-field>

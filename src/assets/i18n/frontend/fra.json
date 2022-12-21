@@ -952,6 +952,7 @@
 		"outputs_list": "Liste des chaînes sortantes",
 		"page": "Page",
 		"register_date": "Enregistré le",
+		"remove_duplicated_line": "Supprimer la ligne dupliquée",
 		"required": "Obligatoire ?",
 		"reset_customers_search": "Réinitialiser la recherche des compte clients",
 		"reset_document_list": "Réinitialiser la liste des documents",
