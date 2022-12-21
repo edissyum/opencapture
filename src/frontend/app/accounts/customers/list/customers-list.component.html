@@ -4,7 +4,7 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <div class="absolute left-4 top-0 search_customer">
+            <div class="absolute left-4 top-0 settings_search">
                 <mat-form-field>
                     <mat-label>{{ 'ACCOUNTS.search_customer' | translate }}</mat-label>
                     <input matInput type="text" [disabled]="this.loading" (keyup)="searchCustomer($event)">
@@ -52,7 +52,7 @@
                     <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.name)"
                             matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="fa-solid fa-trash fa-lg"></i>
+                        <i class="fa-solid fa-trash text-lg"></i>
                     </button>
                 </mat-cell>
             </ng-container>

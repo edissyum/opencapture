@@ -14,8 +14,7 @@
         </mat-list>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <button mat-icon-button (click)="sidenav.toggle();"
-                class="absolute left-2 top-2" style="z-index: 999">
+        <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-2" style="z-index: 999">
             <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-xl text-gray-900"></i>
         </button>
         <div *ngIf="this.loading">

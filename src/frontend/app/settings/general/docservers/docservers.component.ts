@@ -42,7 +42,7 @@ import { HistoryService } from "../../../../services/history.service";
     ]
 })
 export class DocserversComponent implements OnInit {
-    columnsToDisplay    : string[]      = ['id', 'docserver_id', 'description', 'path', 'actions'];
+    columnsToDisplay    : string[]      = ['id', 'docserver_id', 'description', 'content', 'actions'];
     headers             : HttpHeaders   = this.authService.headers;
     loading             : boolean       = true;
     updateLoading       : boolean       = false;

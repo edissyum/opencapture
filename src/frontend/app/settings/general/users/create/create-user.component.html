@@ -3,9 +3,9 @@
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
         <mat-nav-list class="pt-0 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 60px)">
-            <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
+            <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent(); let i = index"
                                  [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
-                <mat-expansion-panel-header class="settings_expansion">
+                <mat-expansion-panel-header class="settings_expansion" [class.border-t-0]="i === 0">
                     <mat-panel-title>
                         {{ parent['label'] | translate }}
                     </mat-panel-title>
@@ -26,7 +26,7 @@
                                                 class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                                 [routerLink]="setting['route']">
-                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm">
+                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm 2xl:w-full">
                                                 {{ setting['label'] | translate }}
                                             </p>
                                         </button>
@@ -60,7 +60,7 @@
                                     class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
                                     (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                     [routerLink]="setting['route']">
-                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm">
+                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm 2xl:w-full">
                                     {{ setting['label'] | translate }}
                                 </p>
                             </button>
@@ -108,17 +108,24 @@
         </div>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="customers w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "ACCOUNTS.customers_list" | translate }}</h3>
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">
+            {{ "ACCOUNTS.customers_list" | translate }}
+        </h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <div *ngIf="loadingCustomers" class="relative" style="top: 40%">
+        <div *ngIf="this.loadingCustomers" class="relative" style="top: 40%">
             <span class="text-center overflow-hidden">
                 <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900" style="--fa-animation-duration: 1.5s;"></i>
             </span>
         </div>
-        <mat-list *ngIf="!loadingCustomers">
-            <mat-list-item *ngFor="let customer of customers" class="hover:bg-green-400 cursor-pointer m-2 w-auto"
-                           [class.bg-green-400]="hasCustomer(customer.id)" (click)="updateUsersCustomers(customer.id)">
-                {{ customer.name }}
+        <mat-list *ngIf="!this.loadingCustomers">
+            <mat-list-item *ngFor="let customer of customers" class="cursor-pointer m-2 w-auto"
+                           (click)="updateUsersCustomers(customer.id)">
+                <span [class.text-green-400]="hasCustomer(customer.id)" class="hover:text-green-400">
+                    {{ customer.name }}
+                </span>
+                <span *ngIf="hasCustomer(customer.id)">
+                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                </span>
             </mat-list-item>
         </mat-list>
     </mat-sidenav>

@@ -1,4 +1,3 @@
-
 .mat-mdc-tab-header {
     @apply z-20;
     & .mat-mdc-tab-label-container .mat-mdc-tab-list .mat-mdc-tab-labels {
@@ -16,6 +15,11 @@
             }
         }
     }
+}
+
+.mat-mdc-header-row .mat-mdc-header-cell {
+    @apply opacity-60;
+    @apply text-xs;
 }
 
 .mat-mdc-select-arrow svg {
@@ -94,3 +98,35 @@
     }
 }
 
+.mat-mdc-paginator-page-size-select .mat-mdc-text-field-wrapper {
+    @apply w-9/12;
+}
+
+.settings_search .mat-mdc-text-field-wrapper {
+    @apply top-2;
+    & .mat-mdc-form-field-flex {
+        @apply h-10;
+        & .mdc-notched-outline .mdc-notched-outline__notch {
+            & .mdc-floating-label--float-above {
+                @apply top-7 #{!important};
+            }
+            & .mdc-floating-label {
+                top: 1.15rem;
+            }
+        }
+        & .mat-mdc-form-field-infix {
+            padding-top: 10px !important;
+        }
+    }
+}
+
+.mat-column-content {
+    & .mat-mdc-text-field-wrapper {
+        @apply h-8;
+        @apply pl-2;
+        @apply top-3;
+        & .mat-mdc-form-field-infix {
+            @apply text-sm;
+        }
+    }
+}

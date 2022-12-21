@@ -3,9 +3,9 @@
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
         <mat-nav-list class="pt-0 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 60px)">
-            <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
+            <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent(); let i = index"
                                  [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
-                <mat-expansion-panel-header class="settings_expansion">
+                <mat-expansion-panel-header class="settings_expansion" [class.border-t-0]="i === 0">
                     <mat-panel-title>
                         {{ parent['label'] | translate }}
                     </mat-panel-title>
@@ -26,7 +26,7 @@
                                                 class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                                 [routerLink]="setting['route']">
-                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm">
+                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm 2xl:w-full">
                                                 {{ setting['label'] | translate }}
                                             </p>
                                         </button>
@@ -60,7 +60,7 @@
                                     class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
                                     (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                     [routerLink]="setting['route']">
-                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm">
+                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm 2xl:w-full">
                                     {{ setting['label'] | translate }}
                                 </p>
                             </button>
@@ -80,7 +80,7 @@
             </button>
             <div class="settings_title text-center">
                 <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <div class="absolute right-4 top-0">
+                <div class="absolute right-4 top-0 settings_search">
                     <mat-form-field appearance="outline">
                         <mat-label>{{ 'REGEX.search_regex' | translate }}</mat-label>
                         <input matInput type="text" [disabled]="this.loading" (keyup)="searchRegex($event)">
@@ -121,13 +121,13 @@
                                 (click)="element.updateMode = true;"
                                 matTooltip="{{ 'REGEX.update' | translate }}" mat-icon-button
                                 class="inline-block align-text-top">
-                            <i class="fa-solid fa-edit fa-lg"></i>
+                            <i class="fa-solid fa-edit text-lg"></i>
                         </button>
                         <button *ngIf="element.updateMode"
                                 matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button
                                 class="inline-block align-text-top">
-                            <i *ngIf="!this.updateLoading" class="fa-solid fa-check fa-lg"></i>
-                            <i *ngIf="this.updateLoading" class="fa-solid fa-circle-notch fa-spin fa-lg"></i>
+                            <i *ngIf="!this.updateLoading" class="fa-solid fa-check text-lg"></i>
+                            <i *ngIf="this.updateLoading" class="fa-solid fa-circle-notch fa-spin text-lg"></i>
                         </button>
                     </mat-cell>
                 </ng-container>

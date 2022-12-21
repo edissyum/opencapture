@@ -3,9 +3,9 @@
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
         <mat-nav-list class="pt-0">
-            <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
+            <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent(); let i = index"
                                  [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
-                <mat-expansion-panel-header class="settings_expansion">
+                <mat-expansion-panel-header class="settings_expansion" [class.border-t-0]="i === 0">
                     <mat-panel-title>
                         {{ parent['label'] | translate }}
                     </mat-panel-title>
@@ -26,7 +26,7 @@
                                                 class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                                 [routerLink]="setting['route']">
-                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm">
+                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm 2xl:w-full">
                                                 {{ setting['label'] | translate }}
                                             </p>
                                         </button>
@@ -60,7 +60,7 @@
                                     class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
                                     (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                     [routerLink]="setting['route']">
-                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm">
+                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm 2xl:w-full">
                                     {{ setting['label'] | translate }}
                                 </p>
                             </button>
@@ -114,23 +114,23 @@
                             (click)="$event.stopPropagation(); disableConfirmDialog(element.id, element.label)"
                             matTooltip="{{ 'POSITIONS-MASKS.disable' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="fa-solid fa-pause fa-lg"></i>
+                        <i class="fa-solid fa-pause text-lg"></i>
                     </button>
                     <button *ngIf="!element.enabled"
                             (click)="$event.stopPropagation(); enableConfirmDialog(element.id, element.label)"
                             matTooltip="{{ 'POSITIONS-MASKS.enable' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="fa-solid fa-play fa-lg"></i>
+                        <i class="fa-solid fa-play text-lg"></i>
                     </button>
                     <button (click)="$event.stopPropagation(); duplicateConfirmDialog(element.id, element.label)"
                             matTooltip="{{ 'POSITIONS-MASKS.duplicate' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="fa-solid fa-clone fa-lg"></i>
+                        <i class="fa-solid fa-clone text-lg"></i>
                     </button>
                     <button (click)="$event.stopPropagation(); deleteConfirmDialog(element.id, element.label)"
                             matTooltip="{{ 'POSITIONS-MASKS.delete' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="fa-solid fa-trash fa-lg"></i>
+                        <i class="fa-solid fa-trash text-lg"></i>
                     </button>
                 </mat-cell>
             </ng-container>

@@ -49,7 +49,7 @@
             <mat-tree-node style="min-height: 24px" class="pl-12 cursor-pointer hover:bg-black hover:bg-opacity-20"
                            *matTreeNodeDef="let node; when:isLevelTwo;" (click)="loadInvoicePerCustomer(node)">
                 <button mat-icon-button disabled>
-                    <i class="text-green-400 ml-4 fa-solid fa-user pb-0.5"></i>
+                    <i class="text-green-400 ml-4 text-base fa-solid fa-user pb-0.5"></i>
                 </button>
                 <span class="pl-2 font-normal select-none">{{ node.name }}</span>
                 <span class="float-right ml-auto select-none mr-6 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
@@ -73,13 +73,12 @@
                     {{ node.count }}
                 </span>
             </mat-tree-node>
-            <mat-tree-node [class.hidden]="node.count === 0"
-                           style="min-height: 24px"
+            <mat-tree-node [class.hidden]="node.count === 0" style="min-height: 24px"
                            class="child pl-6 cursor-pointer hover:bg-black hover:bg-opacity-10"
                            *matTreeNodeDef="let node;when: isLevelOne;" matTreeNodeToggle>
                 <button mat-icon-button>
                     <i [class.fa-folder-open]="this.treeControl.isExpanded(node)"
-                       class="text-gray-600 ml-4 fa-solid fa-folder pb-0.5"></i>
+                       class="text-gray-600 fa-solid fa-folder text-lg relative -top-0.5"></i>
                 </button>
                 <span class="pl-2 font-normal select-none">{{ node.name }}</span>
                 <span *ngIf="!this.treeControl.isExpanded(node)" class="float-right ml-auto select-none mr-12 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
