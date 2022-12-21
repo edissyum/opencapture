@@ -98,7 +98,9 @@
                 <mat-form-field class="block p-4 w-1/3">
                     <mat-label>{{ 'USER-QUOTA.filtered_users' | translate }}</mat-label>
                     <mat-select [formControl]="usersControlSelect" [multiple]="true" [value]="this.quotaUsersfiltered">
-                        <mat-option *ngFor="let option of this.usersList" [value]="option['id']">{{ option['lastname'] + ' ' + option['firstname'] }}</mat-option>
+                        <mat-option *ngFor="let option of this.usersList" [value]="option['id']">
+                            {{ option['lastname'] + ' ' + option['firstname'] }}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field class="block p-4 w-1/3">
