@@ -132,3 +132,13 @@
         }
     }
 }
+
+.mat-mdc-tab-header {
+    @apply border-b;
+    @apply border-solid;
+    @apply border-gray-300;
+}
+
+.mat-mdc-card-subtitle {
+    font-weight: normal !important;
+}
