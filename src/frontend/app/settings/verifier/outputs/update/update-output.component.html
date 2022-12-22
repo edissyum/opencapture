@@ -143,8 +143,9 @@
                                 </ng-container>
                             </div>
                             <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length !== 0"
-                                    mat-button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
-                                <span (click)="testConnection()">{{ "OUTPUT.test_connection" | translate }}</span>
+                                    (click)="testConnection()" mat-button
+                                    class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                                <span>{{ "OUTPUT.test_connection" | translate }}</span>
                             </button>
                         </mat-tab>
                         <mat-tab [label]="'OUTPUT.parameters' | translate" style="height: 50vh;">
@@ -207,7 +208,7 @@
                                     </mat-slide-toggle>
                                 </ng-container>
                             </div>
-                            <div class="grid grid-cols-4 gap-x-4 gap-y-10 m-5">
+                            <div class="grid grid-cols-4 gap-x-4 gap-y-10 m-8">
                                 <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]['links']">
                                     <mat-form-field *ngIf="(field.type === 'text' || field.type === 'number') && !field.webservice">
                                         <mat-label>{{ field.label | translate }}</mat-label>

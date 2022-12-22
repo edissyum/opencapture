@@ -121,7 +121,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "URL de l''''hôte",
                 "required": "true",
-                "placeholder": "http://localhost/maarch_courrier/rest/"
+                "placeholder": "http://localhost/mem_courrier/rest/"
             },
             {
                 "id": "login",
