@@ -16,9 +16,8 @@
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
 import json
-from operator import itemgetter
-
 import requests
+from operator import itemgetter
 from requests.auth import HTTPBasicAuth
 
 
