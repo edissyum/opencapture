@@ -144,9 +144,15 @@
                                     <div class="my-6 grid grid-cols-6 gap-4 h-10 mt-8">
                                         <button type="submit" mat-button (click)="checkLdapConnexion()"
                                                 class="p-6 border-solid border-gray-900 border hover:bg-gray-900 hover:text-white transition duration-300 col-start-3">
-                                            {{ "LOGIN-METHODS.test_connection" | translate }}
+                                            <span *ngIf="!this.isProcessConnectionLaunched">
+                                                {{ "LOGIN-METHODS.test_connection" | translate }}
+                                            </span>
+                                             <i *ngIf="this.isProcessConnectionLaunched"
+                                               class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"
+                                               style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
                                         </button>
-                                        <button matStepperNext mat-button class="p-6 border-solid border-green-400 border
+                                        <button matStepperNext [disabled]="this.isNextBtnDisabled"
+                                                [class.cursor-not-allowed]="this.isNextBtnDisabled" mat-button class="p-6 border-solid border-green-400 border
                                                 hover:bg-green-400 hover:text-white transition duration-300 ml-2">
                                             {{ "LOGIN-METHODS.next" | translate }}
                                         </button>
@@ -197,13 +203,16 @@
                                                 hover:bg-red-400 hover:text-white transition duration-300">
                                             {{ "LOGIN-METHODS.return" | translate }}
                                         </button>
-                                        <button type="submit" mat-button class="p-6 border-solid border-green-400 border
+                                         <button type="submit" mat-button
+                                                [disabled]="this.isLaunchBtnDisabled"
+                                                [class.cursor-not-allowed]="this.isLaunchBtnDisabled"
+                                                class="p-6 border-solid border-green-400 border
                                                 hover:bg-green-400 hover:text-white transition duration-300"
                                                 (click)="ldapSynchronization()">
-                                            <span *ngIf="!this.isLaunchBtnDisabled">
+                                             <span *ngIf="!this.isProcessLaunched">
                                                 {{ "LOGIN-METHODS.launch" | translate }}
                                             </span>
-                                            <i *ngIf="this.isLaunchBtnDisabled"
+                                             <i *ngIf="this.isLaunchBtnClicked"
                                                class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"
                                                style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
                                         </button>

@@ -1,0 +1,295 @@
+Lecture des listes de paquets…
+Construction de l'arbre des dépendances…
+Lecture des informations d'état…
+postgresql est déjà la version la plus récente (14+238).
+0 mis à jour, 0 nouvellement installés, 0 à enlever et 6 non mis à jour.
+ALTER ROLE
+ALTER ROLE
+ALTER ROLE
+Lecture des listes de paquets…
+Construction de l'arbre des dépendances…
+Lecture des informations d'état…
+php est déjà la version la plus récente (2:8.1+92ubuntu1).
+pkg-config est déjà la version la plus récente (0.29.2-1ubuntu3).
+python3-chardet est déjà la version la plus récente (4.0.0-1).
+python3-pyinotify est déjà la version la plus récente (0.9.6-1.3).
+rabbitmq-server est déjà la version la plus récente (3.9.13-1).
+imagemagick est déjà la version la plus récente (8:6.9.11.60+dfsg-1.3build2).
+libleptonica-dev est déjà la version la plus récente (1.82.0-3build1).
+libmagickwand-dev est déjà la version la plus récente (8:6.9.11.60+dfsg-1.3build2).
+libtesseract-dev est déjà la version la plus récente (4.1.1-2.1build1).
+python3-pip est déjà la version la plus récente (22.0.2+dfsg-1).
+tesseract-ocr est déjà la version la plus récente (4.1.1-2.1build1).
+tesseract-ocr-eng est déjà la version la plus récente (1:4.00~git30-7274cfa-1.1).
+tesseract-ocr-fra est déjà la version la plus récente (1:4.00~git30-7274cfa-1.1).
+zbar-tools est déjà la version la plus récente (0.23.92-4build2).
+apache2 est déjà la version la plus récente (2.4.52-1ubuntu4.1).
+libapache2-mod-wsgi-py3 est déjà la version la plus récente (4.9.0-1ubuntu0.1).
+libpq-dev est déjà la version la plus récente (14.5-0ubuntu0.22.04.1).
+poppler-utils est déjà la version la plus récente (22.02.0-2ubuntu0.1).
+python3 est déjà la version la plus récente (3.10.6-1~22.04).
+libgl1-mesa-glx est déjà la version la plus récente (22.0.5-0ubuntu0.1).
+Les paquets supplémentaires suivants seront installés : 
+  python3-pip-whl python3-setuptools-whl python3.10-venv
+Les NOUVEAUX paquets suivants seront installés :
+  python3-pip-whl python3-setuptools-whl python3-venv python3.10-venv
+0 mis à jour, 4 nouvellement installés, 0 à enlever et 6 non mis à jour.
+Il est nécessaire de prendre 2 474 ko dans les archives.
+Après cette opération, 2 888 ko d'espace disque supplémentaires seront utilisés.
+Réception de :1 http://fr.archive.ubuntu.com/ubuntu jammy/universe amd64 python3-pip-whl all 22.0.2+dfsg-1 [1 679 kB]
+Réception de :2 http://fr.archive.ubuntu.com/ubuntu jammy/universe amd64 python3-setuptools-whl all 59.6.0-1.2 [788 kB]
+Réception de :3 http://fr.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 python3.10-venv amd64 3.10.6-1~22.04 [5 718 B]
+Réception de :4 http://fr.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 python3-venv amd64 3.10.6-1~22.04 [1 038 B]
+2 474 ko réceptionnés en 6s (429 ko/s)
+Sélection du paquet python3-pip-whl précédemment désélectionné.
+(Lecture de la base de données... (Lecture de la base de données... 5%(Lecture de la base de données... 10%(Lecture de la base de données... 15%(Lecture de la base de données... 20%(Lecture de la base de données... 25%(Lecture de la base de données... 30%(Lecture de la base de données... 35%(Lecture de la base de données... 40%(Lecture de la base de données... 45%(Lecture de la base de données... 50%(Lecture de la base de données... 55%(Lecture de la base de données... 60%(Lecture de la base de données... 65%(Lecture de la base de données... 70%(Lecture de la base de données... 75%(Lecture de la base de données... 80%(Lecture de la base de données... 85%(Lecture de la base de données... 90%(Lecture de la base de données... 95%(Lecture de la base de données... 100%(Lecture de la base de données... 216378 fichiers et répertoires déjà installés.)
+Préparation du dépaquetage de .../python3-pip-whl_22.0.2+dfsg-1_all.deb ...
+Dépaquetage de python3-pip-whl (22.0.2+dfsg-1) ...
+Sélection du paquet python3-setuptools-whl précédemment désélectionné.
+Préparation du dépaquetage de .../python3-setuptools-whl_59.6.0-1.2_all.deb ...
+Dépaquetage de python3-setuptools-whl (59.6.0-1.2) ...
+Sélection du paquet python3.10-venv précédemment désélectionné.
+Préparation du dépaquetage de .../python3.10-venv_3.10.6-1~22.04_amd64.deb ...
+Dépaquetage de python3.10-venv (3.10.6-1~22.04) ...
+Sélection du paquet python3-venv précédemment désélectionné.
+Préparation du dépaquetage de .../python3-venv_3.10.6-1~22.04_amd64.deb ...
+Dépaquetage de python3-venv (3.10.6-1~22.04) ...
+Paramétrage de python3-setuptools-whl (59.6.0-1.2) ...
+Paramétrage de python3-pip-whl (22.0.2+dfsg-1) ...
+Paramétrage de python3.10-venv (3.10.6-1~22.04) ...
+Paramétrage de python3-venv (3.10.6-1~22.04) ...
+Requirement already satisfied: pip in /home/essaid/python-venv/opencapture/lib/python3.10/site-packages (22.0.2)
+Collecting pip
+  Using cached pip-22.2.2-py3-none-any.whl (2.0 MB)
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 22.0.2
+    Uninstalling pip-22.0.2:
+      Successfully uninstalled pip-22.0.2
+Successfully installed pip-22.2.2
+Requirement already satisfied: setuptools in /home/essaid/python-venv/opencapture/lib/python3.10/site-packages (59.6.0)
+Collecting setuptools
+  Using cached setuptools-65.4.0-py3-none-any.whl (1.2 MB)
+Installing collected packages: setuptools
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 59.6.0
+    Uninstalling setuptools-59.6.0:
+      Successfully uninstalled setuptools-59.6.0
+Successfully installed setuptools-65.4.0
+Collecting numpy
+  Using cached numpy-1.23.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (17.1 MB)
+Collecting pandas
+  Using cached pandas-1.5.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.1 MB)
+Collecting unidecode
+  Using cached Unidecode-1.3.5-py3-none-any.whl (236 kB)
+Collecting fpdf==1.7.2
+  Using cached fpdf-1.7.2-py2.py3-none-any.whl
+Collecting zeep==4.1.0
+  Using cached zeep-4.1.0-py2.py3-none-any.whl (100 kB)
+Collecting wand==0.6.10
+  Downloading Wand-0.6.10-py2.py3-none-any.whl (142 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 142.8/142.8 kB 154.6 kB/s eta 0:00:00
+Collecting ldap3==2.9.1
+  Using cached ldap3-2.9.1-py2.py3-none-any.whl (432 kB)
+Collecting pyocr==0.8.3
+  Using cached pyocr-0.8.3-py3-none-any.whl
+Collecting PyJWT==2.5.0
+  Downloading PyJWT-2.5.0-py3-none-any.whl (20 kB)
+Collecting flask==2.2.2
+  Using cached Flask-2.2.2-py3-none-any.whl (101 kB)
+Collecting qrcode==7.3.1
+  Using cached qrcode-7.3.1-py3-none-any.whl
+Collecting pillow==9.2.0
+  Using cached Pillow-9.2.0-cp310-cp310-manylinux_2_28_x86_64.whl (3.2 MB)
+Collecting kuyruk==9.4.0
+  Using cached Kuyruk-9.4.0-py3-none-any.whl
+Collecting pyPdf2==2.11.0
+  Downloading PyPDF2-2.11.0-py3-none-any.whl (220 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 220.2/220.2 kB 228.6 kB/s eta 0:00:00
+Collecting psycopg2==2.9.3
+  Using cached psycopg2-2.9.3-cp310-cp310-linux_x86_64.whl
+Collecting werkzeug==2.2.2
+  Using cached Werkzeug-2.2.2-py3-none-any.whl (232 kB)
+Collecting cmislib3==1.0.8
+  Using cached cmislib3-1.0.8-py3-none-any.whl
+Collecting requests==2.28.1
+  Using cached requests-2.28.1-py3-none-any.whl (62 kB)
+Collecting xlsxwriter==3.0.3
+  Using cached XlsxWriter-3.0.3-py3-none-any.whl (149 kB)
+Collecting pdf2image==1.16.0
+  Using cached pdf2image-1.16.0-py3-none-any.whl (10 kB)
+Collecting gitpython==3.1.27
+  Using cached GitPython-3.1.27-py3-none-any.whl (181 kB)
+Collecting tensorflow==2.10.0
+  Downloading tensorflow-2.10.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (578.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 578.0/578.0 MB 1.0 MB/s eta 0:00:00
+Collecting fs-watcher==1.0.11
+  Using cached fs_watcher-1.0.11-py3-none-any.whl (16 kB)
+Collecting flask_cors==3.0.10
+  Using cached Flask_Cors-3.0.10-py2.py3-none-any.whl (14 kB)
+Collecting Flask-Babel==2.0.0
+  Using cached Flask_Babel-2.0.0-py3-none-any.whl (9.3 kB)
+Collecting imap-tools==0.57.0
+  Downloading imap_tools-0.57.0-py3-none-any.whl (31 kB)
+Collecting pytesseract==0.3.10
+  Downloading pytesseract-0.3.10-py3-none-any.whl (14 kB)
+Collecting pyexcel_ods3==0.6.1
+  Using cached pyexcel_ods3-0.6.1-py3-none-any.whl (9.8 kB)
+Collecting configparser==5.2.0
+  Using cached configparser-5.2.0-py3-none-any.whl (19 kB)
+Collecting opencv-python==4.6.0.66
+  Using cached opencv_python-4.6.0.66-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (60.9 MB)
+Collecting requests-file>=1.5.1
+  Using cached requests_file-1.5.1-py2.py3-none-any.whl (3.7 kB)
+Collecting platformdirs>=1.4.0
+  Using cached platformdirs-2.5.2-py3-none-any.whl (14 kB)
+Collecting isodate>=0.5.4
+  Using cached isodate-0.6.1-py2.py3-none-any.whl (41 kB)
+Collecting attrs>=17.2.0
+  Using cached attrs-22.1.0-py2.py3-none-any.whl (58 kB)
+Collecting lxml>=4.6.0
+  Using cached lxml-4.9.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl (6.9 MB)
+Collecting pytz
+  Downloading pytz-2022.2.1-py2.py3-none-any.whl (500 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 500.6/500.6 kB 1.3 MB/s eta 0:00:00
+Collecting cached-property>=1.3.0
+  Using cached cached_property-1.5.2-py2.py3-none-any.whl (7.6 kB)
+Collecting requests-toolbelt>=0.7.1
+  Using cached requests_toolbelt-0.9.1-py2.py3-none-any.whl (54 kB)
+Collecting pyasn1>=0.4.6
+  Using cached pyasn1-0.4.8-py2.py3-none-any.whl (77 kB)
+Collecting click>=8.0
+  Downloading click-8.1.3-py3-none-any.whl (96 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 96.6/96.6 kB 2.4 MB/s eta 0:00:00
+Collecting itsdangerous>=2.0
+  Using cached itsdangerous-2.1.2-py3-none-any.whl (15 kB)
+Collecting Jinja2>=3.0
+  Using cached Jinja2-3.1.2-py3-none-any.whl (133 kB)
+Collecting blinker>=1.3
+  Downloading blinker-1.5-py2.py3-none-any.whl (12 kB)
+Collecting amqp>=2
+  Using cached amqp-5.1.1-py3-none-any.whl (50 kB)
+Collecting MarkupSafe>=2.1.1
+  Using cached MarkupSafe-2.1.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (25 kB)
+Collecting iso8601
+  Using cached iso8601-1.1.0-py3-none-any.whl (9.9 kB)
+Collecting urllib3<1.27,>=1.21.1
+  Downloading urllib3-1.26.12-py2.py3-none-any.whl (140 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 140.4/140.4 kB 1.2 MB/s eta 0:00:00
+Collecting charset-normalizer<3,>=2
+  Using cached charset_normalizer-2.1.1-py3-none-any.whl (39 kB)
+Collecting idna<4,>=2.5
+  Downloading idna-3.4-py3-none-any.whl (61 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 61.5/61.5 kB 234.2 kB/s eta 0:00:00
+Collecting certifi>=2017.4.17
+  Downloading certifi-2022.9.24-py3-none-any.whl (161 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 161.1/161.1 kB 1.2 MB/s eta 0:00:00
+Collecting gitdb<5,>=4.0.1
+  Using cached gitdb-4.0.9-py3-none-any.whl (63 kB)
+Collecting wrapt>=1.11.0
+  Using cached wrapt-1.14.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (77 kB)
+Collecting google-pasta>=0.1.1
+  Using cached google_pasta-0.2.0-py3-none-any.whl (57 kB)
+Collecting keras<2.11,>=2.10.0
+  Downloading keras-2.10.0-py2.py3-none-any.whl (1.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 1.2 MB/s eta 0:00:00
+Requirement already satisfied: setuptools in /home/essaid/python-venv/opencapture/lib/python3.10/site-packages (from tensorflow==2.10.0->-r /var/www/html/opencapture//bin/install/pip-requirements.txt (line 22)) (65.4.0)
+Collecting six>=1.12.0
+  Downloading six-1.16.0-py2.py3-none-any.whl (11 kB)
+Collecting libclang>=13.0.0
+  Using cached libclang-14.0.6-py2.py3-none-manylinux2010_x86_64.whl (14.1 MB)
+Collecting opt-einsum>=2.3.2
+  Using cached opt_einsum-3.3.0-py3-none-any.whl (65 kB)
+Collecting termcolor>=1.1.0
+  Using cached termcolor-2.0.1-py3-none-any.whl (5.4 kB)
+Collecting absl-py>=1.0.0
+  Using cached absl_py-1.2.0-py3-none-any.whl (123 kB)
+Collecting tensorflow-estimator<2.11,>=2.10.0
+  Downloading tensorflow_estimator-2.10.0-py2.py3-none-any.whl (438 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 438.7/438.7 kB 4.2 MB/s eta 0:00:00
+Collecting flatbuffers>=2.0
+  Downloading flatbuffers-22.9.24-py2.py3-none-any.whl (26 kB)
+Collecting packaging
+  Using cached packaging-21.3-py3-none-any.whl (40 kB)
+Collecting protobuf<3.20,>=3.9.2
+  Downloading protobuf-3.19.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 685.0 kB/s eta 0:00:00
+Collecting tensorflow-io-gcs-filesystem>=0.23.1
+  Using cached tensorflow_io_gcs_filesystem-0.27.0-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (2.4 MB)
+Collecting astunparse>=1.6.0
+  Using cached astunparse-1.6.3-py2.py3-none-any.whl (12 kB)
+Collecting keras-preprocessing>=1.1.1
+  Using cached Keras_Preprocessing-1.1.2-py2.py3-none-any.whl (42 kB)
+Collecting tensorboard<2.11,>=2.10
+  Downloading tensorboard-2.10.1-py3-none-any.whl (5.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.9/5.9 MB 731.6 kB/s eta 0:00:00
+Collecting gast<=0.4.0,>=0.2.1
+  Using cached gast-0.4.0-py3-none-any.whl (9.8 kB)
+Collecting grpcio<2.0,>=1.24.3
+  Using cached grpcio-1.49.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.7 MB)
+Collecting h5py>=2.9.0
+  Using cached h5py-3.7.0-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (4.5 MB)
+Collecting typing-extensions>=3.6.6
+  Using cached typing_extensions-4.3.0-py3-none-any.whl (25 kB)
+Collecting lockfile
+  Using cached lockfile-0.12.2-py2.py3-none-any.whl (13 kB)
+Collecting python-daemon
+  Using cached python_daemon-2.3.1-py2.py3-none-any.whl (34 kB)
+Collecting chardet
+  Downloading chardet-5.0.0-py3-none-any.whl (193 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 193.6/193.6 kB 884.9 kB/s eta 0:00:00
+Collecting pyinotify
+  Downloading pyinotify-0.9.6.tar.gz (60 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 61.0/61.0 kB 730.7 kB/s eta 0:00:00
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting future
+  Using cached future-0.18.2-py3-none-any.whl
+Collecting Babel>=2.3
+  Using cached Babel-2.10.3-py3-none-any.whl (9.5 MB)
+Collecting pyexcel-ezodf>=0.3.3
+  Using cached pyexcel_ezodf-0.3.4-py2.py3-none-any.whl (53 kB)
+Collecting pyexcel-io>=0.6.2
+  Using cached pyexcel_io-0.6.6-py2.py3-none-any.whl (44 kB)
+Collecting python-dateutil>=2.8.1
+  Downloading python_dateutil-2.8.2-py2.py3-none-any.whl (247 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 247.7/247.7 kB 940.8 kB/s eta 0:00:00
+Collecting vine>=5.0.0
+  Using cached vine-5.0.0-py2.py3-none-any.whl (9.4 kB)
+Collecting wheel<1.0,>=0.23.0
+  Downloading wheel-0.37.1-py2.py3-none-any.whl (35 kB)
+Collecting smmap<6,>=3.0.1
+  Using cached smmap-5.0.0-py3-none-any.whl (24 kB)
+Collecting pyparsing!=3.0.5,>=2.0.2
+  Downloading pyparsing-3.0.9-py3-none-any.whl (98 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 98.3/98.3 kB 693.2 kB/s eta 0:00:00
+Collecting lml>=0.0.4
+  Using cached lml-0.1.0-py2.py3-none-any.whl (10 kB)
+Collecting google-auth<3,>=1.6.3
+  Using cached google_auth-2.12.0-py2.py3-none-any.whl (169 kB)
+Collecting tensorboard-plugin-wit>=1.6.0
+  Using cached tensorboard_plugin_wit-1.8.1-py3-none-any.whl (781 kB)
+Collecting markdown>=2.6.8
+  Using cached Markdown-3.4.1-py3-none-any.whl (93 kB)
+Collecting google-auth-oauthlib<0.5,>=0.4.1
+  Using cached google_auth_oauthlib-0.4.6-py2.py3-none-any.whl (18 kB)
+Collecting tensorboard-data-server<0.7.0,>=0.6.0
+  Using cached tensorboard_data_server-0.6.1-py3-none-manylinux2010_x86_64.whl (4.9 MB)
+Collecting docutils
+  Using cached docutils-0.19-py3-none-any.whl (570 kB)
+Collecting pyasn1-modules>=0.2.1
+  Using cached pyasn1_modules-0.2.8-py2.py3-none-any.whl (155 kB)
+Collecting rsa<5,>=3.1.4
+  Using cached rsa-4.9-py3-none-any.whl (34 kB)
+Collecting cachetools<6.0,>=2.0.0
+  Using cached cachetools-5.2.0-py3-none-any.whl (9.3 kB)
+Collecting requests-oauthlib>=0.7.0
+  Using cached requests_oauthlib-1.3.1-py2.py3-none-any.whl (23 kB)
+Collecting oauthlib>=3.0.0
+  Downloading oauthlib-3.2.1-py3-none-any.whl (151 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 151.7/151.7 kB 2.5 MB/s eta 0:00:00
+Using legacy 'setup.py install' for pyinotify, since package 'wheel' is not installed.
+Installing collected packages: wand, tensorboard-plugin-wit, pytz, pyinotify, pyasn1, lockfile, lml, libclang, keras, imap-tools, fpdf, flatbuffers, cached-property, xlsxwriter, wrapt, wheel, vine, urllib3, unidecode, typing-extensions, termcolor, tensorflow-io-gcs-filesystem, tensorflow-estimator, tensorboard-data-server, smmap, six, rsa, qrcode, pyPdf2, pyparsing, PyJWT, pyexcel-io, pyasn1-modules, psycopg2, protobuf, platformdirs, pillow, oauthlib, numpy, MarkupSafe, markdown, lxml, ldap3, itsdangerous, iso8601, idna, gast, future, docutils, configparser, click, charset-normalizer, chardet, certifi, cachetools, blinker, Babel, attrs, absl-py, werkzeug, requests, python-dateutil, python-daemon, pyocr, pyexcel-ezodf, pdf2image, packaging, opt-einsum, opencv-python, keras-preprocessing, Jinja2, isodate, h5py, grpcio, google-pasta, google-auth, gitdb, astunparse, amqp, requests-toolbelt, requests-oauthlib, requests-file, pytesseract, pyexcel_ods3, pandas, kuyruk, gitpython, fs-watcher, flask, cmislib3, zeep, google-auth-oauthlib, flask_cors, Flask-Babel, tensorboard, tensorflow
+  Running setup.py install for pyinotify: started
+  Running setup.py install for pyinotify: finished with status 'done'
+Successfully installed Babel-2.10.3 Flask-Babel-2.0.0 Jinja2-3.1.2 MarkupSafe-2.1.1 PyJWT-2.5.0 absl-py-1.2.0 amqp-5.1.1 astunparse-1.6.3 attrs-22.1.0 blinker-1.5 cached-property-1.5.2 cachetools-5.2.0 certifi-2022.9.24 chardet-5.0.0 charset-normalizer-2.1.1 click-8.1.3 cmislib3-1.0.8 configparser-5.2.0 docutils-0.19 flask-2.2.2 flask_cors-3.0.10 flatbuffers-22.9.24 fpdf-1.7.2 fs-watcher-1.0.11 future-0.18.2 gast-0.4.0 gitdb-4.0.9 gitpython-3.1.27 google-auth-2.12.0 google-auth-oauthlib-0.4.6 google-pasta-0.2.0 grpcio-1.49.1 h5py-3.7.0 idna-3.4 imap-tools-0.57.0 iso8601-1.1.0 isodate-0.6.1 itsdangerous-2.1.2 keras-2.10.0 keras-preprocessing-1.1.2 kuyruk-9.4.0 ldap3-2.9.1 libclang-14.0.6 lml-0.1.0 lockfile-0.12.2 lxml-4.9.1 markdown-3.4.1 numpy-1.23.3 oauthlib-3.2.1 opencv-python-4.6.0.66 opt-einsum-3.3.0 packaging-21.3 pandas-1.5.0 pdf2image-1.16.0 pillow-9.2.0 platformdirs-2.5.2 protobuf-3.19.5 psycopg2-2.9.3 pyPdf2-2.11.0 pyasn1-0.4.8 pyasn1-modules-0.2.8 pyexcel-ezodf-0.3.4 pyexcel-io-0.6.6 pyexcel_ods3-0.6.1 pyinotify-0.9.6 pyocr-0.8.3 pyparsing-3.0.9 pytesseract-0.3.10 python-daemon-2.3.1 python-dateutil-2.8.2 pytz-2022.2.1 qrcode-7.3.1 requests-2.28.1 requests-file-1.5.1 requests-oauthlib-1.3.1 requests-toolbelt-0.9.1 rsa-4.9 six-1.16.0 smmap-5.0.0 tensorboard-2.10.1 tensorboard-data-server-0.6.1 tensorboard-plugin-wit-1.8.1 tensorflow-2.10.0 tensorflow-estimator-2.10.0 tensorflow-io-gcs-filesystem-0.27.0 termcolor-2.0.1 typing-extensions-4.3.0 unidecode-1.3.5 urllib3-1.26.12 vine-5.0.0 wand-0.6.10 werkzeug-2.2.2 wheel-0.37.1 wrapt-1.14.1 xlsxwriter-3.0.3 zeep-4.1.0

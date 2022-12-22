@@ -37,13 +37,17 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 export class LoginMethodsComponent implements OnInit {
     loading                 : boolean   = true;
     isSaveBtnDisabled       : boolean   = true;
-    isLaunchBtnDisabled     : boolean   = false;
+    isNextBtnDisabled       : boolean   = true;
+    isLaunchBtnDisabled     : boolean   = true;
+    isLaunchBtnClicked      : boolean   = false;
+    isProcessLaunched       : boolean   = false;
     isLinear                : boolean   = false;
     showPassword            : boolean   = false;
     isLdapChecked           : boolean   = false;
     isDefaultChecked        : boolean   = false;
     connexionServerStatus   : boolean   = false;
     synchroUsersStatus      : boolean   = false;
+    isProcessConnectionLaunched       : boolean   = false;
     label                   : any[]     = [
         marker ('LOGIN-METHODS.ldap'),
         marker ('LOGIN-METHODS.default'),
@@ -348,17 +352,24 @@ export class LoginMethodsComponent implements OnInit {
 
     checkLdapConnexion(): void {
         if (this.isValidConnexionForm()) {
+            this.isProcessConnectionLaunched = true;
             const server_data : any = {};
             this.connectionFormGroup.forEach(element => {
                 server_data[element.id] = element.control.value;
             });
             this.http.post(environment['url'] + '/ws/auth/connectionLdap', server_data,{headers: this.authService.headers}).pipe(
             tap(() => {
+                this.isProcessConnectionLaunched = false;
+                this.isLaunchBtnDisabled = false;
                 this.connexionServerStatus = true;
+                this.isNextBtnDisabled = false;
                 this.notify.success(this.translate.instant('LOGIN-METHODS.server_ldap_connection'));
             }),
             catchError ((err: any) => {
+                this.isProcessConnectionLaunched = false;
+                this.isLaunchBtnDisabled = true;
                 this.isSaveBtnDisabled = true;
+                this.isNextBtnDisabled = true;
                 this.connexionServerStatus = false;
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -369,8 +380,9 @@ export class LoginMethodsComponent implements OnInit {
     }
 
     ldapSynchronization(): void {
-        this.isLaunchBtnDisabled = true;
         if (this.isValidSynchronizationForm() && this.isValidConnexionForm()) {
+            this.isLaunchBtnClicked = true;
+            this.isProcessLaunched = true;
             const synchronizationData : any = {};
             this.connectionFormGroup.forEach(element => {
                 synchronizationData[element.id] = element.control.value;
@@ -380,20 +392,27 @@ export class LoginMethodsComponent implements OnInit {
             });
             this.http.post(environment['url'] + '/ws/auth/ldapSynchronization', synchronizationData, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
+                this.isProcessLaunched = false;
+                this.isLaunchBtnClicked = false;
                 this.isSaveBtnDisabled = false;
+                this.isNextBtnDisabled = false;
                 this.isLaunchBtnDisabled = false;
                 this.synchroUsersStatus = true;
                 this.notify.success(this.translate.instant('LOGIN-METHODS.result_synchronization_operation', {'users_added':data['create_users'],'users_updated':data['update_users'],'users_disabled':data['disabled_users']}));
             }),
             catchError ((err: any) => {
+                this.isProcessLaunched =false
+                this.isLaunchBtnClicked = false;
                 this.isSaveBtnDisabled = true;
-                this.isLaunchBtnDisabled = false;
+                this.isLaunchBtnDisabled = true;
                 this.synchroUsersStatus = false;
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of (false);
             })
         ).subscribe();
+        } else{
+            this.isLaunchBtnDisabled = true;
         }
     }
 
