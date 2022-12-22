@@ -94,10 +94,10 @@ if 'custom_fields' or 'controllers' not in custom_array['custom_fields']['path']
 elif 'controllers' in custom_array['custom_fields']['path']:
     custom_fields = getattr(__import__(custom_array['custom_fields']['path'], fromlist=[custom_array['custom_fields']['module']]), custom_array['custom_fields']['module'])
 
-if 'maarch' or 'controllers' not in custom_array['maarch']['path']:
-    from .controllers import maarch
-elif 'controllers' in custom_array['maarch']['path']:
-    maarch = getattr(__import__(custom_array['maarch']['path'], fromlist=[custom_array['maarch']['module']]), custom_array['maarch']['module'])
+if 'mem' or 'controllers' not in custom_array['mem']['path']:
+    from .controllers import mem
+elif 'controllers' in custom_array['mem']['path']:
+    mem = getattr(__import__(custom_array['mem']['path'], fromlist=[custom_array['mem']['module']]), custom_array['mem']['module'])
 
 if 'inputs' or 'controllers' not in custom_array['inputs']['path']:
     from .controllers import inputs

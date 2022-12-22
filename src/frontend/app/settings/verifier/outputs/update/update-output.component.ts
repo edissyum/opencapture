@@ -200,21 +200,21 @@ export class UpdateOutputComponent implements OnInit {
         },
     ];
     testConnectionMapping   : any           = {
-        'export_maarch' : "testMaarchConnection()"
+        'export_mem' : "testMEMConnection()"
     };
 
     /**
      * Pour ajouter une nouvelle chaine sortante (e.g : Alfresco)
      * Rajouter une nouvelle ligne dans le tableau testConnectionMapping() contenant l'id de la nouvelle chaine et le nom de la fonction permettant de verifier la connection
-     * Dans le JSON présent dans la table output_types, en se basant sur celui existant (export_maarch), créer vos champs par défaut
+     * Dans le JSON présent dans la table output_types, en se basant sur celui existant (export_mem), créer vos champs par défaut
      * Attention à bien garder les clé "auth" et "parameters" présentes
-     * Si un champs "parameters" à besoin de récupérer des données depuis un WS de la solution cible (e.g récupération des utilisateurs Maarch)
+     * Si un champs "parameters" à besoin de récupérer des données depuis un WS de la solution cible (e.g récupération des utilisateurs MEM Courrier)
      * Rajouter une ligne dans le JSON 'webservice' avec un nom de fonction (sans mettre les parenthèses)
      * Créer cette fonction et faites le process permettant de récupérer les données
      * Les données doivent être formatés comme suit : {'id': XX, 'value': XX} et être mise dans la clé "values" du champ
-     * Regarder la fonction getUsersMaarch() pour voir le fonctionnement
+     * Regarder la fonction getUsersMEM() pour voir le fonctionnement
      * Du côté des webservices permettant l'execution des chaînes sortantes, il faut créer un WS dans le fichier rest/verifier.py
-     * La route doit être : verifier/invoices/<int:document_id>/output_type_id (e.g : verifier/invoices/<int:document_id>/export_maarch)
+     * La route doit être : verifier/invoices/<int:document_id>/output_type_id (e.g : verifier/invoices/<int:document_id>/export_mem)
     **/
 
     constructor(
@@ -415,19 +415,19 @@ export class UpdateOutputComponent implements OnInit {
         }
     }
 
-    /**** Maarch Webservices call ****/
-    testMaarchConnection() {
-        const args = this.getMaarchConnectionInfo();
+    /**** MEM Courrier Webservices call ****/
+    testMEMConnection() {
+        const args = this.getMEMConnectionInfo();
         this.http.post(environment['url'] + '/ws/mem/testConnection', {'args': args}, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
                 const status = data.status[0];
                 if (status === true) {
-                    this.notify.success(this.translate.instant('OUTPUT.maarch_connection_ok'));
+                    this.notify.success(this.translate.instant('OUTPUT.mem_connection_ok'));
                     this.connection = true;
                 }
                 else {
-                    this.notify.error(this.translate.instant('OUTPUT.maarch_connection_ko') + ' : ' + status[1]);
+                    this.notify.error(this.translate.instant('OUTPUT.mem_connection_ko') + ' : ' + status[1]);
                     this.connection = false;
                 }
             }),
@@ -439,7 +439,7 @@ export class UpdateOutputComponent implements OnInit {
         ).subscribe();
     }
 
-    getMaarchConnectionInfo() {
+    getMEMConnectionInfo() {
         return {
             'host': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
             'login': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'login'),
@@ -449,7 +449,7 @@ export class UpdateOutputComponent implements OnInit {
 
     getUsersFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
+            const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getUsers', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return[0].users) {
                     const data = _return[0].users;
@@ -467,9 +467,9 @@ export class UpdateOutputComponent implements OnInit {
         }
     }
 
-    getEntitiesFromMaarch(cpt: any) {
+    getEntitiesFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
+            const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getEntities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.entities) {
                     const data = _return.entities;
@@ -489,7 +489,7 @@ export class UpdateOutputComponent implements OnInit {
 
     getCustomFieldsFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
+            const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getCustomFields', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.customFields) {
                     const data = _return.customFields;
@@ -509,7 +509,7 @@ export class UpdateOutputComponent implements OnInit {
 
     getContactsCustomFieldsFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
+            const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getContactsCustomFields', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.customFields) {
                     const data = _return.customFields;
@@ -527,9 +527,9 @@ export class UpdateOutputComponent implements OnInit {
         }
     }
 
-    getDoctypesFromMaarch(cpt: any) {
+    getDoctypesFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
+            const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getDoctypes', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.doctypes) {
                     const data = _return.doctypes;
@@ -547,9 +547,9 @@ export class UpdateOutputComponent implements OnInit {
         }
     }
 
-    getPrioritiesFromMaarch(cpt: any) {
+    getPrioritiesFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
+            const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.priorities) {
                     const data = _return.priorities;
@@ -567,9 +567,9 @@ export class UpdateOutputComponent implements OnInit {
         }
     }
 
-    getStatusesFromMaarch(cpt: any) {
+    getStatusesFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
+            const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.statuses) {
                     const data = _return.statuses;
@@ -587,9 +587,9 @@ export class UpdateOutputComponent implements OnInit {
         }
     }
 
-    getIndexingModelsFromMaarch(cpt: any) {
+    getIndexingModelsFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
+            const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.indexingModels) {
                     const data = _return.indexingModels;
@@ -607,7 +607,7 @@ export class UpdateOutputComponent implements OnInit {
         }
     }
 
-    /**** END Maarch Webservices call  ****/
+    /**** END MEM Courrier Webservices call  ****/
 
     updateOutput() {
         const _array: any = {

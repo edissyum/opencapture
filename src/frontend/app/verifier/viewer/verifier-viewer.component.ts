@@ -228,14 +228,14 @@ export class VerifierViewerComponent implements OnInit {
 
     convertAutocomplete() {
         this.outputs.forEach((output: any) => {
-            if (output.data.options.links && output.output_type_id === 'export_maarch') {
+            if (output.data.options.links && output.output_type_id === 'export_mem') {
                 const data = {
                     "host": output.data.options.auth[0].value,
                     "login": output.data.options.auth[1].value,
                     "password": output.data.options.auth[2].value,
                     "autocompleteField": '',
-                    "maarchCustomField": '',
-                    "maarchClause": '',
+                    "memCustomField": '',
+                    "memClause": '',
                     "vatNumberContactCustom": '',
                     "enabled": false,
                     "supplierCustomId": ''
@@ -247,10 +247,10 @@ export class VerifierViewerComponent implements OnInit {
                     }
                     if (element.id === 'openCaptureField' && element.value) {
                         data['autocompleteField'] = element.value;
-                    } else if (element.id === 'maarchCustomField' && element.value) {
-                        data['maarchCustomField'] = element.value;
-                    } else if (element.id === 'maarchClause' && element.value) {
-                        data['maarchClause'] = element.value;
+                    } else if (element.id === 'memCustomField' && element.value) {
+                        data['memCustomField'] = element.value;
+                    } else if (element.id === 'memClause' && element.value) {
+                        data['memClause'] = element.value;
                     } else if (element.id === 'vatNumberContactCustom' && element.value) {
                         data['vatNumberContactCustom'] = element.value;
                     }
@@ -1434,7 +1434,7 @@ export class VerifierViewerComponent implements OnInit {
                         if (data.data.options.links) {
                             this.form.facturation.forEach((element: any) => {
                                 if (element.autocomplete_values) {
-                                    if (data.output_type_id === 'export_maarch') {
+                                    if (data.output_type_id === 'export_mem') {
                                         data.data['res_id'] = element.autocomplete_id;
                                     }
                                 }

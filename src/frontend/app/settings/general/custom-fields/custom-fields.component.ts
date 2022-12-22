@@ -109,7 +109,7 @@ export class CustomFieldsComponent implements OnInit {
             limit       : 'splitter',
             autoComplete: [
                 {key: '', value: this.translate.instant('SPLITTER.Other')},
-                {key: 'SEPARATOR_MAARCH', value: this.translate.instant('SPLITTER.separator_maarch')},
+                {key: 'SEPARATOR_MEM', value: this.translate.instant('SPLITTER.separator_mem')},
                 {key: 'SEPARATOR_META1', value: this.translate.instant('SPLITTER.separator_meta1')},
                 {key: 'SEPARATOR_META2', value: this.translate.instant('SPLITTER.separator_meta2')},
                 {key: 'SEPARATOR_META3', value: this.translate.instant('SPLITTER.separator_meta3')},

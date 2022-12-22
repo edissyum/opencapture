@@ -32,7 +32,7 @@ msgstr ""
 #: src/backend/controllers/splitter.py:328
 #: src/backend/controllers/splitter.py:334 src/backend/verifier_exports.py:326
 #: src/backend/verifier_exports.py:332 src/backend/verifier_exports.py:338
-msgid "EXPORT_MAARCH_ERROR"
+msgid "EXPORT_MEM_ERROR"
 msgstr ""
 
 #: src/backend/verifier_exports.py:333
@@ -40,14 +40,14 @@ msgid "PDF_FILE_NOT_FOUND"
 msgstr ""
 
 #: src/backend/verifier_exports.py:344
-msgid "MAARCH_WS_INFO_WRONG"
+msgid "MEM_WS_INFO_WRONG"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:340 src/backend/verifier_exports.py:350
-msgid "MAARCH_WS_INFO_EMPTY"
+msgid "MEM_WS_INFO_EMPTY"
 msgstr ""
 
-#: src/backend/classes/MaarchWebServices.py:38
+#: src/backend/classes/MEMWebServices.py:38
 msgid "HOST_NOT_FOUND"
 msgstr ""
 

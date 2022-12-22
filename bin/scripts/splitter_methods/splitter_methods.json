@@ -13,9 +13,9 @@
             "method": "process"
         },
         {
-            "id"    : "qr_code_Maarch",
-            "label" : "Séparation par code QR Maarch",
-            "script": "qr_code_Maarch.py",
+            "id"    : "qr_code_mem",
+            "label" : "Séparation par code QR MEM Courrier",
+            "script": "qr_code_mem.py",
             "method": "process"
         }
     ]

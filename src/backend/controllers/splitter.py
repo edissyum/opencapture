@@ -31,7 +31,7 @@ from src.backend.import_models import splitter, doctypes
 from src.backend.import_controllers import forms, outputs
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from src.backend.import_classes import _Files, _Splitter, _CMIS, _MaarchWebServices, _OpenADS
+from src.backend.import_classes import _Files, _Splitter, _CMIS, _MEMWebServices, _OpenADS
 
 
 def handle_uploaded_file(files, input_id):
@@ -292,14 +292,14 @@ def get_output_parameters(parameters):
     return data
 
 
-def export_maarch(auth_data, file_path, args, batch):
+def export_mem(auth_data, file_path, args, batch):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     host = auth_data['host']
     login = auth_data['login']
     password = auth_data['password']
     if host and login and password:
-        ws = _MaarchWebServices(
+        ws = _MEMWebServices(
             host,
             login,
             password,
@@ -325,19 +325,19 @@ def export_maarch(auth_data, file_path, args, batch):
                 return '', 200
             else:
                 response = {
-                    "errors": gettext('EXPORT_MAARCH_ERROR'),
+                    "errors": gettext('EXPORT_MEM_ERROR'),
                     "message": message['errors']
                 }
                 return response, 400
         else:
             response = {
-                "errors": gettext('EXPORT_MAARCH_ERROR'),
+                "errors": gettext('EXPORT_MEM_ERROR'),
                 "message": ''
             }
             return response, 400
     else:
         response = {
-            "errors": gettext('MAARCH_WS_INFO_EMPTY'),
+            "errors": gettext('MEM_WS_INFO_EMPTY'),
             "message": ''
         }
         return response, 400
@@ -682,16 +682,16 @@ def validate(args):
                         return response, 500
 
                 """
-                    Export to Maarch
+                    Export to MEM Courrier
                 """
-                if output[0]['output_type_id'] in ['export_maarch']:
-                    maarch_params = get_output_parameters(output[0]['data']['options']['parameters'])
-                    maarch_auth = get_output_parameters(output[0]['data']['options']['auth'])
+                if output[0]['output_type_id'] in ['export_mem']:
+                    mem_params = get_output_parameters(output[0]['data']['options']['parameters'])
+                    mem_auth = get_output_parameters(output[0]['data']['options']['auth'])
                     pdf_export_parameters = {
-                        'filename': 'TMP_PDF_EXPORT_TO_MAARCH',
+                        'filename': 'TMP_PDF_EXPORT_TO_MEM',
                         'extension': 'pdf',
-                        'separator': maarch_params['separator'],
-                        'file_name': maarch_params['filename'],
+                        'separator': mem_params['separator'],
+                        'file_name': mem_params['filename'],
                     }
                     res_export_pdf = export_pdf(batch, args['documents'], pdf_export_parameters, pages, now,
                                                 output[0]['compress_type'])
@@ -706,9 +706,9 @@ def validate(args):
                         }
                         parameters['subject'] = _Splitter.get_mask_result(args['documents'][index], args['batchMetadata'],
                                                                           now, mask_args)
-                        res_export_maarch = export_maarch(maarch_auth, file_path, parameters, batch)
-                        if res_export_maarch[1] != 200:
-                            return res_export_maarch
+                        res_export_mem = export_mem(mem_auth, file_path, parameters, batch)
+                        if res_export_mem[1] != 200:
+                            return res_export_mem
                 """
                     Export to OpenADS
                 """

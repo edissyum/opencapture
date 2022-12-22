@@ -18,3 +18,5 @@ ALTER TABLE "accounts_customer" ADD COLUMN module VARCHAR(10);
 UPDATE "accounts_customer" SET module = 'verifier';
 
 ALTER TABLE "users" ADD COLUMN email TEXT;
+
+REPLACE MAARCH BY MEM

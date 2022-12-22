@@ -64,7 +64,7 @@ class Splitter:
                 self.result_batches[-1].append({
                     'source_page': page['source_page'],
                     'doctype_value': page['doctype_value'],
-                    'maarch_value': page['maarch_value'],
+                    'mem_value': page['mem_value'],
                     'metadata_1': page['metadata_1'],
                     'metadata_2': page['metadata_2'],
                     'metadata_3': page['metadata_3'],
@@ -142,10 +142,10 @@ class Splitter:
                                 documents_data['custom_fields'][custom_field['label_short']] = page['metadata_3']
                     args['columns']['data'] = json.dumps(documents_data)
                     """
-                        Maarch entity separator
+                        MEM Courrier entity separator
                     """
-                    if page['maarch_value']:
-                        entity = page['maarch_value']
+                    if page['mem_value']:
+                        entity = page['mem_value']
                         if len(entity.split('_')) == 2:
                             entity = entity.split('_')[1]
                         documents_data = {}
@@ -153,7 +153,7 @@ class Splitter:
                             'select': ['*'],
                             'table': ['custom_fields'],
                             'where': ['metadata_key = %s', 'status <> %s'],
-                            'data': ['SEPARATOR_MAARCH', 'DEL'],
+                            'data': ['SEPARATOR_MEM', 'DEL'],
                         })
                         documents_data['custom_fields'] = {}
                         for custom_field in custom_fields:
