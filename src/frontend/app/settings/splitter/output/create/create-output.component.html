@@ -17,16 +17,16 @@
                         <div *ngIf="this.serviceSettings.getSettingsAction(parent['id'], setting['id']) else noActions">
                             <mat-expansion-panel *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
                                                  [expanded]="this.router.url.includes(setting['route'])">
-                                <mat-expansion-panel-header class="font-normal w-full h-20">
+                                <mat-expansion-panel-header class="font-normal w-full h-16">
                                     <mat-panel-title class="font-normal justify-center items-center text-center">
                                         <i [class.text-green-400]="this.router.url === setting['route']"
                                            class="absolute text-lg left-4 w-10 h-10 rounded-full flex items-center justify-center {{ setting['icon'] }}">
                                         </i>
                                         <button mat-button [class.text-green-400]="this.router.url === setting['route']"
-                                                class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
+                                                class="pr-0 ml-2 font-normal w-full h-16 flex justify-center items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                                [routerLink]="setting['route']">
-                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm 2xl:w-full">
+                                                [routerLink]="setting['route']" style="font-size: 0.82rem !important">
+                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 2xl:w-full">
                                                 {{ setting['label'] | translate }}
                                             </p>
                                         </button>
@@ -40,12 +40,14 @@
                                          *ngIf="(this.privilegesService.hasPrivilege(action['privilege']) || setting['privilege'] === '*') && (!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route'])))">
                                         <button mat-button
                                                 [class.text-green-400]="this.router.url.includes(action['route'])"
-                                                class="font-normal w-full h-12 ml-2 2xl:ml-12 flex items-center text-center"
+                                                [class.text-gray-800]="!this.router.url.includes(action['route'])"
+                                                [class.text-gray-800]="!this.router.url.includes(action['route'])"
+                                                class="font-normal w-full h-10 ml-2 2xl:ml-4 text-xs flex items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                                 [routerLink]="action['route']"
                                                 [class.disable_link]="action['showOnlyIfActive']">
-                                            <i class="absolute -mt-2.5 2xl:-mt-2 text-lg w-10 h-10 rounded-full flex items-center justify-center {{ action['icon'] }}"></i>
-                                            <p class="m-0 ml-10 2xl:ml-12 text-xs 2xl:text-sm" style="margin-top: 2.5px!important">
+                                            <i class="absolute -mt-2.5 2xl:-mt-2 text-sm w-10 h-10 rounded-full flex items-center justify-center {{ action['icon'] }}"></i>
+                                            <p class="m-0 ml-10 2xl:ml-12 text-xs" style="margin-top: 2.5px!important">
                                                 {{ action['label'] | translate }}
                                             </p>
                                         </button>
@@ -57,10 +59,10 @@
                             <i class="absolute mt-5 left-5 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{ setting['icon'] }}"></i>
                             <button *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
                                     mat-button [class.text-green-400]="this.router.url === setting['route']"
-                                    class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
+                                    class="pr-0 ml-2 font-normal w-full h-16 flex justify-center items-center text-center"
                                     (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                    [routerLink]="setting['route']">
-                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm 2xl:w-full">
+                                    [routerLink]="setting['route']" style="font-size: 0.82rem !important">
+                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 2xl:w-full">
                                     {{ setting['label'] | translate }}
                                 </p>
                             </button>

@@ -17,16 +17,16 @@
                         <div *ngIf="this.serviceSettings.getSettingsAction(parent['id'], setting['id']) else noActions">
                             <mat-expansion-panel *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
                                                  [expanded]="this.router.url.includes(setting['route'])">
-                                <mat-expansion-panel-header class="font-normal w-full h-20">
+                                <mat-expansion-panel-header class="font-normal w-full h-16">
                                     <mat-panel-title class="font-normal justify-center items-center text-center">
                                         <i [class.text-green-400]="this.router.url === setting['route']"
                                            class="absolute text-lg left-4 w-10 h-10 rounded-full flex items-center justify-center {{ setting['icon'] }}">
                                         </i>
                                         <button mat-button [class.text-green-400]="this.router.url === setting['route']"
-                                                class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
+                                                class="pr-0 ml-2 font-normal w-full h-16 flex justify-center items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                                [routerLink]="setting['route']">
-                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm 2xl:w-full">
+                                                [routerLink]="setting['route']" style="font-size: 0.82rem !important">
+                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 2xl:w-full">
                                                 {{ setting['label'] | translate }}
                                             </p>
                                         </button>
@@ -40,12 +40,13 @@
                                          *ngIf="(this.privilegesService.hasPrivilege(action['privilege']) || setting['privilege'] === '*') && (!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route'])))">
                                         <button mat-button
                                                 [class.text-green-400]="this.router.url.includes(action['route'])"
-                                                class="font-normal w-full h-12 ml-2 2xl:ml-12 flex items-center text-center"
+                                                [class.text-gray-800]="!this.router.url.includes(action['route'])"
+                                                class="font-normal w-full h-10 ml-2 2xl:ml-4 text-xs flex items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                                 [routerLink]="action['route']"
                                                 [class.disable_link]="action['showOnlyIfActive']">
-                                            <i class="absolute -mt-2.5 2xl:-mt-2 text-lg w-10 h-10 rounded-full flex items-center justify-center {{ action['icon'] }}"></i>
-                                            <p class="m-0 ml-10 2xl:ml-12 text-xs 2xl:text-sm" style="margin-top: 2.5px!important">
+                                            <i class="absolute -mt-2.5 2xl:-mt-2 text-sm w-10 h-10 rounded-full flex items-center justify-center {{ action['icon'] }}"></i>
+                                            <p class="m-0 ml-10 2xl:ml-12 text-xs" style="margin-top: 2.5px!important">
                                                 {{ action['label'] | translate }}
                                             </p>
                                         </button>
@@ -57,10 +58,10 @@
                             <i class="absolute mt-5 left-5 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{ setting['icon'] }}"></i>
                             <button *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
                                     mat-button [class.text-green-400]="this.router.url === setting['route']"
-                                    class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
+                                    class="pr-0 ml-2 font-normal w-full h-16 flex justify-center items-center text-center"
                                     (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                    [routerLink]="setting['route']">
-                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm 2xl:w-full">
+                                    [routerLink]="setting['route']" style="font-size: 0.82rem !important">
+                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 2xl:w-full">
                                     {{ setting['label'] | translate }}
                                 </p>
                             </button>
@@ -83,8 +84,8 @@
                 <hr class="border-green-400">
             </div>
             <button mat-icon-button (click)="sidenav2.toggle();"
-                    class="absolute right-2 top-1">
-                <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-xl text-gray-900"></i>
+                    class="absolute right-2 top-0.5">
+                <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
             </button>
         </div>
         <div *ngIf="!loading" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
@@ -133,12 +134,12 @@
                     </mat-select>
                     <span *ngIf="!field.canRemove" (click)="$event.stopPropagation(); addOutput()"
                           matTooltip="{{ 'OUTPUT.add' | translate }}"
-                          class="absolute top-1 right-4 cursor-pointer text-gray-900 z-40" style="right: -2.2rem">
+                          class="absolute top-3.5 right-4 cursor-pointer text-gray-900 z-40">
                         <mat-icon class="text-lg">add_circle</mat-icon>
                     </span>
                     <span *ngIf="field.canRemove" (click)="$event.stopPropagation(); removeOutput(cpt)"
                           matTooltip="{{ 'OUTPUT.remove' | translate }}"
-                          class="absolute top-1 right-4 cursor-pointer text-red-500" style="right: -2.2rem">
+                          class="absolute top-3.5 right-4 cursor-pointer text-red-500">
                         <mat-icon class="text-xl">delete_forever</mat-icon>
                     </span>
                 </mat-form-field>
@@ -218,9 +219,13 @@
                                         <mat-menu #size="matMenu">
                                             <button mat-menu-item [id]="field.id"
                                                     *ngFor="let _class of classList"
-                                                    (click)="changeClass(field.id, _class.id, _class.label, category['id'])"
-                                                    [class.bg-green-400]="_class.id === field.class">
-                                                {{ _class.label | translate  }}
+                                                    (click)="changeClass(field.id, _class.id, _class.label, category['id'])">
+                                                <span [class.text-green-400]="_class.id === field.class">
+                                                    {{ _class.label | translate }}
+                                                </span>
+                                                <span *ngIf="_class.id === field.class">
+                                                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                </span>
                                             </button>
                                         </mat-menu>
                                         <mat-menu #colors="matMenu">
@@ -235,25 +240,37 @@
                                         <mat-menu #format="matMenu">
                                             <button mat-menu-item [id]="field.id"
                                                     *ngFor="let _format of formatList"
-                                                    (click)="changeFormat(field.id, _format.id, _format.icon, category['id'])"
-                                                    [class.bg-green-400]="_format.id === field.format">
-                                                {{ _format.label | translate }}
+                                                    (click)="changeFormat(field.id, _format.id, _format.icon, category['id'])">
+                                                <span [class.text-green-400]="_format.id === field.format">
+                                                    {{ _format.label | translate }}
+                                                </span>
+                                                <span *ngIf="_format.id === field.format">
+                                                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                </span>
                                             </button>
                                         </mat-menu>
                                         <mat-menu #display="matMenu">
                                             <button mat-menu-item [id]="field.id"
                                                     *ngFor="let _display of displayList"
-                                                    (click)="changeDisplay(field.id, _display.id, _display.icon, category['id'])"
-                                                    [class.bg-green-400]="_display.id === field.display">
-                                                {{ _display.label | translate }}
+                                                    (click)="changeDisplay(field.id, _display.id, _display.icon, category['id'])">
+                                                <span [class.text-green-400]="_display.id === field.display">
+                                                    {{ _display.label | translate }}
+                                                </span>
+                                                <span *ngIf="_display.id === field.display">
+                                                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                </span>
                                             </button>
                                         </mat-menu>
                                         <mat-menu #required="matMenu">
                                             <button mat-menu-item [id]="field.id"
                                                     *ngFor="let required of mandatoryList"
-                                                    (click)="changeRequired(field.id, required.id, required.icon, category['id'])"
-                                                    [class.bg-green-400]="required.id === field.required">
-                                                {{ required.label | translate }}
+                                                    (click)="changeRequired(field.id, required.id, required.icon, category['id'])">
+                                                <span [class.text-green-400]="required.id === field.required">
+                                                    {{ required.label | translate }}
+                                                </span>
+                                                <span *ngIf="required.id === field.required">
+                                                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                </span>
                                             </button>
                                         </mat-menu>
                                     </div>

@@ -401,7 +401,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     /**** Maarch Webservices call ****/
     testMaarchConnection() {
         const args = this.getMaarchConnectionInfo();
-        this.http.post(environment['url'] + '/ws/maarch/testConnection', {'args': args}, {headers: this.authService.headers},
+        this.http.post(environment['url'] + '/ws/mem/testConnection', {'args': args}, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
                 const status = data.status;
@@ -462,10 +462,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
         };
     }
 
-    getUsersFromMaarch(cpt: any) {
+    getUsersFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(environment['url'] + '/ws/maarch/getUsers', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/mem/getUsers', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.users) {
                     const data = _return.users;
                     const users = [];
@@ -485,7 +485,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     getEntitiesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(environment['url'] + '/ws/maarch/getEntities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/mem/getEntities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.entities) {
                     const data = _return.entities;
                     const entities = [];
@@ -505,7 +505,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     getDoctypesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(environment['url'] + '/ws/maarch/getDoctypes', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/mem/getDoctypes', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.doctypes) {
                     const data = _return.doctypes;
                     const doctypes = [];
@@ -525,7 +525,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     getPrioritiesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(environment['url'] + '/ws/maarch/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/mem/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.priorities) {
                     const data = _return.priorities;
                     const priorities = [];
@@ -545,7 +545,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     getStatusesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(environment['url'] + '/ws/maarch/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/mem/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.statuses) {
                     const data = _return.statuses;
                     const statuses = [];
@@ -565,7 +565,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     getIndexingModelsFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(environment['url'] + '/ws/maarch/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/mem/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.indexingModels) {
                     const data = _return.indexingModels;
                     const indexingModels = [];

@@ -113,7 +113,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
         ]
     }
 }');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (2, 'export_maarch', 'Export vers Maarch', 'verifier', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (2, 'export_mem', 'Export vers MEM Courrier', 'verifier', '{
 	"options": {
         "auth": [
             {
@@ -142,19 +142,19 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
             {
                 "id": "enabled",
                 "type": "boolean",
-                "label": "Activer la liaison avec un document dans Maarch",
+                "label": "Activer la liaison avec un document dans MEM Courrier",
                 "required": "true",
                 "webservice": "",
                 "placeholder": ""
             },
             {
-                "id": "maarchCustomField",
+                "id": "memCustomField",
                 "type": "text",
                 "label": "Champ personnalisé à récupérer",
                 "required": "false",
-                "webservice": "getCustomFieldsFromMaarch",
+                "webservice": "getCustomFieldsFromMem",
                 "placeholder": "Numéro de devis",
-                "hint": "Champ personnalisé Maarch dans lequel est stocké la donnée nécessaire à la liaison avec un document"
+                "hint": "Champ personnalisé MEM Courrier dans lequel est stocké la donnée nécessaire à la liaison avec un document"
             },
             {
                 "id": "openCaptureField",
@@ -166,9 +166,9 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "hint": "Identifiant du champ dans Open-Capture"
             },
             {
-                "id": "maarchClause",
+                "id": "memClause",
                 "type": "text",
-                "label": "Clause de selection des documents dans Maarch",
+                "label": "Clause de selection des documents dans MEM Courrier",
                 "required": "false",
                 "webservice": "",
                 "placeholder": "status <> ''END''",
@@ -179,7 +179,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET",
                 "required": "true",
-                "webservice": "getContactsCustomFieldsFromMaarch",
+                "webservice": "getContactsCustomFieldsFromMem",
                 "placeholder": "Identifiant Open-Capture",
                 "hint": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET"
             }
@@ -190,7 +190,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Utilisateur destinataire",
                 "required": "true",
-                "webservice": "getUsersFromMaarch",
+                "webservice": "getUsersFromMem",
                 "placeholder": "Bernard BLIER"
             },
             {
@@ -198,7 +198,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Status",
                 "required": "true",
-                "webservice": "getStatusesFromMaarch",
+                "webservice": "getStatusesFromMem",
                 "placeholder": "Courrier à qualifier"
             },
             {
@@ -214,7 +214,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Type de document",
                 "required": "true",
-                "webservice": "getDoctypesFromMaarch",
+                "webservice": "getDoctypesFromMem",
                 "placeholder": "Facture à qualifier"
             },
             {
@@ -222,7 +222,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Utilisateur Rédacteur",
                 "required": "true",
-                "webservice": "getUsersFromMaarch",
+                "webservice": "getUsersFromMem",
                 "placeholder": "Bernard BLIER"
             },
             {
@@ -230,7 +230,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Priorité",
                 "required": "true",
-                "webservice": "getPrioritiesFromMaarch",
+                "webservice": "getPrioritiesFromMem",
                 "placeholder": "Normal"
             },
             {
@@ -245,7 +245,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Modèle d''''enregistrement",
                 "required": "true",
-                "webservice": "getIndexingModelsFromMaarch",
+                "webservice": "getIndexingModelsFromMem",
                 "placeholder": "Facture"
             },
             {
@@ -253,12 +253,12 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Entité destinatrice",
                 "required": "true",
-                "webservice": "getEntitiesFromMaarch",
+                "webservice": "getEntitiesFromMem",
                 "placeholder": "Service Courrier"
             },
             {
                 "id": "customFields",
-                "hint": "La valeur doit être de type JSON avec des doubles quotes \". La clé est l''''identifiant du custom Maarch, la valeur est l''''identifiant du champ Open-Capture",
+                "hint": "La valeur doit être de type JSON avec des doubles quotes \". La clé est l''''identifiant du custom MEM Courrier, la valeur est l''''identifiant du champ Open-Capture",
                 "type": "textarea",
                 "label": "Champs personnalisés",
                 "isJson": "true",
@@ -299,7 +299,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
 }');
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (1, 'export_xml', 'Export XML par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}, {"id": "extension", "type": "text", "value": "xml"}]}}');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_maarch', 'Export Maarch par défaut', 'verifier');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_mem', 'Export MEM Courrier par défaut', 'verifier');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (3, 'export_pdf', 'Export PDF par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}]}}');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE SPLITTER

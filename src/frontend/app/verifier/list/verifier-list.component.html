@@ -165,14 +165,14 @@
                     <div class="content mx-10 mt-3" *ngIf="!this.loading">
                         <div class="cards-list list grid 2xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-flow-row gap-12">
                             <mat-card *ngFor="let invoice of this.invoices;" class="cursor-pointer p-0 mb-0">
-                                <label class="p-5 absolute z-40 cursor-pointer">
+                                <label class="p-4 absolute z-40 cursor-pointer">
                                     <input id="{{ invoice.invoice_id }}_checkbox" (click)="checkCheckedInvoices()"
-                                           class="accent-green-400 checkBox_list cursor-pointer" type="checkbox">
+                                           class="accent-green-400 checkBox_list cursor-pointer w-5 h-5" type="checkbox">
                                 </label>
-                                <div class="absolute right-0 p-5 z-30">
+                                <div class="absolute right-0 pt-4 pr-5 z-40">
                                     <div [matMenuTriggerFor]="menu" matTooltipPosition="above"
                                          [matTooltip]="this.translate.instant('VERIFIER.documents_settings')">
-                                        <mat-icon class="field_settings text-md">more_vert</mat-icon>
+                                        <i class="fa-solid fa-ellipsis-vertical text-2xl"></i>
                                     </div>
                                     <mat-menu #menu="matMenu">
                                         <button mat-menu-item [matMenuTriggerFor]="customers">
@@ -184,22 +184,29 @@
                                     </mat-menu>
                                     <mat-menu #customers="matMenu">
                                         <button mat-menu-item *ngFor="let customer of this.dataSource.data"
-                                                [class.bg-green-400]="customer.id === invoice.customer_id"
                                                 (click)="changeCustomer(customer.id, invoice.invoice_id)">
-                                            {{ customer.name | translate }}
+                                            <span [class.text-green-400]="customer.id === invoice.customer_id">
+                                                {{ customer.name | translate }}
+                                            </span>
+                                            <span *ngIf="customer.id === invoice.customer_id">
+                                                <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                            </span>
                                         </button>
                                     </mat-menu>
                                     <mat-menu #formMenu="matMenu">
-                                        <button mat-menu-item *ngFor="let form of this.filteredForms"
-                                                [class.bg-green-400]="form.id === invoice.form_id"
-                                                (click)="changeInvoiceForm(form.id, invoice.invoice_id)">
-                                            {{ form.label | translate }}
+                                        <button mat-menu-item (click)="changeInvoiceForm(form.id, invoice.invoice_id)"
+                                                *ngFor="let form of this.filteredForms">
+                                            <span [class.text-green-400]="form.id === invoice.form_id">
+                                                {{ form.label | translate }}
+                                            </span>
+                                            <span *ngIf="form.id === invoice.form_id">
+                                                <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                            </span>
                                         </button>
                                     </mat-menu>
                                 </div>
                                 <img [routerLink]="invoice.locked ? '/verifier/list' : '/verifier/viewer/' + invoice.invoice_id"
-                                     mat-card-image class="m-auto p-4"
-                                     [src]="invoice.thumb" alt="Open-Capture Verifier image"
+                                     mat-card-image class="m-auto p-4" [src]="invoice.thumb" alt="Open-Capture image"
                                      (click)="invoice.locked ? displayInvoiceLocked(invoice.locked_by) : ''">
                                 <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-8 pr-8"
                                         [routerLink]="invoice.locked ? '/verifier/list' : '/verifier/viewer/' + invoice.invoice_id"

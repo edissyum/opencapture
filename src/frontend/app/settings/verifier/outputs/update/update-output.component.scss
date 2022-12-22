@@ -4,4 +4,7 @@
             @apply w-1/2;
         }
     }
+    & .mat-mdc-tab-body {
+        height: 50vh;
+    }
 }

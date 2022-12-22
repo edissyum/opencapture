@@ -264,7 +264,7 @@ export class VerifierViewerComponent implements OnInit {
 
                     this.form.facturation.forEach((element: any) => {
                        if (element.id === data['autocompleteField']) {
-                           this.http.post(environment['url'] + '/ws/maarch/getDocumentsWithContact', data, {headers: this.authService.headers},
+                           this.http.post(environment['url'] + '/ws/mem/getDocumentsWithContact', data, {headers: this.authService.headers},
                            ).pipe(
                                tap((_return: any) => {
                                    element.type = 'autocomplete';
