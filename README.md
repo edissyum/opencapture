@@ -1,4 +1,4 @@
-![Logo Open-Capture](https://edissyum.com/wp-content/uploads/2019/08/OpenCaptureForInvoices.png)
+![Logo Open-Capture](https://open-capture.com/wp-content/uploads/2022/12/0_Open-Capture.png)
 
 # Open-Capture by Edissyum v2
 
