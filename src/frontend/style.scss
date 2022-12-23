@@ -119,9 +119,6 @@ div[id*="select-area-label_"] {
 
 .settings_header {
     & .mat-form-field-wrapper {
-        @apply pt-1;
-        @apply pb-1;
-
         & .mat-form-field-infix {
             max-height: 3rem !important;
 
@@ -172,7 +169,6 @@ div[id*="select-area-label_"] {
     @apply bg-green-400;
     @apply bg-opacity-60;
     @apply text-gray-900;
-    padding-top: 0.9rem;
     @apply relative;
     @apply z-30;
 }

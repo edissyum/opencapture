@@ -105,7 +105,8 @@
 }
 
 .settings_search .mat-mdc-text-field-wrapper {
-    @apply top-2;
+    @apply top-3;
+    @apply flex;
     & .mat-mdc-form-field-flex {
         @apply h-10;
         & .mdc-notched-outline .mdc-notched-outline__notch {
