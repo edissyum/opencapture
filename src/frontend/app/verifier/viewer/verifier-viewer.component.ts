@@ -35,7 +35,6 @@ import { HistoryService } from "../../../services/history.service";
 import { LocaleService } from "../../../services/locale.service";
 declare const $: any;
 
-
 @Component({
     selector: 'verifier-viewer',
     templateUrl: './verifier-viewer.component.html',
@@ -322,7 +321,7 @@ export class VerifierViewerComponent implements OnInit {
         if (this.imgArray[cpt]) {
             this.imgSrc = this.imgArray[cpt];
         } else {
-            this.http.post(environment['url'] + '/ws/verifier/getThumb',{'args': {'type': 'full', 'filename': filename}},
+            this.http.post(environment['url'] + '/ws/verifier/getThumb', {'args': {'type': 'full', 'filename': filename}},
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     this.imgSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
@@ -806,7 +805,7 @@ export class VerifierViewerComponent implements OnInit {
             this.form[category].forEach((input: any) => {
                 if (input.id.trim() === inputId.trim()) {
                     if (input.format === 'number_int' || input.format === 'number_float') {
-                        value = value.replace(/[A-Za-z€%$]/g,'');
+                        value = value.replace(/[A-Za-z€%$]/g, '');
                     }
                     if (input.type === 'date') {
                         const format = moment().localeData().longDateFormat('L');
@@ -1187,7 +1186,7 @@ export class VerifierViewerComponent implements OnInit {
                 Object.keys(listOfNewFieldData).forEach((newFieldId: any) => {
                     this.form[categoryId].forEach((element: any, cpt: number) => {
                         if (newFieldId === element.id) {
-                            const parentId = element.id.split('_').slice(0,-1).join('_');
+                            const parentId = element.id.split('_').slice(0, -1).join('_');
                             this.form[categoryId].splice(cpt, 1);
                             this.form[categoryId].forEach((parent_field: any) => {
                                 if (parent_field.id.trim() === parentId.trim()) {
@@ -1228,7 +1227,7 @@ export class VerifierViewerComponent implements OnInit {
                 const numberOfField = field.class.replace('w-1/', '');
                 if (numberOfField !== 'full') {
                     for (let i = cpt - numberOfField + 1; i <= cpt; i++) {
-                        const parentId = this.form[categoryId][i].id.split('_').slice(0,-1).join('_');
+                        const parentId = this.form[categoryId][i].id.split('_').slice(0, -1).join('_');
                         listOfFieldToDelete.push(this.form[categoryId][i].id);
                         this.form[categoryId].forEach((parent_field: any) => {
                             if (parent_field.id.trim() === parentId.trim()) {
@@ -1246,7 +1245,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     removeDuplicateField(fieldId: any, categoryId: any) {
-        const parentId = fieldId.split('_').slice(0,-1).join('_');
+        const parentId = fieldId.split('_').slice(0, -1).join('_');
         this.form[categoryId].forEach((field: any, cpt:number) => {
             if (field.id.trim() === fieldId.trim()) {
                 this.deleteData(field.id);
@@ -1335,7 +1334,7 @@ export class VerifierViewerComponent implements OnInit {
         let total   = 0;
         for (let i = size - 1; i >= 0; i--) {
             const step = (value.charCodeAt(i) - 48) * (bal + 1);
-            total += (step > 9) ? step - 9:step;
+            total += (step > 9) ? step - 9 : step;
             bal = 1 - bal;
         }
         return total % 10 === 0;

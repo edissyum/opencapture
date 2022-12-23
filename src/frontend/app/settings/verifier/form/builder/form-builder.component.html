@@ -103,7 +103,9 @@
                     <mat-slide-toggle [formControl]="this.formSettings['delete_documents_after_outputs'].control">
                         {{ "FORMS.delete_documents_after_outputs" | translate }}
                     </mat-slide-toggle>
-                    <mat-hint class="text-gray-600 mt-4">{{ "FORMS.delete_documents_after_outputs_hint" | translate }}</mat-hint>
+                    <mat-hint class="text-gray-600 mt-4">
+                        {{ "FORMS.delete_documents_after_outputs_hint" | translate }}
+                    </mat-hint>
                 </div>
                 <div class="flex justify-center mt-4">
                     <mat-slide-toggle [formControl]="this.formSettings['allow_automatic_validation'].control"
@@ -115,7 +117,7 @@
                     <mat-label>{{ "FORMS.automatic_validation_data" | translate }}</mat-label>
                     <input matInput [formControl]="this.formSettings['automatic_validation_data'].control" required
                            placeholder="supplier,footer,invoice_number,document_date">
-                    <mat-hint (click)="this.modalOpen = true" class="cursor-pointer">
+                    <mat-hint (click)="this.modalOpen = true" class="text-gray-600 cursor-pointer">
                         {{ 'FORMS.automatic_validation_data_hint' | translate }}
                     </mat-hint>
                 </mat-form-field>
@@ -135,12 +137,12 @@
                     <span *ngIf="!field.canRemove" (click)="$event.stopPropagation(); addOutput()"
                           matTooltip="{{ 'OUTPUT.add' | translate }}"
                           class="absolute top-3.5 right-4 cursor-pointer text-gray-900 z-40">
-                        <mat-icon class="text-lg">add_circle</mat-icon>
+                        <i class="fa-solid fa-circle-plus"></i>
                     </span>
                     <span *ngIf="field.canRemove" (click)="$event.stopPropagation(); removeOutput(cpt)"
                           matTooltip="{{ 'OUTPUT.remove' | translate }}"
                           class="absolute top-3.5 right-4 cursor-pointer text-red-500">
-                        <mat-icon class="text-xl">delete_forever</mat-icon>
+                        <i class="fa-solid fa-trash"></i>
                     </span>
                 </mat-form-field>
             </div>
@@ -156,10 +158,12 @@
                             <div *ngFor="let field of this.fields[category['id']]; let index = index"
                                  class="flex items-center overflow-hidden" [class]="field.class"
                                  [ngSortGridItems]="fields[category['id']]" ngSortgridItem
-                                 [ngSortGridGroup]="category['id']" (sorted)="storeNewOrder($event, category['id'])">
+                                 [ngSortGridGroup]="category['id']" (sorted)="storeNewOrder($event, category['id'])"
+                                 [class.-mt-4]="field.lineSelected">
                                 <mat-form-field class="right-0 form-builder mt-1 rounded-md"
                                                 [class.bg-opacity-30]="field.lineSelected"
                                                 [class.px-3]="!field.lineSelected" [class.px-6]="field.lineSelected"
+                                                [class.pb-0]="field.lineSelected" [class.pt-5]="field.lineSelected"
                                                 [ngClass]="{'w-full': !field.lineSelected, 'w-11/12': field.lineSelected}"
                                                 [class.bg-gray-900]="field.lineSelected"
                                                 (click)="selectForLine($event, this.fields[category['id']][index])">
@@ -194,7 +198,7 @@
                                     <div class="absolute top-0 -right-4 z-10" *ngIf="!field.edit_name">
                                         <button mat-button [matMenuTriggerFor]="menu" matTooltipPosition="above"
                                                 [matTooltip]="this.translate.instant('VERIFIER.field_settings')">
-                                            <mat-icon class="field_settings text-md">more_vert</mat-icon>
+                                            <i class="fa-solid fa-ellipsis-vertical text-lg"></i>
                                         </button>
                                         <mat-menu #menu="matMenu">
                                             <button mat-menu-item [matMenuTriggerFor]="colors"
@@ -204,16 +208,24 @@
                                                 {{ "VERIFIER.colors" | translate }}
                                             </button>
                                             <button mat-menu-item [matMenuTriggerFor]="size">
-                                                {{ "VERIFIER.size" | translate }} <small class="ml-2">{{ field.class_label }}</small>
+                                                {{ "VERIFIER.size" | translate }} <small class="ml-2">
+                                                    {{ field.class_label }}
+                                                </small>
                                             </button>
                                             <button mat-menu-item [matMenuTriggerFor]="format" *ngIf="field.type !== 'select'">
-                                                {{ "VERIFIER.format" | translate }} <small class="ml-2"><i class="text-base text-green-400 {{ field.format_icon }}"></i></small>
+                                                {{ "VERIFIER.format" | translate }} <small class="ml-2">
+                                                    <i class="text-base text-green-400 {{ field.format_icon }}"></i>
+                                                </small>
                                             </button>
                                             <button mat-menu-item [matMenuTriggerFor]="display" *ngIf="field.type !== 'select'">
-                                                {{ "VERIFIER.display" | translate }} <small class="ml-2"><i class="text-base text-green-400 {{ field.display_icon }}"></i></small>
+                                                {{ "VERIFIER.display" | translate }} <small class="ml-2">
+                                                    <i class="text-base text-green-400 {{ field.display_icon }}"></i>
+                                                </small>
                                             </button>
                                             <button mat-menu-item [matMenuTriggerFor]="required">
-                                                {{ "VERIFIER.required" | translate }} <small class="ml-2"><i class="text-base text-green-400 {{ field.required_icon }}"></i></small>
+                                                {{ "VERIFIER.required" | translate }} <small class="ml-2">
+                                                    <i class="text-base text-green-400 {{ field.required_icon }}"></i>
+                                                </small>
                                             </button>
                                         </mat-menu>
                                         <mat-menu #size="matMenu">

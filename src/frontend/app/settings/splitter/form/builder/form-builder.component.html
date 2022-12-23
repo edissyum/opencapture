@@ -117,12 +117,12 @@
                     <span *ngIf="!field.canRemove" (click)="$event.stopPropagation(); addOutput()"
                           matTooltip="{{ 'OUTPUT.add' | translate }}"
                           class="absolute top-3.5 right-4 cursor-pointer text-gray-900 z-50">
-                        <mat-icon class="text-lg">add_circle</mat-icon>
+                        <i class="fa-solid fa-circle-plus"></i>
                     </span>
                     <span *ngIf="field.canRemove" (click)="$event.stopPropagation(); removeOutput(cpt)"
                           matTooltip="{{ 'OUTPUT.remove' | translate }}"
                           class="absolute top-3.5 right-4 cursor-pointer text-red-500">
-                        <mat-icon class="text-xl">delete_forever</mat-icon>
+                        <i class="fa-solid fa-trash"></i>
                     </span>
                 </mat-form-field>
                 <mat-form-field>

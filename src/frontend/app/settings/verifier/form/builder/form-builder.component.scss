@@ -59,10 +59,11 @@ i.cdk-drag {
                 @apply duration-500;
             }
         }
-
-        &:hover > .mat-mdc-form-field-infix > i {
-            @apply visible;
-            @apply opacity-100;
+        .mat-mdc-form-field-infix {
+            &:hover i {
+                @apply visible;
+                @apply opacity-100;
+            }
         }
 
         &:hover > .mat-mdc-form-field-infix > div > button {
@@ -75,4 +76,8 @@ i.cdk-drag {
             @apply pl-12;
         }
     }
+}
+
+::ng-deep .mat-mdc-menu-panel {
+    @apply max-w-full #{!important};
 }
