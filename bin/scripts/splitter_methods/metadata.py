@@ -19,50 +19,52 @@ import re
 from PIL import Image
 
 
-def process(args, file, log, splitter, files, batch_folder, config, docservers, ocr, regex):
+def process(args):
     """
-    :param args:
-    :param file: File path to split
-    :param log: log object
-    :param splitter: Splitter object
-    :param files: Files object
-    :param batch_folder: batch folder path
-    :param config: Config object
-    :param ocr: PyTesseract object
-    :param regex: regex content values
+    Process custom split for file
+    :param args: has :
+    - log: log object
+    - files: Files object
+    - config: Config object
+    - ocr: PyTesseract object
+    - file: File path to split
+    - splitter: Splitter object
+    - regex: regex content values
+    - customer_id: used customer id
+    - batch_folder: batch folder path
     :return: N/A
     """
-    log.info('Processing file for separation : ' + file)
+    args['log'].info('Processing file for separation : ' + args['file'])
 
-    batch_folder_path = f"{docservers['SPLITTER_BATCHES']}/{batch_folder}/"
-    batch_thumbs_path = f"{docservers['SPLITTER_THUMB']}/{batch_folder}/"
-    files.save_img_with_pdf2image(file, batch_folder_path + "page")
-    files.save_img_with_pdf2image_min(file, batch_thumbs_path + "page", single_file=False)
+    batch_folder_path = f"{args['docservers']['SPLITTER_BATCHES']}/{args['batch_folder']}/"
+    batch_thumbs_path = f"{args['docservers']['SPLITTER_THUMB']}/{args['batch_folder']}/"
+    args['files'].save_img_with_pdf2image(args['file'], batch_folder_path + "page")
+    args['files'].save_img_with_pdf2image_min(args['file'], batch_thumbs_path + "page", single_file=False)
 
-    list_files = files.sorted_file(batch_folder, 'jpg')
+    list_files = args['files'].sorted_file(args['batch_folder'], 'jpg')
     blank_pages = []
 
     regex_content = {
-        'invoice_number': regex['invoice_number'],
-        'vat_number': regex['vat_number'],
-        'siret': regex['siret'],
-        'siren': regex['siren'],
-        'iban': regex['iban'],
+        'invoice_number': args['regex']['invoice_number'],
+        'vat_number': args['regex']['vat_number'],
+        'siret': args['regex']['siret'],
+        'siren': args['regex']['siren'],
+        'iban': args['regex']['iban'],
     }
 
     # Remove blank pages
-    if splitter.separator_qr.remove_blank_pages:
+    if args['splitter'].separator_qr.remove_blank_pages:
         cpt = 0
         tmp_list_files = list_files
         for f in tmp_list_files:
-            if files.is_blank_page(f[1]):
+            if args['files'].is_blank_page(f[1]):
                 blank_pages.append(cpt)
             cpt = cpt + 1
 
-    split(splitter, list_files, ocr, regex_content)
-    original_file = file
-    file = files.move_to_docservers(docservers, file, 'splitter')
-    splitter.save_documents(batch_folder, file, args['input_id'], original_file)
+    split(args['splitter'], list_files, args['ocr'], regex_content)
+    original_file = args['file']
+    file = args['files'].move_to_docservers(args['docservers'], args['file'], 'splitter')
+    args['splitter'].save_documents(args['batch_folder'], file, args['input_id'], original_file)
 
 
 def split(splitter, pages, ocr, regex_content):
