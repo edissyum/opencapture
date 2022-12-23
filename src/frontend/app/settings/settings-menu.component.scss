@@ -1,0 +1,9 @@
+.settings-menu-nav {
+    top:0.1rem;
+    @apply flex;
+    @apply w-1/7;
+    @apply h-full;
+    @apply flex-col;
+    @apply border-r;
+    @apply border-green-400;
+}

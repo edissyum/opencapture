@@ -1,75 +1,6 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
-    <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
-        <mat-divider class="border-green-400"></mat-divider>
-        <mat-nav-list class="pt-0 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 60px)">
-            <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent(); let i = index"
-                                 [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
-                <mat-expansion-panel-header class="settings_expansion" [class.border-t-0]="i === 0">
-                    <mat-panel-title>
-                        {{ parent['label'] | translate }}
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div class="w-full border-t-2 border-gray-600">
-                    <div *ngFor="let setting of this.serviceSettings.getSettings()[parent['id']];"
-                         [class.border-b]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
-                         [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'">
-                        <div *ngIf="this.serviceSettings.getSettingsAction(parent['id'], setting['id']) else noActions">
-                            <mat-expansion-panel *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
-                                                 [expanded]="this.router.url.includes(setting['route'])">
-                                <mat-expansion-panel-header class="font-normal w-full h-16">
-                                    <mat-panel-title class="font-normal justify-center items-center text-center">
-                                        <i [class.text-green-400]="this.router.url === setting['route']"
-                                           class="absolute text-lg left-4 w-10 h-10 rounded-full flex items-center justify-center {{ setting['icon'] }}">
-                                        </i>
-                                        <button mat-button [class.text-green-400]="this.router.url === setting['route']"
-                                                class="pr-0 ml-2 font-normal w-full h-16 flex justify-center items-center text-center"
-                                                (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                                [routerLink]="setting['route']" style="font-size: 0.82rem !important">
-                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 2xl:w-full">
-                                                {{ setting['label'] | translate }}
-                                            </p>
-                                        </button>
-                                    </mat-panel-title>
-                                </mat-expansion-panel-header>
-                                <div *ngFor="let action of this.serviceSettings.getSettingsAction(parent['id'], setting['id'])"
-                                     [class.border-gray-600]="!action['showOnlyIfActive']"
-                                     [class.border-t]="!action['showOnlyIfActive']"
-                                     [class.w-full]="!action['showOnlyIfActive']">
-                                    <div class="border-b border-gray-400"
-                                         *ngIf="(this.privilegesService.hasPrivilege(action['privilege']) || setting['privilege'] === '*') && (!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route'])))">
-                                        <button mat-button
-                                                [class.text-green-400]="this.router.url.includes(action['route'])"
-                                                [class.text-gray-800]="!this.router.url.includes(action['route'])"
-                                                class="font-normal w-full h-10 ml-2 2xl:ml-4 text-xs flex items-center text-center"
-                                                (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                                [routerLink]="action['route']"
-                                                [class.disable_link]="action['showOnlyIfActive']">
-                                            <i class="absolute -mt-2.5 2xl:-mt-2 text-sm w-10 h-10 rounded-full flex items-center justify-center {{ action['icon'] }}"></i>
-                                            <p class="m-0 ml-10 2xl:ml-12 text-xs" style="margin-top: 2.5px!important">
-                                                {{ action['label'] | translate }}
-                                            </p>
-                                        </button>
-                                    </div>
-                                </div>
-                            </mat-expansion-panel>
-                        </div>
-                        <ng-template #noActions>
-                            <i class="absolute mt-5 left-5 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{ setting['icon'] }}"></i>
-                            <button *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
-                                    mat-button [class.text-green-400]="this.router.url === setting['route']"
-                                    class="pr-0 ml-2 font-normal w-full h-16 flex justify-center items-center text-center"
-                                    (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                    [routerLink]="setting['route']" style="font-size: 0.82rem !important">
-                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 2xl:w-full">
-                                    {{ setting['label'] | translate }}
-                                </p>
-                            </button>
-                        </ng-template>
-                    </div>
-                </div>
-            </mat-expansion-panel>
-        </mat-nav-list>
+    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav">
+        <app-settings-menu></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white">
         <div *ngIf="this.loading">
@@ -103,13 +34,13 @@
                 </ng-container>
                 <ng-container matColumnDef="content">
                     <mat-header-cell *matHeaderCellDef> {{ 'HEADER.value' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element" (click)="element.updateMode = true">
+                    <mat-cell *matCellDef="let element" (click)="element.updateMode = true;">
                         <ng-container *ngIf="!element.updateMode else update">
                             {{ element.content }}
                         </ng-container>
                         <ng-template #update>
                             <mat-form-field appearance="outline" class="w-full">
-                                <input [id]="element.id" matInput [value]="element.content" (keyup.enter)="updateValue($event, element.id, element.regex_id)"
+                                <input [id]="element.id" autofocus matInput [value]="element.content" (keyup.enter)="updateValue($event, element.id, element.regex_id)"
                                        class="relative -top-2.5" (focusout)="updateValue($event, element.id, element.regex_id)">
                             </mat-form-field>
                         </ng-template>
@@ -125,6 +56,7 @@
                             <i class="fa-solid fa-edit text-lg"></i>
                         </button>
                         <button *ngIf="element.updateMode"
+                                (click)="element.updateMode = false;"
                                 matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button
                                 class="inline-block align-text-top">
                             <i *ngIf="!this.updateLoading" class="fa-solid fa-check text-lg"></i>
