@@ -84,7 +84,7 @@ class Splitter:
 
             clean_path = re.sub(r"/+", "/", file)
             clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_PDF'])
-
+            print(input_settings)
             args = {
                 'table': 'splitter_batches',
                 'columns': {
@@ -93,7 +93,8 @@ class Splitter:
                     'batch_folder': batch_folder,
                     'thumbnail': os.path.basename(batch[0]['path']),
                     'documents_count': str(max((node['split_document'] for node in batch))),
-                    'form_id': str(input_settings[0]['default_form_id'])
+                    'form_id': str(input_settings[0]['default_form_id']),
+                    'customer_id': str(input_settings[0]['customer_id'])
                 }
             }
 
