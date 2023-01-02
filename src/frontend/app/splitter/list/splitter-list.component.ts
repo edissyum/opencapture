@@ -43,7 +43,6 @@ interface AccountsNode {
     id: number
     parent_id: any
     supplier_id: any
-    purchase_or_sale: any
     count: number
     display: boolean
     children: any
@@ -55,7 +54,6 @@ interface FlatNode {
     id: number
     parent_id: any
     supplier_id: any
-    purchase_or_sale: any
     display: boolean
     count: number
     level: number
@@ -114,7 +112,6 @@ export class SplitterListComponent implements OnInit {
         supplier_id: node.supplier_id,
         id: node.id,
         parent_id: node.parent_id,
-        purchase_or_sale: node.purchase_or_sale,
         display: node.display,
         count: node.count,
         level: level,
