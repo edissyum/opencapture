@@ -26,7 +26,6 @@ import string
 import random
 import shutil
 import PyPDF2
-import pathlib
 import datetime
 import subprocess
 import numpy as np
@@ -35,7 +34,6 @@ from zipfile import ZipFile
 from pdf2image import convert_from_path
 from werkzeug.utils import secure_filename
 from src.backend.functions import get_custom_array
-from io import BytesIO
 
 custom_array = get_custom_array()
 
