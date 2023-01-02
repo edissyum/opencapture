@@ -81,9 +81,9 @@ class Splitter:
                 'where': ['input_id = %s', 'module = %s'],
                 'data': [input_id, 'splitter'],
             })
-
             clean_path = re.sub(r"/+", "/", file)
             clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_PDF'])
+
             args = {
                 'table': 'splitter_batches',
                 'columns': {
@@ -96,8 +96,8 @@ class Splitter:
                     'customer_id': str(input_settings[0]['customer_id'])
                 }
             }
-
             batch_id = self.db.insert(args)
+
             documents_id = 0
             previous_split_document = 0
             for page in batch:

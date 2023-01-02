@@ -23,7 +23,7 @@ import { of } from "rxjs";
 import { AuthService } from "../../../services/auth.service";
 import { HttpClient } from "@angular/common/http";
 import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder } from "@angular/forms";
+import {FormBuilder, FormControl} from "@angular/forms";
 import { UserService } from "../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../services/notifications/notifications.service";
@@ -35,6 +35,32 @@ import { HistoryService } from "../../../services/history.service";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { LastUrlService } from "../../../services/last-url.service";
+import {FlatTreeControl} from "@angular/cdk/tree";
+import {MatTreeFlatDataSource, MatTreeFlattener} from "@angular/material/tree";
+
+interface AccountsNode {
+    name: string
+    id: number
+    parent_id: any
+    supplier_id: any
+    purchase_or_sale: any
+    count: number
+    display: boolean
+    children: any
+}
+
+interface FlatNode {
+    expandable: boolean
+    name: string
+    id: number
+    parent_id: any
+    supplier_id: any
+    purchase_or_sale: any
+    display: boolean
+    count: number
+    level: number
+    children: any
+}
 
 @Component({
     selector: 'app-list',
@@ -46,20 +72,22 @@ import { LastUrlService } from "../../../services/last-url.service";
 })
 
 export class SplitterListComponent implements OnInit {
-    batches         : any     = [];
-    isLoading       : boolean = true;
-    status          : any[]   = [];
-    gridColumns     : number  = 4;
-    page            : number  = 1;
-    selectedTab     : number  = 0;
-    searchText      : string  = "";
-    pageSize        : number  = 16;
-    pageIndex       : number  = 1;
-    offset          : number  = 0;
-    pageSizeOptions : any []  = [4, 8, 12, 16, 24, 48];
-    total           : number  = 0;
-    totals          : any     = {};
-    batchList       : any[]   = [
+    batches          : any     = [];
+    isLoading        : boolean = true;
+    loadingCustomers : boolean = true;
+    expanded         : boolean = false;
+    status           : any[]   = [];
+    gridColumns      : number  = 4;
+    page             : number  = 1;
+    selectedTab      : number  = 0;
+    searchText       : string  = "";
+    pageSize         : number  = 16;
+    pageIndex        : number  = 1;
+    offset           : number  = 0;
+    pageSizeOptions  : any []  = [4, 8, 12, 16, 24, 48];
+    total            : number  = 0;
+    totals           : any     = {};
+    batchList        : any[]   = [
         {
             'id': 'today',
             'label': marker('BATCH.today'),
@@ -73,10 +101,33 @@ export class SplitterListComponent implements OnInit {
             'label': marker('BATCH.older'),
         }
     ];
-    currentTime     : string  = 'today';
-    currentStatus   : string  = 'NEW';
-    batchesSelected : boolean = false;
-    totalChecked    : number  = 0;
+    currentTime         : string  = 'today';
+    currentStatus       : string  = 'NEW';
+    batchesSelected     : boolean = false;
+    totalChecked        : number  = 0;
+    customerFilterEmpty : boolean = false;
+    customerFilter      = new FormControl('');
+
+    private _transformer = (node: AccountsNode, level: number) => ({
+        expandable: !!node.children && node.children.length > 0,
+        name: node.name,
+        supplier_id: node.supplier_id,
+        id: node.id,
+        parent_id: node.parent_id,
+        purchase_or_sale: node.purchase_or_sale,
+        display: node.display,
+        count: node.count,
+        level: level,
+        children: node.children
+    });
+
+    treeControl = new FlatTreeControl<FlatNode>(
+        node => node.level, node => node.expandable);
+
+    treeFlattener = new MatTreeFlattener(
+        this._transformer, node => node.level, node => node.expandable, node => node.children);
+
+    dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
     constructor(
         private router: Router,
@@ -93,6 +144,11 @@ export class SplitterListComponent implements OnInit {
         private routerExtService: LastUrlService,
         private localStorageService: LocalStorageService,
     ) {}
+
+    hasChild = (_: number, node: FlatNode) => node.expandable;
+    isLevelOne = (_: number, node: FlatNode) => node.level === 1;
+    isLevelTwo = (_: number, node: FlatNode) => node.level === 2;
+    isNotLevelOne = (_: number, node: FlatNode) => node.level !== 1;
 
     ngOnInit(): void {
         if (!this.authService.headersExists) {
@@ -344,5 +400,32 @@ export class SplitterListComponent implements OnInit {
         this.currentStatus = event.value;
         this.resetPaginator();
         this.loadBatches();
+    }
+
+    expandAll() {
+        if (!this.expanded) this.treeControl.expandAll();
+        else this.treeControl.collapseAll();
+        this.expanded = !this.expanded;
+    }
+
+    filterCustomers() {
+        const tmpData = this.dataSource.data;
+        this.customerFilterEmpty = false;
+        let customerMatch = false;
+        tmpData.forEach((element: any) => {
+            if (element.name.toLowerCase().includes(this.customerFilter.value!.toLowerCase())) {
+                element.display = true;
+                customerMatch = true;
+            } else {
+                element.display = false;
+            }
+        });
+        if (!customerMatch) this.customerFilterEmpty = true;
+        this.dataSource.data = tmpData;
+    }
+
+    resetSearchCustomer() {
+        this.customerFilter.setValue('');
+        this.filterCustomers();
     }
 }
