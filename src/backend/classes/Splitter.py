@@ -84,7 +84,6 @@ class Splitter:
 
             clean_path = re.sub(r"/+", "/", file)
             clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_PDF'])
-            print(input_settings)
             args = {
                 'table': 'splitter_batches',
                 'columns': {
