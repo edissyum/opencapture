@@ -86,8 +86,8 @@ class OutputsTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
 
-    def test_successful_get_output_type_by_id_maarch(self):
-        response = self.app.get('/test/ws/outputs/getOutputTypeById/export_maarch',
+    def test_successful_get_output_type_by_id_mem(self):
+        response = self.app.get('/test/ws/outputs/getOutputTypeById/export_mem',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))

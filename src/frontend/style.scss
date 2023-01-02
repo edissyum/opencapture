@@ -119,9 +119,6 @@ div[id*="select-area-label_"] {
 
 .settings_header {
     & .mat-form-field-wrapper {
-        @apply pt-1;
-        @apply pb-1;
-
         & .mat-form-field-infix {
             max-height: 3rem !important;
 
@@ -145,16 +142,6 @@ div[id*="select-area-label_"] {
     background-color: transparent;
 }
 
-.mat-form-field-appearance-outline .mat-form-field-outline {
-    @apply text-gray-900 #{!important};
-    transition: all;
-}
-
-.mat-form-field-appearance-outline .mat-focused .mat-form-field-outline-thick,
-.mat-datepicker-toggle-active {
-    @apply text-green-400 #{!important};
-}
-
 .mat-input-element {
     caret-color: #97BF3D !important;
 }
@@ -164,36 +151,6 @@ div[id*="select-area-label_"] {
 .cdk-program-focused .mat-calendar-body-active > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
     @apply bg-green-400 #{!important};
     @apply bg-opacity-60 #{!important};
-}
-
-.mat-selected,
-.mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
-.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar,
-.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb,
-.mat-calendar-body-selected,
-mat-ink-bar {
-    @apply bg-green-400 #{!important};
-}
-
-.mat-selected .mat-option-text,
-.mat-form-field-label {
-    @apply text-gray-900 #{!important};
-}
-
-.mat-selected .mat-option-text span{
-    @apply text-gray-900 #{!important};
-}
-
-.mat-form-field-appearance-outline .mat-form-field-invalid .mat-form-field-invalid .mat-form-field-outline-thick {
-    color: red !important;
-}
-
-.mat-form-field-invalid .mat-input-element, .mat-warn .mat-input-element {
-    caret-color: red !important;
-}
-
-.mat-form-field.mat-form-field-invalid .mat-form-field-label {
-    color: red !important;
 }
 
 .mat-expansion-panel-body {
@@ -212,7 +169,6 @@ mat-ink-bar {
     @apply bg-green-400;
     @apply bg-opacity-60;
     @apply text-gray-900;
-    padding-top: 0.9rem;
     @apply relative;
     @apply z-30;
 }

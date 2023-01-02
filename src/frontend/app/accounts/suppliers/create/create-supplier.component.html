@@ -23,7 +23,7 @@
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessageSupplier(field.id) }}</mat-error>
-                        <mat-hint *ngIf="field.hint">{{ field.hint | translate }}</mat-hint>
+                        <mat-hint *ngIf="field.hint" class="text-gray-600">{{ field.hint | translate }}</mat-hint>
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
@@ -46,7 +46,7 @@
                     </mat-select-country>
                 </ng-container>
                 <div class="button col-span-7">
-                    <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
+                    <button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
                         {{ 'ACCOUNTS.create_supplier' | translate }}
                     </button>
                 </div>

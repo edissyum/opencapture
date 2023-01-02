@@ -6,7 +6,7 @@
     <link rel="icon" type="image/x-icon" href="src/assets/imgs/favicon.ico">
 </head>
 <style>
-    .instances_title h2{
+    .instances_title h2 {
         margin: 40px;
         text-align: center;
     }

@@ -134,7 +134,7 @@
                     </button>
                 </div>
                 <div class="ml-3 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('change_language')">
-                    <mat-form-field class="origin-top-right right-0 mt-4 w-32">
+                    <mat-form-field class="language origin-top-right right-0 mt-4 w-32">
                         <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
                         <mat-select (selectionChange)="this.localeService.changeLocale($event)"
                                     [disabled]="this.localeService.localeLoading"

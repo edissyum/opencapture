@@ -110,14 +110,15 @@ export class UserQuotaComponent implements OnInit {
                 'email_dest': this.quotaEmailDestControl.value
             }
         };
-
-        this.usersControlSelect.value.forEach((user_id: any) => {
-            this.usersList.forEach((user: any) => {
-               if (user['id'] === user_id) {
-                   data['value']['users_filtered'].push(user['username']);
-               }
+        if (this.usersControlSelect.value) {
+            this.usersControlSelect.value.forEach((user_id: any) => {
+                this.usersList.forEach((user: any) => {
+                    if (user['id'] === user_id) {
+                        data['value']['users_filtered'].push(user['username']);
+                    }
+                });
             });
-        });
+        }
 
         this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + this.userQuotaConfigId,
             {'data': data}, {headers: this.authService.headers}).pipe(

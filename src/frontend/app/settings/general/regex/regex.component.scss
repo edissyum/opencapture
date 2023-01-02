@@ -6,19 +6,14 @@
     flex: 0 0 10%;
 }
 
-.mat-column-content {
+::ng-deep .mat-column-content {
     flex: 0 0 75%;
-    & ::ng-deep .mat-form-field-wrapper {
-        @apply pt-2;
-        @apply pb-2;
-
-        & .mat-form-field-infix {
-            max-height: 1vh !important;
-
-            & .mat-select-value {
-                @apply relative;
-                @apply -top-0.5;
-            }
+    & .mat-mdc-text-field-wrapper {
+        @apply h-8;
+        @apply pl-2;
+        @apply top-3;
+        & .mat-mdc-form-field-infix {
+            @apply text-sm;
         }
     }
 }

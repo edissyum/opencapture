@@ -158,7 +158,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     ];
     testConnectionMapping : any           = {
         'export_openads'   : "testOpenadsConnection()",
-        'export_maarch' : "testMaarchConnection()",
+        'export_mem' : "testMEMConnection()",
         'export_cmis'   : "testCmisConnection()"
     };
 
@@ -398,19 +398,19 @@ export class SplitterUpdateOutputComponent implements OnInit {
         };
     }
 
-    /**** Maarch Webservices call ****/
-    testMaarchConnection() {
-        const args = this.getMaarchConnectionInfo();
-        this.http.post(environment['url'] + '/ws/maarch/testConnection', {'args': args}, {headers: this.authService.headers},
+    /**** MEM Courrier Webservices call ****/
+    testMEMConnection() {
+        const args = this.getMEMConnectionInfo();
+        this.http.post(environment['url'] + '/ws/mem/testConnection', {'args': args}, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
                 const status = data.status;
                 if (status === true) {
-                    this.notify.success(this.translate.instant('OUTPUT.maarch_connection_ok'));
+                    this.notify.success(this.translate.instant('OUTPUT.mem_connection_ok'));
                     this.connection = true;
                 }
                 else {
-                    this.notify.error(this.translate.instant('OUTPUT.maarch_connection_ko') + ' : ' + status[1]);
+                    this.notify.error(this.translate.instant('OUTPUT.mem_connection_ko') + ' : ' + status[1]);
                     this.connection = false;
                 }
             }),
@@ -454,7 +454,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
         ).subscribe();
     }
 
-    getMaarchConnectionInfo() {
+    getMEMConnectionInfo() {
         return {
             'host': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
             'login': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'login'),
@@ -462,10 +462,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
         };
     }
 
-    getUsersFromMaarch(cpt: any) {
+    getUsersFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
-            this.http.post(environment['url'] + '/ws/maarch/getUsers', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            const args = this.getMEMConnectionInfo();
+            this.http.post(environment['url'] + '/ws/mem/getUsers', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.users) {
                     const data = _return.users;
                     const users = [];
@@ -482,10 +482,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
         }
     }
 
-    getEntitiesFromMaarch(cpt: any) {
+    getEntitiesFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
-            this.http.post(environment['url'] + '/ws/maarch/getEntities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            const args = this.getMEMConnectionInfo();
+            this.http.post(environment['url'] + '/ws/mem/getEntities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.entities) {
                     const data = _return.entities;
                     const entities = [];
@@ -502,10 +502,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
         }
     }
 
-    getDoctypesFromMaarch(cpt: any) {
+    getDoctypesFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
-            this.http.post(environment['url'] + '/ws/maarch/getDoctypes', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            const args = this.getMEMConnectionInfo();
+            this.http.post(environment['url'] + '/ws/mem/getDoctypes', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.doctypes) {
                     const data = _return.doctypes;
                     const doctypes = [];
@@ -522,10 +522,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
         }
     }
 
-    getPrioritiesFromMaarch(cpt: any) {
+    getPrioritiesFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
-            this.http.post(environment['url'] + '/ws/maarch/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            const args = this.getMEMConnectionInfo();
+            this.http.post(environment['url'] + '/ws/mem/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.priorities) {
                     const data = _return.priorities;
                     const priorities = [];
@@ -542,10 +542,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
         }
     }
 
-    getStatusesFromMaarch(cpt: any) {
+    getStatusesFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
-            this.http.post(environment['url'] + '/ws/maarch/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            const args = this.getMEMConnectionInfo();
+            this.http.post(environment['url'] + '/ws/mem/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.statuses) {
                     const data = _return.statuses;
                     const statuses = [];
@@ -562,10 +562,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
         }
     }
 
-    getIndexingModelsFromMaarch(cpt: any) {
+    getIndexingModelsFromMem(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            const args = this.getMaarchConnectionInfo();
-            this.http.post(environment['url'] + '/ws/maarch/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            const args = this.getMEMConnectionInfo();
+            this.http.post(environment['url'] + '/ws/mem/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.indexingModels) {
                     const data = _return.indexingModels;
                     const indexingModels = [];
@@ -582,7 +582,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
         }
     }
 
-    /**** END Maarch Webservices call  ****/
+    /**** END MEM Courrier Webservices call  ****/
 
     updateOutput() {
         const _array: any = {

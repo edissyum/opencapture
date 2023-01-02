@@ -32,22 +32,22 @@ msgstr "Destination folder for PDF doesn't exists"
 #: src/backend/controllers/splitter.py:328
 #: src/backend/controllers/splitter.py:334 src/backend/verifier_exports.py:326
 #: src/backend/verifier_exports.py:332 src/backend/verifier_exports.py:338
-msgid "EXPORT_MAARCH_ERROR"
-msgstr "Error during Maarch export"
+msgid "EXPORT_MEM_ERROR"
+msgstr "Error during MEM Courrier export"
 
 #: src/backend/verifier_exports.py:333
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "PDF file not found"
 
 #: src/backend/verifier_exports.py:344
-msgid "MAARCH_WS_INFO_WRONG"
-msgstr "Maarch informations are wrong"
+msgid "MEM_WS_INFO_WRONG"
+msgstr "MEM Courrier informations are wrong"
 
 #: src/backend/controllers/splitter.py:340 src/backend/verifier_exports.py:350
-msgid "MAARCH_WS_INFO_EMPTY"
-msgstr "Maarch informations are empty"
+msgid "MEM_WS_INFO_EMPTY"
+msgstr "MEM Courrier informations are empty"
 
-#: src/backend/classes/MaarchWebServices.py:38
+#: src/backend/classes/MEMWebServices.py:38
 msgid "HOST_NOT_FOUND"
 msgstr "Host not found"
 

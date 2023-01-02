@@ -45,7 +45,7 @@ export class NotificationService {
     ) {}
 
     success(message: string, _duration?: number) {
-        const duration = _duration ? this.getMessageDuration(message, _duration):
+        const duration = _duration ? this.getMessageDuration(message, _duration) :
             this.getMessageDuration(message, 2000);
 
         if (this.snackBar._openedSnackBarRef) {

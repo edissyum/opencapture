@@ -44,7 +44,7 @@ import { HistoryService } from "../../../../services/history.service";
     ]
 })
 export class ConfigurationsComponent implements OnInit {
-    columnsToDisplay    : string[]      = ['id', 'label', 'description', 'type', 'value', 'actions'];
+    columnsToDisplay    : string[]      = ['id', 'label', 'description', 'type', 'content', 'actions'];
     headers             : HttpHeaders   = this.authService.headers;
     loading             : boolean       = true;
     updateLoading       : boolean       = false;

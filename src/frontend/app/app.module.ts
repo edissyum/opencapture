@@ -112,6 +112,7 @@ import { MiddlewareComponent } from "./middleware.component";
 import { VerifierDisplayComponent } from './settings/verifier/display/display.component';
 import { MailCollectComponent } from './settings/general/mailcollect/mailcollect.component';
 import { UserQuotaComponent } from './settings/general/user-quota/user-quota.component';
+import { SettingsMenuComponent } from './settings/settings-menu.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -187,7 +188,8 @@ export function createTranslateLoader(http: HttpClient) {
         LoginMethodsComponent,
         VerifierDisplayComponent,
         MailCollectComponent,
-        UserQuotaComponent
+        UserQuotaComponent,
+        SettingsMenuComponent
     ],
     imports: [
         BrowserModule,

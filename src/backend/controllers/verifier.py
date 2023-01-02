@@ -348,12 +348,12 @@ def remove_lock_by_user_id(user_id):
         return response, 401
 
 
-def export_maarch(invoice_id, data):
+def export_mem(invoice_id, data):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if not error:
-        return verifier_exports.export_maarch(data['data'], invoice_info, _vars[5], _vars[2], _vars[0])
+        return verifier_exports.export_mem(data['data'], invoice_info, _vars[5], _vars[2], _vars[0])
 
 
 def export_xml(invoice_id, data):

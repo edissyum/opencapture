@@ -1,38 +1,46 @@
 .notif-container {
-  display: flex;
-  align-items: center;
-  padding-top: 25px;
-  padding-bottom: 25px;
-  cursor: pointer;
-
-  &-icon {
     display: flex;
-    width:50px;
-    justify-content: center;
-  }
+    align-items: center;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    cursor: pointer;
 
-  &-content {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-
-    &-msg {
-      display: flex;
-      flex-direction: column;
+    &-icon {
+        display: flex;
+        width: 50px;
+        justify-content: center;
     }
-  }
+
+    &-content {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+
+        &-msg {
+            display: flex;
+            flex-direction: column;
+        }
+    }
 }
 
-::ng-deep.mat-snack-bar-container {
-  background: white;
+::ng-deep .mdc-snackbar__surface {
+    @apply bg-white #{!important};
+}
 
-  &.error-snackbar{
-    color: red;
-    border: solid 1px red;
-  }
+::ng-deep .mat-mdc-snack-bar-container {
+    &.error-snackbar {
+        @apply border;
+        @apply border-red-500;
+        & .mdc-snackbar__surface .mat-mdc-snack-bar-label {
+            @apply text-red-500 #{!important};
+        }
+    }
 
-  &.success-snackbar{
-    color: green;
-    border: solid 1px green;
-  }
+    &.success-snackbar {
+        @apply border;
+        @apply border-green-700;
+        & .mdc-snackbar__surface .mat-mdc-snack-bar-label {
+            @apply text-green-700 #{!important};
+        }
+    }
 }

@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask import request
-from src.backend.import_classes import _MaarchWebServices
+from src.backend.import_classes import _MEMWebServices
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
 
@@ -24,7 +24,7 @@ from src.backend.functions import retrieve_custom_from_url
 def test_connection(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _ws = _MaarchWebServices(
+    _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -36,7 +36,7 @@ def test_connection(args):
 def get_users(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _ws = _MaarchWebServices(
+    _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -49,7 +49,7 @@ def get_users(args):
 def get_doctypes(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _ws = _MaarchWebServices(
+    _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -62,7 +62,7 @@ def get_doctypes(args):
 def get_entities(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _ws = _MaarchWebServices(
+    _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -75,7 +75,7 @@ def get_entities(args):
 def get_custom_fields(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _ws = _MaarchWebServices(
+    _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -88,7 +88,7 @@ def get_custom_fields(args):
 def get_contact_custom_fields(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _ws = _MaarchWebServices(
+    _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -101,7 +101,7 @@ def get_contact_custom_fields(args):
 def get_priorities(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _ws = _MaarchWebServices(
+    _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -114,7 +114,7 @@ def get_priorities(args):
 def get_statuses(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _ws = _MaarchWebServices(
+    _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -127,7 +127,7 @@ def get_statuses(args):
 def retrieve_contact(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _ws = _MaarchWebServices(
+    _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -140,7 +140,7 @@ def retrieve_contact(args):
 def get_document_with_contact(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _ws = _MaarchWebServices(
+    _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -153,7 +153,7 @@ def get_document_with_contact(args):
 def get_indexing_models(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _ws = _MaarchWebServices(
+    _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],

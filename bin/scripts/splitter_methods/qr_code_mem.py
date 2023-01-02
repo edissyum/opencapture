@@ -62,7 +62,7 @@ def split(splitter, pages):
     :param pages: pages list
     :return: N/A
     """
-    maarch_value = None
+    mem_value = None
     for index, path in pages:
         separator_type = None
         is_separator = list(filter(lambda separator: int(separator['num']) + 1 == int(index),
@@ -72,10 +72,10 @@ def split(splitter, pages):
             splitter.log.info("QR Code in page " + str(index) + " : " + str(qr_code))
 
             """
-                Maarch separator (MAARCH_ is a Maarch prefix)
+                MEM separator (MAARCH_ or MEM_ are a MEM Courrier prefix)
             """
-            if 'MAARCH_' in qr_code and '|' not in qr_code:
-                maarch_value = qr_code
+            if ('MAARCH_' in qr_code or 'MEM_' in qr_code) and '|' not in qr_code:
+                mem_value = qr_code
                 separator_type = splitter.doc_start
             else:
                 if splitter.bundle_start in qr_code:
@@ -87,7 +87,7 @@ def split(splitter, pages):
             'source_page': index,
             'separator_type': separator_type,
             'doctype_value': None,
-            'maarch_value': maarch_value,
+            'mem_value': mem_value,
             'metadata_1': None,
             'metadata_2': None,
             'metadata_3': None,

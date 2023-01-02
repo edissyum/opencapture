@@ -7,18 +7,18 @@
 }
 
 
-::ng-deep .mat-tab-labels {
-    & .mat-tab-disabled {
+::ng-deep .mat-mdc-tab-labels {
+    & .mat-mdc-tab-disabled {
         @apply opacity-100 #{!important};
     }
 
-    & :not(.mat-tab-label-active) {
+    & :not(.mat-mdc-tab-label-active) {
         & .actions {
             @apply pointer-events-none;
         }
     }
 
-    & .mat-tab-label-active {
+    & .mat-mdc-tab-label-active {
         @apply opacity-100 #{!important};
         & .actions {
             @apply pointer-events-auto;

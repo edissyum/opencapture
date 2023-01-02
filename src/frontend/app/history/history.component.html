@@ -34,7 +34,7 @@
                     <mat-form-field *ngIf="field.type === 'autocomplete'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [formControl]="field.control" [type]="field.type" [matAutocomplete]="autocomplete">
-                        <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
+                        <mat-hint *ngIf="field.hint" class="text-gray-600">{{ field.hint }}</mat-hint>
                         <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn"
                                           (optionSelected)="setSelectedUser($event.option.id)">
                             <mat-option *ngFor="let option of filteredUsers | async" [value]="option" [id]="option.id">

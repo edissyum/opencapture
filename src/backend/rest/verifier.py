@@ -99,11 +99,11 @@ def export_pdf(invoice_id):
     return make_response(res[0], res[1])
 
 
-@bp.route('verifier/invoices/<int:invoice_id>/export_maarch', methods=['POST'])
+@bp.route('verifier/invoices/<int:invoice_id>/export_mem', methods=['POST'])
 @auth.token_required
-def export_maarch(invoice_id):
+def export_mem(invoice_id):
     data = request.json['args']
-    res = verifier.export_maarch(invoice_id, data)
+    res = verifier.export_mem(invoice_id, data)
     return make_response(res[0], res[1])
 
 
