@@ -23,8 +23,7 @@
                 </mat-form-field>
                 <mat-form-field class="ml-4 w-1/4">
                     <mat-select [disabled]="!this.selectedStatistic || this.loading"
-                                [ngModel]="this.selectedDiagramType"
-                                (selectionChange)="changeDiagramType($event)"
+                                [ngModel]="this.selectedDiagramType" (selectionChange)="changeDiagramType($event)"
                                 [placeholder]="'STATISTICS.choose_diagram' | translate">
                         <mat-option *ngFor="let option of diagramTypes" [value]="option['id']">
                             {{ option['label'] | translate }} <i class="fa-solid {{ option['logo'] }} ml-2"></i>
@@ -35,32 +34,19 @@
             <div class="relative mt-20 w-full" *ngIf="!loading && this.selectedStatistic">
                 <ngx-charts-bar-vertical
                         *ngIf="this.selectedDiagramType === 'vertical-bar'"
-                        [results]="currentData"
-                        [xAxis]="true"
-                        [yAxis]="true"
-                        [legend]="true"
-                        [legendTitle]="this.selectedStatistic.label | translate"
-                        [showXAxisLabel]="true"
-                        [showYAxisLabel]="true">
+                        [results]="currentData" [xAxis]="true" [yAxis]="true" [legend]="true" [showYAxisLabel]="true"
+                        [showXAxisLabel]="true" [legendTitle]="this.selectedStatistic.label | translate">
                 </ngx-charts-bar-vertical>
                 <ngx-charts-pie-chart
-                        *ngIf="this.selectedDiagramType === 'pie-chart'"
-                        [results]="currentData"
-                        [legendTitle]="this.selectedStatistic.label | translate"
-                        [labels]="true">
+                        *ngIf="this.selectedDiagramType === 'pie-chart'" [results]="currentData" [labels]="true"
+                        [legendTitle]="this.selectedStatistic.label | translate">
                 </ngx-charts-pie-chart>
                 <ngx-charts-pie-grid
-                        *ngIf="this.selectedDiagramType === 'pie-grid'"
-                        [results]="currentData">
+                        *ngIf="this.selectedDiagramType === 'pie-grid'" [results]="currentData">
                 </ngx-charts-pie-grid>
                 <ngx-charts-line-chart
-                        *ngIf="this.selectedDiagramType === 'line-charts'"
-                        [results]="currentData"
-                        [xAxis]="true"
-                        [yAxis]="true"
-                        [legend]="false"
-                        [showXAxisLabel]="true"
-                        [showYAxisLabel]="true">
+                        *ngIf="this.selectedDiagramType === 'line-charts'" [showXAxisLabel]="true"
+                        [showYAxisLabel]="true" [results]="currentData" [xAxis]="true" [yAxis]="true" [legend]="false">
                 </ngx-charts-line-chart>
             </div>
         </div>
