@@ -343,13 +343,15 @@ def export_mem(auth_data, file_path, args, batch):
         return response, 400
 
 
-def export_pdf(batch, documents, parameters, pages, now, compress_type):
-    if 'docservers' in session:
+def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
+    if 'docservers' in session and 'configurations' in session:
         docservers = json.loads(session['docservers'])
+        configurations = json.loads(session['configurations'])
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
+        configurations = _vars[10]
 
     filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch['file_path']
     pdf_filepaths = []
@@ -361,8 +363,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
     Add PDF file to zip archive if enabled
     """
     if 'add_to_zip' in parameters and parameters['add_to_zip']:
-        except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) \
-            if 'Except' in parameters['add_to_zip'] else ''
+        except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) if 'Except' in parameters['add_to_zip'] else ''
         mask_args = {
             'mask': parameters['add_to_zip'].split('[Except=')[0],
             'separator': parameters['separator'],
@@ -390,7 +391,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
             })
         else:
             doc_except_from_zip.append(documents[index]['id'])
-    export_pdf_res = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], compress_type, 1)
+    export_pdf_res = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], output_parameter, log, configurations['locale'], 1)
     if not export_pdf_res[0]:
         response = {
             "errors": gettext('EXPORT_PDF_ERROR'),
@@ -597,8 +598,7 @@ def validate(args):
                     Export PDF files
                 """
                 if output[0]['output_type_id'] in ['export_pdf']:
-                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now,
-                                                output[0]['compress_type'])
+                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], _log)
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
 

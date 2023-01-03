@@ -33,6 +33,7 @@ from PIL import Image
 from zipfile import ZipFile
 from pdf2image import convert_from_path
 from werkzeug.utils import secure_filename
+from ..functions import generate_searchable_pdf
 from src.backend.functions import get_custom_array
 
 custom_array = get_custom_array()
@@ -486,7 +487,7 @@ class Files:
                 return positions
 
     @staticmethod
-    def export_pdf(pages_lists, documents, input_file, output_file, compress_type, reduce_index=0):
+    def export_pdf(pages_lists, documents, input_file, output_file, output_parameter, log, lang, reduce_index=0):
         pdf_writer = pypdf.PdfWriter()
         paths = []
         try:
@@ -501,22 +502,39 @@ class Files:
                     pdf_writer.add_page(pdf_page)
                 file_path = output_file + '/' + documents[index]['fileName']
 
-                if compress_type:
+                if output_parameter['compress_type']:
                     tmp_filename = '/tmp/' + documents[index]['fileName']
                     with open(tmp_filename, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
                     pdf_writer = pypdf.PdfWriter()
                     compressed_file_path = '/tmp/min_' + documents[index]['fileName']
-                    compress_pdf(tmp_filename, compressed_file_path, compress_type)
+                    compress_pdf(tmp_filename, compressed_file_path, output_parameter['compress_type'])
                     shutil.move(compressed_file_path, file_path)
                 else:
                     with open(file_path, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
                     pdf_writer = pypdf.PdfWriter()
+
+                if output_parameter['ocrise']:
+                    check_ocr = os.popen('pdffonts ' + file_path, 'r')
+                    tmp = []
+                    for line in check_ocr:
+                        tmp.append(line)
+                    tmp = '\n'.join(tmp)
+
+                    is_ocr = False
+                    if len(tmp.split('\n')) > 4:
+                        is_ocr = True
+                    if not is_ocr:
+                        tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
+                        generate_searchable_pdf(file_path, tmp_filename, lang, log)
+                        try:
+                            shutil.move(tmp_filename, file_path)
+                        except shutil.Error as _e:
+                            log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
         except Exception as err:
-            print('aaaa')
             return False, str(err)
         return paths
 
