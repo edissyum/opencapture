@@ -20,40 +20,6 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
     outline: none !important;
 }
 
-/** Style réglages **/
-
-.mat-drawer-inner-container {
-    @apply overflow-x-hidden #{!important};
-    @apply overflow-y-auto #{!important};
-}
-
-.mat-button-wrapper {
-    @apply w-full;
-}
-
-mat-expansion-panel {
-    @apply rounded-none #{!important};
-}
-
-mat-expansion-panel-header.settings_expansion {
-    @apply border-t;
-    @apply border-white;
-    @apply z-30;
-    @apply bg-gray-900;
-    box-shadow: 0 1px 5px 4px gray;
-
-    & .mat-content mat-panel-title {
-        @apply text-white #{!important};
-    }
-
-    &:hover, &:focus {
-        @apply bg-none #{!important};
-        @apply bg-gray-900 #{!important};
-    }
-}
-
-/** END **/
-
 /*** Image area select ***/
 
 .select-areas-overlay {
@@ -117,23 +83,6 @@ div[id*="select-area-label_"] {
 
 /*** END image area select ***/
 
-.settings_header {
-    & .mat-form-field-wrapper {
-        & .mat-form-field-infix {
-            max-height: 3rem !important;
-
-            & .mat-form-field-label-wrapper {
-                @apply -top-4;
-            }
-
-            & .mat-input-element {
-                @apply relative;
-                @apply -top-2;
-            }
-        }
-    }
-}
-
 .mat-menu-panel {
     max-width:fit-content !important;
 }
@@ -165,13 +114,6 @@ div[id*="select-area-label_"] {
     pointer-events: none !important;
 }
 
-.settings_header {
-    @apply bg-green-400;
-    @apply bg-opacity-60;
-    @apply text-gray-900;
-    @apply relative;
-    @apply z-30;
-}
 
 .mat-row:hover > .mat-cell {
     @apply text-green-400;

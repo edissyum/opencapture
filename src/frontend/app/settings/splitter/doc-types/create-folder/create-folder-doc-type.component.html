@@ -4,25 +4,27 @@
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
         <div class="settings_header z-50">
-            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-0.5">
-                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened"
-                   class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
+            <div class="flex">
+                <button mat-icon-button (click)="sidenav.toggle();">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
             </div>
-            <button mat-icon-button (click)="sidenav2.toggle();"
-                    class="absolute right-2 top-0.5">
-                <i  class="fa-solid fa-stream text-xl text-gray-900"
-                    [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened"></i>
-            </button>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="settings_search">
+                <button mat-icon-button (click)="sidenav2.toggle();">
+                    <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened"
+                       class="fa-solid fa-stream text-xl text-gray-900"></i>
+                </button>
+            </div>
         </div>
+        <hr class="border-green-400 relative z-50">
         <app-document-type-factory [data]="{canFolderBeSelected: false}"
                                    (selectedFormOutput)="getSelectedForm($event)"></app-document-type-factory>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ 'DOCTYPE.add_folder' | translate }}</h3>
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-5">
+            {{ 'DOCTYPE.add_folder' | translate }}
+        </h3>
         <mat-divider class="border-green-400"></mat-divider>
         <form (ngSubmit)="form.valid && addFolder()" [formGroup]="form">
             <div class="grid grid-cols-1 gap-x-2 gap-y-2 m-2">

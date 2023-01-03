@@ -902,6 +902,7 @@
 		"old_password": "Old password",
 		"password": "Password",
 		"password_check": "Check password",
+		"password_mismatch": "Passwords mismatch",
 		"profile_updated": "Profile updated",
 		"search_user": "Search user",
 		"update": "Update user",

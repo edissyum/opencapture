@@ -3,21 +3,22 @@
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
-        <div class="settings_header">
-            <div class="absolute left-4 top-0 settings_search">
+        <div class="settings_header flex justify-between items-center pl-2 pr-2 bg-green-400 bg-opacity-60 text-gray-900">
+            <div class="settings_search">
                 <mat-form-field>
                     <mat-label>{{ 'ACCOUNTS.search_customer' | translate }}</mat-label>
                     <input matInput type="text" [disabled]="this.loading" (keyup)="searchCustomer($event)">
                 </mat-form-field>
             </div>
-            <h3 class="text-center">{{ this.serviceSettings.getTitle() }}</h3>
-            <hr class="border-green-400">
-            <button routerLink="/accounts/customers/create" class="relative float-right -top-12 right-4">
-                <i class="fa-solid fa-plus text-2xl ml-2"></i>
-                <span class="ml-2 relative -top-1">{{ 'ACCOUNTS.create_customer' | translate }}</span>
-            </button>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="flex">
+                <button routerLink="/accounts/customers/create">
+                    <i class="fa-solid fa-plus text-2xl ml-2" [matTooltip]="'ACCOUNTS.create_customer' | translate"></i>
+                </button>
+            </div>
         </div>
-        <mat-table matSort [dataSource]="customers" (matSortChange)="sortData($event)" class="w-full table relative -top-8">
+        <hr class="border-green-400">
+        <mat-table matSort [dataSource]="customers" (matSortChange)="sortData($event)" class="w-full table">
             <ng-container matColumnDef="id">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>

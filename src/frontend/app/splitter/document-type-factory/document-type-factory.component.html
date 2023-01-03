@@ -21,9 +21,9 @@
             <div *ngFor="let form of forms">
                 <mat-option [value]="form.id">
                     <span>{{ form.label | translate }}</span>
-                    <button *ngIf="form.id !== selectFormControl.value" matTooltip="{{ 'DOCTYPE.clone_doctypes' | translate }}"
+                    <button *ngIf="form.id !== selectFormControl.value" [matTooltip]="'DOCTYPE.clone_doctypes' | translate"
                         (click)="$event.stopPropagation(); cloneFormDoctypes(form.id, selectFormControl.value)"
-                        class="hover:text-green-400 fa fa-clone text-xl absolute right-0 m-2"></button>
+                        class="hover:text-green-400 fa fa-clone absolute right-0 mr-2"></button>
                 </mat-option>
             </div>
         </mat-select>

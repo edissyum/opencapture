@@ -7,14 +7,15 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-0.5">
-                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
+            <div class="flex">
+                <button mat-icon-button (click)="sidenav.toggle();">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
             </div>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="settings_search"></div>
         </div>
+        <hr class="border-green-400 relative z-30">
         <form>
             <div class="grid grid-cols-2 gap-4 w-auto m-5 text-center">
                 <ng-container *ngFor="let field of this.inputForm">

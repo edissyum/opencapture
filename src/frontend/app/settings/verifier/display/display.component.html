@@ -7,19 +7,20 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-0.5">
-                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
+            <div class="flex">
+                <button mat-icon-button (click)="sidenav.toggle();">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
             </div>
-            <button mat-icon-button (click)="sidenav2.toggle();"
-                    class="absolute right-2 top-0.5">
-                <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="settings_search">
+                <button mat-icon-button (click)="sidenav2.toggle();">
+                    <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
+            </div>
         </div>
-        <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
+        <hr class="border-green-400 relative z-30">
+        <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
             <app-hint [message]="'FORMS.display_hint' | translate"></app-hint>
             <div class="w-1/3 m-auto mt-4">
                 <mat-form-field class="block">
@@ -85,7 +86,7 @@
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end"
                  class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-5">
             {{ "FORMS.available_fields" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
@@ -98,7 +99,7 @@
                 </span>
             </div>
         </div>
-        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)"
+        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)"
              cdkDropList [cdkDropListData]="this.availableFieldsTmp" (cdkDropListDropped)="drop($event)">
             <div *ngFor="let field of this.availableFieldsTmp; let cpt = index"
                  class="my-8 ml-2 text-base" cdkDrag>
