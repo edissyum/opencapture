@@ -61,13 +61,10 @@
                                     </mat-form-field>
                                     &nbsp;:
                                     <span class="ml-2 w-4/12 h-3 bg-gradient-to-br from-green-400 to-gray-600"></span>
-
                                     <i class="fa-solid fa-edit text-lg cursor-pointer absolute right-6 mt-0.5 mr-2"
                                        (click)="subtitle['updateMode'] = true" *ngIf="!subtitle['updateMode']"></i>
-
                                     <i class="fa-solid fa-check text-lg cursor-pointer absolute right-6 mt-0.5 mr-2"
                                        *ngIf="subtitle['updateMode']"></i>
-
                                     <i class="fa-solid fa-trash text-red-500 cursor-pointer absolute right-2 mt-1"
                                        (click)="removeLine(subtitle['id'], cpt)"></i>
                                 </div>
@@ -100,7 +97,8 @@
             </div>
         </div>
         <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)"
-             cdkDropList [cdkDropListData]="this.availableFieldsTmp" (cdkDropListDropped)="drop($event)">
+             cdkDropList [cdkDropListData]="this.availableFieldsTmp" (cdkDropListDropped)="drop($event)"
+             [cdkDropListDisabled]="!this.formLoaded">
             <div *ngFor="let field of this.availableFieldsTmp; let cpt = index"
                  class="my-8 ml-2 text-base" cdkDrag>
                 <span class="cursor-move">
@@ -108,4 +106,5 @@
                 </span>
             </div>
         </div>
-    </mat-sidenav></mat-sidenav-container>
+    </mat-sidenav>
+</mat-sidenav-container>

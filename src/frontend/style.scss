@@ -20,6 +20,13 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
     outline: none !important;
 }
 
+.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background,
+.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate ~ .mdc-checkbox__background,
+.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control[data-indeterminate="true"]:enabled ~ .mdc-checkbox__background {
+    @apply bg-green-400 #{!important};
+    @apply border-green-400 #{!important};
+}
+
 /*** Image area select ***/
 
 .select-areas-overlay {
