@@ -7,19 +7,20 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-0.5">
-                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
+            <div class="flex">
+                <button mat-icon-button (click)="sidenav.toggle();">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
             </div>
-            <button mat-icon-button (click)="sidenav2.toggle();"
-                    class="absolute right-2 top-0.5">
-                <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="settings_search">
+                <button mat-icon-button (click)="sidenav2.toggle();">
+                    <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
+            </div>
         </div>
-        <div *ngIf="!loading" class="overflow-auto" style="height: calc(100% - 64px)">
+        <hr class="border-green-400 relative z-30">
+        <div *ngIf="!loading" class="overflow-auto" style="height: calc(100% - 70px)">
             <div class="grid grid-cols-3 gap-4 mt-6 ml-6 mr-6">
                 <mat-form-field>
                     <mat-label>{{ "FORMS.label" | translate }}</mat-label>
@@ -175,9 +176,8 @@
             </div>
         </div>
     </mat-sidenav-content>
-    <mat-sidenav #sidenav2 mode="side" opened position="end"
-                 class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">
+    <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-5">
             {{ "FORMS.available_fields" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
@@ -187,7 +187,7 @@
                    style="--fa-animation-duration: 1.5s;"></i>
             </span>
         </div>
-        <mat-tab-group style="height: calc(100% - 64px)" *ngIf="!this.loadingCustomFields">
+        <mat-tab-group style="height: calc(100% - 70px)" *ngIf="!this.loadingCustomFields">
             <mat-tab *ngFor="let availableFields of this.availableFieldsParent" label="{{ availableFields['label'] | translate }}">
                 <div id="{{ availableFields['id'] }}" cdkDropList [cdkDropListData]="availableFields['values']"
                      (cdkDropListDropped)="dropFromAvailableFields($event)" class="min-w-full" style="min-height: 500px">

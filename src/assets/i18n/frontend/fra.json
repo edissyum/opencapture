@@ -902,6 +902,7 @@
 		"old_password": "Ancien mot de passe",
 		"password": "Mot de passe",
 		"password_check": "Vérification du mot de passe",
+		"password_mismatch": "Les mots de passent ne correspondent pas",
 		"profile_updated": "Profil mis à jour",
 		"search_user": "Rechercher un utilisateur",
 		"update": "Modifier l'utilisateur",

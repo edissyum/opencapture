@@ -7,19 +7,20 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-0.5">
-                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
+            <div class="flex">
+                <button mat-icon-button (click)="sidenav.toggle();">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
             </div>
-            <button mat-icon-button (click)="sidenav2.toggle();"
-                    class="absolute right-2 top-0.5">
-                <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="settings_search">
+                <button mat-icon-button (click)="sidenav2.toggle();">
+                    <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
+            </div>
         </div>
-        <div class="overflow-auto" style="height: calc(100% - 64px)">
+        <hr class="border-green-400 relative z-30">
+        <div class="overflow-auto" style="height: calc(100% - 70px)">
             <div class="flex justify-center items-center mt-5">
                 <button mat-button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
                     <span class="block" (click)="updatePositionsMask()">{{ "POSITIONS-MASKS.modify" | translate }}</span>
@@ -85,16 +86,18 @@
         </div>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "FORMS.available_fields" | translate }}</h3>
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-5">
+            {{ "FORMS.available_fields" | translate }}
+        </h3>
         <mat-divider class="border-green-400"></mat-divider>
         <div *ngIf="loadingFields" class="relative" style="top: 40%">
             <span class="text-center overflow-hidden">
                 <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900" style="--fa-animation-duration: 1.5s;"></i>
             </span>
         </div>
-        <mat-tab-group style="height: calc(100% - 64px)" *ngIf="!loadingFields">
+        <mat-tab-group style="height: calc(100% - 70px)" *ngIf="!loadingFields">
             <mat-tab *ngFor="let availableFields of this.availableFieldsParent" label="{{ availableFields['label'] | translate }}">
-                <div class="min-w-full" style="min-height: 500px">
+                <div class="min-w-full overflow-x-hidden" style="min-height: 500px">
                     <div *ngFor="let field of availableFields['values']">
                         <div class="flex flex-row items-center justify-between m-5">
                             <ng-container>

@@ -89,6 +89,23 @@ export class SplitterCreateOutputComponent implements OnInit {
             ],
             required: false,
         },
+        {
+            id: 'ocrise',
+            label: this.translate.instant('OUTPUT.enable_ocr'),
+            type: 'select',
+            control: new FormControl(),
+            values: [
+                {
+                    'id': true,
+                    'label': marker('OUTPUT.ocr_enabled')
+                },
+                {
+                    'id': false,
+                    'label': marker('OUTPUT.ocr_disabled')
+                },
+            ],
+            required: false,
+        }
     ];
 
     constructor(
@@ -138,9 +155,10 @@ export class SplitterCreateOutputComponent implements OnInit {
 
     createOutput() {
         if (this.isValidForm(this.outputForm)) {
-            const outputTypeId = this.getValueFromForm(this.outputForm, 'output_type_id');
+            const ocrise = this.getValueFromForm(this.outputForm, 'ocrise');
             const outputLabel = this.getValueFromForm(this.outputForm, 'output_label');
             const compressType = this.getValueFromForm(this.outputForm, 'compress_type');
+            const outputTypeId = this.getValueFromForm(this.outputForm, 'output_type_id');
             this.http.post(environment['url'] + '/ws/outputs/create',
                 {
                     'args': {
@@ -148,6 +166,7 @@ export class SplitterCreateOutputComponent implements OnInit {
                         'output_label'  : outputLabel,
                         'compress_type' : compressType,
                         'module'        : 'splitter',
+                        'ocrise'        : ocrise,
                     }}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {

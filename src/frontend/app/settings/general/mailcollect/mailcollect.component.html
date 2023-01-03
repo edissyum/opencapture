@@ -7,19 +7,20 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-0.5">
-                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
-                <button (click)="addProcess()" class="relative float-right -top-12 right-4 ml-4">
-                    <i class="fa-solid fa-plus text-2xl ml-2"></i>
-                    <span class="ml-2 relative -top-1">{{ 'MAILCOLLECT.add_process' | translate }}</span>
+            <div class="flex">
+                <button mat-icon-button (click)="sidenav.toggle();">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
+            </div>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="flex text-gray-900">
+                <button (click)="addProcess()">
+                    <i class="fa-solid fa-plus text-2xl ml-2" [matTooltip]="'MAILCOLLECT.add_process' | translate"></i>
                 </button>
             </div>
         </div>
-        <div *ngIf="!this.loading" class="w-full overflow-auto" style="height: calc(100% - 64px)">
+        <hr class="border-green-400 relative z-30">
+        <div *ngIf="!this.loading" class="w-full overflow-auto" style="height: calc(100% - 70px)">
             <mat-accordion>
                 <mat-expansion-panel class="m-4" #mep="matExpansionPanel">
                     <mat-expansion-panel-header>
@@ -67,7 +68,7 @@
             </mat-accordion>
 
             <h3 class="text-center text-gray-900 mx-4">{{ 'MAILCOLLECT.process_parameters' | translate }}</h3>
-            <hr class="border-green-400 w-1/2 m-auto mb-4">
+            <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
 
             <mat-tab-group class="mx-5" [selectedIndex]="this.selectedIndex">
                 <mat-tab *ngFor="let process of this.processes">

@@ -19,6 +19,9 @@ import os
 import json
 import glob
 from pathlib import Path
+
+import ocrmypdf
+
 from .classes.Config import Config as _Config
 
 
@@ -215,3 +218,19 @@ def recursive_delete(folder, log):
         os.rmdir(folder)
     except FileNotFoundError as err:
         log.error('Unable to delete ' + folder + ' on temp folder : ' + str(err), False)
+
+
+def generate_searchable_pdf(pdf, tmp_filename, lang, log):
+    """
+    Start from standard PDF, with no OCR, and create a searchable PDF, with OCR. Thanks to ocrmypdf python lib
+
+    :param pdf: Path to original pdf (not searchable, without OCR)
+    :param tmp_path: Path to store the final pdf, searchable with OCR
+    :param separator: Class Separator instance
+    """
+    try:
+        res = ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', skip_text=True, language=lang, progress_bar=False)
+        if res.value != 0:
+            ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', force_ocr=True, language=lang, progress_bar=False)
+    except ocrmypdf.exceptions.PriorOcrFoundError as _e:
+        log.error(_e)

@@ -7,19 +7,20 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-0.5">
-                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
+            <div class="flex">
+                <button mat-icon-button (click)="sidenav.toggle();">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
             </div>
-            <button mat-icon-button (click)="sidenav2.toggle();"
-                    class="absolute right-2 top-0.5">
-                <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="settings_search">
+                <button mat-icon-button (click)="sidenav2.toggle();">
+                    <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
+            </div>
         </div>
-        <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
+        <hr class="border-green-400 relative z-30">
+        <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
             <app-hint [message]="'FORMS.display_hint' | translate"></app-hint>
             <div class="w-1/3 m-auto mt-4">
                 <mat-form-field class="block">
@@ -60,13 +61,10 @@
                                     </mat-form-field>
                                     &nbsp;:
                                     <span class="ml-2 w-4/12 h-3 bg-gradient-to-br from-green-400 to-gray-600"></span>
-
                                     <i class="fa-solid fa-edit text-lg cursor-pointer absolute right-6 mt-0.5 mr-2"
                                        (click)="subtitle['updateMode'] = true" *ngIf="!subtitle['updateMode']"></i>
-
                                     <i class="fa-solid fa-check text-lg cursor-pointer absolute right-6 mt-0.5 mr-2"
                                        *ngIf="subtitle['updateMode']"></i>
-
                                     <i class="fa-solid fa-trash text-red-500 cursor-pointer absolute right-2 mt-1"
                                        (click)="removeLine(subtitle['id'], cpt)"></i>
                                 </div>
@@ -85,7 +83,7 @@
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end"
                  class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-5">
             {{ "FORMS.available_fields" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
@@ -98,8 +96,9 @@
                 </span>
             </div>
         </div>
-        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)"
-             cdkDropList [cdkDropListData]="this.availableFieldsTmp" (cdkDropListDropped)="drop($event)">
+        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)"
+             cdkDropList [cdkDropListData]="this.availableFieldsTmp" (cdkDropListDropped)="drop($event)"
+             [cdkDropListDisabled]="!this.formLoaded">
             <div *ngFor="let field of this.availableFieldsTmp; let cpt = index"
                  class="my-8 ml-2 text-base" cdkDrag>
                 <span class="cursor-move">
@@ -107,4 +106,5 @@
                 </span>
             </div>
         </div>
-    </mat-sidenav></mat-sidenav-container>
+    </mat-sidenav>
+</mat-sidenav-container>

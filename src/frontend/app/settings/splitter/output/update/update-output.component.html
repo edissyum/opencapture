@@ -7,19 +7,20 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-0.5">
-                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
+            <div class="flex">
+                <button mat-icon-button (click)="sidenav.toggle();">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
             </div>
-            <button mat-icon-button (click)="sidenav2.toggle();"
-                    class="absolute right-2 top-0.5">
-                <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="settings_search">
+                <button mat-icon-button (click)="sidenav2.toggle();">
+                    <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
+            </div>
         </div>
-        <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
+        <hr class="border-green-400 relative z-30">
+        <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
             <div *ngIf="!loading" class="flex justify-center items-center">
                 <form class="grid grid-cols-2 gap-12 w-full m-10 text-center">
                     <ng-container *ngFor="let field of outputForm">
@@ -37,7 +38,7 @@
                             </mat-select>
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
                         </mat-form-field>
-                        <mat-form-field *ngIf="field.type === 'select' && field.id === 'compress_type' && this.selectedOutputType === 'export_pdf'">
+                        <mat-form-field *ngIf="field.type === 'select' && (field.id === 'compress_type' || field.id === 'ocrise') && this.selectedOutputType === 'export_pdf'">
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value">
                                 <mat-option *ngFor="let option of field.values" [value]="option.id">
@@ -132,7 +133,7 @@
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end"
                  class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-5">
             {{ "FORMS.available_fields" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
@@ -145,7 +146,7 @@
                 </span>
             </div>
         </div>
-        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
+        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
             <div *ngFor="let field of this.availableFields; let cpt = index" class="my-8 ml-2 text-base">
                 <span>
                     {{ field.label | translate }}

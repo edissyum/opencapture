@@ -13,18 +13,17 @@
                 {{ 'SPLITTER.no_batch_found' | translate }}
             </span>
             <div class="card" *ngFor="let batch of this.batches | slice: 0 : 10">
-                <mat-card class="mat-elevation-z4 my-2"
-                          [ngClass]="{'border-4 border-green-400': this.currentBatch.id === batch.id}">
+                <mat-card class="mat-elevation-z4 my-2" [ngClass]="{'border-4 border-green-400': this.currentBatch.id === batch.id}">
                     <a class="image-link" (click)="changeBatch(batch['id'])">
                         <mat-card-header>
                             <img mat-card-image [src]="batch['thumbnail']" alt="Open-Capture Splitter image">
                         </mat-card-header>
                     </a>
                     <mat-card-content>
-                            <span matTooltip="{{ 'SPLITTER.document_number' | translate }} : {{ batch['pageNumber'] }}"
-                                  class="float-right text-green-400">
-                                {{ batch['pageNumber'] }} <i class="far fa-file"></i>
-                            </span>
+                        <span matTooltip="{{ 'SPLITTER.document_number' | translate }} : {{ batch['pageNumber'] }}"
+                              class="float-right text-green-400">
+                            {{ batch['pageNumber'] }} <i class="far fa-file"></i>
+                        </span>
                         <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">
                             <span class="leading-7 flex">
                                 {{ batch['fileName'] }}
@@ -192,7 +191,7 @@
                         <span>{{ 'SPLITTER.drop_document_in_position' | translate }}</span>
                     </div>
                     <mat-card-title>
-                        <mat-accordion>
+                        <mat-accordion class="block mx-auto my-4" style="width:98%;">
                             <mat-expansion-panel class="bg-gray-20" [expanded]="fieldsCategories['document_metadata'].length !== 0" (opened)="documentMetadataOpenState = true"
                                                  (closed)="documentMetadataOpenState = false" #documentMetadata>
                                 <mat-expansion-panel-header>
@@ -343,80 +342,76 @@
                     </mat-card-content>
                 </mat-card>
             </div>
-            <mat-card class="splitter-tools divide-x divide-green-500 border-gray-300 py-0">
+            <mat-card class="splitter-tools divide-x divide-green-500 border-gray-300 py-0 mb-8">
                 <mat-card-content style="overflow: auto;" class="grid grid-rows-1 grid-cols-3">
-                    <div class="absolute top-2 left-8 text-gray-500 bg-white px-2"
+                    <div class="absolute top-5 left-8 text-gray-500 bg-white px-2"
                          matTooltip="{{ currentBatch.selectedPagesCount }} {{ 'SPLITTER.selected_pages' | translate }}">
                         <span class="font-medium mx-1">{{ currentBatch.selectedPagesCount }}</span>
                         <i class="fa-solid fa-file"></i>
                     </div>
-                    <div class="border border-gray-600 rounded-lg flex h-20 col-span-2 py-4 my-4 overflow-x-auto overflow-y-hidden">
-                        <button mat-button (click)="deleteSelectedPages()" class="btn-icon w-8 ml-4"
-                                matTooltip="{{ 'SPLITTER.delete_selected_pages' | translate }}"
-                                [disabled]="currentBatch.selectedPagesCount === 0">
-                            <i class="fas fa-trash-alt text-lg"></i>
-                        </button>
-                        <button mat-button (click)="setAllPagesTo(true)" class="btn-icon w-8"
-                                matTooltip="{{ 'SPLITTER.select_all' | translate }}">
-                            <i class="fas fa-check-circle text-lg"></i>
-                        </button>
-                        <button mat-button (click)="setAllPagesTo(false)"
-                                class="btn-icon border-r-2 border-black w-8"
-                                matTooltip="{{ 'SPLITTER.unselect_all' | translate }}">
-                            <i class="fas fa-ban text-lg"></i>
-                        </button>
-                        <button mat-button (click)="rotateSelectedPages()"
-                                [disabled]="currentBatch.selectedPagesCount === 0"
-                                class="btn-icon btn-rotate border-r-10 border-gray-400 w-8"
-                                matTooltip="{{ 'SPLITTER.rotatePage' | translate }}">
-                            <i class="fas fa-rotate-right text-lg"></i>
-                        </button>
-                        <button mat-button (click)="createDocument()"
-                                matTooltip="{{ 'SPLITTER.add_document' | translate }}">
-                            <i class="fas fa-plus-circle fa-lg" *ngIf="!addDocumentLoading"></i>
-                            <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="addDocumentLoading"></i>
-                        </button>
-                        <mat-form-field class="-top-2">
-                            <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>
-                            <mat-select [(ngModel)]="toolSelectedOption">
-                                <mat-option *ngFor="let document of this.documents;" [value]="document['id']">
-                                    {{ document['documentTypeName'] }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <button (click)="sendSelectedPages()" mat-button class="btn-icon w-8"
-                                matTooltip="{{ 'SPLITTER.send' | translate }}">
-                            <i class="fa fa-paper-plane text-lg"></i>
-                        </button>
-                        <button (click)="saveInfo()" mat-button class="w-8"
-                                matTooltip="{{ 'SPLITTER.save' | translate }}" [ngClass]="{'text-green-400': isDataEdited}">
-                            <i class="fa fa-save fa-lg" *ngIf="!saveInfosLoading"></i>
-                            <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="saveInfosLoading"></i>
-                        </button>
-                    </div>
-                    <div class="grid grid-rows-4 py-2">
-                        <div class="row-span-3 overflow-y-auto">
-                            <button mat-button (click)="validateWithConfirmation()"
-                                    [disabled]="outputs.length === 0 || currentBatch.status !== 'NEW' || documents.length === 0"
-                                    [ngClass]="{'cursor-not-allowed text-gray-500 bg-gray-300': outputs.length === 0 || currentBatch.status !== 'NEW' || documents.length === 0}"
-                                    class="btn-validate-splitter rounded-full bg-green-400 text-white text-sm
-                                    font-medium transition duration-300 mt-2 ml-2 float-right top-4"
-                                    style="border-right: 1px dotted white !important;">
-                                {{ 'GLOBAL.validate' | translate }}
+                    <div class="border border-gray-600 rounded-lg flex col-span-2 my-4 overflow-x-auto overflow-y-hidden">
+                        <div class="mt-2 -mb-1">
+                            <button mat-button (click)="deleteSelectedPages()" class="btn-icon w-8 ml-4"
+                                    matTooltip="{{ 'SPLITTER.delete_selected_pages' | translate }}"
+                                    [disabled]="currentBatch.selectedPagesCount === 0">
+                                <i class="fas fa-trash-alt text-lg"></i>
                             </button>
-                            <button mat-button class="btn-validate-splitter text-gray-500 bg-gray-300 rounded-full
-                                text-sm font-medium transition duration-300 mt-2 float-right top-4" (click)="cancel()">
-                                {{ 'GLOBAL.quit' | translate }}
+                            <button mat-button (click)="setAllPagesTo(true)" class="btn-icon w-8"
+                                    matTooltip="{{ 'SPLITTER.select_all' | translate }}">
+                                <i class="fas fa-check-circle text-lg"></i>
+                            </button>
+                            <button mat-button (click)="setAllPagesTo(false)"
+                                    class="btn-icon border-r-2 border-black w-8"
+                                    matTooltip="{{ 'SPLITTER.unselect_all' | translate }}">
+                                <i class="fas fa-ban text-lg"></i>
+                            </button>
+                            <button mat-button (click)="rotateSelectedPages()"
+                                    [disabled]="currentBatch.selectedPagesCount === 0"
+                                    class="btn-icon btn-rotate border-r-10 border-gray-400 w-8"
+                                    matTooltip="{{ 'SPLITTER.rotatePage' | translate }}">
+                                <i class="fas fa-rotate-right text-lg"></i>
+                            </button>
+                            <button mat-button (click)="createDocument()"
+                                    matTooltip="{{ 'SPLITTER.add_document' | translate }}">
+                                <i class="fas fa-plus-circle fa-lg" *ngIf="!addDocumentLoading"></i>
+                                <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="addDocumentLoading"></i>
+                            </button>
+                            <mat-form-field>
+                                <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>
+                                <mat-select [(ngModel)]="toolSelectedOption">
+                                    <mat-option *ngFor="let document of this.documents;" [value]="document['id']">
+                                        {{ document['documentTypeName'] }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <button (click)="sendSelectedPages()" mat-button class="btn-icon w-8"
+                                    matTooltip="{{ 'SPLITTER.send' | translate }}">
+                                <i class="fa fa-paper-plane text-lg"></i>
+                            </button>
+                            <button (click)="saveInfo()" mat-button class="w-8"
+                                    matTooltip="{{ 'SPLITTER.save' | translate }}" [ngClass]="{'text-green-400': isDataEdited}">
+                                <i class="fa fa-save fa-lg" *ngIf="!saveInfosLoading"></i>
+                                <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="saveInfosLoading"></i>
                             </button>
                         </div>
-                        <div class="text-right text-gray-400">
-                            <span>{{ outputs.join(', ') }}</span>
-                            <span class="text-red-500" *ngIf="this.outputs.length === 0">{{ 'OUTPUT.no_output_configured' | translate }}</span>
-                        </div>
                     </div>
+                    <div class="grid grid-cols-2 gap-4 text-gray-900 relative mt-6">
+                        <button mat-button (click)="cancel()" type="submit"
+                                class="p-6 ml-4 border-solid border-red-400 border hover:bg-red-400 hover:text-white transition duration-300">
+                            {{ 'GLOBAL.quit' | translate }}
+                        </button>
+                        <button mat-button (click)="validateWithConfirmation()" type="submit"
+                                [disabled]="outputs.length === 0 || currentBatch.status !== 'NEW' || documents.length === 0"
+                                class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                            <span >{{ 'FORMS.validate' | translate }}</span>
+                        </button>
+                    </div>
+<!--                        <div class="text-right text-gray-400">-->
+<!--                            <span>{{ outputs.join(', ') }}</span>-->
+<!--                            <span class="text-red-500" *ngIf="this.outputs.length === 0">{{ 'OUTPUT.no_output_configured' | translate }}</span>-->
+<!--                        </div>-->
                 </mat-card-content>
             </mat-card>
-            <div class="splitter-tools-place"></div>
         </div>
     </mat-drawer-content>
 </mat-drawer-container>

@@ -20,12 +20,12 @@ import uuid
 import json
 import shutil
 import datetime
-import ocrmypdf
 import subprocess
 import pandas as pd
 from xml.dom import minidom
 from flask_babel import gettext
 import xml.etree.ElementTree as Et
+from .functions import generate_searchable_pdf
 from src.backend.import_classes import _MEMWebServices
 
 
@@ -98,22 +98,6 @@ def compress_pdf(input_file, output_file, compress_id):
     subprocess.check_call(gs_args)
 
 
-def generate_searchable_pdf(pdf, tmp_filename, lang, log):
-    """
-    Start from standard PDF, with no OCR, and create a searchable PDF, with OCR. Thanks to ocrmypdf python lib
-
-    :param pdf: Path to original pdf (not searchable, without OCR)
-    :param tmp_path: Path to store the final pdf, searchable with OCR
-    :param separator: Class Separator instance
-    """
-    try:
-        res = ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', skip_text=True, language=lang, progress_bar=False)
-        if res.value != 0:
-            ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', force_ocr=True, language=lang, progress_bar=False)
-    except ocrmypdf.exceptions.PriorOcrFoundError as _e:
-        log.error(_e)
-
-
 def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
@@ -133,7 +117,6 @@ def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
 
     if os.path.isdir(folder_out):
         file = invoice_info['path'] + '/' + invoice_info['filename']
-
         if compress_type:
             compressed_file_path = '/tmp/min_' + invoice_info['filename']
             compress_pdf(file, compressed_file_path, compress_type)

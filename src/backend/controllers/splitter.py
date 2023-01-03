@@ -17,8 +17,8 @@
 
 import re
 import json
+import pypdf
 import base64
-import PyPDF2
 import shutil
 import os.path
 import datetime
@@ -343,13 +343,15 @@ def export_mem(auth_data, file_path, args, batch):
         return response, 400
 
 
-def export_pdf(batch, documents, parameters, pages, now, compress_type):
-    if 'docservers' in session:
+def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
+    if 'docservers' in session and 'configurations' in session:
         docservers = json.loads(session['docservers'])
+        configurations = json.loads(session['configurations'])
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
+        configurations = _vars[10]
 
     filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch['file_path']
     pdf_filepaths = []
@@ -361,8 +363,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
     Add PDF file to zip archive if enabled
     """
     if 'add_to_zip' in parameters and parameters['add_to_zip']:
-        except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) \
-            if 'Except' in parameters['add_to_zip'] else ''
+        except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) if 'Except' in parameters['add_to_zip'] else ''
         mask_args = {
             'mask': parameters['add_to_zip'].split('[Except=')[0],
             'separator': parameters['separator'],
@@ -390,7 +391,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
             })
         else:
             doc_except_from_zip.append(documents[index]['id'])
-    export_pdf_res = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], compress_type, 1)
+    export_pdf_res = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], output_parameter, log, configurations['locale'], 1)
     if not export_pdf_res[0]:
         response = {
             "errors": gettext('EXPORT_PDF_ERROR'),
@@ -597,8 +598,7 @@ def validate(args):
                     Export PDF files
                 """
                 if output[0]['output_type_id'] in ['export_pdf']:
-                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now,
-                                                output[0]['compress_type'])
+                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], _log)
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
 
@@ -834,8 +834,8 @@ def merge_batches(parent_id, batches):
     parent_max_split_index = splitter.get_documents_max_split_index({'id': parent_id})[0][0]['split_index']
     parent_max_source_page = splitter.get_max_source_page({'id': parent_document_id})[0][0]['source_page']
 
-    parent_pdf = PyPDF2.PdfReader(parent_filename)
-    merged_pdf = PyPDF2.PdfWriter()
+    parent_pdf = pypdf.PdfReader(parent_filename)
+    merged_pdf = pypdf.PdfWriter()
     for page in range(len(parent_pdf.pages)):
         merged_pdf.add_page(parent_pdf.pages[page])
 
@@ -844,7 +844,7 @@ def merge_batches(parent_id, batches):
         batch_info = splitter.get_batch_by_id({'id': batch})[0]
         parent_batch_documents += batch_info['documents_count']
         batches_info.append(batch_info)
-        pdf = PyPDF2.PdfReader(docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
+        pdf = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
         for page in range(len(pdf.pages)):
             merged_pdf.add_page(pdf.pages[page])
 

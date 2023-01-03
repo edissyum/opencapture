@@ -14,6 +14,7 @@
                         </mat-label>
                         <input [readonly]="field.type === 'password' && this.disablePasswordModification" matInput
                                [formControl]="field.control" [type]="field.type" [required]="field.required"
+                               [email]="field.type === 'email'"
                                placeholder="{{ field.label | translate }}">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                     </mat-form-field>

@@ -1,10 +1,12 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
     <mat-sidenav #sidenav mode="side" opened class="w-1/7 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
-        <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">{{ "ACCOUNTS.choose_input_upload" | translate }}</h3>
+        <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
+            {{ "ACCOUNTS.choose_input_upload" | translate }}
+        </h3>
         <mat-divider></mat-divider>
         <mat-list>
-            <mat-list-item *ngFor="let input of inputs" class="hover:text-green-400 cursor-pointer m-2 w-auto" (click)="setInput(input.id)">
-                <span [class.text-green-400]="this.selectedInput === input.id">
+            <mat-list-item *ngFor="let input of inputs" class="cursor-pointer m-2 w-auto" (click)="setInput(input.id)">
+                <span [class.text-green-400]="this.selectedInput === input.id" class="hover:text-green-400">
                     {{ input.input_label }}
                 </span>
                 <span *ngIf="this.selectedInput === input.id">

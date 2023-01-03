@@ -7,14 +7,19 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-0.5">
-                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
+            <div class="flex">
+                <button mat-icon-button (click)="sidenav.toggle();">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
+            </div>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="settings_search">
+                <button mat-icon-button (click)="sidenav2.toggle();">
+                    <i [class.transform]="!sidenav2.opened" [class.rotate-180]="!sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
             </div>
         </div>
+        <hr class="border-green-400 relative z-30">
         <div class="flex justify-center items-center align-middle">
             <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
                 <ng-container *ngFor="let field of userForm">
@@ -40,7 +45,7 @@
         </div>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="customers w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-5">
             {{ "ACCOUNTS.customers_list" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>

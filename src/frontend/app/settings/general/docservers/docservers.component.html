@@ -7,20 +7,20 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-0.5">
-                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <div class="absolute right-4 top-0 settings_search">
-                    <mat-form-field appearance="outline">
-                        <mat-label>{{ 'DOCSERVERS.search_docserver' | translate }}</mat-label>
-                        <input matInput type="text" [disabled]="this.loading" (keyup)="searchDocservers($event)">
-                    </mat-form-field>
-                </div>
-                <hr class="border-green-400">
+            <div class="flex">
+                <button mat-icon-button (click)="sidenav.toggle();">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
+            </div>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="settings_search">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ 'DOCSERVERS.search_docserver' | translate }}</mat-label>
+                    <input matInput type="text" [disabled]="this.loading" (keyup)="searchDocservers($event)">
+                </mat-form-field>
             </div>
         </div>
+        <hr class="border-green-400 relative z-30">
         <div *ngIf="!loading" class="w-full">
             <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
             <mat-table matSort [dataSource]="docservers" (matSortChange)="sortData($event)">

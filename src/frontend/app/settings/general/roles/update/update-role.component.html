@@ -7,17 +7,18 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-0.5">
-                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
-            <div class="settings_title text-center">
-                <h3>
-                    {{ this.serviceSettings.getTitle() }} : <span *ngIf="this.role">{{ this.role['label'] }}</span>
-                    <strong *ngIf="this.role"> ({{ this.role['label_short'] }})</strong>
-                </h3>
-                <hr class="border-green-400">
+            <div class="flex">
+                <button mat-icon-button (click)="sidenav.toggle();">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
             </div>
+            <h3 class="text-center flex m-0">
+                {{ this.serviceSettings.getTitle() }} :&nbsp;<span *ngIf="this.role">{{ this.role['label'] }}</span>
+                <strong *ngIf="this.role">&nbsp;({{ this.role['label_short'] }})</strong>
+            </h3>
+            <div class="settings_search"></div>
         </div>
+        <hr class="border-green-400 relative z-30">
         <div class="flex justify-center items-center">
             <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
                 <ng-container *ngFor="let field of roleForm">
@@ -26,23 +27,20 @@
                         <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                     </mat-form-field>
-                    <mat-checkbox class="mt-4 -ml-72"
-                            *ngIf="field.type === 'checkbox'"
-                            [formControl]="field.control">
+                    <mat-slide-toggle class="mt-4 -ml-96" *ngIf="field.type === 'checkbox'" [formControl]="field.control">
                         {{ field.label | translate }}
-                    </mat-checkbox>
+                    </mat-slide-toggle>
                 </ng-container>
             </form>
         </div>
         <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
         <h4 class="text-center mt-10 mb-10">{{ 'PRIVILEGES.list' | translate }}</h4>
         <div class="flex justify-center items-center ml-10 mr-5">
-            <mat-tab-group *ngIf="this.privileges && this.rolePrivileges" dynamicHeight>
+            <mat-tab-group *ngIf="this.privileges && this.rolePrivileges" dynamicHeight class="w-full">
                 <mat-tab *ngFor="let parent of this.privileges['parent']" [label]="this.translate.instant('PRIVILEGES.' + parent)">
                     <div class="grid grid-cols-4 gap-x-40 gap-y-10 mt-10">
                         <mat-slide-toggle *ngFor="let privilege of this.getChildsByParent(parent)"
-                                          [name]="privilege"
-                                          [checked]="this.hasPrivilege(privilege)"
+                                          [name]="privilege" [checked]="this.hasPrivilege(privilege)"
                                           (change)="changePrivilege($event)">
                             {{ 'PRIVILEGES.' + privilege | translate }}
                         </mat-slide-toggle>

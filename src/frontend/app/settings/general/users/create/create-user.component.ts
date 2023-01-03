@@ -194,7 +194,7 @@ export class CreateUserComponent implements OnInit {
             });
 
             if (user['password'] !== user['password_check']) {
-                this.notify.handleErrors('USER.password_mismatch');
+                this.notify.handleErrors(this.translate.instant('USER.password_mismatch'));
                 return of(false);
             }
             user['customers'] = this.usersCustomers;
