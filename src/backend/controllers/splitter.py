@@ -17,8 +17,8 @@
 
 import re
 import json
+import pypdf
 import base64
-import PyPDF2
 import shutil
 import os.path
 import datetime
@@ -834,8 +834,8 @@ def merge_batches(parent_id, batches):
     parent_max_split_index = splitter.get_documents_max_split_index({'id': parent_id})[0][0]['split_index']
     parent_max_source_page = splitter.get_max_source_page({'id': parent_document_id})[0][0]['source_page']
 
-    parent_pdf = PyPDF2.PdfReader(parent_filename)
-    merged_pdf = PyPDF2.PdfWriter()
+    parent_pdf = pypdf.PdfReader(parent_filename)
+    merged_pdf = pypdf.PdfWriter()
     for page in range(len(parent_pdf.pages)):
         merged_pdf.add_page(parent_pdf.pages[page])
 
@@ -844,7 +844,7 @@ def merge_batches(parent_id, batches):
         batch_info = splitter.get_batch_by_id({'id': batch})[0]
         parent_batch_documents += batch_info['documents_count']
         batches_info.append(batch_info)
-        pdf = PyPDF2.PdfReader(docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
+        pdf = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
         for page in range(len(pdf.pages)):
             merged_pdf.add_page(pdf.pages[page])
 
