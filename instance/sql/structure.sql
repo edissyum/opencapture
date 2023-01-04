@@ -378,7 +378,7 @@ CREATE TABLE mailcollect (
      "splitter_technical_input_id"   VARCHAR(255),
      "folder_to_crawl"               VARCHAR(255) NOT NULL,
      "folder_destination"            VARCHAR(255) NOT NULL,
-     "folder_trash"                  VARCHAR(255) NOT NULL,
+     "folder_trash"                  VARCHAR(255),
      "action_after_process"          VARCHAR(255) NOT NULL,
      "verifier_customer_id"          INTEGER,
      "verifier_form_id"              INTEGER

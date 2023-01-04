@@ -81,14 +81,12 @@
                             <hr>
                         </span>
                         <a (click)="closeprofileDropDown()" routerLink="/profile/{{ this.userService.user['id'] }}"
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
-                           role="menuitem">
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">
                             {{ 'USER.my_profile' | translate }}
                         </a>
                         <a (click)="closeprofileDropDown()"
                            routerLink="/logout"
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
-                           role="menuitem">
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">
                             {{ 'GLOBAL.log_out' | translate }}
                         </a>
                     </div>
@@ -115,6 +113,14 @@
                             [matTooltip]="'GLOBAL.statistics' | translate"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
                         <i class="fa-solid fa-chart-bar"></i>
+                    </button>
+                </div>
+                <div class="ml-3 mr-2 relative hidden md:block" *ngIf="false && this.privilegesService.hasPrivilege('monitoring')">
+                    <button id="monitoring-menu" aria-haspopup="true" mat-mini-fab routerLink="/statistics"
+                            [class.settings_active]="location.path().includes('monitoring')"
+                            [matTooltip]="'GLOBAL.monitoring' | translate"
+                            class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i>
                     </button>
                 </div>
                 <div class="ml-3 mr-2 relative border-l border-green-400 pl-5 hidden md:block" *ngIf="this.privilegesService.hasPrivilege('suppliers_list')">

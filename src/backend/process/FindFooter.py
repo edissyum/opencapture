@@ -95,8 +95,7 @@ class FindFooter:
                                     number_formatted = str(float(number_formatted))
                         except (ValueError, SyntaxError, TypeError):
                             pass
-
-                    result += re.sub('\s*', '', number_formatted).replace(',', '.')
+                    result += re.sub(r'\s*', '', number_formatted).replace(',', '.')
                     i = i + 1
                 result_split = result.split('.')
                 if len(result_split) > 1:
@@ -149,8 +148,8 @@ class FindFooter:
                     # If results isn't a float, transform it
                     text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text.replace(' ', ''))
                     result = ''
-                    for t in text:
-                        result += t.group()
+                    for _t in text:
+                        result += _t.group()
 
                     if select[0] != 'vat_1_position':
                         try:
@@ -168,22 +167,17 @@ class FindFooter:
                                     result = ''.join(splitted_number) + '.' + last_index
                                     result = str(float(result))
                         except (ValueError, SyntaxError, TypeError):
-                            pass
+                            return False
 
                 if result != '':
-                    result = re.sub('\s*', '', result).replace(',', '.')
+                    result = re.sub(r'\s*', '', result).replace(',', '.')
                     self.nb_pages = data['page']
                     try:
                         position = json.loads(position)
                     except (TypeError, json.decoder.JSONDecodeError):
-                        pass
+                        return False
                     return [result, position, data['page']]
-                else:
-                    return False
-            else:
-                return False
-        else:
-            return False
+        return False
 
     def test_amount(self, total_ht, total_ttc, vat_rate, vat_amount):
         if total_ht in [False, None] or vat_rate in [False, None]:

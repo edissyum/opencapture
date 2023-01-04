@@ -22,7 +22,7 @@
         <hr class="border-green-400 relative z-30">
         <div class="overflow-auto" style="height: calc(100% - 70px)">
             <div class="flex justify-center items-center mt-5">
-                <button mat-button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                <button mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                     <span class="block" (click)="updatePositionsMask()">{{ "POSITIONS-MASKS.modify" | translate }}</span>
                 </button>
             </div>
@@ -92,7 +92,7 @@
         <mat-divider class="border-green-400"></mat-divider>
         <div *ngIf="loadingFields" class="relative" style="top: 40%">
             <span class="text-center overflow-hidden">
-                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900" style="--fa-animation-duration: 1.5s;"></i>
+                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
             </span>
         </div>
         <mat-tab-group style="height: calc(100% - 70px)" *ngIf="!loadingFields">

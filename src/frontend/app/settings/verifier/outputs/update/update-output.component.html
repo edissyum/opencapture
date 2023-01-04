@@ -53,7 +53,7 @@
             <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
             <h4 class="text-center mt-10 mb-5">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
             <div class="flex justify-center items-center mb-2">
-                <button mat-button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                <button mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                     <span class="block" (click)="updateOutput()">{{ "OUTPUT.update" | translate }}</span>
                 </button>
             </div>
@@ -76,7 +76,7 @@
                             </div>
                             <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length !== 0"
                                     (click)="testConnection()" mat-button
-                                    class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                                    class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                                 <span>{{ "OUTPUT.test_connection" | translate }}</span>
                             </button>
                         </mat-tab>
@@ -189,7 +189,7 @@
         <div *ngIf="this.loadingCustomFields" class="flex text-gray-400 object-contain"
              style="height: calc(100% - 8rem)">
             <div class="m-auto text-center">
-                <i class="fa-solid fa-code fa-4x fa-beat-fade w-full mb-2" style="--fa-animation-duration: 1.5s;"></i>
+                <i class="fa-solid fa-code fa-4x fa-beat-fade w-full mb-2"></i>
                 <span class="w-full">
                     {{ 'OUTPUT.loading_custom_fields' | translate }}
                 </span>

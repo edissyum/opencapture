@@ -14,8 +14,8 @@
             </div>
             <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="flex text-gray-900">
-                <button (click)="addProcess()">
-                    <i class="fa-solid fa-plus text-2xl ml-2" [matTooltip]="'MAILCOLLECT.add_process' | translate"></i>
+                <button mat-icon-button (click)="addProcess()" class="ml-2">
+                    <i class="fa-solid fa-plus text-2xl" [matTooltip]="'MAILCOLLECT.add_process' | translate"></i>
                 </button>
             </div>
         </div>
@@ -59,7 +59,7 @@
                         </ng-container>
                     </div>
                     <div class="w-full text-center mb-4">
-                        <button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white
+                        <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
                                         transition duration-300" type="submit" mat-button (click)="updateGlobal()">
                             {{ 'MAILCOLLECT.update_global' | translate }}
                         </button>
@@ -104,13 +104,12 @@
                                 </div>
                                 <div class="relative top-5">
                                     <i *ngIf="!this.loadingProcessName" class="fas fa-check ml-2" (click)="updateProcessName(process, new_process_name.value)"></i>
-                                    <i *ngIf="this.loadingProcessName" class="fa-solid fa-circle-notcha f-spin"
-                                       style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
+                                    <i *ngIf="this.loadingProcessName" class="fa-solid fa-circle-notch fa-spin"></i>
                                 </div>
                             </div>
                         </span>
                         <ng-template #input>
-                            <div class="grid grid-cols-5">
+                            <div class="actions grid grid-cols-5">
                                 <div class="change_process_name settings_search col-span-4">
                                     <mat-form-field class="block">
                                         <input #new_process_name_input matInput type="text"
@@ -198,25 +197,22 @@
                         </ng-container>
                     </div>
                     <div class="mb-6 grid grid-cols-6 gap-4 h-10 mt-8">
-                        <button class="p-6 border-solid border-gray-900 border hover:bg-gray-900 hover:text-white
+                        <button class="p-6 border-solid border-gray-900 border bg-gray-900 text-white hover:bg-transparent hover:text-gray-900
                                     transition duration-300 col-start-3" mat-button (click)="retrieveFolders(process)">
                             <span *ngIf="!this.folderLoading">{{ 'MAILCOLLECT.retrieve_folders' | translate }}</span>
-                            <i *ngIf="this.folderLoading" class="fa-solid text-2xl fa-circle-notch fa-spin
-                                        text-green-400" style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
+                            <i *ngIf="this.folderLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-green-400"></i>
                         </button>
-                        <button *ngIf="process.exists"
-                                class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white
-                                    transition duration-300" mat-button (click)="updateProcess(process)">
+                        <button *ngIf="process.exists" mat-button (click)="updateProcess(process)"
+                                class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
+                                    transition duration-300">
                             <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.update_process' | translate }}</span>
-                            <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin
-                                        text-gray-900" style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
+                            <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                         </button>
-                        <button *ngIf="!process.exists"
-                                class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white
-                                    transition duration-300" mat-button (click)="createProcess(process)">
+                        <button *ngIf="!process.exists" mat-button (click)="createProcess(process)"
+                                class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
+                                    transition duration-300">
                             <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.create_process' | translate }}</span>
-                            <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin
-                                        text-gray-900" style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
+                            <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                         </button>
                     </div>
                 </mat-tab>
