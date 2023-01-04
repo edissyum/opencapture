@@ -32,7 +32,7 @@ elif 'models' in custom_array['user']['path']:
 if 'mailcollect' or 'models' not in custom_array['mailcollect']['path']:
     from .models import mailcollect
 elif 'models' in custom_array['mailcollect']['path']:
-    user = getattr(__import__(custom_array['mailcollect']['path'], fromlist=[custom_array['mailcollect']['module']]), custom_array['mailcollect']['module'])
+    mailcollect = getattr(__import__(custom_array['mailcollect']['path'], fromlist=[custom_array['mailcollect']['module']]), custom_array['mailcollect']['module'])
 
 if 'roles' or 'models' not in custom_array['roles']['path']:
     from .models import roles
@@ -67,7 +67,7 @@ elif 'models' in custom_array['history']['path']:
 if 'config' or 'models' not in custom_array['config']['path']:
     from .models import config
 elif 'models' in custom_array['config']['path']:
-    history = getattr(__import__(custom_array['config']['path'], fromlist=[custom_array['config']['module']]), custom_array['config']['module'])
+    config = getattr(__import__(custom_array['config']['path'], fromlist=[custom_array['config']['module']]), custom_array['config']['module'])
 
 if 'verifier' or 'models' not in custom_array['verifier']['path']:
     from .models import verifier
