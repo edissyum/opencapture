@@ -35,30 +35,6 @@ import { HistoryService } from "../../../services/history.service";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { LastUrlService } from "../../../services/last-url.service";
-import {FlatTreeControl} from "@angular/cdk/tree";
-import {MatTreeFlatDataSource, MatTreeFlattener} from "@angular/material/tree";
-
-interface AccountsNode {
-    name: string
-    id: number
-    parent_id: any
-    supplier_id: any
-    count: number
-    display: boolean
-    children: any
-}
-
-interface FlatNode {
-    expandable: boolean
-    name: string
-    id: number
-    parent_id: any
-    supplier_id: any
-    display: boolean
-    count: number
-    level: number
-    children: any
-}
 
 @Component({
     selector: 'app-list',
@@ -75,6 +51,7 @@ export class SplitterListComponent implements OnInit {
     loadingCustomers : boolean = true;
     expanded         : boolean = false;
     status           : any[]   = [];
+
     gridColumns      : number  = 4;
     page             : number  = 1;
     selectedTab      : number  = 0;
@@ -99,32 +76,10 @@ export class SplitterListComponent implements OnInit {
             'label': marker('BATCH.older'),
         }
     ];
-    currentTime         : string  = 'today';
-    currentStatus       : string  = 'NEW';
-    batchesSelected     : boolean = false;
     totalChecked        : number  = 0;
-    customerFilterEmpty : boolean = false;
-    customerFilter      = new FormControl('');
-
-    private _transformer = (node: AccountsNode, level: number) => ({
-        expandable: !!node.children && node.children.length > 0,
-        name: node.name,
-        supplier_id: node.supplier_id,
-        id: node.id,
-        parent_id: node.parent_id,
-        display: node.display,
-        count: node.count,
-        level: level,
-        children: node.children
-    });
-
-    treeControl = new FlatTreeControl<FlatNode>(
-        node => node.level, node => node.expandable);
-
-    treeFlattener = new MatTreeFlattener(
-        this._transformer, node => node.level, node => node.expandable, node => node.children);
-
-    dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+    batchesSelected     : boolean = false;
+    currentStatus       : string  = 'NEW';
+    currentTime         : string  = 'today';
 
     constructor(
         private router: Router,
@@ -142,15 +97,15 @@ export class SplitterListComponent implements OnInit {
         private localStorageService: LocalStorageService,
     ) {}
 
-    hasChild = (_: number, node: FlatNode) => node.expandable;
-    isLevelOne = (_: number, node: FlatNode) => node.level === 1;
-    isLevelTwo = (_: number, node: FlatNode) => node.level === 2;
-    isNotLevelOne = (_: number, node: FlatNode) => node.level !== 1;
-
-    ngOnInit(): void {
+    async ngOnInit() {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+
+        if (!this.userService.user) {
+            this.userService.user = this.userService.getUserFromLocal();
+        }
+
         this.localStorageService.save('splitter_or_verifier', 'splitter');
 
         const lastUrl = this.routerExtService.getPreviousUrl();
@@ -397,32 +352,5 @@ export class SplitterListComponent implements OnInit {
         this.currentStatus = event.value;
         this.resetPaginator();
         this.loadBatches();
-    }
-
-    expandAll() {
-        if (!this.expanded) this.treeControl.expandAll();
-        else this.treeControl.collapseAll();
-        this.expanded = !this.expanded;
-    }
-
-    filterCustomers() {
-        const tmpData = this.dataSource.data;
-        this.customerFilterEmpty = false;
-        let customerMatch = false;
-        tmpData.forEach((element: any) => {
-            if (element.name.toLowerCase().includes(this.customerFilter.value!.toLowerCase())) {
-                element.display = true;
-                customerMatch = true;
-            } else {
-                element.display = false;
-            }
-        });
-        if (!customerMatch) this.customerFilterEmpty = true;
-        this.dataSource.data = tmpData;
-    }
-
-    resetSearchCustomer() {
-        this.customerFilter.setValue('');
-        this.filterCustomers();
     }
 }
