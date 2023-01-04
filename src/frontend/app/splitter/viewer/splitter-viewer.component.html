@@ -397,19 +397,19 @@
                     </div>
                     <div class="grid grid-cols-2 gap-4 text-gray-900 relative mt-6">
                         <button mat-button (click)="cancel()" type="submit"
-                                class="p-6 ml-4 border-solid border-red-400 border hover:bg-red-400 hover:text-white transition duration-300">
+                                class="p-6 ml-4 border-solid border-red-400 border bg-red-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                             {{ 'GLOBAL.quit' | translate }}
                         </button>
                         <button mat-button (click)="validateWithConfirmation()" type="submit"
                                 [disabled]="outputs.length === 0 || currentBatch.status !== 'NEW' || documents.length === 0"
-                                class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                                class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                             <span >{{ 'FORMS.validate' | translate }}</span>
                         </button>
+                        <div class="text-gray-400 -mt-2 col-start-2">
+                            <span>{{ outputs.join(', ') }}</span>
+                            <span class="text-red-500" *ngIf="this.outputs.length === 0">{{ 'OUTPUT.no_output_configured' | translate }}</span>
+                        </div>
                     </div>
-<!--                        <div class="text-right text-gray-400">-->
-<!--                            <span>{{ outputs.join(', ') }}</span>-->
-<!--                            <span class="text-red-500" *ngIf="this.outputs.length === 0">{{ 'OUTPUT.no_output_configured' | translate }}</span>-->
-<!--                        </div>-->
                 </mat-card-content>
             </mat-card>
         </div>

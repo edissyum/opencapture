@@ -88,11 +88,11 @@
                         </div>
                     </div>
                     <div class="flex justify-center m-5">
-                        <button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300"
+                        <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
                                 mat-button (click)="addCustomField()" *ngIf="!update">
                             {{ 'CUSTOM-FIELDS.add' | translate }}
                         </button>
-                        <button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300"
+                        <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
                                 mat-button (click)="$event.stopPropagation();updateCustomOnSubmit()" *ngIf="update">
                             {{ 'CUSTOM-FIELDS.update' | translate }}
                         </button>

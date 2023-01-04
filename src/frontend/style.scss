@@ -27,6 +27,14 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
     @apply border-green-400 #{!important};
 }
 
+.fa-solid {
+    --fa-animation-duration: 1.5s;
+}
+
+.mat-mdc-button .mat-mdc-button-persistent-ripple::before {
+    @apply bg-transparent #{!important};
+}
+
 /*** Image area select ***/
 
 .select-areas-overlay {

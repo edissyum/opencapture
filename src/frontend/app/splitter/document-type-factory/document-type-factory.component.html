@@ -30,7 +30,7 @@
     </mat-form-field>
 </div>
 <mat-card class="overflow-auto" style="height: calc(100% - 9.5rem) !important;">
-    <div *ngIf="treeDataObj.doctypeData.length === 0" class="text-gray-400">
+    <div *ngIf="treeDataObj.doctypeData.length === 0" class="text-gray-400 p-4">
         {{ 'DOCTYPE.no_doctype_to_show' | translate }}
     </div>
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">

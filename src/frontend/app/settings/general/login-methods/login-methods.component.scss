@@ -13,3 +13,10 @@
         }
     }
 }
+
+
+::ng-deep .mat-step-header .mat-step-icon-selected,
+::ng-deep .mat-step-header .mat-step-icon-state-done,
+::ng-deep .mat-step-header .mat-step-icon-state-edit {
+    @apply bg-green-400;
+}

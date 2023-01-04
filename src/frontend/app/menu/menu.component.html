@@ -81,14 +81,12 @@
                             <hr>
                         </span>
                         <a (click)="closeprofileDropDown()" routerLink="/profile/{{ this.userService.user['id'] }}"
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
-                           role="menuitem">
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">
                             {{ 'USER.my_profile' | translate }}
                         </a>
                         <a (click)="closeprofileDropDown()"
                            routerLink="/logout"
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
-                           role="menuitem">
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">
                             {{ 'GLOBAL.log_out' | translate }}
                         </a>
                     </div>

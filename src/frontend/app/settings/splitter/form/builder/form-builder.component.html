@@ -168,7 +168,7 @@
                 </div>
             </ng-container>
             <div class="flex justify-center items-center">
-                <button mat-button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white
+                <button mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
                 transition duration-300">
                     <span class="block" (click)="createForm()" *ngIf="creationMode">{{ "FORMS.create" | translate }}</span>
                     <span class="block" (click)="updateForm()" *ngIf="!creationMode">{{ "FORMS.modify" | translate }}</span>
@@ -183,8 +183,7 @@
         <mat-divider class="border-green-400"></mat-divider>
         <div *ngIf="this.loadingCustomFields" class="relative" style="top: 40%">
             <span class="text-center overflow-hidden">
-                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"
-                   style="--fa-animation-duration: 1.5s;"></i>
+                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
             </span>
         </div>
         <mat-tab-group style="height: calc(100% - 70px)" *ngIf="!this.loadingCustomFields">

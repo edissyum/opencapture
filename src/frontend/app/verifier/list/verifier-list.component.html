@@ -29,7 +29,7 @@
         <div *ngIf="this.loadingCustomers || this.dataSource.data.length === 0" class="flex text-gray-400 object-contain"
              style="height: calc(100% - 10rem)">
             <div class="m-auto text-center">
-                <i class="fa-solid fa-users fa-4x fa-beat-fade w-full mb-2" style="--fa-animation-duration: 1.5s;"></i>
+                <i class="fa-solid fa-users fa-4x fa-beat-fade w-full mb-2"></i>
                 <span class="w-full">
                     {{ 'VERIFIER.loading_customers' | translate }}
                 </span>
@@ -38,7 +38,7 @@
         <div *ngIf="this.customerFilter.value && !this.loadingCustomers && this.customerFilterEmpty"
              class="flex text-gray-400 object-contain" style="height: calc(100% - 10rem)">
             <div class="m-auto text-center">
-                <i class="fa-solid fa-ban fa-4x fa-beat-fade w-full mb-2" style="--fa-animation-duration: 1.5s;"></i>
+                <i class="fa-solid fa-ban fa-4x fa-beat-fade w-full mb-2"></i>
                 <span class="w-full">
                     {{ 'VERIFIER.no_customers_filter' | translate }}
                 </span>
