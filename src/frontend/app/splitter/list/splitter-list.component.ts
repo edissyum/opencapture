@@ -102,7 +102,7 @@ export class SplitterListComponent implements OnInit {
             this.authService.generateHeaders();
         }
 
-        if (!this.userService.user) {
+        if (!this.userService.user.id) {
             this.userService.user = this.userService.getUserFromLocal();
         }
 
@@ -137,7 +137,7 @@ export class SplitterListComponent implements OnInit {
 
     loadBatches(): void {
         this.isLoading = true;
-        this.http.get(environment['url'] + '/ws/splitter/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/splitter/batches/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.totals = data.totals;
             }),
@@ -147,13 +147,13 @@ export class SplitterListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.get(environment['url'] + '/ws/splitter/batches/' +
+        this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id +  '/paging/' +
             (this.pageIndex - 1) + '/' + this.pageSize + '/' + this.currentTime + '/' + this.currentStatus,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.batches = data.batches;
-                for (let batchIndex = 0; batchIndex < this.batches.length; batchIndex++) {
-                    this.batches[batchIndex]['thumbnail'] = this.sanitize(this.batches[batchIndex]['thumbnail']);
+                for (const batch of this.batches) {
+                    batch['thumbnail'] = this.sanitize(batch['thumbnail']);
                 }
                 this.total = data.count;
             }),

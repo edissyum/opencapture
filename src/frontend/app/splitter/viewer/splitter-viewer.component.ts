@@ -184,7 +184,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     loadBatchById(): void {
         this.loading = true;
-        this.http.get(environment['url'] + '/ws/splitter/batches/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/splitter/batches/' + this.currentBatch.id  + '/user/'
+            + this.userService.user.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.currentBatch = {
                     id                  : data.batches[0]['id'],
@@ -266,7 +267,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     loadBatches(): void {
         this.batchesLoading = true;
         this.batches        = [];
-        this.http.get(environment['url'] + '/ws/splitter/batches/0/5/' + this.currentTime + '/' + this.currentBatch.status, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id
+            + '/paging/0/5/' + this.currentTime + '/' + this.currentBatch.status, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.batches.forEach((batch: any) =>
                     this.batches.push(

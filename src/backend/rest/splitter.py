@@ -39,16 +39,17 @@ def upload():
         return make_response(gettext('UNKNOW_ERROR'), 400)
 
 
-@bp.route('splitter/batches', defaults={'time': None, 'status': None, 'batch_id': None, 'size': None, 'page': None},
+@bp.route('splitter/batches/user/<int:user_id>', defaults={'time': None, 'status': None, 'batch_id': None, 'size': None, 'page': None},
           methods=['GET'])
-@bp.route('splitter/batches/<int:batch_id>', defaults={'time': None, 'status': None, 'size': None, 'page': None},
+@bp.route('splitter/batches/<int:batch_id>/user/<int:user_id>', defaults={'time': None, 'status': None, 'size': None, 'page': None},
           methods=['GET'])
-@bp.route('splitter/batches/<int:page>/<int:size>/<string:time>/<string:status>', defaults={'batch_id': None},
+@bp.route('splitter/batches/user/<int:user_id>/paging/<int:page>/<int:size>/<string:time>/<string:status>', defaults={'batch_id': None},
           methods=['GET'])
 @auth.token_required
-def retrieve_splitter_batches(batch_id, page, size, time, status):
+def retrieve_splitter_batches(batch_id, user_id, page, size, time, status):
     args = {
         'batch_id': batch_id,
+        'user_id': user_id,
         'size': size,
         'page': page,
         'time': time if time != 'None' else None,
@@ -171,8 +172,8 @@ def merge_batches(parent_id):
     return make_response(jsonify('')), 200
 
 
-@bp.route('splitter/invoices/totals', defaults={'status': None}, methods=['GET'])
-@bp.route('splitter/invoices/totals/<string:status>', methods=['GET'])
+@bp.route('splitter/batches/totals', defaults={'status': None}, methods=['GET'])
+@bp.route('splitter/batches/totals/<string:status>', methods=['GET'])
 @auth.token_required
 def get_totals(status):
     totals = splitter.get_totals(status)
