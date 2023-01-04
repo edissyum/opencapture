@@ -115,6 +115,14 @@
                         <i class="fa-solid fa-chart-bar"></i>
                     </button>
                 </div>
+                <div class="ml-3 mr-2 relative hidden md:block" *ngIf="false && this.privilegesService.hasPrivilege('monitoring')">
+                    <button id="monitoring-menu" aria-haspopup="true" mat-mini-fab routerLink="/statistics"
+                            [class.settings_active]="location.path().includes('monitoring')"
+                            [matTooltip]="'GLOBAL.monitoring' | translate"
+                            class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                    </button>
+                </div>
                 <div class="ml-3 mr-2 relative border-l border-green-400 pl-5 hidden md:block" *ngIf="this.privilegesService.hasPrivilege('suppliers_list')">
                     <button id="supplier-menu" aria-haspopup="true" mat-mini-fab routerLink="/accounts/suppliers"
                             [class.settings_active]="this.location.path().includes('accounts/suppliers')"
