@@ -16,8 +16,8 @@ psycopg2==2.9.5
 werkzeug==2.2.2
 cmislib3==1.0.8
 requests==2.28.1
-ocrmypdf==14.0.1
-xlsxwriter==3.0.5
+ocrmypdf==14.0.2
+xlsxwriter==3.0.6
 pdf2image==1.16.2
 gitpython==3.1.30
 imap-tools==1.0.0

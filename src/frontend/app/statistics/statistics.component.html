@@ -32,20 +32,15 @@
                 </mat-form-field>
             </div>
             <div class="relative mt-20 w-full" *ngIf="!loading && this.selectedStatistic">
-                <ngx-charts-bar-vertical
-                        *ngIf="this.selectedDiagramType === 'vertical-bar'"
+                <ngx-charts-bar-vertical *ngIf="this.selectedDiagramType === 'vertical-bar'"
                         [results]="currentData" [xAxis]="true" [yAxis]="true" [legend]="true" [showYAxisLabel]="true"
                         [showXAxisLabel]="true" [legendTitle]="this.selectedStatistic.label | translate">
                 </ngx-charts-bar-vertical>
-                <ngx-charts-pie-chart
-                        *ngIf="this.selectedDiagramType === 'pie-chart'" [results]="currentData" [labels]="true"
-                        [legendTitle]="this.selectedStatistic.label | translate">
+                <ngx-charts-pie-chart *ngIf="this.selectedDiagramType === 'pie-chart'" [results]="currentData"
+                                      [labels]="true" [legendTitle]="this.selectedStatistic.label | translate">
                 </ngx-charts-pie-chart>
-                <ngx-charts-pie-grid
-                        *ngIf="this.selectedDiagramType === 'pie-grid'" [results]="currentData">
-                </ngx-charts-pie-grid>
-                <ngx-charts-line-chart
-                        *ngIf="this.selectedDiagramType === 'line-charts'" [showXAxisLabel]="true"
+                <ngx-charts-pie-grid *ngIf="this.selectedDiagramType === 'pie-grid'" [results]="currentData"></ngx-charts-pie-grid>
+                <ngx-charts-line-chart *ngIf="this.selectedDiagramType === 'line-charts'" [showXAxisLabel]="true"
                         [showYAxisLabel]="true" [results]="currentData" [xAxis]="true" [yAxis]="true" [legend]="false">
                 </ngx-charts-line-chart>
             </div>
