@@ -137,6 +137,7 @@ export class SplitterListComponent implements OnInit {
 
     loadBatches(): void {
         this.isLoading = true;
+        this.batches   = [];
         this.http.get(environment['url'] + '/ws/splitter/batches/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.totals = data.totals;
