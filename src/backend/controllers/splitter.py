@@ -27,7 +27,7 @@ from flask import current_app
 from flask_babel import gettext
 from flask import request, session
 from src.backend.main_splitter import launch
-from src.backend.import_models import splitter, doctypes
+from src.backend.import_models import splitter, doctypes, accounts
 from src.backend.import_controllers import forms, outputs, user
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
@@ -138,10 +138,11 @@ def retrieve_batches(args):
     if not error_batches and not error_count:
         for index, batch in enumerate(batches):
             form = forms.get_form_by_id(batch['form_id'])
-            if 'label' in form[0]:
-                batches[index]['form_label'] = form[0]['label']
-            else:
-                batches[index]['form_label'] = gettext('FORM_UNDEFINED')
+            batches[index]['form_label'] = form[0]['label'] if 'label' in form[0] else gettext('FORM_UNDEFINED')
+
+            customer = accounts.get_customer_by_id({'customer_id': batch['customer_id']})
+            batches[index]['customer_name'] = customer[0]['name'] if 'name' in customer[0] else gettext('CUSTOMER_UNDEFINED')
+
             try:
                 thumbnail = f"{docservers['SPLITTER_THUMB']}/{batches[index]['batch_folder']}/{batches[index]['thumbnail']}"
                 with open(thumbnail, 'rb') as image_file:

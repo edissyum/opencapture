@@ -151,10 +151,20 @@ export class SplitterListComponent implements OnInit {
             (this.pageIndex - 1) + '/' + this.pageSize + '/' + this.currentTime + '/' + this.currentStatus,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.batches = data.batches;
-                for (const batch of this.batches) {
-                    batch['thumbnail'] = this.sanitize(batch['thumbnail']);
-                }
+                data.batches.forEach((batch: any) =>
+                    this.batches.push(
+                        {
+                            id             : batch['id'],
+                            inputId        : batch['input_id'],
+                            fileName       : batch['file_name'],
+                            forLabel       : batch['form_label'],
+                            date           : batch['batch_date'],
+                            customerName   : batch['customer_name'],
+                            documentsCount : batch['documents_count'],
+                            thumbnail      : this.sanitize(batch['thumbnail']),
+                        }
+                    )
+                );
                 this.total = data.count;
             }),
             finalize(() => this.isLoading = false),

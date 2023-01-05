@@ -82,7 +82,6 @@
 		"model_path": "Model name",
 		"model_selected": "Model selected : ",
 		"model_updated": "Model updated successfully",
-		"no_model_to_display": "No model to display",
 		"not_enough_checked": "Select at least 2 documents to predict",
 		"predict": "Predict",
 		"prediction": "Prediction",
@@ -90,7 +89,6 @@
 		"test_model": "Test a model",
 		"train_a_model": "Train a model",
 		"train_time": "Train time",
-		"type": "Type",
 		"update_model": "Update model"
 	},
 	"AUTH": {
@@ -794,7 +792,6 @@
 		"document_identifier": "Document identifier",
 		"document_index": "Document index",
 		"document_metadata": "Document metadata",
-		"document_number": "Number of documents",
 		"document_separator": "Document separator",
 		"doubleClickToSelectDoctype": "Double click to select a document type",
 		"drop_document_in_position": "Drop document in wanted position",

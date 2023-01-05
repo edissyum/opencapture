@@ -82,7 +82,6 @@
 		"model_path": "Nom du modèle",
 		"model_selected": "Modèle sélectionné : ",
 		"model_updated": "Modèle modifié avec succès",
-		"no_model_to_display": "Aucun modèle à afficher",
 		"not_enough_checked": "Selectionnez au moins 2 documents à prédire",
 		"predict": "Lancer la prédiction",
 		"prediction": "Prédiction",
@@ -90,7 +89,6 @@
 		"test_model": "Tester la prédiction d'un modèle",
 		"train_a_model": "Entraîner un modèle",
 		"train_time": "Temps d'entraînement",
-		"type": "Type",
 		"update_model": "Modifier le modèle"
 	},
 	"AUTH": {
@@ -794,7 +792,6 @@
 		"document_identifier": "Identifiant du document",
 		"document_index": "Indice du document",
 		"document_metadata": "Métadonnées de document",
-		"document_number": "Nombre de document",
 		"document_separator": "Séparateur de documents",
 		"doubleClickToSelectDoctype": "Double-cliquez pour sélectionner un type de document",
 		"drop_document_in_position": "Déposez le document dans la position souhaitée",
