@@ -74,7 +74,7 @@
                 </mat-card>
             </div>
             <div class="flex justify-center items-center mt-8">
-                <button mat-button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white
+                <button mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
                 transition duration-300" [disabled]="!this.formLoaded">
                     <span class="block" (click)="this.updateDisplay()">{{ "FORMS.modify_display" | translate }}</span>
                 </button>
@@ -90,7 +90,7 @@
         <div *ngIf="this.loadingCustomFields" class="flex text-gray-400 object-contain"
              style="height: calc(100% - 8rem)">
             <div class="m-auto text-center">
-                <i class="fa-solid fa-code fa-4x fa-beat-fade w-full mb-2" style="--fa-animation-duration: 1.5s;"></i>
+                <i class="fa-solid fa-code fa-4x fa-beat-fade w-full mb-2"></i>
                 <span class="w-full">
                     {{ 'OUTPUT.loading_custom_fields' | translate }}
                 </span>

@@ -46,7 +46,7 @@
                     </mat-form-field>
                 </ng-container>
                 <div class="button col-span-3">
-                    <button class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
+                    <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300" type="submit" mat-button>
                         {{ 'USER.update' | translate }}
                     </button>
                 </div>
@@ -60,7 +60,7 @@
         <mat-divider class="border-green-400"></mat-divider>
         <div *ngIf="this.loadingCustomers" class="relative" style="top: 40%">
             <span class="text-center overflow-hidden">
-                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900" style="--fa-animation-duration: 1.5s;"></i>
+                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
             </span>
         </div>
         <mat-list *ngIf="!this.loadingCustomers">

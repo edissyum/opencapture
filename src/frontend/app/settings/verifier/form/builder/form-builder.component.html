@@ -232,15 +232,14 @@
                 </ng-container>
             </div>
             <div class="flex justify-center items-center">
-                <button mat-button class="p-7 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
-                    <span class="block" (click)="createForm()" *ngIf="this.creationMode">
+                <button mat-button class="w-56 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                        (click)="createForm()" *ngIf="this.creationMode">
                         {{ "FORMS.create" | translate }}
-                    </span>
-                    <span class="w-48 block" (click)="updateForm()" *ngIf="!this.creationMode">
+                </button>
+                <button mat-button class="w-56 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                        (click)="updateForm()" *ngIf="!this.creationMode">
                         <span *ngIf="!this.updateFormLoading">{{ "FORMS.modify" | translate }}</span>
-                        <i *ngIf="this.updateFormLoading" class="fa-solid text-2xl fa-circle-notch fa-spin
-                                  text-gray-900 relative top-1" style="--fa-animation-duration: 1.5s;"></i>
-                    </span>
+                        <i *ngIf="this.updateFormLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                 </button>
             </div>
             <div class="absolute overflow-y-auto overflow-x-hidden z-40 w-full md:inset-0 grid
@@ -280,8 +279,7 @@
         <mat-divider class="border-green-400"></mat-divider>
         <div *ngIf="loadingCustomFields" class="relative" style="top: 40%">
             <span class="text-center overflow-hidden">
-                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"
-                   style="--fa-animation-duration: 1.5s;"></i>
+                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
             </span>
         </div>
         <mat-tab-group style="height: calc(100% - 70px)" *ngIf="!loadingCustomFields">

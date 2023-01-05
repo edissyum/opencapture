@@ -107,6 +107,7 @@
 .settings_search .mat-mdc-text-field-wrapper {
     @apply top-3;
     @apply flex;
+    @apply w-64;
     & .mat-mdc-form-field-flex {
         @apply h-10;
         & .mdc-notched-outline .mdc-notched-outline__notch {
@@ -115,6 +116,7 @@
             }
             & .mdc-floating-label {
                 top: 1.15rem;
+                @apply text-sm;
             }
         }
         & .mat-mdc-form-field-infix {

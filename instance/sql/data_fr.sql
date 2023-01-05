@@ -647,7 +647,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (55, 'user_quota', 'ge
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (56, 'list_ai_model', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (57, 'create_ai_model', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (58, 'update_ai_model', 'splitter');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 59;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (58, 'monitoring', 'general');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 60;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

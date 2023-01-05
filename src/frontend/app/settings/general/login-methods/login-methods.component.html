@@ -75,11 +75,11 @@
                                     </form>
                                     <div class="my-6 grid grid-cols-6 gap-4 h-10 mt-8">
                                         <button type="submit" mat-button (click)="checkLdapConnexion()"
-                                                class="p-6 border-solid border-gray-900 border hover:bg-gray-900 hover:text-white transition duration-300 col-start-3">
+                                                class="p-6 border-solid border-gray-900 border bg-gray-900 text-white hover:bg-transparent hover:text-gray-900 transition duration-300 col-start-3">
                                             {{ "LOGIN-METHODS.test_connection" | translate }}
                                         </button>
                                         <button matStepperNext mat-button class="p-6 border-solid border-green-400 border
-                                                hover:bg-green-400 hover:text-white transition duration-300 ml-2">
+                                                bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300 ml-2">
                                             {{ "LOGIN-METHODS.next" | translate }}
                                         </button>
                                     </div>
@@ -107,14 +107,11 @@
                                             </mat-form-field>
                                         </ng-container>
                                     </div>
-                                    <div class="mb-6 grid grid-cols-2 gap-4 h-12 text-gray-900">
-                                        <button matStepperPrevious mat-button class="p-6 border-solid border-red-400 border
-                                                hover:bg-red-400 hover:text-white transition duration-300">
+                                    <div class="my-6 grid grid-cols-6 gap-4 h-10 mt-8">
+                                        <button matStepperPrevious mat-button class="p-6 border-solid border-red-400 border bg-red-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300 col-start-3">
                                             {{ "LOGIN-METHODS.return" | translate }}
                                         </button>
-                                        <button matStepperNext mat-button class="p-6 border-solid border-green-400 border
-                                                border-opacity-70 hover:bg-green-400 hover:bg-opacity-70
-                                                hover:text-white transition duration-300">
+                                        <button matStepperNext mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                                             {{ "LOGIN-METHODS.next" | translate }}
                                         </button>
                                     </div>
@@ -125,25 +122,21 @@
                                     </ng-template>
                                     <p>{{ "LOGIN-METHODS.end_ldap_setup" | translate }}</p>
                                     <div class="mb-6 grid grid-cols-3 gap-4 h-12 text-gray-900">
-                                        <button matStepperPrevious mat-button class="p-6 border-solid border-red-400 border
-                                                hover:bg-red-400 hover:text-white transition duration-300">
+                                        <button matStepperPrevious mat-button class="p-6 border-solid border-red-400 border bg-red-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                                             {{ "LOGIN-METHODS.return" | translate }}
                                         </button>
-                                        <button type="submit" mat-button class="p-6 border-solid border-green-400 border
-                                                hover:bg-green-400 hover:text-white transition duration-300"
+                                        <button type="submit" mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
                                                 (click)="ldapSynchronization()">
                                             <span *ngIf="!this.isLaunchBtnDisabled">
                                                 {{ "LOGIN-METHODS.launch" | translate }}
                                             </span>
                                             <i *ngIf="this.isLaunchBtnDisabled"
-                                               class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"
-                                               style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
+                                               class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                                         </button>
                                         <button (click)="saveLoginMethodConfigs()" mat-button
                                                 [disabled]="this.isSaveBtnDisabled"
                                                 [class.cursor-not-allowed]="this.isSaveBtnDisabled"
-                                                class="p-6 border-solid border-green-400 border hover:bg-green-400
-                                                       shover:text-white transition duration-300">
+                                                class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
                                             {{ "LOGIN-METHODS.register" | translate }}
                                         </button>
                                     </div>

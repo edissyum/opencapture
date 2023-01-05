@@ -187,3 +187,10 @@ UPDATE "outputs" SET data = REPLACE(data::TEXT, 'getPrioritiesFromMaarch', 'getP
 UPDATE "outputs" SET data = REPLACE(data::TEXT, 'getCustomFieldsFromMaarch', 'getCustomFieldsFromMem')::JSONB WHERE output_type_id = 'export_mem';
 UPDATE "outputs" SET data = REPLACE(data::TEXT, 'getIndexingModelsFromMaarch', 'getIndexingModelsFromMem')::JSONB WHERE output_type_id = 'export_mem';
 UPDATE "outputs" SET data = REPLACE(data::TEXT, 'getContactsCustomFieldsFromMaarch', 'getContactsCustomFieldsFromMem')::JSONB WHERE output_type_id = 'export_mem';
+
+ALTER TABLE mailcollect ALTER COLUMN folder_trash DROP NOT NULL;
+
+INSERT INTO "privileges" ("label", "parent") VALUES ('user_quota', 'general');
+INSERT INTO "privileges" ("label", "parent") VALUES ('list_ai_model', 'splitter');
+INSERT INTO "privileges" ("label", "parent") VALUES ('create_ai_model', 'splitter');
+INSERT INTO "privileges" ("label", "parent") VALUES ('update_ai_model', 'splitter');
