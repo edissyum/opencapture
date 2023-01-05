@@ -159,7 +159,7 @@ export class SplitterListComponent implements OnInit {
                             id             : batch['id'],
                             inputId        : batch['input_id'],
                             fileName       : batch['file_name'],
-                            forLabel       : batch['form_label'],
+                            formLabel      : batch['form_label'],
                             date           : batch['batch_date'],
                             customerName   : batch['customer_name'],
                             documentsCount : batch['documents_count'],
