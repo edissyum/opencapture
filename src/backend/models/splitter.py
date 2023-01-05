@@ -436,11 +436,13 @@ def get_totals(args):
     database = _vars[0]
     error = None
     select = data = []
+
     if 'status' in args and args['status']:
-        where = ["status = %s"]
-        data = [args['status']]
+        where = ["customer_id = ANY(%s)", "status = %s"]
+        data = [args['user_customers'], args['status']]
     else:
-        where = ["status <> 'DEL'"]
+        where = ["customer_id = ANY(%s)", "status <> %s"]
+        data = [args['user_customers'], 'DEL']
 
     if args['time'] in ['today', 'yesterday']:
         select = ['COUNT(id) as ' + args['time']]

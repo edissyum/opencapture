@@ -114,7 +114,6 @@ def retrieve_batches(args):
     docservers = _vars[9]
 
     user_customers = user.get_customers_by_user_id(args['user_id'])
-
     if user_customers[1] != 200:
         return user_customers[0], user_customers[1]
     user_customers = user_customers[0]
@@ -809,11 +808,28 @@ def get_metadata_methods(form_method=False):
     return metadata_methods, 401
 
 
-def get_totals(status):
+def get_totals(status, user_id):
     totals = {}
-    totals['today'], error = splitter.get_totals({'time': 'today', 'status': status})
-    totals['yesterday'], error = splitter.get_totals({'time': 'yesterday', 'status': status})
-    totals['older'], error = splitter.get_totals({'time': 'older', 'status': status})
+    user_customers = user.get_customers_by_user_id(user_id)
+    if user_customers[1] != 200:
+        return user_customers[0], user_customers[1]
+    user_customers = user_customers[0]
+
+    totals['today'], error = splitter.get_totals({
+        'time': 'today',
+        'status': status,
+        'user_customers': user_customers
+    })
+    totals['yesterday'], error = splitter.get_totals({
+        'time': 'yesterday',
+        'status': status,
+        'user_customers': user_customers
+    })
+    totals['older'], error = splitter.get_totals({
+        'time': 'older',
+        'status': status,
+        'user_customers': user_customers
+    })
 
     if error is None:
         return totals, 200
