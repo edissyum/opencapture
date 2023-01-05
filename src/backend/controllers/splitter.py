@@ -27,8 +27,8 @@ from flask import current_app
 from flask_babel import gettext
 from flask import request, session
 from src.backend.main_splitter import launch
-from src.backend.import_models import splitter, doctypes
-from src.backend.import_controllers import forms, outputs
+from src.backend.import_models import splitter, doctypes, accounts
+from src.backend.import_controllers import forms, outputs, user
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from src.backend.import_classes import _Files, _Splitter, _CMIS, _MEMWebServices, _OpenADS
@@ -113,9 +113,14 @@ def retrieve_batches(args):
     _vars = create_classes_from_custom_id(custom_id)
     docservers = _vars[9]
 
+    user_customers = user.get_customers_by_user_id(args['user_id'])
+    if user_customers[1] != 200:
+        return user_customers[0], user_customers[1]
+    user_customers = user_customers[0]
+
     args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
-    args['where'] = []
-    args['data'] = []
+    args['where'] = ['customer_id = ANY(%s)']
+    args['data'] = [user_customers]
 
     if 'status' in args and args['status'] is not None:
         args['where'].append("status = %s")
@@ -132,10 +137,11 @@ def retrieve_batches(args):
     if not error_batches and not error_count:
         for index, batch in enumerate(batches):
             form = forms.get_form_by_id(batch['form_id'])
-            if 'label' in form[0]:
-                batches[index]['form_label'] = form[0]['label']
-            else:
-                batches[index]['form_label'] = gettext('FORM_UNDEFINED')
+            batches[index]['form_label'] = form[0]['label'] if 'label' in form[0] else gettext('FORM_UNDEFINED')
+
+            customer = accounts.get_customer_by_id({'customer_id': batch['customer_id']})
+            batches[index]['customer_name'] = customer[0]['name'] if 'name' in customer[0] else gettext('CUSTOMER_UNDEFINED')
+
             try:
                 thumbnail = f"{docservers['SPLITTER_THUMB']}/{batches[index]['batch_folder']}/{batches[index]['thumbnail']}"
                 with open(thumbnail, 'rb') as image_file:
@@ -360,7 +366,7 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
     zip_file_path = ''
     zip_filename = ''
     """
-    Add PDF file to zip archive if enabled
+        Add PDF file to zip archive if enabled
     """
     if 'add_to_zip' in parameters and parameters['add_to_zip']:
         except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) if 'Except' in parameters['add_to_zip'] else ''
@@ -802,11 +808,28 @@ def get_metadata_methods(form_method=False):
     return metadata_methods, 401
 
 
-def get_totals(status):
+def get_totals(status, user_id):
     totals = {}
-    totals['today'], error = splitter.get_totals({'time': 'today', 'status': status})
-    totals['yesterday'], error = splitter.get_totals({'time': 'yesterday', 'status': status})
-    totals['older'], error = splitter.get_totals({'time': 'older', 'status': status})
+    user_customers = user.get_customers_by_user_id(user_id)
+    if user_customers[1] != 200:
+        return user_customers[0], user_customers[1]
+    user_customers = user_customers[0]
+
+    totals['today'], error = splitter.get_totals({
+        'time': 'today',
+        'status': status,
+        'user_customers': user_customers
+    })
+    totals['yesterday'], error = splitter.get_totals({
+        'time': 'yesterday',
+        'status': status,
+        'user_customers': user_customers
+    })
+    totals['older'], error = splitter.get_totals({
+        'time': 'older',
+        'status': status,
+        'user_customers': user_customers
+    })
 
     if error is None:
         return totals, 200

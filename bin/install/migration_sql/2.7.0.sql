@@ -17,6 +17,7 @@ INSERT INTO "docservers" ("description", "docserver_id", "path") VALUES ('[SPLIT
 ALTER TABLE "accounts_customer" ADD COLUMN module VARCHAR(10);
 UPDATE "accounts_customer" SET module = 'verifier' WHERE module is NULL or module = '';
 
+ALTER TABLE "splitter_batches" ADD COLUMN customer_id INTEGER;
 ALTER TABLE "users" ADD COLUMN email TEXT;
 
 UPDATE "outputs_types" SET output_type_label = REPLACE(output_type_label, 'Maarch', 'MEM Courrier');

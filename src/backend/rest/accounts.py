@@ -204,12 +204,13 @@ def skip_auto_validate(supplier_id):
 
 
 @bp.route('accounts/customers/list', methods=['GET'])
+@bp.route('accounts/customers/list/<string:module>', methods=['GET'])
 @auth.token_required
-def customers_list():
+def customers_list(module=False):
     args = {
         'select': ['*', 'count(*) OVER() as total'],
-        'where': ['status <> %s'],
-        'data': ['DEL'],
+        'where': ['status <> %s', 'module = %s'] if module else ['status <> %s'],
+        'data': ['DEL', module] if module else ['DEL'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else ''
     }

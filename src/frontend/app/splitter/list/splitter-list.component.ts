@@ -23,7 +23,7 @@ import { of } from "rxjs";
 import { AuthService } from "../../../services/auth.service";
 import { HttpClient } from "@angular/common/http";
 import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, FormControl } from "@angular/forms";
+import { FormBuilder } from "@angular/forms";
 import { UserService } from "../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../services/notifications/notifications.service";
@@ -51,7 +51,6 @@ export class SplitterListComponent implements OnInit {
     loadingCustomers : boolean = true;
     expanded         : boolean = false;
     status           : any[]   = [];
-    gridColumns      : number  = 4;
     page             : number  = 1;
     selectedTab      : number  = 0;
     searchText       : string  = "";
@@ -103,6 +102,7 @@ export class SplitterListComponent implements OnInit {
         if (!this.userService.user.id) {
             this.userService.user = this.userService.getUserFromLocal();
         }
+
         this.localStorageService.save('splitter_or_verifier', 'splitter');
 
         const lastUrl = this.routerExtService.getPreviousUrl();
@@ -134,7 +134,9 @@ export class SplitterListComponent implements OnInit {
 
     loadBatches(): void {
         this.isLoading = true;
-        this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id + '/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
+        this.batches   = [];
+        this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id + '/totals/'
+            + this.currentStatus, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.totals = data.totals;
             }),
@@ -144,7 +146,7 @@ export class SplitterListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id + '/paging/' +
+        this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id +  '/paging/' +
             (this.pageIndex - 1) + '/' + this.pageSize + '/' + this.currentTime + '/' + this.currentStatus,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
