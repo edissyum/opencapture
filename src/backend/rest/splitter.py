@@ -170,11 +170,11 @@ def merge_batches(parent_id):
     return make_response(jsonify('')), 200
 
 
-@bp.route('splitter/batches/totals', defaults={'status': None}, methods=['GET'])
-@bp.route('splitter/batches/totals/<string:status>', methods=['GET'])
+@bp.route('splitter/batches/user/<int:user_id>/totals', defaults={'status': None}, methods=['GET'])
+@bp.route('splitter/batches/user/<int:user_id>/totals/<string:status>', methods=['GET'])
 @auth.token_required
-def get_totals(status):
-    totals = splitter.get_totals(status)
+def get_totals(status, user_id):
+    totals = splitter.get_totals(status, user_id)
     return make_response({'totals': totals[0]}, totals[1])
 
 

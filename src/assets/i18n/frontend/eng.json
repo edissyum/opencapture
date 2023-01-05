@@ -793,7 +793,6 @@
 		"document_identifier": "Document identifier",
 		"document_index": "Document index",
 		"document_metadata": "Document metadata",
-		"document_number": "Number of documents",
 		"document_separator": "Document separator",
 		"doubleClickToSelectDoctype": "Double click to select a document type",
 		"drop_document_in_position": "Drop document in wanted position",
