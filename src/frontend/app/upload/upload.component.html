@@ -31,15 +31,19 @@
                 [accept]="'pdf'"
                 [displayFileSize]="true"
                 [emptyPlaceholder]="'UPLOAD.placeholder' | translate"
-                [class]="'max-w-3xl h-56 mt-24'"
+                [class]="'max-w-3xl h-56 mt-24 mb-5'"
                 (valueChanged)="checkFile($event)">
         </ngx-file-drag-drop>
-        <div class="flex justify-center content-center">
-            <button mat-flat-button
+        <div class="text-center"
+             [class.cursor-not-allowed]="!(!this.sending && this.selectedInput && this.fileControl.value!.length !== 0)">
+            <button mat-button
                     [disabled]="this.sending || this.selectedInput === '' || this.fileControl.value!.length === 0" (click)="uploadInvoice()"
-                    [class.hover:bg-green-400]="!this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
-                    [class.hover:text-white]="!this.sending&& this.selectedInput && this.fileControl.value!.length !== 0"
-                    class="mt-5 p-6 border-solid border-green-400 border text-sm font-medium transition duration-300">
+                    [class.hover:bg-transparent]="!this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
+                    [class.bg-opacity-100]="!this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
+                    [class.bg-opacity-40]="!(!this.sending && this.selectedInput && this.fileControl.value!.length !== 0)"
+                    [class.text-white]="!this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
+                    [class.hover:text-gray-900]="!this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
+                    class="p-6 border-solid border-green-400 border bg-green-400 text-sm font-medium transition duration-300">
                 {{ 'UPLOAD.upload_file' | translate }}
             </button>
         </div>
