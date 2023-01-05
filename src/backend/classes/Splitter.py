@@ -81,7 +81,6 @@ class Splitter:
                 'where': ['input_id = %s', 'module = %s'],
                 'data': [input_id, 'splitter'],
             })
-
             clean_path = re.sub(r"/+", "/", file)
             clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_PDF'])
 
@@ -93,11 +92,12 @@ class Splitter:
                     'batch_folder': batch_folder,
                     'thumbnail': os.path.basename(batch[0]['path']),
                     'documents_count': str(max((node['split_document'] for node in batch))),
-                    'form_id': str(input_settings[0]['default_form_id'])
+                    'form_id': str(input_settings[0]['default_form_id']),
+                    'customer_id': str(input_settings[0]['customer_id'])
                 }
             }
-
             batch_id = self.db.insert(args)
+
             documents_id = 0
             previous_split_document = 0
             for page in batch:

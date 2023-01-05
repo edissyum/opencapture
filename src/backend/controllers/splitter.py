@@ -28,7 +28,7 @@ from flask_babel import gettext
 from flask import request, session
 from src.backend.main_splitter import launch
 from src.backend.import_models import splitter, doctypes
-from src.backend.import_controllers import forms, outputs
+from src.backend.import_controllers import forms, outputs, user
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from src.backend.import_classes import _Files, _Splitter, _CMIS, _MEMWebServices, _OpenADS
@@ -112,6 +112,10 @@ def retrieve_batches(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     docservers = _vars[9]
+
+    user_customers = user.get_customers_by_user_id(args['user_id'])
+    if user_customers[1] != 200:
+        return user_customers[0], user_customers[1]
 
     args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
     args['where'] = []

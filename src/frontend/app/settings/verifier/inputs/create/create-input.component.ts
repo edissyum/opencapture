@@ -148,7 +148,7 @@ export class CreateInputComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
 
-        this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/list/verifier', {headers: this.authService.headers}).pipe(
             tap((customers: any) => {
                 this.inputForm.forEach((element: any) => {
                     if (element.id === 'customer_id') {

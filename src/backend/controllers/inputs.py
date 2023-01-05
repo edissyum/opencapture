@@ -95,7 +95,7 @@ def create_input(data):
         'input_label': data['input_label'],
         'input_folder': data['input_folder'],
         'default_form_id': data['default_form_id'],
-        'customer_id': data['customer_id'] if data['module'] == 'verifier' else None,
+        'customer_id': data['customer_id'],
         'splitter_method_id': data['splitter_method_id'] if 'splitter_method_id' in data else False,
         'remove_blank_pages': data['remove_blank_pages'] if 'remove_blank_pages' in data else False,
         'override_supplier_form': data['override_supplier_form'] if 'override_supplier_form' in data else False,

@@ -71,6 +71,7 @@ def launch(args):
             'data': [args['input_id'], 'splitter'],
         })
         if input_settings:
+            args['customer_id'] = input_settings[0]['customer_id']
             remove_blank_pages = input_settings[0]['remove_blank_pages']
 
     separator_qr = _SeparatorQR(log, config, batch_folder_path, 'splitter', files, remove_blank_pages, docservers)
@@ -99,7 +100,20 @@ def launch(args):
                                                                                        available_split_method['script'],
                                                                                        available_split_method['method'])
                                     log.info('Split using method : {}'.format(available_split_method['id']))
-                                    split_method(args, path, log, splitter, files, batch_folder, config, docservers, ocr, regex)
+                                    split_args = {
+                                        "log": log,
+                                        "ocr": ocr,
+                                        "file": path,
+                                        "regex": regex,
+                                        "files": files,
+                                        "config": config,
+                                        "splitter": splitter,
+                                        "docservers": docservers,
+                                        "batch_folder": batch_folder,
+                                        "input_id": args['input_id'],
+                                        "customer_id": args['customer_id'],
+                                    }
+                                    split_method(split_args)
                 else:
                     process_err = True
                     log.error("The input_id doesn't exists in database")

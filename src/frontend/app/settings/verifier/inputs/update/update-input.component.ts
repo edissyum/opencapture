@@ -171,7 +171,7 @@ export class UpdateInputComponent implements OnInit {
                                     })
                                 ).subscribe();
                             } else if (element.id === 'customer_id') {
-                                this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+                                this.http.get(environment['url'] + '/ws/accounts/customers/list/verifier', {headers: this.authService.headers}).pipe(
                                     tap((customers: any) => {
                                         element.values = customers.customers;
                                     }),
