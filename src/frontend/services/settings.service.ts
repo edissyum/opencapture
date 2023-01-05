@@ -15,13 +15,13 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
+import { Router } from "@angular/router";
 import { Injectable } from '@angular/core';
+import { AuthService } from "./auth.service";
+import { Title } from "@angular/platform-browser";
+import { LastUrlService } from "./last-url.service";
 import { TranslateService } from "@ngx-translate/core";
 import { LocalStorageService } from "./local-storage.service";
-import { LastUrlService } from "./last-url.service";
-import { Title } from "@angular/platform-browser";
-import { Router } from "@angular/router";
-import { AuthService } from "./auth.service";
 
 @Injectable({
     providedIn: 'root'

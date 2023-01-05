@@ -23,7 +23,7 @@ from flask_babel import gettext
 from requests.auth import HTTPBasicAuth
 
 
-class MaarchWebServices:
+class MEMWebServices:
     def __init__(self, host, user, pwd, log):
         self.base_url = host + '/'
         self.auth = HTTPBasicAuth(user, pwd)
@@ -80,9 +80,9 @@ class MaarchWebServices:
         return json.loads(res.text)
 
     def get_document_with_contact(self, args):
-        where = "?custom_fields=" + str(args['maarchCustomField']['id'])
-        if args['maarchClause']:
-            where += '&clause=' + args['maarchClause'].replace(' ', '')
+        where = "?custom_fields=" + str(args['memCustomField']['id'])
+        if args['memClause']:
+            where += '&clause=' + args['memClause'].replace(' ', '')
         res = requests.get(self.base_url + '/resources/getByContact/' + args['contactId'] + where, auth=self.auth)
         if res.status_code != 200:
             if res.status_code != 204:
@@ -186,7 +186,7 @@ class MaarchWebServices:
         res = requests.post(self.base_url + 'resources', auth=self.auth, data=json.dumps(data),
                             headers={'Connection': 'close', 'Content-Type': 'application/json'})
         if res.status_code != 200:
-            self.log.error('(' + str(res.status_code) + ') InsertIntoMaarchError : ' + str(res.text))
+            self.log.error('(' + str(res.status_code) + ') InsertIntoMEMError : ' + str(res.text))
             return False, json.loads(res.text)
         return True, json.loads(res.text)
 

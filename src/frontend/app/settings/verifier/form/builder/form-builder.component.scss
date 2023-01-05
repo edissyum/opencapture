@@ -5,13 +5,11 @@ i.cdk-drag {
     @apply mb-1;
 }
 
-::ng-deep .input-label-builder .mat-form-field-wrapper {
-    & .mat-form-field-flex {
+::ng-deep .input-label-builder {
+    & .mat-mdc-form-field-flex {
         @apply h-10 #{!important};
-        top: 0.320rem;
-
-        & .mat-form-field-infix {
-            @apply p-0;
+        & .mat-mdc-form-field-infix {
+            @apply p-1;
         }
     }
 }
@@ -27,45 +25,22 @@ i.cdk-drag {
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
-::ng-deep .form-container .mat-focused .mat-form-field-label-wrapper label {
-    @apply transform-none #{!important};
-    @apply w-full #{!important};
-}
-
-::ng-deep .form-builder > .mat-form-field-wrapper {
+::ng-deep .form-builder {
     @apply pb-3;
     @apply pt-3;
-
-    &:hover > .mat-form-field-flex > .mat-form-field-infix > i {
-        @apply visible;
-        @apply opacity-100;
-    }
-
-    &:hover > .mat-form-field-flex > .mat-form-field-infix > div > button {
-        @apply visible;
-        @apply opacity-100;
-        @apply left-0;
-    }
-
-    &:hover > .mat-form-field-flex > .mat-form-field-infix > .input-label {
-        @apply pl-12;
-    }
-
-    & .mat-form-field-flex {
+    & .mat-mdc-form-field-flex {
         @apply h-14;
-
-        & .mat-form-field-infix {
+        & .mat-mdc-form-field-infix {
             @apply w-full;
-
             & div > button {
                 @apply invisible;
                 @apply opacity-0;
                 @apply transition-all;
                 @apply duration-500;
                 @apply left-8;
-
-                & .mat-button-focus-overlay {
-                    @apply bg-transparent;
+                @apply top-2;
+                &:hover .mat-mdc-button-persistent-ripple::before {
+                    @apply bg-transparent #{!important};
                 }
             }
 
@@ -75,8 +50,7 @@ i.cdk-drag {
                 @apply left-0.5;
                 @apply transition-all;
                 @apply duration-500;
-                @apply top-1;
-                top: 7px;
+                @apply top-4;
             }
 
             & .input-label {
@@ -85,5 +59,25 @@ i.cdk-drag {
                 @apply duration-500;
             }
         }
+        .mat-mdc-form-field-infix {
+            &:hover i {
+                @apply visible;
+                @apply opacity-100;
+            }
+        }
+
+        &:hover > .mat-mdc-form-field-infix > div > button {
+            @apply visible;
+            @apply opacity-100;
+            @apply left-0;
+        }
+
+        &:hover > .mat-mdc-form-field-infix > .input-label {
+            @apply pl-12;
+        }
     }
+}
+
+::ng-deep .mat-mdc-menu-panel {
+    @apply max-w-full #{!important};
 }

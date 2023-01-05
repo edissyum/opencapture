@@ -113,7 +113,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
         ]
     }
 }');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (2, 'export_maarch', 'Export vers Maarch', 'verifier', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (2, 'export_mem', 'Export vers MEM Courrier', 'verifier', '{
 	"options": {
         "auth": [
             {
@@ -121,7 +121,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "URL de l''''hôte",
                 "required": "true",
-                "placeholder": "http://localhost/maarch_courrier/rest/"
+                "placeholder": "http://localhost/mem_courrier/rest/"
             },
             {
                 "id": "login",
@@ -142,19 +142,19 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
             {
                 "id": "enabled",
                 "type": "boolean",
-                "label": "Activer la liaison avec un document dans Maarch",
+                "label": "Activer la liaison avec un document dans MEM Courrier",
                 "required": "true",
                 "webservice": "",
                 "placeholder": ""
             },
             {
-                "id": "maarchCustomField",
+                "id": "memCustomField",
                 "type": "text",
                 "label": "Champ personnalisé à récupérer",
                 "required": "false",
-                "webservice": "getCustomFieldsFromMaarch",
+                "webservice": "getCustomFieldsFromMem",
                 "placeholder": "Numéro de devis",
-                "hint": "Champ personnalisé Maarch dans lequel est stocké la donnée nécessaire à la liaison avec un document"
+                "hint": "Champ personnalisé MEM Courrier dans lequel est stocké la donnée nécessaire à la liaison avec un document"
             },
             {
                 "id": "openCaptureField",
@@ -166,9 +166,9 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "hint": "Identifiant du champ dans Open-Capture"
             },
             {
-                "id": "maarchClause",
+                "id": "memClause",
                 "type": "text",
-                "label": "Clause de selection des documents dans Maarch",
+                "label": "Clause de selection des documents dans MEM Courrier",
                 "required": "false",
                 "webservice": "",
                 "placeholder": "status <> ''END''",
@@ -179,7 +179,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET",
                 "required": "true",
-                "webservice": "getContactsCustomFieldsFromMaarch",
+                "webservice": "getContactsCustomFieldsFromMem",
                 "placeholder": "Identifiant Open-Capture",
                 "hint": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET"
             }
@@ -190,7 +190,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Utilisateur destinataire",
                 "required": "true",
-                "webservice": "getUsersFromMaarch",
+                "webservice": "getUsersFromMem",
                 "placeholder": "Bernard BLIER"
             },
             {
@@ -198,7 +198,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Status",
                 "required": "true",
-                "webservice": "getStatusesFromMaarch",
+                "webservice": "getStatusesFromMem",
                 "placeholder": "Courrier à qualifier"
             },
             {
@@ -214,7 +214,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Type de document",
                 "required": "true",
-                "webservice": "getDoctypesFromMaarch",
+                "webservice": "getDoctypesFromMem",
                 "placeholder": "Facture à qualifier"
             },
             {
@@ -222,7 +222,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Utilisateur Rédacteur",
                 "required": "true",
-                "webservice": "getUsersFromMaarch",
+                "webservice": "getUsersFromMem",
                 "placeholder": "Bernard BLIER"
             },
             {
@@ -230,7 +230,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Priorité",
                 "required": "true",
-                "webservice": "getPrioritiesFromMaarch",
+                "webservice": "getPrioritiesFromMem",
                 "placeholder": "Normal"
             },
             {
@@ -245,7 +245,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Modèle d''''enregistrement",
                 "required": "true",
-                "webservice": "getIndexingModelsFromMaarch",
+                "webservice": "getIndexingModelsFromMem",
                 "placeholder": "Facture"
             },
             {
@@ -253,12 +253,12 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Entité destinatrice",
                 "required": "true",
-                "webservice": "getEntitiesFromMaarch",
+                "webservice": "getEntitiesFromMem",
                 "placeholder": "Service Courrier"
             },
             {
                 "id": "customFields",
-                "hint": "La valeur doit être de type JSON avec des doubles quotes \". La clé est l''''identifiant du custom Maarch, la valeur est l''''identifiant du champ Open-Capture",
+                "hint": "La valeur doit être de type JSON avec des doubles quotes \". La clé est l''''identifiant du custom MEM Courrier, la valeur est l''''identifiant du champ Open-Capture",
                 "type": "textarea",
                 "label": "Champs personnalisés",
                 "isJson": "true",
@@ -299,7 +299,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
 }');
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (1, 'export_xml', 'Export XML par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}, {"id": "extension", "type": "text", "value": "xml"}]}}');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_maarch', 'Export Maarch par défaut', 'verifier');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_mem', 'Export MEM Courrier par défaut', 'verifier');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (3, 'export_pdf', 'Export PDF par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}]}}');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE SPLITTER
@@ -551,7 +551,7 @@ INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "
     "allow_automatic_validation": false,
     "delete_documents_after_outputs": false
 }');
-INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{"other": [], "supplier": [{"id": "name", "type": "text", "unit": "supplier", "class": "w-full", "color": "white", "label": "ACCOUNTS.supplier_name", "format": "alphanum", "display": "simple", "required": true, "class_label": "1", "format_icon": "fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "address1", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_1", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fas fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "address2", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_2", "format": "alphanum_extended_with_accent", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fas fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "postal_code", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.postal_code", "format": "number_int", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "city", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.city", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-font", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "country", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.country", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-font", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_number", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "olive", "label": "ACCOUNTS.vat_number", "format": "alphanum", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fas fa-hashtag", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star"}, {"id": "siren", "type": "text", "unit": "supplier", "class": "w-1/6", "color": "lime", "label": "ACCOUNTS.siren", "format": "number_int", "display": "simple", "required": false, "class_label": "1/6", "format_icon": "fas fa-calculator", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star"}, {"id": "siret", "type": "text", "unit": "supplier", "class": "w-1/6", "color": "green", "label": "ACCOUNTS.siret", "format": "number_int", "display": "simple", "required": false, "class_label": "1/6", "format_icon": "fas fa-calculator", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star"}, {"id": "email", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "green", "label": "FORMATS.email", "format": "email", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fa-solid fa-at", "autocomplete": "none", "display_icon": "fa-solid file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}], "facturation": [{"id": "invoice_number", "type": "text", "unit": "facturation", "class": "w-1/2", "color": "red", "label": "FACTURATION.invoice_number", "format": "alphanum_extended", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fas fa-level-up-alt", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "quotation_number", "type": "text", "unit": "facturation", "class": "w-1/2", "color": "orange", "label": "FACTURATION.quotation_number", "format": "alphanum_extended", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-print", "required_icon": "fa-solid fa-star"}, {"id": "delivery_number", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "orange", "label": "FACTURATION.delivery_number", "format": "alphanum_extended", "display": "multi", "required": false, "class_label": "1/33", "format_icon": "fas fa-hashtag fa-level-up-alt", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "document_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "aqua", "label": "FACTURATION.document_date", "format": "date", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calendar-day", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "document_due_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "blue", "label": "FACTURATION.document_due_date", "format": "date", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fas fa-calendar-day", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_rate", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "pink", "label": "FACTURATION.vat_rate", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "no_rate_amount", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "fuchsia", "label": "FACTURATION.no_rate_amount", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_amount", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "purple", "label": "FACTURATION.vat_amount", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "accounting_plan", "type": "select", "unit": "facturation", "class": "w-1/4", "label": "FACTURATION.accounting_plan", "required": false, "class_label": "1/4", "autocomplete": "none", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_vat", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "", "label": "FACTURATION.total_vat", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_ttc", "type": "text", "unit": "facturation", "class": "w-1/3", "label": "FACTURATION.total_ttc", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_ht", "type": "text", "unit": "facturation", "class": "w-1/3", "label": "FACTURATION.total_ht", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}]}');
+INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{"other": [], "supplier": [{"id": "name", "type": "text", "unit": "supplier", "class": "w-full", "color": "white", "label": "ACCOUNTS.supplier_name", "format": "alphanum", "display": "simple", "required": true, "class_label": "1", "format_icon": "fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "address1", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_1", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fas fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "address2", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_2", "format": "alphanum_extended_with_accent", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fas fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "postal_code", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.postal_code", "format": "number_int", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "city", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.city", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-font", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "country", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.country", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-font", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_number", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "olive", "label": "ACCOUNTS.vat_number", "format": "alphanum", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fas fa-hashtag", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star"}, {"id": "siren", "type": "text", "unit": "supplier", "class": "w-1/6", "color": "lime", "label": "ACCOUNTS.siren", "format": "number_int", "display": "simple", "required": false, "class_label": "1/6", "format_icon": "fas fa-calculator", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star"}, {"id": "siret", "type": "text", "unit": "supplier", "class": "w-1/6", "color": "green", "label": "ACCOUNTS.siret", "format": "number_int", "display": "simple", "required": false, "class_label": "1/6", "format_icon": "fas fa-calculator", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star"}, {"id": "email", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "green", "label": "FORMATS.email", "format": "email", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fa-solid fa-at", "autocomplete": "none", "display_icon": "fa-solid fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}], "facturation": [{"id": "invoice_number", "type": "text", "unit": "facturation", "class": "w-1/2", "color": "red", "label": "FACTURATION.invoice_number", "format": "alphanum_extended", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fas fa-level-up-alt", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "quotation_number", "type": "text", "unit": "facturation", "class": "w-1/2", "color": "orange", "label": "FACTURATION.quotation_number", "format": "alphanum_extended", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "required_icon": "fa-solid fa-star"}, {"id": "delivery_number", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "orange", "label": "FACTURATION.delivery_number", "format": "alphanum_extended", "display": "multi", "required": false, "class_label": "1/33", "format_icon": "fas fa-hashtag fa-level-up-alt", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "document_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "aqua", "label": "FACTURATION.document_date", "format": "date", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calendar-day", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "document_due_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "blue", "label": "FACTURATION.document_due_date", "format": "date", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fas fa-calendar-day", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_rate", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "pink", "label": "FACTURATION.vat_rate", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "no_rate_amount", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "fuchsia", "label": "FACTURATION.no_rate_amount", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_amount", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "purple", "label": "FACTURATION.vat_amount", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "accounting_plan", "type": "select", "unit": "facturation", "class": "w-1/4", "label": "FACTURATION.accounting_plan", "required": false, "class_label": "1/4", "autocomplete": "none", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_vat", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "", "label": "FACTURATION.total_vat", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_ttc", "type": "text", "unit": "facturation", "class": "w-1/3", "label": "FACTURATION.total_ttc", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_ht", "type": "text", "unit": "facturation", "class": "w-1/3", "label": "FACTURATION.total_ht", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}]}');
 
 INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "settings") VALUES (2, 'OCRisation simple', false, '{1,3}', 'verifier',  '{
     "supplier_verif": false,
@@ -647,7 +647,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (55, 'user_quota', 'ge
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (56, 'list_ai_model', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (57, 'create_ai_model', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (58, 'update_ai_model', 'splitter');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 59;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (58, 'monitoring', 'general');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 60;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

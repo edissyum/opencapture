@@ -13,19 +13,3 @@
 .mat-column-actions {
     flex: 0 0 5%;
 }
-
-.mat-column-value {
-    & ::ng-deep .mat-form-field-wrapper {
-        @apply pt-2;
-        @apply pb-2;
-
-        & .mat-form-field-infix {
-            max-height: 1vh !important;
-
-            & .mat-select-value {
-                @apply relative;
-                @apply -top-0.5;
-            }
-        }
-    }
-}

@@ -1,17 +1,22 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
-    <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
-        <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">{{ "ACCOUNTS.choose_input_upload" | translate }}</h3>
+    <mat-sidenav #sidenav mode="side" opened class="w-1/7 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
+        <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
+            {{ "ACCOUNTS.choose_input_upload" | translate }}
+        </h3>
         <mat-divider></mat-divider>
         <mat-list>
-            <mat-list-item *ngFor="let input of inputs" class="hover:bg-green-400 cursor-pointer m-2 w-auto"
-                           [class.bg-green-400]="this.selectedInput === input.id" (click)="setInput(input.id)">
-                {{ input.input_label }}
+            <mat-list-item *ngFor="let input of inputs" class="cursor-pointer m-2 w-auto" (click)="setInput(input.id)">
+                <span [class.text-green-400]="this.selectedInput === input.id" class="hover:text-green-400">
+                    {{ input.input_label }}
+                </span>
+                <span *ngIf="this.selectedInput === input.id">
+                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                </span>
             </mat-list-item>
         </mat-list>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <button mat-icon-button (click)="sidenav.toggle();"
-                class="absolute left-2 top-2" style="z-index: 999">
+        <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-2" style="z-index: 999">
             <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-xl text-gray-900"></i>
         </button>
         <div *ngIf="this.loading">
@@ -26,15 +31,19 @@
                 [accept]="'pdf'"
                 [displayFileSize]="true"
                 [emptyPlaceholder]="'UPLOAD.placeholder' | translate"
-                [class]="'max-w-3xl h-56 mt-24'"
+                [class]="'max-w-3xl h-56 mt-24 mb-5'"
                 (valueChanged)="checkFile($event)">
         </ngx-file-drag-drop>
-        <div class="flex justify-center content-center">
-            <button mat-flat-button
+        <div class="text-center"
+             [class.cursor-not-allowed]="!(!this.sending && this.selectedInput && this.fileControl.value!.length !== 0)">
+            <button mat-button
                     [disabled]="this.sending || this.selectedInput === '' || this.fileControl.value!.length === 0" (click)="uploadInvoice()"
-                    [class.hover:bg-green-400]="!this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
-                    [class.hover:text-white]="!this.sending&& this.selectedInput && this.fileControl.value!.length !== 0"
-                    class="mt-5 border-solid border-green-400 border px-3 py-2 text-sm font-medium transition duration-300">
+                    [class.hover:bg-transparent]="!this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
+                    [class.bg-opacity-100]="!this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
+                    [class.bg-opacity-40]="!(!this.sending && this.selectedInput && this.fileControl.value!.length !== 0)"
+                    [class.text-white]="!this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
+                    [class.hover:text-gray-900]="!this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
+                    class="p-6 border-solid border-green-400 border bg-green-400 text-sm font-medium transition duration-300">
                 {{ 'UPLOAD.upload_file' | translate }}
             </button>
         </div>

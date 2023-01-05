@@ -16,10 +16,8 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from time import sleep
-
-from flask import Blueprint, make_response, jsonify, request
 from flask_babel import gettext
+from flask import Blueprint, make_response, jsonify, request
 from src.backend.import_controllers import auth, splitter, forms
 
 bp = Blueprint('splitter', __name__, url_prefix='/ws/')

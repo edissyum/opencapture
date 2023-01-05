@@ -117,11 +117,11 @@ elif 'rest' in custom_array['outputs']['path']:
     outputs = getattr(__import__(custom_array['outputs']['path'], fromlist=[custom_array['outputs']['module']]),
                        custom_array['outputs']['module'])
 
-if 'maarch' not in custom_array or 'rest' not in custom_array['maarch']['path']:
-    from .rest import maarch
-elif 'rest' in custom_array['maarch']['path']:
-    maarch = getattr(__import__(custom_array['maarch']['path'], fromlist=[custom_array['maarch']['module']]),
-                       custom_array['maarch']['module'])
+if 'mem' not in custom_array or 'rest' not in custom_array['mem']['path']:
+    from .rest import mem
+elif 'rest' in custom_array['mem']['path']:
+    mem = getattr(__import__(custom_array['mem']['path'], fromlist=[custom_array['mem']['module']]),
+                       custom_array['mem']['module'])
 
 if 'inputs' not in custom_array or 'rest' not in custom_array['inputs']['path']:
     from .rest import inputs

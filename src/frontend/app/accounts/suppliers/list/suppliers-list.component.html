@@ -3,63 +3,65 @@
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
-        <div class="settings_header">
-            <div class="absolute left-4 top-0">
+        <div class="settings_header flex justify-between items-center pl-2 pr-2 bg-green-400 bg-opacity-60 text-gray-900">
+            <div class="settings_search">
                 <mat-form-field>
                     <mat-label>{{ 'ACCOUNTS.search_supplier' | translate }}</mat-label>
                     <input matInput type="text" [disabled]="this.loading" (keyup)="searchSupplier($event)">
                 </mat-form-field>
             </div>
-            <h3 class="text-center">{{ this.serviceSettings.getTitle() }}</h3>
-            <hr class="border-green-400">
-            <button routerLink="/accounts/suppliers/create" class="relative float-right -top-12 right-4 ml-4">
-                <i class="fa-solid fa-plus text-2xl ml-2"></i>
-                <span class="ml-2 relative -top-1">{{ 'ACCOUNTS.create_supplier' | translate }}</span>
-            </button>
-            <button [class.hidden]="!this.privilegesService.hasPrivilege('export_suppliers')"
-                    (click)="getReferenceFile()" class="relative float-right -top-12 right-4 ml-4"
-                    [matTooltip]="'ACCOUNTS.export_suppliers' | translate" [disabled]="this.loading">
-                <i class="fa-solid fa-file-export text-2xl ml-2"></i>
-            </button>
-            <input type="file" class="hidden" accept=".csv, .ods, .xlsx" (change)="importSuppliers($event)" #suppliersUpload>
-            <button [class.hidden]="!this.privilegesService.hasPrivilege('import_suppliers')"
-                    [matTooltip]="'ACCOUNTS.import_suppliers' | translate" (click)="suppliersUpload.click()"
-                    [disabled]="this.loading" class="relative float-right -top-12 right-4 ml-4">
-                <i class="fa-solid fa-file-import text-2xl ml-2"></i>
-            </button>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="flex">
+                <input type="file" class="hidden" accept=".csv, .ods, .xlsx" (change)="importSuppliers($event)" #suppliersUpload>
+                <button [class.hidden]="!this.privilegesService.hasPrivilege('import_suppliers')"
+                        [matTooltip]="'ACCOUNTS.import_suppliers' | translate" (click)="suppliersUpload.click()"
+                        [disabled]="this.loading" class="ml-4">
+                    <i class="fa-solid fa-file-import text-2xl ml-2"></i>
+                </button>
+                <button [class.hidden]="!this.privilegesService.hasPrivilege('export_suppliers')"
+                        (click)="getReferenceFile()" class="ml-4"
+                        [matTooltip]="'ACCOUNTS.export_suppliers' | translate" [disabled]="this.loading">
+                    <i class="fa-solid fa-file-export text-2xl ml-2"></i>
+                </button>
+                <button routerLink="/accounts/suppliers/create" class="ml-4"
+                        [matTooltip]="'ACCOUNTS.create_supplier' | translate">
+                    <i class="fa-solid fa-plus text-2xl ml-2"></i>
+                </button>
+            </div>
         </div>
-        <mat-table matSort [dataSource]="suppliers" (matSortChange)="sortData($event)" class="w-full table relative -top-8">
+        <hr class="border-green-400">
+        <mat-table matSort [dataSource]="suppliers" (matSortChange)="sortData($event)" class="w-full table">
             <ng-container matColumnDef="id">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'HEADER.id' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.id }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="name">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.supplier_name' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.supplier_name' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.name }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="email">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'FORMATS.email' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.email }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'FORMATS.email' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.email }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="vat_number">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.vat_number' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.vat_number }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.vat_number' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.vat_number }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="siret">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.siret' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.siret }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.siret' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.siret }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="siren">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.siren' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.siren }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.siren' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.siren }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="iban">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.iban' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.iban }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.iban' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.iban }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="form_label">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.form' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.form_label }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.form' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.form_label }}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="actions">
                 <mat-header-cell *matHeaderCellDef> </mat-header-cell>
@@ -67,24 +69,24 @@
                     <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.name)"
                             matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="fa-solid fa-trash fa-lg"></i>
+                        <i class="fa-solid fa-trash text-lg"></i>
                     </button>
                     <button (click)="$event.stopPropagation();deletePositionsConfirmDialog(element.id, element.name)"
                             matTooltip="{{ 'GLOBAL.delete_supplier_positions' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="fa-solid fa-circle-xmark"></i>
+                        <i class="fa-solid fa-circle-xmark text-lg"></i>
                     </button>
                     <button (click)="$event.stopPropagation();skipAutoValidateConfirmDialog(element.id, element.name)"
                             matTooltip="{{ 'GLOBAL.skip_auto_validate' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="fa-solid fa-forward fa-lg"></i>
+                        <i class="fa-solid fa-forward text-lg"></i>
                     </button>
                 </mat-cell>
             </ng-container>
             <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
             <mat-row *matRowDef="let row; columns: columnsToDisplay;"
                      routerLink="/accounts/suppliers/update/{{ row.id }}"
-                     class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
+                     class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
         </mat-table>
         <mat-paginator showFirstLastButtons
                        [length]="this.total"

@@ -109,7 +109,7 @@ def split(splitter, pages):
             'source_page': index,
             'separator_type': separator_type,
             'doctype_value': doctype_value,
-            'maarch_value': None,
+            'mem_value': None,
             'metadata_1': metadata_1,
             'metadata_2': metadata_2,
             'metadata_3': metadata_3,

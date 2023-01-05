@@ -105,7 +105,7 @@ def split(splitter, pages, ocr, regex_content):
             'metadata_1': None,
             'metadata_2': None,
             'metadata_3': None,
-            'maarch_value': None,
+            'mem_value': None,
         })
 
         if not is_next_page_has_same_invoice_number or \

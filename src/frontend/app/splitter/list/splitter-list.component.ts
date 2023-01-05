@@ -23,7 +23,7 @@ import { of } from "rxjs";
 import { AuthService } from "../../../services/auth.service";
 import { HttpClient } from "@angular/common/http";
 import { ActivatedRoute, Router } from "@angular/router";
-import {FormBuilder, FormControl} from "@angular/forms";
+import { FormBuilder } from "@angular/forms";
 import { UserService } from "../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../services/notifications/notifications.service";
@@ -51,8 +51,6 @@ export class SplitterListComponent implements OnInit {
     loadingCustomers : boolean = true;
     expanded         : boolean = false;
     status           : any[]   = [];
-
-    gridColumns      : number  = 4;
     page             : number  = 1;
     selectedTab      : number  = 0;
     searchText       : string  = "";
@@ -101,7 +99,6 @@ export class SplitterListComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
-
         if (!this.userService.user.id) {
             this.userService.user = this.userService.getUserFromLocal();
         }
@@ -154,18 +151,16 @@ export class SplitterListComponent implements OnInit {
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.batches.forEach((batch: any) =>
-                    this.batches.push(
-                        {
-                            id             : batch['id'],
-                            inputId        : batch['input_id'],
-                            fileName       : batch['file_name'],
-                            formLabel      : batch['form_label'],
-                            date           : batch['batch_date'],
-                            customerName   : batch['customer_name'],
-                            documentsCount : batch['documents_count'],
-                            thumbnail      : this.sanitize(batch['thumbnail']),
-                        }
-                    )
+                    this.batches.push({
+                        id             : batch['id'],
+                        inputId        : batch['input_id'],
+                        fileName       : batch['file_name'],
+                        formLabel      : batch['form_label'],
+                        date           : batch['batch_date'],
+                        customerName   : batch['customer_name'],
+                        documentsCount : batch['documents_count'],
+                        thumbnail      : this.sanitize(batch['thumbnail']),
+                    })
                 );
                 this.total = data.count;
             }),

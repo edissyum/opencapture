@@ -14,7 +14,7 @@
         },
         {
             "id"    : "qr_code_MEM",
-            "label" : "Séparation par code QR MEM",
+            "label" : "Séparation par code QR MEM Courrier",
             "script": "qr_code_MEM.py",
             "method": "process"
         }

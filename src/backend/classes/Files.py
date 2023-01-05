@@ -22,10 +22,10 @@ import cv2
 import json
 import time
 import uuid
+import pypdf
 import string
 import random
 import shutil
-import PyPDF2
 import datetime
 import subprocess
 import numpy as np
@@ -33,7 +33,7 @@ from PIL import Image
 from zipfile import ZipFile
 from pdf2image import convert_from_path
 from werkzeug.utils import secure_filename
-from src.backend.functions import get_custom_array
+from src.backend.functions import get_custom_array, generate_searchable_pdf
 
 custom_array = get_custom_array()
 
@@ -190,16 +190,16 @@ class Files:
 
     def get_pages(self, docservers, file):
         try:
-            pdf = PyPDF2.PdfReader(file)
+            pdf = pypdf.PdfReader(file)
             try:
                 return len(pdf.pages)
             except ValueError as file_error:
                 self.log.error(file_error)
                 shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                 return 1
-        except PyPDF2.utils.PdfReadError:
-            pdf_read_rewrite = PyPDF2.PdfReader(file, strict=False)
-            pdfwrite = PyPDF2.PdfWriter()
+        except pypdf.utils.PdfReadError:
+            pdf_read_rewrite = pypdf.PdfReader(file, strict=False)
+            pdfwrite = pypdf.PdfWriter()
             for page_count in range(len(pdf_read_rewrite.pages)):
                 pages = pdf_read_rewrite.pages[page_count]
                 pdfwrite.add_page(pages)
@@ -258,8 +258,8 @@ class Files:
             if size2 == size:
                 if file.lower().endswith(".pdf"):
                     try:
-                        PyPDF2.PdfReader(file)
-                    except PyPDF2.utils.PdfReadError:
+                        pypdf.PdfReader(file)
+                    except pypdf.utils.PdfReadError:
                         shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         return False
                     else:
@@ -486,12 +486,12 @@ class Files:
                 return positions
 
     @staticmethod
-    def export_pdf(pages_lists, documents, input_file, output_file, compress_type, reduce_index=0):
-        pdf_writer = PyPDF2.PdfWriter()
+    def export_pdf(pages_lists, documents, input_file, output_file, output_parameter, log, lang, reduce_index=0):
+        pdf_writer = pypdf.PdfWriter()
         paths = []
         try:
             for index, pages in enumerate(pages_lists):
-                pdf_reader = PyPDF2.PdfReader(input_file, strict=False)
+                pdf_reader = pypdf.PdfReader(input_file, strict=False)
                 if not pages:
                     continue
                 for page in pages:
@@ -501,22 +501,39 @@ class Files:
                     pdf_writer.add_page(pdf_page)
                 file_path = output_file + '/' + documents[index]['fileName']
 
-                if compress_type:
+                if output_parameter['compress_type']:
                     tmp_filename = '/tmp/' + documents[index]['fileName']
                     with open(tmp_filename, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
-                    pdf_writer = PyPDF2.PdfWriter()
+                    pdf_writer = pypdf.PdfWriter()
                     compressed_file_path = '/tmp/min_' + documents[index]['fileName']
-                    compress_pdf(tmp_filename, compressed_file_path, compress_type)
+                    compress_pdf(tmp_filename, compressed_file_path, output_parameter['compress_type'])
                     shutil.move(compressed_file_path, file_path)
                 else:
                     with open(file_path, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
-                    pdf_writer = PyPDF2.PdfWriter()
+                    pdf_writer = pypdf.PdfWriter()
+
+                if output_parameter['ocrise']:
+                    check_ocr = os.popen('pdffonts ' + file_path, 'r')
+                    tmp = []
+                    for line in check_ocr:
+                        tmp.append(line)
+                    tmp = '\n'.join(tmp)
+
+                    is_ocr = False
+                    if len(tmp.split('\n')) > 4:
+                        is_ocr = True
+                    if not is_ocr:
+                        tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
+                        generate_searchable_pdf(file_path, tmp_filename, lang, log)
+                        try:
+                            shutil.move(tmp_filename, file_path)
+                        except shutil.Error as _e:
+                            log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
         except Exception as err:
-            print('aaaa')
             return False, str(err)
         return paths
 

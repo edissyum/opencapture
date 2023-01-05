@@ -16,9 +16,8 @@
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
 import json
-from operator import itemgetter
-
 import requests
+from operator import itemgetter
 from requests.auth import HTTPBasicAuth
 
 
@@ -28,7 +27,7 @@ def load_entities(args):
     :return: N/A
     """
     """
-        Get entities list from Maarch
+        Get entities list from MEM
     """
     r = requests.get(url=args['method_data']['wsUrl'], auth=HTTPBasicAuth(args['method_data']['user'],
                                                                            args['method_data']['password']))

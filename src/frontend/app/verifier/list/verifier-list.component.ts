@@ -286,12 +286,14 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    async loadInvoices() {
+    async loadInvoices(loading = true) {
         this.invoiceToDeleteSelected = false;
         this.totalChecked = 0;
-        this.loading = true;
+        if (loading) {
+            this.invoices = [];
+            this.loading = true;
+        }
         this.loadingCustomers = true;
-        this.invoices = [];
         this.loadForms();
         let url = environment['url'] + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id;
         if (this.currentForm !== '') {
@@ -338,7 +340,7 @@ export class VerifierListComponent implements OnInit {
                                     {"id": "document_date", "label": "FACTURATION.document_date"},
                                     {"id": "date", "label": "VERIFIER.register_date"},
                                     {"id": "original_filename", "label": "VERIFIER.original_file"},
-                                    {"id": "form_label", "label": "VERIFIER.form"}
+                                    {"id": "form_label", "label": "ACCOUNTS.form"}
                                 ]
                             };
                         } else {
@@ -710,7 +712,7 @@ export class VerifierListComponent implements OnInit {
 
     searchInvoice(event: any) {
         this.search = event.target.value;
-        this.loadInvoices();
+        this.loadInvoices(false).then();
     }
 
     resetPaginator() {

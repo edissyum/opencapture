@@ -3,21 +3,22 @@
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
-        <div class="settings_header">
-            <div class="absolute left-4 top-0">
+        <div class="settings_header flex justify-between items-center pl-2 pr-2 bg-green-400 bg-opacity-60 text-gray-900">
+            <div class="settings_search">
                 <mat-form-field>
                     <mat-label>{{ 'ACCOUNTS.search_customer' | translate }}</mat-label>
                     <input matInput type="text" [disabled]="this.loading" (keyup)="searchCustomer($event)">
                 </mat-form-field>
             </div>
-            <h3 class="text-center">{{ this.serviceSettings.getTitle() }}</h3>
-            <hr class="border-green-400">
-            <button routerLink="/accounts/customers/create" class="relative float-right -top-12 right-4">
-                <i class="fa-solid fa-plus text-2xl ml-2"></i>
-                <span class="ml-2 relative -top-1">{{ 'ACCOUNTS.create_customer' | translate }}</span>
-            </button>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="flex">
+                <button routerLink="/accounts/customers/create">
+                    <i class="fa-solid fa-plus text-2xl ml-2" [matTooltip]="'ACCOUNTS.create_customer' | translate"></i>
+                </button>
+            </div>
         </div>
-        <mat-table matSort [dataSource]="customers" (matSortChange)="sortData($event)" class="w-full table relative -top-8">
+        <hr class="border-green-400">
+        <mat-table matSort [dataSource]="customers" (matSortChange)="sortData($event)" class="w-full table">
             <ng-container matColumnDef="id">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
@@ -52,14 +53,14 @@
                     <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.name)"
                             matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="fa-solid fa-trash fa-lg"></i>
+                        <i class="fa-solid fa-trash text-lg"></i>
                     </button>
                 </mat-cell>
             </ng-container>
             <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
             <mat-row *matRowDef="let row; columns: columnsToDisplay;"
                      routerLink="/accounts/customers/update/{{ row.id }}"
-                     class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
+                     class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
         </mat-table>
         <mat-paginator showFirstLastButtons
                        [length]="this.total"

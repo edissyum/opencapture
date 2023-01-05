@@ -22,7 +22,7 @@ import { SettingsService } from "../../services/settings.service";
 import { PrivilegesService } from "../../services/privileges.service";
 
 @Component({
-    selector: 'app-panel',
+    selector: 'app-settings',
     templateUrl: "settings.component.html"
 })
 

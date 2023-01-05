@@ -1,0 +1,58 @@
+::ng-deep .settings-menu-nav {
+    @apply flex;
+    @apply w-1/75;
+    @apply h-full;
+    @apply flex-col;
+    @apply border-r;
+    @apply border-green-400;
+}
+
+::ng-deep .settings_search {
+    @apply -my-2;
+}
+
+::ng-deep .settings_header {
+    @apply z-30;
+    @apply px-2;
+    @apply flex;
+    @apply py-1.5;
+    @apply relative;
+    @apply items-center;
+    @apply bg-green-400;
+    @apply bg-opacity-60;
+    @apply text-gray-900;
+    @apply justify-between;
+    & div button i {
+        @apply leading-none #{!important};
+    }
+}
+
+::ng-deep .mat-drawer-inner-container {
+    @apply overflow-x-hidden #{!important};
+    @apply overflow-y-auto #{!important};
+}
+
+::ng-deep .mat-button-wrapper {
+    @apply w-full;
+}
+
+::ng-deep mat-expansion-panel {
+    @apply rounded-none #{!important};
+}
+
+::ng-deep .settings_expansion {
+    @apply border-t;
+    @apply border-white;
+    @apply z-30;
+    @apply bg-gray-900;
+    box-shadow: 0 1px 5px 4px gray;
+
+    & .mat-content mat-panel-title {
+        @apply text-white #{!important};
+    }
+
+    &:hover, &:focus {
+        @apply bg-none #{!important};
+        @apply bg-gray-900 #{!important};
+    }
+}

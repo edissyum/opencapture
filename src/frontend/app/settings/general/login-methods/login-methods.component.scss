@@ -7,9 +7,16 @@
  }
 
 ::ng-deep .login-methods-tab {
-    & .mat-tab-header {
-        & .mat-tab-label-container > .mat-tab-list > .mat-tab-labels > .mat-tab-label {
+    & .mat-mdc-tab-header {
+        & .mat-mdc-tab-label-container > .mat-mdc-tab-list > .mat-mdc-tab-labels > .mat-mdc-tab-label {
             @apply w-1/2;
         }
     }
+}
+
+
+::ng-deep .mat-step-header .mat-step-icon-selected,
+::ng-deep .mat-step-header .mat-step-icon-state-done,
+::ng-deep .mat-step-header .mat-step-icon-state-edit {
+    @apply bg-green-400;
 }

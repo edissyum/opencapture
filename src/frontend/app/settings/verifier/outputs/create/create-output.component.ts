@@ -156,10 +156,10 @@ export class CreateOutputComponent implements OnInit {
 
     createOutput() {
         if (this.isValidForm(this.outputForm)) {
-            const outputTypeId = this.getValueFromForm(this.outputForm, 'output_type_id');
+            const ocrise = this.getValueFromForm(this.outputForm, 'ocrise');
             const outputLabel = this.getValueFromForm(this.outputForm, 'output_label');
             const compressType = this.getValueFromForm(this.outputForm, 'compress_type');
-            const ocrise = this.getValueFromForm(this.outputForm, 'ocrise');
+            const outputTypeId = this.getValueFromForm(this.outputForm, 'output_type_id');
             this.http.post(environment['url'] + '/ws/outputs/create',
                 {'args': {
                     'output_type_id': outputTypeId,

@@ -1,93 +1,26 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
-    <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
-        <mat-divider class="border-green-400"></mat-divider>
-        <mat-nav-list class="pt-0 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 60px)">
-            <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
-                                 [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
-                <mat-expansion-panel-header class="settings_expansion">
-                    <mat-panel-title>
-                        {{ parent['label'] | translate }}
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div class="w-full border-t-2 border-gray-600">
-                    <div *ngFor="let setting of this.serviceSettings.getSettings()[parent['id']];"
-                         [class.border-b]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
-                         [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'">
-                        <div *ngIf="this.serviceSettings.getSettingsAction(parent['id'], setting['id']) else noActions">
-                            <mat-expansion-panel *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
-                                                 [expanded]="this.router.url.includes(setting['route'])">
-                                <mat-expansion-panel-header class="font-normal w-full h-20">
-                                    <mat-panel-title class="font-normal justify-center items-center text-center">
-                                        <i [class.text-green-400]="this.router.url === setting['route']"
-                                           class="absolute text-lg left-4 w-10 h-10 rounded-full flex items-center justify-center {{ setting['icon'] }}">
-                                        </i>
-                                        <button mat-button [class.text-green-400]="this.router.url === setting['route']"
-                                                class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
-                                                (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                                [routerLink]="setting['route']">
-                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm">
-                                                {{ setting['label'] | translate }}
-                                            </p>
-                                        </button>
-                                    </mat-panel-title>
-                                </mat-expansion-panel-header>
-                                <div *ngFor="let action of this.serviceSettings.getSettingsAction(parent['id'], setting['id'])"
-                                     [class.border-gray-600]="!action['showOnlyIfActive']"
-                                     [class.border-t]="!action['showOnlyIfActive']"
-                                     [class.w-full]="!action['showOnlyIfActive']">
-                                    <div class="border-b border-gray-400"
-                                         *ngIf="(this.privilegesService.hasPrivilege(action['privilege']) || setting['privilege'] === '*') && (!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route'])))">
-                                        <button mat-button
-                                                [class.text-green-400]="this.router.url.includes(action['route'])"
-                                                class="font-normal w-full h-12 ml-2 2xl:ml-12 flex items-center text-center"
-                                                (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                                [routerLink]="action['route']"
-                                                [class.disable_link]="action['showOnlyIfActive']">
-                                            <i class="absolute -mt-2.5 2xl:-mt-2 text-lg w-10 h-10 rounded-full flex items-center justify-center {{ action['icon'] }}"></i>
-                                            <p class="m-0 ml-10 2xl:ml-12 text-xs 2xl:text-sm" style="margin-top: 2.5px!important">
-                                                {{ action['label'] | translate }}
-                                            </p>
-                                        </button>
-                                    </div>
-                                </div>
-                            </mat-expansion-panel>
-                        </div>
-                        <ng-template #noActions>
-                            <button *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
-                                    mat-button [class.text-green-400]="this.router.url === setting['route']"
-                                    class="pr-0 ml-2 font-normal w-full h-20 flex justify-center items-center text-center"
-                                    (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                    [routerLink]="setting['route']">
-                                <i class="absolute -mt-2.5 2xl:-mt-2 left-4 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{ setting['icon'] }}"></i>
-                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0 truncate w-11/12 text-xs 2xl:text-sm">
-                                    {{ setting['label'] | translate }}
-                                </p>
-                            </button>
-                        </ng-template>
-                    </div>
-                </div>
-            </mat-expansion-panel>
-        </mat-nav-list>
+    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav">
+        <app-settings-menu></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-2">
-                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
-            </button>
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
+            <div class="flex">
+                <button mat-icon-button (click)="sidenav.toggle();">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
             </div>
-            <button mat-icon-button (click)="sidenav2.toggle();"
-                    class="absolute right-2 top-2">
-                <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-xl text-gray-900"></i>
-            </button>
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="settings_search">
+                <button mat-icon-button (click)="sidenav2.toggle();">
+                    <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
+            </div>
         </div>
-        <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
+        <hr class="border-green-400 relative z-30">
+        <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
             <div *ngIf="!loading" class="flex justify-center items-center">
                 <form class="grid grid-cols-2 gap-12 w-full m-10 text-center">
                     <ng-container *ngFor="let field of outputForm">
@@ -105,7 +38,7 @@
                             </mat-select>
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
                         </mat-form-field>
-                        <mat-form-field *ngIf="field.type === 'select' && field.id === 'compress_type' && this.selectedOutputType === 'export_pdf'">
+                        <mat-form-field *ngIf="field.type === 'select' && (field.id === 'compress_type' || field.id === 'ocrise') && this.selectedOutputType === 'export_pdf'">
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value">
                                 <mat-option *ngFor="let option of field.values" [value]="option.id">
@@ -120,7 +53,7 @@
             <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
             <h4 class="text-center mt-10 mb-5">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
             <div class="flex justify-center items-center mb-2">
-                <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                <button mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                     <span class="block" (click)="updateOutput()">{{ "OUTPUT.update" | translate }}</span>
                 </button>
             </div>
@@ -142,7 +75,7 @@
                                 </ng-container>
                             </div>
                             <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length !== 0"
-                                    mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                                    mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                                 <span (click)="testConnection()">{{ "OUTPUT.test_connection" | translate }}</span>
                             </button>
                         </mat-tab>
@@ -157,7 +90,10 @@
                                         <input matInput [value]="field.control.value" [formControl]="field.control"
                                                [type]="field.type" [placeholder]="field.placeholder" [required]="field.required">
                                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
-                                        <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
+                                        <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
+                                              [matTooltip]="field.hint">
+                                            <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
                                     </mat-form-field>
                                     <mat-form-field *ngIf="(field.type === 'textarea') && !field.webservice" class="col-span-4">
                                         <mat-label>{{ field.label | translate }}</mat-label>
@@ -165,7 +101,10 @@
                                                   [formControl]="field.control" [type]="field.type" [placeholder]="field.placeholder"
                                                   [required]="field.required"  rows="16" spellcheck="false"></textarea>
                                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
-                                        <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
+                                        <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
+                                              [matTooltip]="field.hint">
+                                            <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
                                     </mat-form-field>
                                     <mat-form-field (focusin)="retrieveDataFromWS(field.id)" *ngIf="(field.type === 'text' || field.type === 'number') && field.webservice">
                                         <mat-label>{{ field.label | translate }}</mat-label>
@@ -173,7 +112,10 @@
                                                [readonly]="field.webservice && !this.connection"
                                                [placeholder]="field.placeholder" [required]="field.required" [matAutocomplete]="autocomplete">
                                         <mat-error *ngIf="field.webservice && !this.connection">{{ 'OUTPUT.check_connection_before' | translate }}</mat-error>
-                                        <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
+                                        <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
+                                              [matTooltip]="field.hint">
+                                            <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
                                         <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn">
                                             <mat-option *ngFor="let option of field.filteredOptions | async" [value]="option">
                                                 <span [innerHTML]="option.value | highlight: toHighlight"></span>
@@ -191,20 +133,20 @@
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end"
                  class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-4">
             {{ "FORMS.available_fields" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
         <div *ngIf="this.loadingCustomFields" class="flex text-gray-400 object-contain"
              style="height: calc(100% - 8rem)">
             <div class="m-auto text-center">
-                <i class="fa-solid fa-code fa-4x fa-beat-fade w-full mb-2" style="--fa-animation-duration: 1.5s;"></i>
+                <i class="fa-solid fa-code fa-4x fa-beat-fade w-full mb-2"></i>
                 <span class="w-full">
                     {{ 'OUTPUT.loading_custom_fields' | translate }}
                 </span>
             </div>
         </div>
-        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
+        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
             <div *ngFor="let field of this.availableFields; let cpt = index" class="my-8 ml-2 text-base">
                 <span>
                     {{ field.label | translate }}
