@@ -33,8 +33,7 @@ from PIL import Image
 from zipfile import ZipFile
 from pdf2image import convert_from_path
 from werkzeug.utils import secure_filename
-from ..functions import generate_searchable_pdf
-from src.backend.functions import get_custom_array
+from src.backend.functions import get_custom_array, generate_searchable_pdf
 
 custom_array = get_custom_array()
 
