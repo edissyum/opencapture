@@ -17,7 +17,7 @@ INSERT INTO "docservers" ("description", "docserver_id", "path") VALUES ('[SPLIT
 ALTER TABLE "accounts_customer" ADD COLUMN module VARCHAR(10);
 UPDATE "accounts_customer" SET module = 'verifier' WHERE module is NULL or module = '';
 
-ALTER TABLE "splitter_batches" ADD COLUMN customer_id INTEGER ;
+ALTER TABLE "splitter_batches" ADD COLUMN customer_id INTEGER;
 ALTER TABLE "users" ADD COLUMN email TEXT;
 
 UPDATE "outputs_types" SET output_type_label = REPLACE(output_type_label, 'Maarch', 'MEM Courrier');
@@ -195,4 +195,3 @@ INSERT INTO "privileges" ("label", "parent") VALUES ('user_quota', 'general');
 INSERT INTO "privileges" ("label", "parent") VALUES ('list_ai_model', 'splitter');
 INSERT INTO "privileges" ("label", "parent") VALUES ('create_ai_model', 'splitter');
 INSERT INTO "privileges" ("label", "parent") VALUES ('update_ai_model', 'splitter');
->>>>>>> 2.x
