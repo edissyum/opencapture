@@ -114,12 +114,14 @@ def retrieve_batches(args):
     docservers = _vars[9]
 
     user_customers = user.get_customers_by_user_id(args['user_id'])
+
     if user_customers[1] != 200:
         return user_customers[0], user_customers[1]
+    user_customers = user_customers[0]
 
     args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
-    args['where'] = []
-    args['data'] = []
+    args['where'] = ['customer_id  = ANY(%s)']
+    args['data'] = [user_customers]
 
     if 'status' in args and args['status'] is not None:
         args['where'].append("status = %s")
@@ -362,7 +364,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
     zip_file_path = ''
     zip_filename = ''
     """
-    Add PDF file to zip archive if enabled
+        Add PDF file to zip archive if enabled
     """
     if 'add_to_zip' in parameters and parameters['add_to_zip']:
         except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) \
