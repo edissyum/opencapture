@@ -23,7 +23,7 @@ import { of } from "rxjs";
 import { AuthService } from "../../../services/auth.service";
 import { HttpClient } from "@angular/common/http";
 import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder } from "@angular/forms";
+import { FormBuilder, FormControl } from "@angular/forms";
 import { UserService } from "../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../services/notifications/notifications.service";
@@ -46,20 +46,22 @@ import { LastUrlService } from "../../../services/last-url.service";
 })
 
 export class SplitterListComponent implements OnInit {
-    batches         : any     = [];
-    isLoading       : boolean = true;
-    status          : any[]   = [];
-    gridColumns     : number  = 4;
-    page            : number  = 1;
-    selectedTab     : number  = 0;
-    searchText      : string  = "";
-    pageSize        : number  = 16;
-    pageIndex       : number  = 1;
-    offset          : number  = 0;
-    pageSizeOptions : any []  = [4, 8, 12, 16, 24, 48];
-    total           : number  = 0;
-    totals          : any     = {};
-    batchList       : any[]   = [
+    batches          : any     = [];
+    isLoading        : boolean = true;
+    loadingCustomers : boolean = true;
+    expanded         : boolean = false;
+    status           : any[]   = [];
+    gridColumns      : number  = 4;
+    page             : number  = 1;
+    selectedTab      : number  = 0;
+    searchText       : string  = "";
+    pageSize         : number  = 16;
+    pageIndex        : number  = 1;
+    offset           : number  = 0;
+    pageSizeOptions  : any []  = [4, 8, 12, 16, 24, 48];
+    total            : number  = 0;
+    totals           : any     = {};
+    batchList        : any[]   = [
         {
             'id': 'today',
             'label': marker('BATCH.today'),
@@ -73,10 +75,10 @@ export class SplitterListComponent implements OnInit {
             'label': marker('BATCH.older'),
         }
     ];
-    currentTime     : string  = 'today';
-    currentStatus   : string  = 'NEW';
-    batchesSelected : boolean = false;
-    totalChecked    : number  = 0;
+    totalChecked        : number  = 0;
+    batchesSelected     : boolean = false;
+    currentStatus       : string  = 'NEW';
+    currentTime         : string  = 'today';
 
     constructor(
         private router: Router,
@@ -94,9 +96,12 @@ export class SplitterListComponent implements OnInit {
         private localStorageService: LocalStorageService,
     ) {}
 
-    ngOnInit(): void {
+    async ngOnInit() {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
+        }
+        if (!this.userService.user.id) {
+            this.userService.user = this.userService.getUserFromLocal();
         }
         this.localStorageService.save('splitter_or_verifier', 'splitter');
 
@@ -129,7 +134,7 @@ export class SplitterListComponent implements OnInit {
 
     loadBatches(): void {
         this.isLoading = true;
-        this.http.get(environment['url'] + '/ws/splitter/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id + '/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.totals = data.totals;
             }),
@@ -139,14 +144,22 @@ export class SplitterListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.get(environment['url'] + '/ws/splitter/batches/' +
+        this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id + '/paging/' +
             (this.pageIndex - 1) + '/' + this.pageSize + '/' + this.currentTime + '/' + this.currentStatus,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.batches = data.batches;
-                for (let batchIndex = 0; batchIndex < this.batches.length; batchIndex++) {
-                    this.batches[batchIndex]['thumbnail'] = this.sanitize(this.batches[batchIndex]['thumbnail']);
-                }
+                data.batches.forEach((batch: any) =>
+                    this.batches.push({
+                        id             : batch['id'],
+                        inputId        : batch['input_id'],
+                        fileName       : batch['file_name'],
+                        formLabel      : batch['form_label'],
+                        date           : batch['batch_date'],
+                        customerName   : batch['customer_name'],
+                        documentsCount : batch['documents_count'],
+                        thumbnail      : this.sanitize(batch['thumbnail']),
+                    })
+                );
                 this.total = data.count;
             }),
             finalize(() => this.isLoading = false),
