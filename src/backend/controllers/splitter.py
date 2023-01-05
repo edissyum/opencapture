@@ -120,7 +120,7 @@ def retrieve_batches(args):
     user_customers = user_customers[0]
 
     args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
-    args['where'] = ['customer_id  = ANY(%s)']
+    args['where'] = ['customer_id = ANY(%s)']
     args['data'] = [user_customers]
 
     if 'status' in args and args['status'] is not None:
