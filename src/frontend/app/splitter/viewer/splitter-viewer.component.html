@@ -1,8 +1,8 @@
 <div *ngIf="this.loading || this.documentsLoading || this.batchesLoading">
     <app-loader></app-loader>
 </div>
-<mat-drawer-container *ngIf="!this.loading" class="viewer-container" hasBackdrop="false">
-    <mat-drawer #drawer mode="side" opened>
+<mat-drawer-container *ngIf="!this.loading" class="w-full absolute top-16 bottom-0" hasBackdrop="false">
+    <mat-drawer #drawer mode="side" opened class="w-1/5">
         <div class="mt-1">
             <div [ngSwitch]="currentTime" class="mt-2 w-full h-10 grid place-content-center">
                 <div class="text-base text-slate-400">
@@ -36,8 +36,9 @@
             </div>
         </div>
     </mat-drawer>
-    <mat-drawer-content>
-        <button class="btn-show-batches left-0" mat-raised-button (click)="drawer.toggle()">
+    <mat-drawer-content class="flex flex-col items-start bg-white">
+        <button class="btn-show-batches left-0 sticky min-h-full mt-0 top-0 left-0 w-2.5 min-w-0"
+                mat-raised-button (click)="drawer.toggle()">
             <span>
                 <i *ngIf="drawer.opened" class="fa-solid fa-angle-left"></i>
                 <i *ngIf="!drawer.opened" class="fa-solid fa-angle-right"></i>
@@ -58,7 +59,7 @@
                  alt="Zoom Image"/>
         </div>
         <div class="w-10/12 absolute top-0 mx-32">
-            <mat-accordion class="metadata">
+            <mat-accordion class="block w-full h-52">
                 <mat-expansion-panel class="my-10 bg-gray-20" [expanded]="true" (opened)="batchMetadataOpenState = true"
                                      (closed)="batchMetadataOpenState = false" #batchMetadata>
                     <mat-expansion-panel-header>
@@ -174,7 +175,8 @@
             </mat-accordion>
             <span *ngIf="documents.length === 0" class="block align-text-top text-center text-red-600">{{ 'SPLITTER.no_document_to_show' | translate }}</span>
             <div cdkDropList (cdkDropListDropped)="dropDocument($event)">
-                <mat-card class="document group" *ngFor="let document of documents; let documentIndex = index;" (click)="selectDocument(document)" cdkDrag>
+                <mat-card class="document w-full shadow-lg"
+                          *ngFor="let document of documents; let documentIndex = index;" (click)="selectDocument(document)" cdkDrag>
                     <div class="w-full h-40 border-dashed border-2 border-gray-400 bg-gray-200" *cdkDragPlaceholder></div>
                     <div class="drag-document absolute w-6 h-6 -left-1 -top-1 z-10 rounded-full text-gray-400 text-center
                       align-middle bg-slate-50 drop-shadow-xl hover:cursor-grabbing group-hover:text-gray-500
@@ -294,18 +296,19 @@
                             </mat-expansion-panel>
                         </mat-accordion>
                     </mat-card-title>
-                    <mat-card-content class="document-content">
-                        <div cdkDropListOrientation="horizontal" (click)="selectDocument(document)" class="drop-list"
+                    <mat-card-content class="document-content w-full">
+                        <div cdkDropListOrientation="horizontal" (click)="selectDocument(document)"
+                             class="drop-list bg-white flex flex-row rounded w-full overflow-scroll h-104"
+                             style="background-image: url('assets/imgs/dots.jpg');"
                              [ngClass]="currentBatch.selectedDocument.id === document.id ? 'border-2 border-green-400':
                              'border-2 border-gray-200 hover:cursor-pointer'"
-                             style="background-image: url('assets/imgs/dots.jpg'); width:100%; overflow:scroll!important;"
                              (cdkDropListDropped)="dropPage($event, document)" cdkDropList
                              id="{{ addDocumentIdToDropList(document['id']) }}" [cdkDropListData]="document['pages']"
                              [cdkDropListConnectedTo]="DropListDocumentsIds">
-                            <div class="page m-1.5 bg-gray-200 rounded-md"
+                            <div class="page m-1.5 bg-gray-200 rounded-md overflow-hidden cursor-move w-60 p-1.5"
                                  *ngFor="let page of document['pages']; let pageIndex = index;"
                                  (click)="page['checkBox'] = !page['checkBox']; countSelectedPages();" cdkDrag>
-                                <div class="custom-placeholder bg-gray-200 m-1.5 border-dashed border-2 border-gray-400" *cdkDragPlaceholder></div>
+                                <div class="bg-gray-200 m-1.5 border-dashed border-2 border-gray-400 w-60 p-3" *cdkDragPlaceholder></div>
                                 <div class="flex justify-between">
                                     <mat-checkbox [(ngModel)]="page['checkBox']"
                                                   (click)="$event.stopPropagation();"
@@ -313,7 +316,7 @@
                                                   matTooltip="{{ 'SPLITTER.select' | translate }}"
                                                   class="page-check-box float-left mt-4" id="page-check-box-{{ page['id'] }}">
                                     </mat-checkbox>
-                                    <button mat-button class="page-header-btn text-gray-400 m-1"
+                                    <button mat-button class="page-header-btn text-gray-400 mb-1 mt-0"
                                             (click)="rotatePage(documentIndex, pageIndex); $event.stopPropagation()"
                                             matTooltip="{{ 'SPLITTER.pageRotated' | translate }} {{ ' ' + page['rotation'] + ' ' + ('SPLITTER.degrees' | translate)}}">
                                         <span *ngIf="page['rotation'] !== 0">
@@ -342,7 +345,7 @@
                     </mat-card-content>
                 </mat-card>
             </div>
-            <mat-card class="splitter-tools divide-x divide-green-500 border-gray-300 py-0 mb-8">
+            <mat-card class="splitter-tools divide-x divide-green-500 border-gray-300 py-0 mb-8 z-10 sticky bottom-2.5">
                 <mat-card-content style="overflow: auto;" class="grid grid-rows-1 grid-cols-3">
                     <div class="absolute top-5 left-8 text-gray-500 bg-white px-2"
                          matTooltip="{{ currentBatch.selectedPagesCount }} {{ 'SPLITTER.selected_pages' | translate }}">
@@ -351,23 +354,24 @@
                     </div>
                     <div class="border border-gray-600 rounded-lg flex col-span-2 my-4 overflow-x-auto overflow-y-hidden">
                         <div class="mt-2 -mb-1">
-                            <button mat-button (click)="deleteSelectedPages()" class="btn-icon w-8 ml-4"
+                            <button mat-button (click)="deleteSelectedPages()"
+                                    class="btn-icon w-8 ml-4 rounded-none"
                                     matTooltip="{{ 'SPLITTER.delete_selected_pages' | translate }}"
                                     [disabled]="currentBatch.selectedPagesCount === 0">
                                 <i class="fas fa-trash-alt text-lg"></i>
                             </button>
-                            <button mat-button (click)="setAllPagesTo(true)" class="btn-icon w-8"
+                            <button mat-button (click)="setAllPagesTo(true)" class="btn-icon w-8 rounded-none"
                                     matTooltip="{{ 'SPLITTER.select_all' | translate }}">
                                 <i class="fas fa-check-circle text-lg"></i>
                             </button>
                             <button mat-button (click)="setAllPagesTo(false)"
-                                    class="btn-icon border-r-2 border-black w-8"
+                                    class="btn-icon border-r-2 border-black w-8 rounded-none"
                                     matTooltip="{{ 'SPLITTER.unselect_all' | translate }}">
                                 <i class="fas fa-ban text-lg"></i>
                             </button>
                             <button mat-button (click)="rotateSelectedPages()"
                                     [disabled]="currentBatch.selectedPagesCount === 0"
-                                    class="btn-icon btn-rotate border-r-10 border-gray-400 w-8"
+                                    class="btn-icon btn-rotate w-8 rounded-none"
                                     matTooltip="{{ 'SPLITTER.rotatePage' | translate }}">
                                 <i class="fas fa-rotate-right text-lg"></i>
                             </button>
@@ -384,7 +388,7 @@
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-                            <button (click)="sendSelectedPages()" mat-button class="btn-icon w-8"
+                            <button (click)="sendSelectedPages()" mat-button class="btn-icon w-8 rounded-none"
                                     matTooltip="{{ 'SPLITTER.send' | translate }}">
                                 <i class="fa fa-paper-plane text-lg"></i>
                             </button>
