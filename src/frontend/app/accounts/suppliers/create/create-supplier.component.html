@@ -3,12 +3,15 @@
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
-        <div class="settings_header">
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
+        <div class="settings_header flex h-14 justify-between items-center pl-2 pr-2 bg-green-400 bg-opacity-60 text-gray-900">
+            <div class="flex">
             </div>
+            <h3 class="text-center flex m-0">
+                {{ this.serviceSettings.getTitle() }}
+            </h3>
+            <div class="settings_search"></div>
         </div>
+        <hr class="border-green-400">
         <div class="flex justify-center m-10">
             <ng-container *ngFor="let field of supplierForm">
                 <mat-slide-toggle *ngIf="field.type === 'mat-slide-toggle'" [formControl]="field.control">
