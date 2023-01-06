@@ -1,6 +1,8 @@
 {
     "name": "opencapture",
     "version": "2.7.0",
+    "license": "GPL-3.0",
+    "author": "Edissyum Consulting",
     "scripts": {
         "lint": "ng lint",
         "check-update": "ncu",

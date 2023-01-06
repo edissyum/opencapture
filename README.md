@@ -1,6 +1,6 @@
 ![Logo Open-Capture](https://open-capture.com/wp-content/uploads/2022/12/0_Open-Capture.png)
 
-# Open-Capture by Edissyum v2
+# Open-Capture
 
 <pre>
 Link to the full documentation : <a href="https://kutt.it/DocumentationV2">https://kutt.it/DocumentationV2</a>
