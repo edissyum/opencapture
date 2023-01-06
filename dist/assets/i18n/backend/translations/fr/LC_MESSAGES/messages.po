@@ -32,22 +32,22 @@ msgstr "Le dossier de destination PDF n'existe pas"
 #: src/backend/controllers/splitter.py:328
 #: src/backend/controllers/splitter.py:334 src/backend/verifier_exports.py:326
 #: src/backend/verifier_exports.py:332 src/backend/verifier_exports.py:338
-msgid "EXPORT_MAARCH_ERROR"
-msgstr "Erreur lors de l'export vers Maarch"
+msgid "EXPORT_MEM_ERROR"
+msgstr "Erreur lors de l'export vers MEM Courrier"
 
 #: src/backend/verifier_exports.py:333
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "Le fichier PDF est introuvable"
 
 #: src/backend/verifier_exports.py:344
-msgid "MAARCH_WS_INFO_WRONG"
-msgstr "Les informations de connexion à Maarch sont erronées"
+msgid "MEM_WS_INFO_WRONG"
+msgstr "Les informations de connexion à MEM Courrier sont erronées"
 
 #: src/backend/controllers/splitter.py:340 src/backend/verifier_exports.py:350
-msgid "MAARCH_WS_INFO_EMPTY"
-msgstr "Les informations de connexion à Maarch sont vides"
+msgid "MEM_WS_INFO_EMPTY"
+msgstr "Les informations de connexion à MEM Courrier sont vides"
 
-#: src/backend/classes/MaarchWebServices.py:38
+#: src/backend/classes/MEMWebServices.py:38
 msgid "HOST_NOT_FOUND"
 msgstr "L'URL de l'hôte n'existe pas"
 
