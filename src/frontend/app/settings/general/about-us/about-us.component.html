@@ -13,21 +13,22 @@
                 </button>
             </div>
             <h3 class="text-center flex m-0">
-                Open-Capture&nbsp;<span *ngIf="!this.loading"><strong>version {{ this.currentVersion }}</strong></span>
-                <span *ngIf="this.lastVersion === undefined">
-                        | <span class="text-red-600">{{ 'ERROR.git_connection' | translate }}</span>
+                Open-Capture&nbsp;<span *ngIf="!this.loading"><strong>version {{ this.currentVersion }}</strong>&nbsp;</span>
+                <span *ngIf="!this.lastVersion === undefined">
+                    |<span class="text-red-600">&nbsp;{{ 'ERROR.git_connection' | translate }}</span>
                 </span>
                 <span *ngIf="!this.loading && this.lastVersion > this.currentVersion && this.isProd">
-                        | {{ 'ABOUT-US.new_version_available' | translate }} (<strong>
-                                <a [href]="'https://github.com/edissyum/opencapture/releases/tag/' + this.lastVersion"
-                                   target="_blank">{{ this.lastVersion }}</a>
-                            </strong>)
+                    | {{ 'ABOUT-US.new_version_available' | translate }} (<strong>
+                        <a [href]="'https://github.com/edissyum/opencapture/releases/tag/' + this.lastVersion"
+                           target="_blank">{{ this.lastVersion }}</a>
+                    </strong>)
                 </span>
                 <span *ngIf="!this.loading && this.lastVersion < this.currentVersion && this.isProd">
-                        | {{ 'ABOUT-US.are_you_in_future' | translate }} ({{ 'ABOUT-US.last_official_version' | translate }} : <strong>
-                                <a [href]="'https://github.com/edissyum/opencapture/releases/tag/' + this.lastVersion"
-                                   target="_blank">{{ this.lastVersion }}</a>
-                            </strong>)
+                    | {{ 'ABOUT-US.are_you_in_future' | translate }} ({{ 'ABOUT-US.last_official_version' | translate }}&nbsp;:
+                    <strong>
+                        <a [href]="'https://github.com/edissyum/opencapture/releases/tag/' + this.lastVersion"
+                            target="_blank">{{ this.lastVersion }}</a>
+                    </strong>)
                 </span>
             </h3>
             <div class="settings_search"></div>
