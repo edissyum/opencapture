@@ -104,7 +104,7 @@ export class SplitterListComponent implements OnInit {
         }
 
         this.localStorageService.save('splitter_or_verifier', 'splitter');
-
+        this.removeLockByUserId(this.userService.user.username);
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('splitter/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
             if (this.localStorageService.get('splitterPageIndex'))
@@ -132,6 +132,16 @@ export class SplitterListComponent implements OnInit {
         this.loadBatches();
     }
 
+    removeLockByUserId(userId: any) {
+        this.http.put(environment['url'] + '/ws/splitter/removeLockByUserId/' + userId, {}, {headers: this.authService.headers}).pipe(
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
     loadBatches(): void {
         this.isLoading = true;
         this.batches   = [];
@@ -150,11 +160,14 @@ export class SplitterListComponent implements OnInit {
             (this.pageIndex - 1) + '/' + this.pageSize + '/' + this.currentTime + '/' + this.currentStatus,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
+                console.log(data);
                 data.batches.forEach((batch: any) =>
                     this.batches.push({
                         id             : batch['id'],
+                        locked         : batch['locked'],
                         inputId        : batch['input_id'],
                         fileName       : batch['file_name'],
+                        lockedBy       : batch['locked_by'],
                         formLabel      : batch['form_label'],
                         date           : batch['batch_date'],
                         customerName   : batch['customer_name'],
@@ -170,6 +183,18 @@ export class SplitterListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    displayBatchLocked(lockedBy: any) {
+        this.dialog.open(ConfirmDialogComponent, {
+            data: {
+                confirmTitle        : this.translate.instant('SPLITTER.batch_locked'),
+                confirmText         : this.translate.instant('SPLITTER.batch_locked_by', {'locked_by': lockedBy}),
+                confirmButton       : this.translate.instant('GLOBAL.confirm'),
+                confirmButtonColor  : "warn"
+            },
+            width: "600px",
+        });
     }
 
     sanitize(url: string) {
