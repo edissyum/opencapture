@@ -479,10 +479,8 @@ WantedBy=multi-user.target
 EOF"
 
     systemctl daemon-reload
-    systemctl start "OCVerifier-worker_$customId".service
-    systemctl start "OCSplitter-worker_$customId".service
-    sudo systemctl enable "OCVerifier-worker_$customId".service
-    sudo systemctl enable "OCSplitter-worker_$customId".service
+    sudo systemctl enable --now "OCVerifier-worker_$customId".service
+    sudo systemctl enable --now "OCSplitter-worker_$customId".service
 else
     apt-get install -y supervisor >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     touch "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
@@ -570,8 +568,7 @@ WantedBy=multi-user.target
 EOF"
 
 systemctl daemon-reload
-systemctl enable fs-watcher
-systemctl start fs-watcher
+systemctl enable --now fs-watcher
 
 ####################
 # Fix ImageMagick Policies
