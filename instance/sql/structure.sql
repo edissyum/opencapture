@@ -294,7 +294,7 @@ create table "doctypes"
 (
     "id"         SERIAL         UNIQUE PRIMARY KEY,
     "key"        VARCHAR(255)   NOT NULL,
-    "label"      VARCHAR(255),
+    "label"      VARCHAR,
     "code"       VARCHAR(255),
     "is_default" BOOLEAN        DEFAULT False,
     "status"     VARCHAR(3)     DEFAULT 'OK':: CHARACTER VARYING,
