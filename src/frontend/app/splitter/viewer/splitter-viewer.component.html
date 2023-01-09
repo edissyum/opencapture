@@ -202,11 +202,11 @@
                                                 [ngClass]="!document['documentTypeName'] ? 'text-red-500':''"
                                                 (click)="documentMetadata.toggle(); openDocumentTypeDialog(document);"
                                                 matTooltip="{{ 'GLOBAL.edit' | translate }}">
-                                            <span class="w-full font-medium">
-                                                <i class="fa-solid fa-edit"></i>
-                                                <span *ngIf="!document['documentTypeName']" class="mx-2">{{ 'SPLITTER.no_selected_doctype' | translate }}</span>
+                                            <div class="font-medium whitespace-nowrap">
+                                                 <i class="fa-solid fa-edit"></i>
                                                 {{ document['documentTypeName'] }}
-                                            </span>
+                                                <span *ngIf="!document['documentTypeName']" class="mx-2">{{ 'SPLITTER.no_selected_doctype' | translate }}</span>
+                                            </div>
                                         </button>
                                     </mat-panel-title>
                                     <button mat-button class="right-2" (click)="deleteDocument(documentIndex); $event.stopPropagation();"
@@ -393,7 +393,7 @@
                                 <i class="fa fa-paper-plane text-lg"></i>
                             </button>
                             <button (click)="saveInfo()" mat-button class="w-8"
-                                    matTooltip="{{ 'SPLITTER.save' | translate }}" [ngClass]="{'text-green-400': isDataEdited}">
+                                    matTooltip="{{ 'SPLITTER.save_changes' | translate }}" [ngClass]="{'text-green-400': isDataEdited}">
                                 <i class="fa fa-save fa-lg" *ngIf="!saveInfosLoading"></i>
                                 <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="saveInfosLoading"></i>
                             </button>
