@@ -26,6 +26,11 @@ a:hover {
     }
 }
 
+::ng-deep .document_type_options .mdc-list-item__primary-text {
+    @apply truncate #{!important};
+    @apply w-full;
+}
+
 /* documents list */
 
 .drag-document:hover {

@@ -175,7 +175,7 @@
             </mat-accordion>
             <span *ngIf="documents.length === 0" class="block align-text-top text-center text-red-600">{{ 'SPLITTER.no_document_to_show' | translate }}</span>
             <div cdkDropList (cdkDropListDropped)="dropDocument($event)">
-                <mat-card class="document w-full shadow-lg"
+                <mat-card class="document w-full shadow-lg mb-4"
                           *ngFor="let document of documents; let documentIndex = index;" (click)="selectDocument(document)" cdkDrag>
                     <div class="w-full h-40 border-dashed border-2 border-gray-400 bg-gray-200" *cdkDragPlaceholder></div>
                     <div class="drag-document absolute w-6 h-6 -left-1 -top-1 z-10 rounded-full text-gray-400 text-center
@@ -353,7 +353,7 @@
                         <i class="fa-solid fa-file"></i>
                     </div>
                     <div class="border border-gray-600 rounded-lg flex col-span-2 my-4 overflow-x-auto overflow-y-hidden">
-                        <div class="mt-2 -mb-1">
+                        <div class="flex items-center">
                             <button mat-button (click)="deleteSelectedPages()"
                                     class="btn-icon w-8 ml-4 rounded-none"
                                     matTooltip="{{ 'SPLITTER.delete_selected_pages' | translate }}"
@@ -380,11 +380,11 @@
                                 <i class="fas fa-plus-circle fa-lg" *ngIf="!addDocumentLoading"></i>
                                 <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="addDocumentLoading"></i>
                             </button>
-                            <mat-form-field>
+                            <mat-form-field class="w-64 pt-2">
                                 <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>
                                 <mat-select [(ngModel)]="toolSelectedOption">
-                                    <mat-option *ngFor="let document of this.documents;" [value]="document['id']">
-                                        {{ document['documentTypeName'] }}
+                                    <mat-option *ngFor="let document of this.documents;" [value]="document['id']" class="w-full document_type_options">
+                                            {{ document['documentTypeName'] }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
