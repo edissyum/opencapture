@@ -225,7 +225,7 @@ CREATE TABLE "invoices"
     "register_date"     TIMESTAMP           DEFAULT (CURRENT_TIMESTAMP),
     "nb_pages"          INTEGER             NOT NULL DEFAULT 1,
     "locked"            BOOLEAN             DEFAULT False,
-    "locked_by"         VARCHAR(20),
+    "locked_by"         VARCHAR(50),
     "positions"         JSONB               DEFAULT '{}',
     "pages"             JSONB               DEFAULT '{}',
     "datas"             JSONB               DEFAULT '{}'
@@ -263,6 +263,8 @@ CREATE TABLE "splitter_batches"
     "documents_count"   INTEGER,
     "form_id"           INTEGER,
     "customer_id"       INTEGER,
+    "locked"            BOOLEAN         DEFAULT False,
+    "locked_by"         VARCHAR(50),
     "data"              JSON            DEFAULT '{}'::json
 );
 

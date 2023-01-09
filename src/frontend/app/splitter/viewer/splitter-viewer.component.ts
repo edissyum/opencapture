@@ -157,6 +157,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.currentBatch.id    = this.route.snapshot.params['id'];
         this.currentTime        = this.route.snapshot.params['currentTime'];
         this.loadSelectedBatch();
+        this.updateBatchLock();
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
             this.historyService.addHistory('splitter', 'viewer', translated);
         });
@@ -173,6 +174,20 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
+    }
+
+    updateBatchLock() {
+        this.http.post(environment['url'] + '/ws/splitter/lockBatch', {
+                'batchId' : this.currentBatch.id,
+                'lockedBy': this.userService.user.username
+            }, {headers: this.authService.headers}).pipe(
+            catchError((err: any) => {
+                this.loading = false;
+                this.notify.handleErrors(err);
+                console.debug(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     loadSelectedBatch(): void {

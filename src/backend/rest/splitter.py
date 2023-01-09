@@ -105,6 +105,22 @@ def change_form():
     return make_response(jsonify(response)), status
 
 
+@bp.route('splitter/lockBatch', methods=['POST'])
+@auth.token_required
+def lock_batch():
+    data = request.data
+    data = json.loads(data)
+    response, status = splitter.lock_batch({'batch_id': data['batchId'], 'user_id': data['lockedBy']})
+    return make_response(jsonify(response)), status
+
+
+@bp.route('splitter/removeLockByUserId/<string:user_id>', methods=['PUT'])
+@auth.token_required
+def remove_lock_by_user_id(user_id):
+    res = splitter.remove_lock_by_user_id(user_id)
+    return make_response(res[0], res[1])
+
+
 @bp.route('splitter/pages/<int:page_id>/fullThumbnail', methods=['GET'])
 @auth.token_required
 def get_page_full_thumbnail(page_id):

@@ -681,7 +681,7 @@ msgstr "Error while updating invoice"
 
 #: src/backend/controllers/verifier.py:345
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
-msgstr "Error while removing lock on invoice"
+msgstr "Error while removing lock"
 
 #: src/backend/controllers/verifier.py:467
 #: src/backend/controllers/verifier.py:470
