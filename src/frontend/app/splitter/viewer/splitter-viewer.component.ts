@@ -811,7 +811,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     openDocumentTypeDialog(document: any): void {
         const dialogRef = this.dialog.open(DocumentTypeComponent, {
             width   : '800px',
-            height  : '900px',
+            height  : '860px',
             data    : {
                 selectedDocType: {
                     key: document.documentTypeKey  ? document.documentTypeKey  : "",
