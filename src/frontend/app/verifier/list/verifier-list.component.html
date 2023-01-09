@@ -210,7 +210,7 @@
                                         (click)="invoice.locked ? displayInvoiceLocked(invoice.locked_by) : ''">
                                     <mat-card-title class="break-all">
                                         <span class="leading-7">
-                                            <i [matTooltip]="'VERIFIER.document_locked_by' | translate"
+                                            <i [matTooltip]="'VERIFIER.document_locked' | translate"
                                                class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"
                                                *ngIf="invoice.locked"></i>
                                             {{ invoice.supplier_name ? invoice.supplier_name : 'ACCOUNTS.supplier_unknow' | translate }}

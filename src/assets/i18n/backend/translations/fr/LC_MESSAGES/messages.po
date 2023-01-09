@@ -681,7 +681,7 @@ msgstr "Erreur lors de la mise à jour de la facture"
 
 #: src/backend/controllers/verifier.py:345
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
-msgstr "Erreur lors de la suppression du verrou sur la facture"
+msgstr "Erreur lors de la suppression du verrou"
 
 #: src/backend/controllers/verifier.py:467
 #: src/backend/controllers/verifier.py:470

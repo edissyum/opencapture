@@ -181,6 +181,32 @@ def change_form(args):
         return res, 401
 
 
+def lock_batch(args):
+    res = splitter.lock_batch(args)
+
+    if res:
+        return res, 200
+    else:
+        return res, 401
+
+
+def remove_lock_by_user_id(user_id):
+    _, error = splitter.remove_lock_by_user_id({
+        'set': {"locked": False, "locked_by": None},
+        'where': ['locked_by = %s'],
+        'user_id': user_id
+    })
+
+    if error in [None, '']:
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('REMOVE_LOCK_BY_USER_ID_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def get_page_full_thumbnail(page_id):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
