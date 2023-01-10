@@ -202,7 +202,7 @@
                                                 [ngClass]="!document['documentTypeName'] ? 'text-red-500':''"
                                                 (click)="documentMetadata.toggle(); openDocumentTypeDialog(document);"
                                                 matTooltip="{{ 'GLOBAL.edit' | translate }}">
-                                            <div class="font-medium truncate ...">
+                                            <div class="font-medium truncate">
                                                  <i class="fa-solid fa-edit"></i>
                                                 {{ document['documentTypeName'] }}
                                                 <span *ngIf="!document['documentTypeName']" class="mx-2">{{ 'SPLITTER.no_selected_doctype' | translate }}</span>
