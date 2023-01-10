@@ -47,7 +47,6 @@ module.exports = {
                 '104': '26rem',
             },
             maxWidth: {
-                '100': '100%',
                 '11/12': '91.6%',
             },
             colors: {
