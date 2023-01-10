@@ -69,7 +69,7 @@ export class UploadComponent implements OnInit {
         ]
     );
 
-    async ngOnInit() {
+    ngOnInit(): void {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
