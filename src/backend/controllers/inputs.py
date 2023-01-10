@@ -22,12 +22,30 @@ from flask_babel import gettext
 from flask import request, session
 from src.backend.import_models import inputs
 from src.backend.import_classes import _Config
+from src.backend.import_controllers import user
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
 def get_inputs(args):
-    _inputs = inputs.get_inputs(args)
+    _args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'offset': args['offset'],
+        'limit': args['limit'],
+        'where': ["status <> 'DEL'", "module = %s"],
+        'data': [args['module'] if 'module' in args else '']
+    }
+
+    if args['user_id']:
+        user_customers = user.get_customers_by_user_id(args['user_id'])
+        if user_customers[1] != 200:
+            return user_customers[0], user_customers[1]
+
+        user_customers = user_customers[0]
+        _args['where'].append('(customer_id IS NULL OR customer_id = ANY(%s))')
+        _args['data'].append(user_customers)
+
+    _inputs = inputs.get_inputs(_args)
 
     response = {
         "inputs": _inputs
