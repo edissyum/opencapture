@@ -200,8 +200,8 @@ INSERT INTO "privileges" ("label", "parent") VALUES ('create_ai_model', 'splitte
 INSERT INTO "privileges" ("label", "parent") VALUES ('update_ai_model', 'splitter');
 
 DO $$
-DECLARE new_customer_id integer;
+    DECLARE new_customer_id integer;
 BEGIN
-    INSERT INTO accounts_customer (name, vat_number, siret, siren, company_number, address_id, module, status, creation_date) VALUES ('Splitter default customer', null, null, null, null, null, 'splitter', 'OK', '2023-01-09 11:26:38.989482') RETURNING id INTO new_customer_id;
+    INSERT INTO accounts_customer (name, module, status, creation_date) VALUES ('Splitter - Compte client par défaut', 'splitter', 'OK', '2023-01-09 11:26:38.989482') RETURNING id INTO new_customer_id;
     UPDATE inputs SET customer_id = new_customer_id WHERE module = 'splitter';
 END $$;
