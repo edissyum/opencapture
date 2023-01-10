@@ -6,7 +6,8 @@
         <mat-divider></mat-divider>
         <mat-list>
             <mat-list-item *ngFor="let input of inputs" class="cursor-pointer m-2 w-auto" (click)="setInput(input.id)">
-                <span [class.text-green-400]="this.selectedInput === input.id" class="hover:text-green-400">
+                <span [class.text-green-400]="this.selectedInput === input.id" class="hover:text-green-400"
+                [matTooltip]="input.input_label">
                     {{ input.input_label }}
                 </span>
                 <span *ngIf="this.selectedInput === input.id">

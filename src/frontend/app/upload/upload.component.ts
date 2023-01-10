@@ -73,8 +73,13 @@ export class UploadComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+        if (!this.userService.user.id) {
+            this.userService.user = this.userService.getUserFromLocal();
+        }
+
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
-        this.http.get(environment['url'] + '/ws/inputs/list?module=' + splitterOrVerifier,
+        this.http.get(environment['url'] + '/ws/inputs/list?module=' + splitterOrVerifier +
+            '&userId=' + this.userService.user.id,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.inputs = data.inputs;
