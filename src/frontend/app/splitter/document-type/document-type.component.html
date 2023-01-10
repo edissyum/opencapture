@@ -8,11 +8,11 @@
         [data]="{canFolderBeSelected: false, formId: data.formId}"
         (selectedDoctypeOutput)="getOutPut($event)">
     </app-document-type-factory>
-    <span class="text-gray-400 m-4">
+    <div class="text-gray-400 mt-1 mx-4">
         <i class="fa-solid fa-circle-info"></i>
         {{ 'SPLITTER.doubleClickToSelectDoctype' | translate }}
-    </span>
-    <div class="w-max mx-auto">
+    </div>
+    <div class="w-max mt-2 mx-auto">
         <button mat-button class="mx-auto h-12 w-48 bg-gray-200 text-gray-500" [mat-dialog-close]="selectedItem">
             {{ 'SPLITTER.select' | translate }}
         </button>
