@@ -1002,3 +1002,11 @@ INSERT INTO "accounting_plan" ("compte_num", "compte_lib") VALUES ('7140 0005', 
 INSERT INTO "accounting_plan" ("compte_num", "compte_lib") VALUES ('7160 0000', 'Produits financiers');
 INSERT INTO "accounting_plan" ("compte_num", "compte_lib") VALUES ('7180 0000', 'Produits exceptionnels');
 INSERT INTO "accounting_plan" ("compte_num", "compte_lib") VALUES ('7800 0000', 'Reprises de dépréciations sur créances douteuses');
+
+-- CRÉATION DU COMPTE CLIENT PAR DÉFAUT
+DO $$
+    DECLARE new_customer_id integer;
+BEGIN
+    INSERT INTO accounts_customer (name, module, status, creation_date) VALUES ('Splitter - Compte client par défaut', 'splitter', 'OK', '2023-01-09 11:26:38.989482') RETURNING id INTO new_customer_id;
+    UPDATE inputs SET customer_id = new_customer_id WHERE module = 'splitter';
+END $$;

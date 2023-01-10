@@ -878,7 +878,6 @@ def merge_batches(parent_id, batches):
     parent_info = splitter.get_batch_by_id({'id': parent_id})[0]
     parent_filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + parent_info['file_path']
     parent_batch_documents = int(parent_info['documents_count'])
-    batch_folder = docservers['SPLITTER_BATCHES'] + '/' +  parent_info['batch_folder']
     parent_document_id = splitter.get_documents({'id': parent_id})[0][0]['id']
     parent_max_split_index = splitter.get_documents_max_split_index({'id': parent_id})[0][0]['split_index']
     parent_max_source_page = splitter.get_max_source_page({'id': parent_document_id})[0][0]['source_page']
@@ -915,14 +914,20 @@ def merge_batches(parent_id, batches):
                 })
 
                 for page in splitter.get_documents_pages({'id': doc['id']})[0]:
-                    new_path = batch_folder + '/' + os.path.basename(page['thumbnail'])
                     parent_max_source_page = parent_max_source_page + 1
-                    if not os.path.isfile(new_path):
-                        shutil.copy(page['thumbnail'], new_path)
+                    new_page = parent_info['batch_folder'] + '/' + 'page-' + str(parent_max_source_page).zfill(3) + '.jpg'
+
+                    new_page_absolute = docservers['SPLITTER_BATCHES'] + '/' + new_page
+                    if not os.path.isfile(new_page_absolute):
+                        shutil.copy(docservers['SPLITTER_BATCHES'] + '/' + page['thumbnail'], new_page_absolute)
+
+                    new_thumb_absolute = docservers['SPLITTER_THUMB'] + '/' + new_page
+                    if not os.path.isfile(new_thumb_absolute):
+                        shutil.copy(docservers['SPLITTER_THUMB'] + '/' + page['thumbnail'], new_thumb_absolute)
 
                     splitter.insert_page({
                         'document_id': document_id,
-                        'path': new_path,
+                        'path': new_page,
                         'source_page': parent_max_source_page
                     })
 

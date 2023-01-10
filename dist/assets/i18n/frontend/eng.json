@@ -334,6 +334,7 @@
 		"log_out": "Log out",
 		"login": "Login",
 		"minimize": "Minimize",
+		"monitoring": "Monitoring",
 		"move_to_active": "Move to active",
 		"move_to_inactive": "Move to inactive",
 		"n_minutes_ago": "{{ minutes }} min ago",
@@ -346,8 +347,7 @@
 		"task_error": "Task error",
 		"task_error_informations": "Task error informations",
 		"upload": "Upload",
-		"utilisation_guide": "Access to user guide of Open-Capture",
-		"validate": "Validate"
+		"utilisation_guide": "Access to user guide of Open-Capture"
 	},
 	"HEADER": {
 		"active": "Active",
@@ -773,6 +773,8 @@
 		"barch_form_change_success": "Batch form changed with success",
 		"batch_deleted": "Batch deleted",
 		"batch_identifier": "Batch identifier",
+		"batch_locked": "Batch locked",
+		"batch_locked_by": "Batch locked by following user : <strong>{{ locked_by }}</strong>",
 		"batch_metadata": "Batch metadata",
 		"batch_modification_saved": "Modifications saved",
 		"batch_validate_processing": "Batch validation processing ...",
@@ -793,6 +795,7 @@
 		"document_identifier": "Document identifier",
 		"document_index": "Document index",
 		"document_metadata": "Document metadata",
+		"document_number": "Number of documents",
 		"document_separator": "Document separator",
 		"doubleClickToSelectDoctype": "Double click to select a document type",
 		"drop_document_in_position": "Drop document in wanted position",
@@ -821,7 +824,7 @@
 		"referential_updated": "Referential updated",
 		"reload_batches": "Reset batches list",
 		"rotatePage": "Rotate page with",
-		"save": "Save",
+		"save_changes": "Save changes",
 		"search": "Search",
 		"search_folder": "Search folder",
 		"select": "Select",
