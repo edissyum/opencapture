@@ -33,9 +33,9 @@ def get_positions_masks(args):
         'left_join': ['positions_masks.form_id = form_models.id'],
         'where': ['1=%s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
-        'limit': str(args['limit']) if 'limit' in args else [],
+        'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'order_by': args['order_by'] if 'order_by' in args else [],
-        'offset': str(args['offset']) if 'offset' in args else [],
+        'offset': str(args['offset']) if 'offset' in args else 0,
     })
 
     return positions_masks, error

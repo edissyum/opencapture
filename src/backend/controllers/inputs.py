@@ -30,13 +30,13 @@ from src.backend.main import create_classes_from_custom_id
 def get_inputs(args):
     _args = {
         'select': ['*', 'count(*) OVER() as total'],
-        'offset': args['offset'],
-        'limit': args['limit'],
+        'offset': args['offset'] if 'offset' in args else 0,
+        'limit': args['limit'] if 'limit' in args else 'ALL',
         'where': ["status <> 'DEL'", "module = %s"],
         'data': [args['module'] if 'module' in args else '']
     }
 
-    if args['user_id']:
+    if 'user_id' in args and args['user_id']:
         user_customers = user.get_customers_by_user_id(args['user_id'])
         if user_customers[1] != 200:
             return user_customers[0], user_customers[1]
