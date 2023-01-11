@@ -39,8 +39,8 @@ def get_configurations():
         'select': ['*', 'count(*) OVER() as total'],
         'where': ['display = %s'],
         'data': [True],
-        'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else ''
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
     }
 
     if 'search' in request.args and request.args['search']:
@@ -65,8 +65,8 @@ def get_docservers():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'where': [],
-        'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else ''
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
     }
 
     if 'search' in request.args and request.args['search']:
@@ -94,8 +94,8 @@ def get_regex():
         'select': ['*', 'count(*) OVER() as total'],
         'where': ["lang in ('global', %s)"],
         'data': [configurations['locale']],
-        'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else ''
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
     }
 
     if 'search' in request.args and request.args['search']:

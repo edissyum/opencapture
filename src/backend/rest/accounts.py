@@ -34,8 +34,8 @@ def suppliers_list():
         'select': ['*', 'count(*) OVER() as total'],
         'where': ['status <> %s'],
         'data': ['DEL'],
-        'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else '',
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
         'order_by': [request.args['order']] if 'order' in request.args else ''
     }
 
@@ -211,8 +211,8 @@ def customers_list(module=False):
         'select': ['*', 'count(*) OVER() as total'],
         'where': ['status <> %s', 'module = %s'] if module else ['status <> %s'],
         'data': ['DEL', module] if module else ['DEL'],
-        'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else ''
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
     }
     if 'search' in request.args and request.args['search']:
         args['offset'] = ''

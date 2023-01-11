@@ -26,8 +26,8 @@ bp = Blueprint('roles', __name__, url_prefix='/ws/')
 def get_roles():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
-        'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else ''
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
     }
     if 'full' in request.args:
         args['where'] = ['status NOT IN (%s)']

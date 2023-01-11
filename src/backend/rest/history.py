@@ -49,8 +49,8 @@ def get_history():
 
     args = {
         'select': ['*', 'count(*) OVER() as total', "to_char(history_date, '" + _format + "') as date"],
-        'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else '',
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
         'order_by': ['id DESC']
     }
     where = []

@@ -28,8 +28,8 @@ bp = Blueprint('forms', __name__, url_prefix='/ws/')
 def get_forms():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
-        'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else '',
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
         'where': ["status <> 'DEL'", "form_models.module like %s"],
         'data': [request.args['module']] if 'module' in request.args else '%',
         'totals': 'totals' in request.args and request.args['totals'] == 'true',

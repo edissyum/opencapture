@@ -31,8 +31,8 @@ def get_roles(args):
         'where': ["status NOT IN (%s)", "editable <> %s"] if "where" not in args else args["where"],
         'data': ["DEL", "false"] if "data" not in args else args["data"],
         'order_by': ["id ASC"],
-        'limit': str(args['limit']) if 'limit' in args else [],
-        'offset': str(args['offset']) if 'offset' in args else [],
+        'limit': str(args['limit']) if 'limit' in args else 'ALL',
+        'offset': str(args['offset']) if 'offset' in args else 0,
     })
 
     return roles

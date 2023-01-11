@@ -26,8 +26,8 @@ bp = Blueprint('outputs', __name__, url_prefix='/ws/')
 def get_outputs():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
-        'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else '',
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
         'where': ["status <> 'DEL'", "module = %s"],
         'data': [request.args['module'] if 'module' in request.args else '']
     }
