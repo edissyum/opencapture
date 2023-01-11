@@ -49,6 +49,7 @@
 
     & .mat-content mat-panel-title {
         @apply text-white #{!important};
+        @apply truncate #{!important};
     }
 
     &:hover, &:focus {
