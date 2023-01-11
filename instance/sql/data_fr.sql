@@ -439,7 +439,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
         "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
         "type": "text",
         "label": "Nom du fichier XML",
-        "required": "true",
+        "required": "false",
         "placeholder": "#random"
       },
       {
