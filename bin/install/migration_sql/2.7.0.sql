@@ -205,3 +205,64 @@ BEGIN
     INSERT INTO accounts_customer (name, module, status, creation_date) VALUES ('Splitter - Compte client par défaut', 'splitter', 'OK', '2023-01-09 11:26:38.989482') RETURNING id INTO new_customer_id;
     UPDATE inputs SET customer_id = new_customer_id WHERE module = 'splitter';
 END $$;
+
+UPDATE "outputs_types" SET data = '{
+  "options": {
+    "auth": [
+      {
+        "id": "cmis_ws",
+        "type": "text",
+        "label": "CMIS Web-Service",
+        "required": "true",
+        "placeholder": "http://localhost//alfresco/api/-default-/public/cmis/versions/1.1/browser"
+      },
+      {
+        "id": "folder",
+        "type": "text",
+        "label": "Répertoire de dépôt",
+        "required": "true",
+        "placeholder": "/OpenCapture/PMI/scans/"
+      },
+      {
+        "id": "login",
+        "type": "text",
+        "label": "Pseudo de l''''utilisateur WS",
+        "required": "true",
+        "placeholder": "edissyumws"
+      },
+      {
+        "id": "password",
+        "type": "password",
+        "label": "Mot de passe de l''''utilisateur WS",
+        "required": "true",
+        "placeholder": "alfresco"
+      }
+    ],
+    "parameters": [
+      {
+        "id": "pdf_filename",
+        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+        "type": "text",
+        "label": "Nom du fichier PDF",
+        "required": "true",
+        "placeholder": "doctype#random"
+      },
+      {
+        "id": "xml_filename",
+        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+        "type": "text",
+        "label": "Nom du fichier XML",
+        "required": "false",
+        "placeholder": "#random"
+      },
+      {
+        "id": "separator",
+        "hint": "",
+        "type": "text",
+        "label": "Séparateur",
+        "required": "true",
+        "placeholder": "_"
+      }
+    ]
+  }
+}' WHERE output_type_id = 'export_cmis';
