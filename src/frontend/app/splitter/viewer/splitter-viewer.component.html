@@ -298,25 +298,25 @@
                     </mat-card-title>
                     <mat-card-content class="document-content w-full">
                         <div cdkDropListOrientation="horizontal" (click)="selectDocument(document)"
-                             class="drop-list bg-white flex flex-row rounded w-full overflow-scroll h-104"
+                             class="drop-list bg-white flex flex-row rounded w-full overflow-auto"
                              style="background-image: url('assets/imgs/dots.jpg');"
                              [ngClass]="currentBatch.selectedDocument.id === document.id ? 'border-2 border-green-400':
                              'border-2 border-gray-200 hover:cursor-pointer'"
                              (cdkDropListDropped)="dropPage($event, document)" cdkDropList
                              id="{{ addDocumentIdToDropList(document['id']) }}" [cdkDropListData]="document['pages']"
                              [cdkDropListConnectedTo]="DropListDocumentsIds">
-                            <div class="page m-1.5 bg-gray-200 rounded-md overflow-hidden cursor-move w-60 p-1.5"
+                            <div class="page m-1.5 bg-gray-200 rounded-md cursor-move w-60 p-1.5 h-96"
                                  *ngFor="let page of document['pages']; let pageIndex = index;"
                                  (click)="page['checkBox'] = !page['checkBox']; countSelectedPages();" cdkDrag>
-                                <div class="bg-gray-200 m-1.5 border-dashed border-2 border-gray-400 w-60 p-3" *cdkDragPlaceholder></div>
-                                <div class="flex justify-between">
+                                <div class="bg-gray-200 m-1.5 border-dashed border-2 border-gray-400 p-3" *cdkDragPlaceholder></div>
+                                <div class="flex justify-between w-60 h-12">
                                     <mat-checkbox [(ngModel)]="page['checkBox']"
                                                   (click)="$event.stopPropagation();"
                                                   (change)="countSelectedPages();"
                                                   matTooltip="{{ 'SPLITTER.select' | translate }}"
                                                   class="page-check-box float-left mt-4" id="page-check-box-{{ page['id'] }}">
                                     </mat-checkbox>
-                                    <button mat-button class="page-header-btn text-gray-400 mb-1 mt-0"
+                                    <button mat-button class="page-header-btn text-gray-400 mt-0"
                                             (click)="rotatePage(documentIndex, pageIndex); $event.stopPropagation()"
                                             matTooltip="{{ 'SPLITTER.pageRotated' | translate }} {{ ' ' + page['rotation'] + ' ' + ('SPLITTER.degrees' | translate)}}">
                                         <span *ngIf="page['rotation'] !== 0">
@@ -324,14 +324,14 @@
                                         </span>
                                         <i class="fa-solid fa-rotate-right"></i>
                                     </button>
-                                    <button mat-button class="page-header-btn float-right bg-gray-100"
+                                    <button mat-button class="page-header-btn float-right bg-gray-100 mr-4 mt-0"
                                             matTooltip="{{ 'SPLITTER.zoom' | translate }}"
                                             (click)="getZoomPage(page); $event.stopPropagation();">
                                         <i *ngIf="page.id !== this.currentBatch.pageIdInLoad" class="fa-solid fa-search-plus"></i>
                                         <i *ngIf="page.id === this.currentBatch.pageIdInLoad" class="fas fa-circle-notch fa-spin fa-lg my-4"></i>
                                     </button>
                                 </div>
-                                <img [ngClass]="
+                                <img class="z-10" [ngClass]="
                                          (page['rotation'] === 0)   ? 'rotate-0 m-auto':
                                          (page['rotation'] === 90)  ? 'rotate-90 m-auto scale-75 px-2':
                                          (page['rotation'] === 180) ? 'rotate-180 m-auto':
