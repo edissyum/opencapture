@@ -17,6 +17,10 @@
     }
 }
 
+.mdc-tooltip__surface {
+    @apply text-base #{!important};
+}
+
 .mat-mdc-header-row .mat-mdc-header-cell {
     @apply text-xs;
     @apply opacity-60;
