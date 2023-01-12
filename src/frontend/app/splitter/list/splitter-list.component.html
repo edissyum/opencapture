@@ -84,11 +84,11 @@
                                     </mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-actions class="pb-4">
-                                    <i class="fa-solid fa-trash cursor-pointer text-red-500 pl-4"
+                                    <i class="fa-solid fa-trash cursor-pointer text-red-500 pl-2"
                                        (click)="$event.stopPropagation();openConfirmDialog(batch['id'])">
                                         <span class="font-medium mat-typography">{{ 'GLOBAL.delete' | translate }}</span>
                                     </i>
-                                    <i class="fa-solid fa-circle-info text-gray-400 relative float-right pl-4"
+                                    <i class="fa-solid fa-circle-info text-gray-400 absolute right-4"
                                        matTooltip="{{ 'ACCOUNTS.customer_name' | translate }} : {{ batch['customerName'] }}">
                                     </i>
                                     <i *ngIf="this.totalChecked >= 2 && isCheckboxChecked(batch['id'])"
