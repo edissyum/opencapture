@@ -296,7 +296,7 @@
                             </mat-expansion-panel>
                         </mat-accordion>
                     </mat-card-title>
-                    <mat-card-content class="document-content w-full">
+                    <mat-card-content class="document-content w-full h-104">
                         <div cdkDropListOrientation="horizontal" (click)="selectDocument(document)"
                              class="drop-list bg-white flex flex-row rounded w-full overflow-auto min-h-full"
                              style="background-image: url('assets/imgs/dots.jpg');"
@@ -305,7 +305,7 @@
                              (cdkDropListDropped)="dropPage($event, document)" cdkDropList
                              id="{{ addDocumentIdToDropList(document['id']) }}" [cdkDropListData]="document['pages']"
                              [cdkDropListConnectedTo]="DropListDocumentsIds">
-                            <div class="page m-1.5 bg-gray-200 rounded-md cursor-move w-60 p-1.5 h-96"
+                            <div class="page m-1.5 bg-gray-200 rounded-md cursor-move w-60 p-1.5"
                                  *ngFor="let page of document['pages']; let pageIndex = index;"
                                  (click)="page['checkBox'] = !page['checkBox']; countSelectedPages();" cdkDrag>
                                 <div class="bg-gray-200 m-1.5 border-dashed border-2 border-gray-400 p-3" *cdkDragPlaceholder></div>
