@@ -85,8 +85,8 @@ if [ $pythonVenv = 'true' ]; then
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install -r "$defaultPath/bin/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade -r "$defaultPath/bin/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install -r "$OpenCapturePath/bin/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade -r "$OpenCapturePath/bin/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     "/home/$user/python-venv/opencapture/bin/python3" -c "import nltk
 nltk.download('stopwords')
 nltk.download('punkt')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
