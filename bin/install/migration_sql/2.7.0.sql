@@ -1,5 +1,4 @@
-CREATE TABLE ai_models
-(
+CREATE TABLE "ai_models" (
     "id"                SERIAL       PRIMARY KEY,
     "model_path"        VARCHAR(50),
     "type"              VARCHAR(15),
@@ -192,7 +191,7 @@ UPDATE "outputs" SET data = REPLACE(data::TEXT, 'getCustomFieldsFromMaarch', 'ge
 UPDATE "outputs" SET data = REPLACE(data::TEXT, 'getIndexingModelsFromMaarch', 'getIndexingModelsFromMem')::JSONB WHERE output_type_id = 'export_mem';
 UPDATE "outputs" SET data = REPLACE(data::TEXT, 'getContactsCustomFieldsFromMaarch', 'getContactsCustomFieldsFromMem')::JSONB WHERE output_type_id = 'export_mem';
 
-ALTER TABLE mailcollect ALTER COLUMN folder_trash DROP NOT NULL;
+ALTER TABLE "mailcollect" ALTER COLUMN folder_trash DROP NOT NULL;
 
 INSERT INTO "privileges" ("label", "parent") VALUES ('user_quota', 'general');
 INSERT INTO "privileges" ("label", "parent") VALUES ('list_ai_model', 'splitter');

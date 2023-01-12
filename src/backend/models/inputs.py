@@ -15,7 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import request, session
+from flask import request
 from flask_babel import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
@@ -31,8 +31,8 @@ def get_inputs(args):
         'where': args['where'],
         'data': [] if "data" not in args else args["data"],
         'order_by': ["id ASC"],
-        'limit': str(args['limit']) if 'limit' in args else [],
-        'offset': str(args['offset']) if 'offset' in args else [],
+        'limit': str(args['limit']) if 'limit' in args else 'ALL',
+        'offset': str(args['offset']) if 'offset' in args else 0,
     })
 
     return _inputs

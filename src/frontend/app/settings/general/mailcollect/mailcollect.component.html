@@ -197,14 +197,9 @@
                         </ng-container>
                     </div>
                     <div class="mb-6 grid grid-cols-6 gap-4 h-10 mt-8">
-                        <button class="p-6 border-solid border-gray-900 border bg-gray-900 text-white hover:bg-transparent hover:text-gray-900
-                                    transition duration-300 col-start-3" mat-button (click)="retrieveFolders(process)">
-                            <span *ngIf="!this.folderLoading">{{ 'MAILCOLLECT.retrieve_folders' | translate }}</span>
-                            <i *ngIf="this.folderLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-green-400"></i>
-                        </button>
                         <button *ngIf="process.exists" mat-button (click)="updateProcess(process)"
                                 class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
-                                    transition duration-300">
+                                    transition duration-300 col-start-3">
                             <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.update_process' | translate }}</span>
                             <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                         </button>
@@ -213,6 +208,11 @@
                                     transition duration-300">
                             <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.create_process' | translate }}</span>
                             <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                        </button>
+                        <button class="p-6 border-solid border-gray-900 border bg-gray-900 text-white hover:bg-transparent hover:text-gray-900
+                                    transition duration-300" mat-button (click)="retrieveFolders(process)">
+                            <span *ngIf="!this.folderLoading">{{ 'MAILCOLLECT.retrieve_folders' | translate }}</span>
+                            <i *ngIf="this.folderLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-green-400"></i>
                         </button>
                     </div>
                 </mat-tab>

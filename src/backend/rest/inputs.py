@@ -26,8 +26,8 @@ bp = Blueprint('inputs', __name__, url_prefix='/ws/')
 def get_inputs():
     args = {
         'module': request.args['module'],
-        'limit': request.args['limit'] if 'limit' in request.args else '',
-        'offset': request.args['offset'] if 'offset' in request.args else '',
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
         'user_id': request.args['userId'] if 'userId' in request.args else None
     }
     _inputs = inputs.get_inputs(args)

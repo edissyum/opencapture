@@ -5,15 +5,6 @@ i.cdk-drag {
     @apply mb-1;
 }
 
-::ng-deep .input-label-builder {
-    & .mat-mdc-form-field-flex {
-        @apply h-10 #{!important};
-        & .mat-mdc-form-field-infix {
-            @apply p-1;
-        }
-    }
-}
-
 .ng-sg-placeholder,
 .cdk-drag-placeholder {
     @apply border;

@@ -32,8 +32,8 @@ def retrieve_suppliers(args):
         'where': ['1 = %s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
         'order_by': ['id ASC'] if 'order_by' not in args else args['order_by'],
-        'limit': str(args['limit']) if 'limit' in args else [],
-        'offset': str(args['offset']) if 'offset' in args else [],
+        'limit': str(args['limit']) if 'limit' in args else 'ALL',
+        'offset': str(args['offset']) if 'offset' in args else 0,
     })
 
     return suppliers
@@ -181,8 +181,8 @@ def retrieve_customers(args):
         'where': ['1 = %s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
         'order_by': ['id ASC'] if 'order_by' not in args else args['order_by'],
-        'limit': str(args['limit']) if 'limit' in args else [],
-        'offset': str(args['offset']) if 'offset' in args else [],
+        'limit': str(args['limit']) if 'limit' in args else 'ALL',
+        'offset': str(args['offset']) if 'offset' in args else 0,
     })
 
     return customers
