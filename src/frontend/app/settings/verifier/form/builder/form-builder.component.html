@@ -68,12 +68,12 @@
                     </mat-select>
                     <span *ngIf="!field.canRemove" (click)="$event.stopPropagation(); addOutput()"
                           matTooltip="{{ 'OUTPUT.add' | translate }}"
-                          class="absolute top-3.5 right-4 cursor-pointer text-gray-900 z-40">
+                          class="absolute top-4 right-4 cursor-pointer text-gray-900 z-40">
                         <i class="fa-solid fa-circle-plus"></i>
                     </span>
                     <span *ngIf="field.canRemove" (click)="$event.stopPropagation(); removeOutput(cpt)"
                           matTooltip="{{ 'OUTPUT.remove' | translate }}"
-                          class="absolute top-3.5 right-4 cursor-pointer text-red-500">
+                          class="absolute top-4 right-4 cursor-pointer text-red-500">
                         <i class="fa-solid fa-trash"></i>
                     </span>
                 </mat-form-field>
@@ -115,7 +115,7 @@
                                         <span *ngIf="field.type === 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>
                                     </span>
                                     <span class="flex w-full" *ngIf="field.edit_name">
-                                        <mat-form-field appearance="outline" class="w-full input-label-builder"
+                                        <mat-form-field appearance="outline" class="w-full"
                                                         style="margin-top: -8px">
                                             <input matInput [value]="field.label | translate" class="relative top-1"
                                                    (keyup.enter)="updateValue($event, field)"
