@@ -19,7 +19,7 @@ import json
 import unittest
 import warnings
 from src.backend import app
-from src.backend.tests import get_db, get_token
+from src.backend.tests import CUSTOM_ID, get_db, get_token
 from werkzeug.security import check_password_hash
 
 
@@ -41,7 +41,7 @@ class UserTest(unittest.TestCase):
             "customers": [1]
         })
 
-        return self.app.post('/test/ws/users/new', headers={"Content-Type": "application/json"}, data=payload)
+        return self.app.post(f'/{CUSTOM_ID}/ws/users/new', headers={"Content-Type": "application/json"}, data=payload)
 
     def test_successful_create_user(self):
         user = self.create_user()
@@ -50,7 +50,7 @@ class UserTest(unittest.TestCase):
 
     def test_successful_delete_user(self):
         user = self.create_user()
-        response = self.app.delete('/test/ws/users/delete/' + str(user.json['id']),
+        response = self.app.delete(f'/{CUSTOM_ID}/ws/users/delete/' + str(user.json['id']),
                                    headers={"Content-Type": "application/json",
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -61,7 +61,7 @@ class UserTest(unittest.TestCase):
 
     def test_successful_disable_user(self):
         user = self.create_user()
-        response = self.app.put('/test/ws/users/disable/' + str(user.json['id']),
+        response = self.app.put(f'/{CUSTOM_ID}/ws/users/disable/' + str(user.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
@@ -71,7 +71,7 @@ class UserTest(unittest.TestCase):
 
     def test_successful_enable_user(self):
         user = self.create_user()
-        response = self.app.put('/test/ws/users/enable/' + str(user.json['id']),
+        response = self.app.put(f'/{CUSTOM_ID}/ws/users/enable/' + str(user.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
@@ -88,7 +88,7 @@ class UserTest(unittest.TestCase):
             "email": "test123@tttt.fr",
             "role": "1",
         }
-        response = self.app.put('/test/ws/users/update/' + str(user.json['id']),
+        response = self.app.put(f'/{CUSTOM_ID}/ws/users/update/' + str(user.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={'args': payload})
         self.assertEqual(200, response.status_code)
@@ -104,7 +104,7 @@ class UserTest(unittest.TestCase):
 
     def test_successful_get_users_list(self):
         self.create_user()
-        response = self.app.get('/test/ws/users/list',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/users/list',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -112,7 +112,7 @@ class UserTest(unittest.TestCase):
 
     def test_successful_get_users_list_search(self):
         self.create_user()
-        response = self.app.get('/test/ws/users/list?search=Test',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/users/list?search=Test',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -120,7 +120,7 @@ class UserTest(unittest.TestCase):
 
     def test_successful_get_users_list_limit(self):
         self.create_user()
-        response = self.app.get('/test/ws/users/list?limit=0',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/users/list?limit=0',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -128,7 +128,7 @@ class UserTest(unittest.TestCase):
 
     def test_successful_get_users_list_full(self):
         self.create_user()
-        response = self.app.get('/test/ws/users/list_full',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/users/list_full',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -136,7 +136,7 @@ class UserTest(unittest.TestCase):
 
     def test_successful_get_user_by_id(self):
         user = self.create_user()
-        response = self.app.get('/test/ws/users/getById/' + str(user.json['id']),
+        response = self.app.get(f'/{CUSTOM_ID}/ws/users/getById/' + str(user.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -149,7 +149,7 @@ class UserTest(unittest.TestCase):
 
     def test_successful_get_customers_by_user_id(self):
         user = self.create_user()
-        response = self.app.get('/test/ws/users/getCustomersByUserId/' + str(user.json['id']),
+        response = self.app.get(f'/{CUSTOM_ID}/ws/users/getCustomersByUserId/' + str(user.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(list, type(response.json))
@@ -158,7 +158,7 @@ class UserTest(unittest.TestCase):
     def test_successful_update_customers_by_user_id(self):
         user = self.create_user()
         payload = {"customers": [1, 2, 3]}
-        response = self.app.put('/test/ws/users/customers/update/' + str(user.json['id']),
+        response = self.app.put(f'/{CUSTOM_ID}/ws/users/customers/update/' + str(user.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json=payload)
         self.assertEqual(200, response.status_code)
