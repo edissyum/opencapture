@@ -20,7 +20,7 @@ import base64
 import unittest
 import warnings
 from src.backend import app
-from src.backend.tests import get_db, get_token
+from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
 class ConfigTest(unittest.TestCase):
@@ -32,20 +32,20 @@ class ConfigTest(unittest.TestCase):
         warnings.filterwarnings('ignore', message="subprocess .* is still running", category=ResourceWarning)
 
     def test_successful_read_config(self):
-        response = self.app.get('/test/ws/config/readConfig',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/readConfig',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json['config']))
 
     def test_successful_get_configurations_full(self):
-        response = self.app.get('/test/ws/config/getConfigurations',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getConfigurations',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
         self.assertEqual(list, type(response.json['configurations']))
 
     def test_successful_get_configurations_search(self):
-        response = self.app.get('/test/ws/config/getConfigurations?search=loginMessage',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getConfigurations?search=loginMessage',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -53,7 +53,7 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(len(response.json['configurations']), 1)
 
     def test_successful_get_configurations_limit(self):
-        response = self.app.get('/test/ws/config/getConfigurations?limit=5',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getConfigurations?limit=5',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -61,7 +61,7 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(len(response.json['configurations']), 5)
 
     def test_successful_get_configuration_by_label(self):
-        response = self.app.get('/test/ws/config/getConfiguration/loginMessage',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getConfiguration/loginMessage',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -70,14 +70,14 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(response.json['configuration'][0]['label'], 'loginMessage')
 
     def test_successful_get_docservers_full(self):
-        response = self.app.get('/test/ws/config/getDocservers',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getDocservers',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
         self.assertEqual(list, type(response.json['docservers']))
 
     def test_successful_get_docservers_search(self):
-        response = self.app.get('/test/ws/config/getDocservers?search=DOCSERVERS_PATH',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getDocservers?search=DOCSERVERS_PATH',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -85,7 +85,7 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(len(response.json['docservers']), 1)
 
     def test_successful_get_docservers_limit(self):
-        response = self.app.get('/test/ws/config/getDocservers?limit=5',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getDocservers?limit=5',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -93,14 +93,14 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(len(response.json['docservers']), 5)
 
     def test_successful_get_regex_full(self):
-        response = self.app.get('/test/ws/config/getRegex',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getRegex',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
         self.assertEqual(list, type(response.json['regex']))
 
     def test_successful_get_regex_search(self):
-        response = self.app.get('/test/ws/config/getRegex?search=email',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getRegex?search=email',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -108,7 +108,7 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(len(response.json['regex']), 1)
 
     def test_successful_get_regex_limit(self):
-        response = self.app.get('/test/ws/config/getRegex?limit=5',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getRegex?limit=5',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -118,7 +118,7 @@ class ConfigTest(unittest.TestCase):
     def test_successful_update_regex(self):
         self.db.execute("SELECT id FROM regex WHERE regex_id = 'email'")
         regex_id = self.db.fetchall()
-        response = self.app.put('/test/ws/config/updateRegex/' + str(regex_id[0]['id']),
+        response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateRegex/' + str(regex_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={'data': {"label": 'Adresse email', "content": "Updated_content"}})
         self.assertEqual(200, response.status_code)
@@ -128,7 +128,7 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual("Updated_content", updated_regex[0]['content'])
 
     def test_successful_get_login_image(self):
-        response = self.app.get('/test/ws/config/getLoginImage',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getLoginImage',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         login_image = open('/var/www/html/opencapture/src/assets/imgs/login_image.png', 'rb')
@@ -140,7 +140,7 @@ class ConfigTest(unittest.TestCase):
         login_image = open('/var/www/html/opencapture/src/assets/imgs/login_image.png', 'rb')
         default_login_image = base64.b64encode(login_image.read())
         login_image.close()
-        response = self.app.put('/test/ws/config/updateLoginImage',
+        response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateLoginImage',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={"args": {"image_content": default_login_image.decode('utf-8')}})
         self.assertEqual(200, response.status_code)
@@ -152,7 +152,7 @@ class ConfigTest(unittest.TestCase):
     def test_successful_update_configuration(self):
         self.db.execute("SELECT id FROM configurations WHERE label = 'loginMessage'")
         configuration_id = self.db.fetchall()
-        response = self.app.put('/test/ws/config/updateConfiguration/' + str(configuration_id[0]['id']),
+        response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateConfiguration/' + str(configuration_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={"data": {"type": "string", "value": "New loginMessage",
                                                "description": "Court message affiché sur l'écran d'accueil"}})
@@ -165,7 +165,7 @@ class ConfigTest(unittest.TestCase):
         self.db.execute("SELECT id, path, description, docserver_id FROM docservers WHERE docserver_id = "
                         "'DOCSERVERS_PATH'")
         docserver_id = self.db.fetchall()
-        response = self.app.put('/test/ws/config/updateDocserver/' + str(docserver_id[0]['id']),
+        response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateDocserver/' + str(docserver_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={"data": {"id": docserver_id[0]['id'], "docserver_id": "DOCSERVERS_PATH",
                                                "description": docserver_id[0]['description'], "path": "/new/path/"}})
@@ -176,7 +176,7 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual("/new/path/", updated_docservers[0]['path'])
 
     def test_successful_get_git_Info(self):
-        response = self.app.get('/test/ws/config/gitInfo',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/gitInfo',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
         self.assertEqual(200, response.status_code)

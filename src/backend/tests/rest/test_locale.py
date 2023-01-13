@@ -18,7 +18,7 @@
 import unittest
 import warnings
 from src.backend import app
-from src.backend.tests import get_db, get_token
+from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
 class LocaleTest(unittest.TestCase):
@@ -29,7 +29,7 @@ class LocaleTest(unittest.TestCase):
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
 
     def test_successful_change_language(self):
-        response = self.app.get('/test/ws/i18n/changeLanguage/eng',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/i18n/changeLanguage/eng',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
@@ -38,7 +38,7 @@ class LocaleTest(unittest.TestCase):
         self.assertEqual('eng', new_configuration[0]['value'])
 
     def test_successful_get_all_lang(self):
-        response = self.app.get('/test/ws/i18n/getAllLang',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/i18n/getAllLang',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -46,7 +46,7 @@ class LocaleTest(unittest.TestCase):
         self.assertGreaterEqual(2, len(response.json['langs']))
 
     def test_successful_get_current_lang(self):
-        response = self.app.get('/test/ws/i18n/getCurrentLang',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/i18n/getCurrentLang',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))

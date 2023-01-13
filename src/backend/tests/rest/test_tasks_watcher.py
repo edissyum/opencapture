@@ -18,7 +18,7 @@
 import unittest
 import warnings
 from src.backend import app
-from src.backend.tests import get_db, get_token
+from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
 class TaskWatcherTest(unittest.TestCase):
@@ -29,14 +29,14 @@ class TaskWatcherTest(unittest.TestCase):
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
 
     def test_successful_get_last_task_verifier(self):
-        response = self.app.get('/test/ws/tasks/progress?module=verifier',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/tasks/progress?module=verifier',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
         self.assertEqual(len(response.json['tasks']), 0)
 
     def test_successful_get_last_task_splitter(self):
-        response = self.app.get('/test/ws/tasks/progress?module=splitter',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/tasks/progress?module=splitter',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -44,7 +44,7 @@ class TaskWatcherTest(unittest.TestCase):
 
     def test_successful_add_task_verifier(self):
         self.db.execute("INSERT INTO tasks_watcher (title, type, module) VALUES ('test.pdf', 'upload', 'verifier')")
-        response = self.app.get('/test/ws/tasks/progress?module=verifier',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/tasks/progress?module=verifier',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -52,7 +52,7 @@ class TaskWatcherTest(unittest.TestCase):
 
     def test_successful_add_task_splitter(self):
         self.db.execute("INSERT INTO tasks_watcher (title, type, module) VALUES ('test.pdf', 'upload', 'splitter')")
-        response = self.app.get('/test/ws/tasks/progress?module=splitter',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/tasks/progress?module=splitter',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
