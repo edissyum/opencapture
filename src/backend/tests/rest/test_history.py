@@ -18,7 +18,7 @@
 import unittest
 import warnings
 from src.backend import app
-from src.backend.tests import get_db, get_token
+from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
 class HistoryTest(unittest.TestCase):
@@ -37,7 +37,7 @@ class HistoryTest(unittest.TestCase):
             'user_id': 1
         }
 
-        return self.app.post('/test/ws/history/add', headers={"Content-Type": "application/json"}, json=payload)
+        return self.app.post(f'/{CUSTOM_ID}/ws/history/add', headers={"Content-Type": "application/json"}, json=payload)
 
     def test_successful_add_history(self):
         history = self.create_history()
@@ -45,7 +45,7 @@ class HistoryTest(unittest.TestCase):
 
     def test_successful_get_history_list(self):
         self.create_history()
-        response = self.app.get('/test/ws/history/list?module=verifier',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/history/list?module=verifier',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -53,7 +53,7 @@ class HistoryTest(unittest.TestCase):
 
     def test_successful_get_history_submodules(self):
         self.create_history()
-        response = self.app.get('/test/ws/history/submodules',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/history/submodules',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -61,7 +61,7 @@ class HistoryTest(unittest.TestCase):
 
     def test_successful_get_history_users(self):
         self.create_history()
-        response = self.app.get('/test/ws/history/users',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/history/users',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))

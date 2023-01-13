@@ -18,7 +18,7 @@
 import unittest
 import warnings
 from src.backend import app
-from src.backend.tests import get_db, get_token
+from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
 class PrivilegesTest(unittest.TestCase):
@@ -29,7 +29,7 @@ class PrivilegesTest(unittest.TestCase):
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
 
     def test_successful_get_privileges_list(self):
-        response = self.app.get('/test/ws/privileges/list',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/privileges/list',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -37,7 +37,7 @@ class PrivilegesTest(unittest.TestCase):
         self.assertTrue('parent' in response.json)
 
     def test_successful_get_privileges_by_role(self):
-        response = self.app.get('/test/ws/privileges/getbyRoleId/1',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/privileges/getbyRoleId/1',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(str, type(response.json))

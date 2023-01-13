@@ -19,7 +19,7 @@ import json
 import warnings
 import unittest
 from src.backend import app
-from src.backend.tests import get_db, get_token
+from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
 class RolesTest(unittest.TestCase):
@@ -37,7 +37,7 @@ class RolesTest(unittest.TestCase):
             }
         })
 
-        return self.app.post('/test/ws/roles/create',
+        return self.app.post(f'/{CUSTOM_ID}/ws/roles/create',
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                              data=payload)
 
@@ -48,7 +48,7 @@ class RolesTest(unittest.TestCase):
 
     def test_successful_delete_role(self):
         role = self.create_role()
-        response = self.app.delete('/test/ws/roles/delete/' + str(role.json['id']),
+        response = self.app.delete(f'/{CUSTOM_ID}/ws/roles/delete/' + str(role.json['id']),
                                    headers={"Content-Type": "application/json",
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -59,7 +59,7 @@ class RolesTest(unittest.TestCase):
 
     def test_successful_disable_role(self):
         role = self.create_role()
-        response = self.app.put('/test/ws/roles/disable/' + str(role.json['id']),
+        response = self.app.put(f'/{CUSTOM_ID}/ws/roles/disable/' + str(role.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
@@ -69,7 +69,7 @@ class RolesTest(unittest.TestCase):
 
     def test_successful_enable_role(self):
         role = self.create_role()
-        response = self.app.put('/test/ws/roles/enable/' + str(role.json['id']),
+        response = self.app.put(f'/{CUSTOM_ID}/ws/roles/enable/' + str(role.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
@@ -84,7 +84,7 @@ class RolesTest(unittest.TestCase):
             "label_short": "TEST123",
             "enabled": False
         }
-        response = self.app.put('/test/ws/roles/update/' + str(role.json['id']),
+        response = self.app.put(f'/{CUSTOM_ID}/ws/roles/update/' + str(role.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={'args': payload})
         self.assertEqual(200, response.status_code)
@@ -98,7 +98,7 @@ class RolesTest(unittest.TestCase):
     def test_successful_update_role_privilege(self):
         role = self.create_role()
         payload = [1, 2, 3]
-        response = self.app.put('/test/ws/roles/updatePrivilege/' + str(role.json['id']),
+        response = self.app.put(f'/{CUSTOM_ID}/ws/roles/updatePrivilege/' + str(role.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={'privileges': payload})
         self.assertEqual(200, response.status_code)
@@ -108,7 +108,7 @@ class RolesTest(unittest.TestCase):
         self.assertEqual('[1, 2, 3]', new_role_privileges[0]['privileges_id']['data'])
 
     def test_successful_get_roles(self):
-        response = self.app.get('/test/ws/roles/list',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/roles/list',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -116,7 +116,7 @@ class RolesTest(unittest.TestCase):
 
     def test_successful_get_role_by_id(self):
         role = self.create_role()
-        response = self.app.get('/test/ws/roles/getById/' + str(role.json['id']),
+        response = self.app.get(f'/{CUSTOM_ID}/ws/roles/getById/' + str(role.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
