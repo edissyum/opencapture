@@ -171,7 +171,6 @@ def update_user(args):
     _vars = create_classes_from_custom_id(custom_id)
     database = _vars[0]
     error = None
-
     user = database.update({
         'table': ['users'],
         'set': args['set'],
@@ -202,6 +201,8 @@ def update_user_ldap(args):
         error = gettext('UPDATE_USER_ERROR')
 
     return user, error
+
+
 
 def update_customers_by_user_id(args):
     custom_id = retrieve_custom_from_url(request)

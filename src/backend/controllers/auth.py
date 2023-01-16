@@ -477,7 +477,6 @@ def get_ldap_users(connection, class_user, object_class, users_dn, base_dn):
         return False
 
 
-
 def ldap_users_synchro(ldap_synchronization_data):
     error = None
     result_synchro = None
@@ -619,13 +618,9 @@ def ldap_server_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin,
     return ldap_connection_status , error
 
 
-
-
-
 def check_database_users(ldap_users_data, default_role):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
 
     oc_users = []
     create_users = 0
@@ -637,14 +632,6 @@ def check_database_users(ldap_users_data, default_role):
         'where': ['status <> %s'],
         'data': ['DEL']
     })[0]
-
-
-    # active_users, _ = user.get_users({
-    #     'select': ['id', 'username', 'count(*) OVER() as total'],
-    #     'where': ['status NOT IN (%s)', "role <> 1"],
-    #     'data': ['DEL']
-    # })
-
     if users_list:
         for user_info in users_list:
             oc_users.append([user_info['username'], user_info['firstname'], user_info['lastname'], user_info['id']])
@@ -657,25 +644,12 @@ def check_database_users(ldap_users_data, default_role):
                         'where': ['username = %s'],
                         'data': [oc_user[0]]
                     })[0]
-                    print(user_status)
                     if not user_status:
                         user_id = user.get_user_by_username({
                             'select': ['users.id'],
                             'username': oc_user[0]
-                        })[0]
-                        print(user_id)
-                        user.update_user({'set': {'enabled': True},'user_id': user_id})
-                        # user.update_user({
-                        #     'set': {'enabled': True},
-                        #     'where': {'username = % s'},
-                        #     'user_id': oc_user[0]
-                        # })
-                        # database.update({
-                        #     'table': ['users'],
-                        #     'set': {'enabled': True},
-                        #     'where': ['username = %s'],
-                        #     'data': [oc_user[0]]
-                        # })
+                        })[0]['id']
+                        user.update_user({'set': {'enabled': True}, 'user_id': user_id})
                         ldap_user[0] = 'Updated'
                         oc_user[0] = 'Updated'
                         update_users += 1
@@ -686,29 +660,16 @@ def check_database_users(ldap_users_data, default_role):
                         user_id = user.get_user_by_username({
                             'select': ['users.id'],
                             'username': oc_user[0]
-                        })[0]
+                        })[0]['id']
                         user.update_user({
                             'set': {
                                 'firstname': str(ldap_user[1]),
                                 'lastname': str(ldap_user[2]),
                                 'role': default_role,
-                                'enabledN': True,
+                                'enabled': True,
                             },
                             'user_id': user_id
                         })
-
-
-                        # database.update({
-                        #     'table': ['users'],
-                        #     'set': {
-                        #         'firstname': str(ldap_user[1]),
-                        #         'lastname': str(ldap_user[2]),
-                        #         'role': default_role,
-                        #         'enabledN': True,
-                        #     },
-                        #     'where': ['username = %s'],
-                        #     'data': [oc_user[0]]
-                        # })
                         ldap_user[0] = 'Updated'
                         oc_user[0] = 'Updated'
                         update_users += 1
@@ -721,12 +682,6 @@ def check_database_users(ldap_users_data, default_role):
                 'where': ['username = %s'],
                 'data': [oc_user[0]]
             })[0]
-            # user_oc_status = database.select({
-            #     'select': ['enabled'],
-            #     'table': ['users'],
-            #     'where': ['username = %s'],
-            #     'data': [oc_user[0]]
-            # })[0]['enabled']
             if user_oc_status != '' and user_oc_status:
                 is_user_superadmin = auth.get_user_role_by_username(oc_user[0])
                 if is_user_superadmin[0] != 'superadmin':
@@ -744,26 +699,16 @@ def check_database_users(ldap_users_data, default_role):
         if user_to_create[0] != 'Same' and user_to_create[0] != 'Updated':
             random_password = str(uuid.uuid4())
             hash_password = generate_password_hash(random_password)
-
-            user.create_user({
-                'columns': {
+            new_user = user.create_user({
                     'username': user_to_create[0],
                     'firstname': user_to_create[1],
                     'lastname': user_to_create[2],
+                    'email': '',
                     'password': hash_password,
-                    'role': default_role
-                }
+                    'role': default_role,
+                    'customers': []
             })
-            # database.insert({
-            #     'table': 'users',
-            #     'columns': {
-            #         'username': user_to_create[0],
-            #         'firstname': user_to_create[1],
-            #         'lastname': user_to_create[2],
-            #         'password': hash_password,
-            #         'role': default_role
-            #     }
-            # })
-            user_to_create[0] = 'Created'
-            create_users += 1
+            if new_user:
+                user_to_create[0] = 'Created'
+                create_users += 1
     return {'create_users': create_users, 'disabled_users': disabled_users, 'update_users': update_users}
