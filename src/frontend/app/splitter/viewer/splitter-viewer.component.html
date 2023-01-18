@@ -74,9 +74,9 @@
                                     </mat-slide-toggle>
                                 </div>
                             </div>
-                            <div class="text-center">
-                                <i class="fa-regular fa-rectangle-list"></i>
-                                <mat-form-field id="form-select-field" (click)="$event.stopPropagation()" matTooltip="{{ 'SPLITTER.edit_used_form' | translate }}">
+                            <div>
+                                <mat-form-field id="form-select-field" class="w-full" (click)="$event.stopPropagation()" matTooltip="{{ 'SPLITTER.edit_used_form' | translate }}">
+                                    <i matPrefix class="fa-sharp fa-solid fa-caret-down text-green-400 fa-lg"></i>
                                     <mat-select (selectionChange)="onFormChange($event.value)" [(ngModel)]="currentBatch.formId">
                                         <mat-option [value]="form.id" *ngFor="let form of this.forms;">
                                             {{ form.label }}
