@@ -693,26 +693,27 @@ def validate(args):
                     """
                         Export xml for Alfresco
                     """
-                    parameters = {
-                        'extension': 'xml',
-                        'folder_out': docservers['TMP_PATH'],
-                        'separator': cmis_params['separator'],
-                        'filename': cmis_params['xml_filename'],
-                        'doc_loop_regex': regex['splitter_doc_loop'],
-                        'condition_regex': regex['splitter_condition'],
-                        'empty_line_regex': regex['splitter_empty_line'],
-                        'xml_comment_regex': regex['splitter_xml_comment'],
-                    }
-                    res_export_xml = export_xml(args['documents'], parameters, args['batchMetadata'], now)
-                    if res_export_xml[1] != 200:
-                        return res_export_xml
-                    cmis_res = cmis.create_document(res_export_xml[0]['path'], 'text/xml')
-                    if not cmis_res[0]:
-                        response = {
-                            "errors": gettext('EXPORT_XML_ERROR'),
-                            "message": cmis_res[1]
+                    if cmis_params['xml_filename']:
+                        parameters = {
+                            'extension': 'xml',
+                            'folder_out': docservers['TMP_PATH'],
+                            'separator': cmis_params['separator'],
+                            'filename': cmis_params['xml_filename'],
+                            'doc_loop_regex': regex['splitter_doc_loop'],
+                            'condition_regex': regex['splitter_condition'],
+                            'empty_line_regex': regex['splitter_empty_line'],
+                            'xml_comment_regex': regex['splitter_xml_comment'],
                         }
-                        return response, 500
+                        res_export_xml = export_xml(args['documents'], parameters, args['batchMetadata'], now)
+                        if res_export_xml[1] != 200:
+                            return res_export_xml
+                        cmis_res = cmis.create_document(res_export_xml[0]['path'], 'text/xml')
+                        if not cmis_res[0]:
+                            response = {
+                                "errors": gettext('EXPORT_XML_ERROR'),
+                                "message": cmis_res[1]
+                            }
+                            return response, 500
 
                 """
                     Export to MEM Courrier
