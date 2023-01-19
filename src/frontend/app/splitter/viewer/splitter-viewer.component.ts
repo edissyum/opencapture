@@ -71,6 +71,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     showZoomPage                : boolean       = false;
     isDataEdited                : boolean       = false;
     batchesLoading              : boolean       = false;
+    downloadLoading             : boolean       = false;
     saveInfosLoading            : boolean       = false;
     documentsLoading            : boolean       = false;
     addDocumentLoading          : boolean       = false;
@@ -785,6 +786,27 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         });
         return new FormGroup(group);
     }
+
+    downloadOriginalFile(): void {
+        this.downloadLoading = true;
+        this.http.get(environment['url'] + '/ws/splitter/batch/' + this.currentBatch.id + '/file',
+            {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                const link = document.createElement("a");
+                link.href = "data:application/pdf;base64," + data['encodedFile'];
+                link.download = `${data['filename']}`;
+                link.click();
+            }),
+            finalize(() => this.downloadLoading = false),
+            catchError((err: any) => {
+                this.downloadLoading = false
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
     /* -- End Metadata -- */
 
     /* -- Begin documents control -- */

@@ -166,9 +166,15 @@
                             </ng-container>
                         </div>
                     </form>
+                    <button mat-button (click)="downloadOriginalFile(); $event.stopPropagation();"
+                            class="float-left mb-2"
+                            matTooltip="{{ 'SPLITTER.download_original_file' | translate }}">
+                        <i class="fa-solid fa-file-arrow-down fa-2x" *ngIf="!downloadLoading"></i>
+                        <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="downloadLoading"></i>
+                    </button>
                     <button mat-button (click)="loadReferential(true); $event.stopPropagation();"
                             class="float-right mb-2"
-                            matTooltip="{{ 'SPLITTER.loadReferential' | translate }}">
+                            matTooltip="{{ 'SPLITTER.load_referential' | translate }}">
                         <i class="fa-solid fa-sync fa-2x"></i>
                     </button>
                 </mat-expansion-panel>

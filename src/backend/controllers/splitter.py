@@ -163,6 +163,35 @@ def retrieve_batches(args):
     return response, 401
 
 
+def download_original_file(batch_id):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    docservers = _vars[9]
+
+    res = splitter.get_batch_by_id({
+        'id': batch_id
+    })
+    if res[0]:
+        try:
+            batch = res[0]
+            file_path = docservers['SPLITTER_ORIGINAL_PDF'] + "/" + batch['file_path']
+            with open(file_path, 'rb') as pdf_file:
+                encoded_file = base64.b64encode(pdf_file.read()).decode('utf-8')
+            return {'encodedFile': encoded_file, 'filename': batch['file_name']}, 200
+        except Exception as e:
+            response = {
+                "errors": "ERROR",
+                "message": str(e)
+            }
+            return response, 401
+
+    response = {
+        "errors": "ERROR",
+        "message": res[1]
+    }
+    return response, 401
+
+
 def change_status(args):
     res = splitter.change_status(args)
 
@@ -432,7 +461,7 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
         'filename': filename,
         'documents': documents,
         'metadata': batch['metadata'],
-        'locale': configurations['locale'],
+        'lang': configurations['locale'],
         'folder_out': parameters['folder_out'],
         'output_parameter': output_parameter
     })
