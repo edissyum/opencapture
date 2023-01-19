@@ -101,7 +101,6 @@ def launch(args):
             path = args['file']
             if check_file(files, path, log, docservers):
                 if 'input_id' in args and args['input_id']:
-                    print(input_settings)
                     splitter_method_id = input_settings[0]['splitter_method_id']
                     available_split_methods_path = docservers['SPLITTER_METHODS_PATH'] + "/splitter_methods.json"
                     if splitter_method_id and os.path.isfile(available_split_methods_path):
