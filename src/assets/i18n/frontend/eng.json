@@ -822,6 +822,8 @@
 		"quit_without_saving": "Quit without saving",
 		"quit_without_saving_modifications": "Are you sure you want to quit without saving?",
 		"referential_updated": "Referential updated",
+		"refresh_without_saving": "Refresh without saving",
+		"refresh_without_saving_modifications": "Are you sure you want to refresh without saving?",
 		"reload_batches": "Reset batches list",
 		"rotatePage": "Rotate page with",
 		"save_changes": "Save changes",

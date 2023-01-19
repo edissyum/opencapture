@@ -547,7 +547,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    loadReferential(refreshAfterLoad: boolean): void {
+    loadReferentialWithConfirmation(refreshAfterLoad: boolean): void {
         this.metadata = [];
         this.http.get(environment['url'] + `/ws/splitter/loadReferential/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -555,7 +555,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     metadataItem.data['metadataId'] = metadataItem.id;
                     this.metadata.push(metadataItem.data);
                 });
-
                 if (this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')) {
                     const autocompletionValue = this.metadata.filter(item => item.metadataId === this.currentBatch.customFieldsValues.metadataId);
                     if (autocompletionValue.length > 0) {
@@ -576,6 +575,28 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    loadReferential(refreshAfterLoad: boolean): void {
+        if (this.isDataEdited) {
+            const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+                data:{
+                    confirmTitle       : this.translate.instant('GLOBAL.confirm'),
+                    confirmText        : this.translate.instant('SPLITTER.refresh_without_saving_modifications'),
+                    confirmButton      : this.translate.instant('SPLITTER.refresh_without_saving'),
+                    confirmButtonColor : "warn",
+                    cancelButton       : this.translate.instant('GLOBAL.cancel'),
+                },
+                width: "600px",
+            });
+            dialogRef.afterClosed().subscribe(result => {
+                if (result) {
+                    this.loadReferentialWithConfirmation(refreshAfterLoad);
+                }
+            });
+        } else {
+            this.loadReferentialWithConfirmation(refreshAfterLoad);
+        }
     }
 
     setValueChange(key: string, value: string) {
