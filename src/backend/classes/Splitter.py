@@ -81,6 +81,7 @@ class Splitter:
                 'where': ['input_id = %s', 'module = %s'],
                 'data': [input_id, 'splitter'],
             })
+
             clean_path = re.sub(r"/+", "/", file)
             clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_PDF'])
 

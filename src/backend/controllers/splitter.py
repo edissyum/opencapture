@@ -424,8 +424,19 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
             })
         else:
             doc_except_from_zip.append(documents[index]['id'])
-    export_pdf_res = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], output_parameter, log,
-                                       configurations['locale'], 1)
+
+    export_pdf_res = _Files.export_pdf({
+        'log': log,
+        'pages': pages,
+        'reduce_index': 1,
+        'filename': filename,
+        'documents': documents,
+        'metadata': batch['metadata'],
+        'locale': configurations['locale'],
+        'folder_out': parameters['folder_out'],
+        'output_parameter': output_parameter
+    })
+
     if not export_pdf_res[0]:
         response = {
             "errors": gettext('EXPORT_PDF_ERROR'),
@@ -804,7 +815,7 @@ def validate(args):
         """
         splitter.change_status({
             'id': args['batchMetadata']['id'],
-            'status': 'END'
+            'status': 'NEW'
         })
 
     return {"OK": True}, 200
