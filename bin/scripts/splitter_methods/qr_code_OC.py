@@ -29,6 +29,8 @@ def process(args):
     - regex: regex content values
     - customer_id: used customer id
     - batch_folder: batch folder path
+    - configurations: configuration values
+    - ocrise: bool, launch OCR on file or not
     :return: N/A
     """
     args['log'].info('Processing file for separation : ' + args['file'])
@@ -54,6 +56,8 @@ def process(args):
     args['splitter'].get_result_documents(blank_pages)
     original_file = args['file']
     file = args['files'].move_to_docservers(args['docservers'], args['file'], 'splitter')
+    if args['ocrise']:
+        args['files'].ocrise_pdf(file, args['configurations']['locale'], args['log'])
     args['splitter'].save_documents(args['batch_folder'], file, args['input_id'], original_file)
 
 

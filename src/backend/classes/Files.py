@@ -486,9 +486,31 @@ class Files:
                 return positions
 
     @staticmethod
+    def ocrise_pdf(file_path, lang, log):
+        """
+        :param file_path: path to file to OCRise
+        :param lang: OCR language
+        :param log: log object
+        """
+        is_ocr = False
+        pdf_reader = pypdf.PdfReader(file_path, strict=False)
+        for index in range(pdf_reader.pages.__len__()):
+            page_content = pdf_reader.pages[index].extract_text()
+            if page_content:
+                is_ocr = True
+                break
+
+        if not is_ocr:
+            tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
+            generate_searchable_pdf(file_path, tmp_filename, lang, log)
+            try:
+                shutil.move(tmp_filename, file_path)
+            except shutil.Error as _e:
+                log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
+
+    @staticmethod
     def export_pdf(args):
         pdf_writer = pypdf.PdfWriter()
-        is_ocr = False
         paths = []
 
         try:
@@ -498,21 +520,16 @@ class Files:
                     continue
                 for page in pages:
                     pdf_page = pdf_reader.pages[page['source_page'] - args['reduce_index']]
-
-                    page_content = pdf_reader.pages[page['source_page'] - args['reduce_index']].extract_text()
-                    is_ocr = True if page_content else False
-
                     if page['rotation'] != 0:
                         pdf_page.rotateCounterClockwise(-page['rotation'])
                     pdf_writer.add_page(pdf_page)
 
                 pdf_writer.add_metadata(pdf_reader.metadata)
                 pdf_writer.add_metadata({
-                    '/Author': "author",
-                    '/Title': "title",
-                    '/Subject': "subject",
-                    '/Producer': "CropPDF",
-                    '/Creator': "CropPDF",
+                    '/Author': f"{args['metadata']['userLastName']} {args['metadata']['userFirstName']}",
+                    '/Title': args['metadata']['title'] if 'title' in args['metadata'] else '',
+                    '/Subject': args['metadata']['subject'] if 'subject' in args['metadata'] else '',
+                    '/Creator': "Open-Capture",
                 })
 
                 file_path = args['folder_out'] + '/' + args['documents'][index]['fileName']
@@ -531,14 +548,6 @@ class Files:
                         pdf_writer.write(file)
                         paths.append(file_path)
                     pdf_writer = pypdf.PdfWriter()
-
-                if args['output_parameter']['ocrise'] and not is_ocr:
-                    tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
-                    generate_searchable_pdf(file_path, tmp_filename, args['lang'], args['log'])
-                    try:
-                        shutil.move(tmp_filename, file_path)
-                    except shutil.Error as _e:
-                        args['log'].error('Moving file ' + tmp_filename + ' error : ' + str(_e))
         except Exception as err:
             return False, str(err)
 
