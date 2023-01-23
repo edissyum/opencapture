@@ -204,44 +204,44 @@ class Splitter:
         random_num = str(random.randint(0, 99999)).zfill(5)
         mask_keys = mask_args['mask'].split('#')
         separator = mask_args['separator'] if mask_args['separator'] else ''
-        for keys in mask_keys:
-            if not keys:
+        for key in mask_keys:
+            if not key:
                 continue
             """
                 PDF or XML masks value
             """
-            if keys in metadata:
-                mask_result.append(str(metadata[keys]).replace(' ', separator))
-            elif keys == 'date':
+            if key in metadata:
+                mask_result.append(str(metadata[key]).replace(' ', separator))
+            elif key == 'date':
                 mask_result.append(_date.replace(' ', separator))
-            elif keys == 'random':
+            elif key == 'random':
                 mask_result.append(random_num.replace(' ', separator))
             elif document:
                 """
                     PDF masks value
                 """
-                if keys in document['metadata']:
-                    value = (document['metadata'][keys] if document['metadata'][keys] else '').replace(' ', separator)
+                if key in document['metadata']:
+                    value = (document['metadata'][key] if document['metadata'][key] else '').replace(' ', separator)
                     mask_result.append(value)
-                elif keys in metadata:
-                    value = (metadata[keys] if metadata[keys] else '').replace(' ', separator)
+                elif key in metadata:
+                    value = (metadata[key] if metadata[key] else '').replace(' ', separator)
                     mask_result.append(value)
-                elif keys == 'doctype':
+                elif key == 'doctype':
                     mask_result.append(document['documentTypeKey'].replace(' ', separator))
-                elif keys == 'document_identifier':
+                elif key == 'document_identifier':
                     mask_result.append(document['id'])
-                elif keys == 'document_index':
+                elif key == 'document_index':
                     mask_result.append(document['id'])
                 else:
                     """
                         PDF value when mask value not found in metadata
                     """
-                    mask_result.append(keys.replace(' ', separator))
+                    mask_result.append(key.replace(' ', separator))
             else:
                 """
                     XML value when mask value not found in metadata
                 """
-                mask_result.append(keys.replace(' ', separator))
+                mask_result.append(key.replace(' ', separator))
 
         mask_result = separator.join(str(x) for x in mask_result)
         mask_result = unidecode(mask_result)
