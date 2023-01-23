@@ -63,9 +63,25 @@ class Middleware:
         return self.middleware_app(environ, start_response)
 
 
+def get_locale():
+    if 'SECRET_KEY' not in app.config or not app.config['SECRET_KEY']:
+        return 'fr'
+    if 'lang' not in session:
+        if 'languages' in session:
+            languages = json.loads(session['languages'])
+        else:
+            custom_id = retrieve_custom_from_url(request)
+            _vars = create_classes_from_custom_id(custom_id)
+            if not _vars[0]:
+                return 'fr'
+            languages = _vars[11]
+        session['lang'] = request.accept_languages.best_match(languages.keys())
+    return session['lang']
+
+
 app = Flask(__name__, instance_relative_config=True)
 app.wsgi_app = Middleware(app.wsgi_app)
-babel = Babel(app)
+babel = Babel(app, default_locale='fr', locale_selector=get_locale)
 CORS(app, supports_credentials=True)
 
 app.config.from_mapping(
@@ -95,23 +111,6 @@ app.register_blueprint(tasks_watcher.bp)
 app.register_blueprint(doctypes.bp)
 app.register_blueprint(mailcollect.bp)
 app.register_blueprint(artificial_intelligence.bp)
-
-
-@babel.localeselector
-def get_locale():
-    if 'SECRET_KEY' not in app.config or not app.config['SECRET_KEY']:
-        return 'fr'
-    if 'lang' not in session:
-        if 'languages' in session:
-            languages = json.loads(session['languages'])
-        else:
-            custom_id = retrieve_custom_from_url(request)
-            _vars = create_classes_from_custom_id(custom_id)
-            if not _vars[0]:
-                return 'fr'
-            languages = _vars[11]
-        session['lang'] = request.accept_languages.best_match(languages.keys())
-    return session['lang']
 
 
 if __name__ == "__main__":
