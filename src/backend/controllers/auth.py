@@ -104,7 +104,7 @@ def login(username, password, lang, method='default'):
 
         encoded_token = encode_auth_token(user_info['username'])
 
-        if configurations['allowUserMultipleLogin'] not in ['true', True]:
+        if 'allowUserMultipleLogin' in configurations and configurations['allowUserMultipleLogin'] not in ['true', True]:
             last_connection = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             user.update_user({'set': {'last_connection': last_connection}, 'user_id': user_info['id']})
 
