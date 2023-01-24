@@ -486,55 +486,71 @@ class Files:
                 return positions
 
     @staticmethod
-    def export_pdf(pages_lists, documents, input_file, output_file, output_parameter, log, lang, reduce_index=0):
+    def ocrise_pdf(file_path, lang, log):
+        """
+        :param file_path: path to file to OCRise
+        :param lang: OCR language
+        :param log: log object
+        """
+        is_ocr = False
+        pdf_reader = pypdf.PdfReader(file_path, strict=False)
+        for index in range(pdf_reader.pages.__len__()):
+            page_content = pdf_reader.pages[index].extract_text()
+            if page_content:
+                is_ocr = True
+                break
+
+        if not is_ocr:
+            tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
+            generate_searchable_pdf(file_path, tmp_filename, lang, log)
+            try:
+                shutil.move(tmp_filename, file_path)
+            except shutil.Error as _e:
+                log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
+
+    @staticmethod
+    def export_pdf(args):
         pdf_writer = pypdf.PdfWriter()
         paths = []
+
         try:
-            for index, pages in enumerate(pages_lists):
-                pdf_reader = pypdf.PdfReader(input_file, strict=False)
+            for index, pages in enumerate(args['pages']):
+                pdf_reader = pypdf.PdfReader(args['filename'], strict=False)
                 if not pages:
                     continue
                 for page in pages:
-                    pdf_page = pdf_reader.pages[page['source_page'] - reduce_index]
+                    pdf_page = pdf_reader.pages[page['source_page'] - args['reduce_index']]
                     if page['rotation'] != 0:
                         pdf_page.rotateCounterClockwise(-page['rotation'])
                     pdf_writer.add_page(pdf_page)
-                file_path = output_file + '/' + documents[index]['fileName']
 
-                if output_parameter['compress_type']:
-                    tmp_filename = '/tmp/' + documents[index]['fileName']
+                pdf_writer.add_metadata(pdf_reader.metadata)
+                pdf_writer.add_metadata({
+                    '/Author': f"{args['metadata']['userLastName']} {args['metadata']['userFirstName']}",
+                    '/Title': args['metadata']['title'] if 'title' in args['metadata'] else '',
+                    '/Subject': args['metadata']['subject'] if 'subject' in args['metadata'] else '',
+                    '/Creator': "Open-Capture",
+                })
+
+                file_path = args['folder_out'] + '/' + args['documents'][index]['fileName']
+
+                if args['output_parameter']['compress_type']:
+                    tmp_filename = '/tmp/' + args['documents'][index]['fileName']
                     with open(tmp_filename, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
                     pdf_writer = pypdf.PdfWriter()
-                    compressed_file_path = '/tmp/min_' + documents[index]['fileName']
-                    compress_pdf(tmp_filename, compressed_file_path, output_parameter['compress_type'])
+                    compressed_file_path = '/tmp/min_' + args['documents'][index]['fileName']
+                    compress_pdf(tmp_filename, compressed_file_path, args['output_parameter']['compress_type'])
                     shutil.move(compressed_file_path, file_path)
                 else:
                     with open(file_path, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
                     pdf_writer = pypdf.PdfWriter()
-
-                if output_parameter['ocrise']:
-                    check_ocr = os.popen('pdffonts ' + file_path, 'r')
-                    tmp = []
-                    for line in check_ocr:
-                        tmp.append(line)
-                    tmp = '\n'.join(tmp)
-
-                    is_ocr = False
-                    if len(tmp.split('\n')) > 4:
-                        is_ocr = True
-                    if not is_ocr:
-                        tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
-                        generate_searchable_pdf(file_path, tmp_filename, lang, log)
-                        try:
-                            shutil.move(tmp_filename, file_path)
-                        except shutil.Error as _e:
-                            log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
         except Exception as err:
             return False, str(err)
+
         return paths
 
     @staticmethod

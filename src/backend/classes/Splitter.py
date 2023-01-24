@@ -81,6 +81,7 @@ class Splitter:
                 'where': ['input_id = %s', 'module = %s'],
                 'data': [input_id, 'splitter'],
             })
+
             clean_path = re.sub(r"/+", "/", file)
             clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_PDF'])
 
@@ -201,44 +202,46 @@ class Splitter:
         seconds = str('%02d' % now_date.second)
         _date = year + month + day + hour + minute + seconds
         random_num = str(random.randint(0, 99999)).zfill(5)
-        mask_values = mask_args['mask'].split('#')
+        mask_keys = mask_args['mask'].split('#')
         separator = mask_args['separator'] if mask_args['separator'] else ''
-        for mask_value in mask_values:
-            if not mask_value:
+        for key in mask_keys:
+            if not key:
                 continue
             """
                 PDF or XML masks value
             """
-            if mask_value in metadata:
-                mask_result.append(str(metadata[mask_value]).replace(' ', separator))
-            elif mask_value == 'date':
+            if key in metadata:
+                mask_result.append(str(metadata[key]).replace(' ', separator))
+            elif key == 'date':
                 mask_result.append(_date.replace(' ', separator))
-            elif mask_value == 'random':
+            elif key == 'random':
                 mask_result.append(random_num.replace(' ', separator))
             elif document:
                 """
                     PDF masks value
                 """
-                if mask_value in document['metadata']:
-                    mask_result.append(
-                        (document['metadata'][mask_value] if document['metadata'][mask_value] else '')
-                            .replace(' ', separator))
-                elif mask_value == 'doctype':
+                if key in document['metadata']:
+                    value = (document['metadata'][key] if document['metadata'][key] else '').replace(' ', separator)
+                    mask_result.append(value)
+                elif key in metadata:
+                    value = (metadata[key] if metadata[key] else '').replace(' ', separator)
+                    mask_result.append(value)
+                elif key == 'doctype':
                     mask_result.append(document['documentTypeKey'].replace(' ', separator))
-                elif mask_value == 'document_identifier':
+                elif key == 'document_identifier':
                     mask_result.append(document['id'])
-                elif mask_value == 'document_index':
+                elif key == 'document_index':
                     mask_result.append(document['id'])
                 else:
                     """
                         PDF value when mask value not found in metadata
                     """
-                    mask_result.append(mask_value.replace(' ', separator))
+                    mask_result.append(key.replace(' ', separator))
             else:
                 """
                     XML value when mask value not found in metadata
                 """
-                mask_result.append(mask_value.replace(' ', separator))
+                mask_result.append(key.replace(' ', separator))
 
         mask_result = separator.join(str(x) for x in mask_result)
         mask_result = unidecode(mask_result)
@@ -291,7 +294,8 @@ class Splitter:
                     continue
                 doc_loop_item = doc_loop_item_template.group(1)
                 doc_loop_item = doc_loop_item.replace('#date', date)
-                doc_loop_item = doc_loop_item.replace('#filename', document['fileName'] if 'fileName' in document else '')
+                doc_loop_item = doc_loop_item.replace('#filename',
+                                                      document['fileName'] if 'fileName' in document else '')
                 doc_loop_item = doc_loop_item.replace('#documents_count', str(len(documents)))
                 doc_loop_item = doc_loop_item.replace('#document_identifier', str(document['id']))
                 doc_loop_item = doc_loop_item.replace('#doctype', str(document['documentTypeKey']))

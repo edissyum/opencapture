@@ -57,6 +57,13 @@ def retrieve_splitter_batches(batch_id, user_id, page, size, time, status):
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('splitter/batch/<int:batch_id>/file', methods=['GET'])
+@auth.token_required
+def download_original_file(batch_id):
+    response, status = splitter.download_original_file(batch_id)
+    return make_response(jsonify(response)), status
+
+
 @bp.route('splitter/loadReferential/<int:form_id>', methods=['GET'])
 @auth.token_required
 def retrieve_referential(form_id):

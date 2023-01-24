@@ -122,7 +122,7 @@ export class UploadComponent implements OnInit {
         this.selectedInput = inputId;
     }
 
-    uploadInvoice(): void {
+    uploadFile(): void {
         this.sending = true;
         const formData: FormData = new FormData();
 
