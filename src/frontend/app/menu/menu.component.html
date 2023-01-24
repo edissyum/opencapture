@@ -2,7 +2,7 @@
 <nav style="background: #f8f9fa" class="shadow-md relative z-40">
     <div class="mx-auto px-2 sm:px-6 lg:px-8" style="max-width: 100rem">
         <div class="relative flex items-center justify-between h-16 z-50">
-            <div class="absolute inset-y-0 left-0 flex items-center md:hidden">
+            <div class="absolute inset-y-0 left-0 flex items-center lg:hidden">
                 <!-- Mobile menu button-->
                 <button (click)="toggleMobileMenu()"
                         class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-white
@@ -18,6 +18,7 @@
                     </svg>
                 </button>
             </div>
+
             <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                 <div class="flex-shrink-0 items-center sm:hidden xl:flex">
                     <img class="hidden lg:block h-10 w-auto" [src]="this.image" alt="Open-Capture logo">
@@ -25,7 +26,7 @@
                 <div class="flex-shrink-0 items-center sm:flex xl:hidden">
                     <img class="hidden lg:block h-10 w-auto" [src]="this.imageMobile" alt="Open-Capture logo">
                 </div>
-                <div class="hidden md:block sm:ml-3">
+                <div class="hidden lg:block sm:ml-3">
                     <div class="flex space-x-4">
                         <button mat-flat-button routerLink="/home" [routerLinkActive]="'bg-gray-900 text-green-400'"
                                 [class.text-gray-500]="!location.path().includes('/home')"
@@ -70,7 +71,7 @@
                         <i class="fa-solid fa-cog"></i>
                     </button>
                 </div>
-                <div class="ml-3 mr-2 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('history')">
+                <div class="ml-3 mr-2 relative" *ngIf="this.privilegesService.hasPrivilege('history')">
                     <button id="history-menu" aria-haspopup="true" mat-mini-fab routerLink="/history"
                             [class.settings_active]="location.path().includes('history')"
                             [matTooltip]="'GLOBAL.history' | translate"
@@ -78,7 +79,7 @@
                         <i class="fa-solid fa-history"></i>
                     </button>
                 </div>
-                <div class="ml-3 mr-2 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('statistics')">
+                <div class="ml-3 mr-2 relative" *ngIf="this.privilegesService.hasPrivilege('statistics')">
                     <button id="statistics-menu" aria-haspopup="true" mat-mini-fab routerLink="/statistics"
                             [class.settings_active]="location.path().includes('statistics')"
                             [matTooltip]="'GLOBAL.statistics' | translate"
@@ -86,7 +87,7 @@
                         <i class="fa-solid fa-chart-bar"></i>
                     </button>
                 </div>
-                <div class="ml-3 mr-2 relative hidden md:block" *ngIf="false && this.privilegesService.hasPrivilege('monitoring')">
+                <div class="ml-3 mr-2 relative" *ngIf="false && this.privilegesService.hasPrivilege('monitoring')">
                     <button id="monitoring-menu" aria-haspopup="true" mat-mini-fab routerLink="/statistics"
                             [class.settings_active]="location.path().includes('monitoring')"
                             [matTooltip]="'GLOBAL.monitoring' | translate"
@@ -94,7 +95,7 @@
                         <i class="fa-solid fa-magnifying-glass-chart"></i>
                     </button>
                 </div>
-                <div class="ml-3 mr-2 relative border-l border-green-400 pl-5 hidden md:block" *ngIf="this.privilegesService.hasPrivilege('suppliers_list')">
+                <div class="ml-3 mr-2 relative border-l border-green-400 pl-5" *ngIf="this.privilegesService.hasPrivilege('suppliers_list')">
                     <button id="supplier-menu" aria-haspopup="true" mat-mini-fab routerLink="/accounts/suppliers"
                             [class.settings_active]="this.location.path().includes('accounts/suppliers')"
                             [matTooltip]="'ACCOUNTS.suppliers_list' | translate"
@@ -102,7 +103,7 @@
                         <i class="fa-solid fa-city"></i>
                     </button>
                 </div>
-                <div class="ml-3 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('customers_list')">
+                <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('customers_list')">
                     <button id="customer-menu" aria-haspopup="true" mat-mini-fab routerLink="/accounts/customers"
                             [class.settings_active]="this.location.path().includes('accounts/customers')"
                             [matTooltip]="'ACCOUNTS.customers_list' | translate"
@@ -125,15 +126,20 @@
                        class="fa-solid fa-earth-europe fa-beat fa-lg text-gray-900 ml-4"></i>
                 </div>
                 <div class="my_profile ml-4 relative py-2 px-1 hover:cursor-pointer" (click)="toggleProfileDropdown()"
-                     id="user-menu" aria-haspopup="true" [matTooltip]="this.translate.instant('USER.my_profile')"
+                     id="user-menu" aria-haspopup="true"
                      [class.profile_active]="location.path().includes('profile/' + this.userService.user['id'])"
                      (clickOutside)="closeprofileDropDown()">
-                    <span *ngIf="this.userService.user">
-                        <span class="mr-2">
-                            <i class="fa-solid fa-user text-lg"></i>
+                    <span *ngIf="this.userService.user" class="flex items-center"
+                          [matTooltip]="this.translate.instant('USER.my_profile')">
+                        <div class="hidden xl:block">
+                            <strong>
+                                {{ this.userService.user['lastname'] }} {{ this.userService.user['firstname'] }}
+                            </strong>
+                            <br>({{ this.userService.user['username'] }})
+                        </div>
+                        <span class="ml-2">
+                            <i class="fa-solid fa-user text-xl"></i>
                         </span>
-                        <strong>{{ this.userService.user['lastname'] }}</strong>
-                        {{ this.userService.user['firstname'] }} ({{ this.userService.user['username'] }})
                     </span>
                     <div class="ml-3 mr-0 md:mr-2 relative">
                         <div [class.hidden]="!this.profileDropdownCurrentState" class="origin-top-right absolute md:right-0 mt-2 w-56 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
@@ -149,6 +155,28 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div *ngIf="this.mobileMenuState" id="mobile-menu">
+            <div class="space-y-1 px-2 pt-2 pb-3 text-gray-500">
+                <a routerLink="/home" [routerLinkActive]="'bg-gray-900 text-green-400'" (click)="this.mobileMenuState = false"
+                   class="hover:bg-gray-500 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                    {{ 'GLOBAL.home' | translate }}
+                </a>
+                <a routerLink="/verifier" *ngIf="location.path() !== '/home' && this.getSplitterOrVerifier() === 'verifier'"
+                   [routerLinkActive]="'bg-gray-900 text-green-400'" (click)="this.mobileMenuState = false"
+                   class="hover:bg-gray-500 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                    {{ 'GLOBAL.batches' | translate }}
+                </a>
+                <a routerLink="/splitter" *ngIf="location.path() !== '/home' && this.getSplitterOrVerifier() === 'splitter'"
+                   [routerLinkActive]="'bg-gray-900 text-green-400'" (click)="this.mobileMenuState = false"
+                   class="hover:bg-gray-500 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                    {{ 'GLOBAL.batches' | translate }}
+                </a>
+                <a routerLink="/upload" [routerLinkActive]="'bg-gray-900 text-green-400'" (click)="this.mobileMenuState = false"
+                   class="hover:bg-gray-500 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                    {{ 'GLOBAL.upload' | translate }}
+                </a>
             </div>
         </div>
     </div>
