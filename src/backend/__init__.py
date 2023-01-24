@@ -81,7 +81,6 @@ def get_locale():
 
 app = Flask(__name__, instance_relative_config=True)
 app.wsgi_app = Middleware(app.wsgi_app)
-babel = Babel(app, default_locale='fr', locale_selector=get_locale)
 CORS(app, supports_credentials=True)
 
 app.config.from_mapping(
@@ -89,6 +88,8 @@ app.config.from_mapping(
     UPLOAD_FOLDER_SPLITTER=os.path.join(app.instance_path, 'upload/splitter/'),
     BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
 )
+
+babel = Babel(app, default_locale='fr', locale_selector=get_locale)
 
 app.register_blueprint(auth.bp)
 app.register_blueprint(user.bp)
