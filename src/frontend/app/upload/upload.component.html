@@ -38,7 +38,7 @@
         <div class="text-center"
              [class.cursor-not-allowed]="this.error || !(!this.sending && this.selectedInput && this.fileControl.value!.length !== 0)">
             <button mat-button
-                    [disabled]="this.error || this.sending || this.selectedInput === '' || this.fileControl.value!.length === 0" (click)="uploadInvoice()"
+                    [disabled]="this.error || this.sending || this.selectedInput === '' || this.fileControl.value!.length === 0" (click)="uploadFile()"
                     [class.hover:bg-transparent]="!this.error && !this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
                     [class.bg-opacity-100]="!this.error && !this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
                     [class.bg-opacity-40]="this.error || !(!this.sending && this.selectedInput && this.fileControl.value!.length !== 0)"
