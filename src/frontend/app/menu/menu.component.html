@@ -62,35 +62,6 @@
                 </div>
             </div>
             <div class="flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <!-- Profile dropdown -->
-                <div class="ml-3 mr-0 md:mr-2 relative">
-                    <div *ngIf="this.userService.user">
-                        <button [class.settings_active]="location.path().includes('profile/' + this.userService.user['id'])"
-                                mat-mini-fab (click)="toggleProfileDropdown()" id="user-menu" aria-haspopup="true"
-                                [matTooltip]="this.translate.instant('USER.my_profile')"
-                                (clickOutside)="closeprofileDropDown()"
-                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
-                            <i class="fa-solid fa-users-cog"></i>
-                        </button>
-                    </div>
-                    <div [class.hidden]="!this.profileDropdownCurrentState" class="origin-top-right absolute md:right-0 mt-2 w-56 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
-                         role="menu" aria-orientation="vertical" aria-labelledby="user-menu" *ngIf="this.userService.user">
-                        <span class="block text-center mb-2 text-gray-900">
-                            <strong>{{ this.userService.user['lastname'] }}</strong> {{ this.userService.user['firstname'] }} ({{ this.userService.user['username'] }})
-                            <i *ngIf="this.userService.user['role']">{{ this.userService.user['role']['label'] }}</i>
-                            <hr>
-                        </span>
-                        <a (click)="closeprofileDropDown()" routerLink="/profile/{{ this.userService.user['id'] }}"
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">
-                            {{ 'USER.my_profile' | translate }}
-                        </a>
-                        <a (click)="closeprofileDropDown()"
-                           routerLink="/logout"
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">
-                            {{ 'GLOBAL.log_out' | translate }}
-                        </a>
-                    </div>
-                </div>
                 <div class="ml-3 mr-0 md:mr-2 relative" *ngIf="this.privilegesService.hasPrivilege('settings')">
                     <button id="settings-menu" aria-haspopup="true" mat-mini-fab routerLink="/settings"
                             [class.settings_active]="location.path().includes('settings')"
@@ -153,11 +124,30 @@
                     <i *ngIf="this.localeService.localeLoading"
                        class="fa-solid fa-earth-europe fa-beat fa-lg text-gray-900 ml-4"></i>
                 </div>
-                <div class="ml-6 relative">
-                    <span class="text-gray-600" *ngIf="this.userService.user">
+                <div class="my_profile ml-4 relative py-2 px-1 hover:cursor-pointer" (click)="toggleProfileDropdown()"
+                     id="user-menu" aria-haspopup="true" [matTooltip]="this.translate.instant('USER.my_profile')"
+                     [class.profile_active]="location.path().includes('profile/' + this.userService.user['id'])"
+                     (clickOutside)="closeprofileDropDown()">
+                    <span *ngIf="this.userService.user">
+                        <span class="mr-2">
+                            <i class="fa-solid fa-user text-lg"></i>
+                        </span>
                         <strong>{{ this.userService.user['lastname'] }}</strong>
                         {{ this.userService.user['firstname'] }} ({{ this.userService.user['username'] }})
                     </span>
+                    <div class="ml-3 mr-0 md:mr-2 relative">
+                        <div [class.hidden]="!this.profileDropdownCurrentState" class="origin-top-right absolute md:right-0 mt-2 w-56 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
+                             role="menu" aria-orientation="vertical" aria-labelledby="user-menu" *ngIf="this.userService.user">
+                            <a (click)="closeprofileDropDown()" routerLink="/profile/{{ this.userService.user['id'] }}"
+                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">
+                                {{ 'USER.my_profile' | translate }}
+                            </a>
+                            <a (click)="closeprofileDropDown()" routerLink="/logout"
+                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">
+                                {{ 'GLOBAL.log_out' | translate }}
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
