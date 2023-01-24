@@ -63,16 +63,28 @@ def launch(args):
     files = _Files('', log, docservers, configurations, regex, languages, database)
 
     remove_blank_pages = False
-    if 'input_id' in args:
-        input_settings = database.select({
-            'select': ['*'],
-            'table': ['inputs'],
-            'where': ['input_id = %s', 'module = %s'],
-            'data': [args['input_id'], 'splitter'],
-        })
-        if input_settings:
-            args['customer_id'] = input_settings[0]['customer_id']
-            remove_blank_pages = input_settings[0]['remove_blank_pages']
+    ocrise = False
+
+    input_settings = database.select({
+        'select': ['*'],
+        'table': ['inputs', 'form_models'],
+        'left_join': ['inputs.default_form_id = form_models.id'],
+        'where': ['inputs.input_id = %s', 'inputs.module = %s'],
+        'data': [args['input_id'], 'splitter'],
+    })
+    if input_settings:
+        args['customer_id'] = input_settings[0]['customer_id']
+        remove_blank_pages = input_settings[0]['remove_blank_pages']
+        for output_id in input_settings[0]['outputs']:
+            outputs_settings = database.select({
+                'select': ['ocrise'],
+                'table': ['outputs'],
+                'where': ['id = %s'],
+                'data': [int(output_id)],
+            })
+            if not outputs_settings:
+                continue
+            ocrise = outputs_settings[0]['ocrise']
 
     separator_qr = _SeparatorQR(log, config, batch_folder_path, 'splitter', files, remove_blank_pages, docservers)
     splitter = _Splitter(config, database, separator_qr, log, docservers)
@@ -106,11 +118,13 @@ def launch(args):
                                         "file": path,
                                         "regex": regex,
                                         "files": files,
+                                        "ocrise": ocrise,
                                         "config": config,
                                         "splitter": splitter,
                                         "docservers": docservers,
                                         "batch_folder": batch_folder,
                                         "input_id": args['input_id'],
+                                        "configurations": configurations,
                                         "customer_id": args['customer_id'],
                                     }
                                     split_method(split_args)
