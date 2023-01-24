@@ -868,7 +868,7 @@
 	"UPLOAD": {
 		"extension_unauthorized": "One or more files aren't in PDF format",
 		"no_file": "No file to upload",
-		"placeholder": "Drag and drop or click to upload file(s) (maximum 3)",
+		"placeholder": "Drag and drop or click to upload PDF file(s) (maximum 3)",
 		"please_select_input": "Please select input",
 		"purchase_invoice": "Purchase invoice",
 		"sale_invoice": "Sale invoice",
