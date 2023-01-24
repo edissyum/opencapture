@@ -76,10 +76,15 @@
                                     <div class="my-6 grid grid-cols-6 gap-4 h-10 mt-8">
                                         <button type="submit" mat-button (click)="checkLdapConnexion()"
                                                 class="p-6 border-solid border-gray-900 border bg-gray-900 text-white hover:bg-transparent hover:text-gray-900 transition duration-300 col-start-3">
-                                            {{ "LOGIN-METHODS.test_connection" | translate }}
+                                            <span *ngIf="!this.isProcessConnectionLaunched">
+                                                {{ "LOGIN-METHODS.test_connection" | translate }}
+                                            </span>
+                                            <i *ngIf="this.isProcessConnectionLaunched"
+                                               class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                                         </button>
-                                        <button matStepperNext mat-button class="p-6 border-solid border-green-400 border
-                                                bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300 ml-2">
+                                        <button matStepperNext mat-button [disabled]="this.isNextBtnDisabled"
+                                                class="p-6 border-solid border-green-400 border bg-green-400 text-white
+                                                hover:bg-transparent hover:text-gray-900 transition duration-300 ml-2">
                                             {{ "LOGIN-METHODS.next" | translate }}
                                         </button>
                                     </div>
@@ -122,15 +127,19 @@
                                     </ng-template>
                                     <p>{{ "LOGIN-METHODS.end_ldap_setup" | translate }}</p>
                                     <div class="mb-6 grid grid-cols-3 gap-4 h-12 text-gray-900">
-                                        <button matStepperPrevious mat-button class="p-6 border-solid border-red-400 border bg-red-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+                                        <button matStepperPrevious mat-button
+                                                class="p-6 border-solid border-red-400 border bg-red-400 text-white
+                                                hover:bg-transparent hover:text-gray-900 transition duration-300">
                                             {{ "LOGIN-METHODS.return" | translate }}
                                         </button>
-                                        <button type="submit" mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                                        <button type="submit" mat-button [disabled]="this.isLaunchBtnDisabled"
+                                                [class.cursor-not-allowed]="this.isLaunchBtnDisabled"
+                                                class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
                                                 (click)="ldapSynchronization()">
-                                            <span *ngIf="!this.isLaunchBtnDisabled">
+                                            <span *ngIf="!this.isProcessLaunched">
                                                 {{ "LOGIN-METHODS.launch" | translate }}
                                             </span>
-                                            <i *ngIf="this.isLaunchBtnDisabled"
+                                            <i *ngIf="this.isLaunchBtnClicked"
                                                class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                                         </button>
                                         <button (click)="saveLoginMethodConfigs()" mat-button
