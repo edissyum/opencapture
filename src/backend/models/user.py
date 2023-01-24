@@ -202,3 +202,22 @@ def update_customers_by_user_id(args):
         error = gettext('UPDATE_CUSTOMERS_USER_ERROR')
 
     return user, error
+
+
+def update_user_ldap(args):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    error = None
+
+    user = database.update({
+        'table': ['users'],
+        'set': args['set'],
+        'where': ['username = %s','role <> %s'],
+        'data':[args['username'], args['role']]
+    })
+
+    if user[0] is False:
+        error = gettext('UPDATE_USER_ERROR')
+
+    return user, error
