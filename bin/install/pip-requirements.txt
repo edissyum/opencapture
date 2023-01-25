@@ -28,5 +28,5 @@ Flask-Babel==3.0.0
 pytesseract==0.3.10
 pyexcel_ods3==0.6.1
 configparser==5.3.0
-scikit-learn==1.2.0
+scikit-learn==1.2.1
 opencv-python==4.7.0.68
