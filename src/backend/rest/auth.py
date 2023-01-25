@@ -27,7 +27,7 @@ bp = Blueprint('auth', __name__, url_prefix='/ws/')
 @bp.route('auth/login', methods=['POST'])
 def login():
     login_method = auth.get_enabled_login_method()
-    enabled_login_method_name = login_method[0]['login_method_name']
+    enabled_login_method_name = login_method[0]['login_method_name'] if login_method[0]['login_method_name'] else [{'method_name': 'default'}]
     res = auth.check_connection()
     data = request.json
     if enabled_login_method_name and enabled_login_method_name[0]['method_name'] == 'default':
