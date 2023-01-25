@@ -54,8 +54,8 @@ class VerifierTest(unittest.TestCase):
 
     def create_invoice(self):
         file = './custom/test/src/backend/process_queue_verifier.py'
-        text_to_search = r"@kuyruk.task(queue='verifier_test')"
-        text_to_replace = "# @kuyruk.task(queue='verifier_test')"
+        text_to_search = rf"@kuyruk.task(queue='verifier_{CUSTOM_ID}')"
+        text_to_replace = f"# @kuyruk.task(queue='verifier_{CUSTOM_ID}')"
 
         with open(file, "r+") as text_file:
             texts = text_file.read()
