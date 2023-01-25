@@ -28,26 +28,30 @@ import { LocalStorageService } from "./local-storage.service";
 })
 
 export class SettingsService {
-    selectedSetting: any = "configurations";
-    selectedParentSetting: any = "general";
-    settingsParent: any[] = [
+    selectedSetting         : any       = "configurations";
+    selectedParentSetting   : any       = "general";
+    minimizeSideNav         : boolean   = false;
+    settingsParent          : any[]     = [
         {
             "id": "general",
             "label": this.translate.instant("SETTINGS.general"),
+            "icon": 'fa-globe',
             "opened": false
         },
         {
             "id": "verifier",
             "label": this.translate.instant("SETTINGS.verifier"),
+            "icon": 'fa-certificate',
             "opened": false
         },
         {
             "id": "splitter",
             "label": this.translate.instant("SETTINGS.splitter"),
+            "icon": 'fa-arrows-split-up-and-left',
             "opened": false
         },
     ];
-    settings: any = {
+    settings                : any       = {
         "general": [
             {
                 "id"        : "configurations",

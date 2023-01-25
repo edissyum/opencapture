@@ -498,6 +498,7 @@
 		"login_method_disabled": "La méthode désactivée avec succès",
 		"login_method_enabled": "La méthode activée avec succès",
 		"next": "Suivant",
+		"no_default_login_methods": "Aucune méthode de connexion activée par défaut. Utilisation de l'authentification par mot de passe",
 		"password_admin": "Mot de passe administrateur",
 		"port": "Port",
 		"prefix": "Préfixe",
@@ -868,7 +869,7 @@
 	"UPLOAD": {
 		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
 		"no_file": "Aucun fichier à téléverser",
-		"placeholder": "Cliquez pour choisir un ou plusieurs documents (3 maximum) ou faites glisser vos documents",
+		"placeholder": "Cliquez pour choisir un ou plusieurs documents PDF (3 maximum) ou faites glisser vos documents",
 		"please_select_input": "Choisissez une chaîne entrante avant de procéder au téléversement",
 		"purchase_invoice": "Facture d'achat",
 		"sale_invoice": "Facture de vente",

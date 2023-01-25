@@ -16,19 +16,21 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Router } from "@angular/router";
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 import { SettingsService } from "../../services/settings.service";
 import { PrivilegesService } from "../../services/privileges.service";
 
 @Component({
-  selector: 'app-settings-menu',
-  templateUrl: './settings-menu.component.html',
-  styleUrls: ['./settings-menu.component.scss']
+    selector: 'app-settings-menu',
+    templateUrl: './settings-menu.component.html',
+    styleUrls: ['./settings-menu.component.scss']
 })
 export class SettingsMenuComponent {
-  constructor(
-      public router: Router,
-      public serviceSettings: SettingsService,
-      public privilegesService: PrivilegesService,
-  ) {}
+    @Input() minimizeSideNav : any;
+
+    constructor(
+        public router: Router,
+        public serviceSettings: SettingsService,
+        public privilegesService: PrivilegesService,
+    ) {}
 }

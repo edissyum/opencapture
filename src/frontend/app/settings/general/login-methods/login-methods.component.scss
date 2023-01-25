@@ -1,5 +1,5 @@
 .mat-form-field {
-  margin-top: 16px;
+    margin-top: 16px;
 }
 
 ::ng-deep .mat-step-header .mat-step-icon-selected {
@@ -19,4 +19,9 @@
 ::ng-deep .mat-step-header .mat-step-icon-state-done,
 ::ng-deep .mat-step-header .mat-step-icon-state-edit {
     @apply bg-green-400;
+}
+
+::ng-deep .mat-step-header[aria-labelledby="disabled_step"] {
+    @apply pointer-events-none;
+    cursor: not-allowed !important;
 }

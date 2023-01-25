@@ -63,9 +63,24 @@ class Middleware:
         return self.middleware_app(environ, start_response)
 
 
+def get_locale():
+    if 'SECRET_KEY' not in app.config or not app.config['SECRET_KEY']:
+        return 'fr'
+    if 'lang' not in session:
+        if 'languages' in session:
+            languages = json.loads(session['languages'])
+        else:
+            custom_id = retrieve_custom_from_url(request)
+            _vars = create_classes_from_custom_id(custom_id)
+            if not _vars[0]:
+                return 'fr'
+            languages = _vars[11]
+        session['lang'] = request.accept_languages.best_match(languages.keys())
+    return session['lang']
+
+
 app = Flask(__name__, instance_relative_config=True)
 app.wsgi_app = Middleware(app.wsgi_app)
-babel = Babel(app)
 CORS(app, supports_credentials=True)
 
 app.config.from_mapping(
@@ -73,6 +88,8 @@ app.config.from_mapping(
     UPLOAD_FOLDER_SPLITTER=os.path.join(app.instance_path, 'upload/splitter/'),
     BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
 )
+
+babel = Babel(app, default_locale='fr', locale_selector=get_locale)
 
 app.register_blueprint(auth.bp)
 app.register_blueprint(user.bp)
@@ -95,23 +112,6 @@ app.register_blueprint(tasks_watcher.bp)
 app.register_blueprint(doctypes.bp)
 app.register_blueprint(mailcollect.bp)
 app.register_blueprint(artificial_intelligence.bp)
-
-
-@babel.localeselector
-def get_locale():
-    if 'SECRET_KEY' not in app.config or not app.config['SECRET_KEY']:
-        return 'fr'
-    if 'lang' not in session:
-        if 'languages' in session:
-            languages = json.loads(session['languages'])
-        else:
-            custom_id = retrieve_custom_from_url(request)
-            _vars = create_classes_from_custom_id(custom_id)
-            if not _vars[0]:
-                return 'fr'
-            languages = _vars[11]
-        session['lang'] = request.accept_languages.best_match(languages.keys())
-    return session['lang']
 
 
 if __name__ == "__main__":
