@@ -36,7 +36,7 @@
                         </mat-slide-toggle>
                         <div [class.pointer-events-none]="!this.isLdapChecked"
                              [class.opacity-30]="!this.isLdapChecked">
-                            <mat-stepper orientation="horizontal" [linear]="this.isLinear" #stepper>
+                            <mat-stepper orientation="horizontal" #stepper>
                                 <mat-step>
                                     <form class="grid gap-x-8 gap-y-2 grid-cols-3 text-center m-5">
                                         <ng-template matStepLabel>
@@ -93,7 +93,7 @@
                                         </div>
                                     </div>
                                 </mat-step>
-                                <mat-step>
+                                <mat-step [aria-labelledby]="this.isNextBtnDisabled ? 'disabled_step' : ''">
                                     <ng-template matStepLabel>
                                         {{ "LOGIN-METHODS.synchronization" | translate }}
                                     </ng-template>
@@ -131,7 +131,7 @@
                                         </div>
                                     </div>
                                 </mat-step>
-                                <mat-step>
+                                <mat-step [aria-labelledby]="this.isNextBtnDisabled ? 'disabled_step' : ''">
                                     <ng-template matStepLabel>
                                         {{ "LOGIN-METHODS.launching" | translate }}
                                     </ng-template>
