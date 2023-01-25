@@ -1,6 +1,6 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
-    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav">
-        <app-settings-menu></app-settings-menu>
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
+    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-16]="this.serviceSettings.minimizeSideNav">
+        <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white">
         <div *ngIf="this.loading">
@@ -8,7 +8,7 @@
         </div>
         <div class="settings_header">
             <div class="flex">
-                <button mat-icon-button (click)="sidenav.toggle();">
+                <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
                     <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
                 </button>
             </div>
@@ -145,6 +145,7 @@
                                         <div [class.cursor-not-allowed]="this.isLaunchBtnDisabled">
                                             <button matStepperNext mat-button [disabled]="this.isLaunchBtnDisabled"
                                                     [class.bg-gray-400]="this.isLaunchBtnDisabled" type="submit"
+                                                    (click)="ldapSynchronization()"
                                                     [class.border-gray-400]="this.isLaunchBtnDisabled" class="p-6 border-solid border-green-400 border bg-green-400 text-white w-full
                                                     hover:bg-transparent hover:text-gray-900 transition duration-300 ml-2">
                                                 <span *ngIf="!this.isProcessLaunched">
