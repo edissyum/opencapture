@@ -17,7 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from flask import request, session
+from flask import request
 from gettext import gettext
 from werkzeug.security import generate_password_hash
 from src.backend.main import create_classes_from_custom_id
@@ -213,8 +213,8 @@ def update_user_ldap(args):
     user = database.update({
         'table': ['users'],
         'set': args['set'],
-        'where': ['username = %s','role <> %s'],
-        'data':[args['username'], args['role']]
+        'where': ['username = %s', 'role <> %s'],
+        'data': [args['username'], args['role']]
     })
 
     if user[0] is False:

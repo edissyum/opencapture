@@ -41,7 +41,6 @@ export class LoginMethodsComponent implements OnInit {
     isLaunchBtnDisabled     : boolean   = true;
     isLaunchBtnClicked      : boolean   = false;
     isProcessLaunched       : boolean   = false;
-    isLinear                : boolean   = false;
     showPassword            : boolean   = false;
     isLdapChecked           : boolean   = false;
     isDefaultChecked        : boolean   = false;

@@ -498,6 +498,7 @@
 		"login_method_disabled": "La méthode désactivée avec succès",
 		"login_method_enabled": "La méthode activée avec succès",
 		"next": "Suivant",
+		"no_default_login_methods": "Aucune méthode de connexion activée par défaut. Utilisation de l'authentification par mot de passe",
 		"password_admin": "Mot de passe administrateur",
 		"port": "Port",
 		"prefix": "Préfixe",
