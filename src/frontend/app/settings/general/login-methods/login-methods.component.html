@@ -120,9 +120,15 @@
                                         <button matStepperPrevious mat-button class="p-6 border-solid border-red-400 border bg-red-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300 col-start-3">
                                             {{ "LOGIN-METHODS.return" | translate }}
                                         </button>
-                                        <button matStepperNext mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
-                                            {{ "LOGIN-METHODS.next" | translate }}
-                                        </button>
+                                        <div [class.cursor-not-allowed]="this.isNextBtnDisabled">
+                                            <button matStepperNext mat-button [disabled]="this.isNextBtnDisabled"
+                                                    [class.bg-gray-400]="this.isNextBtnDisabled"
+                                                    [class.border-gray-400]="this.isNextBtnDisabled"
+                                                    class="p-6 border-solid border-green-400 border bg-green-400 text-white w-full
+                                                hover:bg-transparent hover:text-gray-900 transition duration-300 ml-2">
+                                                {{ "LOGIN-METHODS.next" | translate }}
+                                            </button>
+                                        </div>
                                     </div>
                                 </mat-step>
                                 <mat-step>
@@ -136,17 +142,18 @@
                                                 hover:bg-transparent hover:text-gray-900 transition duration-300">
                                             {{ "LOGIN-METHODS.return" | translate }}
                                         </button>
-                                        <button type="submit" mat-button [disabled]="this.isLaunchBtnDisabled"
-                                                [class.cursor-not-allowed]="this.isLaunchBtnDisabled"
-                                                class="p-6 border-solid border-green-400 border bg-green-400 text-white
-                                                hover:bg-transparent hover:text-gray-900 transition duration-300"
-                                                (click)="ldapSynchronization()">
-                                            <span *ngIf="!this.isProcessLaunched">
-                                                {{ "LOGIN-METHODS.launch" | translate }}
-                                            </span>
-                                            <i *ngIf="this.isLaunchBtnClicked"
-                                               class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
-                                        </button>
+                                        <div [class.cursor-not-allowed]="this.isLaunchBtnDisabled">
+                                            <button matStepperNext mat-button [disabled]="this.isLaunchBtnDisabled"
+                                                    [class.bg-gray-400]="this.isLaunchBtnDisabled" type="submit"
+                                                    [class.border-gray-400]="this.isLaunchBtnDisabled" class="p-6 border-solid border-green-400 border bg-green-400 text-white w-full
+                                                    hover:bg-transparent hover:text-gray-900 transition duration-300 ml-2">
+                                                <span *ngIf="!this.isProcessLaunched">
+                                                    {{ "LOGIN-METHODS.launch" | translate }}
+                                                </span>
+                                                <i *ngIf="this.isLaunchBtnClicked"
+                                                   class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                                            </button>
+                                        </div>
                                         <button (click)="saveLoginMethodConfigs()" mat-button
                                                 [disabled]="this.isSaveBtnDisabled"
                                                 [class.cursor-not-allowed]="this.isSaveBtnDisabled"

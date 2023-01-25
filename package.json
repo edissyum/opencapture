@@ -10,7 +10,7 @@
         "build-prod": "ng build --configuration production",
         "build-watch": "ng build --configuration development --watch",
         "upgrade-all-packages-ncu": "ncu -u && npm run reload-packages",
-        "reload-packages": "rm -Rf node_modules && rm -f package-lock.json && npm i",
+        "reload-packages": "rm -Rf node_modules && rm -f package-lock.json && npm i --force",
         "extract-translations": "ngx-translate-extract --input ./src/frontend/ --output ./src/assets/i18n/frontend/*.json --clean --sort --format namespaced-json --marker _"
     },
     "private": true,
