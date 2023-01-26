@@ -25,7 +25,7 @@ from src.backend import app
 from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
-class DoctypeTest(unittest.TestCase):
+class SplitterTest(unittest.TestCase):
     def setUp(self):
         self.db = get_db()
         self.app = app.test_client()
