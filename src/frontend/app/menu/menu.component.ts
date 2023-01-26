@@ -56,10 +56,10 @@ export class MenuComponent implements OnInit {
             this.localeService.getLocales();
             this.localeService.getCurrentLocale();
         }
-        const k = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+        const k = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
         let n = 0;
         document.addEventListener('keydown', (e) => {
-            if (e.keyCode === k[n++]) {
+            if (e.key === k[n++]) {
                 if (n === k.length) {
                     const audio = new Audio("assets/imgs/konami.mp3");
                     const konami = document.getElementById('konami');
