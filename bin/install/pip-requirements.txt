@@ -21,7 +21,6 @@ xlsxwriter==3.0.7
 pdf2image==1.16.2
 gitpython==3.1.30
 imap-tools==1.0.0
-tensorflow==2.11.0
 fs-watcher==1.0.11
 flask_cors==3.0.10
 Flask-Babel==3.0.0

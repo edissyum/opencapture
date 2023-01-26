@@ -33,7 +33,7 @@
         {{ 'DOCTYPE.no_doctype_to_show' | translate }}
     </div>
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="m-2">
-        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding="1">
             <button class="h-8"
                     (click)="selectNode(node, false)"
                     (dblclick)="selectNode(node, true)">

@@ -108,7 +108,6 @@ export class SplitterUpdateInputComponent implements OnInit {
         public privilegesService: PrivilegesService,
     ) {}
 
-
     ngOnInit(): void {
         this.serviceSettings.init();
         this.inputId = this.route.snapshot.params['id'];
@@ -189,7 +188,6 @@ export class SplitterUpdateInputComponent implements OnInit {
 
         return state;
     }
-
 
     onSubmit() {
         if (this.isValidForm()) {

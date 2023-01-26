@@ -64,7 +64,7 @@ export class TasksWatcherComponent implements OnInit {
         if (!this.minimizeDisplay) {
             this.getLastTasks();
         }
-        this.localStorageService.save('task_watcher_minimize_display', minimizeDisplay ? 'true': 'false');
+        this.localStorageService.save('task_watcher_minimize_display', minimizeDisplay ? 'true' : 'false');
     }
 
     getLastTasks() {
@@ -89,7 +89,7 @@ export class TasksWatcherComponent implements OnInit {
                                 'error'         : task.error_description ? task.error_description : false,
                                 'status'        : task.status ? task.status : 'in_progress',
                                 'age'           : task.age !== 0 ?
-                                    this.translate.instant("GLOBAL.n_minutes_ago", {'minutes': task.age}):
+                                    this.translate.instant("GLOBAL.n_minutes_ago", {'minutes': task.age}) :
                                     this.translate.instant("GLOBAL.few_seconds_ago")
                             });
                             cpt++;

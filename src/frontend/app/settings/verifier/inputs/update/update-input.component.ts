@@ -30,7 +30,6 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { FormControl } from "@angular/forms";
 import { of } from "rxjs";
 import { HistoryService } from "../../../../../services/history.service";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'input-update',
@@ -147,7 +146,6 @@ export class UpdateInputComponent implements OnInit {
         public privilegesService: PrivilegesService,
     ) {}
 
-
     ngOnInit(): void {
         this.serviceSettings.init();
         this.inputId = this.route.snapshot.params['id'];
@@ -210,7 +208,6 @@ export class UpdateInputComponent implements OnInit {
 
         return state;
     }
-
 
     onSubmit() {
         if (this.isValidForm()) {

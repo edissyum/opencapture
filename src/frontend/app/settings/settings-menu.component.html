@@ -59,7 +59,7 @@
                                         [class.disable_link]="action['showOnlyIfActive']">
                                     <i class="text-sm rounded-full flex items-center justify-center 2xl:block hidden {{ action['icon'] }}"
                                        [matTooltip]="action['label'] | translate" [matTooltipDisabled]="!this.serviceSettings.minimizeSideNav" [matTooltipPosition]="'right'"></i>
-                                    <p class="m-0 text-xs" style="margin-top: 2.5px!important" *ngIf="!this.serviceSettings.minimizeSideNav">
+                                    <p class="m-0 text-xs flex items-center justify-center" *ngIf="!this.serviceSettings.minimizeSideNav">
                                         {{ action['label'] | translate }}
                                     </p>
                                 </button>

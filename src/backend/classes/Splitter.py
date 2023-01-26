@@ -24,7 +24,6 @@ import random
 import pathlib
 from xml.dom import minidom
 from unidecode import unidecode
-from src.backend.classes.Files import Files
 
 
 class Splitter:

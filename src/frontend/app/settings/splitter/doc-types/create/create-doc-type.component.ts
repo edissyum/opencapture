@@ -103,7 +103,7 @@ export class CreateDocTypeComponent implements OnInit {
             if (docType.code.startsWith(codeSelected)
                 && docType.code.split('.').length === codeSelected.split('.').length + 1) {
                 const currentIdx = Number(docType.code.split('.').pop());
-                lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
+                lastIndex = (currentIdx > lastIndex) ? currentIdx : lastIndex;
             }
         });
         return lastIndex + 1;

@@ -125,7 +125,7 @@ export class ConfigurationsComponent implements OnInit {
                 const args = {
                     'image_content': value.target.result
                 };
-                this.http.put(environment['url'] + '/ws/config/updateLoginImage',{'args': args},
+                this.http.put(environment['url'] + '/ws/config/updateLoginImage', {'args': args},
                     {headers: this.authService.headers},
                 ).pipe(
                     tap(() => {

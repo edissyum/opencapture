@@ -126,7 +126,7 @@ export class ListDocTypeComponent implements OnInit {
         this.form.controls['key'].setValue(this.selectedDocType.key);
         this.form.controls['label'].setValue(this.selectedDocType.label);
         this.form.controls['isDefault'].setValue(this.selectedDocType.isDefault);
-        this.selectedDocType.type === 'document' ? this.form.controls['isDefault'].enable(): this.form.controls['isDefault'].disable();
+        this.selectedDocType.type === 'document' ? this.form.controls['isDefault'].enable() : this.form.controls['isDefault'].disable();
     }
 
     deleteDoctype() {
@@ -171,7 +171,7 @@ export class ListDocTypeComponent implements OnInit {
                 if (docType.code.startsWith(codeSelected)
                     && docType.code.split('.').length === codeSelected.split('.').length + 1) {
                     const currentIdx = Number(docType.code.split('.').pop());
-                    lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
+                    lastIndex = (currentIdx > lastIndex) ? currentIdx : lastIndex;
                 }
             });
         }
@@ -179,7 +179,7 @@ export class ListDocTypeComponent implements OnInit {
             this.documentTypeFactoryComponent.treeDataObj.doctypeData.forEach((docType:any) => {
                 if (docType.code.split('.').length === 2) {
                     const currentIdx = Number(docType.code.split('.').pop());
-                    lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
+                    lastIndex = (currentIdx > lastIndex) ? currentIdx : lastIndex;
                 }
             });
         }
