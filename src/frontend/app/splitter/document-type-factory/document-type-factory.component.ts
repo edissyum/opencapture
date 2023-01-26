@@ -259,7 +259,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
             this.treeDataObj.loadTree(formId);
             this.selectedFormOutput.emit({'formId': formId});
         });
-        this.data.hasOwnProperty('formId') ? this.treeDataObj.loadTree(this.data.formId): this.loadForms();
+        this.data.hasOwnProperty('formId') ? this.treeDataObj.loadTree(this.data.formId) : this.loadForms();
     }
 
     loadForms(): void {
@@ -308,7 +308,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     };
 
     filterChanged() {
-        this.localStorageService.save('doctype_last_search_value',this.searchText);
+        this.localStorageService.save('doctype_last_search_value', this.searchText);
         this.treeDataObj.filter(this.searchText);
         if (this.searchText)
         {
@@ -321,7 +321,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
 
     selectNode(node: any, isDblClick:boolean) {
         this.selectedDocTypeInput = node;
-        this.selectedDocTypeInput.isDblClick =isDblClick;
+        this.selectedDocTypeInput.isDblClick = isDblClick;
         this.selectedDoctypeOutput.emit(this.selectedDocTypeInput);
     }
 

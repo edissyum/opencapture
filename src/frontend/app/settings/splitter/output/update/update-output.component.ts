@@ -644,7 +644,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
             _array[element.id] = element.control.value;
         });
 
-        this.http.put(environment['url'] + '/ws/outputs/update/' + this.outputId, {'args': _array},{headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/outputs/update/' + this.outputId, {'args': _array}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('OUTPUT.output_updated'));
             }),

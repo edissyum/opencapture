@@ -134,8 +134,6 @@ export class RolesListComponent implements OnInit {
         });
     }
 
-
-
     disableConfirmDialog(roleId: number, role: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {

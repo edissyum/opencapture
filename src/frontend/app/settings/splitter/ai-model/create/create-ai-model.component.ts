@@ -187,7 +187,6 @@ export class CreateAiModelComponent implements OnInit {
             for (let i = 0; i < this.totalChecked; i = i + 1) {
                 const fold = matches[i].doc;
                 const formid = matches[i].linked_form;
-                console.log(formid)
                 const ocTarget = matches[i].linked_doctype;
                 doctypes.push({
                     form: formid,
@@ -246,15 +245,6 @@ export class CreateAiModelComponent implements OnInit {
         return state;
     }
 
-    isSelectRequired(form: any, selected: any) {
-        if (selected) {
-            form.setValidators([Validators.required]);
-        } else {
-            form.clearValidators();
-        }
-        form.updateValueAndValidity();
-        return 0;
-    }
 
     getValueFromForm(form: any, fieldId: any) {
         let value = '';

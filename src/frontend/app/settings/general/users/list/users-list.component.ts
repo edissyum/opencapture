@@ -46,7 +46,7 @@ import { HistoryService } from "../../../../../services/history.service";
 })
 
 export class UsersListComponent implements OnInit {
-    columnsToDisplay: string[]    = ['id', 'username', 'firstname', 'lastname', 'role','status', 'actions'];
+    columnsToDisplay: string[]    = ['id', 'username', 'firstname', 'lastname', 'role', 'status', 'actions'];
     headers         : HttpHeaders = this.authService.headers;
     loading         : boolean     = true;
     users           : any         = [];

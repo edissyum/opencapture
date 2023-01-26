@@ -202,7 +202,7 @@ export class UserProfileComponent implements OnInit {
             });
 
             this.http.put(
-                environment['url'] + '/ws/users/update/' + this.userId,{'args': user},
+                environment['url'] + '/ws/users/update/' + this.userId, {'args': user},
                 {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
