@@ -69,3 +69,4 @@ class SplitterTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.db.execute("UPDATE splitter_batches SET status = 'DEL'")
+        self.db.execute("DELETE FROM tasks_watcher WHERE module = 'splitter'")
