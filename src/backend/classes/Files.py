@@ -191,13 +191,15 @@ class Files:
     def get_pages(self, docservers, file):
         try:
             pdf = pypdf.PdfReader(file)
+            if pdf.is_encrypted:
+                pdf.decrypt('')
             try:
                 return len(pdf.pages)
             except ValueError as file_error:
                 self.log.error(file_error)
                 shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                 return 1
-        except pypdf.utils.PdfReadError:
+        except pypdf.errors.PdfReadError:
             pdf_read_rewrite = pypdf.PdfReader(file, strict=False)
             pdfwrite = pypdf.PdfWriter()
             for page_count in range(len(pdf_read_rewrite.pages)):
@@ -259,7 +261,7 @@ class Files:
                 if file.lower().endswith(".pdf"):
                     try:
                         pypdf.PdfReader(file)
-                    except pypdf.utils.PdfReadError:
+                    except pypdf.errors.PdfReadError:
                         shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         return False
                     else:
