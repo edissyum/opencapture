@@ -71,7 +71,7 @@ export class MenuComponent implements OnInit {
                         konami!.style.opacity = "0";
                         setTimeout(() => {
                             konami!.style.display = "none";
-                        },1000);
+                        }, 1000);
                     }, 3000);
                     audio.play().then();
                     n = 0;
