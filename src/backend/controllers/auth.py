@@ -319,16 +319,16 @@ def enable_login_method(method_name):
 def ldap_connection_bind(ldap_configs, data):
     ldap_configurations = ldap_configs[0]['ldap_configurations']
     data_ldap_configs = ldap_configurations[0]['data']
-    type_AD = data_ldap_configs['typeAD']
+    type_ad = data_ldap_configs['typeAD']
     domain_ldap = data_ldap_configs['host']
     port_ldap = data_ldap_configs['port']
     username_ldap_admin = data_ldap_configs['loginAdmin']
     password_ldap_admin = data_ldap_configs['passwordAdmin']
-    base_DN = data_ldap_configs['baseDN']
+    base_dn = data_ldap_configs['baseDN']
     suffix = data_ldap_configs['suffix'] if 'suffix' in data_ldap_configs else ''
     prefix = data_ldap_configs['prefix'] if 'prefix' in data_ldap_configs else ''
-    usernameAttribute = data_ldap_configs['attributSourceUser']
-    user_connection_status = check_user_connection(type_AD, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_DN, suffix, prefix, usernameAttribute, data['username'], data['password'])
+    username_attribute = data_ldap_configs['attributSourceUser']
+    user_connection_status = check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix, username_attribute, data['username'], data['password'])
     if user_connection_status:
         res = login(data['username'], None, data['lang'], 'ldap')
     else:
@@ -384,16 +384,16 @@ def check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, 
 
 
 def verify_ldap_server_connection(server_ldap_data):
-    type_AD = server_ldap_data['typeAD']
+    type_ad = server_ldap_data['typeAD']
     domain_ldap = server_ldap_data['host']
     port_ldap = server_ldap_data['port']
     username_ldap_admin = server_ldap_data['loginAdmin']
     password_ldap_admin = server_ldap_data['passwordAdmin']
-    base_DN = server_ldap_data['baseDN']
+    base_dn = server_ldap_data['baseDN']
     suffix = server_ldap_data['suffix'] if 'suffix' in server_ldap_data else ''
     prefix = server_ldap_data['prefix'] if 'prefix' in server_ldap_data else ''
 
-    ldap_connection_status, error = ldap_server_connection(type_AD, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_DN, suffix, prefix)
+    ldap_connection_status, error = ldap_server_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix)
     if error is None:
         response = ['', 200]
     else:
@@ -438,8 +438,8 @@ def connection_ldap(type_ad, domain_ldap, port_ldap, username_ldap_admin, passwo
         return {'status_server_ldap': False, 'connection_object': None}
 
 
-def check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_DN, user_password):
-    if not user_DN and not user_password:
+def check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, user_password):
+    if not user_dn and not user_password:
         return False
     ldap_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
     try:
@@ -447,7 +447,7 @@ def check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_DN, user_pa
             server = Server(ldap_server, get_info=ALL, use_ssl=True)
         elif type_ad == 'adLDAP':
             server = Server(ldap_server, get_info=ALL)
-        with ldap3.Connection(server, authentication="SIMPLE", user=user_DN, password=user_password, auto_bind=True) as connection:
+        with ldap3.Connection(server, authentication="SIMPLE", user=user_dn, password=user_password, auto_bind=True) as connection:
             if connection.bind() and connection.result["description"] == 'success':
                 return True
             else :

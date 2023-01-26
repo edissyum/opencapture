@@ -48,9 +48,9 @@ class InputsTest(unittest.TestCase):
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
     def test_successful_create_intput(self):
-        input = self.create_input()
-        self.assertEqual(200, input.status_code)
-        self.assertEqual(int, type(input.json['id']))
+        _input = self.create_input()
+        self.assertEqual(200, _input.status_code)
+        self.assertEqual(int, type(_input.json['id']))
 
     def test_successful_get_inputs_list_verifier(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/inputs/list?module=verifier',
@@ -110,8 +110,8 @@ class InputsTest(unittest.TestCase):
         self.assertEqual(1, len(new_input))
 
     def test_successful_delete_input(self):
-        input = self.create_input()
-        response = self.app.delete(f'/{CUSTOM_ID}/ws/inputs/delete/' + str(input.json['id']),
+        _input = self.create_input()
+        response = self.app.delete(f'/{CUSTOM_ID}/ws/inputs/delete/' + str(_input.json['id']),
                                    headers={"Content-Type": "application/json",
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)

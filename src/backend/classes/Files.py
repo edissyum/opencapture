@@ -450,7 +450,7 @@ class Files:
     @staticmethod
     def save_uploaded_file(file, path, add_rand=True):
         filename, file_ext = os.path.splitext(file.filename)
-        rand = ''.join(random.choice(string.ascii_lowercase) for i in range(4))
+        rand = ''.join(random.choice(string.ascii_lowercase) for _ in range(4))
         filename = filename.replace(' ', '_') + '_' + rand + file_ext.lower() if add_rand \
             else filename.replace(' ', '_') + file_ext.lower()
         new_path = os.path.join(path, secure_filename(filename))
@@ -562,7 +562,7 @@ class Files:
     @staticmethod
     def get_random_string(length):
         letters = string.ascii_uppercase + string.digits
-        return ''.join(random.choice(letters) for i in range(length))
+        return ''.join(random.choice(letters) for _ in range(length))
 
     @staticmethod
     def zip_files(input_paths, output_path, delete_zipped_files=False):

@@ -568,7 +568,7 @@ export class VerifierListComponent implements OnInit {
                 this.allowedSuppliers = [supplierId];
                 this.purchaseOrSale = purchaseOrSale;
                 this.resetPaginator();
-                this.loadInvoices();
+                this.loadInvoices().then();
             }
         });
     }
@@ -684,13 +684,13 @@ export class VerifierListComponent implements OnInit {
     changeStatus(event: any) {
         this.currentStatus = event.value;
         this.resetPaginator();
-        this.loadInvoices();
+        this.loadInvoices().then();
     }
 
     changeForm(event: any) {
         this.currentForm = event.value;
         this.resetPaginator();
-        this.loadInvoices();
+        this.loadInvoices().then();
     }
 
     onTabChange(event: any) {
@@ -699,7 +699,7 @@ export class VerifierListComponent implements OnInit {
         this.localStorageService.save('invoicesTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
         this.resetPaginator();
-        this.loadInvoices();
+        this.loadInvoices().then();
     }
 
     onPageChange(event: any) {
@@ -707,7 +707,7 @@ export class VerifierListComponent implements OnInit {
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
         this.localStorageService.save('invoicesPageIndex', event.pageIndex);
-        this.loadInvoices();
+        this.loadInvoices().then();
     }
 
     searchInvoice(event: any) {

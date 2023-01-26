@@ -472,7 +472,7 @@ def get_totals(args):
     _vars = create_classes_from_custom_id(custom_id)
     database = _vars[0]
     error = None
-    select = data = []
+    select = []
 
     if 'status' in args and args['status']:
         where = ["customer_id = ANY(%s)", "status = %s"]
