@@ -260,7 +260,6 @@ class Mail:
         :param smtp: instance of SMTP class
         :param batch_path: Path to the actual batch
         :param error_path: path to the error path
-        :param docservers: Instance of docservers class
         """
 
         try:

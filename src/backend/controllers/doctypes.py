@@ -116,12 +116,10 @@ def update(args):
 def generate_separator(args):
     if 'docservers' in session and 'configurations' in session:
         docservers = json.loads(session['docservers'])
-        configurations = json.loads(session['configurations'])
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
-        configurations = _vars[10]
 
     qr_code_value = ""
     separator_type_label = ""
