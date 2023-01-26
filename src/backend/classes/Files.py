@@ -521,7 +521,7 @@ class Files:
                 for page in pages:
                     pdf_page = pdf_reader.pages[page['source_page'] - args['reduce_index']]
                     if page['rotation'] != 0:
-                        pdf_page.rotateCounterClockwise(-page['rotation'])
+                        pdf_page.rotate(page['rotation'])
                     pdf_writer.add_page(pdf_page)
 
                 pdf_writer.add_metadata(pdf_reader.metadata)
