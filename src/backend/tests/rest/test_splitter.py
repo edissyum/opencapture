@@ -28,7 +28,6 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 class SplitterTest(unittest.TestCase):
     def setUp(self):
         self.db = get_db()
-        self.batch_id = None
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
