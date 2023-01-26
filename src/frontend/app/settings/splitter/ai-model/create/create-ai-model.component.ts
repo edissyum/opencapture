@@ -245,7 +245,6 @@ export class CreateAiModelComponent implements OnInit {
         return state;
     }
 
-
     getValueFromForm(form: any, fieldId: any) {
         let value = '';
         form.forEach((element: any) => {

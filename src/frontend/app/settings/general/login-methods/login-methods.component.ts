@@ -397,7 +397,7 @@ export class LoginMethodsComponent implements OnInit {
                     this.isNextBtnDisabled = false;
                     this.isLaunchBtnDisabled = false;
                     this.synchroUsersStatus = true;
-                    this.notify.success(this.translate.instant('LOGIN-METHODS.result_synchronization_operation', {'users_added':data['create_users'], 'users_updated':data['update_users'] ,'users_disabled':data['disabled_users']}));
+                    this.notify.success(this.translate.instant('LOGIN-METHODS.result_synchronization_operation', {'users_added':data['create_users'], 'users_updated':data['update_users'], 'users_disabled':data['disabled_users']}));
                 }),
                 catchError ((err: any) => {
                     this.isProcessLaunched = false;

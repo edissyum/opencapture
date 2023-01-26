@@ -251,7 +251,7 @@ class Mail:
         return args
 
     @staticmethod
-    def move_batch_to_error(batch_path, error_path, smtp, process, msg, docservers):
+    def move_batch_to_error(batch_path, error_path, smtp, process, msg):
         """
         If error in batch process, move the batch folder into error folder
 

@@ -245,7 +245,7 @@ class SeparatorQR:
             output_pdf.write(stream)
 
     @staticmethod
-    def generate_separator(db_config, docservers, qr_code_value, doctype_label, separator_type_label):
+    def generate_separator(docservers, qr_code_value, doctype_label, separator_type_label):
         """
         Generate separator file
         :param qr_code_value: QR code value
