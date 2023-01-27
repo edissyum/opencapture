@@ -1,5 +1,4 @@
 # This file is part of Open-Capture.
-
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -22,8 +21,8 @@ import urllib3
 import unittest
 import warnings
 from src.backend import app
-from src.backend.tests import CUSTOM_ID, get_db, get_token
 from werkzeug.datastructures import FileStorage
+from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
 class VerifierTest(unittest.TestCase):
@@ -76,7 +75,7 @@ class VerifierTest(unittest.TestCase):
             content_type="application/pdf",
         )
 
-        return self.app.post(f'/{CUSTOM_ID}/ws/verifier/upload', data={"inputId": 1, "file": my_file},
+        return self.app.post(f'/{CUSTOM_ID}/ws/verifier/upload?inputId=1', data={"file": my_file},
                              content_type='multipart/form-data',
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
