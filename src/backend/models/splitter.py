@@ -449,6 +449,7 @@ def remove_lock_by_user_id(args):
 
     return res
 
+
 def update_batch_documents_count(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)

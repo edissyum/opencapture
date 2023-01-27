@@ -19,9 +19,8 @@ import shutil
 import urllib3
 import unittest
 import warnings
-from werkzeug.datastructures import FileStorage
-
 from src.backend import app
+from werkzeug.datastructures import FileStorage
 from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
@@ -32,7 +31,7 @@ class SplitterTest(unittest.TestCase):
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
 
-    def test_upload_batch(self):
+    def create_batch(self):
         file = './custom/test/src/backend/process_queue_splitter.py'
         text_to_search = rf"@kuyruk.task(queue='splitter_{CUSTOM_ID}')"
         text_to_replace = f"# @kuyruk.task(queue='splitter_{CUSTOM_ID}')"
@@ -56,25 +55,31 @@ class SplitterTest(unittest.TestCase):
             filename="splitter_test.pdf",
             content_type="application/pdf",
         )
+        return self.app.post(f'/{CUSTOM_ID}/ws/splitter/upload?inputId=default_input', data={"file": my_file},
+                             content_type='multipart/form-data',
+                             headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
-        response = self.app.post(f'/{CUSTOM_ID}/ws/splitter/upload?inputId=default_input', data={"file": my_file},
-                                 content_type='multipart/form-data',
-                                 headers={"Content-Type": "application/json",
-                                          'Authorization': 'Bearer ' + self.token})
+    def test_create_batch(self):
+        response = self.create_batch()
         self.assertEqual(200, response.status_code)
 
+    def test_successful_get_batches_list(self):
+        self.create_batch()
         response = self.app.get(f'/{CUSTOM_ID}/ws/splitter/batches/user/1/paging/0/16/today/NEW',
-                                headers={"Content-Type": "application/json",
-                                         'Authorization': 'Bearer ' + self.token})
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(True, len(response.json['batches']) > 0)
 
-        response = self.app.get(f"/{CUSTOM_ID}/ws/splitter/documents/{response.json['batches'][0]['id']}",
+    def test_successful_get_documents(self):
+        self.create_batch()
+        self.db.execute("SELECT * FROM splitter_batches")
+        batches = self.db.fetchall()
+        response = self.app.get(f"/{CUSTOM_ID}/ws/splitter/documents/{batches[0]['id']}",
                                 headers={"Content-Type": "application/json",
                                          'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(2, len(response.json['documents']))
 
     def tearDown(self) -> None:
-            self.db.execute("TRUNCATE TABLE splitter_batches")
-            self.db.execute("TRUNCATE TABLE tasks_watcher")
+        self.db.execute("TRUNCATE TABLE splitter_batches")
+        self.db.execute("TRUNCATE TABLE tasks_watcher")
