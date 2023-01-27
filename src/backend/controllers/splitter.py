@@ -445,7 +445,10 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
             'separator': parameters['separator'],
             'extension': parameters['extension']
         }
+
+        document['metadata']['batch_id'] = batch['id']
         documents[index]['fileName'] = _Splitter.get_mask_result(document, document['metadata'], now, mask_args)
+
         if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in documents[index]['documentTypeKey']:
             pdf_filepaths.append({
                 'input_path': parameters['folder_out'] + '/' + documents[index]['fileName'],
