@@ -32,7 +32,7 @@ class SplitterTest(unittest.TestCase):
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
 
-    def test_batch_manipulate(self):
+    def test_upload_batch(self):
         file = './custom/test/src/backend/process_queue_splitter.py'
         text_to_search = rf"@kuyruk.task(queue='splitter_{CUSTOM_ID}')"
         text_to_replace = f"# @kuyruk.task(queue='splitter_{CUSTOM_ID}')"
