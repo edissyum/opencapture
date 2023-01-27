@@ -99,6 +99,9 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { CreateDocTypeComponent } from './settings/splitter/doc-types/create/create-doc-type.component';
 import { ListDocTypeComponent } from './settings/splitter/doc-types/list/list-doc-type.component';
 import { CreateFolderDocTypeComponent } from './settings/splitter/doc-types/create-folder/create-folder-doc-type.component';
+import { ListAiModelComponent } from "./settings/splitter/ai-model/list/list-ai-model.component";
+import { CreateAiModelComponent } from "./settings/splitter/ai-model/create/create-ai-model.component";
+import { UpdateAiModelComponent } from "./settings/splitter/ai-model/update/update-ai-model.component";
 import { ConfigurationsComponent } from './settings/general/configurations/configurations.component';
 import { DocserversComponent } from './settings/general/docservers/docservers.component';
 import { RegexComponent } from './settings/general/regex/regex.component';
@@ -109,6 +112,7 @@ import { MiddlewareComponent } from "./middleware.component";
 import { VerifierDisplayComponent } from './settings/verifier/display/display.component';
 import { MailCollectComponent } from './settings/general/mailcollect/mailcollect.component';
 import { UserQuotaComponent } from './settings/general/user-quota/user-quota.component';
+import { SettingsMenuComponent } from './settings/settings-menu.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -168,6 +172,9 @@ export function createTranslateLoader(http: HttpClient) {
         SplitterUpdateOutputComponent,
         SplitterCreateOutputComponent,
         SplitterOutputListComponent,
+        ListAiModelComponent,
+        CreateAiModelComponent,
+        UpdateAiModelComponent,
         HistoryComponent,
         StatisticsComponent,
         CreateDocTypeComponent,
@@ -181,7 +188,8 @@ export function createTranslateLoader(http: HttpClient) {
         LoginMethodsComponent,
         VerifierDisplayComponent,
         MailCollectComponent,
-        UserQuotaComponent
+        UserQuotaComponent,
+        SettingsMenuComponent
     ],
     imports: [
         BrowserModule,

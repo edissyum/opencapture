@@ -17,7 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 
-from flask import request, session
+from flask import request
 from gettext import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
@@ -33,9 +33,9 @@ def get_forms(args):
         'table': ['form_models'],
         'where': ['1=%s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
-        'limit': str(args['limit']) if 'limit' in args else [],
+        'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'order_by': ['id ASC'],
-        'offset': str(args['offset']) if 'offset' in args else [],
+        'offset': str(args['offset']) if 'offset' in args else 0,
     })
 
     return forms, error

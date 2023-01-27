@@ -15,15 +15,15 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Location } from "@angular/common";
 import { Router } from "@angular/router";
+import { Location } from "@angular/common";
 import { TranslateService } from "@ngx-translate/core";
 import { Component, Input, OnInit } from '@angular/core';
 import { UserService } from "../../services/user.service";
+import { AuthService } from "../../services/auth.service";
 import { LocaleService } from "../../services/locale.service";
 import { PrivilegesService } from "../../services/privileges.service";
 import { LocalStorageService } from "../../services/local-storage.service";
-import {AuthService} from "../../services/auth.service";
 
 @Component({
     selector: 'app-menu',
@@ -56,13 +56,13 @@ export class MenuComponent implements OnInit {
             this.localeService.getLocales();
             this.localeService.getCurrentLocale();
         }
-        const k = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+        const k = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
         let n = 0;
         document.addEventListener('keydown', (e) => {
-            if (e.keyCode === k[n++]) {
+            if (e.key === k[n++]) {
                 if (n === k.length) {
                     const audio = new Audio("assets/imgs/konami.mp3");
-                    const konami = document.getElementById('konami'); //.fadeIn("slow").delay(3000).fadeOut();
+                    const konami = document.getElementById('konami');
                     konami!.style.display = "block";
                     konami!.style.transition = "opacity .5s";
                     konami!.style.opacity = "1";
@@ -71,7 +71,7 @@ export class MenuComponent implements OnInit {
                         konami!.style.opacity = "0";
                         setTimeout(() => {
                             konami!.style.display = "none";
-                        },1000);
+                        }, 1000);
                     }, 3000);
                     audio.play().then();
                     n = 0;

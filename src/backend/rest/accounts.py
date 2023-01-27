@@ -34,8 +34,8 @@ def suppliers_list():
         'select': ['*', 'count(*) OVER() as total'],
         'where': ['status <> %s'],
         'data': ['DEL'],
-        'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else '',
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
         'order_by': [request.args['order']] if 'order' in request.args else ''
     }
 
@@ -132,6 +132,12 @@ def update_address_by_supplier_id(suplier_id):
 @auth.token_required
 def create_address():
     data = request.json['args']
+    module = ''
+    if 'module' in data:
+        module = data['module']
+        del data['module']
+    if all(data[x] is None for x in data) and module == 'splitter':
+        return make_response(''), 204
     res = accounts.create_address(data)
     return make_response(jsonify(res[0])), res[1]
 
@@ -198,14 +204,15 @@ def skip_auto_validate(supplier_id):
 
 
 @bp.route('accounts/customers/list', methods=['GET'])
+@bp.route('accounts/customers/list/<string:module>', methods=['GET'])
 @auth.token_required
-def customers_list():
+def customers_list(module=False):
     args = {
         'select': ['*', 'count(*) OVER() as total'],
-        'where': ['status <> %s'],
-        'data': ['DEL'],
-        'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else ''
+        'where': ['status <> %s', 'module = %s'] if module else ['status <> %s'],
+        'data': ['DEL', module] if module else ['DEL'],
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
     }
     if 'search' in request.args and request.args['search']:
         args['offset'] = ''

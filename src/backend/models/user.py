@@ -17,7 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from flask import request, session
+from flask import request
 from gettext import gettext
 from werkzeug.security import generate_password_hash
 from src.backend.main import create_classes_from_custom_id
@@ -80,8 +80,8 @@ def get_users(args):
         'where': ['status NOT IN (%s)', "role <> 1"] if 'where' not in args else args['where'],
         'data': ['DEL'] if 'data' not in args else args['data'],
         'order_by': ['id ASC'],
-        'limit': str(args['limit']) if 'limit' in args else [],
-        'offset': str(args['offset']) if 'offset' in args else [],
+        'limit': str(args['limit']) if 'limit' in args else 'ALL',
+        'offset': str(args['offset']) if 'offset' in args else 0,
     })
 
     return users, error
@@ -98,8 +98,8 @@ def get_users_full(args):
         'where': ['status NOT IN (%s)'],
         'data': ['DEL'],
         'order_by': ['id ASC'],
-        'limit': str(args['limit']) if 'limit' in args else [],
-        'offset': str(args['offset']) if 'offset' in args else [],
+        'limit': str(args['limit']) if 'limit' in args else 'ALL',
+        'offset': str(args['offset']) if 'offset' in args else 0,
     })
 
     return users, error
@@ -200,5 +200,24 @@ def update_customers_by_user_id(args):
 
     if user[0] is False:
         error = gettext('UPDATE_CUSTOMERS_USER_ERROR')
+
+    return user, error
+
+
+def update_user_ldap(args):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    error = None
+
+    user = database.update({
+        'table': ['users'],
+        'set': args['set'],
+        'where': ['username = %s', 'role <> %s'],
+        'data': [args['username'], args['role']]
+    })
+
+    if user[0] is False:
+        error = gettext('UPDATE_USER_ERROR')
 
     return user, error

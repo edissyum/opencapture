@@ -113,7 +113,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'siret',
@@ -128,7 +128,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_int',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'siren',
@@ -143,7 +143,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_int',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'vat_number',
@@ -158,7 +158,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'iban',
@@ -173,7 +173,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'email',
@@ -188,7 +188,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'email',
                     format_icon:'fa-solid fa-at',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'address1',
@@ -202,7 +202,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended_with_accent',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'address2',
@@ -216,7 +216,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended_with_accent',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'postal_code',
@@ -230,7 +230,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_int',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'city',
@@ -244,7 +244,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'char',
                     format_icon:'fa-solid fa-font',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'country',
@@ -258,7 +258,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'char',
                     format_icon:'fa-solid fa-font',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
             ]
         },
@@ -294,7 +294,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended',
                     format_icon: 'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'quotation_number',
@@ -309,7 +309,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended',
                     format_icon: 'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-print',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'document_date',
@@ -324,7 +324,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'date',
                     format_icon: 'fa-solid fa-calendar-day',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'document_due_date',
@@ -339,7 +339,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'date',
                     format_icon: 'fa-solid fa-calendar-day',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'vat_rate',
@@ -411,7 +411,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'total_ht',
@@ -425,7 +425,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
                 {
                     id: 'total_vat',
@@ -440,7 +440,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid file-alt',
+                    display_icon:'fa-solid fa-file-alt',
                 },
             ]
         },
@@ -713,7 +713,7 @@ export class FormBuilderComponent implements OnInit {
                         })
                     ).subscribe();
                 }
-            }),catchError((err: any) => {
+            }), catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);

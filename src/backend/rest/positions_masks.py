@@ -30,8 +30,8 @@ bp = Blueprint('positions_masks', __name__, url_prefix='/ws/')
 def get_positions_masks():
     args = {
         'select': ['positions_masks.*', 'form_models.label as form_label', 'count(*) OVER() as total'],
-        'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else '',
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
         'where': ["positions_masks.status <> 'DEL'"],
         'order_by': ['positions_masks.id ASC']
     }

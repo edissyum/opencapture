@@ -95,8 +95,7 @@ class FindFooter:
                                     number_formatted = str(float(number_formatted))
                         except (ValueError, SyntaxError, TypeError):
                             pass
-
-                    result += re.sub('\s*', '', number_formatted).replace(',', '.')
+                    result += re.sub(r'\s*', '', number_formatted).replace(',', '.')
                     i = i + 1
                 result_split = result.split('.')
                 if len(result_split) > 1:
@@ -149,8 +148,8 @@ class FindFooter:
                     # If results isn't a float, transform it
                     text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text.replace(' ', ''))
                     result = ''
-                    for t in text:
-                        result += t.group()
+                    for _t in text:
+                        result += _t.group()
 
                     if select[0] != 'vat_1_position':
                         try:
@@ -168,22 +167,17 @@ class FindFooter:
                                     result = ''.join(splitted_number) + '.' + last_index
                                     result = str(float(result))
                         except (ValueError, SyntaxError, TypeError):
-                            pass
+                            return False
 
                 if result != '':
-                    result = re.sub('\s*', '', result).replace(',', '.')
+                    result = re.sub(r'\s*', '', result).replace(',', '.')
                     self.nb_pages = data['page']
                     try:
                         position = json.loads(position)
                     except (TypeError, json.decoder.JSONDecodeError):
-                        pass
+                        return False
                     return [result, position, data['page']]
-                else:
-                    return False
-            else:
-                return False
-        else:
-            return False
+        return False
 
     def test_amount(self, total_ht, total_ttc, vat_rate, vat_amount):
         if total_ht in [False, None] or vat_rate in [False, None]:
@@ -310,9 +304,9 @@ class FindFooter:
         if total_ttc and total_ht:
             ttc = self.return_max(total_ttc)[0]
             ht = self.return_max(total_ht)[0]
-            if 'from_position' in total_ttc and total_ttc['from_position']:
+            if 'from_position' in total_ttc and total_ttc['from_position'] and total_ttc[0]:
                 ttc = total_ttc[0]
-            if 'from_position' in total_ht and total_ht['from_position']:
+            if 'from_position' in total_ht and total_ht['from_position'] and total_ht[0]:
                 ht = total_ht[0]
             if ttc and ht and not vat_amount:
                 vat_amount = [float("%.2f" % (float(ttc) - float(ht))), (('', ''), ('', ''))]
@@ -320,25 +314,28 @@ class FindFooter:
         if total_ttc and vat_amount and not total_ht:
             ttc = self.return_max(total_ttc)[0]
             vat = self.return_max(vat_amount)[0]
-            if 'from_position' in total_ttc and total_ttc['from_position']:
+            if 'from_position' in total_ttc and total_ttc['from_position'] and total_ttc[0]:
                 ttc = total_ttc[0]
-            total_ht = [float("%.2f" % (float(ttc) - float(vat))), (('', ''), ('', ''))]
+            if ttc and vat:
+                total_ht = [float("%.2f" % (float(ttc) - float(vat))), (('', ''), ('', ''))]
 
         if total_ht and vat_amount and not total_ttc:
             ht = self.return_max(total_ht)[0]
             vat = self.return_max(vat_amount)[0]
-            if 'from_position' in total_ht and total_ht['from_position']:
+            if 'from_position' in total_ht and total_ht['from_position'] and total_ht[0]:
                 ht = total_ht[0]
-            total_ttc = [float("%.2f" % (float(ht) + float(vat))), (('', ''), ('', ''))]
+            if ht and vat:
+                total_ttc = [float("%.2f" % (float(ht) + float(vat))), (('', ''), ('', ''))]
 
         if total_ht and vat_rate and not total_ttc:
             ht = self.return_max(total_ht)[0]
             percentage = self.return_max(vat_rate)[0]
-            if 'from_position' in total_ht and total_ht['from_position']:
-                ht = total_ttc[0]
-            if 'from_position' in vat_rate and vat_rate['from_position']:
+            if 'from_position' in total_ht and total_ht['from_position'] and total_ht[0]:
+                ht = total_ht[0]
+            if 'from_position' in vat_rate and vat_rate['from_position'] and vat_rate[0]:
                 percentage = vat_rate[0]
-            total_ttc = [float("%.2f" % (float(ht) + (float(ht) * (float(percentage) / 100)))), (('', ''), ('', ''))]
+            if ht and percentage:
+                total_ttc = [float("%.2f" % (float(ht) + (float(ht) * (float(percentage) / 100)))), (('', ''), ('', ''))]
 
         if total_ttc and vat_rate and not total_ht:
             ttc = self.return_max(total_ttc)[0]
@@ -364,9 +361,9 @@ class FindFooter:
                 total_ht = [float("%.2f" % (float(total_ttc[0]) / (1 + float(vat_rate[0] / 100)))), (('', ''), ('', '')), True]
             if total_ht is False and total_ttc and vat_amount:
                 total_ht = [float("%.2f" % (float(total_ttc[0]) - float(vat_amount[0]))), (('', ''), ('', '')), True]
-            elif (total_ttc is False or not total_ttc[0]) and total_ht and vat_rate:
+            elif (total_ttc is False or not total_ttc[0]) and total_ht and total_ht[0] and vat_rate and vat_rate[0]:
                 total_ttc = [float("%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(float(vat_rate[0]) / 100)))), (('', ''), ('', '')), True]
-            elif (total_ttc is False or not total_ttc[0]) and total_ht and vat_amount:
+            elif (total_ttc is False or not total_ttc[0]) and total_ht and total_ht[0] and vat_amount and vat_amount[0]:
                 total_ttc = [float("%.2f" % (float(total_ht[0]) + float(vat_amount[0]))), (('', ''), ('', '')), True]
             elif vat_rate is False and total_ht and total_ttc:
                 if vat_amount is False:

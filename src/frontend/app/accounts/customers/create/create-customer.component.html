@@ -1,14 +1,17 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
     <mat-sidenav-content class="bg-white">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
-        <div class="settings_header">
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
+        <div class="settings_header flex h-14 justify-between items-center pl-2 pr-2 bg-green-400 bg-opacity-60 text-gray-900">
+            <div class="flex">
             </div>
+            <h3 class="text-center flex m-0">
+                {{ this.serviceSettings.getTitle() }}
+            </h3>
+            <div class="settings_search"></div>
         </div>
+        <hr class="border-green-400">
         <div class="flex justify-center items-center align-middle">
             <form (ngSubmit)="onSubmit()" class="grid grid-cols-6 gap-2 w-full m-10 text-center">
                 <ng-container *ngFor="let field of customerForm">
@@ -19,8 +22,11 @@
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [formControl]="field.control" [(value)]="field.control.value" [required]="field.required">
-                            <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
+                        <mat-select [formControl]="field.control" [(value)]="field.control.value"
+                                    [required]="field.required" (selectionChange)="updateRequired(field)">
+                            <mat-option *ngFor="let option of field.values" [value]="option['id']">
+                                {{ option['label'] | translate }}
+                            </mat-option>
                         </mat-select>
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessageCustomer(field.id) }}</mat-error>
                     </mat-form-field>
@@ -38,7 +44,7 @@
                     </mat-select-country>
                 </ng-container>
                 <div class="button col-span-6">
-                    <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
+                    <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300" type="submit" mat-button>
                         {{ 'ACCOUNTS.create_customer' | translate }}
                     </button>
                 </div>

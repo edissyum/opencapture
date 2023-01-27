@@ -1,7 +1,10 @@
 ::ng-deep .output-tab {
-    & .mat-tab-header {
-        & .mat-tab-label-container > .mat-tab-list > .mat-tab-labels > .mat-tab-label {
+    & .mat-mdc-tab-header {
+        & .mat-mdc-tab-label-container > .mat-mdc-tab-list > .mat-mdc-tab-labels > .mat-mdc-tab-label {
             @apply w-1/2;
         }
+    }
+    & .mat-mdc-tab-body {
+        height: 50vh;
     }
 }

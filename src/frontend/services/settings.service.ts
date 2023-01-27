@@ -15,39 +15,43 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
+import { Router } from "@angular/router";
 import { Injectable } from '@angular/core';
+import { AuthService } from "./auth.service";
+import { Title } from "@angular/platform-browser";
+import { LastUrlService } from "./last-url.service";
 import { TranslateService } from "@ngx-translate/core";
 import { LocalStorageService } from "./local-storage.service";
-import { LastUrlService } from "./last-url.service";
-import { Title } from "@angular/platform-browser";
-import { Router } from "@angular/router";
-import { AuthService } from "./auth.service";
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class SettingsService {
-    selectedSetting: any = "configurations";
-    selectedParentSetting: any = "general";
-    settingsParent: any[] = [
+    selectedSetting         : any       = "configurations";
+    selectedParentSetting   : any       = "general";
+    minimizeSideNav         : boolean   = false;
+    settingsParent          : any[]     = [
         {
             "id": "general",
             "label": this.translate.instant("SETTINGS.general"),
+            "icon": 'fa-globe',
             "opened": false
         },
         {
             "id": "verifier",
             "label": this.translate.instant("SETTINGS.verifier"),
+            "icon": 'fa-certificate',
             "opened": false
         },
         {
             "id": "splitter",
             "label": this.translate.instant("SETTINGS.splitter"),
+            "icon": 'fa-arrows-split-up-and-left',
             "opened": false
         },
     ];
-    settings: any = {
+    settings                : any       = {
         "general": [
             {
                 "id"        : "configurations",
@@ -368,6 +372,30 @@ export class SettingsService {
                     }
                 ]
             },
+            {
+                "id"        : "artificial-intelligence",
+                "label"     : this.translate.instant("SETTINGS.artificial_intelligence"),
+                "icon"      : "fa-solid fa-microchip",
+                "route"     : "/settings/splitter/ai",
+                "privilege" : "list_ai_model",
+                "actions"   : [
+                    {
+                        "id"        : "splitter_add_model",
+                        "label"     : this.translate.instant("ARTIFICIAL-INTELLIGENCE.add_model"),
+                        "route"     : "/settings/splitter/ai/create",
+                        "privilege" : "create_ai_model",
+                        "icon"      : "fa-solid fa-plus"
+                    },
+                    {
+                        "id"                : "splitter_update_model",
+                        "label"             : this.translate.instant("ARTIFICIAL-INTELLIGENCE.update_model"),
+                        "route"             : "/settings/splitter/ai/update/",
+                        "privilege"         : "update_ai_model",
+                        "icon"              : "fa-solid fa-edit",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
+            }
         ]
     };
 

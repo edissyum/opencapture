@@ -93,7 +93,7 @@ class FindFooterRaw:
                         except (ValueError, SyntaxError, TypeError):
                             pass
 
-                    result += re.sub('\s*', '', number_formatted).replace(',', '.')
+                    result += re.sub(r'\s*', '', number_formatted).replace(',', '.')
                     i = i + 1
                 result_split = result.split('.')
                 if len(result_split) > 1:
@@ -166,22 +166,17 @@ class FindFooterRaw:
                                     result = ''.join(splitted_number) + '.' + last_index
                                     result = str(float(result))
                         except (ValueError, SyntaxError, TypeError):
-                            pass
+                            return False
 
                 if result != '':
-                    result = re.sub('\s*', '', result).replace(',', '.')
-                    self.nbPage = data['page']
+                    result = re.sub(r'\s*', '', result).replace(',', '.')
+                    self.nb_pages = data['page']
                     try:
                         position = json.loads(position)
                     except (TypeError, json.decoder.JSONDecodeError):
-                        pass
+                        return False
                     return [result, position, data['page']]
-                else:
-                    return False
-            else:
-                return False
-        else:
-            return False
+        return False
 
     def test_amount(self, total_ht, total_ttc, vat_rate, vat_amount):
         if total_ht in [False, None, {}] or vat_rate in [False, None, {}] or total_ttc in [False, None, {}] or vat_amount in [False, None, {}]:
@@ -319,5 +314,4 @@ class FindFooterRaw:
             result = value
         else:
             result = ['', '']
-
         return result

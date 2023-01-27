@@ -30,7 +30,6 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { FormControl } from "@angular/forms";
 import { of } from "rxjs";
 import { HistoryService } from "../../../../../services/history.service";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'input-update',
@@ -147,7 +146,6 @@ export class UpdateInputComponent implements OnInit {
         public privilegesService: PrivilegesService,
     ) {}
 
-
     ngOnInit(): void {
         this.serviceSettings.init();
         this.inputId = this.route.snapshot.params['id'];
@@ -171,7 +169,7 @@ export class UpdateInputComponent implements OnInit {
                                     })
                                 ).subscribe();
                             } else if (element.id === 'customer_id') {
-                                this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+                                this.http.get(environment['url'] + '/ws/accounts/customers/list/verifier', {headers: this.authService.headers}).pipe(
                                     tap((customers: any) => {
                                         element.values = customers.customers;
                                     }),
@@ -210,7 +208,6 @@ export class UpdateInputComponent implements OnInit {
 
         return state;
     }
-
 
     onSubmit() {
         if (this.isValidForm()) {

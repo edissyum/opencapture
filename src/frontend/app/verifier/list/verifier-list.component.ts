@@ -235,7 +235,7 @@ export class VerifierListComponent implements OnInit {
 
     loadCustomers() {
         this.TREE_DATA = [];
-        this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/list/verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const customers = data.customers;
                 this.TREE_DATA.push({
@@ -286,12 +286,14 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    async loadInvoices() {
+    async loadInvoices(loading = true) {
         this.invoiceToDeleteSelected = false;
         this.totalChecked = 0;
-        this.loading = true;
+        if (loading) {
+            this.invoices = [];
+            this.loading = true;
+        }
         this.loadingCustomers = true;
-        this.invoices = [];
         this.loadForms();
         let url = environment['url'] + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id;
         if (this.currentForm !== '') {
@@ -338,7 +340,7 @@ export class VerifierListComponent implements OnInit {
                                     {"id": "document_date", "label": "FACTURATION.document_date"},
                                     {"id": "date", "label": "VERIFIER.register_date"},
                                     {"id": "original_filename", "label": "VERIFIER.original_file"},
-                                    {"id": "form_label", "label": "VERIFIER.form"}
+                                    {"id": "form_label", "label": "ACCOUNTS.form"}
                                 ]
                             };
                         } else {
@@ -566,7 +568,7 @@ export class VerifierListComponent implements OnInit {
                 this.allowedSuppliers = [supplierId];
                 this.purchaseOrSale = purchaseOrSale;
                 this.resetPaginator();
-                this.loadInvoices();
+                this.loadInvoices().then();
             }
         });
     }
@@ -682,13 +684,13 @@ export class VerifierListComponent implements OnInit {
     changeStatus(event: any) {
         this.currentStatus = event.value;
         this.resetPaginator();
-        this.loadInvoices();
+        this.loadInvoices().then();
     }
 
     changeForm(event: any) {
         this.currentForm = event.value;
         this.resetPaginator();
-        this.loadInvoices();
+        this.loadInvoices().then();
     }
 
     onTabChange(event: any) {
@@ -697,7 +699,7 @@ export class VerifierListComponent implements OnInit {
         this.localStorageService.save('invoicesTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
         this.resetPaginator();
-        this.loadInvoices();
+        this.loadInvoices().then();
     }
 
     onPageChange(event: any) {
@@ -705,12 +707,12 @@ export class VerifierListComponent implements OnInit {
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
         this.localStorageService.save('invoicesPageIndex', event.pageIndex);
-        this.loadInvoices();
+        this.loadInvoices().then();
     }
 
     searchInvoice(event: any) {
         this.search = event.target.value;
-        this.loadInvoices();
+        this.loadInvoices(false).then();
     }
 
     resetPaginator() {

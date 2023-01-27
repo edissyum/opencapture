@@ -187,6 +187,7 @@ CREATE TABLE "accounts_customer"
     "siren"          VARCHAR(20),
     "company_number" VARCHAR(10),
     "address_id"     INTEGER,
+    "module"         VARCHAR(10),
     "status"         VARCHAR(3)     DEFAULT 'OK',
     "creation_date"  TIMESTAMP      DEFAULT (CURRENT_TIMESTAMP)
 );
@@ -224,7 +225,7 @@ CREATE TABLE "invoices"
     "register_date"     TIMESTAMP           DEFAULT (CURRENT_TIMESTAMP),
     "nb_pages"          INTEGER             NOT NULL DEFAULT 1,
     "locked"            BOOLEAN             DEFAULT False,
-    "locked_by"         VARCHAR(20),
+    "locked_by"         VARCHAR(50),
     "positions"         JSONB               DEFAULT '{}',
     "pages"             JSONB               DEFAULT '{}',
     "datas"             JSONB               DEFAULT '{}'
@@ -261,6 +262,9 @@ CREATE TABLE "splitter_batches"
     "status"            VARCHAR(20)     DEFAULT 'NEW',
     "documents_count"   INTEGER,
     "form_id"           INTEGER,
+    "customer_id"       INTEGER,
+    "locked"            BOOLEAN         DEFAULT False,
+    "locked_by"         VARCHAR(50),
     "data"              JSON            DEFAULT '{}'::json
 );
 
@@ -290,7 +294,7 @@ create table "doctypes"
 (
     "id"         SERIAL         UNIQUE PRIMARY KEY,
     "key"        VARCHAR(255)   NOT NULL,
-    "label"      VARCHAR(255),
+    "label"      VARCHAR,
     "code"       VARCHAR(255),
     "is_default" BOOLEAN        DEFAULT False,
     "status"     VARCHAR(3)     DEFAULT 'OK':: CHARACTER VARYING,
@@ -377,7 +381,7 @@ CREATE TABLE mailcollect (
      "splitter_technical_input_id"   VARCHAR(255),
      "folder_to_crawl"               VARCHAR(255) NOT NULL,
      "folder_destination"            VARCHAR(255) NOT NULL,
-     "folder_trash"                  VARCHAR(255) NOT NULL,
+     "folder_trash"                  VARCHAR(255),
      "action_after_process"          VARCHAR(255) NOT NULL,
      "verifier_customer_id"          INTEGER,
      "verifier_form_id"              INTEGER
@@ -385,3 +389,16 @@ CREATE TABLE mailcollect (
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;
 COMMENT ON SEQUENCE splitter_referential_call_count IS 'Splitter referential demand number count';
+
+CREATE TABLE ai_models
+(
+    "id"                SERIAL       PRIMARY KEY,
+    "model_path"        VARCHAR(50),
+    "type"              VARCHAR(15),
+    "train_time"        REAL,
+    "accuracy_score"    REAL,
+    "min_proba"         INTEGER,
+    "status"            VARCHAR(10)  DEFAULT 'OK',
+    "documents"         JSONB        DEFAULT '{}',
+    "module"            VARCHAR(10)
+);

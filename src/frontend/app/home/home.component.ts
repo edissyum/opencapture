@@ -19,8 +19,8 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from "../../services/user.service";
 import { LocalStorageService } from "../../services/local-storage.service";
 import { PrivilegesService } from "../../services/privileges.service";
-import {Router} from "@angular/router";
-import {LastUrlService} from "../../services/last-url.service";
+import { Router } from "@angular/router";
+import { LastUrlService } from "../../services/last-url.service";
 
 @Component({
     selector: 'app-home',

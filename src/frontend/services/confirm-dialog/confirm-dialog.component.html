@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>{{ data.confirmTitle }}</h2>
-<hr class="border-green-400 -mt-4 mb-4">
-<mat-dialog-content class="mat-typography" [innerHTML]=data.confirmText></mat-dialog-content>
+<hr class="border-green-400 -mt-4 w-11/12 m-auto">
+<mat-dialog-content class="mat-typography text-gray-900" [innerHTML]=data.confirmText></mat-dialog-content>
 <mat-dialog-content class="mat-typography" *ngIf="data.selectValues">
     <mat-form-field class="w-full mt-1">
         <mat-label>{{ data.selectLabel }}</mat-label>
@@ -9,7 +9,7 @@
         </mat-select>
     </mat-form-field>
 </mat-dialog-content>
-<mat-dialog-actions class="flex justify-end">
+<mat-dialog-actions class="flex justify-end pb-4 pr-4">
     <button mat-button [mat-dialog-close]="">{{ data.cancelButton }}</button>
     <button *ngIf="data.selectValues" mat-button [mat-dialog-close]="this.selectData" color="{{ data.confirmButtonColor }}" cdkFocusInitial>{{ data.confirmButton }}</button>
     <button *ngIf="!data.selectValues" mat-button [mat-dialog-close]="true" color="{{ data.confirmButtonColor }}"

@@ -13,7 +13,7 @@
  You should have received a copy of the GNU General Public License
  along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
- @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
+ @dev : Nathan CHEVAL <nathan.cheval@outlook.fr> */
 
 import { of } from "rxjs";
 import { environment } from  "../env";

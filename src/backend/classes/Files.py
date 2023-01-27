@@ -22,11 +22,10 @@ import cv2
 import json
 import time
 import uuid
+import pypdf
 import string
 import random
 import shutil
-import PyPDF2
-import pathlib
 import datetime
 import subprocess
 import numpy as np
@@ -34,8 +33,7 @@ from PIL import Image
 from zipfile import ZipFile
 from pdf2image import convert_from_path
 from werkzeug.utils import secure_filename
-from src.backend.functions import get_custom_array
-from io import BytesIO
+from src.backend.functions import get_custom_array, generate_searchable_pdf
 
 custom_array = get_custom_array()
 
@@ -192,16 +190,18 @@ class Files:
 
     def get_pages(self, docservers, file):
         try:
-            pdf = PyPDF2.PdfReader(file)
+            pdf = pypdf.PdfReader(file)
+            if pdf.is_encrypted:
+                pdf.decrypt('')
             try:
                 return len(pdf.pages)
             except ValueError as file_error:
                 self.log.error(file_error)
                 shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                 return 1
-        except PyPDF2.utils.PdfReadError:
-            pdf_read_rewrite = PyPDF2.PdfReader(file, strict=False)
-            pdfwrite = PyPDF2.PdfWriter()
+        except pypdf.errors.PdfReadError:
+            pdf_read_rewrite = pypdf.PdfReader(file, strict=False)
+            pdfwrite = pypdf.PdfWriter()
             for page_count in range(len(pdf_read_rewrite.pages)):
                 pages = pdf_read_rewrite.pages[page_count]
                 pdfwrite.add_page(pages)
@@ -260,8 +260,8 @@ class Files:
             if size2 == size:
                 if file.lower().endswith(".pdf"):
                     try:
-                        PyPDF2.PdfReader(file)
-                    except PyPDF2.utils.PdfReadError:
+                        pypdf.PdfReader(file)
+                    except pypdf.errors.PdfReadError:
                         shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         return False
                     else:
@@ -450,7 +450,7 @@ class Files:
     @staticmethod
     def save_uploaded_file(file, path, add_rand=True):
         filename, file_ext = os.path.splitext(file.filename)
-        rand = ''.join(random.choice(string.ascii_lowercase) for i in range(4))
+        rand = ''.join(random.choice(string.ascii_lowercase) for _ in range(4))
         filename = filename.replace(' ', '_') + '_' + rand + file_ext.lower() if add_rand \
             else filename.replace(' ', '_') + file_ext.lower()
         new_path = os.path.join(path, secure_filename(filename))
@@ -488,38 +488,71 @@ class Files:
                 return positions
 
     @staticmethod
-    def export_pdf(pages_lists, documents, input_file, output_file, compress_type, reduce_index=0):
-        pdf_writer = PyPDF2.PdfWriter()
+    def ocrise_pdf(file_path, lang, log):
+        """
+        :param file_path: path to file to OCRise
+        :param lang: OCR language
+        :param log: log object
+        """
+        is_ocr = False
+        pdf_reader = pypdf.PdfReader(file_path, strict=False)
+        for index in range(pdf_reader.pages.__len__()):
+            page_content = pdf_reader.pages[index].extract_text()
+            if page_content:
+                is_ocr = True
+                break
+
+        if not is_ocr:
+            tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
+            generate_searchable_pdf(file_path, tmp_filename, lang, log)
+            try:
+                shutil.move(tmp_filename, file_path)
+            except shutil.Error as _e:
+                log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
+
+    @staticmethod
+    def export_pdf(args):
+        pdf_writer = pypdf.PdfWriter()
         paths = []
+
         try:
-            for index, pages in enumerate(pages_lists):
-                pdf_reader = PyPDF2.PdfReader(input_file, strict=False)
+            for index, pages in enumerate(args['pages']):
+                pdf_reader = pypdf.PdfReader(args['filename'], strict=False)
                 if not pages:
                     continue
                 for page in pages:
-                    pdf_page = pdf_reader.pages[page['source_page'] - reduce_index]
+                    pdf_page = pdf_reader.pages[page['source_page'] - args['reduce_index']]
                     if page['rotation'] != 0:
-                        pdf_page.rotateCounterClockwise(-page['rotation'])
+                        pdf_page.rotate(page['rotation'])
                     pdf_writer.add_page(pdf_page)
-                file_path = output_file + '/' + documents[index]['fileName']
 
-                if compress_type:
-                    tmp_filename = '/tmp/' + documents[index]['fileName']
+                pdf_writer.add_metadata(pdf_reader.metadata)
+                pdf_writer.add_metadata({
+                    '/Author': f"{args['metadata']['userLastName']} {args['metadata']['userFirstName']}",
+                    '/Title': args['metadata']['title'] if 'title' in args['metadata'] else '',
+                    '/Subject': args['metadata']['subject'] if 'subject' in args['metadata'] else '',
+                    '/Creator': "Open-Capture",
+                })
+
+                file_path = args['folder_out'] + '/' + args['documents'][index]['fileName']
+
+                if args['output_parameter']['compress_type']:
+                    tmp_filename = '/tmp/' + args['documents'][index]['fileName']
                     with open(tmp_filename, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
-                    pdf_writer = PyPDF2.PdfWriter()
-                    compressed_file_path = '/tmp/min_' + documents[index]['fileName']
-                    compress_pdf(tmp_filename, compressed_file_path, compress_type)
+                    pdf_writer = pypdf.PdfWriter()
+                    compressed_file_path = '/tmp/min_' + args['documents'][index]['fileName']
+                    compress_pdf(tmp_filename, compressed_file_path, args['output_parameter']['compress_type'])
                     shutil.move(compressed_file_path, file_path)
                 else:
                     with open(file_path, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
-                    pdf_writer = PyPDF2.PdfWriter()
+                    pdf_writer = pypdf.PdfWriter()
         except Exception as err:
-            print('aaaa')
             return False, str(err)
+
         return paths
 
     @staticmethod
@@ -529,7 +562,7 @@ class Files:
     @staticmethod
     def get_random_string(length):
         letters = string.ascii_uppercase + string.digits
-        return ''.join(random.choice(letters) for i in range(length))
+        return ''.join(random.choice(letters) for _ in range(length))
 
     @staticmethod
     def zip_files(input_paths, output_path, delete_zipped_files=False):
@@ -540,6 +573,24 @@ class Files:
                                  input_path['path_in_zip'] if input_path['path_in_zip'] else None)
                     if delete_zipped_files:
                         os.remove(input_path['input_path'])
+
+    @staticmethod
+    def adjust_image(image_path):
+        """
+        Preprocessing of a given image and reading of its text
+        :param image_path: path of the image we want to use ocr on
+        :return: the text extracted from the image in lowercase (string)
+        """
+        img = cv2.imread(image_path)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        blur = cv2.bilateralFilter(gray, 5, 75, 75)
+        _, black_and_white_image = cv2.threshold(blur, 127, 255, cv2.THRESH_BINARY)
+        return black_and_white_image
+
+    @staticmethod
+    def normalize(file_name):
+        normalized = file_name.replace(' ', '_')
+        return normalized
 
 
 def compress_pdf(input_file, output_file, compress_id):

@@ -117,11 +117,11 @@ elif 'rest' in custom_array['outputs']['path']:
     outputs = getattr(__import__(custom_array['outputs']['path'], fromlist=[custom_array['outputs']['module']]),
                        custom_array['outputs']['module'])
 
-if 'maarch' not in custom_array or 'rest' not in custom_array['maarch']['path']:
-    from .rest import maarch
-elif 'rest' in custom_array['maarch']['path']:
-    maarch = getattr(__import__(custom_array['maarch']['path'], fromlist=[custom_array['maarch']['module']]),
-                       custom_array['maarch']['module'])
+if 'mem' not in custom_array or 'rest' not in custom_array['mem']['path']:
+    from .rest import mem
+elif 'rest' in custom_array['mem']['path']:
+    mem = getattr(__import__(custom_array['mem']['path'], fromlist=[custom_array['mem']['module']]),
+                       custom_array['mem']['module'])
 
 if 'inputs' not in custom_array or 'rest' not in custom_array['inputs']['path']:
     from .rest import inputs
@@ -140,3 +140,9 @@ if 'tasks_watcher' not in custom_array or 'rest' not in custom_array['tasks_watc
 elif 'rest' in custom_array['tasks_watcher']['path']:
     tasks_watcher = getattr(__import__(custom_array['tasks_watcher']['path'], fromlist=[custom_array['tasks_watcher']['module']]),
                        custom_array['tasks_watcher']['module'])
+
+if 'artificial_intelligence' not in custom_array or 'rest' not in custom_array['artificial_intelligence']['path']:
+    from .rest import artificial_intelligence
+elif 'rest' in custom_array['artificial_intelligence']['path']:
+    artificial_intelligence = getattr(__import__(custom_array['artificial_intelligence']['path'], fromlist=[custom_array['artificial_intelligence']['module']]),
+                                      custom_array['artificial_intelligence']['module'])

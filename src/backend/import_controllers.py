@@ -94,10 +94,10 @@ if 'custom_fields' or 'controllers' not in custom_array['custom_fields']['path']
 elif 'controllers' in custom_array['custom_fields']['path']:
     custom_fields = getattr(__import__(custom_array['custom_fields']['path'], fromlist=[custom_array['custom_fields']['module']]), custom_array['custom_fields']['module'])
 
-if 'maarch' or 'controllers' not in custom_array['maarch']['path']:
-    from .controllers import maarch
-elif 'controllers' in custom_array['maarch']['path']:
-    maarch = getattr(__import__(custom_array['maarch']['path'], fromlist=[custom_array['maarch']['module']]), custom_array['maarch']['module'])
+if 'mem' or 'controllers' not in custom_array['mem']['path']:
+    from .controllers import mem
+elif 'controllers' in custom_array['mem']['path']:
+    mem = getattr(__import__(custom_array['mem']['path'], fromlist=[custom_array['mem']['module']]), custom_array['mem']['module'])
 
 if 'inputs' or 'controllers' not in custom_array['inputs']['path']:
     from .controllers import inputs
@@ -107,9 +107,14 @@ elif 'controllers' in custom_array['inputs']['path']:
 if 'doctypes' or 'controllers' not in custom_array['doctypes']['path']:
     from .controllers import doctypes
 elif 'controllers' in custom_array['doctypes']['path']:
-    inputs = getattr(__import__(custom_array['doctypes']['path'], fromlist=[custom_array['doctypes']['module']]), custom_array['doctypes']['module'])
+    doctypes = getattr(__import__(custom_array['doctypes']['path'], fromlist=[custom_array['doctypes']['module']]), custom_array['doctypes']['module'])
 
 if 'tasks_watcher' or 'controllers' not in custom_array['tasks_watcher']['path']:
     from .controllers import tasks_watcher
 elif 'controllers' in custom_array['tasks_watcher']['path']:
-    inputs = getattr(__import__(custom_array['tasks_watcher']['path'], fromlist=[custom_array['tasks_watcher']['module']]), custom_array['tasks_watcher']['module'])
+    tasks_watcher = getattr(__import__(custom_array['tasks_watcher']['path'], fromlist=[custom_array['tasks_watcher']['module']]), custom_array['tasks_watcher']['module'])
+
+if 'artificial_intelligence' or 'controllers' not in custom_array['artificial_intelligence']['path']:
+    from .controllers import artificial_intelligence
+elif 'controllers' in custom_array['artificial_intelligence']['path']:
+    artificial_intelligence = getattr(__import__(custom_array['artificial_intelligence']['path'], fromlist=[custom_array['artificial_intelligence']['module']]), custom_array['artificial_intelligence']['module'])

@@ -394,7 +394,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 _array['regex'] = JSON.stringify(_array['regex']);
             }
 
-            this.http.put(environment['url'] + '/ws/positions_masks/update/' + this.positionMaskId, {'args': _array},{headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/positions_masks/update/' + this.positionMaskId, {'args': _array}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.historyService.addHistory('verifier', 'update_positions_masks', this.translate.instant('HISTORY-DESC.update-positions-masks', {positions_masks: _array['label']}));
                     this.notify.success(this.translate.instant('POSITIONS-MASKS.updated'));
@@ -745,7 +745,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
     }
 
     async getThumb(filename:string) {
-        return await this.http.post(environment['url'] + '/ws/verifier/getThumb',{
+        return await this.http.post(environment['url'] + '/ws/verifier/getThumb', {
             'args': {
                 'type': 'positions_masks',
                 'filename': filename

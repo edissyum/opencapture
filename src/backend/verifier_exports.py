@@ -20,13 +20,13 @@ import uuid
 import json
 import shutil
 import datetime
-import ocrmypdf
 import subprocess
 import pandas as pd
 from xml.dom import minidom
 from flask_babel import gettext
 import xml.etree.ElementTree as Et
-from src.backend.import_classes import _MaarchWebServices
+from .functions import generate_searchable_pdf
+from src.backend.import_classes import _MEMWebServices
 
 
 def export_xml(data, log, regex, invoice_info, database):
@@ -92,27 +92,10 @@ def export_xml(data, log, regex, invoice_info, database):
 
 
 def compress_pdf(input_file, output_file, compress_id):
-    gs_command = 'gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/%s#-dNOPAUSE#-dQUIET#-o#%s#%s' \
-                 % (compress_id, output_file, input_file)
-
+    gs_command = f"gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/{compress_id}#-dNOPAUSE#-dQUIET#-o" \
+                 f"#{output_file}#{input_file}"
     gs_args = gs_command.split('#')
     subprocess.check_call(gs_args)
-
-
-def generate_searchable_pdf(pdf, tmp_filename, lang, log):
-    """
-    Start from standard PDF, with no OCR, and create a searchable PDF, with OCR. Thanks to ocrmypdf python lib
-
-    :param pdf: Path to original pdf (not searchable, without OCR)
-    :param tmp_path: Path to store the final pdf, searchable with OCR
-    :param separator: Class Separator instance
-    """
-    try:
-        res = ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', skip_text=True, language=lang, progress_bar=False)
-        if res.value != 0:
-            ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', force_ocr=True, language=lang, progress_bar=False)
-    except ocrmypdf.exceptions.PriorOcrFoundError as e:
-        log.error(e)
 
 
 def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
@@ -134,26 +117,26 @@ def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
 
     if os.path.isdir(folder_out):
         file = invoice_info['path'] + '/' + invoice_info['filename']
-
         if compress_type:
             compressed_file_path = '/tmp/min_' + invoice_info['filename']
             compress_pdf(file, compressed_file_path, compress_type)
             try:
                 shutil.move(compressed_file_path, folder_out + '/' + filename)
-            except shutil.Error as e:
-                log.error('Moving file ' + compressed_file_path + ' error : ' + str(e))
+            except shutil.Error as _e:
+                log.error('Moving file ' + compressed_file_path + ' error : ' + str(_e))
         else:
             if os.path.isfile(file):
                 shutil.copy(file, folder_out + '/' + filename)
 
         if ocrise:
             check_ocr = os.popen('pdffonts ' + file, 'r')
-            tmp = ''
+            tmp = []
             for line in check_ocr:
-                tmp += line
+                tmp.append(line)
+            tmp = '\n'.join(tmp)
 
             is_ocr = False
-            if len(tmp.split('\n')) > 3:
+            if len(tmp.split('\n')) > 4:
                 is_ocr = True
 
             if not is_ocr:
@@ -162,8 +145,8 @@ def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
                 generate_searchable_pdf(file, tmp_filename, lang, log)
                 try:
                     shutil.move(tmp_filename, folder_out + '/' + filename)
-                except shutil.Error as e:
-                    log.error('Moving file ' + tmp_filename + ' error : ' + str(e))
+                except shutil.Error as _e:
+                    log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
 
         return '', 200
     else:
@@ -177,7 +160,7 @@ def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
         return response, 401
 
 
-def export_maarch(data, invoice_info, log, regex, database):
+def export_mem(data, invoice_info, log, regex, database):
     host = login = password = ''
     auth_data = data['options']['auth']
     for _data in auth_data:
@@ -189,7 +172,7 @@ def export_maarch(data, invoice_info, log, regex, database):
             password = _data['value']
 
     if host and login and password:
-        _ws = _MaarchWebServices(
+        _ws = _MEMWebServices(
             host,
             login,
             password,
@@ -215,17 +198,17 @@ def export_maarch(data, invoice_info, log, regex, database):
                         supplier[0].update(address[0])
 
                 link_resource = False
-                opencapture_field = maarch_custom_field = maarch_clause = custom_field_contact_id = None
+                opencapture_field = mem_custom_field = mem_clause = custom_field_contact_id = None
                 if 'links' in data['options']:
                     for _links in data['options']['links']:
                         if _links['id'] == 'enabled' and _links['value']:
                             link_resource = True
-                        if _links['id'] == 'maarchCustomField' and _links['value']:
-                            maarch_custom_field = _links['value']
+                        if _links['id'] == 'memCustomField' and _links['value']:
+                            mem_custom_field = _links['value']
                         if _links['id'] == 'openCaptureField' and _links['value']:
                             opencapture_field = _links['value']
-                        if _links['id'] == 'maarchClause' and _links['value']:
-                            maarch_clause = _links['value']
+                        if _links['id'] == 'memClause' and _links['value']:
+                            mem_clause = _links['value']
                         if _links['id'] == 'vatNumberContactCustom' and _links['value']:
                             custom_field_contact_id = _links['value']
 
@@ -250,7 +233,7 @@ def export_maarch(data, invoice_info, log, regex, database):
                 for _data in ws_data:
                     value = _data['value']
                     if 'webservice' in _data:
-                        # Pour le webservices Maarch, ce sont les identifiants qui sont utilisés
+                        # Pour le webservices MEM Courrier, ce sont les identifiants qui sont utilisés
                         # et non les valeurs bruts (e.g COU plutôt que Service courrier)
                         if _data['value']:
                             value = _data['value']['id']
@@ -311,9 +294,9 @@ def export_maarch(data, invoice_info, log, regex, database):
                             res_id = message['resId']
                             if opencapture_field:
                                 opencapture_field = ''.join(construct_with_var(opencapture_field, invoice_info, regex))
-                                if maarch_custom_field:
+                                if mem_custom_field:
                                     if 'res_id' not in data or not data['res_id']:
-                                        docs = _ws.retrieve_doc_with_custom(maarch_custom_field['id'], opencapture_field, maarch_clause)
+                                        docs = _ws.retrieve_doc_with_custom(mem_custom_field['id'], opencapture_field, mem_clause)
                                         if docs and docs['resources'] and len(docs['resources']) >= 1:
                                             res_id = docs['resources'][0]['res_id']
                                     else:
@@ -323,31 +306,31 @@ def export_maarch(data, invoice_info, log, regex, database):
                         return '', 200
                     else:
                         response = {
-                            "errors": gettext('EXPORT_MAARCH_ERROR'),
+                            "errors": gettext('EXPORT_MEM_ERROR'),
                             "message": message['errors']
                         }
                         return response, 400
                 else:
                     response = {
-                        "errors": gettext('EXPORT_MAARCH_ERROR'),
+                        "errors": gettext('EXPORT_MEM_ERROR'),
                         "message": gettext('PDF_FILE_NOT_FOUND')
                     }
                     return response, 400
             else:
                 response = {
-                    "errors": gettext('EXPORT_MAARCH_ERROR'),
+                    "errors": gettext('EXPORT_MEM_ERROR'),
                     "message": ''
                 }
                 return response, 400
         else:
             response = {
-                "errors": gettext('MAARCH_WS_INFO_WRONG'),
+                "errors": gettext('MEM_WS_INFO_WRONG'),
                 "message": _ws.status[1]
             }
             return response, 400
     else:
         response = {
-            "errors": gettext('MAARCH_WS_INFO_EMPTY'),
+            "errors": gettext('MEM_WS_INFO_EMPTY'),
             "message": ''
         }
         return response, 400

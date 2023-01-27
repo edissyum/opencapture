@@ -31,18 +31,18 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import {HistoryService} from "../../../../services/history.service";
+import { HistoryService } from "../../../../services/history.service";
 
 @Component({
     selector: 'app-docservers',
     templateUrl: './docservers.component.html',
     styleUrls: ['./docservers.component.scss'],
     providers: [
-        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' }},
     ]
 })
 export class DocserversComponent implements OnInit {
-    columnsToDisplay    : string[]      = ['id', 'docserver_id', 'description', 'path', 'actions'];
+    columnsToDisplay    : string[]      = ['id', 'docserver_id', 'description', 'content', 'actions'];
     headers             : HttpHeaders   = this.authService.headers;
     loading             : boolean       = true;
     updateLoading       : boolean       = false;

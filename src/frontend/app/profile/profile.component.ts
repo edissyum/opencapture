@@ -57,6 +57,13 @@ export class UserProfileComponent implements OnInit {
             required: true
         },
         {
+            id: 'email',
+            label: this.translate.instant('USER.email'),
+            type: 'text',
+            control: new FormControl(),
+            required: false
+        },
+        {
             id: 'old_password',
             label: this.translate.instant('USER.old_password'),
             type: 'password',
@@ -195,7 +202,7 @@ export class UserProfileComponent implements OnInit {
             });
 
             this.http.put(
-                environment['url'] + '/ws/users/update/' + this.userId,{'args': user},
+                environment['url'] + '/ws/users/update/' + this.userId, {'args': user},
                 {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {

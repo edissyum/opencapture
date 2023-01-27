@@ -20,39 +20,20 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
     outline: none !important;
 }
 
-/** Style réglages **/
-
-.mat-drawer-inner-container {
-    @apply overflow-x-hidden #{!important};
-    @apply overflow-y-auto #{!important};
+.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background,
+.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate ~ .mdc-checkbox__background,
+.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control[data-indeterminate="true"]:enabled ~ .mdc-checkbox__background {
+    @apply bg-green-400 #{!important};
+    @apply border-green-400 #{!important};
 }
 
-.mat-button-wrapper {
-    @apply w-full;
+.fa-solid {
+    --fa-animation-duration: 1.5s;
 }
 
-mat-expansion-panel {
-    @apply rounded-none #{!important};
+.mat-mdc-button .mat-mdc-button-persistent-ripple::before {
+    @apply bg-transparent #{!important};
 }
-
-mat-expansion-panel-header.settings_expansion {
-    @apply border-t;
-    @apply border-white;
-    @apply z-30;
-    @apply bg-gray-900;
-    box-shadow: 0 1px 5px 4px gray;
-
-    & .mat-content mat-panel-title {
-        @apply text-white #{!important};
-    }
-
-    &:hover, &:focus {
-        @apply bg-none #{!important};
-        @apply bg-gray-900 #{!important};
-    }
-}
-
-/** END **/
 
 /*** Image area select ***/
 
@@ -117,42 +98,12 @@ div[id*="select-area-label_"] {
 
 /*** END image area select ***/
 
-.settings_header {
-    & .mat-form-field-wrapper {
-        @apply pt-1;
-        @apply pb-1;
-
-        & .mat-form-field-infix {
-            max-height: 3rem !important;
-
-            & .mat-form-field-label-wrapper {
-                @apply -top-4;
-            }
-
-            & .mat-input-element {
-                @apply relative;
-                @apply -top-2;
-            }
-        }
-    }
-}
-
 .mat-menu-panel {
     max-width:fit-content !important;
 }
 
 ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
     background-color: transparent;
-}
-
-.mat-form-field-appearance-outline .mat-form-field-outline {
-    @apply text-gray-900 #{!important};
-    transition: all;
-}
-
-.mat-form-field-appearance-outline .mat-focused .mat-form-field-outline-thick,
-.mat-datepicker-toggle-active {
-    @apply text-green-400 #{!important};
 }
 
 .mat-input-element {
@@ -164,36 +115,6 @@ div[id*="select-area-label_"] {
 .cdk-program-focused .mat-calendar-body-active > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
     @apply bg-green-400 #{!important};
     @apply bg-opacity-60 #{!important};
-}
-
-.mat-selected,
-.mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
-.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar,
-.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb,
-.mat-calendar-body-selected,
-mat-ink-bar {
-    @apply bg-green-400 #{!important};
-}
-
-.mat-selected .mat-option-text,
-.mat-form-field-label {
-    @apply text-gray-900 #{!important};
-}
-
-.mat-selected .mat-option-text span{
-    @apply text-gray-900 #{!important};
-}
-
-.mat-form-field-appearance-outline .mat-form-field-invalid .mat-form-field-invalid .mat-form-field-outline-thick {
-    color: red !important;
-}
-
-.mat-form-field-invalid .mat-input-element, .mat-warn .mat-input-element {
-    caret-color: red !important;
-}
-
-.mat-form-field.mat-form-field-invalid .mat-form-field-label {
-    color: red !important;
 }
 
 .mat-expansion-panel-body {
@@ -208,14 +129,6 @@ mat-ink-bar {
     pointer-events: none !important;
 }
 
-.settings_header {
-    @apply bg-green-400;
-    @apply bg-opacity-60;
-    @apply text-gray-900;
-    padding-top: 0.9rem;
-    @apply relative;
-    @apply z-30;
-}
 
 .mat-row:hover > .mat-cell {
     @apply text-green-400;

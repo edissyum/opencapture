@@ -120,7 +120,7 @@ export class SeparatorComponent implements OnInit {
 
     generateSeparator(args: any) {
         this.loadingSeparator = true;
-        this.http.post(environment['url'] + '/ws/doctypes/generateSeparator',  args,{headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/doctypes/generateSeparator',  args, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.separator.fileUrl = "data:application/pdf;base64," + data.encoded_file;
                 this.separator.thumbnailUrl = "data:image/jpeg;base64," + data.encoded_thumbnail;
@@ -136,8 +136,8 @@ export class SeparatorComponent implements OnInit {
     }
 
     downloadSeparator() {
-        const fileName = this.selectedSeparator + (this.selectedDocType ? '_' + this.selectedDocType.key: '');
-        this.downloadPdf(this.separator.fileUrl,fileName);
+        const fileName = this.selectedSeparator + (this.selectedDocType ? '_' + this.selectedDocType.key : '');
+        this.downloadPdf(this.separator.fileUrl, fileName);
     }
 
     downloadPdf(base64String: any, fileName:any) {

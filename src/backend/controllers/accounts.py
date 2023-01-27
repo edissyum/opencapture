@@ -65,13 +65,19 @@ def delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id):
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
         _set = {}
-        supplier_positions = supplier_info['positions']
         form_id = str(form_id)
+        supplier_positions = supplier_info['positions']
         if form_id in supplier_positions:
             if field_id in supplier_positions[form_id]:
                 del supplier_positions[form_id][field_id]
-        _, error = accounts.update_supplier(
-            {'set': {"positions": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
+
+        _, error = accounts.update_supplier({
+            'set': {
+                'positions': json.dumps(supplier_positions)
+            },
+            'supplier_id': supplier_id
+        })
+
         if error is None:
             return '', 200
         else:
@@ -86,13 +92,19 @@ def delete_invoice_page_by_supplier_id(supplier_id, field_id, form_id):
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
         _set = {}
-        supplier_positions = supplier_info['pages']
         form_id = str(form_id)
+        supplier_positions = supplier_info['pages']
         if form_id in supplier_positions:
             if field_id in supplier_positions[form_id]:
                 del supplier_positions[form_id][field_id]
-        _, error = accounts.update_supplier(
-            {'set': {"pages": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
+
+        _, error = accounts.update_supplier({
+            'set': {
+                'pages': json.dumps(supplier_positions)
+            },
+            'supplier_id': supplier_id
+        })
+
         if error is None:
             return '', 200
         else:
@@ -367,6 +379,8 @@ def update_customer(customer_id, data):
             _set.update({'vat_number': data['vat_number']})
         if 'company_number' in data:
             _set.update({'company_number': data['company_number']})
+        if 'module' in data:
+            _set.update({'module': data['module']})
 
         _, error = accounts.update_customer({'set': _set, 'customer_id': customer_id})
 
@@ -393,7 +407,8 @@ def create_customer(data):
         'siren': data['siren'],
         'vat_number': data['vat_number'],
         'company_number': data['company_number'],
-        'address_id': data['address_id'],
+        'module': data['module'] if 'module' in data else 'verifier',
+        'address_id': data['address_id'] if 'address_id' in data else None,
     }
 
     customer = accounts.retrieve_customers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})

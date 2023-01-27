@@ -30,7 +30,7 @@ import { LocaleService } from "../../services/locale.service";
 import { UserService } from "../../services/user.service";
 import { HistoryService } from "../../services/history.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import {LocalStorageService} from "../../services/local-storage.service";
+import { LocalStorageService } from "../../services/local-storage.service";
 
 @Component({
     selector: 'app-login',
@@ -100,8 +100,13 @@ export class LoginComponent implements OnInit {
 
         this.http.get(environment['url'] + '/ws/auth/getEnabledLoginMethod', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                const login_method_name = data['login_method_name'][0];
-                this.enableLoginMethodName = login_method_name['method_name'];
+                if (data['login_method_name'][0]) {
+                    const login_method_name = data['login_method_name'][0];
+                    this.enableLoginMethodName = login_method_name['method_name'];
+                } else {
+                    this.notify.error(this.translate.instant('LOGIN-METHODS.no_default_login_methods'));
+                    this.enableLoginMethodName = 'default';
+                }
                 this.isConnectionBtnDisabled = false;
             }),
             catchError((err: any) => {

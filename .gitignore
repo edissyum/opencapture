@@ -1,13 +1,16 @@
+*.pyc
+*.log
 .idea/
 .angular/
 custom/
 bin/data/tmp/
-bin/data/pdf/*.pdf
 node_modules/
 bin/data/*.pdf
 last_mail.lock
 bin/data/error/
 bin/scripts/*.sh
+bin/install/*.log
+bin/data/pdf/*.pdf
 /package-lock.json
 bin/data/log/*.log
 bin/scripts/*/*.sh

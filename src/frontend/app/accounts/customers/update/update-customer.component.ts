@@ -39,12 +39,13 @@ import { Country } from "@angular-material-extensions/select-country";
     styleUrls: ['./update-customer.component.scss']
 })
 export class UpdateCustomerComponent implements OnInit {
-    headers     : HttpHeaders   = this.authService.headers;
-    loading     : boolean       = true;
-    customerId  : any;
-    addressId   : any;
-    customer    : any;
-    customerForm: any[]         = [
+    headers         : HttpHeaders   = this.authService.headers;
+    loading         : boolean       = true;
+    customerId      : any;
+    addressId       : any;
+    customer        : any;
+    currentModule   : string        = '';
+    customerForm    : any[]         = [
         {
             id: 'name',
             label: marker('ACCOUNTS.supplier_name'),
@@ -80,8 +81,19 @@ export class UpdateCustomerComponent implements OnInit {
             control: new FormControl(),
             required: false
         },
+        {
+            id: 'module',
+            label: marker('CUSTOM-FIELDS.module'),
+            type: 'select',
+            control: new FormControl(),
+            required: true,
+            values: [
+                {id: 'verifier', label: this.translate.instant('HOME.verifier')},
+                {id: 'splitter', label: this.translate.instant('HOME.splitter')}
+            ]
+        },
     ];
-    addressForm : any []        = [
+    addressForm     : any []        = [
         {
             id: 'address1',
             label: marker('ADDRESSES.address_1'),
@@ -118,8 +130,7 @@ export class UpdateCustomerComponent implements OnInit {
             required: true,
         },
     ];
-
-    defaultValue: Country = {
+    defaultValue    : Country       = {
         name: 'France',
         alpha2Code: '',
         alpha3Code: '',
@@ -150,6 +161,12 @@ export class UpdateCustomerComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/accounts/customers/getById/' + this.customerId, {headers: this.authService.headers}).pipe(
             tap((customer: any) => {
                 this.customer = customer;
+                for (const field in this.customer) {
+                    if (field === 'module') {
+                        this.currentModule = this.customer[field];
+                        this.updateRequired({control: {value: this.currentModule}});
+                    }
+                }
                 for (const field in this.customer) {
                     if (customer.hasOwnProperty(field)) {
                         this.customerForm.forEach(element => {
@@ -187,7 +204,8 @@ export class UpdateCustomerComponent implements OnInit {
                                                 'address2': '',
                                                 'postal_code': '',
                                                 'city': '',
-                                                'country': ''
+                                                'country': '',
+                                                'module': this.currentModule
                                             }
                                         }, {headers: this.authService.headers},
                                     ).pipe(
@@ -221,6 +239,23 @@ export class UpdateCustomerComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    updateRequired(field: any) {
+        let requiredFields: any = [];
+        this.currentModule = field.control.value;
+        if (field.control.value === 'splitter') {
+            requiredFields = ['name', 'module'];
+        } else {
+            requiredFields = ['name', 'vat_number', 'siret', 'siren', 'module', 'address1', 'postal_code', 'city'];
+        }
+
+        this.customerForm.forEach((element: any) => {
+            element.required = requiredFields.includes(element.id);
+        });
+        this.addressForm.forEach((element: any) => {
+            element.required = requiredFields.includes(element.id);
+        });
     }
 
     onCountrySelected(country: Country) {

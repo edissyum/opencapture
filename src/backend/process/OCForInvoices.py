@@ -110,8 +110,8 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
 
                     if output_info[0]['output_type_id'] == 'export_xml':
                         verifier_exports.export_xml(output_info[0]['data'], log, regex, invoice_data, database)
-                    elif output_info[0]['output_type_id'] == 'export_maarch':
-                        verifier_exports.export_maarch(output_info[0]['data'], invoice_data, log, regex, database)
+                    elif output_info[0]['output_type_id'] == 'export_mem':
+                        verifier_exports.export_mem(output_info[0]['data'], invoice_data, log, regex, database)
                     elif output_info[0]['output_type_id'] == 'export_pdf':
                         verifier_exports.export_pdf(output_info[0]['data'], log, regex, invoice_data, current_lang,
                                                     output_info[0]['compress_type'], output_info[0]['ocrise'])
@@ -248,7 +248,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 pages.update({field: custom_fields[field][2]})
 
     # Find invoice number
-    invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,ocr.header_text,
+    invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file, ocr.header_text,
                                              1, False, ocr.footer_text, docservers, configurations, languages, form_id)
     invoice_number = invoice_number_class.run()
     if not invoice_number:

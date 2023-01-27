@@ -1,15 +1,13 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
     <mat-sidenav-content class="bg-white">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
-        <div class="settings_header">
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
-            </div>
+        <div class="settings_header flex justify-center p-4 items-center bg-green-400 bg-opacity-60 text-gray-900">
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
         </div>
-        <div class="flex justify-center" style="height: calc(100% - 64px)">
+        <hr class="border-green-400 relative z-30">
+        <div class="flex justify-center" style="height: calc(100% - 70px)">
             <div class="w-full h-1 absolute text-center mt-2 z-50">
                 <mat-form-field class="w-1/4">
                     <mat-select (selectionChange)="changeStatistic($event)"
@@ -25,8 +23,7 @@
                 </mat-form-field>
                 <mat-form-field class="ml-4 w-1/4">
                     <mat-select [disabled]="!this.selectedStatistic || this.loading"
-                                [ngModel]="this.selectedDiagramType"
-                                (selectionChange)="changeDiagramType($event)"
+                                [ngModel]="this.selectedDiagramType" (selectionChange)="changeDiagramType($event)"
                                 [placeholder]="'STATISTICS.choose_diagram' | translate">
                         <mat-option *ngFor="let option of diagramTypes" [value]="option['id']">
                             {{ option['label'] | translate }} <i class="fa-solid {{ option['logo'] }} ml-2"></i>
@@ -35,34 +32,16 @@
                 </mat-form-field>
             </div>
             <div class="relative mt-20 w-full" *ngIf="!loading && this.selectedStatistic">
-                <ngx-charts-bar-vertical
-                        *ngIf="this.selectedDiagramType === 'vertical-bar'"
-                        [results]="currentData"
-                        [xAxis]="true"
-                        [yAxis]="true"
-                        [legend]="true"
-                        [legendTitle]="this.selectedStatistic.label | translate"
-                        [showXAxisLabel]="true"
-                        [showYAxisLabel]="true">
+                <ngx-charts-bar-vertical *ngIf="this.selectedDiagramType === 'vertical-bar'"
+                        [results]="currentData" [xAxis]="true" [yAxis]="true" [legend]="true" [showYAxisLabel]="true"
+                        [showXAxisLabel]="true" [legendTitle]="this.selectedStatistic.label | translate">
                 </ngx-charts-bar-vertical>
-                <ngx-charts-pie-chart
-                        *ngIf="this.selectedDiagramType === 'pie-chart'"
-                        [results]="currentData"
-                        [legendTitle]="this.selectedStatistic.label | translate"
-                        [labels]="true">
+                <ngx-charts-pie-chart *ngIf="this.selectedDiagramType === 'pie-chart'" [results]="currentData"
+                                      [labels]="true" [legendTitle]="this.selectedStatistic.label | translate">
                 </ngx-charts-pie-chart>
-                <ngx-charts-pie-grid
-                        *ngIf="this.selectedDiagramType === 'pie-grid'"
-                        [results]="currentData">
-                </ngx-charts-pie-grid>
-                <ngx-charts-line-chart
-                        *ngIf="this.selectedDiagramType === 'line-charts'"
-                        [results]="currentData"
-                        [xAxis]="true"
-                        [yAxis]="true"
-                        [legend]="false"
-                        [showXAxisLabel]="true"
-                        [showYAxisLabel]="true">
+                <ngx-charts-pie-grid *ngIf="this.selectedDiagramType === 'pie-grid'" [results]="currentData"></ngx-charts-pie-grid>
+                <ngx-charts-line-chart *ngIf="this.selectedDiagramType === 'line-charts'" [showXAxisLabel]="true"
+                        [showYAxisLabel]="true" [results]="currentData" [xAxis]="true" [yAxis]="true" [legend]="false">
                 </ngx-charts-line-chart>
             </div>
         </div>

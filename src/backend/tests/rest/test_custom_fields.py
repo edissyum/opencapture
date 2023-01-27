@@ -19,7 +19,7 @@ import json
 import unittest
 import warnings
 from src.backend import app
-from src.backend.tests import get_db, get_token
+from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
 class CustomFieldsTest(unittest.TestCase):
@@ -38,7 +38,7 @@ class CustomFieldsTest(unittest.TestCase):
             'metadata_key': '',
         }
 
-        return self.app.post('/test/ws/customFields/add',
+        return self.app.post(f'/{CUSTOM_ID}/ws/customFields/add',
                              json=payload,
                              headers={"Content-Type": "application/json",  'Authorization': 'Bearer ' + self.token})
 
@@ -48,7 +48,7 @@ class CustomFieldsTest(unittest.TestCase):
         self.assertEqual(int, type(custom.json['id']))
 
     def test_successful_get_custom_fields_list_splitter(self):
-        response = self.app.get('/test/ws/customFields/list?module=splitter',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/customFields/list?module=splitter',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -56,7 +56,7 @@ class CustomFieldsTest(unittest.TestCase):
 
     def test_successful_get_custom_fields_list_verifier(self):
         self.create_custom()
-        response = self.app.get('/test/ws/customFields/list?module=verifier',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/customFields/list?module=verifier',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -64,7 +64,7 @@ class CustomFieldsTest(unittest.TestCase):
 
     def test_successful_update_custom_fields(self):
         custom = self.create_custom()
-        response = self.app.put('/test/ws/customFields/update',
+        response = self.app.put(f'/{CUSTOM_ID}/ws/customFields/update',
                                 data=json.dumps({
                                     'id': custom.json['id'],
                                     'label': 'Labelled updated',
@@ -83,7 +83,7 @@ class CustomFieldsTest(unittest.TestCase):
 
     def test_successful_delete_custom_fields(self):
         custom = self.create_custom()
-        response = self.app.delete('/test/ws/customFields/delete/' + str(custom.json['id']),
+        response = self.app.delete(f'/{CUSTOM_ID}/ws/customFields/delete/' + str(custom.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.db.execute("SELECT status  FROM custom_fields WHERE label_short = 'test_custom_verifier'")

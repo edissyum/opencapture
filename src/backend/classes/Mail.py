@@ -251,7 +251,7 @@ class Mail:
         return args
 
     @staticmethod
-    def move_batch_to_error(batch_path, error_path, smtp, process, msg, docservers):
+    def move_batch_to_error(batch_path, error_path, smtp, process, msg):
         """
         If error in batch process, move the batch folder into error folder
 
@@ -260,7 +260,6 @@ class Mail:
         :param smtp: instance of SMTP class
         :param batch_path: Path to the actual batch
         :param error_path: path to the error path
-        :param docservers: Instance of docservers class
         """
 
         try:

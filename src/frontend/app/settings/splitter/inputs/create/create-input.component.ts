@@ -56,6 +56,13 @@ export class SplitterCreateInputComponent implements OnInit {
             required: true,
         },
         {
+            id: 'customer_id',
+            label: this.translate.instant('INPUT.associated_customer'),
+            type: 'select',
+            control: new FormControl(),
+            required: true,
+        },
+        {
             id: 'splitter_method_id',
             label: this.translate.instant('INPUT.splitter_method'),
             type: 'select',
@@ -86,7 +93,7 @@ export class SplitterCreateInputComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
-        this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/list/splitter', {headers: this.authService.headers}).pipe(
             tap((customers: any) => {
                 this.inputForm.forEach((element: any) => {
                     if (element.id === 'customer_id') {

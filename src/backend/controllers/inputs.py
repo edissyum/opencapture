@@ -22,12 +22,30 @@ from flask_babel import gettext
 from flask import request, session
 from src.backend.import_models import inputs
 from src.backend.import_classes import _Config
+from src.backend.import_controllers import user
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
 def get_inputs(args):
-    _inputs = inputs.get_inputs(args)
+    _args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'offset': args['offset'] if 'offset' in args else 0,
+        'limit': args['limit'] if 'limit' in args else 'ALL',
+        'where': ["status <> 'DEL'", "module = %s"],
+        'data': [args['module'] if 'module' in args else '']
+    }
+
+    if 'user_id' in args and args['user_id']:
+        user_customers = user.get_customers_by_user_id(args['user_id'])
+        if user_customers[1] != 200:
+            return user_customers[0], user_customers[1]
+
+        user_customers = user_customers[0]
+        _args['where'].append('(customer_id IS NULL OR customer_id = ANY(%s))')
+        _args['data'].append(user_customers)
+
+    _inputs = inputs.get_inputs(_args)
 
     response = {
         "inputs": _inputs
@@ -95,7 +113,7 @@ def create_input(data):
         'input_label': data['input_label'],
         'input_folder': data['input_folder'],
         'default_form_id': data['default_form_id'],
-        'customer_id': data['customer_id'] if data['module'] == 'verifier' else None,
+        'customer_id': data['customer_id'],
         'splitter_method_id': data['splitter_method_id'] if 'splitter_method_id' in data else False,
         'remove_blank_pages': data['remove_blank_pages'] if 'remove_blank_pages' in data else False,
         'override_supplier_form': data['override_supplier_form'] if 'override_supplier_form' in data else False,

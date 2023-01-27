@@ -1,5 +1,4 @@
 # This file is part of Open-Capture.
-
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -16,15 +15,14 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 
-import base64
 import os
 import shutil
 import urllib3
 import unittest
 import warnings
 from src.backend import app
-from src.backend.tests import get_db, get_token
 from werkzeug.datastructures import FileStorage
+from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
 class VerifierTest(unittest.TestCase):
@@ -48,14 +46,14 @@ class VerifierTest(unittest.TestCase):
             "document_lang": "fra",
         }
 
-        return self.app.post('/test/ws/accounts/suppliers/create',
+        return self.app.post(f'/{CUSTOM_ID}/ws/accounts/suppliers/create',
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                              json={"args": payload})
 
     def create_invoice(self):
         file = './custom/test/src/backend/process_queue_verifier.py'
-        text_to_search = r"@kuyruk.task(queue='verifier_test')"
-        text_to_replace = "# @kuyruk.task(queue='verifier_test')"
+        text_to_search = rf"@kuyruk.task(queue='verifier_{CUSTOM_ID}')"
+        text_to_replace = f"# @kuyruk.task(queue='verifier_{CUSTOM_ID}')"
 
         with open(file, "r+") as text_file:
             texts = text_file.read()
@@ -77,7 +75,7 @@ class VerifierTest(unittest.TestCase):
             content_type="application/pdf",
         )
 
-        return self.app.post('/test/ws/verifier/upload', data={"inputId": 1, "file": my_file},
+        return self.app.post(f'/{CUSTOM_ID}/ws/verifier/upload?inputId=1', data={"file": my_file},
                              content_type='multipart/form-data',
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
@@ -102,7 +100,7 @@ class VerifierTest(unittest.TestCase):
     def test_successful_get_invoices_list(self):
         self.create_supplier()
         self.create_invoice()
-        response = self.app.post('/test/ws/verifier/invoices/list', json={},
+        response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/invoices/list', json={},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
         self.assertEqual(200, response.status_code)
@@ -114,7 +112,7 @@ class VerifierTest(unittest.TestCase):
         self.create_invoice()
         self.db.execute("SELECT id FROM invoices")
         invoice = self.db.fetchall()
-        response = self.app.get('/test/ws/verifier/invoices/' + str(invoice[0]['id']), json={},
+        response = self.app.get(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']), json={},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(invoice[0]['id'], response.json['id'])
@@ -133,7 +131,7 @@ class VerifierTest(unittest.TestCase):
                 "ocr_from_user": True
             }
         }
-        response = self.app.put('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/updatePosition',
+        response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']) + '/updatePosition',
                                 json={"args": new_position},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -152,7 +150,7 @@ class VerifierTest(unittest.TestCase):
         new_page = {
             "invoice_number": 2
         }
-        response = self.app.put('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/updatePage',
+        response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']) + '/updatePage',
                                 json={"args": new_page},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -169,7 +167,7 @@ class VerifierTest(unittest.TestCase):
             "invoice_number": "test_invoice_number",
             "quotation_number": "test_quotation_number"
         }
-        response = self.app.put('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/updateData',
+        response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']) + '/updateData',
                                 json={"args": new_data},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -183,7 +181,7 @@ class VerifierTest(unittest.TestCase):
         self.create_invoice()
         self.db.execute("SELECT id FROM invoices")
         invoice = self.db.fetchall()
-        response = self.app.delete('/test/ws/verifier/invoices/delete/' + str(invoice[0]['id']),
+        response = self.app.delete(f'/{CUSTOM_ID}/ws/verifier/invoices/delete/' + str(invoice[0]['id']),
                                    headers={"Content-Type": "application/json",
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -196,7 +194,7 @@ class VerifierTest(unittest.TestCase):
         self.create_invoice()
         self.db.execute("SELECT id FROM invoices")
         invoice = self.db.fetchall()
-        response = self.app.put('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/deleteData',
+        response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']) + '/deleteData',
                                 json={'args': 'invoice_number'},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -209,7 +207,7 @@ class VerifierTest(unittest.TestCase):
         self.create_invoice()
         self.db.execute("SELECT id, path, filename FROM invoices")
         invoice = self.db.fetchall()
-        response = self.app.get('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/deleteDocuments',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']) + '/deleteDocuments',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertFalse(os.path.isfile(invoice[0]['path'] + '/' + invoice[0]['filename']))
@@ -219,7 +217,7 @@ class VerifierTest(unittest.TestCase):
         self.create_invoice()
         self.db.execute("SELECT id FROM invoices")
         invoice = self.db.fetchall()
-        response = self.app.put('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/deletePosition',
+        response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']) + '/deletePosition',
                                 json={'args': 'invoice_number'},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -232,7 +230,7 @@ class VerifierTest(unittest.TestCase):
         self.create_invoice()
         self.db.execute("SELECT id FROM invoices")
         invoice = self.db.fetchall()
-        response = self.app.put('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/deletePage',
+        response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']) + '/deletePage',
                                 json={'args': 'invoice_number'},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -243,7 +241,7 @@ class VerifierTest(unittest.TestCase):
     def test_successful_get_totals(self):
         self.create_supplier()
         self.create_invoice()
-        response = self.app.get('/test/ws/verifier/invoices/totals/NEW/1',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/verifier/invoices/totals/NEW/1',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, response.json['totals']['today'])
@@ -253,7 +251,7 @@ class VerifierTest(unittest.TestCase):
         self.create_invoice()
         self.db.execute("SELECT full_jpg_filename FROM invoices")
         invoice = self.db.fetchall()
-        response = self.app.post('/test/ws/verifier/getThumb',
+        response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/getThumb',
                                  json={'args': {'type': 'full', 'filename': invoice[0]['full_jpg_filename']}},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -280,7 +278,7 @@ class VerifierTest(unittest.TestCase):
                 'height': 1736
             }
         }
-        response = self.app.post('/test/ws/verifier/ocrOnFly', json=data,
+        response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/ocrOnFly', json=data,
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual('INV-001510', response.json['result'])
@@ -293,7 +291,7 @@ class VerifierTest(unittest.TestCase):
         new_data = {
             "locked": True
         }
-        response = self.app.put('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/update',
+        response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']) + '/update',
                                 json={"args": new_data},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -310,9 +308,9 @@ class VerifierTest(unittest.TestCase):
             "locked": True,
             "locked_by": "admin"
         }
-        self.app.put('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/update', json={"args": new_data},
-                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-        response = self.app.put('/test/ws/verifier/invoices/removeLockByUserId/admin',
+        self.app.put(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']) + '/update', json={"args": new_data},
+                     headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/invoices/removeLockByUserId/admin',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.db.execute("SELECT * FROM invoices")
@@ -326,7 +324,7 @@ class VerifierTest(unittest.TestCase):
         invoice = self.db.fetchall()
         self.db.execute("SELECT * FROM outputs WHERE output_type_id = 'export_xml' AND module = 'verifier'")
         output = self.db.fetchall()
-        response = self.app.post('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/export_xml',
+        response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']) + '/export_xml',
                                  json={'args': output[0]},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -339,7 +337,7 @@ class VerifierTest(unittest.TestCase):
         invoice = self.db.fetchall()
         self.db.execute("SELECT * FROM outputs WHERE output_type_id = 'export_pdf'")
         output = self.db.fetchall()
-        response = self.app.post('/test/ws/verifier/invoices/' + str(invoice[0]['id']) + '/export_pdf',
+        response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']) + '/export_pdf',
                                  json={'args': output[0]},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)

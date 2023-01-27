@@ -16,10 +16,8 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from time import sleep
-
-from flask import Blueprint, make_response, jsonify, request
 from flask_babel import gettext
+from flask import Blueprint, make_response, jsonify, request
 from src.backend.import_controllers import auth, splitter, forms
 
 bp = Blueprint('splitter', __name__, url_prefix='/ws/')
@@ -39,16 +37,17 @@ def upload():
         return make_response(gettext('UNKNOW_ERROR'), 400)
 
 
-@bp.route('splitter/batches', defaults={'time': None, 'status': None, 'batch_id': None, 'size': None, 'page': None},
+@bp.route('splitter/batches/user/<int:user_id>', defaults={'time': None, 'status': None, 'batch_id': None, 'size': None, 'page': None},
           methods=['GET'])
-@bp.route('splitter/batches/<int:batch_id>', defaults={'time': None, 'status': None, 'size': None, 'page': None},
+@bp.route('splitter/batches/<int:batch_id>/user/<int:user_id>', defaults={'time': None, 'status': None, 'size': None, 'page': None},
           methods=['GET'])
-@bp.route('splitter/batches/<int:page>/<int:size>/<string:time>/<string:status>', defaults={'batch_id': None},
+@bp.route('splitter/batches/user/<int:user_id>/paging/<int:page>/<int:size>/<string:time>/<string:status>', defaults={'batch_id': None},
           methods=['GET'])
 @auth.token_required
-def retrieve_splitter_batches(batch_id, page, size, time, status):
+def retrieve_splitter_batches(batch_id, user_id, page, size, time, status):
     args = {
         'batch_id': batch_id,
+        'user_id': user_id,
         'size': size,
         'page': page,
         'time': time if time != 'None' else None,
@@ -56,6 +55,13 @@ def retrieve_splitter_batches(batch_id, page, size, time, status):
     }
     res = splitter.retrieve_batches(args)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('splitter/batch/<int:batch_id>/file', methods=['GET'])
+@auth.token_required
+def download_original_file(batch_id):
+    response, status = splitter.download_original_file(batch_id)
+    return make_response(jsonify(response)), status
 
 
 @bp.route('splitter/loadReferential/<int:form_id>', methods=['GET'])
@@ -104,6 +110,22 @@ def change_form():
         'batch_id': data['batchId'],
     })
     return make_response(jsonify(response)), status
+
+
+@bp.route('splitter/lockBatch', methods=['POST'])
+@auth.token_required
+def lock_batch():
+    data = request.data
+    data = json.loads(data)
+    response, status = splitter.lock_batch({'batch_id': data['batchId'], 'user_id': data['lockedBy']})
+    return make_response(jsonify(response)), status
+
+
+@bp.route('splitter/removeLockByUserId/<string:user_id>', methods=['PUT'])
+@auth.token_required
+def remove_lock_by_user_id(user_id):
+    res = splitter.remove_lock_by_user_id(user_id)
+    return make_response(res[0], res[1])
 
 
 @bp.route('splitter/pages/<int:page_id>/fullThumbnail', methods=['GET'])
@@ -171,11 +193,11 @@ def merge_batches(parent_id):
     return make_response(jsonify('')), 200
 
 
-@bp.route('splitter/invoices/totals', defaults={'status': None}, methods=['GET'])
-@bp.route('splitter/invoices/totals/<string:status>', methods=['GET'])
+@bp.route('splitter/batches/user/<int:user_id>/totals', defaults={'status': None}, methods=['GET'])
+@bp.route('splitter/batches/user/<int:user_id>/totals/<string:status>', methods=['GET'])
 @auth.token_required
-def get_totals(status):
-    totals = splitter.get_totals(status)
+def get_totals(status, user_id):
+    totals = splitter.get_totals(status, user_id)
     return make_response({'totals': totals[0]}, totals[1])
 
 

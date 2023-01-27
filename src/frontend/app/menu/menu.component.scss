@@ -4,3 +4,26 @@
     @apply ring-green-400;
     @apply ring-opacity-60;
 }
+
+.profile_active {
+    @apply text-green-400 #{!important};
+}
+
+::ng-deep .language .mat-mdc-text-field-wrapper {
+    @apply top-0.5;
+    & .mat-mdc-form-field-flex {
+        @apply h-12;
+        & .mat-mdc-form-field-infix {
+            padding-top: 14px !important;
+        }
+    }
+}
+
+.my_profile {
+    @apply text-gray-600;
+    &:hover {
+        & span {
+            @apply text-green-400;
+        }
+    }
+}

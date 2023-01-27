@@ -71,8 +71,7 @@ def get_ldap_users(connection, base_dn, users_dn):
     """
     :param connection:
     :param users_dn:
-    :param classUser:
-    :param objectClass:
+    :param base_dn:
     :return:
     """
     try:

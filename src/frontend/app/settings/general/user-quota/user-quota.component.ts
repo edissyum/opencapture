@@ -1,18 +1,35 @@
+/** This file is part of Open-Capture.
+
+ Open-Capture is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {MatDialog} from "@angular/material/dialog";
-import {UserService} from "../../../../services/user.service";
-import {FormBuilder, FormControl, Validators} from "@angular/forms";
-import {AuthService} from "../../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {HistoryService} from "../../../../services/history.service";
-import {SettingsService} from "../../../../services/settings.service";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {environment} from "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
+import { ActivatedRoute, Router } from "@angular/router";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { MatDialog } from "@angular/material/dialog";
+import { UserService } from "../../../../services/user.service";
+import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { AuthService } from "../../../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { HistoryService } from "../../../../services/history.service";
+import { SettingsService } from "../../../../services/settings.service";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { environment } from "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
 
 @Component({
     selector: 'app-user-quota',
@@ -47,7 +64,6 @@ export class UserQuotaComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
-
         this.http.get(environment['url'] + '/ws/users/list', {headers: this.authService.headers}).pipe(
             tap((data_users: any) => {
                 this.usersList = data_users.users;
@@ -94,14 +110,15 @@ export class UserQuotaComponent implements OnInit {
                 'email_dest': this.quotaEmailDestControl.value
             }
         };
-
-        this.usersControlSelect.value.forEach((user_id: any) => {
-            this.usersList.forEach((user: any) => {
-               if (user['id'] === user_id) {
-                   data['value']['users_filtered'].push(user['username']);
-               }
+        if (this.usersControlSelect.value) {
+            this.usersControlSelect.value.forEach((user_id: any) => {
+                this.usersList.forEach((user: any) => {
+                    if (user['id'] === user_id) {
+                        data['value']['users_filtered'].push(user['username']);
+                    }
+                });
             });
-        });
+        }
 
         this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + this.userQuotaConfigId,
             {'data': data}, {headers: this.authService.headers}).pipe(

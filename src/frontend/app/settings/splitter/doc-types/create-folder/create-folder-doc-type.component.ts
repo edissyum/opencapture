@@ -24,32 +24,24 @@ export class CreateFolderDocTypeComponent implements OnInit {
     noMasterFolder      : string    = '_NO_MASTER';
     fields              : any       = [
         {
-            id      : 'key',
-            type    : 'text',
-            label   : this.translate.instant('HEADER.id'),
-            control : new FormControl(),
-            required: true,
-            disabled  : false,
+            id       : 'key',
+            type     : 'text',
+            label    : this.translate.instant('HEADER.id'),
+            control  : new FormControl(),
+            required : true,
+            disabled : false,
         },
         {
-            id      : 'label',
-            type    : 'text',
-            label   : this.translate.instant('HEADER.label'),
-            control : new FormControl(),
-            required: true,
-            disabled  : false,
-        },
-        {
-            id      : 'isDefault',
-            type    : 'slide',
-            label   : this.translate.instant('DOCTYPE.default_doctype'),
-            control : new FormControl(),
-            required: false,
-            disabled: true,
-        },
+            id       : 'label',
+            type     : 'text',
+            label    : this.translate.instant('HEADER.label'),
+            control  : new FormControl(),
+            required : true,
+            disabled : false,
+        }
     ];
     selectedFormId      : number | undefined;
-    form!: FormGroup;
+    form!               : FormGroup;
 
     constructor(
       private http: HttpClient,
@@ -86,7 +78,7 @@ export class CreateFolderDocTypeComponent implements OnInit {
                 if (docType.code.startsWith(codeSelected)
                     && docType.code.split('.').length === codeSelected.split('.').length + 1) {
                     const currentIdx = Number(docType.code.split('.').pop());
-                    lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
+                    lastIndex = (currentIdx > lastIndex) ? currentIdx : lastIndex;
                 }
             });
         }
@@ -94,7 +86,7 @@ export class CreateFolderDocTypeComponent implements OnInit {
             this.documentTypeFactoryComponent.treeDataObj.doctypeData.forEach((docType:any) => {
                 if (docType.code.split('.').length === 2) {
                     const currentIdx = Number(docType.code.split('.').pop());
-                    lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
+                    lastIndex = (currentIdx > lastIndex) ? currentIdx : lastIndex;
                 }
             });
         }
@@ -110,7 +102,7 @@ export class CreateFolderDocTypeComponent implements OnInit {
         const lastIndex = this.getLastFolderIndex(newFolder.folder);
         newFolder = {
             'key'       : newFolder.key,
-            'code'      : newFolder.folder !== this.noMasterFolder ? newFolder.folder + '.' + lastIndex: '0.' + lastIndex,
+            'code'      : newFolder.folder !== this.noMasterFolder ? newFolder.folder + '.' + lastIndex : '0.' + lastIndex,
             'label'     : newFolder.label,
             'is_default': false,
             'type'      : 'folder',

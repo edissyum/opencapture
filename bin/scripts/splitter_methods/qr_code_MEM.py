@@ -15,44 +15,50 @@
 
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
-def process(args, file, log, splitter, files, batch_folder, config, docservers, ocr, regex):
+def process(args):
     """
-    :param args:
-    :param file: File path to split
-    :param log: log object
-    :param splitter: Splitter object
-    :param files: Files object
-    :param batch_folder: batch folder path
-    :param config: Config object
-    :param ocr: PyTesseract object
-    :param regex: regex content values
+    Process custom split for file
+    :param args: has :
+    - log: log object
+    - files: Files object
+    - config: Config object
+    - ocr: PyTesseract object
+    - file: File path to split
+    - splitter: Splitter object
+    - regex: regex content values
+    - customer_id: used customer id
+    - batch_folder: batch folder path
+    - configurations: configuration values
+    - ocrise: bool, launch OCR on file or not
     :return: N/A
     """
-    log.info('Processing file for separation : ' + file)
+    args['log'].info('Processing file for separation : ' + args['file'])
 
-    batch_folder_path = f"{docservers['SPLITTER_BATCHES']}/{batch_folder}/"
-    batch_thumbs_path = f"{docservers['SPLITTER_THUMB']}/{batch_folder}/"
-    files.save_img_with_pdf2image(file, batch_folder_path + "page")
-    files.save_img_with_pdf2image_min(file, batch_thumbs_path + "page", single_file=False)
+    batch_folder_path = f"{args['docservers']['SPLITTER_BATCHES']}/{args['batch_folder']}/"
+    batch_thumbs_path = f"{args['docservers']['SPLITTER_THUMB']}/{args['batch_folder']}/"
+    args['files'].save_img_with_pdf2image(args['file'], batch_folder_path + "page")
+    args['files'].save_img_with_pdf2image_min(args['file'], batch_thumbs_path + "page", single_file=False)
 
-    list_files = files.sorted_file(batch_folder_path, 'jpg')
+    list_files = args['files'].sorted_file(batch_folder_path, 'jpg')
     blank_pages = []
 
     # Remove blank pages
-    if splitter.separator_qr.remove_blank_pages:
+    if args['splitter'].separator_qr.remove_blank_pages:
         cpt = 0
         tmp_list_files = list_files
         for f in tmp_list_files:
-            if files.is_blank_page(f[1]):
+            if args['files'].is_blank_page(f[1]):
                 blank_pages.append(cpt)
             cpt = cpt + 1
 
-    splitter.separator_qr.run(file)
-    split(splitter, list_files)
-    splitter.get_result_documents(blank_pages)
-    original_file = file
-    file = files.move_to_docservers(docservers, file, 'splitter')
-    splitter.save_documents(batch_folder, file, args['input_id'], original_file)
+    args['splitter'].separator_qr.run(args['file'])
+    split(args['splitter'], list_files)
+    args['splitter'].get_result_documents(blank_pages)
+    original_file = args['file']
+    file = args['files'].move_to_docservers(args['docservers'], args['file'], 'splitter')
+    if args['ocrise']:
+        args['files'].ocrise_pdf(file, args['configurations']['locale'], args['log'])
+    args['splitter'].save_documents(args['batch_folder'], file, args['input_id'], original_file)
 
 
 def split(splitter, pages):
@@ -62,7 +68,7 @@ def split(splitter, pages):
     :param pages: pages list
     :return: N/A
     """
-    maarch_value = None
+    mem_value = None
     for index, path in pages:
         separator_type = None
         is_separator = list(filter(lambda separator: int(separator['num']) + 1 == int(index),
@@ -72,10 +78,10 @@ def split(splitter, pages):
             splitter.log.info("QR Code in page " + str(index) + " : " + str(qr_code))
 
             """
-                Maarch separator (MAARCH_ is a Maarch prefix)
+                MEM separator (MAARCH_ or MEM_ are a MEM Courrier prefix)
             """
-            if 'MAARCH_' in qr_code and '|' not in qr_code:
-                maarch_value = qr_code
+            if ('MAARCH_' in qr_code or 'MEM_' in qr_code) and '|' not in qr_code:
+                mem_value = qr_code
                 separator_type = splitter.doc_start
             else:
                 if splitter.bundle_start in qr_code:
@@ -87,7 +93,7 @@ def split(splitter, pages):
             'source_page': index,
             'separator_type': separator_type,
             'doctype_value': None,
-            'maarch_value': maarch_value,
+            'mem_value': mem_value,
             'metadata_1': None,
             'metadata_2': None,
             'metadata_3': None,

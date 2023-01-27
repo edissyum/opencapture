@@ -232,7 +232,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                         })
                     ).subscribe();
                 }
-            }),catchError((err: any) => {
+            }), catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);

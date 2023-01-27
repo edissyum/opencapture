@@ -33,18 +33,18 @@ import { NotificationService } from "../../../../services/notifications/notifica
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import {HistoryService} from "../../../../services/history.service";
+import { HistoryService } from "../../../../services/history.service";
 
 @Component({
     selector: 'app-configurations',
     templateUrl: './configurations.component.html',
     styleUrls: ['./configurations.component.scss'],
     providers: [
-        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' }},
     ]
 })
 export class ConfigurationsComponent implements OnInit {
-    columnsToDisplay    : string[]      = ['id', 'label', 'description', 'type', 'value', 'actions'];
+    columnsToDisplay    : string[]      = ['id', 'label', 'description', 'type', 'content', 'actions'];
     headers             : HttpHeaders   = this.authService.headers;
     loading             : boolean       = true;
     updateLoading       : boolean       = false;
@@ -125,7 +125,7 @@ export class ConfigurationsComponent implements OnInit {
                 const args = {
                     'image_content': value.target.result
                 };
-                this.http.put(environment['url'] + '/ws/config/updateLoginImage',{'args': args},
+                this.http.put(environment['url'] + '/ws/config/updateLoginImage', {'args': args},
                     {headers: this.authService.headers},
                 ).pipe(
                     tap(() => {

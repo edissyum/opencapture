@@ -31,7 +31,6 @@ import { NotificationService } from "../../services/notifications/notifications.
 import { LocalStorageService } from "../../services/local-storage.service";
 import { HistoryService } from "../../services/history.service";
 
-
 @Component({
     selector: 'app-upload',
     templateUrl: './upload.component.html',
@@ -46,6 +45,7 @@ export class UploadComponent implements OnInit {
     inputs                   : any[]         = [];
     loading                  : boolean       = true;
     sending                  : boolean       = false;
+    error                    : boolean       = false;
 
     constructor(
         private router: Router,
@@ -73,8 +73,13 @@ export class UploadComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+        if (!this.userService.user.id) {
+            this.userService.user = this.userService.getUserFromLocal();
+        }
+
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
-        this.http.get(environment['url'] + '/ws/inputs/list?module=' + splitterOrVerifier,
+        this.http.get(environment['url'] + '/ws/inputs/list?module=' + splitterOrVerifier +
+            '&userId=' + this.userService.user.id,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.inputs = data.inputs;
@@ -93,11 +98,13 @@ export class UploadComponent implements OnInit {
     }
 
     checkFile(data: any): void {
+        this.error = false;
         if (data && data.length !== 0) {
             for (let i = 0; i < data.length; i++) {
                 const fileName = data[i].name;
                 const fileExtension = fileName.split('.').pop();
                 if (fileExtension.toLowerCase() !== 'pdf') {
+                    this.error = true;
                     this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized',
                         {count: data.length}));
                     return;
@@ -115,7 +122,7 @@ export class UploadComponent implements OnInit {
         this.selectedInput = inputId;
     }
 
-    uploadInvoice(): void {
+    uploadFile(): void {
         this.sending = true;
         const formData: FormData = new FormData();
 

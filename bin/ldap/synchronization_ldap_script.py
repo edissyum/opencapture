@@ -153,7 +153,7 @@ def get_ldap_users_data(ldap_users_dict):
             user_ldap_id = list_users_ldap[i][user_id][0] if user_id in list_users_ldap[i] else ''
             givenname_user_ldap = list_users_ldap[i][firstname][0] if firstname in list_users_ldap[i] else ''
             lastname_user_ldap = list_users_ldap[i][lastname][0] if lastname in list_users_ldap[i] else ''
-            if user_ldap_id and givenname_user_ldap and lastname_user_ldap :
+            if user_ldap_id and givenname_user_ldap and lastname_user_ldap:
                 user_data.append(user_ldap_id)
                 user_data.append(givenname_user_ldap)
                 user_data.append(lastname_user_ldap)

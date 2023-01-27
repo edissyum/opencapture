@@ -7,18 +7,18 @@
 }
 
 
-::ng-deep .mat-tab-labels {
-    & .mat-tab-disabled {
+::ng-deep .mat-mdc-tab-labels {
+    & .mat-mdc-tab-disabled {
         @apply opacity-100 #{!important};
     }
 
-    & :not(.mat-tab-label-active) {
+    & :not(.mdc-tab--active) {
         & .actions {
             @apply pointer-events-none;
         }
     }
 
-    & .mat-tab-label-active {
+    & .mdc-tab--active {
         @apply opacity-100 #{!important};
         & .actions {
             @apply pointer-events-auto;
@@ -33,6 +33,6 @@
     }
 
     & .mat-form-field-infix {
-        @apply -top-3.5;
+        @apply -top-3;
     }
 }

@@ -30,7 +30,12 @@ def get_forms(args):
             for form in _forms:
                 allowed_customers, _ = user.get_customers_by_user_id(args['user_id'])
                 allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
-                total = verifier.get_totals({'time': args['time'], 'status': args['status'], 'form_id': form['id'],'allowedCustomers': allowed_customers})[0]
+                total = verifier.get_totals({
+                    'time': args['time'],
+                    'status': args['status'],
+                    'form_id': form['id'],
+                    'allowedCustomers': allowed_customers
+                })[0]
                 form['total'] = total
         response = {
             "forms": _forms

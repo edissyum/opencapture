@@ -37,13 +37,16 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 export class LoginMethodsComponent implements OnInit {
     loading                 : boolean   = true;
     isSaveBtnDisabled       : boolean   = true;
-    isLaunchBtnDisabled     : boolean   = false;
-    isLinear                : boolean   = false;
+    isNextBtnDisabled       : boolean   = true;
+    isLaunchBtnDisabled     : boolean   = true;
+    isLaunchBtnClicked      : boolean   = false;
+    isProcessLaunched       : boolean   = false;
     showPassword            : boolean   = false;
     isLdapChecked           : boolean   = false;
     isDefaultChecked        : boolean   = false;
     connexionServerStatus   : boolean   = false;
     synchroUsersStatus      : boolean   = false;
+    isProcessConnectionLaunched       : boolean   = false;
     label                   : any[]     = [
         marker ('LOGIN-METHODS.ldap'),
         marker ('LOGIN-METHODS.default'),
@@ -164,7 +167,7 @@ export class LoginMethodsComponent implements OnInit {
             values: [],
             control: new FormControl(),
             required: true,
-             hint:'Ex : sn'
+            hint:'Ex : sn'
         },
         {
             id: 'usersDN',
@@ -331,7 +334,7 @@ export class LoginMethodsComponent implements OnInit {
     }
 
     enableLoginMethod(loginMethodName: any): void {
-        this.http.post(environment['url'] + '/ws/auth/enableLoginMethodName',loginMethodName, {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/auth/enableLoginMethodName', loginMethodName, {headers: this.authService.headers}).pipe(
             tap(() => {
                 if (loginMethodName['method_name'] === 'default') {
                     this.isDefaultChecked = true;
@@ -348,52 +351,67 @@ export class LoginMethodsComponent implements OnInit {
 
     checkLdapConnexion(): void {
         if (this.isValidConnexionForm()) {
+            this.isProcessConnectionLaunched = true;
             const server_data : any = {};
             this.connectionFormGroup.forEach(element => {
                 server_data[element.id] = element.control.value;
             });
-            this.http.post(environment['url'] + '/ws/auth/connectionLdap', server_data,{headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.connexionServerStatus = true;
-                this.notify.success(this.translate.instant('LOGIN-METHODS.server_ldap_connection'));
-            }),
-            catchError ((err: any) => {
-                this.isSaveBtnDisabled = true;
-                this.connexionServerStatus = false;
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of (false);
-            })
-        ).subscribe();
+            this.http.post(environment['url'] + '/ws/auth/connectionLdap', server_data, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.isProcessConnectionLaunched = false;
+                    this.isLaunchBtnDisabled = false;
+                    this.connexionServerStatus = true;
+                    this.isNextBtnDisabled = false;
+                    this.notify.success(this.translate.instant('LOGIN-METHODS.server_ldap_connection'));
+                }),
+                catchError ((err: any) => {
+                    this.isProcessConnectionLaunched = false;
+                    this.isLaunchBtnDisabled = true;
+                    this.isSaveBtnDisabled = true;
+                    this.isNextBtnDisabled = true;
+                    this.connexionServerStatus = false;
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of (false);
+                })
+            ).subscribe();
         }
     }
 
     ldapSynchronization(): void {
-        this.isLaunchBtnDisabled = true;
         if (this.isValidSynchronizationForm() && this.isValidConnexionForm()) {
+            this.isLaunchBtnClicked = true;
+            this.isProcessLaunched = true;
             const synchronizationData : any = {};
             this.connectionFormGroup.forEach(element => {
                 synchronizationData[element.id] = element.control.value;
             });
-             this.synchroparamsFormGroup.forEach(element => {
+            this.synchroparamsFormGroup.forEach(element => {
                 synchronizationData[element.id] = element.control.value;
             });
             this.http.post(environment['url'] + '/ws/auth/ldapSynchronization', synchronizationData, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.isSaveBtnDisabled = false;
-                this.isLaunchBtnDisabled = false;
-                this.synchroUsersStatus = true;
-                this.notify.success(this.translate.instant('LOGIN-METHODS.result_synchronization_operation', {'users_added':data['create_users'],'users_updated':data['update_users'],'users_disabled':data['disabled_users']}));
-            }),
-            catchError ((err: any) => {
-                this.isSaveBtnDisabled = true;
-                this.isLaunchBtnDisabled = false;
-                this.synchroUsersStatus = false;
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of (false);
-            })
-        ).subscribe();
+                tap((data: any) => {
+                    this.isProcessLaunched = false;
+                    this.isLaunchBtnClicked = false;
+                    this.isSaveBtnDisabled = false;
+                    this.isNextBtnDisabled = false;
+                    this.isLaunchBtnDisabled = false;
+                    this.synchroUsersStatus = true;
+                    this.notify.success(this.translate.instant('LOGIN-METHODS.result_synchronization_operation', {'users_added':data['create_users'], 'users_updated':data['update_users'], 'users_disabled':data['disabled_users']}));
+                }),
+                catchError ((err: any) => {
+                    this.isProcessLaunched = false;
+                    this.isLaunchBtnClicked = false;
+                    this.isSaveBtnDisabled = true;
+                    this.isLaunchBtnDisabled = true;
+                    this.synchroUsersStatus = false;
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of (false);
+                })
+            ).subscribe();
+        } else{
+            this.isLaunchBtnDisabled = true;
         }
     }
 
@@ -404,7 +422,7 @@ export class LoginMethodsComponent implements OnInit {
                 this.connectionFormGroup.forEach(element => {
                     methodDataToSave[element.id] = element.control.value;
                 });
-                 this.synchroparamsFormGroup.forEach(element => {
+                this.synchroparamsFormGroup.forEach(element => {
                     methodDataToSave[element.id] = element.control.value;
                 });
                 this.http.post(environment['url'] + '/ws/auth/saveLoginMethodConfigs', methodDataToSave, {headers: this.authService.headers}).pipe(

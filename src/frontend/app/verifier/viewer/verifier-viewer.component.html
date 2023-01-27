@@ -2,18 +2,18 @@
     <app-loader></app-loader>
 </div>
 <div class="grid grid-cols-2 overflow-auto" style="height: calc(100vh - 64px) !important">
-    <div class="fixed z-50 text-xl left-6 top-4">
-        <ng-container *ngIf="!this.loading && this.invoice && this.invoice.nb_pages> 1">
-            <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
-            {{ 'VERIFIER.page' | translate }}
-            {{ currentPage }}
-            {{ 'VERIFIER.on' | translate }}
-            {{ invoice.nb_pages }}
-            <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()"></i>
-        </ng-container>
-    </div>
     <div id="image" class="overflow-auto" style="height: calc(100vh - 64px) !important; direction: rtl">
         <div class="image-container px-4" *ngIf="this.invoice">
+            <div class="z-50 text-xl text-left py-2">
+                <ng-container *ngIf="!this.loading && this.invoice.nb_pages> 1">
+                    <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()"></i>
+                    {{ 'VERIFIER.page' | translate }}
+                    {{ currentPage }}
+                    {{ 'VERIFIER.on' | translate }}
+                    {{ invoice.nb_pages }}
+                    <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
+                </ng-container>
+            </div>
             <img id="document_image" alt="Open-Capture" [src]="this.imgSrc">
         </div>
     </div>
@@ -40,7 +40,9 @@
                                             {{ form['label'] }}
                                         </mat-option>
                                     </mat-select>
-                                    <mat-hint>{{ 'VERIFIER.outputs_list' | translate }} : {{ this.outputsLabel.join(', ') }}</mat-hint>
+                                    <mat-hint class="text-gray-500">
+                                        {{ 'VERIFIER.outputs_list' | translate }} : {{ this.outputsLabel.join(', ') }}
+                                    </mat-hint>
                                 </mat-form-field>
                             </mat-tab>
                         </mat-tab-group>
@@ -66,7 +68,7 @@
                     </span>
                 </div>
                 <div class="relative border-green-400 border rounded-lg -top-3.5">
-                    <div id="{{ category['id'] }}" class="flex flex-wrap w-full my-3" style="min-height: 50px;">
+                    <div id="{{ category['id'] }}" class="flex flex-wrap w-full mt-6" style="min-height: 50px;">
                         <div *ngFor="let field of this.form[category['id']];" class="flex items-center px-3" [class]="field.class">
                             <ng-container *ngIf="field.type === 'text'">
                                 <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.invoice.status === 'END'"
@@ -77,7 +79,7 @@
                                     </mat-label>
                                     <input [id]="field.id" matInput type="text" [required]="field.required" [readonly]="this.invoice.status === 'END'"
                                            [formControl]="field.control" [pattern]="field.pattern" [matAutocomplete]="auto">
-                                    <mat-error class="mt-1" *ngIf="field.control.errors">
+                                    <mat-error *ngIf="field.control.errors">
                                         {{ getErrorMessage(field.id, category['id']) }}
                                     </mat-error>
                                     <mat-autocomplete #auto="matAutocomplete" [id]="field.id"
@@ -93,18 +95,18 @@
                                             {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                         </mat-label>
                                         <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                              class="absolute -top-2 -right-2.5 cursor-pointer text-gray-900">
-                                            <mat-icon class="text-lg">add_circle</mat-icon>
+                                              class="absolute top-0.5 -right-2 cursor-pointer text-gray-600">
+                                            <i class="fa-solid fa-circle-plus"></i>
                                         </span>
                                         <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                              class="absolute -top-2 -right-2.5 cursor-pointer text-red-500">
-                                            <mat-icon class="text-xl">delete_forever</mat-icon>
+                                              class="absolute top-0.5 -right-2 cursor-pointer text-red-500 opacity-70">
+                                            <i class="fa-solid fa-trash"></i>
                                         </span>
                                         <input [id]="field.id" matInput type="text" [formControl]="field.control" [required]="field.required"
                                                [pattern]="field.pattern" (click)="this.ocrFromUser = true; this.saveInfo = true;"
                                                (focusin)="ocr($event, true, field.color);" [readonly]="this.invoice.status === 'END'"
                                                (focusout)="ocr($event, false); saveData($any($event.target).value, field['id']); checkVAT(field['id'], $any($event.target).value); checkSirenOrSiret(field['id'], $any($event.target).value)">
-                                        <mat-error class="mt-1" *ngIf="field.control.errors">
+                                        <mat-error *ngIf="field.control.errors">
                                             {{ getErrorMessage(field.id, category['id']) }}
                                         </mat-error>
                                     </mat-form-field>
@@ -116,12 +118,12 @@
                                         {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                     </mat-label>
                                     <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                      class="absolute -top-2 -right-2.5 cursor-pointer text-gray-900">
-                                        <mat-icon class="text-lg">add_circle</mat-icon>
+                                      class="absolute top-0.5 -right-2 cursor-pointer text-gray-600">
+                                        <i class="fa-solid fa-circle-plus"></i>
                                     </span>
                                     <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                      class="absolute -top-2 -right-2.5 cursor-pointer text-red-500">
-                                        <mat-icon class="text-xl">delete_forever</mat-icon>
+                                      class="absolute top-0.5 -right-2 cursor-pointer text-red-500 opacity-70">
+                                        <i class="fa-solid fa-trash"></i>
                                     </span>
                                     <textarea [id]="field.id" matInput cdkTextareaAutosize
                                               cdkAutosizeMinRows="1"
@@ -129,7 +131,7 @@
                                               [required]="field.required" [formControl]="field.control" [pattern]="field.pattern"
                                               (focusin)="ocr($event, true, field.color)" [readonly]="this.invoice.status === 'END'"
                                               (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"></textarea>
-                                    <mat-error class="mt-1" *ngIf="field.control.errors">
+                                    <mat-error *ngIf="field.control.errors">
                                         {{ getErrorMessage(field.id, category['id']) }}
                                     </mat-error>
                                 </mat-form-field>
@@ -140,12 +142,12 @@
                                         {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                     </mat-label>
                                     <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                      class="absolute -top-2 -right-2.5 cursor-pointer text-gray-900">
-                                        <mat-icon class="text-lg">add_circle</mat-icon>
+                                      class="absolute top-0.5 -right-2 cursor-pointer text-gray-600">
+                                        <i class="fa-solid fa-circle-plus"></i>
                                     </span>
                                     <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                      class="absolute -top-2 -right-2.5 cursor-pointer text-red-500">
-                                        <mat-icon class="text-xl">delete_forever</mat-icon>
+                                      class="absolute top-0.5 -right-2 cursor-pointer text-red-500 opacity-70">
+                                        <i class="fa-solid fa-trash"></i>
                                     </span>
                                     <input [id]="field.id" matInput [matDatepicker]="picker" [formControl]="field.control"
                                            [readonly]="this.invoice.status === 'END'"
@@ -154,7 +156,7 @@
                                            (dateChange)="saveData($any($event.targetElement).value, field['id'])">
                                     <mat-datepicker-toggle [disabled]="this.invoice.status === 'END'" matSuffix [for]="picker"></mat-datepicker-toggle>
                                     <mat-datepicker #picker></mat-datepicker>
-                                    <mat-error class="mt-1" *ngIf="field.control.errors">
+                                    <mat-error *ngIf="field.control.errors">
                                         {{ getErrorMessage(field.id, category['id']) }}
                                     </mat-error>
                                 </mat-form-field>
@@ -165,12 +167,12 @@
                                         {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                     </mat-label>
                                     <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                      class="absolute -top-2 -right-2.5 cursor-pointer text-gray-900">
-                                        <mat-icon class="text-lg">add_circle</mat-icon>
+                                      class="absolute top-0.5 -right-2 cursor-pointer text-gray-600">
+                                        <i class="fa-solid fa-circle-plus"></i>
                                     </span>
                                     <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                      class="absolute -top-2 -right-2.5 cursor-pointer text-red-500">
-                                        <mat-icon class="text-xl">delete_forever</mat-icon>
+                                      class="absolute top-0.5 -right-2 cursor-pointer text-red-500 opacity-70">
+                                        <i class="fa-solid fa-trash"></i>
                                     </span>
                                     <input [id]="field.id" matInput type="text" [required]="field.required"
                                            [formControl]="field.control"
@@ -199,18 +201,19 @@
                                         {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                     </mat-label>
                                     <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                      class="absolute -top-2 -right-2.5 cursor-pointer text-gray-900">
-                                        <mat-icon class="text-lg">add_circle</mat-icon>
+                                      class="absolute top-0.5 -right-2 cursor-pointer text-gray-600">
+                                        <i class="fa-solid fa-circle-plus"></i>
                                     </span>
                                     <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                      class="absolute -top-2 -right-2.5 cursor-pointer text-red-500">
-                                        <mat-icon class="text-xl">delete_forever</mat-icon>
+                                      class="absolute top-0.5 -right-2 cursor-pointer text-red-500 opacity-70">
+                                        <i class="fa-solid fa-trash"></i>
                                     </span>
-                                    <input [id]="field.id" matInput type="text" [required]="field.required"
+                                    <input matInput [id]="field.id" type="text" [required]="field.required"
                                            [formControl]="field.control" [matAutocomplete]="accounting" [readonly]="this.invoice.status === 'END'">
-                                    <mat-hint *ngIf="accountingPlanEmpty" class="mt-1 h-6">
-                                        {{ 'VERIFIER.accounting_plan_empty' | translate }}
-                                    </mat-hint>
+                                    <span *ngIf="accountingPlanEmpty" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
+                                          [matTooltip]="'VERIFIER.accounting_plan_empty' | translate">
+                                        <i class="fa-solid fa-circle-question"></i>
+                                    </span>
                                     <mat-autocomplete #accounting="matAutocomplete">
                                         <mat-option *ngFor="let option of field.values | async" [value]="option.compte_lib" [id]="option.compte_num">
                                             <span [innerHTML]="option.compte_num + ' - ' + option['compte_lib'] | highlight: toHighlightAccounting"></span>
@@ -229,14 +232,14 @@
                                 </mat-form-field>
                             </ng-container>
                             <span *ngIf="field.fullSizeSelected" (click)="duplicateLine(field.id, category['id'])"
-                                  class="relative -right-1.5 cursor-pointer text-gray-900"
+                                  class="relative -right-1.5 cursor-pointer text-gray-900 -top-2.5"
                                   [matTooltip]="'VERIFIER.duplicate_line' | translate" matTooltipPosition="above">
-                                <mat-icon class="text-lg">add_circle</mat-icon>
+                                <i class="fa-solid fa-clone text-lg"></i>
                             </span>
                             <span *ngIf="field.deleteLine" (click)="removeDuplicateLine(field.id, category['id'])"
-                                  class="relative -right-1.5 cursor-pointer text-red-500"
-                                  [matTooltip]="'VERIFIER.duplicate_line' | translate" matTooltipPosition="above">
-                                <mat-icon class="text-lg">remove_circle</mat-icon>
+                                  class="relative -right-1.5 cursor-pointer text-red-500 -top-2.5"
+                                  [matTooltip]="'VERIFIER.remove_duplicated_line' | translate" matTooltipPosition="above">
+                                <i class="fa-solid fa-trash text-lg"></i>
                             </span>
                         </div>
                     </div>
@@ -245,13 +248,12 @@
         </ng-container>
         <div class="mb-6 grid grid-cols-2 gap-4 h-12 text-gray-900">
             <button mat-button (click)="validateForm()" type="submit" [disabled]="this.invoice.status === 'END'"
-                    class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                    class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                 <span *ngIf="!this.loadingSubmit">{{ 'FORMS.validate' | translate }}</span>
-                <i *ngIf="this.loadingSubmit" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"
-                   style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
+                <i *ngIf="this.loadingSubmit" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
             </button>
             <button mat-button (click)="refuseForm()" type="submit" [disabled]="this.invoice.status === 'END'"
-                    class="border-solid border-red-400 border hover:bg-red-400 hover:text-white transition duration-300">
+                    class="p-6 border-solid border-red-400 border bg-red-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                 {{ 'FORMS.refuse' | translate }}
             </button>
         </div>

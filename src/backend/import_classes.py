@@ -43,12 +43,12 @@ elif 'classes' in custom_array['Files']['path']:
     _Files = getattr(__import__(custom_array['Files']['path'] + '.' + custom_array['Files']['module'],
                                 fromlist=[custom_array['Files']['module']]), custom_array['Files']['module'])
 
-if 'MaarchWebServices' or 'classes' not in custom_array['MaarchWebServices']['path']:
-    from .classes.MaarchWebServices import MaarchWebServices as _MaarchWebServices
-elif 'classes' in custom_array['MaarchWebServices']['path']:
-    _MaarchWebServices = getattr(__import__(custom_array['MaarchWebServices']['path'] + '.' + custom_array['MaarchWebServices']['module'],
-                                      fromlist=[custom_array['MaarchWebServices']['module']]),
-                           custom_array['MaarchWebServices']['module'])
+if 'MEMWebServices' or 'classes' not in custom_array['MEMWebServices']['path']:
+    from .classes.MEMWebServices import MEMWebServices as _MEMWebServices
+elif 'classes' in custom_array['MEMWebServices']['path']:
+    _MEMWebServices = getattr(__import__(custom_array['MEMWebServices']['path'] + '.' + custom_array['MEMWebServices']['module'],
+                                      fromlist=[custom_array['MEMWebServices']['module']]),
+                           custom_array['MEMWebServices']['module'])
 
 if 'PyTesseract' or 'classes' not in custom_array['PyTesseract']['path']:
     from .classes.PyTesseract import PyTesseract as _PyTesseract
@@ -62,13 +62,6 @@ if 'database' or 'classes' not in custom_array['Database']['path']:
 elif 'classes' in custom_array['Database']['path']:
     _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'],
                                    fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
-
-# if 'invoice_classification' or 'classes' not in custom_array['invoice_classification']['path']:
-#     from .invoice_classification import invoice_classification
-# elif 'classes' in custom_array['invoice_classification']['path']:
-#     invoice_classification = getattr(__import__(custom_array['invoice_classification']['path'],
-#                                                 fromlist=[custom_array['invoice_classification']['module']]),
-#                                      custom_array['invoice_classification']['module'])
 
 if 'Splitter' or 'classes' not in custom_array['Splitter']['path']:
     from .classes.Splitter import Splitter as _Splitter

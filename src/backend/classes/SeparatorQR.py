@@ -19,8 +19,8 @@
 import os
 import re
 import uuid
+import pypdf
 import shutil
-import PyPDF2
 import base64
 import qrcode
 import pdf2image
@@ -81,8 +81,8 @@ class SeparatorQR:
                     pass
 
         if blank_page_exists:
-            infile = PyPDF2.PdfReader(file)
-            output = PyPDF2.PdfWriter()
+            infile = pypdf.PdfReader(file)
+            output = pypdf.PdfWriter()
             for i in self.sorted_files(pages_to_keep):
                 _page = infile.pages[int(i) - 1]
                 output.add_page(_page)
@@ -95,14 +95,14 @@ class SeparatorQR:
         path = os.path.dirname(file)
         file_without_extention = os.path.splitext(os.path.basename(file))[0]
 
-        pdf = PyPDF2.PdfReader(file, strict=False)
+        pdf = pypdf.PdfReader(file, strict=False)
         nb_pages = len(pdf.pages)
 
         array_of_files = []
         cpt = 1
         for i in range(nb_pages):
             if i % 2 == 0:
-                output = PyPDF2.PdfWriter()
+                output = pypdf.PdfWriter()
                 output.add_page(pdf.pages[i])
                 if i + 1 < nb_pages:
                     output.add_page(pdf.pages[i + 1])
@@ -118,7 +118,7 @@ class SeparatorQR:
         self.log.info('Start page separation using QR CODE')
         self.pages = []
         try:
-            pdf = PyPDF2.PdfReader(file)
+            pdf = pypdf.PdfReader(file)
             self.nb_pages = len(pdf.pages)
             self.get_xml_qr_code(file)
 
@@ -235,8 +235,8 @@ class SeparatorQR:
 
     @staticmethod
     def split_pdf(input_path, output_path, pages):
-        input_pdf = PyPDF2.PdfReader(input_path)
-        output_pdf = PyPDF2.PdfWriter()
+        input_pdf = pypdf.PdfReader(input_path)
+        output_pdf = pypdf.PdfWriter()
 
         for page in pages:
             output_pdf.add_page(input_pdf.pages[page - 1])
@@ -245,7 +245,7 @@ class SeparatorQR:
             output_pdf.write(stream)
 
     @staticmethod
-    def generate_separator(db_config, docservers, qr_code_value, doctype_label, separator_type_label):
+    def generate_separator(docservers, qr_code_value, doctype_label, separator_type_label):
         """
         Generate separator file
         :param qr_code_value: QR code value

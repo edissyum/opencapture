@@ -38,7 +38,16 @@ module.exports = {
                 'splitter': "url('../assets/imgs/Open-Capture_Splitter.svg')",
             },
             width: {
-                '30': '30%'
+                '30': '30%',
+                '1/7': '14.3%',
+                '1/75': '13.3%',
+            },
+            height: {
+                '100': '25rem',
+                '104': '26rem',
+            },
+            maxWidth: {
+                '11/12': '91.6%',
             },
             colors: {
                 green: {

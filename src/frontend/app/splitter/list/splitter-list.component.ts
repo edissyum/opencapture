@@ -46,20 +46,19 @@ import { LastUrlService } from "../../../services/last-url.service";
 })
 
 export class SplitterListComponent implements OnInit {
-    batches         : any     = [];
-    isLoading       : boolean = true;
-    status          : any[]   = [];
-    gridColumns     : number  = 4;
-    page            : number  = 1;
-    selectedTab     : number  = 0;
-    searchText      : string  = "";
-    pageSize        : number  = 16;
-    pageIndex       : number  = 1;
-    offset          : number  = 0;
-    pageSizeOptions : any []  = [4, 8, 12, 16, 24, 48];
-    total           : number  = 0;
-    totals          : any     = {};
-    batchList       : any[]   = [
+    batches          : any     = [];
+    isLoading        : boolean = true;
+    status           : any[]   = [];
+    page             : number  = 1;
+    selectedTab      : number  = 0;
+    searchText       : string  = "";
+    pageSize         : number  = 16;
+    pageIndex        : number  = 1;
+    offset           : number  = 0;
+    pageSizeOptions  : any []  = [4, 8, 12, 16, 24, 48];
+    total            : number  = 0;
+    totals           : any     = {};
+    batchList        : any[]   = [
         {
             'id': 'today',
             'label': marker('BATCH.today'),
@@ -73,10 +72,10 @@ export class SplitterListComponent implements OnInit {
             'label': marker('BATCH.older'),
         }
     ];
-    currentTime     : string  = 'today';
-    currentStatus   : string  = 'NEW';
-    batchesSelected : boolean = false;
-    totalChecked    : number  = 0;
+    totalChecked        : number  = 0;
+    batchesSelected     : boolean = false;
+    currentStatus       : string  = 'NEW';
+    currentTime         : string  = 'today';
 
     constructor(
         private router: Router,
@@ -94,12 +93,16 @@ export class SplitterListComponent implements OnInit {
         private localStorageService: LocalStorageService,
     ) {}
 
-    ngOnInit(): void {
+    async ngOnInit() {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
-        this.localStorageService.save('splitter_or_verifier', 'splitter');
+        if (!this.userService.user.id) {
+            this.userService.user = this.userService.getUserFromLocal();
+        }
 
+        this.localStorageService.save('splitter_or_verifier', 'splitter');
+        this.removeLockByUserId(this.userService.user.username);
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('splitter/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
             if (this.localStorageService.get('splitterPageIndex'))
@@ -127,9 +130,21 @@ export class SplitterListComponent implements OnInit {
         this.loadBatches();
     }
 
+    removeLockByUserId(userId: any) {
+        this.http.put(environment['url'] + '/ws/splitter/removeLockByUserId/' + userId, {}, {headers: this.authService.headers}).pipe(
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
     loadBatches(): void {
         this.isLoading = true;
-        this.http.get(environment['url'] + '/ws/splitter/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
+        this.batches   = [];
+        this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id + '/totals/'
+            + this.currentStatus, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.totals = data.totals;
             }),
@@ -139,14 +154,25 @@ export class SplitterListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.get(environment['url'] + '/ws/splitter/batches/' +
+        this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id +  '/paging/' +
             (this.pageIndex - 1) + '/' + this.pageSize + '/' + this.currentTime + '/' + this.currentStatus,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.batches = data.batches;
-                for (let batchIndex = 0; batchIndex < this.batches.length; batchIndex++) {
-                    this.batches[batchIndex]['thumbnail'] = this.sanitize(this.batches[batchIndex]['thumbnail']);
-                }
+                console.log(data);
+                data.batches.forEach((batch: any) =>
+                    this.batches.push({
+                        id             : batch['id'],
+                        locked         : batch['locked'],
+                        inputId        : batch['input_id'],
+                        fileName       : batch['file_name'],
+                        lockedBy       : batch['locked_by'],
+                        formLabel      : batch['form_label'],
+                        date           : batch['batch_date'],
+                        customerName   : batch['customer_name'],
+                        documentsCount : batch['documents_count'],
+                        thumbnail      : this.sanitize(batch['thumbnail']),
+                    })
+                );
                 this.total = data.count;
             }),
             finalize(() => this.isLoading = false),
@@ -155,6 +181,18 @@ export class SplitterListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    displayBatchLocked(lockedBy: any) {
+        this.dialog.open(ConfirmDialogComponent, {
+            data: {
+                confirmTitle        : this.translate.instant('SPLITTER.batch_locked'),
+                confirmText         : this.translate.instant('SPLITTER.batch_locked_by', {'locked_by': lockedBy}),
+                confirmButton       : this.translate.instant('GLOBAL.confirm'),
+                confirmButtonColor  : "warn"
+            },
+            width: "600px",
+        });
     }
 
     sanitize(url: string) {

@@ -14,15 +14,19 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama Brich <nathan.cheval@outlook.fr>
 
 import jwt
 import psycopg2
 from datetime import datetime, timedelta
 from src.backend.import_classes import _Config
 
+CUSTOM_ID = 'test'
+PROJECT_PATH = '/var/www/html/opencapture/'
+
 
 def get_db():
-    config = _Config('/var/www/html/opencapture/custom/test/config/config.ini')
+    config = _Config(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/config.ini')
     conn = psycopg2.connect(
         "dbname     =" + config.cfg['DATABASE']['postgresdatabase'] +
         " user      =" + config.cfg['DATABASE']['postgresuser'] +
@@ -35,9 +39,8 @@ def get_db():
 
 
 def get_token(user_id):
-    secret_key_file = open('/var/www/html/opencapture/custom/test/config/secret_key')
-    secret_key = secret_key_file.read().replace('\n', '')
-    secret_key_file.close()
+    with open(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/secret_key', encoding='UTF-8') as secret_key_file:
+        secret_key = secret_key_file.read().replace('\n', '')
     try:
         payload = {
             'exp': datetime.utcnow() + timedelta(minutes=1440, seconds=0),
@@ -51,4 +54,3 @@ def get_token(user_id):
         )
     except Exception as _e:
         return str(_e)
-

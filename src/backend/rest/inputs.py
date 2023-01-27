@@ -25,28 +25,27 @@ bp = Blueprint('inputs', __name__, url_prefix='/ws/')
 @auth.token_required
 def get_inputs():
     args = {
-        'select': ['*', 'count(*) OVER() as total'],
-        'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else '',
-        'where': ["status <> 'DEL'", "module = %s"],
-        'data': [request.args['module'] if 'module' in request.args else '']
+        'module': request.args['module'],
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'user_id': request.args['userId'] if 'userId' in request.args else None
     }
-    _roles = inputs.get_inputs(args)
-    return make_response(jsonify(_roles[0])), _roles[1]
+    _inputs = inputs.get_inputs(args)
+    return make_response(jsonify(_inputs[0])), _inputs[1]
 
 
 @bp.route('inputs/getById/<int:input_id>', methods=['GET'])
 @auth.token_required
 def get_input_by_id(input_id):
-    _role = inputs.get_input_by_id(input_id)
-    return make_response(jsonify(_role[0])), _role[1]
+    _input = inputs.get_input_by_id(input_id)
+    return make_response(jsonify(_input[0])), _input[1]
 
 
 @bp.route('inputs/getByFormId/<int:form_id>', methods=['GET'])
 @auth.token_required
 def get_input_by_form_id(form_id):
-    _role = inputs.get_input_by_form_id(form_id)
-    return make_response(jsonify(_role[0])), _role[1]
+    _input = inputs.get_input_by_form_id(form_id)
+    return make_response(jsonify(_input[0])), _input[1]
 
 
 @bp.route('inputs/update/<int:input_id>', methods=['PUT'])

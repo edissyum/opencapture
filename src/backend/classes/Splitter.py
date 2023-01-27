@@ -24,7 +24,6 @@ import random
 import pathlib
 from xml.dom import minidom
 from unidecode import unidecode
-from src.backend.classes.Files import Files
 
 
 class Splitter:
@@ -64,7 +63,7 @@ class Splitter:
                 self.result_batches[-1].append({
                     'source_page': page['source_page'],
                     'doctype_value': page['doctype_value'],
-                    'maarch_value': page['maarch_value'],
+                    'mem_value': page['mem_value'],
                     'metadata_1': page['metadata_1'],
                     'metadata_2': page['metadata_2'],
                     'metadata_3': page['metadata_3'],
@@ -93,11 +92,12 @@ class Splitter:
                     'batch_folder': batch_folder,
                     'thumbnail': os.path.basename(batch[0]['path']),
                     'documents_count': str(max((node['split_document'] for node in batch))),
-                    'form_id': str(input_settings[0]['default_form_id'])
+                    'form_id': str(input_settings[0]['default_form_id']),
+                    'customer_id': str(input_settings[0]['customer_id'])
                 }
             }
-
             batch_id = self.db.insert(args)
+
             documents_id = 0
             previous_split_document = 0
             for page in batch:
@@ -142,10 +142,10 @@ class Splitter:
                                 documents_data['custom_fields'][custom_field['label_short']] = page['metadata_3']
                     args['columns']['data'] = json.dumps(documents_data)
                     """
-                        Maarch entity separator
+                        MEM Courrier entity separator
                     """
-                    if page['maarch_value']:
-                        entity = page['maarch_value']
+                    if page['mem_value']:
+                        entity = page['mem_value']
                         if len(entity.split('_')) == 2:
                             entity = entity.split('_')[1]
                         documents_data = {}
@@ -153,7 +153,7 @@ class Splitter:
                             'select': ['*'],
                             'table': ['custom_fields'],
                             'where': ['metadata_key = %s', 'status <> %s'],
-                            'data': ['SEPARATOR_MAARCH', 'DEL'],
+                            'data': ['SEPARATOR_MEM', 'DEL'],
                         })
                         documents_data['custom_fields'] = {}
                         for custom_field in custom_fields:
@@ -201,44 +201,48 @@ class Splitter:
         seconds = str('%02d' % now_date.second)
         _date = year + month + day + hour + minute + seconds
         random_num = str(random.randint(0, 99999)).zfill(5)
-        mask_values = mask_args['mask'].split('#')
+        mask_keys = mask_args['mask'].split('#')
         separator = mask_args['separator'] if mask_args['separator'] else ''
-        for mask_value in mask_values:
-            if not mask_value:
+        for key in mask_keys:
+            if not key:
                 continue
             """
                 PDF or XML masks value
             """
-            if mask_value in metadata:
-                mask_result.append(str(metadata[mask_value]).replace(' ', separator))
-            elif mask_value == 'date':
+            if key in metadata:
+                mask_result.append(str(metadata[key]).replace(' ', separator))
+            elif key == 'date':
                 mask_result.append(_date.replace(' ', separator))
-            elif mask_value == 'random':
+            elif key == 'random':
                 mask_result.append(random_num.replace(' ', separator))
+            elif key == 'id':
+                mask_result.append(metadata['batch_id'])
             elif document:
                 """
                     PDF masks value
                 """
-                if mask_value in document['metadata']:
-                    mask_result.append(
-                        (document['metadata'][mask_value] if document['metadata'][mask_value] else '')
-                            .replace(' ', separator))
-                elif mask_value == 'doctype':
+                if key in document['metadata']:
+                    value = (document['metadata'][key] if document['metadata'][key] else '').replace(' ', separator)
+                    mask_result.append(value)
+                elif key in metadata:
+                    value = (metadata[key] if metadata[key] else '').replace(' ', separator)
+                    mask_result.append(value)
+                elif key == 'doctype':
                     mask_result.append(document['documentTypeKey'].replace(' ', separator))
-                elif mask_value == 'document_identifier':
+                elif key == 'document_identifier':
                     mask_result.append(document['id'])
-                elif mask_value == 'document_index':
+                elif key == 'document_index':
                     mask_result.append(document['id'])
                 else:
                     """
                         PDF value when mask value not found in metadata
                     """
-                    mask_result.append(mask_value.replace(' ', separator))
+                    mask_result.append(key.replace(' ', separator))
             else:
                 """
                     XML value when mask value not found in metadata
                 """
-                mask_result.append(mask_value.replace(' ', separator))
+                mask_result.append(key.replace(' ', separator))
 
         mask_result = separator.join(str(x) for x in mask_result)
         mask_result = unidecode(mask_result)
@@ -291,7 +295,8 @@ class Splitter:
                     continue
                 doc_loop_item = doc_loop_item_template.group(1)
                 doc_loop_item = doc_loop_item.replace('#date', date)
-                doc_loop_item = doc_loop_item.replace('#filename', document['fileName'] if 'fileName' in document else '')
+                doc_loop_item = doc_loop_item.replace('#filename',
+                                                      document['fileName'] if 'fileName' in document else '')
                 doc_loop_item = doc_loop_item.replace('#documents_count', str(len(documents)))
                 doc_loop_item = doc_loop_item.replace('#document_identifier', str(document['id']))
                 doc_loop_item = doc_loop_item.replace('#doctype', str(document['documentTypeKey']))

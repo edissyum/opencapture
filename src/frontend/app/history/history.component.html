@@ -1,14 +1,12 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
     <mat-sidenav-content class="bg-white">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
-        <div class="settings_header">
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
-            </div>
+        <div class="settings_header flex justify-center p-4 items-center bg-green-400 bg-opacity-60 text-gray-900">
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
         </div>
+        <hr class="border-green-400 relative z-30">
         <div class="flex justify-center">
             <div class="m-auto w-1/12 text-center">{{ 'HISTORY.filter' | translate }} : </div>
             <form class="grid grid-cols-3 gap-6 w-full mt-5 mb-0 text-center">
@@ -34,7 +32,7 @@
                     <mat-form-field *ngIf="field.type === 'autocomplete'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [formControl]="field.control" [type]="field.type" [matAutocomplete]="autocomplete">
-                        <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
+                        <mat-hint *ngIf="field.hint" class="text-gray-600">{{ field.hint }}</mat-hint>
                         <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn"
                                           (optionSelected)="setSelectedUser($event.option.id)">
                             <mat-option *ngFor="let option of filteredUsers | async" [value]="option" [id]="option.id">
