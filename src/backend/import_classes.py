@@ -63,13 +63,6 @@ elif 'classes' in custom_array['Database']['path']:
     _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'],
                                    fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
 
-# if 'invoice_classification' or 'classes' not in custom_array['invoice_classification']['path']:
-#     from .invoice_classification import invoice_classification
-# elif 'classes' in custom_array['invoice_classification']['path']:
-#     invoice_classification = getattr(__import__(custom_array['invoice_classification']['path'],
-#                                                 fromlist=[custom_array['invoice_classification']['module']]),
-#                                      custom_array['invoice_classification']['module'])
-
 if 'Splitter' or 'classes' not in custom_array['Splitter']['path']:
     from .classes.Splitter import Splitter as _Splitter
 elif 'classes' in custom_array['Splitter']['path']:

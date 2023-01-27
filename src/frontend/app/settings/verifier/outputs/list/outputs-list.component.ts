@@ -64,7 +64,6 @@ export class OutputsListComponent implements OnInit {
         private localStorageService: LocalStorageService,
     ) {}
 
-
     ngOnInit(): void {
         this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function

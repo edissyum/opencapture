@@ -98,7 +98,7 @@ export class LoginRequiredService implements CanActivate {
             for (const [key, value] of params.entries()) {
                 if (key === 'token') {
                     token_param = value;
-                    route = window.location.hash.replace('#', '').replace(/\?.*/,'')
+                    route = window.location.hash.replace('#', '').replace(/\?.*/, '');
                     this.login(token_param, route);
                 }
             }

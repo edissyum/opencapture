@@ -48,8 +48,6 @@ import { LastUrlService } from "../../../services/last-url.service";
 export class SplitterListComponent implements OnInit {
     batches          : any     = [];
     isLoading        : boolean = true;
-    loadingCustomers : boolean = true;
-    expanded         : boolean = false;
     status           : any[]   = [];
     page             : number  = 1;
     selectedTab      : number  = 0;

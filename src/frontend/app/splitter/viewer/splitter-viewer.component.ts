@@ -799,7 +799,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }),
             finalize(() => this.downloadLoading = false),
             catchError((err: any) => {
-                this.downloadLoading = false
+                this.downloadLoading = false;
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);

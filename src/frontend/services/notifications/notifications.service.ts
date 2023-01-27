@@ -122,7 +122,7 @@ export class NotificationService {
         }
     }
 
-    handleErrors(err: any, route='') {
+    handleErrors(err: any, route = '') {
         if (err.status === 0 && err.statusText === 'Unknown Error') {
             const message = '<b>' + this.translate.instant('ERROR.connection_failed') + '</b> : ' +
                 this.translate.instant('ERROR.is_server_up', {server: environment['url']});

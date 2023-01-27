@@ -56,6 +56,7 @@ class SplitterTest(unittest.TestCase):
             filename="splitter_test.pdf",
             content_type="application/pdf",
         )
+
         response = self.app.post(f'/{CUSTOM_ID}/ws/splitter/upload?inputId=default_input', data={"file": my_file},
                                  content_type='multipart/form-data',
                                  headers={"Content-Type": "application/json",

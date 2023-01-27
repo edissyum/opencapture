@@ -22,7 +22,7 @@ import tempfile
 import datetime
 from src.backend import app
 from src.backend.functions import retrieve_config_from_custom_id
-from src.backend.import_classes import _Log, _Mail, _Config
+from src.backend.import_classes import _Log, _Mail
 from src.backend.main_splitter import launch as launch_splitter
 from src.backend.main import launch as launch_verifier, create_classes_from_custom_id
 

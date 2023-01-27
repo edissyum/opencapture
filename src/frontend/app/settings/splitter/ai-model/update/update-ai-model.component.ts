@@ -49,7 +49,6 @@ export class UpdateAiModelComponent implements OnInit {
     chosenDocs          : any       = [];
     documents           : any       = [];
     len                 : number    = 0;
-    displayedColumns    : string[]  = ['Documents', 'Formulaires', 'Doctypes'];
     modelForm           : any[]     = [
         {
             id: 'model_path',

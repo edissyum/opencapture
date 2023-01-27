@@ -16,7 +16,6 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 @dev : Oussama BRICH <oussama.brich@edissyum.com> */
 
-
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
@@ -46,9 +45,9 @@ import { CreateCustomerComponent } from "./accounts/customers/create/create-cust
 const routes: Routes = [
     { path: '500', component: Error500Component },
     { path: '', redirectTo: 'login', pathMatch: 'full' },
-    { path: 'home', component: HomeComponent , data: { title: 'GLOBAL.home' }, canActivate: [LoginRequiredService] },
-    { path: 'login', component: LoginComponent , data: { title: 'GLOBAL.login' }, canActivate: [LoginRedirectService] },
-    { path: 'logout', component: LogoutComponent , canActivate: [LoginRequiredService] },
+    { path: 'home', component: HomeComponent, data: { title: 'GLOBAL.home' }, canActivate: [LoginRequiredService] },
+    { path: 'login', component: LoginComponent, data: { title: 'GLOBAL.login' }, canActivate: [LoginRedirectService] },
+    { path: 'logout', component: LogoutComponent, canActivate: [LoginRequiredService] },
     { path: 'profile/:id', component: UserProfileComponent, canActivate: [LoginRequiredService] },
     {
         path: 'splitter/viewer/:currentTime/:id', component: SplitterViewerComponent,

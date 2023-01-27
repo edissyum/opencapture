@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 
-import base64
 import os
 import shutil
 import urllib3

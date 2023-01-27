@@ -116,12 +116,10 @@ def update(args):
 def generate_separator(args):
     if 'docservers' in session and 'configurations' in session:
         docservers = json.loads(session['docservers'])
-        configurations = json.loads(session['configurations'])
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
-        configurations = _vars[10]
 
     qr_code_value = ""
     separator_type_label = ""
@@ -135,8 +133,7 @@ def generate_separator(args):
         qr_code_value = "BUNDLESTART"
         separator_type_label = gettext('BUNDLESEPARATOR')
 
-    res_separators = _SeparatorQR.generate_separator(configurations, docservers, qr_code_value, args['label'],
-                                                     separator_type_label)
+    res_separators = _SeparatorQR.generate_separator(docservers, qr_code_value, args['label'], separator_type_label)
     if not res_separators[0]:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),

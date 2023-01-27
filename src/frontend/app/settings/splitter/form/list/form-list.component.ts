@@ -106,7 +106,6 @@ export class SplitterFormListComponent implements OnInit {
         ).subscribe();
     }
 
-
     deleteConfirmDialog(formId: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {
