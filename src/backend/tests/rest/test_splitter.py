@@ -57,16 +57,24 @@ class SplitterTest(unittest.TestCase):
             content_type="application/pdf",
         )
 
-        response = self.app.post(f'/{CUSTOM_ID}/ws/splitter/upload?input_id=default_input', data={"file": my_file},
+        response = self.app.post(f'/{CUSTOM_ID}/ws/splitter/upload?inputId=default_input', data={"file": my_file},
                                  content_type='multipart/form-data',
-                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+                                 headers={"Content-Type": "application/json",
+                                          'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
-    def test_successful_get_batches(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/splitter/batches/user/1/paging/0/16/today/NEW',
-                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+                                headers={"Content-Type": "application/json",
+                                         'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
+        self.assertEqual(True, len(response.json['batches']) > 0)
+
+        response = self.app.get(f"/{CUSTOM_ID}/ws/splitter/documents/{response.json['batches'][0]['id']}",
+                                headers={"Content-Type": "application/json",
+                                         'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(2, len(response.json['documents']))
 
     def tearDown(self) -> None:
-        self.db.execute("UPDATE splitter_batches SET status = 'DEL'")
-        self.db.execute("DELETE FROM tasks_watcher WHERE module = 'splitter'")
+            self.db.execute("TRUNCATE TABLE splitter_batches")
+            self.db.execute("TRUNCATE TABLE tasks_watcher")
