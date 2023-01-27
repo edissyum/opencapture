@@ -76,5 +76,5 @@ class SplitterTest(unittest.TestCase):
         self.assertEqual(2, len(response.json['documents']))
 
     def tearDown(self) -> None:
-            self.db.execute("TRUNCATE TABLE splitter_batches")
-            self.db.execute("TRUNCATE TABLE tasks_watcher")
+        self.db.execute("TRUNCATE TABLE splitter_batches")
+        self.db.execute("TRUNCATE TABLE tasks_watcher")

@@ -310,7 +310,7 @@ class VerifierTest(unittest.TestCase):
             "locked_by": "admin"
         }
         self.app.put(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']) + '/update', json={"args": new_data},
-                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+                     headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/invoices/removeLockByUserId/admin',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
