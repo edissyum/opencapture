@@ -3,17 +3,17 @@
 </div>
 <div class="grid grid-cols-2 overflow-auto" style="height: calc(100vh - 64px) !important">
     <div id="image" class="overflow-auto" style="height: calc(100vh - 64px) !important; direction: rtl">
+        <div class="relative ml-4 z-50 text-xl text-left py-2">
+            <ng-container *ngIf="!this.loading && this.invoice.nb_pages> 1">
+                <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()"></i>
+                {{ 'VERIFIER.page' | translate }}
+                {{ currentPage }}
+                {{ 'VERIFIER.on' | translate }}
+                {{ invoice.nb_pages }}
+                <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
+            </ng-container>
+        </div>
         <div class="image-container px-4" *ngIf="this.invoice">
-            <div class="z-50 text-xl text-left py-2">
-                <ng-container *ngIf="!this.loading && this.invoice.nb_pages> 1">
-                    <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()"></i>
-                    {{ 'VERIFIER.page' | translate }}
-                    {{ currentPage }}
-                    {{ 'VERIFIER.on' | translate }}
-                    {{ invoice.nb_pages }}
-                    <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
-                </ng-container>
-            </div>
             <img id="document_image" alt="Open-Capture" [src]="this.imgSrc">
         </div>
     </div>
