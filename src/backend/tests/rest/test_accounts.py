@@ -372,7 +372,7 @@ class UserTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['customers']), 1)
+        self.assertEqual(len(response.json['customers']), 2)
 
     def test_successful_get_customers_list_search(self):
         self.create_customer()
@@ -460,4 +460,4 @@ class UserTest(unittest.TestCase):
                     '/var/www/html/opencapture/custom/test/instance/referencial//default_referencial_supplier.ods')
         self.db.execute("TRUNCATE TABLE addresses")
         self.db.execute("TRUNCATE TABLE accounts_supplier")
-        self.db.execute("TRUNCATE TABLE accounts_customer")
+        self.db.execute("DELETE FROM accounts_customer WHERE name <> 'Splitter - Compte client par défaut'")
