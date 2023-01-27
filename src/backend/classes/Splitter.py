@@ -215,6 +215,8 @@ class Splitter:
                 mask_result.append(_date.replace(' ', separator))
             elif key == 'random':
                 mask_result.append(random_num.replace(' ', separator))
+            elif key == 'id':
+                mask_result.append(metadata['batch_id'])
             elif document:
                 """
                     PDF masks value
