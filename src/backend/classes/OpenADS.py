@@ -67,8 +67,8 @@ class OpenADS:
                     {
                         'b64_content': b64,
                         "filename": filename,
-                        "content_type": "application/pdf",
-                        "piece_type": int(doctype)
+                        "piece_type": int(doctype),
+                        "content_type": "application/pdf"
                     },
                 ]
                 response = requests.post(self.api + "/dossier/" + folder_id + "/pieces", data=json.dumps(data), auth=self.auth)
