@@ -62,12 +62,13 @@ class OpenADS:
                 with open(path, 'rb') as f:
                     b64 = str(b64encode(f.read()), 'utf-8')
                 filename = os.path.basename(path)
+                doctype = metadata[index]['documentTypeKey'].split("-")[-1]
                 data = [
                     {
                         'b64_content': b64,
                         "filename": filename,
-                        "content_type": "application/pdf",
-                        "piece_type": int(metadata[index]['documentTypeKey'])
+                        "piece_type": int(doctype),
+                        "content_type": "application/pdf"
                     },
                 ]
                 response = requests.post(self.api + "/dossier/" + folder_id + "/pieces", data=json.dumps(data), auth=self.auth)
