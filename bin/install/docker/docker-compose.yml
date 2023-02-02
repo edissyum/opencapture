@@ -1,0 +1,34 @@
+version: ${VERSION}
+services:
+    psql-database:
+        hostname: psql-database
+        container_name: psql-database
+        image: postgres:13.9-bullseye
+        environment:
+            POSTGRES_USER: nathan
+            POSTGRES_PASSWORD: rg290gli
+            PGDATA: /data/postgres
+        restart: unless-stopped
+    frontend:
+        hostname: frontend
+        container_name: frontend
+        build:
+            context: .
+            dockerfile: DockerfileApache2
+        ports:
+            - 8080:80
+        volumes:
+            - /var/www/html/:/usr/local/apache2/htdocs
+    backend:
+        hostname: backend
+        container_name: backend
+        tty: true
+        depends_on:
+            - psql-database
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                custom_id: edissyum
+                version: ${VERSION}
+

@@ -1,0 +1,4 @@
+FROM httpd:2.4.55-bullseye
+
+RUN apt-get update
+RUN apt-get -y install python3 libapache2-mod-wsgi-py3

@@ -4,12 +4,12 @@ unidecode
 nltk==3.8.1
 fpdf==1.7.2
 zeep==4.2.1
+qrcode==7.4
 ldap3==2.9.1
 pyocr==0.8.3
 PyJWT==2.6.0
 flask==2.2.2
 pypdf==3.3.0
-qrcode==7.4.0
 pillow==9.4.0
 kuyruk==9.4.0
 psycopg2==2.9.5
