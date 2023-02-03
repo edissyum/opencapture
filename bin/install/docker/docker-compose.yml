@@ -12,23 +12,27 @@ services:
     frontend:
         hostname: frontend
         container_name: frontend
+        tty: true
+        depends_on:
+            - backend
+        volumes:
+            - opencapture-src:/var/www/html/opencapture/
         build:
             context: .
             dockerfile: DockerfileApache2
         ports:
             - 8080:80
-        volumes:
-            - /var/www/html/:/usr/local/apache2/htdocs
     backend:
         hostname: backend
         container_name: backend
         tty: true
-        depends_on:
-            - psql-database
+        volumes:
+              - opencapture-src:/var/www/html/opencapture/
         build:
             context: .
             dockerfile: Dockerfile
             args:
                 custom_id: edissyum
                 version: ${VERSION}
-
+volumes:
+    opencapture-src:
