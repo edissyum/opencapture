@@ -34,7 +34,7 @@ from src.backend.main import create_classes_from_custom_id
 from src.backend.import_classes import _Files, _Splitter, _CMIS, _MEMWebServices, _OpenADS
 
 
-def handle_uploaded_file(files, input_id):
+def handle_uploaded_file(files, input_id, user_id):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER_SPLITTER']
 
@@ -42,9 +42,10 @@ def handle_uploaded_file(files, input_id):
         f = files[file]
         filename = _Files.save_uploaded_file(f, path, False)
         launch({
-            'file': filename,
             'custom_id': custom_id,
-            'input_id': input_id
+            'input_id': input_id,
+            'user_id': user_id,
+            'file': filename,
         })
 
     return True
@@ -431,7 +432,7 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
             'separator': parameters['separator'],
             'extension': 'zip'
         }
-        zip_filename = _Splitter.get_mask_result(None, batch['metadata'], now, mask_args)
+        zip_filename = _Splitter.get_value_from_mask(None, batch['metadata'], now, mask_args)
 
     documents_doctypes = []
     for index, document in enumerate(documents):
@@ -446,7 +447,7 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
             'extension': parameters['extension']
         }
 
-        documents[index]['fileName'] = _Splitter.get_mask_result(document, batch['metadata'], now, mask_args)
+        documents[index]['fileName'] = _Splitter.get_value_from_mask(document, batch['metadata'], now, mask_args)
 
         if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in documents[index]['documentTypeKey']:
             pdf_filepaths.append({
@@ -488,7 +489,7 @@ def export_xml(documents, parameters, metadata, now):
         'separator': parameters['separator'],
         'extension': parameters['extension']
     }
-    file_name = _Splitter.get_mask_result(None, metadata, now, mask_args)
+    file_name = _Splitter.get_value_from_mask(None, metadata, now, mask_args)
     res_xml = _Splitter.export_xml(documents, metadata, parameters, file_name, now)
     if not res_xml[0]:
         response = {
@@ -781,8 +782,8 @@ def validate(args):
                             'separator': ' ',
                             'format': parameters['format']
                         }
-                        parameters['subject'] = _Splitter.get_mask_result(args['documents'][index], args['batchMetadata'],
-                                                                          now, mask_args)
+                        parameters['subject'] = _Splitter.get_value_from_mask(args['documents'][index], args['batchMetadata'],
+                                                                              now, mask_args)
                         res_export_mem = export_mem(mem_auth, file_path, parameters, batch)
                         if res_export_mem[1] != 200:
                             return res_export_mem
@@ -798,7 +799,7 @@ def validate(args):
                         'mask': openads_params['folder_id'],
                         'separator': '',
                     }
-                    folder_id = _Splitter.get_mask_result(None, args['batchMetadata'], now, folder_id_mask)
+                    folder_id = _Splitter.get_value_from_mask(None, args['batchMetadata'], now, folder_id_mask)
                     openads_res = _openads.check_folder_by_id(folder_id)
                     if not openads_res['status']:
                         response = {
@@ -838,7 +839,7 @@ def validate(args):
                 'mask': form[0]['settings']['export_zip_file'],
                 'separator': '_',
             }
-            export_zip_file = _Splitter.get_mask_result(None, args['batchMetadata'], now, mask_args)
+            export_zip_file = _Splitter.get_value_from_mask(None, args['batchMetadata'], now, mask_args)
             _Files.zip_files(files_to_zip, export_zip_file, True)
 
         """

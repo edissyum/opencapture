@@ -30,6 +30,15 @@ kuyruk = Kuyruk()
 
 @kuyruk.task(queue='splitter_§§CUSTOM_ID§§')
 def launch(args):
+    """
+    Launch Splitter process on a file
+    :param args:
+    - custom_id: custom id
+    - input_id: input id
+    - user_id: user id
+    - file: file path
+    :return: N/A
+    """
     start = time.time()
 
     if not retrieve_config_from_custom_id(args['custom_id']):
@@ -122,6 +131,7 @@ def launch(args):
                                         "config": config,
                                         "splitter": splitter,
                                         "docservers": docservers,
+                                        "user_id": args['user_id'],
                                         "batch_folder": batch_folder,
                                         "input_id": args['input_id'],
                                         "configurations": configurations,

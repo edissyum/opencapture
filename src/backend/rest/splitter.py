@@ -29,8 +29,13 @@ def upload():
     input_id = None
     if 'inputId' in request.args:
         input_id = request.args['inputId']
+
+    user_id = None
+    if 'userId' in request.args:
+        user_id = request.args['userId']
+
     files = request.files
-    res = splitter.handle_uploaded_file(files, input_id)
+    res = splitter.handle_uploaded_file(files, input_id, user_id)
     if res:
         return make_response('', 200)
     else:

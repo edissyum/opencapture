@@ -23,6 +23,7 @@ import json
 import random
 import pathlib
 from xml.dom import minidom
+from datetime import datetime
 from unidecode import unidecode
 
 
@@ -61,18 +62,68 @@ class Splitter:
 
             else:
                 self.result_batches[-1].append({
-                    'source_page': page['source_page'],
-                    'doctype_value': page['doctype_value'],
+                    'path': page['path'],
                     'mem_value': page['mem_value'],
                     'metadata_1': page['metadata_1'],
                     'metadata_2': page['metadata_2'],
                     'metadata_3': page['metadata_3'],
                     'split_document': split_document,
-                    'path': page['path']
+                    'source_page': page['source_page'],
+                    'doctype_value': page['doctype_value'],
+
                 })
                 is_previous_code_qr = False
 
-    def save_documents(self, batch_folder, file, input_id, original_filename):
+    def get_default_values(self, form_id, user_id):
+        user = None
+        default_values = {
+            'batch': {},
+            'document': {}
+        }
+
+        fields = self.db.select({
+            'select': ['*'],
+            'table': ['form_models_field'],
+            'where': ['form_id = %s'],
+            'data': [form_id],
+        })[0]
+
+        if user_id:
+            user = self.db.select({
+                'select': ['*'],
+                'table': ['users'],
+                'where': ['id = %s'],
+                'data': [user_id],
+            })[0]
+
+        data = {
+            'email': user['email'] if user else '',
+            'username': user['username'] if user else '',
+            'lastname': user['lastname'] if user else '',
+            'firstname': user['firstname'] if user else ''
+        }
+
+        for field in fields['fields']['batch_metadata']:
+            if 'defaultValue' in field:
+                mask = {
+                    'mask': field['defaultValue'],
+                    'separator': ' ',
+                }
+                self.get_value_from_mask(None, data, None, mask)
+                default_values['batch'][field['label_short']] = self.get_value_from_mask(None, data, None, mask)
+
+        for field in fields['fields']['document_metadata']:
+            if 'defaultValue' in field:
+                mask = {
+                    'mask': field['defaultValue'],
+                    'separator': ' ',
+                }
+                self.get_value_from_mask(None, data, None, mask)
+                default_values['document'][field['label_short']] = self.get_value_from_mask(None, data, None, mask)
+
+        return default_values
+
+    def create_batch(self, batch_folder, file, input_id, user_id, original_filename):
         for _, batch in enumerate(self.result_batches):
             input_settings = self.db.select({
                 'select': ['*'],
@@ -84,16 +135,18 @@ class Splitter:
             clean_path = re.sub(r"/+", "/", file)
             clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_PDF'])
 
+            default_values = self.get_default_values(input_settings[0]['default_form_id'], user_id)
             args = {
                 'table': 'splitter_batches',
                 'columns': {
-                    'file_path': clean_path.replace(clean_ds, ''),
-                    'file_name': os.path.basename(original_filename),
                     'batch_folder': batch_folder,
+                    'file_path': clean_path.replace(clean_ds, ''),
                     'thumbnail': os.path.basename(batch[0]['path']),
-                    'documents_count': str(max((node['split_document'] for node in batch))),
+                    'file_name': os.path.basename(original_filename),
                     'form_id': str(input_settings[0]['default_form_id']),
-                    'customer_id': str(input_settings[0]['customer_id'])
+                    'customer_id': str(input_settings[0]['customer_id']),
+                    'data': json.dumps({'custom_fields': default_values['batch']}),
+                    'documents_count': str(max((node['split_document'] for node in batch)))
                 }
             }
             batch_id = self.db.insert(args)
@@ -102,14 +155,14 @@ class Splitter:
             previous_split_document = 0
             for page in batch:
                 if page['split_document'] != previous_split_document:
-                    documents_data = {'custom_fields': {}}
+                    documents_data = {'custom_fields': default_values['document']}
                     args = {
                         'table': 'splitter_documents',
                         'columns': {
                             'batch_id': str(batch_id),
                             'split_index': page['split_document'],
                             'display_order': page['split_document'],
-                            'data': '{}',
+                            'data': 'documents_data',
                         }
                     }
                     """
@@ -191,14 +244,18 @@ class Splitter:
         return pages
 
     @staticmethod
-    def get_mask_result(document, metadata, now_date, mask_args):
+    def get_value_from_mask(document, metadata, date, mask_args):
         mask_result = []
-        year = str(now_date.year)
-        day = str('%02d' % now_date.day)
-        month = str('%02d' % now_date.month)
-        hour = str('%02d' % now_date.hour)
-        minute = str('%02d' % now_date.minute)
-        seconds = str('%02d' % now_date.second)
+
+        if not date:
+            date = datetime.now()
+
+        year = str(date.year)
+        day = str('%02d' % date.day)
+        month = str('%02d' % date.month)
+        hour = str('%02d' % date.hour)
+        minute = str('%02d' % date.minute)
+        seconds = str('%02d' % date.second)
         _date = year + month + day + hour + minute + seconds
         random_num = str(random.randint(0, 99999)).zfill(5)
         mask_keys = mask_args['mask'].split('#')
@@ -248,6 +305,7 @@ class Splitter:
         mask_result = unidecode(mask_result)
         if 'extension' in mask_args:
             mask_result += '.{}'.format(mask_args['extension'])
+
         return mask_result
 
     @staticmethod
