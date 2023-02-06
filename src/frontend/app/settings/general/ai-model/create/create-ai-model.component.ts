@@ -38,18 +38,19 @@ import { finalize } from "rxjs/operators";
 })
 
 export class CreateAiModelComponent implements OnInit {
-    loading         : boolean   = true;
-    docs            : any = [];
-    doctypes        : any = [];
-    docStatus       : any = [];
-    controls        : any = [];
-    formControl     : FormControl = new FormControl('');
-    listModels      : any = [];
-    forms           : any = [];
-    chosenForm      : any = [];
-    chosenDocs      : any = [];
-    totalChecked    : number    = 0;
-    modelForm       : any[]     = [
+    loading             : boolean   = true;
+    docs                : any       = [];
+    doctypes            : any       = [];
+    docStatus           : any       = [];
+    controls            : any       = [];
+    formControl         : FormControl = new FormControl('');
+    listModels          : any       = [];
+    forms               : any       = [];
+    chosenForm          : any       = [];
+    chosenDocs          : any       = [];
+    totalChecked        : number    = 0;
+    splitterOrVerifier  : any       = 'verifier';
+    modelForm           : any[]     = [
         {
             id: 'model_label',
             label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_name"),
@@ -83,6 +84,11 @@ export class CreateAiModelComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        if (this.router.url.includes('/verifier/')) {
+            this.splitterOrVerifier = 'verifier';
+        } else if (this.router.url.includes('/splitter/')) {
+            this.splitterOrVerifier = 'splitter';
+        }
         this.serviceSettings.init();
         this.retrieveModels();
         this.retrieveDoctypes();
@@ -91,7 +97,7 @@ export class CreateAiModelComponent implements OnInit {
     }
 
     retrieveDoctypes() {
-        this.http.get(environment['url'] + '/ws/ai/splitter/getTrainDocuments', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/getTrainDocuments', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.docs = data;
                 this.docStatus.splice(0);
@@ -205,7 +211,7 @@ export class CreateAiModelComponent implements OnInit {
             }
             if (start_training) {
                 this.http.post(environment['url'] + '/ws/ai/trainModel/' + modelName,
-                    {docs: doctypes, min_pred: minPred}, {headers: this.authService.headers}).pipe(
+                    {docs: doctypes, min_pred: minPred, module: this.splitterOrVerifier}, {headers: this.authService.headers}).pipe(
                     catchError((err: any) => {
                         console.debug(err);
                         return of(false);
@@ -213,8 +219,8 @@ export class CreateAiModelComponent implements OnInit {
                 ).subscribe();
 
                 this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.created'));
-                this.historyService.addHistory('splitter', 'create_ai_model', this.translate.instant('HISTORY-DESC.create-ai-model', {model: modelName}));
-                this.router.navigate(['/settings/splitter/ai']).then();
+                this.historyService.addHistory(this.splitterOrVerifier, 'create_ai_model', this.translate.instant('HISTORY-DESC.create-ai-model', {model: modelName}));
+                this.router.navigate(['/settings/' + this.splitterOrVerifier + '/ai']).then();
             }
         } else {
             if(this.totalChecked < 2) {
@@ -256,7 +262,7 @@ export class CreateAiModelComponent implements OnInit {
     }
 
     retrieveModels() {
-        this.http.get(environment['url'] + '/ws/ai/getAIModels?module=splitter&limit=', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/ai/getAIModels?module=' + this.splitterOrVerifier + '&limit=', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.listModels = data.models;
             }),
@@ -268,7 +274,7 @@ export class CreateAiModelComponent implements OnInit {
     }
 
     retrieveForms() {
-        this.http.get(environment['url'] + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/list?module=' + this.splitterOrVerifier, {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                this.forms = forms.forms;
                if (this.forms.length === 1) {
