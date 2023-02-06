@@ -400,5 +400,6 @@ CREATE TABLE ai_models
     "min_proba"         INTEGER,
     "status"            VARCHAR(10)  DEFAULT 'OK',
     "documents"         JSONB        DEFAULT '{}',
-    "module"            VARCHAR(10)
+    "module"            VARCHAR(10),
+    "input_id"          INTEGER
 );

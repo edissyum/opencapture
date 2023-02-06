@@ -44,6 +44,17 @@ def splitter_retrieve_documents():
     return data
 
 
+def verifier_retrieve_documents():
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    _docservers = _vars[9]
+    data = []
+    for file_name in os.listdir(_docservers.get('VERIFIER_TRAIN_PATH_FILES')):
+        if not file_name.endswith(".csv") and not file_name.endswith(".gitkeep"):
+            data.append(file_name)
+    return data
+
+
 def get_models(module):
     _models = artificial_intelligence.get_models({'where': ["status = %s", "module = %s"], 'data': ['OK', module]})
 
@@ -113,11 +124,8 @@ def launch_train(data, model_name):
     _docservers = _vars[9]
 
     folders = []
-    target = []
-
     for element in data["docs"]:
         folders.append(element["folder"])
-        target.append(element["doctype"])
     min_pred = data["min_pred"]
 
     path = _docservers.get('SPLITTER_TRAIN_PATH_FILES')
