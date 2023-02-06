@@ -170,6 +170,11 @@ export class SplitterFormBuilderComponent implements OnInit {
             'control'       : new FormControl(),
         },
         {
+            'id'            : 'defaultValue',
+            'placeholder'   : marker('FIELD_METADATA.default_value'),
+            'control'       : new FormControl(),
+        },
+        {
             'id'            : 'validationMask',
             'placeholder'   : marker('FIELD_METADATA.validation_mask'),
             'control'       : new FormControl(),
@@ -265,17 +270,17 @@ export class SplitterFormBuilderComponent implements OnInit {
                                     if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push(
                                             {
-                                                id          : 'custom_' + data.customFields[field].id,
-                                                metadata_key: data.customFields[field].metadata_key,
-                                                label_short : data.customFields[field].label_short,
-                                                settings    : data.customFields[field].settings,
-                                                required    : data.customFields[field].required,
-                                                label       : data.customFields[field].label,
-                                                type        : data.customFields[field].type,
-                                                format      : data.customFields[field].type,
-                                                unit        : 'custom',
-                                                class       : "w-1/3",
-                                                class_label : "1/33",
+                                                id           : 'custom_' + data.customFields[field].id,
+                                                metadata_key : data.customFields[field].metadata_key,
+                                                label_short  : data.customFields[field].label_short,
+                                                settings     : data.customFields[field].settings,
+                                                required     : data.customFields[field].required,
+                                                label        : data.customFields[field].label,
+                                                type         : data.customFields[field].type,
+                                                format       : data.customFields[field].type,
+                                                unit         : 'custom',
+                                                class        : "w-1/3",
+                                                class_label  : "1/33",
                                             }
                                         );
                                     }
@@ -451,7 +456,8 @@ export class SplitterFormBuilderComponent implements OnInit {
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
-                    this.http.post(environment['url'] + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/forms/updateFields/' + this.formId, this.fields,
+                        {headers: this.authService.headers}).pipe(
                         tap(() => {
                             this.notify.success(this.translate.instant('FORMS.updated'));
                         }),
@@ -495,7 +501,8 @@ export class SplitterFormBuilderComponent implements OnInit {
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
-                    this.http.post(environment['url'] + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/forms/updateFields/' + data.id, this.fields,
+                        {headers: this.authService.headers}).pipe(
                         catchError((err: any) => {
                             console.debug(err);
                             this.notify.handleErrors(err);
