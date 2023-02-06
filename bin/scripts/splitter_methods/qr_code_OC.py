@@ -21,6 +21,8 @@ def process(args):
     Process custom split for file
     :param args: has :
     - log: log object
+    - user_id: User id
+    - docservers: paths
     - files: Files object
     - config: Config object
     - ocr: PyTesseract object
@@ -33,6 +35,7 @@ def process(args):
     - ocrise: bool, launch OCR on file or not
     :return: N/A
     """
+
     args['log'].info('Processing file for separation : ' + args['file'])
     batch_folder_path = f"{args['docservers']['SPLITTER_BATCHES']}/{args['batch_folder']}/"
     batch_thumbs_path = f"{args['docservers']['SPLITTER_THUMB']}/{args['batch_folder']}/"
@@ -58,7 +61,7 @@ def process(args):
     file = args['files'].move_to_docservers(args['docservers'], args['file'], 'splitter')
     if args['ocrise']:
         args['files'].ocrise_pdf(file, args['configurations']['locale'], args['log'])
-    args['splitter'].save_documents(args['batch_folder'], file, args['input_id'], original_file)
+    args['splitter'].create_batch(args['batch_folder'], file, args['input_id'], args['user_id'], original_file)
 
 
 def split(splitter, pages):
