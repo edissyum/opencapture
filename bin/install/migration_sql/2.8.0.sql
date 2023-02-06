@@ -1,0 +1,1 @@
+UPDATE configurations SET display = false WHERE label = 'locale';

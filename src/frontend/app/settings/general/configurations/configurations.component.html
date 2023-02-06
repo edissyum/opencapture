@@ -1,5 +1,5 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-16]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white">
@@ -22,18 +22,38 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!loading" class="w-full overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
-            <div class="text-center">
-                <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.change_image" | translate }}</h3>
-                <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+            <div class="text-center grid grid-cols-2 gap-6">
                 <div>
-                    <img class="shadow-md hover:shadow-2xl m-auto p-2 transition-all ease-in-out duration-500
+                    <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.change_image" | translate }}</h3>
+                    <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                    <div>
+                        <img class="shadow-md hover:shadow-2xl m-auto p-2 transition-all ease-in-out duration-500
                          cursor-pointer shadow-gray-900 hover:shadow-gray-900" [src]="this.loginImage" alt="Login image"
-                         (click)="onClick(logo)">
-                    <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
+                             (click)="onClick(logo)">
+                        <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
+                    </div>
+                    <mat-hint class="text-gray-600 relative top-2">
+                        {{ "CONFIGURATIONS.authorized_extensions" | translate }}
+                    </mat-hint>
                 </div>
-                <mat-hint class="text-gray-600 relative top-2">
-                    {{ "CONFIGURATIONS.authorized_extensions" | translate }}
-                </mat-hint>
+                <div>
+                    <h3 class="text-gray-900 m-4">{{ "PRIVILEGES.change_language" | translate }}</h3>
+                    <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                    <div class="ml-3 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('change_language')">
+                        <mat-form-field class="language origin-top-right right-0 mt-4 w-1/2">
+                            <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
+                            <mat-select (selectionChange)="this.localeService.changeLocale($event)"
+                                        [disabled]="this.localeService.localeLoading"
+                                        [(value)]="this.localeService.currentLang">
+                                <mat-option *ngFor="let lang of this.localeService.langs" [value]="lang[0]">
+                                    {{ lang[1] }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <i *ngIf="this.localeService.localeLoading"
+                           class="fa-solid fa-earth-europe fa-beat fa-lg text-gray-900 ml-4"></i>
+                    </div>
+                </div>
             </div>
             <mat-divider class="border-green-400 mt-4 mb-4 w-3/4 m-auto"></mat-divider>
             <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
