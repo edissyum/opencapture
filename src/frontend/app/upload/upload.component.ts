@@ -142,7 +142,9 @@ export class UploadComponent implements OnInit {
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
-                environment['url'] + '/ws/' + splitterOrVerifier + '/upload?inputId=' + this.selectedInputTechnicalId,
+                environment['url'] + '/ws/' + splitterOrVerifier + '/upload' +
+                '?inputId=' + this.selectedInputTechnicalId +
+                 '&userId=' + this.userService.user.id,
                 formData,
                 {
                     headers: this.authService.headers
