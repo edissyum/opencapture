@@ -241,6 +241,7 @@
 		"vat_rate": "Taux de TVA"
 	},
 	"FIELD_METADATA": {
+		"default_value": "Valeur par défaut",
 		"result_mask": "Masque de résultat",
 		"search_mask": "Masque de recherche",
 		"validation_mask": "Masque de validation"

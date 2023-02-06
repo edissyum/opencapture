@@ -241,6 +241,7 @@
 		"vat_rate": "VAT rate"
 	},
 	"FIELD_METADATA": {
+		"default_value": "Default value",
 		"result_mask": "Result mask",
 		"search_mask": "Search mask",
 		"validation_mask": "Validation mask"
