@@ -1,0 +1,3 @@
+::ng-deep .mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) {
+    @apply bg-green-400 #{!important};
+}

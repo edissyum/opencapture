@@ -60,12 +60,19 @@ export class CreateAiModelComponent implements OnInit {
             required: true,
         },
         {
-            id: 'model_stop',
+            id: 'min_proba',
             label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
             type: 'text',
             control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
             required: true,
         },
+        {
+            id: 'input_id',
+            label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.input_id"),
+            type: 'select',
+            control: new FormControl(''),
+            required: true,
+        }
     ];
 
     constructor(
@@ -94,6 +101,21 @@ export class CreateAiModelComponent implements OnInit {
         this.retrieveDoctypes();
         this.retrieveOCDoctypes();
         this.retrieveForms();
+        this.http.get(environment['url'] + '/ws/inputs/list?module=' + this.splitterOrVerifier, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.modelForm.forEach((element: any) => {
+                    if (element.id === 'input_id') {
+                        element.values = data.inputs;
+                    }
+                });
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     retrieveDoctypes() {
@@ -187,18 +209,25 @@ export class CreateAiModelComponent implements OnInit {
         let start_training = true;
         if (this.isValidForm(this.modelForm) && this.totalChecked > 1 && this.isValidForm2(this.controls)) {
             const doctypes = [];
-            const minPred = this.getValueFromForm(this.modelForm, 'model_stop');
+            const minPred = this.getValueFromForm(this.modelForm, 'min_proba');
             const modelName = this.getValueFromForm(this.modelForm, 'model_label');
             const matches = this.docStatus.filter((a: { isSelected: boolean }) => a.isSelected);
             for (let i = 0; i < this.totalChecked; i = i + 1) {
                 const fold = matches[i].doc;
                 const formid = matches[i].linked_form;
-                const ocTarget = matches[i].linked_doctype;
-                doctypes.push({
-                    form: formid,
-                    folder: fold,
-                    doctype: ocTarget
-                });
+                if (this.splitterOrVerifier === 'splitter') {
+                    const ocTarget = matches[i].linked_doctype;
+                    doctypes.push({
+                        form: formid,
+                        folder: fold,
+                        doctype: ocTarget
+                    });
+                } else if (this.splitterOrVerifier === 'verifier')  {
+                    doctypes.push({
+                        form: formid,
+                        folder: fold,
+                    });
+                }
             }
 
             for (const element of this.listModels) {

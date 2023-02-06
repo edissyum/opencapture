@@ -24,8 +24,15 @@ bp = Blueprint('ai', __name__, url_prefix='/ws/')
 
 @bp.route('ai/splitter/getTrainDocuments', methods=['GET'])
 @auth.token_required
-def get_train_documents():
+def get_train_documents_splitter():
     res = artificial_intelligence.splitter_retrieve_documents()
+    return make_response(jsonify(res)), 200
+
+
+@bp.route('ai/verifier/getTrainDocuments', methods=['GET'])
+@auth.token_required
+def get_train_documents_verifier():
+    res = artificial_intelligence.verifier_retrieve_documents()
     return make_response(jsonify(res)), 200
 
 
