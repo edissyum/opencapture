@@ -44,8 +44,8 @@ def splitter_retrieve_documents():
     return data
 
 
-def get_models(args):
-    _models = artificial_intelligence.get_models(args)
+def get_models(module):
+    _models = artificial_intelligence.get_models({'where': ["status = %s", "module = %s"], 'data': ['OK', module]})
 
     response = {
         "models": _models
@@ -71,6 +71,7 @@ def create_model(data):
         'model_path': data['model_path'],
         'type': data['type'],
         'status': data['status'],
+        'module': data['module'],
     }
 
     res, error = artificial_intelligence.create_model({'columns': _columns})
@@ -128,6 +129,7 @@ def launch_train(data, model_name):
         'model_path': model_name.split("/")[-1],
         'type': 'doctype',
         'status': 'training',
+        'module': data['module']
     }
     model_id = create_model(args)[0].get('id')
 

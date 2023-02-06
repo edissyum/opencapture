@@ -1,0 +1,31 @@
+FROM debian:bullseye-slim
+
+RUN apt-get update
+RUN apt-get -y install sudo nano apache2 python3 libapache2-mod-wsgi-py3 php tesseract-ocr
+RUN apt-get -y install libgl1-mesa-glx libpq-dev libglib2.0-0
+
+RUN useradd -m --user-group --password '' --shell /bin/bash opencapture
+RUN usermod -aG sudo opencapture
+RUN echo "source /var/www/html/opencapture/python-venv/opencapture/bin/activate" >> "/home/opencapture/.bashrc"
+
+RUN touch /etc/apache2/sites-available/opencapture.conf
+RUN echo "<VirtualHost *:80>\n" \
+         "    ServerName localhost\n" \
+         "    DocumentRoot /var/www/html/opencapture/\n" \
+         "    WSGIDaemonProcess opencapture user=opencapture group=www-data home=/var/www/html/opencapture/ threads=1 processes=5 python-path=/var/www/html/opencapture/python-venv/opencapture/lib/python3.9/site-packages\n" \
+         "    WSGIScriptAlias /backend_oc /var/www/html/opencapture/wsgi.py\n" \
+         "    <Directory /var/www/html/opencapture/>\n" \
+         "        AllowOverride All\n" \
+         "        WSGIProcessGroup opencapture\n" \
+         "        WSGIApplicationGroup %{GLOBAL}\n" \
+         "        WSGIPassAuthorization On\n" \
+         "        Order deny,allow\n" \
+         "        Allow from all\n" \
+         "        Require all granted\n" \
+         "    </Directory>\n" \
+         "</VirtualHost>\n" > /etc/apache2/sites-available/opencapture.conf
+
+RUN a2ensite opencapture.conf
+RUN a2dissite 000-default.conf
+RUN a2enmod rewrite
+CMD apachectl -D FOREGROUND

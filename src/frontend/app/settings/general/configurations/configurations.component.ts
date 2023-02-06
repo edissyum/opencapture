@@ -25,7 +25,6 @@ import { PrivilegesService } from "../../../../services/privileges.service";
 import { LocalStorageService } from "../../../../services/local-storage.service";
 import { LastUrlService } from "../../../../services/last-url.service";
 import { Sort } from "@angular/material/sort";
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -34,14 +33,12 @@ import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HistoryService } from "../../../../services/history.service";
+import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
     selector: 'app-configurations',
     templateUrl: './configurations.component.html',
-    styleUrls: ['./configurations.component.scss'],
-    providers: [
-        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' }},
-    ]
+    styleUrls: ['./configurations.component.scss']
 })
 export class ConfigurationsComponent implements OnInit {
     columnsToDisplay    : string[]      = ['id', 'label', 'description', 'type', 'content', 'actions'];
@@ -65,6 +62,7 @@ export class ConfigurationsComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        public localeService: LocaleService,
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,

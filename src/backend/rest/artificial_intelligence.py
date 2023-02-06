@@ -32,12 +32,8 @@ def get_train_documents():
 @bp.route('ai/getAIModels', methods=['GET'])
 @auth.token_required
 def get_ai_models():
-    args = {
-        'select': ['*'],
-        'where': ["status = %s"],
-        'data': ['OK']
-    }
-    models = artificial_intelligence.get_models(args)
+    module = request.args['module']
+    models = artificial_intelligence.get_models(module)
     return make_response(jsonify(models[0])), models[1]
 
 
