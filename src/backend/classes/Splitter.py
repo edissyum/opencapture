@@ -72,7 +72,7 @@ class Splitter:
                 })
                 is_previous_code_qr = False
 
-    def save_documents(self, batch_folder, file, input_id, original_filename):
+    def create_batch(self, batch_folder, file, input_id, original_filename):
         for _, batch in enumerate(self.result_batches):
             input_settings = self.db.select({
                 'select': ['*'],
