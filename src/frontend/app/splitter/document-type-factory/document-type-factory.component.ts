@@ -376,4 +376,9 @@ export class DocumentTypeFactoryComponent implements OnInit {
     highlight(text: string) {
         return text.replace(this.searchText, `<span class="p-1 rounded font-bold bg-green-400">${this.searchText}</span>`);
     }
+
+    cleanSearchText() {
+        this.searchText = '';
+        this.filterChanged();
+    }
 }
