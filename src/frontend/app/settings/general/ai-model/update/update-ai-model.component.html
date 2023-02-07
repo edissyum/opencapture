@@ -39,14 +39,6 @@
                             {{ 'ARTIFICIAL-INTELLIGENCE.invalid_selection' | translate }}
                         </mat-error>
                     </mat-form-field>
-                    <mat-form-field class="block" *ngIf="field.type === 'select'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [formControl]="field.control" [(value)]="field.control.value" [required]="field.required">
-                            <mat-option *ngFor="let option of field.values" [value]="option['id']">
-                                {{ option['input_label'] | translate }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
                 </ng-container>
             </div>
             <div class="mx-10 my-2 grid grid-cols-5 gap-4 place-items-stretch">

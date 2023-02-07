@@ -27,9 +27,9 @@
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.id' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="model_path">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.model_path' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.model_path }} </mat-cell>
+                <ng-container matColumnDef="model_label">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.model_label' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.model_label }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="train_time">
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.train_time' | translate }} </mat-header-cell>
@@ -56,7 +56,7 @@
                             <i class="fa-solid fa-vial"></i>
                         </button>
                         <button mat-icon-button
-                                (click)="$event.stopPropagation(); deleteConfirmDialog(element.id, element.model_path)"
+                                (click)="$event.stopPropagation(); deleteConfirmDialog(element.id, element.model_label)"
                                 matTooltip="{{ 'GLOBAL.delete' | translate }}"
                                 class="inline-block align-text-top">
                             <i class="fa-solid fa-trash text-lg"></i>

@@ -46,7 +46,7 @@ export class ListAiModelComponent implements OnInit {
     showResponse        : boolean     = false;
     isPredicting        : boolean     = false;
     modelsList          : any         = [];
-    displayedColumns    : string[]    = ['id', 'model_path', 'train_time', 'accuracy_score', 'documents', 'min_proba', 'actions'];
+    displayedColumns    : string[]    = ['id', 'model_label', 'train_time', 'accuracy_score', 'documents', 'min_proba', 'actions'];
     offset              : number      = 0;
     pageIndex           : number      = 0;
     total               : number      = 0;
@@ -74,8 +74,7 @@ export class ListAiModelComponent implements OnInit {
         private notify: NotificationService,
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        public privilegesService: PrivilegesService
     ) { }
 
     ngOnInit() {
@@ -89,7 +88,7 @@ export class ListAiModelComponent implements OnInit {
     }
 
     retrieveModels(offset?: number, size?: number) {
-        this.http.get(environment['url'] + '/ws/ai/getAIModels?module=' + this.splitterOrVerifier, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/ai/list?module=' + this.splitterOrVerifier, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.modelsList = data.models;
                 for (let i = 0; i < this.modelsList.length; i++) {

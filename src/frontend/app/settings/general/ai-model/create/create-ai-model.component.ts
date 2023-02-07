@@ -54,9 +54,9 @@ export class CreateAiModelComponent implements OnInit {
         {
             id: 'model_label',
             label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_name"),
-            placeholder: "exemple_modèle.sav",
+            placeholder: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_name_placeholder"),
             type: 'text',
-            control: new FormControl('', Validators.pattern("[a-zA-Z0-9+._-éùà)(î]+\\.sav+")),
+            control: new FormControl(''),
             required: true,
         },
         {
@@ -64,13 +64,6 @@ export class CreateAiModelComponent implements OnInit {
             label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
             type: 'text',
             control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
-            required: true,
-        },
-        {
-            id: 'input_id',
-            label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.input_id"),
-            type: 'select',
-            control: new FormControl(''),
             required: true,
         }
     ];
@@ -101,21 +94,6 @@ export class CreateAiModelComponent implements OnInit {
         this.retrieveDoctypes();
         this.retrieveOCDoctypes();
         this.retrieveForms();
-        this.http.get(environment['url'] + '/ws/inputs/list?module=' + this.splitterOrVerifier, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.modelForm.forEach((element: any) => {
-                    if (element.id === 'input_id') {
-                        element.values = data.inputs;
-                    }
-                });
-            }),
-            finalize(() => this.loading = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
     }
 
     retrieveDoctypes() {
@@ -199,9 +177,13 @@ export class CreateAiModelComponent implements OnInit {
                 this.chosenDocs[index] = this.doctypes.filter((a: { formId: number }) => a.formId === this.chosenForm[index]);
             }
         }
-        this.controls[index].value = this.chosenDocs[index][0].id;
+        if (this.splitterOrVerifier === 'splitter') {
+            this.controls[index].value = this.chosenDocs[index][0].id;
+        }
         const match = this.docStatus.find((a: { doc: string }) => a.doc === doc);
-        match.linked_doctype = this.chosenDocs[index][0].id;
+        if (this.splitterOrVerifier === 'splitter') {
+            match.linked_doctype = this.chosenDocs[index][0].id;
+        }
         match.linked_form = this.chosenForm[index];
     }
 
@@ -210,7 +192,8 @@ export class CreateAiModelComponent implements OnInit {
         if (this.isValidForm(this.modelForm) && this.totalChecked > 1 && this.isValidForm2(this.controls)) {
             const doctypes = [];
             const minPred = this.getValueFromForm(this.modelForm, 'min_proba');
-            const modelName = this.getValueFromForm(this.modelForm, 'model_label');
+            const label = this.getValueFromForm(this.modelForm, 'model_label');
+            const modelName = label.toLowerCase().replace(/ /g, "_") + '.sav';
             const matches = this.docStatus.filter((a: { isSelected: boolean }) => a.isSelected);
             for (let i = 0; i < this.totalChecked; i = i + 1) {
                 const fold = matches[i].doc;
@@ -240,7 +223,8 @@ export class CreateAiModelComponent implements OnInit {
             }
             if (start_training) {
                 this.http.post(environment['url'] + '/ws/ai/trainModel/' + modelName,
-                    {docs: doctypes, min_pred: minPred, module: this.splitterOrVerifier}, {headers: this.authService.headers}).pipe(
+                    {label: label, docs: doctypes, min_pred: minPred, module: this.splitterOrVerifier},
+                    {headers: this.authService.headers}).pipe(
                     catchError((err: any) => {
                         console.debug(err);
                         return of(false);
@@ -291,7 +275,7 @@ export class CreateAiModelComponent implements OnInit {
     }
 
     retrieveModels() {
-        this.http.get(environment['url'] + '/ws/ai/getAIModels?module=' + this.splitterOrVerifier + '&limit=', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/ai/list?module=' + this.splitterOrVerifier + '&limit=', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.listModels = data.models;
             }),

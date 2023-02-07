@@ -119,6 +119,14 @@ export class CreateInputComponent implements OnInit {
             ],
         },
         {
+            id: 'ai_model_id',
+            label: this.translate.instant('INPUT.ai_model_id'),
+            type: 'select',
+            control: new FormControl(),
+            required: true,
+            hint: this.translate.instant('INPUT.ai_model_id_hint')
+        },
+        {
             id: 'override_supplier_form',
             label: this.translate.instant('INPUT.override_supplier_form'),
             type: 'boolean',
@@ -168,11 +176,13 @@ export class CreateInputComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+
         this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.inputForm.forEach((element: any) => {
                     if (element.id === 'default_form_id') {
                         element.values = forms.forms;
+                        element.values = [{'id': 0, 'label': this.translate.instant('INPUT.no_form_associated')}].concat(element.values);
                         if (forms.forms.length === 1) {
                             element.control.setValue(forms.forms[0].id);
                         }
@@ -186,12 +196,68 @@ export class CreateInputComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/ai/list?module=verifier', {headers: this.authService.headers}).pipe(
+            tap((aiModel: any) => {
+                this.inputForm.forEach((element: any) => {
+                    if (element.id === 'ai_model_id') {
+                        element.values = aiModel.models;
+                        element.values.forEach((elem: any) => {
+                            elem.label = elem.model_label;
+                        });
+                        element.values = [{'id': 0, 'label': this.translate.instant('INPUT.no_ai_model_associated')}].concat(element.values);
+                        if (aiModel.models.length === 1) {
+                            element.control.setValue(aiModel.models[0].id);
+                        }
+                    }
+                });
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.inputForm.forEach((element: any) => {
+            if (element.id === 'default_form_id') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    const required = !value;
+                    this.inputForm.forEach((elem: any) => {
+                        if (elem.id === 'ai_model_id') {
+                            elem.required = required;
+                        }
+                    });
+                });
+            } else if (element.id === 'ai_model_id') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    const required = !value;
+                    this.inputForm.forEach((elem: any) => {
+                        if (elem.id === 'default_form_id') {
+                            elem.required = required;
+                        }
+                    });
+                });
+            }
+        });
     }
 
     isValidForm() {
         let state = true;
+        let aiEmpty = false;
+        let defaultFormEmpty = false;
         this.inputForm.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
+                state = false;
+            }
+            if (element.id === 'ai_model_id' && element.control.value === 0) {
+                aiEmpty = true;
+            }
+            if (element.id === 'default_form_id' && element.control.value === 0) {
+                defaultFormEmpty = true;
+            }
+            if (aiEmpty && defaultFormEmpty) {
                 state = false;
             }
             element.control.markAsTouched();
@@ -205,7 +271,9 @@ export class CreateInputComponent implements OnInit {
                 'module': 'verifier'
             };
             this.inputForm.forEach(element => {
-                input[element.id] = element.control.value;
+                if (element.control.value !== 'no_form' && element.control.value !== 'no_ai_model') {
+                    input[element.id] = element.control.value;
+                }
             });
 
             this.createInputAndScriptAndIncron();
