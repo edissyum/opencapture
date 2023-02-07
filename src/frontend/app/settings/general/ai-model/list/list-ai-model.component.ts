@@ -215,8 +215,7 @@ export class ListAiModelComponent implements OnInit {
     onSubmit() {
         this.showResponse = false;
         const formData = new FormData();
-        const disp = Object.values(this.clickedRow)[4];
-
+        const disp = Object.values(this.clickedRow)[2];
         if (this.fileControl.value!.length === 0) {
             this.notify.handleErrors(this.translate.instant('UPLOAD.no_file'));
             return;
