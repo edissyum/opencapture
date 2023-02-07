@@ -129,9 +129,9 @@ def launch_train(data, model_name):
         folders.append(element['folder'])
     min_pred = data['min_pred']
 
-    path = _docservers.get('SPLITTER_TRAIN_PATH_FILES')
+    path = _docservers.get('VERIFIER_TRAIN_PATH_FILES') if data['module'] == 'verifier' else _docservers.get('SPLITTER_TRAIN_PATH_FILES')
     csv_file = path + '/data.csv'
-    model_name = _docservers.get('SPLITTER_AI_MODEL_PATH') + model_name
+    model_name = _docservers.get('VERIFIER_AI_MODEL_PATH') + model_name if data['module'] == 'verifier' else _docservers.get('SPLITTER_AI_MODEL_PATH') + model_name
     start_time = time.time()
 
     args = {
@@ -352,7 +352,7 @@ def stemming(clean_text):
     return stem
 
 
-def launch_pred(mname, files):
+def launch_pred(model_id, files):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     _files = _vars[3]
@@ -363,11 +363,16 @@ def launch_pred(mname, files):
         file_to_save = _files.normalize(_f.filename)
         path = _docservers.get('TMP_PATH') + file_to_save
         _f.save(path)
-        model_name = _docservers.get('SPLITTER_AI_MODEL_PATH') + mname
-        if os.path.exists(model_name):
-            csv_file = _docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
-            store_one_file(path, csv_file)
-            return model_testing(model_name, csv_file)
+        ai_model = artificial_intelligence.get_model_by_id({'model_id': model_id})
+        if ai_model:
+            ai_model = ai_model[0]
+            model_name = _docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model['model_path'] if ai_model['module'] == 'verifier' \
+                else _docservers.get('SPLITTER_AI_MODEL_PATH') + ai_model['model_path']
+            if os.path.exists(model_name):
+                csv_file = _docservers.get('VERIFIER_TRAIN_PATH_FILES') + '/data.csv' if ai_model['module'] == 'verifier' \
+                    else _docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
+                store_one_file(path, csv_file)
+                return model_testing(model_name, csv_file)
 
     response = {
         "errors": gettext('GET_IA_MODEL_BY_ID_ERROR'),
