@@ -568,7 +568,7 @@ INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "
     "metadata_method": "",
     "export_zip_file": ""
 }');
-INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (3, 3, '{"metadata": []}');
+INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (3, 3, '{"batch_metadata": [], "document_metadata": []}');
 ALTER SEQUENCE "form_models_id_seq" RESTART WITH 4;
 ALTER SEQUENCE "form_models_field_id_seq" RESTART WITH 4;
 
