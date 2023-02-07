@@ -792,10 +792,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.http.get(environment['url'] + '/ws/splitter/batch/' + this.currentBatch.id + '/file',
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                const link = document.createElement("a");
-                link.href = "data:application/pdf;base64," + data['encodedFile'];
-                link.download = `${data['filename']}`;
-                link.click();
+                const src = `data:application/pdf;base64,${data['encodedFile']}`;
+                const newWindow = window.open();
+                newWindow!.document.write(`<iframe style="width: 100%;height: 100%;margin: 0;padding: 0;" src="${src}" allowfullscreen></iframe>`);
+                newWindow!.document.title = data['filename'];
             }),
             finalize(() => this.downloadLoading = false),
             catchError((err: any) => {

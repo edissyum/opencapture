@@ -148,7 +148,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.login_methods"),
                 "icon"      : "fa-solid fa-right-to-bracket",
                 "route"     : "/settings/general/login-methods",
-                "privilege" : "login_methods",
+                "privilege" : "login_methods"
             },
             {
                 "id"        : "about-us",
