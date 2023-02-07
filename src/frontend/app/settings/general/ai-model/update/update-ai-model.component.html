@@ -17,7 +17,7 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!loading">
-            <div class="grid grid-cols-2 gap-6 m-10 w-full">
+            <div class="grid grid-cols-3 gap-6 m-10 w-full">
                 <ng-container *ngFor="let field of modelForm">
                     <mat-form-field *ngIf="field.type === 'text' && field.id === 'model_path'">
                         <mat-label>
@@ -55,7 +55,7 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <mat-form-field>
+                    <mat-form-field *ngIf="splitterOrVerifier === 'splitter'">
                         <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.doctype" | translate }}</mat-label>
                         <mat-select [formControl]="doctypesFormControl[item.id]">
                             <mat-option *ngFor="let option of chosenDocs[i]" [value]="option.id">

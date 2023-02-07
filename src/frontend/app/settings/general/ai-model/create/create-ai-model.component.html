@@ -39,7 +39,7 @@
                         </mat-select>
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, modelForm) }}</mat-error>
                     </mat-form-field>
-                    <mat-form-field *ngIf="field.type === 'text' && field.id === 'model_stop'">
+                    <mat-form-field *ngIf="field.type === 'text' && field.id === 'min_proba'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type"
                                placeholder="{{ field.label | translate }}" [required]="field.required">
@@ -78,7 +78,7 @@
                         </mat-form-field>
                     </div>
 
-                    <mat-form-field *ngIf="displayDoctypes(formControl) && item.isSelected">
+                    <mat-form-field *ngIf="this.splitterOrVerifier === 'splitter' && displayDoctypes(formControl) && item.isSelected">
                         <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.doctype" | translate }}</mat-label>
                         <mat-select [formControl]="controls[i]"
                                     (selectionChange)="changeOutputType($event, item.doc)">
@@ -94,8 +94,9 @@
             </mat-list>
         </div>
         <div class="flex justify-center items-center mb-2 py-4">
-            <button mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
-                <span class="block" (click)="createModel()">
+            <button mat-button (click)="createModel()" class="p-6 border-solid border-green-400 border bg-green-400
+            text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+                <span class="block">
                     {{ 'ARTIFICIAL-INTELLIGENCE.train_a_model' | translate }}
                 </span>
             </button>

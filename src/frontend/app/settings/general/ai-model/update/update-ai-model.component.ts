@@ -49,6 +49,7 @@ export class UpdateAiModelComponent implements OnInit {
     chosenDocs          : any       = [];
     documents           : any       = [];
     len                 : number    = 0;
+    splitterOrVerifier  : any       = 'verifier';
     modelForm           : any[]     = [
         {
             id: 'model_path',
@@ -56,13 +57,14 @@ export class UpdateAiModelComponent implements OnInit {
             type: 'text',
             control: new FormControl('', Validators.pattern("[a-zA-Z0-9+._-éùà)(î]+\\.sav+")),
             required: true,
-        }, {
+        },
+        {
             id: 'min_proba',
             label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
             type: 'text',
             control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
             required: true,
-        },
+        }
     ];
 
     constructor(
@@ -80,6 +82,11 @@ export class UpdateAiModelComponent implements OnInit {
     ) { }
 
     async ngOnInit() {
+        if (this.router.url.includes('/verifier/')) {
+            this.splitterOrVerifier = 'verifier';
+        } else if (this.router.url.includes('/splitter/')) {
+            this.splitterOrVerifier = 'splitter';
+        }
         this.serviceSettings.init();
         this.modelId = this.route.snapshot.params['id'];
         this.retrieveOCDoctypes();
@@ -89,16 +96,23 @@ export class UpdateAiModelComponent implements OnInit {
                 this.documents = data.documents;
                 const selectedFormId : any = [];
                 this.len = this.documents.length;
-                for(let i = 0; i < this.len; i++) {
-                    for (const element of this.doc_types) {
-                        if (element.id === this.documents[i].doctype) {
-                            selectedFormId.push(element.formId);
-                            break;
+                for (let i = 0; i < this.len; i++) {
+                    if (this.splitterOrVerifier === 'splitter') {
+                        for (const element of this.doc_types) {
+                            if (element.id === this.documents[i].doctype) {
+                                selectedFormId.push(element.formId);
+                                break;
+                            }
+                        }
+                        this.formById.push((this.forms.find((a: { id: number }) => a.id === selectedFormId[i])).id);
+                        this.chosenDocs[i] = this.doc_types.filter((a: { formId: number }) => a.formId === selectedFormId[i]);
+                    } else if (this.splitterOrVerifier === 'verifier') {
+                        for (const doc of this.documents) {
+                            if (doc.form) {
+                                this.formById.push(doc.form);
+                            }
                         }
                     }
-
-                    this.formById.push((this.forms.find((a: { id: number }) => a.id === selectedFormId[i])).id);
-                    this.chosenDocs[i] = this.doc_types.filter((a: { formId: number }) => a.formId === selectedFormId[i]);
                     this.doctypesFormControl.push(new FormControl(this.documents[i].doctype, [Validators.required]));
                     this.formsFormControl.push(new FormControl(this.formById[i], [Validators.required]));
                     this.tableData.push({Documents: this.documents[i].folder, Doctypes: this.documents[i].doctype, Formulaires: this.formById[i], id: i});
@@ -123,7 +137,7 @@ export class UpdateAiModelComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
-                this.router.navigate(['/settings/splitter/ai']).then();
+                this.router.navigate(['/settings/' + this.splitterOrVerifier + '/ai']).then();
                 return of(false);
             })
         ).subscribe();
@@ -152,8 +166,8 @@ export class UpdateAiModelComponent implements OnInit {
                 }, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.model_updated'));
-                        this.historyService.addHistory('splitter', 'update_ai_model', this.translate.instant('HISTORY-DESC.update-ai-model', {model: model_name}));
-                        this.router.navigate(['/settings/splitter/ai']).then();
+                        this.historyService.addHistory(this.splitterOrVerifier, 'update_ai_model', this.translate.instant('HISTORY-DESC.update-ai-model', {model: model_name}));
+                        this.router.navigate(['/settings/' + this.splitterOrVerifier + '/ai']).then();
                     }),
                     catchError((err: any) => {
                         console.debug(err);
@@ -213,7 +227,7 @@ export class UpdateAiModelComponent implements OnInit {
     }
 
     async retrieveForms() {
-        const retrieve = this.http.get(environment['url'] + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
+        const retrieve = this.http.get(environment['url'] + '/ws/forms/list?module=' + this.splitterOrVerifier, {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.forms = forms.forms;
             }),

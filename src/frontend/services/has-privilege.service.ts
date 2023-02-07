@@ -20,6 +20,7 @@ import { PrivilegesService } from "./privileges.service";
 import { ActivatedRouteSnapshot, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "./notifications/notifications.service";
+import {LocalStorageService} from "./local-storage.service";
 
 @Injectable({
     providedIn: 'root'
@@ -30,9 +31,9 @@ export class HasPrivilegeService {
         private router: Router,
         private translate: TranslateService,
         private notify: NotificationService,
-        private privilegesService: PrivilegesService,
-    ) {
-    }
+        private localStorage: LocalStorageService,
+        private privilegesService: PrivilegesService
+    ) {}
 
     canActivate(route: ActivatedRouteSnapshot): boolean {
         if (route.data['privileges'] !== undefined) {
@@ -46,6 +47,10 @@ export class HasPrivilegeService {
                             label = '<b>' + this.translate.instant(route.data['title']) + '</b>';
                         }
                         this.notify.error(translated + label);
+                        if (route.url[0].path === 'settings') {
+                            this.localStorage.remove('selectedSettings');
+                            this.localStorage.remove('selectedParentSettings');
+                        }
                         this.router.navigateByUrl('/home').then();
                     });
                     returnValue = false;

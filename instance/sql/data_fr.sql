@@ -18,7 +18,7 @@ INSERT INTO "mailcollect" ("name", "hostname", "port", "login", "password", "sec
 -- CRÉATION DES PARAMÈTRES
 INSERT INTO "configurations" ("label", "data") VALUES ('jwtExpiration', '{"type": "int", "value": "1440", "description": "Délai avant expiration du token d''authentification (en minutes)"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('timeDelta', '{"type": "int", "value": "-1", "description": "Delta maximum pour remonter une date de facture, en jours. -1 pour désactiver"}');
-INSERT INTO "configurations" ("label", "data") VALUES ('locale', '{"type": "string", "value": "fra", "description": "Clé pour la sélection de la langue (fra ou eng par défaut)"}');
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('locale', '{"type": "string", "value": "fra", "description": "Clé pour la sélection de la langue (fra ou eng par défaut)"}', false);
 INSERT INTO "configurations" ("label", "data") VALUES ('invoiceSizeMin', '{"type": "int", "value": "6", "description": "Taille minimale pour un numéro de facture"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('devisSizeMin', '{"type": "int", "value": "3", "description": "Taille minimale pour un numéro de devis"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('loginMessage', '{"type": "string", "value": "Open-Capture - LAD / RAD", "description": "Court message affiché sur l''écran d''accueil"}');
@@ -67,6 +67,8 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARA
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_THUMB', '[VERIFIER] Chemin pour le stockage des miniatures', '/var/docservers/opencapture/verifier/thumbs/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_IMAGE_FULL', '[VERIFIER] Chemin pour le stockage des images', '/var/docservers/opencapture/verifier/full/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_POSITIONS_MASKS', '[VERIFIER] Chemin pour le stockage des images nécessaire aux masques de positionnement', '/var/docservers/opencapture/verifier/positions_masks/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_TRAIN_PATH_FILES', '[VERIFIER] Chemin vers le dossier contenant les données d''entraînement', '/var/www/html/opencapture/bin/scripts/ai/verifier/train_data');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_AI_MODEL_PATH', '[VERIFIER] Chemin vers le dossier contenant le modèle de prédiction', '/var/www/html/opencapture/bin/scripts/ai/verifier/models/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_BATCHES', '[SPLITTER] Chemin vers le dossier de stockage des dossiers de batch après traitement', '/var/docservers/opencapture/splitter/batches/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_THUMB', '[SPLITTER] Chemin pour le stockage des miniatures', '/var/docservers/opencapture/splitter/thumbs/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_ORIGINAL_PDF', '[SPLITTER] Chemin vers le dossier contenant les PDF originaux', '/var/docservers/opencapture/splitter/original_pdf/');

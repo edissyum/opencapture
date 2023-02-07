@@ -44,8 +44,19 @@ def splitter_retrieve_documents():
     return data
 
 
-def get_models(args):
-    _models = artificial_intelligence.get_models(args)
+def verifier_retrieve_documents():
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    _docservers = _vars[9]
+    data = []
+    for file_name in os.listdir(_docservers.get('VERIFIER_TRAIN_PATH_FILES')):
+        if not file_name.endswith(".csv") and not file_name.endswith(".gitkeep"):
+            data.append(file_name)
+    return data
+
+
+def get_models(module):
+    _models = artificial_intelligence.get_models({'where': ["status = %s", "module = %s"], 'data': ['OK', module]})
 
     response = {
         "models": _models
@@ -71,6 +82,8 @@ def create_model(data):
         'model_path': data['model_path'],
         'type': data['type'],
         'status': data['status'],
+        'module': data['module'],
+        'model_label': data['model_label'],
     }
 
     res, error = artificial_intelligence.create_model({'columns': _columns})
@@ -112,12 +125,9 @@ def launch_train(data, model_name):
     _docservers = _vars[9]
 
     folders = []
-    target = []
-
-    for element in data["docs"]:
-        folders.append(element["folder"])
-        target.append(element["doctype"])
-    min_pred = data["min_pred"]
+    for element in data['docs']:
+        folders.append(element['folder'])
+    min_pred = data['min_pred']
 
     path = _docservers.get('SPLITTER_TRAIN_PATH_FILES')
     csv_file = path + '/data.csv'
@@ -128,6 +138,8 @@ def launch_train(data, model_name):
         'model_path': model_name.split("/")[-1],
         'type': 'doctype',
         'status': 'training',
+        'module': data['module'],
+        'model_label': data['label']
     }
     model_id = create_model(args)[0].get('id')
 

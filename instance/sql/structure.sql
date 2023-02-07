@@ -88,18 +88,19 @@ CREATE TABLE "outputs_types"
 
 CREATE TABLE "inputs"
 (
-    "id"                            SERIAL         UNIQUE PRIMARY KEY,
-    "input_id"                      VARCHAR(255),
-    "input_label"                   VARCHAR(255),
-    "default_form_id"               INTEGER,
-    "customer_id"                   INTEGER,
-    "module"                        VARCHAR(10),
-    "remove_blank_pages"            BOOLEAN        DEFAULT False,
-    "override_supplier_form"        BOOLEAN        DEFAULT False,
-    "purchase_or_sale"              VARCHAR(8)     DEFAULT 'purchase',
-    "status"                        VARCHAR(3)     DEFAULT 'OK',
-    "input_folder"                  TEXT,
-    "splitter_method_id"            VARCHAR(20)    DEFAULT 'qr_code_OC'
+    "id"                        SERIAL         UNIQUE PRIMARY KEY,
+    "input_id"                  VARCHAR(255),
+    "input_label"               VARCHAR(255),
+    "default_form_id"           INTEGER,
+    "customer_id"               INTEGER,
+    "ai_model_id"               INTEGER,
+    "module"                    VARCHAR(10),
+    "remove_blank_pages"        BOOLEAN        DEFAULT False,
+    "override_supplier_form"    BOOLEAN        DEFAULT False,
+    "purchase_or_sale"          VARCHAR(8)     DEFAULT 'purchase',
+    "status"                    VARCHAR(3)     DEFAULT 'OK',
+    "input_folder"              TEXT,
+    "splitter_method_id"        VARCHAR(20)    DEFAULT 'qr_code_OC'
 );
 
 CREATE TABLE "custom_fields"
@@ -393,6 +394,7 @@ COMMENT ON SEQUENCE splitter_referential_call_count IS 'Splitter referential dem
 CREATE TABLE ai_models
 (
     "id"                SERIAL       PRIMARY KEY,
+    "model_label"       VARCHAR,
     "model_path"        VARCHAR(50),
     "type"              VARCHAR(15),
     "train_time"        REAL,

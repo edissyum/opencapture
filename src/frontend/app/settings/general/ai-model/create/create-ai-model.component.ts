@@ -38,33 +38,34 @@ import { finalize } from "rxjs/operators";
 })
 
 export class CreateAiModelComponent implements OnInit {
-    loading         : boolean   = true;
-    docs            : any = [];
-    doctypes        : any = [];
-    docStatus       : any = [];
-    controls        : any = [];
-    formControl     : FormControl = new FormControl('');
-    listModels      : any = [];
-    forms           : any = [];
-    chosenForm      : any = [];
-    chosenDocs      : any = [];
-    totalChecked    : number    = 0;
-    modelForm       : any[]     = [
+    loading             : boolean   = true;
+    docs                : any       = [];
+    doctypes            : any       = [];
+    docStatus           : any       = [];
+    controls            : any       = [];
+    formControl         : FormControl = new FormControl('');
+    listModels          : any       = [];
+    forms               : any       = [];
+    chosenForm          : any       = [];
+    chosenDocs          : any       = [];
+    totalChecked        : number    = 0;
+    splitterOrVerifier  : any       = 'verifier';
+    modelForm           : any[]     = [
         {
             id: 'model_label',
             label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_name"),
-            placeholder: "exemple_modèle.sav",
+            placeholder: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_name_placeholder"),
             type: 'text',
-            control: new FormControl('', Validators.pattern("[a-zA-Z0-9+._-éùà)(î]+\\.sav+")),
+            control: new FormControl(''),
             required: true,
         },
         {
-            id: 'model_stop',
+            id: 'min_proba',
             label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
             type: 'text',
             control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
             required: true,
-        },
+        }
     ];
 
     constructor(
@@ -83,6 +84,11 @@ export class CreateAiModelComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        if (this.router.url.includes('/verifier/')) {
+            this.splitterOrVerifier = 'verifier';
+        } else if (this.router.url.includes('/splitter/')) {
+            this.splitterOrVerifier = 'splitter';
+        }
         this.serviceSettings.init();
         this.retrieveModels();
         this.retrieveDoctypes();
@@ -91,7 +97,7 @@ export class CreateAiModelComponent implements OnInit {
     }
 
     retrieveDoctypes() {
-        this.http.get(environment['url'] + '/ws/ai/splitter/getTrainDocuments', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/getTrainDocuments', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.docs = data;
                 this.docStatus.splice(0);
@@ -171,9 +177,13 @@ export class CreateAiModelComponent implements OnInit {
                 this.chosenDocs[index] = this.doctypes.filter((a: { formId: number }) => a.formId === this.chosenForm[index]);
             }
         }
-        this.controls[index].value = this.chosenDocs[index][0].id;
+        if (this.splitterOrVerifier === 'splitter') {
+            this.controls[index].value = this.chosenDocs[index][0].id;
+        }
         const match = this.docStatus.find((a: { doc: string }) => a.doc === doc);
-        match.linked_doctype = this.chosenDocs[index][0].id;
+        if (this.splitterOrVerifier === 'splitter') {
+            match.linked_doctype = this.chosenDocs[index][0].id;
+        }
         match.linked_form = this.chosenForm[index];
     }
 
@@ -181,18 +191,26 @@ export class CreateAiModelComponent implements OnInit {
         let start_training = true;
         if (this.isValidForm(this.modelForm) && this.totalChecked > 1 && this.isValidForm2(this.controls)) {
             const doctypes = [];
-            const minPred = this.getValueFromForm(this.modelForm, 'model_stop');
-            const modelName = this.getValueFromForm(this.modelForm, 'model_label');
+            const minPred = this.getValueFromForm(this.modelForm, 'min_proba');
+            const label = this.getValueFromForm(this.modelForm, 'model_label');
+            const modelName = label.toLowerCase().replace(/ /g, "_") + '.sav';
             const matches = this.docStatus.filter((a: { isSelected: boolean }) => a.isSelected);
             for (let i = 0; i < this.totalChecked; i = i + 1) {
                 const fold = matches[i].doc;
                 const formid = matches[i].linked_form;
-                const ocTarget = matches[i].linked_doctype;
-                doctypes.push({
-                    form: formid,
-                    folder: fold,
-                    doctype: ocTarget
-                });
+                if (this.splitterOrVerifier === 'splitter') {
+                    const ocTarget = matches[i].linked_doctype;
+                    doctypes.push({
+                        form: formid,
+                        folder: fold,
+                        doctype: ocTarget
+                    });
+                } else if (this.splitterOrVerifier === 'verifier')  {
+                    doctypes.push({
+                        form: formid,
+                        folder: fold,
+                    });
+                }
             }
 
             for (const element of this.listModels) {
@@ -205,7 +223,8 @@ export class CreateAiModelComponent implements OnInit {
             }
             if (start_training) {
                 this.http.post(environment['url'] + '/ws/ai/trainModel/' + modelName,
-                    {docs: doctypes, min_pred: minPred}, {headers: this.authService.headers}).pipe(
+                    {label: label, docs: doctypes, min_pred: minPred, module: this.splitterOrVerifier},
+                    {headers: this.authService.headers}).pipe(
                     catchError((err: any) => {
                         console.debug(err);
                         return of(false);
@@ -213,8 +232,8 @@ export class CreateAiModelComponent implements OnInit {
                 ).subscribe();
 
                 this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.created'));
-                this.historyService.addHistory('splitter', 'create_ai_model', this.translate.instant('HISTORY-DESC.create-ai-model', {model: modelName}));
-                this.router.navigate(['/settings/splitter/ai']).then();
+                this.historyService.addHistory(this.splitterOrVerifier, 'create_ai_model', this.translate.instant('HISTORY-DESC.create-ai-model', {model: modelName}));
+                this.router.navigate(['/settings/' + this.splitterOrVerifier + '/ai']).then();
             }
         } else {
             if(this.totalChecked < 2) {
@@ -256,7 +275,7 @@ export class CreateAiModelComponent implements OnInit {
     }
 
     retrieveModels() {
-        this.http.get(environment['url'] + '/ws/ai/getAIModels?module=splitter&limit=', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/ai/list?module=' + this.splitterOrVerifier + '&limit=', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.listModels = data.models;
             }),
@@ -268,7 +287,7 @@ export class CreateAiModelComponent implements OnInit {
     }
 
     retrieveForms() {
-        this.http.get(environment['url'] + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/list?module=' + this.splitterOrVerifier, {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                this.forms = forms.forms;
                if (this.forms.length === 1) {

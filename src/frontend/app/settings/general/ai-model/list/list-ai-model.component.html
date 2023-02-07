@@ -27,9 +27,9 @@
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.id' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="model_path">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.model_path' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.model_path }} </mat-cell>
+                <ng-container matColumnDef="model_label">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.model_label' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.model_label }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="train_time">
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.train_time' | translate }} </mat-header-cell>
@@ -56,7 +56,7 @@
                             <i class="fa-solid fa-vial"></i>
                         </button>
                         <button mat-icon-button
-                                (click)="$event.stopPropagation(); deleteConfirmDialog(element.id, element.model_path)"
+                                (click)="$event.stopPropagation(); deleteConfirmDialog(element.id, element.model_label)"
                                 matTooltip="{{ 'GLOBAL.delete' | translate }}"
                                 class="inline-block align-text-top">
                             <i class="fa-solid fa-trash text-lg"></i>
@@ -64,7 +64,7 @@
                     </mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;" routerLink="/settings/splitter/ai/update/{{ row.id }}"
+                <mat-row *matRowDef="let row; columns: displayedColumns;" routerLink="/settings/{{ splitterOrVerifier }}/ai/update/{{ row.id }}"
                          class="cursor-pointer hover:shadow-md transition-colors duration-300">
                 </mat-row>
             </mat-table>
@@ -84,27 +84,28 @@
         <mat-divider class="border-green-400"></mat-divider>
         <div class="grid grid-cols-1 gap-x-2 gap-y-2 m-4">
             <mat-card class="w-full border-solid border-green-400 border rounded-lg transition duration-300">
-                <mat-card-title>
+                <mat-card-title class="p-4">
                     {{ 'ARTIFICIAL-INTELLIGENCE.model_selected'| translate }}
                     {{ displaySelectedRowId() }}
                 </mat-card-title>
-                <mat-card-actions>
-                    <ngx-file-drag-drop
-                        [displayFileSize]="true"
-                        [formControl]="fileControl"
-                        [activeBorderColor]="'#97BF3D'"
-                        [class]="'max-w-3xl h-20 mt-12'"
-                        (valueChanged)="checkFile($event)"
-                        [class.disabled]="this.isPredicting"
-                        [class.pointer-events-none]="this.isPredicting"
-                        [emptyPlaceholder]="'ARTIFICIAL-INTELLIGENCE.choose_file' | translate">
-                    </ngx-file-drag-drop>
-                    <div class="flex justify-center content-center">
-                        <button mat-flat-button (click)="onSubmit()"
+                <mat-card-actions class="block">
+                    <div class="w-full">
+                        <ngx-file-drag-drop
+                            [displayFileSize]="true"
+                            [formControl]="fileControl"
+                            [activeBorderColor]="'#97BF3D'"
+                            (valueChanged)="checkFile($event)"
+                            [class.disabled]="this.isPredicting"
+                            [class.pointer-events-none]="this.isPredicting"
+                            [emptyPlaceholder]="'ARTIFICIAL-INTELLIGENCE.choose_file' | translate">
+                        </ngx-file-drag-drop>
+                    </div>
+                    <div class="text-center" [class.cursor-not-allowed]="this.isPredicting || this.fileControl.value!.length === 0">
+                        <button mat-button (click)="onSubmit()"
                                 [disabled]="this.isPredicting || this.fileControl.value!.length === 0"
-                                [class.hover:text-white]="!this.isPredicting && this.fileControl.value!.length !== 0"
-                                [class.hover:bg-green-400]="!this.isPredicting && this.fileControl.value!.length !== 0"
-                                class="w-48 mt-5 border-solid border-green-400 border px-3 py-2 text-sm font-medium transition duration-300">
+                                [class.bg-gray-400]="this.isPredicting || this.fileControl.value!.length === 0"
+                                class="w-3/5 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
+                               transition duration-300">
                             {{ 'ARTIFICIAL-INTELLIGENCE.predict' | translate }}
                         </button>
                     </div>

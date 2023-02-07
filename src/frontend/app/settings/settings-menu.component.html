@@ -34,8 +34,9 @@
                                         (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                         [routerLink]="setting['route']" style="font-size: 0.82rem !important">
                                     <i [class.text-green-400]="this.router.url === setting['route']"
-                                       class="text-lg rounded-full flex items-center justify-center {{ setting['icon'] }} 2xl:block hidden"
-                                       [matTooltip]="setting['label'] | translate" [matTooltipDisabled]="!this.serviceSettings.minimizeSideNav" [matTooltipPosition]="'right'">
+                                       class="text-lg rounded-full flex items-center justify-center {{ setting['icon'] }} 2xl:block"
+                                       [class.hidden]="!minimizeSideNav" [matTooltip]="setting['label'] | translate"
+                                       [matTooltipDisabled]="!this.serviceSettings.minimizeSideNav" [matTooltipPosition]="'right'">
                                     </i>
                                     <p [class.font-medium]="this.router.url === setting['route']" *ngIf="!this.serviceSettings.minimizeSideNav"
                                        class="m-0 truncate w-11/12 2xl:w-full text-left">
@@ -57,8 +58,9 @@
                                         class="font-normal w-full h-10 pl-8 2xl:ml-4 text-xs flex gap-4 items-center text-center"
                                         (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                         [class.disable_link]="action['showOnlyIfActive']">
-                                    <i class="text-sm rounded-full flex items-center justify-center 2xl:block hidden {{ action['icon'] }}"
-                                       [matTooltip]="action['label'] | translate" [matTooltipDisabled]="!this.serviceSettings.minimizeSideNav" [matTooltipPosition]="'right'"></i>
+                                    <i class="text-sm rounded-full flex items-center justify-center 2xl:block {{ action['icon'] }}"
+                                       [class.hidden]="!minimizeSideNav" [matTooltip]="action['label'] | translate"
+                                       [matTooltipDisabled]="!this.serviceSettings.minimizeSideNav" [matTooltipPosition]="'right'"></i>
                                     <p class="m-0 text-xs flex items-center justify-center" *ngIf="!this.serviceSettings.minimizeSideNav">
                                         {{ action['label'] | translate }}
                                     </p>
@@ -73,8 +75,9 @@
                             class="pr-0 font-normal w-full h-16 flex gap-4 justify-center items-center text-center noActions"
                             [class.pl-3]="!this.serviceSettings.minimizeSideNav" [routerLink]="setting['route']"
                             (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])" style="font-size: 0.82rem !important">
-                        <i class="rounded-full flex items-center justify-center fa-lg 2xl:block hidden {{ setting['icon'] }}"
-                           [matTooltip]="setting['label'] | translate" [matTooltipDisabled]="!this.serviceSettings.minimizeSideNav" [matTooltipPosition]="'right'"></i>
+                        <i class="rounded-full flex items-center justify-center fa-lg 2xl:block {{ setting['icon'] }}"
+                           [class.hidden]="!minimizeSideNav" [matTooltip]="setting['label'] | translate"
+                           [matTooltipDisabled]="!this.serviceSettings.minimizeSideNav" [matTooltipPosition]="'right'"></i>
                         <p [class.font-medium]="this.router.url === setting['route']" *ngIf="!this.serviceSettings.minimizeSideNav"
                            class="m-0 truncate w-11/12 2xl:w-full text-left">
                             {{ setting['label'] | translate }}
