@@ -169,6 +169,7 @@
 		"add": "Ajouter",
 		"add_doctype": "Ajouter un type de document",
 		"add_folder": "Ajouter un type une chemise",
+		"clean_search_text": "Supprimer le texte de recherche",
 		"clone_doctypes": "Cloner les types de documents",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le type de document <strong>{{ doctypeLabel }}</strong> ?",
 		"confirm_doctypes_clone": "Veuillez confirmer le clone de types de documents",
