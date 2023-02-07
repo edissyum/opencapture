@@ -16,13 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
-import json
-import shutil
 import uuid
+import json
 from src.backend import verifier_exports
 from src.backend.import_classes import _PyTesseract, _Files
-from src.backend.functions import delete_documents, find_form_with_ia
 from src.backend.import_controllers import artificial_intelligence
+from src.backend.functions import delete_documents, find_form_with_ia
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
 
