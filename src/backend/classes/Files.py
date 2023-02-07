@@ -593,6 +593,20 @@ class Files:
         normalized = file_name.replace(' ', '_')
         return normalized
 
+    @staticmethod
+    def save_img_with_pdf2image_static(pdf_name, output, log, page=None):
+        try:
+            output = os.path.splitext(output)[0]
+            bck_output = os.path.splitext(output)[0]
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
+            cpt = 1
+            for i in range(len(images)):
+                if not page:
+                    output = bck_output + '-' + str(cpt).zfill(3)
+                images[i].save(output + '.jpg', 'JPEG')
+                cpt = cpt + 1
+        except Exception as error:
+            log.error('Error during pdf2image conversion : ' + str(error))
 
 def compress_pdf(input_file, output_file, compress_id):
     gs_command = 'gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/%s#-dNOPAUSE#-dQUIET#-o#%s#%s' \

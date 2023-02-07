@@ -230,7 +230,6 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     _ocr = _vars[4]
-    _log = _vars[5]
     _files = _vars[3]
     _doc_servers = _vars[9]
 
@@ -413,18 +412,36 @@ def store_one_file(file_path, csv_file):
     _vars = create_classes_from_custom_id(custom_id)
     _files = _vars[3]
     _ocr = _vars[4]
-    _log = _vars[5]
-    _doc_servers = _vars[9]
+    _docservers = _vars[9]
     rows = []
 
-    _files.jpg_name = _doc_servers.get('TMP_PATH') + Path(_files.normalize(file_path)).stem + '.jpg'
+    _files.jpg_name = _docservers.get('TMP_PATH') + Path(_files.normalize(file_path)).stem + '.jpg'
     _files.pdf_to_jpg(file_path, 1, open_img=False)
     if os.path.exists(_files.jpg_name):
         filtered_image = _files.adjust_image(_files.jpg_name)
     else:
-        _files.jpg_name = _doc_servers.get('TMP_PATH') + Path(_files.jpg_name).stem + '-1.jpg'
+        _files.jpg_name = _docservers.get('TMP_PATH') + Path(_files.jpg_name).stem + '-1.jpg'
         filtered_image = _files.adjust_image(_files.jpg_name)
     text = _ocr.text_builder(filtered_image).lower()
+    clean_words = word_cleaning(text)
+    text_stem = stemming(clean_words)
+    line = [os.path.basename(file_path), text_stem]
+    rows.append(line)
+
+    create_csv(csv_file)
+    add_to_csv(csv_file, rows)
+
+
+def store_one_file_from_script(file_path, csv_file, files, ocr, docservers, log):
+    rows = []
+    jpg_name = docservers.get('TMP_PATH') + Path(files.normalize(file_path)).stem + '.jpg'
+    files.save_img_with_pdf2image_static(file_path, jpg_name, log, 1)
+    if os.path.exists(jpg_name):
+        filtered_image = files.adjust_image(jpg_name)
+    else:
+        jpg_name = docservers.get('TMP_PATH') + Path(jpg_name).stem + '-1.jpg'
+        filtered_image = files.adjust_image(jpg_name)
+    text = ocr.text_builder(filtered_image).lower()
     clean_words = word_cleaning(text)
     text_stem = stemming(clean_words)
     line = [os.path.basename(file_path), text_stem]

@@ -17,10 +17,13 @@
 
 import os
 import json
+import shutil
+import tempfile
 import uuid
 from src.backend import verifier_exports
 from src.backend.functions import delete_documents
-from src.backend.import_classes import _PyTesseract
+from src.backend.import_classes import _PyTesseract, _Files
+from src.backend.import_controllers import artificial_intelligence
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
 
@@ -78,6 +81,11 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
             invoice_data.update({
                 'form_id': args['form_id']
             })
+
+    if args['found_with_ai']:
+        invoice_data.update({
+            'form_id': args['form_id_ia']
+        })
 
     insert_invoice = True
     if status == 'END' and 'form_id' in invoice_data and invoice_data['form_id']:
@@ -171,6 +179,52 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     # Convert files to JPG
     convert(file, files, ocr, nb_pages)
 
+    input_settings = None
+    form_id = None
+    form_id_found_with_ai = False
+    if 'input_id' in args:
+        input_settings = database.select({
+            'select': ['*'],
+            'table': ['inputs'],
+            'where': ['input_id = %s', 'module = %s'],
+            'data': [args['input_id'], 'verifier'],
+        })
+        ai_model_id = input_settings[0]['ai_model_id'] if input_settings[0]['ai_model_id'] else False
+        if ai_model_id:
+            ai_model = database.select({
+                'select': ['*'],
+                'table': ['ai_models'],
+                'where': ['id = %s', 'module = %s'],
+                'data': [ai_model_id, 'verifier'],
+            })
+            if ai_model:
+                csv_file = docservers.get('VERIFIER_TRAIN_PATH_FILES') + '/data.csv'
+                path = docservers.get('TMP_PATH') + _Files.get_random_string(15) + '.pdf'
+                shutil.copy(file, path)
+                artificial_intelligence.store_one_file_from_script(path, csv_file, files, ocr, docservers, log)
+
+                model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model[0]['model_path']
+                min_proba = ai_model[0]['min_proba']
+                if os.path.isfile(csv_file) and os.path.isfile(model_name):
+                    (_, folder, prob), code = artificial_intelligence.model_testing(model_name, csv_file)
+                    print(folder, prob)
+                    if code == 200:
+                        if prob >= min_proba:
+                            for doc in ai_model[0]['documents']:
+                                if doc['folder'] == folder:
+                                    form = database.select({
+                                        'select': ['*'],
+                                        'table': ['form_models'],
+                                        'where': ['id = %s', 'module = %s'],
+                                        'data': [doc['form'], 'verifier'],
+                                    })
+                                    if form:
+                                        form_id = doc['form']
+                                        args['form_id_ia'] = doc['form']
+                                        form_id_found_with_ai = True
+                                        args['found_with_ai'] = True
+                                        log.info('[IA] Document detected as : ' + folder)
+
     # Find supplier in document
     supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
 
@@ -222,18 +276,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             ocr = _PyTesseract(supplier[2]['document_lang'], log, config, docservers)
             convert(file, files, ocr, nb_pages)
 
-    input_settings = None
-    form_id = None
-    if 'input_id' in args:
-        input_settings = database.select({
-            'select': ['*'],
-            'table': ['inputs'],
-            'where': ['input_id = %s', 'module = %s'],
-            'data': [args['input_id'], 'verifier'],
-        })
-        if input_settings:
-            input_settings = input_settings[0]
-            if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
+    if input_settings:
+        input_settings = input_settings[0]
+        if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
+            if not form_id_found_with_ai:
                 form_id = input_settings['default_form_id']
 
     # Find custom informations using mask
