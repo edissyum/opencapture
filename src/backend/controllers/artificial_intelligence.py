@@ -83,6 +83,7 @@ def create_model(data):
         'type': data['type'],
         'status': data['status'],
         'module': data['module'],
+        'model_label': data['model_label'],
     }
 
     res, error = artificial_intelligence.create_model({'columns': _columns})
@@ -124,9 +125,9 @@ def launch_train(data, model_name):
     _docservers = _vars[9]
 
     folders = []
-    for element in data["docs"]:
-        folders.append(element["folder"])
-    min_pred = data["min_pred"]
+    for element in data['docs']:
+        folders.append(element['folder'])
+    min_pred = data['min_pred']
 
     path = _docservers.get('SPLITTER_TRAIN_PATH_FILES')
     csv_file = path + '/data.csv'
@@ -137,7 +138,8 @@ def launch_train(data, model_name):
         'model_path': model_name.split("/")[-1],
         'type': 'doctype',
         'status': 'training',
-        'module': data['module']
+        'module': data['module'],
+        'model_label': data['label']
     }
     model_id = create_model(args)[0].get('id')
 

@@ -64,13 +64,6 @@ export class UpdateAiModelComponent implements OnInit {
             type: 'text',
             control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
             required: true,
-        },
-        {
-            id: 'input_id',
-            label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.input_id"),
-            type: 'select',
-            control: new FormControl(''),
-            required: true,
         }
     ];
 
@@ -145,22 +138,6 @@ export class UpdateAiModelComponent implements OnInit {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 this.router.navigate(['/settings/' + this.splitterOrVerifier + '/ai']).then();
-                return of(false);
-            })
-        ).subscribe();
-
-        this.http.get(environment['url'] + '/ws/inputs/list?module=' + this.splitterOrVerifier, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.modelForm.forEach((element: any) => {
-                    if (element.id === 'input_id') {
-                        element.values = data.inputs;
-                    }
-                });
-            }),
-            finalize(() => this.loading = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();

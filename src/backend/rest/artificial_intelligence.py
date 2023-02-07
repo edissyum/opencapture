@@ -36,7 +36,7 @@ def get_train_documents_verifier():
     return make_response(jsonify(res)), 200
 
 
-@bp.route('ai/getAIModels', methods=['GET'])
+@bp.route('ai/list', methods=['GET'])
 @auth.token_required
 def get_ai_models():
     module = request.args['module']

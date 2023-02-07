@@ -17,7 +17,7 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!loading">
-            <div class="mx-10 mt-10 mb-5 grid grid-cols-3 gap-4 place-items-stretch">
+            <div class="mx-10 mt-10 mb-5 grid grid-cols-2 gap-4 place-items-stretch">
                 <ng-container *ngFor="let field of modelForm">
                     <mat-form-field *ngIf="field.type === 'text' && field.id === 'model_label'">
                         <mat-label>{{ field.label | translate }}</mat-label>
@@ -49,14 +49,6 @@
                         <mat-error *ngIf="field.control.hasError('pattern') && !field.control.hasError('required')">
                             {{ 'ARTIFICIAL-INTELLIGENCE.invalid_selection' | translate }}
                         </mat-error>
-                    </mat-form-field>
-                    <mat-form-field class="block" *ngIf="field.type === 'select'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [formControl]="field.control" [(value)]="field.control.value" [required]="field.required">
-                            <mat-option *ngFor="let option of field.values" [value]="option['id']">
-                                {{ option['input_label'] | translate }}
-                            </mat-option>
-                        </mat-select>
                     </mat-form-field>
                 </ng-container>
             </div>
