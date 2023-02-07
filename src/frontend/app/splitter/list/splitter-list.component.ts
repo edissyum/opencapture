@@ -158,7 +158,6 @@ export class SplitterListComponent implements OnInit {
             (this.pageIndex - 1) + '/' + this.pageSize + '/' + this.currentTime + '/' + this.currentStatus,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                console.log(data);
                 data.batches.forEach((batch: any) =>
                     this.batches.push({
                         id             : batch['id'],
