@@ -18,11 +18,10 @@
 import os
 import json
 import shutil
-import tempfile
 import uuid
 from src.backend import verifier_exports
-from src.backend.functions import delete_documents
 from src.backend.import_classes import _PyTesseract, _Files
+from src.backend.functions import delete_documents, find_form_with_ia
 from src.backend.import_controllers import artificial_intelligence
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
@@ -82,7 +81,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                 'form_id': args['form_id']
             })
 
-    if args['found_with_ai']:
+    if 'form_id_ia' in args and args['form_id_ia']:
         invoice_data.update({
             'form_id': args['form_id_ia']
         })
@@ -191,39 +190,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         })
         ai_model_id = input_settings[0]['ai_model_id'] if input_settings[0]['ai_model_id'] else False
         if ai_model_id:
-            ai_model = database.select({
-                'select': ['*'],
-                'table': ['ai_models'],
-                'where': ['id = %s', 'module = %s'],
-                'data': [ai_model_id, 'verifier'],
-            })
-            if ai_model:
-                csv_file = docservers.get('VERIFIER_TRAIN_PATH_FILES') + '/data.csv'
-                path = docservers.get('TMP_PATH') + _Files.get_random_string(15) + '.pdf'
-                shutil.copy(file, path)
-                artificial_intelligence.store_one_file_from_script(path, csv_file, files, ocr, docservers, log)
-
-                model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model[0]['model_path']
-                min_proba = ai_model[0]['min_proba']
-                if os.path.isfile(csv_file) and os.path.isfile(model_name):
-                    (_, folder, prob), code = artificial_intelligence.model_testing(model_name, csv_file)
-                    print(folder, prob)
-                    if code == 200:
-                        if prob >= min_proba:
-                            for doc in ai_model[0]['documents']:
-                                if doc['folder'] == folder:
-                                    form = database.select({
-                                        'select': ['*'],
-                                        'table': ['form_models'],
-                                        'where': ['id = %s', 'module = %s'],
-                                        'data': [doc['form'], 'verifier'],
-                                    })
-                                    if form:
-                                        form_id = doc['form']
-                                        args['form_id_ia'] = doc['form']
-                                        form_id_found_with_ai = True
-                                        args['found_with_ai'] = True
-                                        log.info('[IA] Document detected as : ' + folder)
+            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, artificial_intelligence, ocr, log, 'verifier')
+            if res:
+                form_id_found_with_ai = True
+                args['form_id_ia'] = res
 
     # Find supplier in document
     supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()

@@ -231,7 +231,7 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
     _vars = create_classes_from_custom_id(custom_id)
     _ocr = _vars[4]
     _files = _vars[3]
-    _doc_servers = _vars[9]
+    _docservers = _vars[9]
 
     j = 0
     rows = []
@@ -258,7 +258,7 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
                     i += 1
                     total_files += 1
                     if file_name.lower().endswith('.pdf'):
-                        _files.jpg_name = _doc_servers.get('TMP_PATH') + Path(_files.normalize(file_name)).stem + '.jpg'
+                        _files.jpg_name = _docservers.get('TMP_PATH') + Path(_files.normalize(file_name)).stem + '.jpg'
                         _files.pdf_to_jpg(file_path + "/" + dir_name + "/" + file_name, 1, open_img=False)
                         filtered_image = _files.adjust_image(_files.jpg_name)
                     else:
@@ -461,12 +461,12 @@ def rename_model(new_name, model_id):
 
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _doc_servers = _vars[9]
+    _docservers = _vars[9]
     args = {
         'select': ['model_path'],
-        'where': ["id = "+str(model_id)],
+        'where': ["id = " + str(model_id)],
     }
     data = artificial_intelligence.get_models(args)
     old_name = [row["model_path"] for row in data][0]
-    model_path = _doc_servers.get('SPLITTER_AI_MODEL_PATH')
-    os.rename(model_path+old_name, model_path+new_name)
+    model_path = _docservers.get('SPLITTER_AI_MODEL_PATH')
+    os.rename(model_path + old_name, model_path + new_name)
