@@ -549,6 +549,7 @@ class Files:
                     with open(file_path, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
+                        args['log'].info(f"Splitter file exported to : {file_path}")
                     pdf_writer = pypdf.PdfWriter()
         except Exception as err:
             return False, str(err)
