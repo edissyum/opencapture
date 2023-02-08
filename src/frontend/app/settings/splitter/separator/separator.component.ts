@@ -75,9 +75,8 @@ export class SeparatorComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         this.generateSeparator( {
+            'id'    : undefined,
             'type'  : 'bundleSeparator',
-            'key'   : '',
-            'label' : ''
         });
     }
 
@@ -85,23 +84,20 @@ export class SeparatorComponent implements OnInit {
         let args;
         if (this.selectedSeparator === "bundleSeparator") {
             args = {
-                'type'  : 'bundleSeparator',
-                'key'   : '',
-                'label' : ''
+                'type' : 'bundleSeparator',
+                'id'   : undefined,
             };
         }
         else if (this.selectedSeparator === "documentSeparator") {
             args = {
-                'type'  : 'documentSeparator',
-                'key'   : '',
-                'label' : ''
+                'type' : 'documentSeparator',
+                'id'   : undefined,
             };
         }
         else {
             args = {
-                'type'  : 'docTypeSeparator',
-                'key'   : this.selectedDocType ? this.selectedDocType.key : '',
-                'label' : this.selectedDocType ? this.selectedDocType.label : ''
+                'type' : 'docTypeSeparator',
+                'id'   : this.selectedDocType.id ? this.selectedDocType.id : null,
             };
         }
         this.generateSeparator(args);
@@ -110,17 +106,15 @@ export class SeparatorComponent implements OnInit {
     getOutPut($event: any) {
         this.selectedSeparator  = 'docTypeSeparator';
         this.selectedDocType    = $event;
-        const args = {
-            'type': 'docTypeSeparator',
-            'key': this.selectedDocType.key,
-            'label': this.selectedDocType.label
-        };
-        this.generateSeparator(args);
+        this.generateSeparator({
+            'type' : 'docTypeSeparator',
+            'id'   : this.selectedDocType.id
+        });
     }
 
     generateSeparator(args: any) {
         this.loadingSeparator = true;
-        this.http.post(environment['url'] + '/ws/doctypes/generateSeparator',  args, {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/doctypes/generateSeparator', args, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.separator.fileUrl = "data:application/pdf;base64," + data.encoded_file;
                 this.separator.thumbnailUrl = "data:image/jpeg;base64," + data.encoded_thumbnail;

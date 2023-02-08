@@ -245,7 +245,7 @@ class SeparatorQR:
             output_pdf.write(stream)
 
     @staticmethod
-    def generate_separator(docservers, qr_code_value, doctype_label, separator_type_label):
+    def generate_separator(docservers, separators):
         """
         Generate separator file
         :param qr_code_value: QR code value
@@ -255,6 +255,7 @@ class SeparatorQR:
         """
 
         """ Defining the ELEMENTS that will compose the template"""
+        total = 0
         encoded_file = ''
         encoded_thumbnail = ''
         elements = [
@@ -302,26 +303,28 @@ class SeparatorQR:
         # Instantiating the template and defining the HEADER
         f = Template(format="A4", elements=elements,
                      title="Separator file")
-        f.add_page()
+        for separator in separators:
+            f.add_page()
+            total += 1
 
-        # We FILL some of the fields of the template with the information we want
-        # Note we access the elements treating the template instance as a dict
-        f["type"] = separator_type_label
-        f["label"] = doctype_label
-        f["qr_code_value"] = qr_code_value
-        f["icon_loop"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/Open-Capture_Splitter.png"
-        f["logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/login_image.png"
-        f["company_logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/logo_company.png"
+            # We FILL some of the fields of the template with the information we want
+            # Note we access the elements treating the template instance as a dict
+            f["type"] = separator['type']
+            f["label"] = separator['label']
+            f["qr_code_value"] = separator['qr_code_value']
+            f["logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/login_image.png"
+            f["company_logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/logo_company.png"
+            f["icon_loop"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/Open-Capture_Splitter.png"
 
-        img = qrcode.make(qr_code_value)
-
-        qrcode_path = docservers['TMP_PATH'] + "/last_generated_doctype_code_qr.png"
-        img.save(qrcode_path)
-        f["code_qr"] = qrcode_path
+            qrcode_path = docservers['TMP_PATH'] + "/last_generated_doctype_code_qr.png"
+            img = qrcode.make(separator['qr_code_value'])
+            img.save(qrcode_path)
+            f["code_qr"] = qrcode_path
 
         file_path = docservers['TMP_PATH'] + "/last_generated_doctype_file.pdf"
-        f.render(file_path)
+
         try:
+            f.render(file_path)
             with open(file_path, 'rb') as pdf_file:
                 encoded_file = base64.b64encode(pdf_file.read()).decode('utf-8')
             pages = pdf2image.convert_from_path(file_path, dpi=300)
@@ -330,5 +333,10 @@ class SeparatorQR:
             pages[0].save(buffered, format="JPEG")
             encoded_thumbnail = base64.b64encode(buffered.getvalue()).decode('utf-8')
         except Exception as e:
-            return False, str(e)
-        return encoded_file, encoded_thumbnail
+            return {'error': str(e)}
+
+        return {
+            'total': total,
+            'encoded_file': encoded_file,
+            'encoded_thumbnail': encoded_thumbnail
+        }

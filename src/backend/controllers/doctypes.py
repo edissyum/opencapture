@@ -122,29 +122,51 @@ def generate_separator(args):
         docservers = _vars[9]
 
     qr_code_value = ""
-    separator_type_label = ""
-    if args['type'] == "docTypeSeparator":
-        qr_code_value = f"DOCSTART|{args['key']}"
-        separator_type_label = gettext('DOCTYPESEPARATOR')
-    elif args['type'] == "documentSeparator":
-        qr_code_value = "DOCSTART"
-        separator_type_label = gettext('DOCUMENTSEPARATOR')
-    elif args['type'] == "bundleSeparator":
-        qr_code_value = "BUNDLESTART"
-        separator_type_label = gettext('BUNDLESEPARATOR')
+    separator_type = ""
 
-    res_separators = _SeparatorQR.generate_separator(docservers, qr_code_value, args['label'], separator_type_label)
-    if not res_separators[0]:
+    if 'id' in args:
+        _doctypes, error = doctypes.retrieve_doctypes({
+            'where': ['id = %s'],
+            'data': [args['id']]
+        })
+
+    separators = []
+    if args['type'] == "docTypeSeparator":
+        for doctype in _doctypes:
+            separators.append({
+                "label": doctype['label'],
+                "type": gettext('DOCTYPESEPARATOR'),
+                "qr_code_value": f"DOCSTART|{_doctypes[0]['key']}"
+            })
+
+    elif args['type'] == "documentSeparator":
+        separators.append({
+            "label": '',
+            "qr_code_value": "DOCSTART",
+            "type": gettext('DOCUMENTSEPARATOR')
+        })
+
+    elif args['type'] == "bundleSeparator":
+        separators.append({
+            "label": '',
+            "qr_code_value": "BUNDLESTART",
+            "type": gettext('BUNDLESEPARATOR')
+        })
+
+    res_separators = _SeparatorQR.generate_separator(docservers, separators)
+    if 'error' in res_separators:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),
-            "message": res_separators[1]
+            "message": res_separators['error']
         }
         return response, 401
 
     response = {
-        'encoded_file': res_separators[0],
-        'encoded_thumbnail': res_separators[1]
+        'total': res_separators['total'],
+        'encoded_file': res_separators['encoded_file'],
+        'encoded_thumbnail': res_separators['encoded_thumbnail']
     }
+
     return response, 200
 
 
