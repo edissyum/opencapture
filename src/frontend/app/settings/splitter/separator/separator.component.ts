@@ -37,8 +37,10 @@ import { NotificationService } from "../../../../services/notifications/notifica
 export class SeparatorComponent implements OnInit {
     private selectedDocType: any;
     public separator: any      = {
-        'fileUrl': '',
-        'thumbnailUrl': ''
+        'total'      : 0,
+        'current'    : 0,
+        'fileUrl'    : '',
+        'thumbnails' : []
     };
     loading           : boolean = false;
     loadingSeparator  : boolean = false;
@@ -75,9 +77,8 @@ export class SeparatorComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         this.generateSeparator( {
+            'id'    : undefined,
             'type'  : 'bundleSeparator',
-            'key'   : '',
-            'label' : ''
         });
     }
 
@@ -85,23 +86,20 @@ export class SeparatorComponent implements OnInit {
         let args;
         if (this.selectedSeparator === "bundleSeparator") {
             args = {
-                'type'  : 'bundleSeparator',
-                'key'   : '',
-                'label' : ''
+                'id'   : undefined,
+                'type' : 'bundleSeparator',
             };
         }
         else if (this.selectedSeparator === "documentSeparator") {
             args = {
-                'type'  : 'documentSeparator',
-                'key'   : '',
-                'label' : ''
+                'id'   : undefined,
+                'type' : 'documentSeparator',
             };
         }
         else {
             args = {
-                'type'  : 'docTypeSeparator',
-                'key'   : this.selectedDocType ? this.selectedDocType.key : '',
-                'label' : this.selectedDocType ? this.selectedDocType.label : ''
+                'id'   : this.selectedDocType.id ? this.selectedDocType.id : null,
+                'type' : 'docTypeSeparator',
             };
         }
         this.generateSeparator(args);
@@ -110,21 +108,21 @@ export class SeparatorComponent implements OnInit {
     getOutPut($event: any) {
         this.selectedSeparator  = 'docTypeSeparator';
         this.selectedDocType    = $event;
-        const args = {
-            'type': 'docTypeSeparator',
-            'key': this.selectedDocType.key,
-            'label': this.selectedDocType.label
-        };
-        this.generateSeparator(args);
+        this.generateSeparator({
+            'type' : 'docTypeSeparator',
+            'id'   : this.selectedDocType.id
+        });
     }
 
     generateSeparator(args: any) {
         this.loadingSeparator = true;
-        this.http.post(environment['url'] + '/ws/doctypes/generateSeparator',  args, {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/doctypes/generateSeparator', args, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.separator.fileUrl = "data:application/pdf;base64," + data.encoded_file;
-                this.separator.thumbnailUrl = "data:image/jpeg;base64," + data.encoded_thumbnail;
-                this.loadingSeparator = false;
+                this.separator.total      = data.total;
+                this.separator.fileUrl    = data.encoded_file;
+                this.separator.thumbnails = data.encoded_thumbnails;
+                this.separator.current    = 1;
+                this.loadingSeparator     = false;
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -145,5 +143,11 @@ export class SeparatorComponent implements OnInit {
         link.href = base64String;
         link.download = `${fileName}.pdf`;
         link.click();
+    }
+
+    moveCurrentThumbnail(step: number) {
+        if (this.separator.current + step <= this.separator.total && this.separator.current + step > 0) {
+            this.separator.current += step;
+        }
     }
 }

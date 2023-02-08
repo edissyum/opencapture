@@ -18,7 +18,7 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-50">
-        <app-document-type-factory [data]="{canFolderBeSelected: false}" (selectedDoctypeOutput)="getOutPut($event)"></app-document-type-factory>
+        <app-document-type-factory [ngClass]="{'pointer-events-none opacity-50': loadingSeparator}" [data]="{canFolderBeSelected: false, showFoldersSeparatorBtn: true}" (selectedDoctypeOutput)="getOutPut($event)"></app-document-type-factory>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="overflow-hidden w-1/4 flex flex-col h-full border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-4">
@@ -35,7 +35,7 @@
                 </mat-select>
             </mat-form-field>
             <div class="text-right">
-                <button mat-button [disabled]="loadingSeparator" (click)="downloadSeparator()" class="w-10 h-12">
+                <button mat-button [matTooltip]="'DOCTYPE.download_separator' | translate" [disabled]="loadingSeparator" (click)="downloadSeparator()" class="w-10 h-12">
                     <i class="fa-solid fa-file-arrow-down fa-2x"></i>
                 </button>
             </div>
@@ -49,7 +49,16 @@
             </div>
         </div>
         <div *ngIf="!loadingSeparator" class="text-center text-gray-400 object-contain">
-            <img [src]="separator.thumbnailUrl" alt="Separator thumbnail">
+            <img class="m-auto w-11/12" [src]="separator.thumbnails[separator.current - 1]" alt="Separator thumbnail">
+            <button mat-button [matTooltip]="'DOCTYPE.previous_page' | translate" [disabled]="loadingSeparator"
+                    (click)="moveCurrentThumbnail(-1)" class="w-10 h-12">
+                <i class="fa-solid fa-arrow-left fa-lg hover:text-green-400"></i>
+            </button>
+                {{separator.current}} / {{separator.total}}
+            <button mat-button [matTooltip]="'DOCTYPE.next_page' | translate" [disabled]="loadingSeparator"
+                    (click)="moveCurrentThumbnail(1)" class="w-10 h-12">
+                <i class="fa-solid fa-arrow-right fa-lg hover:text-green-400"></i>
+            </button>
         </div>
     </mat-sidenav>
 </mat-sidenav-container>
