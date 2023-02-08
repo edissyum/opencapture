@@ -310,7 +310,7 @@ class SeparatorQR:
             # We FILL some of the fields of the template with the information we want
             # Note we access the elements treating the template instance as a dict
             f["type"] = separator['type']
-            f["label"] = separator['label']
+            f["label"] = separator['label'].encode('latin-1', 'replace').decode('latin-1')
             f["qr_code_value"] = separator['qr_code_value']
             f["logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/login_image.png"
             f["company_logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/logo_company.png"
