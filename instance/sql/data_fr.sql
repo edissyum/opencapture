@@ -67,15 +67,15 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARA
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_THUMB', '[VERIFIER] Chemin pour le stockage des miniatures', '/var/docservers/opencapture/verifier/thumbs/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_IMAGE_FULL', '[VERIFIER] Chemin pour le stockage des images', '/var/docservers/opencapture/verifier/full/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_POSITIONS_MASKS', '[VERIFIER] Chemin pour le stockage des images nécessaire aux masques de positionnement', '/var/docservers/opencapture/verifier/positions_masks/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_TRAIN_PATH_FILES', '[VERIFIER] Chemin vers le dossier contenant les données d''entraînement', '/var/www/html/opencapture/bin/scripts/ai/verifier/train_data');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_AI_MODEL_PATH', '[VERIFIER] Chemin vers le dossier contenant le modèle de prédiction', '/var/www/html/opencapture/bin/scripts/ai/verifier/models/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_TRAIN_PATH_FILES', '[VERIFIER] Chemin vers le dossier contenant les données d''entraînement', '/var/docservers/opencapture/verifier/ai/train_data');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_AI_MODEL_PATH', '[VERIFIER] Chemin vers le dossier contenant le modèle de prédiction', '/var/docservers/opencapture/verifier/ai/models/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_BATCHES', '[SPLITTER] Chemin vers le dossier de stockage des dossiers de batch après traitement', '/var/docservers/opencapture/splitter/batches/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_THUMB', '[SPLITTER] Chemin pour le stockage des miniatures', '/var/docservers/opencapture/splitter/thumbs/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_ORIGINAL_PDF', '[SPLITTER] Chemin vers le dossier contenant les PDF originaux', '/var/docservers/opencapture/splitter/original_pdf/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_METHODS_PATH', '[SPLITTER] Chemin vers le dossier contenant les différents scripts de séparation', '/var/www/html/opencapture/bin/scripts/splitter_methods/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_METADATA_PATH', '[SPLITTER] Chemin vers le dossier contenant les différents scripts de récupération de métadonnées', '/var/www/html/opencapture/bin/scripts/splitter_metadata/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_TRAIN_PATH_FILES', '[SPLITTER] Chemin vers le dossier contenant les données d''entraînement', '/var/www/html/opencapture/bin/scripts/ai/splitter/train_data');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_AI_MODEL_PATH', '[SPLITTER] Chemin vers le dossier contenant le modèle de prédiction', '/var/www/html/opencapture/bin/scripts/ai/splitter/models/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_TRAIN_PATH_FILES', '[SPLITTER] Chemin vers le dossier contenant les données d''entraînement', '/var/docservers/opencapture/splitter/ai/train_data');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_AI_MODEL_PATH', '[SPLITTER] Chemin vers le dossier contenant le modèle de prédiction', '/var/docservers/opencapture/splitter/ai/models/');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE VERIFIER
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (1, 'export_xml', 'Export XML', 'verifier', '{
@@ -649,8 +649,11 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (55, 'user_quota', 'ge
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (56, 'list_ai_model', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (57, 'create_ai_model', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (58, 'update_ai_model', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (58, 'monitoring', 'general');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 60;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (59, 'monitoring', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (60, 'list_ai_model', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (61, 'create_ai_model', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (62, 'update_ai_model', 'verifier');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 63;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

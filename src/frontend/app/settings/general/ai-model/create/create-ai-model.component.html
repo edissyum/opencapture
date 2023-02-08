@@ -22,7 +22,7 @@
                     <mat-form-field *ngIf="field.type === 'text' && field.id === 'model_label'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type"
-                               placeholder="{{ field.placeholder }}" [required]="field.required">
+                               placeholder="{{ field.placeholder | translate }}" [required]="field.required">
                         <mat-error *ngIf="field.control.hasError('required')">
                             {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
                         </mat-error>

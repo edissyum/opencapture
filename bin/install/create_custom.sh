@@ -243,9 +243,11 @@ else
     docserverDefaultPath="$choice"
 fi
 
-mkdir -p /"$docserverDefaultPath"/"$customId"/{verifier,splitter}
-mkdir -p /"$docserverDefaultPath"/"$customId"/verifier/{original_pdf,full,thumbs,positions_masks}
-mkdir -p /"$docserverDefaultPath"/"$customId"/splitter/{original_pdf,batches,thumbs,error}
+mkdir -p $docserverDefaultPath/"$customId"/{verifier,splitter}
+mkdir -p $docserverDefaultPath/"$customId"/verifier/{ai,original_pdf,full,thumbs,positions_masks}
+mkdir -p $docserverDefaultPath/"$customId"/splitter/{ai,original_pdf,batches,thumbs,error}
+mkdir -p $docserverPath/opencapture/"$customId"/verifier/ai/{train_data,models}
+mkdir -p $docserverPath/opencapture/"$customId"/splitter/ai/{train_data,models}
 sudo chmod -R 775 /"$docserverDefaultPath"/"$customId"/
 sudo chown -R "$user":www-data /"$docserverDefaultPath"/"$customId"/
 
@@ -257,10 +259,6 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF'" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/ai/splitter/train_data/' WHERE docserver_id = 'SPLITTER_TRAIN_PATH_FILES'" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/ai/verifier/train_data/' WHERE docserver_id = 'VERIFIER_TRAIN_PATH_FILES'" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/ai/splitter/models/' WHERE docserver_id = 'SPLITTER_AI_MODEL_PATH'" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/ai/verifier/models/' WHERE docserver_id = 'VERIFIER_AI_MODEL_PATH'" "$databaseName"
 
 ####################
 # Create custom symbolic link and folders
@@ -275,8 +273,6 @@ mkdir -p $customPath/bin/data/log/Supervisor/
 touch $customPath/bin/data/log/OpenCapture.log
 mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs,MailCollect,ai}/
 mkdir -p $customPath/bin/scripts/ai/{splitter,verifier}
-mkdir -p $customPath/bin/scripts/ai/verifier/{models,train_data}
-mkdir -p $customPath/bin/scripts/ai/splitter/{models,train_data}
 mkdir -p $customPath/src/backend/
 touch $customPath/config/secret_key
 

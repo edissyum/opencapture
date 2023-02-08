@@ -27,7 +27,7 @@ bin/data/exported_pdfa/*
 bin/data/MailCollect/*
 /edissyum/
 edissyum
-bin/scripts/ai/verifier/train_data/*
-bin/scripts/ai/splitter/train_data/*
-bin/scripts/ai/verifier/models/
-bin/scripts/ai/splitter/models/
+bin/scripts/ai/verifier/train_data/*.pdf
+bin/scripts/ai/splitter/train_data/*.pdf
+bin/scripts/ai/verifier/models/*.sav
+bin/scripts/ai/splitter/models/*.sav

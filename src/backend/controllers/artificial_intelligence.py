@@ -129,9 +129,9 @@ def launch_train(data, model_name):
         folders.append(element['folder'])
     min_pred = data['min_pred']
 
-    path = _docservers.get('SPLITTER_TRAIN_PATH_FILES')
+    path = _docservers.get('VERIFIER_TRAIN_PATH_FILES') if data['module'] == 'verifier' else _docservers.get('SPLITTER_TRAIN_PATH_FILES')
     csv_file = path + '/data.csv'
-    model_name = _docservers.get('SPLITTER_AI_MODEL_PATH') + model_name
+    model_name = _docservers.get('VERIFIER_AI_MODEL_PATH') + model_name if data['module'] == 'verifier' else _docservers.get('SPLITTER_AI_MODEL_PATH') + model_name
     start_time = time.time()
 
     args = {
@@ -230,9 +230,8 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     _ocr = _vars[4]
-    _log = _vars[5]
     _files = _vars[3]
-    _doc_servers = _vars[9]
+    _docservers = _vars[9]
 
     j = 0
     rows = []
@@ -259,7 +258,7 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
                     i += 1
                     total_files += 1
                     if file_name.lower().endswith('.pdf'):
-                        _files.jpg_name = _doc_servers.get('TMP_PATH') + Path(_files.normalize(file_name)).stem + '.jpg'
+                        _files.jpg_name = _docservers.get('TMP_PATH') + Path(_files.normalize(file_name)).stem + '.jpg'
                         _files.pdf_to_jpg(file_path + "/" + dir_name + "/" + file_name, 1, open_img=False)
                         filtered_image = _files.adjust_image(_files.jpg_name)
                     else:
@@ -352,7 +351,7 @@ def stemming(clean_text):
     return stem
 
 
-def launch_pred(mname, files):
+def launch_pred(model_id, files):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     _files = _vars[3]
@@ -363,11 +362,16 @@ def launch_pred(mname, files):
         file_to_save = _files.normalize(_f.filename)
         path = _docservers.get('TMP_PATH') + file_to_save
         _f.save(path)
-        model_name = _docservers.get('SPLITTER_AI_MODEL_PATH') + mname
-        if os.path.exists(model_name):
-            csv_file = _docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
-            store_one_file(path, csv_file)
-            return model_testing(model_name, csv_file)
+        ai_model = artificial_intelligence.get_model_by_id({'model_id': model_id})
+        if ai_model:
+            ai_model = ai_model[0]
+            model_name = _docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model['model_path'] if ai_model['module'] == 'verifier' \
+                else _docservers.get('SPLITTER_AI_MODEL_PATH') + ai_model['model_path']
+            if os.path.exists(model_name):
+                csv_file = _docservers.get('VERIFIER_TRAIN_PATH_FILES') + '/data.csv' if ai_model['module'] == 'verifier' \
+                    else _docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
+                store_one_file(path, csv_file)
+                return model_testing(model_name, csv_file)
 
     response = {
         "errors": gettext('GET_IA_MODEL_BY_ID_ERROR'),
@@ -408,18 +412,36 @@ def store_one_file(file_path, csv_file):
     _vars = create_classes_from_custom_id(custom_id)
     _files = _vars[3]
     _ocr = _vars[4]
-    _log = _vars[5]
-    _doc_servers = _vars[9]
+    _docservers = _vars[9]
     rows = []
 
-    _files.jpg_name = _doc_servers.get('TMP_PATH') + Path(_files.normalize(file_path)).stem + '.jpg'
+    _files.jpg_name = _docservers.get('TMP_PATH') + Path(_files.normalize(file_path)).stem + '.jpg'
     _files.pdf_to_jpg(file_path, 1, open_img=False)
     if os.path.exists(_files.jpg_name):
         filtered_image = _files.adjust_image(_files.jpg_name)
     else:
-        _files.jpg_name = _doc_servers.get('TMP_PATH') + Path(_files.jpg_name).stem + '-1.jpg'
+        _files.jpg_name = _docservers.get('TMP_PATH') + Path(_files.jpg_name).stem + '-1.jpg'
         filtered_image = _files.adjust_image(_files.jpg_name)
     text = _ocr.text_builder(filtered_image).lower()
+    clean_words = word_cleaning(text)
+    text_stem = stemming(clean_words)
+    line = [os.path.basename(file_path), text_stem]
+    rows.append(line)
+
+    create_csv(csv_file)
+    add_to_csv(csv_file, rows)
+
+
+def store_one_file_from_script(file_path, csv_file, files, ocr, docservers, log):
+    rows = []
+    jpg_name = docservers.get('TMP_PATH') + Path(files.normalize(file_path)).stem + '.jpg'
+    files.save_img_with_pdf2image_static(file_path, jpg_name, log, 1)
+    if os.path.exists(jpg_name):
+        filtered_image = files.adjust_image(jpg_name)
+    else:
+        jpg_name = docservers.get('TMP_PATH') + Path(jpg_name).stem + '-1.jpg'
+        filtered_image = files.adjust_image(jpg_name)
+    text = ocr.text_builder(filtered_image).lower()
     clean_words = word_cleaning(text)
     text_stem = stemming(clean_words)
     line = [os.path.basename(file_path), text_stem]
@@ -439,12 +461,12 @@ def rename_model(new_name, model_id):
 
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _doc_servers = _vars[9]
+    _docservers = _vars[9]
     args = {
         'select': ['model_path'],
-        'where': ["id = "+str(model_id)],
+        'where': ["id = " + str(model_id)],
     }
     data = artificial_intelligence.get_models(args)
     old_name = [row["model_path"] for row in data][0]
-    model_path = _doc_servers.get('SPLITTER_AI_MODEL_PATH')
-    os.rename(model_path+old_name, model_path+new_name)
+    model_path = _docservers.get('SPLITTER_AI_MODEL_PATH')
+    os.rename(model_path + old_name, model_path + new_name)
