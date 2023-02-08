@@ -167,7 +167,7 @@ def generate_separator(args):
     response = {
         'total': res_separators['total'],
         'encoded_file': res_separators['encoded_file'],
-        'encoded_thumbnail': res_separators['encoded_thumbnail']
+        'encoded_thumbnails': res_separators['encoded_thumbnails']
     }
 
     return response, 200

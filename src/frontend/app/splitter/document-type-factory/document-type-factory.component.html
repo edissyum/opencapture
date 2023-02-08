@@ -56,6 +56,11 @@
                     <span class="p-1" *ngIf="!searchText"> {{ node.label }}</span>
                     <span class="p-1" *ngIf="searchText" [innerHTML]="highlight(node.label)"></span>
             </button>
+            <button mat-button *ngIf="data.showFoldersSeparatorBtn"  class="p-1 hover:text-green-400"
+                    (click)="selectNode(node, false)"
+                    [matTooltip]="'DOCTYPE.generate_folder_separators' | translate">
+                <i class="fa-solid fa-folder-closed fa-lg"></i>
+            </button>
         </mat-tree-node>
     </mat-tree>
 </mat-card>

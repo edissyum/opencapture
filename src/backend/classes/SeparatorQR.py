@@ -255,7 +255,8 @@ class SeparatorQR:
         """ Defining the ELEMENTS that will compose the template"""
         total = 0
         encoded_file = ''
-        encoded_thumbnail = ''
+        encoded_thumbnails = []
+
         elements = [
             {'name': 'border_1', 'type': 'B', 'x1': 10.0, 'y1': 10.0, 'x2': 200.0, 'y2': 285.0, 'font': 'Arial',
              'size': 2.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
@@ -324,17 +325,20 @@ class SeparatorQR:
         try:
             f.render(file_path)
             with open(file_path, 'rb') as pdf_file:
-                encoded_file = base64.b64encode(pdf_file.read()).decode('utf-8')
+                encoded_file = f"data:application/pdf;base64," \
+                               f"{base64.b64encode(pdf_file.read()).decode('utf-8')}"
             pages = pdf2image.convert_from_path(file_path, dpi=300)
 
-            buffered = BytesIO()
-            pages[0].save(buffered, format="JPEG")
-            encoded_thumbnail = base64.b64encode(buffered.getvalue()).decode('utf-8')
+            for page in pages:
+                buffered = BytesIO()
+                page.save(buffered, format="JPEG")
+                encoded_thumbnails.append(f"data:image/jpeg;base64,"
+                                          f"{base64.b64encode(buffered.getvalue()).decode('utf-8')}")
         except Exception as e:
             return {'error': str(e)}
 
         return {
             'total': total,
             'encoded_file': encoded_file,
-            'encoded_thumbnail': encoded_thumbnail
+            'encoded_thumbnails': encoded_thumbnails
         }

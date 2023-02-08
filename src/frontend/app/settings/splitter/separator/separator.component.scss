@@ -1,3 +1,11 @@
 ::ng-deep .mat-drawer-inner-container {
     @apply overflow-hidden #{!important};
 }
+
+.disabled
+{
+    pointer-events: none;
+    /* for "disabled" effect */
+    opacity: 0.5;
+    background: #CCC;
+}

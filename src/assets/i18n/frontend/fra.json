@@ -177,7 +177,7 @@
 		"doctype_added": "Type de document ajouté",
 		"doctype_edited": "Type de document modifié",
 		"doctypes_clone_success": "Types de documents clônés avec succès",
-		"download_separator": "Télécharger le séparateur",
+		"download_separator": "Télécharger le(s) séparateur(s)",
 		"edit_doctype": "Modifier un type de document",
 		"folder": "Chemise",
 		"folder_added": "Chemise ajouté",
@@ -185,8 +185,10 @@
 		"generating_separator": "Génération du séparateur...",
 		"maximize_tree": "Maximiser l'affichage",
 		"minimize_tree": "Minimiser l'affichage",
+		"next_page": "Page suivante",
 		"no_doctype_to_show": "Aucun type de document à afficher",
 		"no_master": "(Ajouter dans la racine)",
+		"previous_page": "Page précédente",
 		"separator_choice ": "Choix de séparateur"
 	},
 	"ERROR": {
