@@ -121,23 +121,13 @@ def generate_separator(args):
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
 
-    qr_code_value = ""
-    separator_type = ""
-
-    if 'id' in args:
-        _doctypes, error = doctypes.retrieve_doctypes({
-            'where': ['id = %s'],
-            'data': [args['id']]
-        })
-
     separators = []
-    if args['type'] == "docTypeSeparator":
-        for doctype in _doctypes:
-            separators.append({
-                "label": doctype['label'],
-                "type": gettext('DOCTYPESEPARATOR'),
-                "qr_code_value": f"DOCSTART|{_doctypes[0]['key']}"
-            })
+    if args['type'] == "bundleSeparator":
+        separators.append({
+            "label": '',
+            "qr_code_value": "BUNDLESTART",
+            "type": gettext('BUNDLESEPARATOR')
+        })
 
     elif args['type'] == "documentSeparator":
         separators.append({
@@ -146,12 +136,17 @@ def generate_separator(args):
             "type": gettext('DOCUMENTSEPARATOR')
         })
 
-    elif args['type'] == "bundleSeparator":
-        separators.append({
-            "label": '',
-            "qr_code_value": "BUNDLESTART",
-            "type": gettext('BUNDLESEPARATOR')
+    if args['type'] == "docTypeSeparator":
+        _doctypes, error = doctypes.retrieve_doctypes({
+            'where': ['id = %s'],
+            'data': [args['id']]
         })
+        for doctype in _doctypes:
+            separators.append({
+                "label": doctype['label'],
+                "type": gettext('DOCTYPESEPARATOR'),
+                "qr_code_value": f"DOCSTART|{_doctypes[0]['key']}"
+            })
 
     res_separators = _SeparatorQR.generate_separator(docservers, separators)
     if 'error' in res_separators:
