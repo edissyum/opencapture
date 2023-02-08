@@ -181,6 +181,7 @@
 		"edit_doctype": "Edit a document type",
 		"folder": "Folder",
 		"folder_added": "Folder added",
+		"generate_folder_separators": "Generate all folder separators",
 		"generating_separator": "Generating separator",
 		"maximize_tree": "Maximise tree",
 		"minimize_tree": "Minimize tree",

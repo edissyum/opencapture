@@ -248,10 +248,8 @@ class SeparatorQR:
     def generate_separator(docservers, separators):
         """
         Generate separator file
-        :param qr_code_value: QR code value
-        :param doctype_label: doctype label (empty if no doctype selected)
-        :param separator_type_label: separator type label
-        :return: base64 encoded separator file
+        :param separators: separator list to generate
+        :return: base64 encoded separator file, thumbnail and total
         """
 
         """ Defining the ELEMENTS that will compose the template"""

@@ -181,6 +181,7 @@
 		"edit_doctype": "Modifier un type de document",
 		"folder": "Chemise",
 		"folder_added": "Chemise ajouté",
+		"generate_folder_separators": "Générer tous les séparateurs de la chemise",
 		"generating_separator": "Génération du séparateur...",
 		"maximize_tree": "Maximiser l'affichage",
 		"minimize_tree": "Minimiser l'affichage",

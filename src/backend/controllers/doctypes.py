@@ -141,11 +141,19 @@ def generate_separator(args):
             'where': ['id = %s'],
             'data': [args['id']]
         })
+        doctype = _doctypes[0]
+
+        if doctype['type'] == 'folder':
+            _doctypes, error = doctypes.retrieve_doctypes({
+                'where': ['status <> %s', 'form_id = %s', 'code like %s'],
+                'data': ['DEL', doctype['form_id'], f"{doctype['code']}.%"]
+            })
+
         for doctype in _doctypes:
             separators.append({
                 "label": doctype['label'],
                 "type": gettext('DOCTYPESEPARATOR'),
-                "qr_code_value": f"DOCSTART|{_doctypes[0]['key']}"
+                "qr_code_value": f"DOCSTART|{doctype['key']}"
             })
 
     res_separators = _SeparatorQR.generate_separator(docservers, separators)
