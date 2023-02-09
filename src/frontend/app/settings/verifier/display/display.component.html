@@ -75,8 +75,8 @@
             </div>
             <div class="flex justify-center items-center mt-8">
                 <button mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
-                transition duration-300" [disabled]="!this.formLoaded">
-                    <span class="block" (click)="this.updateDisplay()">{{ "FORMS.modify_display" | translate }}</span>
+                transition duration-300" [disabled]="!this.formLoaded" (click)="this.updateDisplay()">
+                    <span class="block">{{ "FORMS.modify_display" | translate }}</span>
                 </button>
             </div>
         </div>
