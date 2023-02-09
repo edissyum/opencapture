@@ -51,13 +51,13 @@
         <div *ngIf="!loadingSeparator" class="text-center text-gray-400 object-contain">
             <img class="m-auto w-11/12" [src]="separator.thumbnails[separator.current - 1]" alt="Separator thumbnail">
             <button mat-button [matTooltip]="'DOCTYPE.previous_page' | translate" [disabled]="loadingSeparator"
-                    (click)="moveCurrentThumbnail(-1)" class="w-10 h-12">
-                <i class="fa-solid fa-arrow-left fa-lg hover:text-green-400"></i>
+                    (click)="moveCurrentThumbnail(-1)" class="hover:text-green-400">
+                <i class="fa-solid fa-arrow-left fa-lg"></i>
             </button>
-                {{separator.current}} / {{separator.total}}
+            {{separator.current}} / {{separator.total}}
             <button mat-button [matTooltip]="'DOCTYPE.next_page' | translate" [disabled]="loadingSeparator"
-                    (click)="moveCurrentThumbnail(1)" class="w-10 h-12">
-                <i class="fa-solid fa-arrow-right fa-lg hover:text-green-400"></i>
+                    (click)="moveCurrentThumbnail(1)" class="hover:text-green-400">
+                <i class="fa-solid fa-arrow-right fa-lg"></i>
             </button>
         </div>
     </mat-sidenav>
