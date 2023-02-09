@@ -104,7 +104,7 @@ def add_positions_mask(args):
     _vars = create_classes_from_custom_id(custom_id)
     _db = _vars[0]
     positions_masks_exists, error = get_positions_masks({
-        'where': ['label = %s', 'status <> %s'],
+        'where': ['positions_masks.label = %s', 'positions_masks.status <> %s'],
         'data': [args['label'], 'DEL']
     })
 
