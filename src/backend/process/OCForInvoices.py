@@ -62,10 +62,6 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                 invoice_data.update({
                     'purchase_or_sale': input_settings['purchase_or_sale']
                 })
-            if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
-                invoice_data.update({
-                    'form_id': input_settings['default_form_id']
-                })
             if input_settings['customer_id']:
                 invoice_data.update({
                     'customer_id': input_settings['customer_id']
@@ -83,6 +79,10 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
     if 'form_id_ia' in args and args['form_id_ia']:
         invoice_data.update({
             'form_id': args['form_id_ia']
+        })
+    elif 'form_id' in args and args['form_id']:
+        invoice_data.update({
+            'form_id': args['form_id']
         })
 
     insert_invoice = True
@@ -250,6 +250,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
             if not form_id_found_with_ai:
                 form_id = input_settings['default_form_id']
+        elif not input_settings['override_supplier_form'] and supplier and supplier[2]['form_id'] not in ['', [], None]:
+            form_id = supplier[2]['form_id']
 
     # Find custom informations using mask
     custom_fields = FindCustom(ocr.header_text, log, regex, config, ocr, files, supplier, file, database,
@@ -493,6 +495,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     only_ocr = False
 
     if form_id:
+        args['form_id'] = form_id
         form_settings = database.select({
             'select': ['settings'],
             'table': ['form_models'],
