@@ -527,10 +527,23 @@ class Files:
                     pdf_writer.add_page(pdf_page)
 
                 pdf_writer.add_metadata(pdf_reader.metadata)
+
+                title = ''
+                if 'title' in args['documents'][index]['metadata']:
+                    title = args['documents'][index]['metadata']['title']
+                elif 'title' in args['metadata']:
+                    title = args['metadata']['title']
+
+                subject = ''
+                if 'subject' in args['documents'][index]['metadata']:
+                    subject = args['documents'][index]['metadata']['subject']
+                elif 'subject' in args['metadata']:
+                    subject = args['metadata']['subject']
+
                 pdf_writer.add_metadata({
                     '/Author': f"{args['metadata']['userLastName']} {args['metadata']['userFirstName']}",
-                    '/Title': args['metadata']['title'] if 'title' in args['metadata'] else '',
-                    '/Subject': args['metadata']['subject'] if 'subject' in args['metadata'] else '',
+                    '/Title': title,
+                    '/Subject': subject,
                     '/Creator': "Open-Capture",
                 })
 
