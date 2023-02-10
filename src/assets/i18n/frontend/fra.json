@@ -94,10 +94,13 @@
 	},
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",
+		"back_to_login": "Retour à la page de connexion",
 		"field_required": "Ce champ est requis",
 		"forgot_password": "Mot de passe oublié ?",
+		"forgot_password_hint": "Un courriel contenant un lien pour réinitialiser votre mot de passe sera envoyé à l'adresse suivante",
 		"login": "Se connecter",
-		"not_connected": "Merci de vous authentifier avant d'accéder à cette page"
+		"not_connected": "Merci de vous authentifier avant d'accéder à cette page",
+		"smtp_server_down": "Le serveur SMTP n'est pas disponible ou n'est pas configuré, réinitialisation du mot de passe impossible"
 	},
 	"BATCH": {
 		"older": "Lots anciens",
@@ -198,6 +201,7 @@
 		"admin_password_alert": "<strong class='text-center block right-4 relative -mt-42'>/!\\ ATTENTION /!\\</strong> <br>Vous utilisez encore le mot de passe par défaut du compte admin. Veuillez le changer au plus vite pour des questions de sécurité",
 		"alphanum_extended_pattern": "La valeur n'est pas au format attendu : alphanumérique avec caractères spéciaux",
 		"alphanum_pattern": "La valeur n'est pas au format attendu : alphanumérique",
+		"bad_email_pattern": "L'adresse email n'est pas valide",
 		"bad_or_missing_database_informations": "Les informations de base de données sont manquantes ou erronées",
 		"char_pattern": "La valeur n'est pas au format attendu : alphabétique",
 		"configuration_error": "Erreur de configuration",
@@ -348,6 +352,7 @@
 		"new_input_link": "Réattribution des chaînes entrantes",
 		"no_task_to_show": "Aucune tâche n'est lancée",
 		"quit": "Quitter",
+		"reset-password": "Réinitialiser le mot de passe",
 		"settings": "Paramètres",
 		"skip_auto_validate": "Outrepasser la prochaine validation automatique",
 		"statistics": "Statistiques",

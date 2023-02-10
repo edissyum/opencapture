@@ -124,7 +124,7 @@ export class UserQuotaComponent implements OnInit {
             {'data': data}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('USER-QUOTA.updated'));
-                this.historyService.addHistory('general', 'mailcollect', this.translate.instant('HISTORY-DESC.user_quota_updated'));
+                this.historyService.addHistory('general', 'user_quota', this.translate.instant('HISTORY-DESC.user_quota_updated'));
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {

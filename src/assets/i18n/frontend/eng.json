@@ -94,10 +94,13 @@
 	},
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
+		"back_to_login": "Back to login page",
 		"field_required": "This field is required",
 		"forgot_password": "Password forgotten ?",
+		"forgot_password_hint": "An email will be sent to your email address to reset your password",
 		"login": "Log in",
-		"not_connected": "Please authenticate yourself before accessing this page"
+		"not_connected": "Please authenticate yourself before accessing this page",
+		"smtp_server_down": "SMTP server down, password reset is not possible"
 	},
 	"BATCH": {
 		"older": "Older",
@@ -198,6 +201,7 @@
 		"admin_password_alert": "<strong class='text-center block right-4 relative -mt-42'>/!\\ WARNING /!\\</strong> <br>You're still using the default admin password. Change it ASAP for security reasons",
 		"alphanum_extended_pattern": "The value is not well formatted : alphanumeric with special char",
 		"alphanum_pattern": "The value is not well formatted : alphanumeric",
+		"bad_email_pattern": "Bad email address pattern",
 		"bad_or_missing_database_informations": "The database informations are missing or mispelled",
 		"char_pattern": "The value is not well formatted : alphabetic",
 		"configuration_error": "Configuration error",
@@ -348,6 +352,7 @@
 		"new_input_link": "Reassign inputs",
 		"no_task_to_show": "No task to show",
 		"quit": "Quit",
+		"reset-password": "Reset password",
 		"settings": "Settings",
 		"skip_auto_validate": "Skip auto validation",
 		"statistics": "Statistics",

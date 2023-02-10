@@ -33,6 +33,7 @@ import { LoginRequiredService } from '../services/login-required.service';
 import { Error500Component } from "./errors/error-500/error-500.component";
 import { VerifierListComponent } from './verifier/list/verifier-list.component';
 import { SplitterListComponent } from "./splitter/list/splitter-list.component";
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { SplitterViewerComponent } from "./splitter/viewer/splitter-viewer.component";
 import { VerifierViewerComponent } from './verifier/viewer/verifier-viewer.component';
 import { CustomersListComponent } from "./accounts/customers/list/customers-list.component";
@@ -47,6 +48,7 @@ const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'home', component: HomeComponent, data: { title: 'GLOBAL.home' }, canActivate: [LoginRequiredService] },
     { path: 'login', component: LoginComponent, data: { title: 'GLOBAL.login' }, canActivate: [LoginRedirectService] },
+    { path: 'forgotPassword', component: ForgotPasswordComponent, data: { title: marker('GLOBAL.reset-password')}},
     { path: 'logout', component: LogoutComponent, canActivate: [LoginRequiredService] },
     { path: 'profile/:id', component: UserProfileComponent, canActivate: [LoginRequiredService] },
     {
