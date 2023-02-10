@@ -27,7 +27,7 @@ from src.backend.main import create_classes_from_custom_id
 from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_config_from_custom_id
 from src.backend.import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, mem, inputs, positions_masks, history, doctypes, tasks_watcher, mailcollect, \
-    artificial_intelligence
+    artificial_intelligence, smtp
 
 
 class Middleware:
@@ -91,26 +91,27 @@ app.config.from_mapping(
 
 babel = Babel(app, default_locale='fr', locale_selector=get_locale)
 
+app.register_blueprint(mem.bp)
 app.register_blueprint(auth.bp)
 app.register_blueprint(user.bp)
+app.register_blueprint(smtp.bp)
 app.register_blueprint(roles.bp)
 app.register_blueprint(forms.bp)
 app.register_blueprint(inputs.bp)
 app.register_blueprint(locale.bp)
 app.register_blueprint(status.bp)
 app.register_blueprint(config.bp)
-app.register_blueprint(mem.bp)
 app.register_blueprint(outputs.bp)
 app.register_blueprint(history.bp)
 app.register_blueprint(splitter.bp)
 app.register_blueprint(accounts.bp)
 app.register_blueprint(verifier.bp)
-app.register_blueprint(privileges.bp)
-app.register_blueprint(custom_fields.bp)
-app.register_blueprint(positions_masks.bp)
-app.register_blueprint(tasks_watcher.bp)
 app.register_blueprint(doctypes.bp)
+app.register_blueprint(privileges.bp)
 app.register_blueprint(mailcollect.bp)
+app.register_blueprint(custom_fields.bp)
+app.register_blueprint(tasks_watcher.bp)
+app.register_blueprint(positions_masks.bp)
 app.register_blueprint(artificial_intelligence.bp)
 
 

@@ -146,3 +146,8 @@ if 'artificial_intelligence' not in custom_array or 'rest' not in custom_array['
 elif 'rest' in custom_array['artificial_intelligence']['path']:
     artificial_intelligence = getattr(__import__(custom_array['artificial_intelligence']['path'], fromlist=[custom_array['artificial_intelligence']['module']]),
                                       custom_array['artificial_intelligence']['module'])
+
+if 'smtp' not in custom_array or 'rest' not in custom_array['smtp']['path']:
+    from .rest import smtp
+elif 'rest' in custom_array['smtp']['path']:
+    smtp = getattr(__import__(custom_array['smtp']['path'], fromlist=[custom_array['smtp']['module']]), custom_array['smtp']['module'])
