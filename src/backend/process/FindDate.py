@@ -129,8 +129,8 @@ class FindDate:
     def run(self):
         date, due_date = None, None
         if self.supplier:
-            date = search_by_positions(self.supplier, 'document_date', self.ocr, self.files, self.database, self.form_id)
-            due_date = search_by_positions(self.supplier, 'document_due_date', self.ocr, self.files, self.database, self.form_id)
+            date = search_by_positions(self.supplier, 'document_date', self.ocr, self.files, self.database, self.form_id, self.log)
+            due_date = search_by_positions(self.supplier, 'document_due_date', self.ocr, self.files, self.database, self.form_id, self.log)
 
         if self.supplier:
             position = self.database.select({
