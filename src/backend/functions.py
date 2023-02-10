@@ -227,8 +227,9 @@ def generate_searchable_pdf(pdf, tmp_filename, lang, log):
     Start from standard PDF, with no OCR, and create a searchable PDF, with OCR. Thanks to ocrmypdf python lib
 
     :param pdf: Path to original pdf (not searchable, without OCR)
-    :param tmp_path: Path to store the final pdf, searchable with OCR
-    :param separator: Class Separator instance
+    :param tmp_filename: Path to store the final pdf, searchable with OCR
+    :param lang: lang instance
+    :param log: log instance
     """
     try:
         res = ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', skip_text=True, language=lang, progress_bar=False)
