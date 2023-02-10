@@ -95,6 +95,7 @@
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",
 		"field_required": "Ce champ est requis",
+		"forgot_password": "Mot de passe oublié ?",
 		"login": "Se connecter",
 		"not_connected": "Merci de vous authentifier avant d'accéder à cette page"
 	},
