@@ -47,31 +47,34 @@ class SMTP:
         Test the connection to the SMTP server
 
         """
+        error = False
         if self.ssl:
             try:
-                self.conn = smtplib.SMTP_SSL(self.host, self.port)
+                self.conn = smtplib.SMTP_SSL(self.host, self.port, timeout=10)
                 self.conn.ehlo()
                 if self.starttls:
                     self.conn.starttls()
                     self.conn.ehlo()
             except (smtplib.SMTPException, OSError) as smtp_error:
+                error = True
                 print('SMTP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(smtp_error))
         else:
             try:
-                self.conn = smtplib.SMTP(self.host, self.port)
+                self.conn = smtplib.SMTP(self.host, self.port, timeout=10)
                 self.conn.ehlo()
                 if self.starttls:
                     self.conn.starttls()
                     self.conn.ehlo()
             except (smtplib.SMTPException, OSError) as smtp_error:
+                error = True
                 print('SMTP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(smtp_error))
         try:
-            if self.auth:
+            if not error and self.auth:
                 self.conn.login(self.login, self.pwd)
         except (smtplib.SMTPException, OSError) as smtp_error:
+            error = True
             print('Error while trying to login to ' + self.host + ' using ' + self.login + '/' + self.pwd + ' as login/password : ' + str(smtp_error))
-
-        self.is_up = True
+        self.is_up = not error
 
     def send_notification(self, error, file_name):
         """
