@@ -51,7 +51,16 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('userQuota', '
     },
     "description": ""
 }', false);
-
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('passwordRules', '{
+    "type": "json",
+    "value": {
+        "minLength": 7,
+        "uppercaseMandatory": true,
+        "numberMandatory": true,
+        "specialCharMandatory": true
+    },
+    "description": ""
+}', false);
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture', '/var/www/html/opencapture/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('LOCALE_PATH', 'Chemin vers le dossier contenant les fichiers de traductions', '/var/www/html/opencapture/src/assets/locale/');
