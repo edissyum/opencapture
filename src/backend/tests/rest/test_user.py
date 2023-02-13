@@ -106,23 +106,12 @@ class UserTest(unittest.TestCase):
     def test_successful_reset_password(self):
         user = self.create_user()
         payload = {
-            "firstname": "Test",
-            "lastname": "Test123",
-            "password": "test123",
-            "email": "test123@tttt.fr",
-            "role": "1",
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=3600),
+            'iat': datetime.datetime.utcnow(),
+            'sub': user.json['id']
         }
-        try:
-            payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=3600),
-                'iat': datetime.datetime.utcnow(),
-                'sub': user.json['id']
-            }
-            reset_token = jwt.encode(payload, app.config['SECRET_KEY'].replace("\n", ""), algorithm='HS512')
-            self.db.execute('UPDATE users SET reset_token = %s WHERE id = %s', (reset_token, user.json['id']))
-        except Exception as _e:
-            return str(_e)
-
+        reset_token = jwt.encode(payload, app.config['SECRET_KEY'].replace("\n", ""), algorithm='HS512')
+        self.db.execute('UPDATE users SET reset_token = %s WHERE id = %s', (reset_token, user.json['id']))
         response = self.app.put(f'/{CUSTOM_ID}/ws/users/resetPassword',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={'resetToken': reset_token, 'newPassword': '123465'})
