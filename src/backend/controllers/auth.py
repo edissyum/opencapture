@@ -79,6 +79,31 @@ def encode_auth_token(user_id):
         return str(_e)
 
 
+def generate_reset_token(user_id):
+    try:
+        payload = {
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=3600),
+            'iat': datetime.datetime.utcnow(),
+            'sub': user_id
+        }
+        return jwt.encode(
+            payload,
+            current_app.config['SECRET_KEY'].replace("\n", ""),
+            algorithm='HS512'
+        )
+    except Exception as _e:
+        return str(_e)
+
+
+def decode_reset_token(token):
+    try:
+        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
+    except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
+            jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
+        return {"errors": gettext("RESET_JWT_ERROR"), "message": str(_e)}, 500
+    return decoded_token, 200
+
+
 def logout():
     for key in list(session.keys()):
         session.pop(key)

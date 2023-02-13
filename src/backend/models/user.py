@@ -126,6 +126,26 @@ def get_user_by_id(args):
     return user, error
 
 
+def get_user_by_mail(args):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    error = None
+    user = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['users'],
+        'where': ['users.email = %s'],
+        'data': [args['user_mail']]
+    })
+
+    if not user:
+        error = gettext('GET_USER_BY_MAIL_ERROR')
+    else:
+        user = user[0]
+
+    return user, error
+
+
 def get_user_by_username(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)

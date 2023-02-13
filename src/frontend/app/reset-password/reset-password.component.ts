@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
@@ -16,20 +16,24 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 
 @Component({
-    selector: 'app-forgot-password',
-    templateUrl: './forgot-password.component.html',
-    styleUrls: ['./forgot-password.component.scss']
+    selector: 'app-reset-password',
+    templateUrl: './reset-password.component.html',
+    styleUrls: ['./reset-password.component.scss']
 })
-export class ForgotPasswordComponent implements OnInit {
-    emailControl            : FormControl = new FormControl('', [Validators.required, Validators.email, Validators.minLength(5)]);
+export class ResetPasswordComponent implements OnInit {
+    passwordControl         : FormControl = new FormControl();
+    passwordConfirmControl  : FormControl = new FormControl();
     image                   : SafeUrl = '';
+    resetToken              : string  = '';
     loading                 : boolean = true;
-    sending                 : boolean = false;
-    smtpStatus              : boolean = false;
+    mismatch                : boolean = false;
+    showPassword            : boolean = false;
+    showPasswordConfirm     : boolean = false;
 
     constructor(
         private router: Router,
         private http: HttpClient,
+        private route: ActivatedRoute,
         private sanitizer: DomSanitizer,
         private formBuilder: FormBuilder,
         private authService: AuthService,
@@ -43,10 +47,16 @@ export class ForgotPasswordComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        console.log(this.mismatch || !this.passwordControl.value || !this.passwordConfirmControl.value)
         if (this.localeService.currentLang === undefined) {
             this.localeService.getCurrentLocale();
         }
-
+        this.resetToken = this.route.snapshot.queryParams['reset_token'];
+        if (!this.resetToken) {
+            this.translate.get('AUTH.token_not_provided').subscribe((translated: string) => {
+                this.notify.error(this.translate.instant(translated));
+            });
+        }
         const b64Content = this.localStorageService.get('login_image_b64');
         if (!b64Content) {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
@@ -54,6 +64,7 @@ export class ForgotPasswordComponent implements OnInit {
                     this.localStorageService.save('login_image_b64', data);
                     this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
                 }),
+                finalize(() => this.loading = false),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -62,39 +73,21 @@ export class ForgotPasswordComponent implements OnInit {
             ).subscribe();
         } else {
             this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
+            this.loading = false;
         }
-
-        this.http.get(environment['url'] + '/ws/smtp/isServerUp').pipe(
-            tap((data: any) => {
-                this.smtpStatus = data.status;
-            }),
-            finalize(() => this.loading = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+        this.passwordConfirmControl.valueChanges.subscribe((value: any) => {
+            if (value) {
+                this.mismatch = (value !== this.passwordControl.value);
+            }
+        });
     }
 
     onSubmit() {
-        this.sending = true;
-        const email = this.emailControl.value;
-        const currentUrl = window.location.href.replace('/forgotPassword', '');
-        this.http.post(environment['url'] + '/ws/users/getByMail', {email: email}).pipe(
+        const passwordConfirm = this.passwordConfirmControl.value;
+        this.http.put(environment['url'] + '/ws/users/resetPassword', {resetToken: this.resetToken, newPassword: passwordConfirm}).pipe(
             tap((data: any) => {
-                this.http.post(environment['url'] + '/ws/users/sendEmailForgotPassword', {userId: data.id, currentUrl: currentUrl}).pipe(
-                    tap((data: any) => {
-                        this.notify.success(this.translate.instant('USER.forgot_password_email_sent'));
-                        this.historyService.addHistory('general', 'user_forgot_password', this.translate.instant('HISTORY-DESC.user_forgot_success', {user: data.username}), data);
-                    }),
-                    finalize(() => this.sending = false),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
+                this.notify.success(this.translate.instant('USER.password_reset_success'));
+                this.authService.logout();
             }),
             catchError((err: any) => {
                 console.debug(err);

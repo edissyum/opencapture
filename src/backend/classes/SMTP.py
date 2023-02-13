@@ -22,6 +22,8 @@ from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+from flask_babel import gettext
+
 
 class SMTP:
     def __init__(self, enabled, host, port, login, pwd, ssl, starttls, dest_mail, delay, auth, from_mail):
@@ -202,5 +204,24 @@ class SMTP:
                 with open('custom/' + custom_id + '/' + file, 'w', encoding='UTF-8') as last_notif:
                     last_notif.write(datetime.now().strftime('%d/%m/%Y %H:%M'))
                 last_notif.close()
+        except smtplib.SMTPException as smtp_error:
+            print('Erreur lors de l\'envoi du mail : ' + str(smtp_error))
+
+    def send_forgot_password_email(self, dest, current_url, reset_token):
+        msg = MIMEMultipart('alternative')
+        msg['To'] = dest
+        if self.from_mail:
+            msg['From'] = self.from_mail
+        else:
+            msg['From'] = 'MailCollect@OpenCapture.com'
+
+        msg['Subject'] = '[OpenCapture - ' + gettext('RESET_PASSWORD') + ']'
+        url = current_url + '/resetPassword?reset_token=' + reset_token
+        message = gettext('FORGOT_EMAIL_HEADER') + '<a href="' + url + '">' + gettext('CLICK_HERE') + '</a>' + gettext('FORGOT_EMAIL_FOOTER')
+
+        msg.attach(MIMEText(message, 'html'))
+
+        try:
+            self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
         except smtplib.SMTPException as smtp_error:
             print('Erreur lors de l\'envoi du mail : ' + str(smtp_error))

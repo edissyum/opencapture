@@ -10,7 +10,8 @@ CREATE TABLE "users"
     "status"            VARCHAR(5)  DEFAULT 'OK',
     "creation_date"     TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
     "last_connection"   TIMESTAMP,
-    "role"              INTEGER     NOT NULL
+    "role"              INTEGER     NOT NULL,
+    "reset_token"       TEXT
 );
 
 CREATE TABLE "form_models"

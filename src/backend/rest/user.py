@@ -69,6 +69,28 @@ def get_user_by_id(user_id):
     return make_response(jsonify(_user[0])), _user[1]
 
 
+@bp.route('users/sendEmailForgotPassword', methods=['POST'])
+def send_email_forgot_password():
+    data = request.json
+    res = user.send_email_forgot_password(data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('users/resetPassword', methods=['PUT'])
+def reset_password():
+    data = request.json
+    res = user.reset_password(data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+
+@bp.route('users/getByMail', methods=['POST'])
+def get_user_by_mail():
+    data = request.json
+    _user = user.get_user_by_mail(data['email'])
+    return make_response(jsonify(_user[0])), _user[1]
+
+
 @bp.route('users/update/<int:user_id>', methods=['PUT'])
 @auth.token_required
 def update_user(user_id):

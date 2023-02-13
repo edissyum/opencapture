@@ -16,8 +16,10 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import json
+import datetime
 from flask_babel import gettext
 from flask import request, session
+from src.backend.import_controllers import auth
 from src.backend.import_models import user, accounts
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
@@ -102,6 +104,22 @@ def get_user_by_id(user_id, get_password=False):
         return response, 401
 
 
+def get_user_by_mail(user_mail):
+    user_info, error = user.get_user_by_mail({
+        'select': ['users.id', 'username', 'firstname', 'email', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
+        'user_mail': user_mail
+    })
+
+    if error is None:
+        return user_info, 200
+    else:
+        response = {
+            "errors": gettext('GET_USER_BY_ID_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def get_user_by_username(username):
     _select = ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled']
     user_info, error = user.get_user_by_username({
@@ -118,6 +136,46 @@ def get_user_by_username(username):
         }
         return response, 401
 
+
+def send_email_forgot_password(args):
+    user_info, error = user.get_user_by_id({'user_id': args['userId']})
+    if error is None:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id, True)
+        smtp = _vars[8]
+        if smtp.is_up:
+            reset_token = auth.generate_reset_token(args['userId'])
+            user.update_user({'set': {'reset_token': reset_token}, 'user_id': args['userId']})
+            smtp.send_forgot_password_email(user_info['email'], args['currentUrl'], reset_token)
+        return user_info, 200
+    else:
+        response = {
+            "errors": gettext('SEND_EMAIL_FORGOT_PASSWORD_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def reset_password(args):
+    decoded_token, status = auth.decode_reset_token(args['resetToken'])
+    if status == 500:
+        return decoded_token, status
+
+    user_info, error = user.get_user_by_id({'user_id': decoded_token['sub']})
+    if error is None:
+        if user_info['reset_token'] == args['resetToken']:
+            user.update_user({'set': {'reset_token': '', 'password': generate_password_hash(args['newPassword'])}, 'user_id': decoded_token['sub']})
+            return user_info, 200
+        response = {
+            "errors": gettext('RESET_PASSWORD_ERROR'),
+            "message": gettext('RESET_TOKEN_MISMATCH')
+        }
+        return response, 401
+    response = {
+        "errors": gettext('RESET_PASSWORD_ERROR'),
+        "message": gettext('GET_USER_BY_ID_ERROR')
+    }
+    return response, 401
 
 def get_customers_by_user_id(user_id):
     user_info, error = user.get_user_by_id({'user_id': user_id})
