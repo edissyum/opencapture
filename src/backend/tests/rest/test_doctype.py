@@ -91,15 +91,13 @@ class DoctypeTest(unittest.TestCase):
         self.assertEqual(len(response.json['doctypes']), 1)
 
     def test_generate_doctype_separator(self):
-        doctype = self.create_folder()
-
+        self.create_folder()
         payload = {
             "id": 1,
             "type": "docTypeSeparator",
         }
 
-        response = self.app.post(f'/{CUSTOM_ID}/ws/doctypes/generateSeparator',
-                                 json=payload,
+        response = self.app.post(f'/{CUSTOM_ID}/ws/doctypes/generateSeparator', json=payload,
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
         try:
