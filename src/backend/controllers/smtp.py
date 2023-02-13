@@ -22,7 +22,7 @@ from src.backend.functions import retrieve_custom_from_url
 
 def check_smtp_status():
     custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
+    _vars = create_classes_from_custom_id(custom_id, True)
     smtp = _vars[8]
     smtp.test_connection()
     return smtp.is_up

@@ -51,7 +51,7 @@ def create_user(args):
 
             if quota <= total_active_users:
                 custom_id = retrieve_custom_from_url(request)
-                _vars = create_classes_from_custom_id(custom_id)
+                _vars = create_classes_from_custom_id(custom_id, True)
                 smtp = _vars[8]
                 if email_dest and smtp.is_up:
                     smtp.send_user_quota_notifications(email_dest, custom_id)

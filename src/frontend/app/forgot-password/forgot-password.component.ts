@@ -49,23 +49,26 @@ export class ForgotPasswordComponent implements OnInit {
             this.localeService.getCurrentLocale();
         }
 
-        this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
-            tap((data: any) => {
-                this.localStorageService.save('login_image_b64', data);
-                this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+        const b64Content = this.localStorageService.get('login_image_b64');
+        if (!b64Content) {
+            this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
+                tap((data: any) => {
+                    this.localStorageService.save('login_image_b64', data);
+                    this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
 
         this.http.get(environment['url'] + '/ws/smtp/isServerUp').pipe(
             tap((data: any) => {
                 this.smtpStatus = data.status;
             }),
-            finalize(() => {this.loading = false}),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);

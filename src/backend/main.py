@@ -22,7 +22,7 @@ from .functions import get_custom_array, retrieve_config_from_custom_id
 from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _Spreadsheet, _SMTP
 
 
-def create_classes_from_custom_id(custom_id):
+def create_classes_from_custom_id(custom_id, load_smtp=False):
     config_file = retrieve_config_from_custom_id(custom_id)
     if config_file is False:
         return False, 'missing_custom_or_file_doesnt_exists'
@@ -45,31 +45,32 @@ def create_classes_from_custom_id(custom_id):
     if not database.conn:
         return False, 'bad_or_missing_database_informations'
 
-    mail_global = database.select({
-        'select': ['*'],
-        'table': ['configurations'],
-        'where': ['label = %s'],
-        'data': ['mailCollectGeneral']
-    })
-
     smtp = None
 
-    if mail_global:
-        mail_global = mail_global[0]['data']['value']
-        smtp = _SMTP(
-            mail_global['smtpNotifOnError'],
-            mail_global['smtpHost'],
-            mail_global['smtpPort'],
-            mail_global['smtpLogin'],
-            mail_global['smtpPwd'],
-            mail_global['smtpSSL'],
-            mail_global['smtpStartTLS'],
-            mail_global['smtpDestAdminMail'],
-            mail_global['smtpDelay'],
-            mail_global['smtpAuth'],
-            mail_global['smtpFromMail'],
-        )
-        log.smtp = smtp
+    if load_smtp:
+        mail_global = database.select({
+            'select': ['*'],
+            'table': ['configurations'],
+            'where': ['label = %s'],
+            'data': ['mailCollectGeneral']
+        })
+
+        if mail_global:
+            mail_global = mail_global[0]['data']['value']
+            smtp = _SMTP(
+                mail_global['smtpNotifOnError'],
+                mail_global['smtpHost'],
+                mail_global['smtpPort'],
+                mail_global['smtpLogin'],
+                mail_global['smtpPwd'],
+                mail_global['smtpSSL'],
+                mail_global['smtpStartTLS'],
+                mail_global['smtpDestAdminMail'],
+                mail_global['smtpDelay'],
+                mail_global['smtpAuth'],
+                mail_global['smtpFromMail'],
+            )
+            log.smtp = smtp
 
     regex = {}
     languages = {}
