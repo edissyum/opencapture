@@ -60,7 +60,7 @@ export class ConfigurationsComponent implements OnInit {
         private route: ActivatedRoute,
         private sanitizer: DomSanitizer,
         private authService: AuthService,
-        private translate: TranslateService,
+        public translate: TranslateService,
         private notify: NotificationService,
         public localeService: LocaleService,
         private historyService: HistoryService,
