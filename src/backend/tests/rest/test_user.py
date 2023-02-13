@@ -122,7 +122,6 @@ class UserTest(unittest.TestCase):
         self.assertTrue(check_password_hash(new_user[0]['password'], '123465'))
         self.db.execute('UPDATE users SET reset_token = NULL WHERE id = ' + str(user.json['id']))
 
-
     def test_successful_get_users_list(self):
         self.create_user()
         response = self.app.get(f'/{CUSTOM_ID}/ws/users/list',
