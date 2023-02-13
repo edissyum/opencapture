@@ -101,6 +101,7 @@
 		"login": "Log in",
 		"modify_password": "Modify password",
 		"not_connected": "Please authenticate yourself before accessing this page",
+		"password_min_length": "The password must be at least 7 characters long",
 		"smtp_server_down": "SMTP server down, password reset is not possible",
 		"token_not_provided": "No authentification token was provided"
 	},
@@ -443,6 +444,7 @@
 		"update_regex": "Regex updated&nbsp;<strong>{{ regex }}</strong>",
 		"user_forgot_success": "Email to reset password has been sent to&nbsp;<strong>{{ user }}</strong>",
 		"user_quota_updated": "User quota settings updated",
+		"user_reset_password_success": "User&nbsp;<strong>{{ regex }}</strong> reset password successfully",
 		"validate_splitter": "Validation of batch n°&nbsp;<strong>{{ batch_id }}</strong>",
 		"viewer": "Visualisation of document n°&nbsp;<strong>{{ document_id }}</strong>",
 		"viewer_splitter": "Visualisation of batch n°&nbsp;<strong>{{ batch_id }}</strong>"

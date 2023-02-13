@@ -21,11 +21,12 @@ import { of } from "rxjs";
     styleUrls: ['./reset-password.component.scss']
 })
 export class ResetPasswordComponent implements OnInit {
-    passwordControl         : FormControl = new FormControl();
-    passwordConfirmControl  : FormControl = new FormControl();
+    passwordControl         : FormControl = new FormControl('', [Validators.minLength(7)]);
+    passwordConfirmControl  : FormControl = new FormControl('', [Validators.minLength(7)]);
     image                   : SafeUrl = '';
     resetToken              : string  = '';
     loading                 : boolean = true;
+    minLengthValid          : boolean = true;
     mismatch                : boolean = false;
     showPassword            : boolean = false;
     showPasswordConfirm     : boolean = false;
@@ -47,7 +48,6 @@ export class ResetPasswordComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        console.log(this.mismatch || !this.passwordControl.value || !this.passwordConfirmControl.value)
         if (this.localeService.currentLang === undefined) {
             this.localeService.getCurrentLocale();
         }
@@ -78,6 +78,7 @@ export class ResetPasswordComponent implements OnInit {
         this.passwordConfirmControl.valueChanges.subscribe((value: any) => {
             if (value) {
                 this.mismatch = (value !== this.passwordControl.value);
+                this.minLengthValid = (value.length >= 7);
             }
         });
     }
@@ -87,6 +88,7 @@ export class ResetPasswordComponent implements OnInit {
         this.http.put(environment['url'] + '/ws/users/resetPassword', {resetToken: this.resetToken, newPassword: passwordConfirm}).pipe(
             tap((data: any) => {
                 this.notify.success(this.translate.instant('USER.password_reset_success'));
+                this.historyService.addHistory('general', 'user_reset_password', this.translate.instant('HISTORY-DESC.user_reset_password_success', {user: data.username}), data);
                 this.authService.logout();
             }),
             catchError((err: any) => {

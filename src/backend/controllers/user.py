@@ -165,6 +165,8 @@ def reset_password(args):
     if error is None:
         if user_info['reset_token'] == args['resetToken']:
             user.update_user({'set': {'reset_token': '', 'password': generate_password_hash(args['newPassword'])}, 'user_id': decoded_token['sub']})
+            del user_info['password']
+            del user_info['reset_token']
             return user_info, 200
         response = {
             "errors": gettext('RESET_PASSWORD_ERROR'),
