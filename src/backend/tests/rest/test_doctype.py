@@ -94,8 +94,8 @@ class DoctypeTest(unittest.TestCase):
         doctype = self.create_folder()
 
         payload = {
-            "type": "docTypeSeparator",
             "id": 1,
+            "type": "docTypeSeparator",
         }
 
         response = self.app.post(f'/{CUSTOM_ID}/ws/doctypes/generateSeparator',
