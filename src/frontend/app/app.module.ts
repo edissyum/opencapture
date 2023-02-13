@@ -115,6 +115,7 @@ import { MailCollectComponent } from './settings/general/mailcollect/mailcollect
 import { UserQuotaComponent } from './settings/general/user-quota/user-quota.component';
 import { SettingsMenuComponent } from './settings/settings-menu.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -193,7 +194,8 @@ export function createTranslateLoader(http: HttpClient) {
         MailCollectComponent,
         UserQuotaComponent,
         SettingsMenuComponent,
-        ForgotPasswordComponent
+        ForgotPasswordComponent,
+        ResetPasswordComponent
     ],
     imports: [
         BrowserModule,

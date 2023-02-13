@@ -1,3 +1,3 @@
-<app-menu [image]="this.image" [imageMobile]="this.imageMobile" *ngIf="this.location.path() !== '/forgotPassword' && this.location.path() !== '/login' && this.location.path() !== '/404' && loading === this.loading"></app-menu>
+<app-menu [image]="this.image" [imageMobile]="this.imageMobile" *ngIf="this.showMenu && loading === this.loading"></app-menu>
 
 <router-outlet></router-outlet>
