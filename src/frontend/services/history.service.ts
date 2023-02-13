@@ -35,9 +35,13 @@ export class HistoryService {
         private notify: NotificationService
     ) { }
 
-    addHistory(module: any, submodule: string, desc: string) {
+    addHistory(module: any, submodule: string, desc: string, predefined_user: any = {}) {
         if (!this.userService.user || !this.userService.user.id) {
             this.userService.user = this.userService.getUserFromLocal();
+        }
+
+        if(!this.userService.user) {
+            this.userService.user = predefined_user;
         }
         const user = this.userService.user.lastname + ' ' + this.userService.user.firstname + ' (' + this.userService.user.username + ')';
         const data = {
@@ -47,7 +51,7 @@ export class HistoryService {
             'user_info': user,
             'user_id': this.userService.user.id
         };
-        this.http.post(environment['url'] + '/ws/history/add', data, {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/history/add', data).pipe(
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);

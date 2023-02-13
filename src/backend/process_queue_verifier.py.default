@@ -53,7 +53,7 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
 def launch(args):
     start = time.time()
 
-    database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
+    database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'], True)
     task_id = database.insert({
         'table': 'tasks_watcher',
         'columns': {

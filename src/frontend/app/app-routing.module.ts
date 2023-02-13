@@ -33,6 +33,8 @@ import { LoginRequiredService } from '../services/login-required.service';
 import { Error500Component } from "./errors/error-500/error-500.component";
 import { VerifierListComponent } from './verifier/list/verifier-list.component';
 import { SplitterListComponent } from "./splitter/list/splitter-list.component";
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { SplitterViewerComponent } from "./splitter/viewer/splitter-viewer.component";
 import { VerifierViewerComponent } from './verifier/viewer/verifier-viewer.component';
 import { CustomersListComponent } from "./accounts/customers/list/customers-list.component";
@@ -46,7 +48,9 @@ const routes: Routes = [
     { path: '500', component: Error500Component },
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'home', component: HomeComponent, data: { title: 'GLOBAL.home' }, canActivate: [LoginRequiredService] },
-    { path: 'login', component: LoginComponent, data: { title: 'GLOBAL.login' }, canActivate: [LoginRedirectService] },
+    { path: 'login', component: LoginComponent, data: { title: 'GLOBAL.login', showMenu: false }, canActivate: [LoginRedirectService] },
+    { path: 'forgotPassword', component: ForgotPasswordComponent, data: { title: marker('GLOBAL.forgot-password'), showMenu: false}},
+    { path: 'resetPassword', component: ResetPasswordComponent, data: { title: marker('GLOBAL.reset-password'), showMenu: false}},
     { path: 'logout', component: LogoutComponent, canActivate: [LoginRequiredService] },
     { path: 'profile/:id', component: UserProfileComponent, canActivate: [LoginRequiredService] },
     {
@@ -120,7 +124,7 @@ const routes: Routes = [
         data: { title: marker('ACCOUNTS.create_customer'), privileges: ['create_customer'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
-    { path: '404', component: NotFoundComponent }, // This two routes (** and 404) need to be the last of const routes: Routes variable
+    { path: '404', component: NotFoundComponent, data: {showMenu: false} }, // This two routes (** and 404) need to be the last of const routes: Routes variable
     { path: '**', redirectTo: '404' }, // if routes doesn't exists, redirect to 404, display a popup and then redirect to login
 ];
 

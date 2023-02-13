@@ -106,6 +106,7 @@ import { ConfigurationsComponent } from './settings/general/configurations/confi
 import { DocserversComponent } from './settings/general/docservers/docservers.component';
 import { RegexComponent } from './settings/general/regex/regex.component';
 import { HintServiceComponent } from "../services/hint/hint.service";
+import { ErrorServiceComponent } from "../services/error/error.service";
 import { Error500Component } from './errors/error-500/error-500.component';
 import { MatSelectCountryModule } from "@angular-material-extensions/select-country";
 import { MiddlewareComponent } from "./middleware.component";
@@ -113,6 +114,8 @@ import { VerifierDisplayComponent } from './settings/verifier/display/display.co
 import { MailCollectComponent } from './settings/general/mailcollect/mailcollect.component';
 import { UserQuotaComponent } from './settings/general/user-quota/user-quota.component';
 import { SettingsMenuComponent } from './settings/settings-menu.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -184,12 +187,15 @@ export function createTranslateLoader(http: HttpClient) {
         DocserversComponent,
         RegexComponent,
         HintServiceComponent,
+        ErrorServiceComponent,
         Error500Component,
         LoginMethodsComponent,
         VerifierDisplayComponent,
         MailCollectComponent,
         UserQuotaComponent,
-        SettingsMenuComponent
+        SettingsMenuComponent,
+        ForgotPasswordComponent,
+        ResetPasswordComponent
     ],
     imports: [
         BrowserModule,
@@ -222,6 +228,7 @@ export function createTranslateLoader(http: HttpClient) {
         TranslateService,
         LastUrlService,
         HintServiceComponent,
+        ErrorServiceComponent,
         {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}},
         {
             provide: MatPaginatorIntl,

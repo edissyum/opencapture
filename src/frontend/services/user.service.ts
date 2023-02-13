@@ -47,7 +47,7 @@ export class UserService {
         if (token) {
             return JSON.parse(atob(token as string));
         } else {
-            if (this.router.url !== '/' && this.router.url !== '/login' && this.router.url !== '/logout') {
+            if (this.router.url !== '/' && !this.router.url.includes('/resetPassword') && this.router.url !== '/forgotPassword' && this.router.url !== '/login' && this.router.url !== '/logout') {
                 this.router.navigate(['/logout']).then();
             }
         }
