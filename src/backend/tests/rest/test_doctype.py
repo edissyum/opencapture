@@ -91,10 +91,11 @@ class DoctypeTest(unittest.TestCase):
         self.assertEqual(len(response.json['doctypes']), 1)
 
     def test_generate_doctype_separator(self):
+        doctype = self.create_folder()
+
         payload = {
             "type": "docTypeSeparator",
-            "key": "test_doctype",
-            "label": "Test doctype updated"
+            "id": 1,
         }
 
         response = self.app.post(f'/{CUSTOM_ID}/ws/doctypes/generateSeparator',
@@ -103,7 +104,7 @@ class DoctypeTest(unittest.TestCase):
 
         try:
             base64.b64decode(response.json['encoded_file'])
-            base64.b64decode(response.json['encoded_thumbnail'])
+            base64.b64decode(response.json['encoded_thumbnails'][0])
             is_base64 = True
         except binascii.Error:
             is_base64 = False
