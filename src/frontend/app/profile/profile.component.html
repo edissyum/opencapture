@@ -14,13 +14,23 @@
                         </mat-label>
                         <input [readonly]="field.type === 'password' && this.disablePasswordModification" matInput
                                [formControl]="field.control" [type]="field.type" [required]="field.required"
-                               [email]="field.type === 'email'"
-                               placeholder="{{ field.label | translate }}">
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                               [email]="field.type === 'email'" (keyup)="checkPasswordValidity(field)"
+                               placeholder="{{ field.label | translate }}" autocomplete="off">
+                        <mat-error class="text-red-400" *ngIf="field.control.invalid || (field.id === 'new_password' && this.errorMessage !== '')">
+                            {{ getErrorMessage(field.id) }}
+                        </mat-error>
+                        <mat-icon *ngIf="field.id === 'old_password'" matSuffix (click)="field.type === 'password' ? field.type = 'text' : field.type = 'password'"
+                                  class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                            <i class="fa fa-1x" [class.fa-eye-slash]="field.type === 'password'" [class.fa-eye]="field.type !== 'password'"></i>
+                        </mat-icon>
+                        <mat-icon *ngIf="field.id === 'new_password'" matSuffix (click)="field.type === 'password' ? field.type = 'text' : field.type = 'password'"
+                                  class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                            <i class="fa fa-1x" [class.fa-eye-slash]="field.type === 'password'" [class.fa-eye]="field.type !== 'password'"></i>
+                        </mat-icon>
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [disabled]="this.userService.getUserFromLocal()['privileges'] !== '*'" [(value)]="field.control.value">
+                        <mat-select [disabled]="this.userService.getUserFromLocal()['username'] === 'admin' || this.userService.getUserFromLocal()['privileges'] !== '*'" [(value)]="field.control.value">
                             <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
                         </mat-select>
                     </mat-form-field>
