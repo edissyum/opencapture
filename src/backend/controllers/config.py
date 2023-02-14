@@ -41,7 +41,7 @@ def change_locale_in_config(lang):
             language = languages[_l]
 
     locale_configuration = retrieve_configuration_by_label('locale')[0]['configuration'][0]
-    update_configuration({
+    update_configuration_by_id({
         'value': language['lang_code'],
         'type': locale_configuration['data']['type'],
         'description': locale_configuration['data']['description']
