@@ -39,6 +39,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
     image       : SafeUrl = '';
     imageMobile : string = '';
     loading     : boolean = true;
+    showMenu    : boolean = true;
 
     constructor(
         private router: Router,
@@ -59,6 +60,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd),
             map(() => {
+                this.showMenu = true;
                 let child = this.activatedRoute.firstChild;
                 let childImage = 'assets/imgs/login_image.png';
                 let childImageMobile = 'assets/imgs/Open-Capture_Verifier.svg';
@@ -78,7 +80,9 @@ export class AppComponent implements OnInit, AfterContentChecked {
                             }
                         }
                     }
-
+                    if (child.snapshot.data['showMenu'] === false) {
+                        this.showMenu = false;
+                    }
                     if (child.snapshot.data['title']) {
                         return [child.snapshot.data['title'], childImage, childImageMobile, splitterOrVerifier];
                     }

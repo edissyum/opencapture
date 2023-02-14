@@ -169,7 +169,7 @@ def search_custom_positions(data, ocr, files, regex, file, docservers):
         return search(position, data['regex'], files, ocr, target_file)
 
 
-def search_by_positions(supplier, index, ocr, files, database, form_id):
+def search_by_positions(supplier, index, ocr, files, database, form_id, log):
     positions_mask = database.select({
         'select': ['*'],
         'table': ['positions_masks'],
@@ -187,7 +187,8 @@ def search_by_positions(supplier, index, ocr, files, database, form_id):
     if positions:
         positions['ocr_from_user'] = True
         data = search(positions, regex, files, ocr, file)
-        if pages:
+        if pages and data[0]:
+            log.info(index + ' found using position mask : ' + data[0])
             data.append(pages)
         return data
 
@@ -226,8 +227,9 @@ def generate_searchable_pdf(pdf, tmp_filename, lang, log):
     Start from standard PDF, with no OCR, and create a searchable PDF, with OCR. Thanks to ocrmypdf python lib
 
     :param pdf: Path to original pdf (not searchable, without OCR)
-    :param tmp_path: Path to store the final pdf, searchable with OCR
-    :param separator: Class Separator instance
+    :param tmp_filename: Path to store the final pdf, searchable with OCR
+    :param lang: lang instance
+    :param log: log instance
     """
     try:
         res = ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', skip_text=True, language=lang, progress_bar=False)

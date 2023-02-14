@@ -19,6 +19,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LastUrlService } from './last-url.service';
 import { HintServiceComponent } from './hint/hint.service';
+import { ErrorServiceComponent } from './error/error.service';
 import { TranslateModule } from "@ngx-translate/core";
 import { AppMaterialModule } from '../app/app-material.module';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
@@ -45,6 +46,6 @@ import { DragDropModule } from "@angular/cdk/drag-drop";
         CustomSnackbarComponent,
         ConfirmDialogComponent,
     ],
-    providers: [NotificationService, LastUrlService, HintServiceComponent]
+    providers: [NotificationService, LastUrlService, HintServiceComponent, ErrorServiceComponent]
 })
 export class ServicesModule { }

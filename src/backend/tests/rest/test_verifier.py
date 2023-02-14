@@ -75,7 +75,7 @@ class VerifierTest(unittest.TestCase):
             content_type="application/pdf",
         )
 
-        return self.app.post(f'/{CUSTOM_ID}/ws/verifier/upload?inputId=1', data={"file": my_file},
+        return self.app.post(f'/{CUSTOM_ID}/ws/verifier/upload?inputId=default_input', data={"file": my_file},
                              content_type='multipart/form-data',
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 

@@ -52,7 +52,7 @@ class FindDeliveryNumber:
 
     def run(self):
         if self.supplier:
-            delivery_number = search_by_positions(self.supplier, 'delivery_number', self.ocr, self.files, self.database, self.form_id)
+            delivery_number = search_by_positions(self.supplier, 'delivery_number', self.ocr, self.files, self.database, self.form_id, self.log)
             if delivery_number and delivery_number[0]:
                 return delivery_number
 
