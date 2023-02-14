@@ -51,7 +51,7 @@
                 {{ 'GLOBAL.utilisation_guide' | translate }}
             </a>
         </span>
-        <div class="text-center relative top-8 text-gray-900">
+        <div class="text-center relative top-8 text-gray-900" *ngIf="this.enableLoginMethodName === 'default'">
             <a routerLink="/forgotPassword">
                 {{ 'AUTH.forgot_password' | translate }}
             </a>
