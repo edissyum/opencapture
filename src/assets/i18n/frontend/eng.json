@@ -101,7 +101,10 @@
 		"login": "Log in",
 		"modify_password": "Modify password",
 		"not_connected": "Please authenticate yourself before accessing this page",
-		"password_min_length": "The password must be at least 7 characters long",
+		"password_min_length": "The password must be at least <strong>{{ min }}</strong> characters long",
+		"password_number_mandatory": "At least one number is required",
+		"password_special_char_mandatory": "At least one special character is required",
+		"password_uppercase_mandatory": "At least one uppercase character is required",
 		"smtp_server_down": "SMTP server down, password reset is not possible",
 		"token_not_provided": "No authentification token was provided"
 	},

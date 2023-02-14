@@ -21,15 +21,21 @@ import { of } from "rxjs";
     styleUrls: ['./reset-password.component.scss']
 })
 export class ResetPasswordComponent implements OnInit {
-    passwordControl         : FormControl = new FormControl('', [Validators.minLength(7)]);
-    passwordConfirmControl  : FormControl = new FormControl('', [Validators.minLength(7)]);
+    passwordControl         : FormControl = new FormControl();
+    passwordConfirmControl  : FormControl = new FormControl();
     image                   : SafeUrl = '';
     resetToken              : string  = '';
+    errorMessage            : string  = '';
     loading                 : boolean = true;
-    minLengthValid          : boolean = true;
     mismatch                : boolean = false;
     showPassword            : boolean = false;
     showPasswordConfirm     : boolean = false;
+    passwordRules           : any     = {
+        minLength: 0,
+        uppercaseMandatory: false,
+        specialCharMandatory: false,
+        numberMandatory: false
+    };
 
     constructor(
         private router: Router,
@@ -64,7 +70,6 @@ export class ResetPasswordComponent implements OnInit {
                     this.localStorageService.save('login_image_b64', data);
                     this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
                 }),
-                finalize(() => this.loading = false),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -73,14 +78,42 @@ export class ResetPasswordComponent implements OnInit {
             ).subscribe();
         } else {
             this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
-            this.loading = false;
         }
+
+        this.http.get(environment['url'] + '/ws/config/getConfiguration/passwordRules', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if (data.configuration[0] && data.configuration[0].data.value) {
+                    this.passwordRules = data.configuration[0].data.value;
+                }
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.passwordConfirmControl.valueChanges.subscribe((value: any) => {
             if (value) {
                 this.mismatch = (value !== this.passwordControl.value);
-                this.minLengthValid = (value.length >= 7);
+                console.log(this.passwordRules);
             }
         });
+    }
+
+    checkPasswordValidity() {
+        if (!this.passwordControl.value.match(/[A-Z]/g) && this.passwordRules.uppercaseMandatory) {
+            this.errorMessage = this.translate.instant('AUTH.password_uppercase_mandatory');
+        } else if (!this.passwordControl.value.match(/[0-9]/g) && this.passwordRules.numberMandatory) {
+            this.errorMessage = this.translate.instant('AUTH.password_number_mandatory');
+        } else if (!this.passwordControl.value.match(/[^A-Za-z0-9]/g) && this.passwordRules.specialCharMandatory) {
+            this.errorMessage = this.translate.instant('AUTH.password_special_char_mandatory');
+        } else if (this.passwordControl.value.length < this.passwordRules.minLength && this.passwordRules.minLength !== 0) {
+            this.errorMessage = this.translate.instant('AUTH.password_min_length', {"min": this.passwordRules.minLength});
+        } else {
+            this.errorMessage = '';
+        }
     }
 
     onSubmit() {
