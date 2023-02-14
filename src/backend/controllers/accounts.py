@@ -43,7 +43,7 @@ def get_supplier_by_id(supplier_id):
     else:
         response = {
             "errors": gettext('GET_SUPPLIER_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -56,7 +56,7 @@ def get_address_by_id(address_id):
     else:
         response = {
             "errors": gettext('GET_ADDRESS_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -83,7 +83,7 @@ def delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id):
         else:
             response = {
                 "errors": gettext('UPDATE_SUPPLIER_POSITIONS_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
@@ -110,7 +110,7 @@ def delete_invoice_page_by_supplier_id(supplier_id, field_id, form_id):
         else:
             response = {
                 "errors": gettext('UPDATE_SUPPLIER_PAGES_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
@@ -131,13 +131,13 @@ def update_supplier(supplier_id, data):
         else:
             response = {
                 "errors": gettext('UPDATE_SUPPLIER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_SUPPLIER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -168,7 +168,7 @@ def update_position_by_supplier_id(supplier_id, data):
         else:
             response = {
                 "errors": gettext('UPDATE_SUPPLIER_POSITIONS_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
@@ -199,7 +199,7 @@ def update_page_by_supplier_id(supplier_id, data):
         else:
             response = {
                 "errors": gettext('UPDATE_SUPPLIER_PAGES_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
@@ -223,13 +223,13 @@ def update_address(address_id, data):
         else:
             response = {
                 "errors": gettext('UPDATE_ADDRESS_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_ADDRESS_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -253,13 +253,13 @@ def update_address_by_supplier_id(supplier_id, data):
         else:
             response = {
                 "errors": gettext('UPDATE_ADDRESS_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_ADDRESS_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -283,7 +283,7 @@ def create_address(data):
     else:
         response = {
             "errors": gettext('CREATE_ADDRESS_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -320,7 +320,7 @@ def create_supplier(data):
         else:
             response = {
                 "errors": gettext('CREATE_SUPPLIER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
@@ -347,7 +347,7 @@ def get_customer_by_id(customer_id):
     else:
         response = {
             "errors": gettext('GET_CUSTOMER_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -389,13 +389,13 @@ def update_customer(customer_id, data):
         else:
             response = {
                 "errors": gettext('UPDATE_CUSTOMER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_CUSTOMER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -424,7 +424,7 @@ def create_customer(data):
         else:
             response = {
                 "errors": gettext('CREATE_CUSTOMER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
@@ -445,13 +445,13 @@ def delete_customer(customer_id):
         else:
             response = {
                 "errors": gettext('DELETE_CUSTOMER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DELETE_CUSTOMER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -466,13 +466,13 @@ def delete_supplier(supplier_id):
         else:
             response = {
                 "errors": gettext('DELETE_SUPPLIER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DELETE_SUPPLIER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 

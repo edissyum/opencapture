@@ -160,7 +160,7 @@ def login(username, password, lang, method='default'):
     else:
         response = {
             "errors": gettext('LOGIN_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -202,7 +202,7 @@ def login_with_token(token, lang):
     else:
         response = {
             "errors": gettext('LOGIN_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -249,7 +249,7 @@ def verify_user_by_username(username):
     else:
         response = {
             "error": gettext('LOGIN_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -270,7 +270,7 @@ def get_enabled_login_method():
     else:
         response = {
             "errors": gettext('LOGIN_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -297,7 +297,7 @@ def update_login_method(login_method_name , server_data):
     else:
         response = {
             "errors": gettext('LOGIN_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -312,7 +312,7 @@ def retrieve_login_methods():
 
     response = {
         "errors": gettext('LOADING_METHODS_AUTH_ERROR'),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -324,7 +324,7 @@ def disable_login_method(method_name):
     else:
         response = {
             "errors": gettext('DISABLE_LOGIN_METHOD_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -336,7 +336,7 @@ def enable_login_method(method_name):
     else:
         response = {
             "errors": gettext('ENABLE_LOGIN_METHOD_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 

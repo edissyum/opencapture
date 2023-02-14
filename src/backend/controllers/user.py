@@ -61,7 +61,7 @@ def create_user(args):
     else:
         response = {
             "errors": gettext('CREATE_USER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -99,7 +99,7 @@ def get_user_by_id(user_id, get_password=False):
     else:
         response = {
             "errors": gettext('GET_USER_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -115,7 +115,7 @@ def get_user_by_mail(user_mail):
     else:
         response = {
             "errors": gettext('GET_USER_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -132,7 +132,7 @@ def get_user_by_username(username):
     else:
         response = {
             "errors": gettext('GET_USER_BY_USERNAME_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -151,7 +151,7 @@ def send_email_forgot_password(args):
     else:
         response = {
             "errors": gettext('SEND_EMAIL_FORGOT_PASSWORD_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -204,7 +204,7 @@ def get_customers_by_user_id(user_id):
     else:
         response = {
             "errors": gettext('GET_CUSTOMER_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -254,13 +254,13 @@ def update_user(user_id, data):
         else:
             response = {
                 "errors": gettext('UPDATE_USER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_USER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -274,13 +274,13 @@ def delete_user(user_id):
         else:
             response = {
                 "errors": gettext('DELETE_USER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DELETE_USER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -294,13 +294,13 @@ def disable_user(user_id):
         else:
             response = {
                 "errors": gettext('DISABLE_USER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DISABLE_USER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -314,13 +314,13 @@ def enable_user(user_id):
         else:
             response = {
                 "errors": gettext('ENABLE_USER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('ENABLE_USER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -337,12 +337,12 @@ def update_customers_by_user_id(user_id, customers):
         else:
             response = {
                 "errors": gettext('UPDATE_CUSTOMERS_USER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_CUSTOMERS_USER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401

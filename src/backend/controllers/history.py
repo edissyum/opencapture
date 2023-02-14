@@ -26,7 +26,7 @@ def add_history(args):
     else:
         response = {
             "errors": gettext("ADD_HISTORY_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 

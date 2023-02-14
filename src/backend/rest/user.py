@@ -83,7 +83,6 @@ def reset_password():
     return make_response(jsonify(res[0])), res[1]
 
 
-
 @bp.route('users/getByMail', methods=['POST'])
 def get_user_by_mail():
     data = request.json

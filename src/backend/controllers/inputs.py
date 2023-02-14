@@ -64,13 +64,13 @@ def update_input(input_id, data):
         else:
             response = {
                 "errors": gettext('UPDATE_INPUT_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_INPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -95,13 +95,13 @@ def duplicate_input(input_id):
         else:
             response = {
                 "errors": gettext('DUPLICATE_INPUT_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DUPLICATE_INPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -154,7 +154,7 @@ def create_input(data):
     else:
         response = {
             "errors": gettext('CREATE_INPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -167,7 +167,7 @@ def get_input_by_id(input_id):
     else:
         response = {
             "errors": gettext('GET_INPUT_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -188,13 +188,13 @@ def delete_input(input_id):
         else:
             response = {
                 "errors": gettext('DELETE_INPUT_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DELETE_INPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
