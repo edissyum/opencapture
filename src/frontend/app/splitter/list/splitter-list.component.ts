@@ -52,10 +52,10 @@ export class SplitterListComponent implements OnInit {
     page             : number  = 1;
     selectedTab      : number  = 0;
     searchText       : string  = "";
-    pageSize         : number  = 16;
+    pageSize         : number  = 15;
     pageIndex        : number  = 1;
     offset           : number  = 0;
-    pageSizeOptions  : any []  = [4, 8, 12, 16, 24, 48];
+    pageSizeOptions  : any []  = [5, 10, 15, 20, 30, 60];
     total            : number  = 0;
     totals           : any     = {};
     batchList        : any[]   = [

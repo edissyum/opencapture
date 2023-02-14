@@ -52,7 +52,7 @@
                         <app-loader></app-loader>
                     </div>
                     <div class="content mx-10 mt-3" *ngIf="!this.isLoading">
-                        <div class="list grid 2xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-flow-row gap-12">
+                        <div class="list grid 2xl:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 grid-flow-row gap-6">
                             <span *ngIf="(this.batches | filter : 'fileName' : this.searchText).length === 0 && !this.isLoading" class="text-gray-900">{{ 'SPLITTER.no_batch_found' | translate }}</span>
                             <mat-card class="batch-card cursor-pointer p-0 mb-0" *ngFor="let batch of this.batches | filter : 'fileName' : this.searchText">
                                 <label class="p-5 absolute z-40 cursor-pointer">
