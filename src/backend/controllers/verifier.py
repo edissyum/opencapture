@@ -54,7 +54,7 @@ def get_invoice_by_id(invoice_id):
     else:
         response = {
             "errors": gettext('GET_INVOICE_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -165,7 +165,7 @@ def update_position_by_invoice_id(invoice_id, args):
         else:
             response = {
                 "errors": gettext('UPDATE_INVOICE_POSITIONS_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
@@ -188,7 +188,7 @@ def update_page_by_invoice_id(invoice_id, args):
         else:
             response = {
                 "errors": gettext('UPDATE_INVOICE_PAGES_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
@@ -211,7 +211,7 @@ def update_invoice_data_by_invoice_id(invoice_id, args):
         else:
             response = {
                 "errors": gettext('UPDATE_INVOICE_DATA_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
@@ -229,7 +229,7 @@ def delete_invoice_data_by_invoice_id(invoice_id, field_id):
         else:
             response = {
                 "errors": gettext('UPDATE_INVOICE_DATA_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
@@ -267,7 +267,7 @@ def delete_invoice_position_by_invoice_id(invoice_id, field_id):
         else:
             response = {
                 "errors": gettext('UPDATE_INVOICE_POSITIONS_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
@@ -285,7 +285,7 @@ def delete_invoice_page_by_invoice_id(invoice_id, field_id):
         else:
             response = {
                 "errors": gettext('UPDATE_INVOICE_PAGES_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
@@ -299,13 +299,13 @@ def delete_invoice(invoice_id):
         else:
             response = {
                 "errors": gettext('DELETE_INVOICE_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DELETE_INVOICE_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -320,13 +320,13 @@ def update_invoice(invoice_id, data):
         else:
             response = {
                 "errors": gettext('UPDATE_INVOICE_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_INVOICE_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -343,7 +343,7 @@ def remove_lock_by_user_id(user_id):
     else:
         response = {
             "errors": gettext('REMOVE_LOCK_BY_USER_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -557,6 +557,6 @@ def get_totals(status, user_id, form_id):
     else:
         response = {
             "errors": gettext('GET_TOTALS_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401

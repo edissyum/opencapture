@@ -43,16 +43,24 @@ import { LocaleService } from "../../../../services/locale.service";
 export class ConfigurationsComponent implements OnInit {
     columnsToDisplay    : string[]      = ['id', 'label', 'description', 'type', 'content', 'actions'];
     headers             : HttpHeaders   = this.authService.headers;
-    loading             : boolean       = true;
     updateLoading       : boolean       = false;
+    minLengthEnabled    : boolean       = false;
+    updating            : boolean       = false;
+    loading             : boolean       = true;
     configurations      : any           = [];
     allConfigurations   : any           = [];
     pageSize            : number        = 10;
+    search              : string        = '';
+    loginImage          : SafeUrl       = '';
+    passwordRules       : any           = {
+        minLength: 0,
+        uppercaseMandatory: false,
+        specialCharMandatory: false,
+        numberMandatory: false
+    };
     pageIndex           : number        = 0;
     total               : number        = 0;
     offset              : number        = 0;
-    search              : string        = '';
-    loginImage          : SafeUrl       = '';
 
     constructor(
         public router: Router,
@@ -107,7 +115,45 @@ export class ConfigurationsComponent implements OnInit {
             this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
         }
 
+        this.http.get(environment['url'] + '/ws/config/getConfiguration/passwordRules', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if (data.configuration[0] && data.configuration[0].data.value) {
+                    this.passwordRules = data.configuration[0].data.value;
+                    if (this.passwordRules.minLength > 0) {
+                        this.minLengthEnabled = true;
+                    }
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.loadConfigurations();
+    }
+
+    updatePasswordRules() {
+        this.updating = true;
+        const args = {
+            'value': this.passwordRules,
+            'type': 'json',
+            'description': ''
+        }
+        this.http.put(environment['url'] + '/ws/config/updateConfiguration/passwordRules', {'args': args},
+            {headers: this.authService.headers},
+        ).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('CONFIGURATIONS.password_rules_updated'));
+            }),
+            finalize(() => this.updating = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     onClick(logo: any) {

@@ -132,9 +132,17 @@ def update_login_image():
 
 @bp.route('config/updateConfiguration/<int:configuration_id>', methods=['PUT'])
 @auth.token_required
-def update_configuration(configuration_id):
+def update_configuration_by_id(configuration_id):
     data = request.json['data']
-    res = config.update_configuration(data, configuration_id)
+    res = config.update_configuration_by_id(data, configuration_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('config/updateConfiguration/<string:configuration_label>', methods=['PUT'])
+@auth.token_required
+def update_configuration_by_label(configuration_label):
+    data = request.json['args']
+    res = config.update_configuration_by_label(data, configuration_label)
     return make_response(jsonify(res[0])), res[1]
 
 

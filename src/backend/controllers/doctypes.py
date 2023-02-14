@@ -33,13 +33,13 @@ def add_doctype(args):
             if not res:
                 response = {
                     "errors": gettext("SET_DEFAULT_DOCTYPE_ERROR"),
-                    "message": error
+                    "message": gettext(error)
                 }
                 return response, 401
     else:
         response = {
             "errors": gettext("ADD_DOCTYPE_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
     response = {
@@ -59,7 +59,7 @@ def retrieve_doctypes(args):
 
     response = {
         "errors": gettext("DOCTYPE_ERROR"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -108,7 +108,7 @@ def update(args):
     else:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -191,7 +191,7 @@ def clone_form_doctypes(src_form_id, dest_form_id):
     if error:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 500
 

@@ -72,7 +72,7 @@ def get_model_by_id(model_id):
     else:
         response = {
             "errors": gettext('GET_IA_MODEL_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -96,7 +96,7 @@ def create_model(data):
     else:
         response = {
             "errors": gettext('CREATE_IA_MODEL_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -107,7 +107,7 @@ def update_model(args):
         return '', 200
     response = {
         "errors": gettext('UPDATE_IA_MODEL_ERROR'),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 

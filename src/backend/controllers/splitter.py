@@ -232,7 +232,7 @@ def remove_lock_by_user_id(user_id):
     else:
         response = {
             "errors": gettext('REMOVE_LOCK_BY_USER_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -248,7 +248,7 @@ def get_page_full_thumbnail(page_id):
     if not res:
         response = {
             "errors": "ERROR",
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -907,7 +907,7 @@ def get_totals(status, user_id):
 
     response = {
         "errors": gettext('GET_TOTALS_ERROR'),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
