@@ -40,6 +40,7 @@ export class UserProfileComponent implements OnInit {
     loading                     : boolean       = true;
     userId                      : any;
     profile                     : any;
+    errorMessage                : string        = '';
     roles                       : any[]         = [];
     profileForm                 : any[]         = [
         {
@@ -87,6 +88,12 @@ export class UserProfileComponent implements OnInit {
         }
     ];
     disablePasswordModification : boolean       = false;
+    passwordRules               : any           = {
+        minLength: 0,
+        uppercaseMandatory: false,
+        specialCharMandatory: false,
+        numberMandatory: false
+    };
 
     constructor(
         private http: HttpClient,
@@ -157,6 +164,21 @@ export class UserProfileComponent implements OnInit {
             })
         ).subscribe();
 
+        this.http.get(environment['url'] + '/ws/config/getConfiguration/passwordRules', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                console.log(data);
+                if (data.configuration[0] && data.configuration[0].data.value) {
+                    this.passwordRules = data.configuration[0].data.value;
+                }
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.http.get(environment['url'] + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.profile = data;
@@ -164,7 +186,7 @@ export class UserProfileComponent implements OnInit {
                     if (this.profile.hasOwnProperty(field)) {
                         this.profileForm.forEach(element => {
                             if (element.id === field) {
-                                element.control.value = this.profile[field];
+                                element.control.setValue(this.profile[field]);
                                 if (element.id === 'role') {
                                     element.values = this.roles;
                                 }
@@ -180,6 +202,36 @@ export class UserProfileComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    checkPasswordValidity(input: any) {
+        if (input.id === 'new_password') {
+            let required: boolean;
+            if (input.control.value) {
+                required = true;
+                if (!input.control.value.match(/[A-Z]/g) && this.passwordRules.uppercaseMandatory) {
+                    this.errorMessage = this.translate.instant('AUTH.password_uppercase_mandatory');
+                } else if (!input.control.value.match(/[0-9]/g) && this.passwordRules.numberMandatory) {
+                    this.errorMessage = this.translate.instant('AUTH.password_number_mandatory');
+                } else if (!input.control.value.match(/[^A-Za-z0-9]/g) && this.passwordRules.specialCharMandatory) {
+                    this.errorMessage = this.translate.instant('AUTH.password_special_char_mandatory');
+                } else if (input.control.value.length < this.passwordRules.minLength && this.passwordRules.minLength !== 0) {
+                    this.errorMessage = this.translate.instant('AUTH.password_min_length', {"min": this.passwordRules.minLength});
+                } else {
+                    this.errorMessage = '';
+                    input.control.setErrors(null);
+                }
+            } else {
+                required = false;
+                this.errorMessage = '';
+                input.control.setErrors(null);
+            }
+            this.profileForm.forEach(element => {
+                if (element.id === 'old_password') {
+                    element.required = required;
+                }
+            });
+        }
     }
 
     isValidForm() {
@@ -224,8 +276,13 @@ export class UserProfileComponent implements OnInit {
 
     getErrorMessage(field: any) {
         let error: any;
+
         this.profileForm.forEach(element => {
             if (element.id === field) {
+                if (this.errorMessage !== '' && field === 'new_password') {
+                    element.control.setErrors({});
+                    error = this.errorMessage;
+                }
                 if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }
