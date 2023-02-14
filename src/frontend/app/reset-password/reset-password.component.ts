@@ -27,7 +27,6 @@ export class ResetPasswordComponent implements OnInit {
     resetToken              : string  = '';
     errorMessage            : string  = '';
     loading                 : boolean = true;
-    mismatch                : boolean = false;
     showPassword            : boolean = false;
     showPasswordConfirm     : boolean = false;
     passwordRules           : any     = {
@@ -93,13 +92,6 @@ export class ResetPasswordComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-
-        this.passwordConfirmControl.valueChanges.subscribe((value: any) => {
-            if (value) {
-                this.mismatch = (value !== this.passwordControl.value);
-                console.log(this.passwordRules);
-            }
-        });
     }
 
     checkPasswordValidity() {

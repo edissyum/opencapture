@@ -140,7 +140,7 @@ export class ConfigurationsComponent implements OnInit {
             'value': this.passwordRules,
             'type': 'json',
             'description': ''
-        }
+        };
         this.http.put(environment['url'] + '/ws/config/updateConfiguration/passwordRules', {'args': args},
             {headers: this.authService.headers},
         ).pipe(
