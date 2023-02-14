@@ -93,6 +93,21 @@ def retrieve_configuration_by_id(args):
     return configurations, error
 
 
+def retrieve_configuration_by_label(args):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    error = None
+    configurations = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['configurations'],
+        'where': ['label = %s'],
+        'data': [args['configuration_label']]
+    })
+
+    return configurations, error
+
+
 def retrieve_regex_by_id(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
@@ -138,7 +153,7 @@ def retrieve_docserver_by_id(args):
     return configurations, error
 
 
-def update_configuration(args):
+def update_configuration_by_id(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     database = _vars[0]
@@ -151,6 +166,27 @@ def update_configuration(args):
         },
         'where': ['id = %s'],
         'data': [args['configuration_id']]
+    })
+
+    if configuration[0] is False:
+        error = gettext('UPDATE_CONFIGURATION_ERROR')
+
+    return configuration, error
+
+
+def update_configuration_by_label(args):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    error = None
+
+    configuration = database.update({
+        'table': ['configurations'],
+        'set': {
+            'data': json.dumps(args['data'])
+        },
+        'where': ['label = %s'],
+        'data': [args['configuration_label']]
     })
 
     if configuration[0] is False:

@@ -113,7 +113,7 @@ def retrieve_regex(args):
     return response, 401
 
 
-def update_configuration(args, configuration_id):
+def update_configuration_by_id(args, configuration_id):
     configuration, error = config.retrieve_configuration_by_id({'configuration_id': configuration_id})
 
     if error is None:
@@ -135,7 +135,39 @@ def update_configuration(args, configuration_id):
         if 'description' in args and args['description']:
             data['data']['description'] = args['description']
 
-        config.update_configuration(data)
+        config.update_configuration_by_id(data)
+        return '', 200
+
+    response = {
+        "errors": gettext("UPDATE_CONFIGURATION_ERROR"),
+        "message": error
+    }
+    return response, 401
+
+
+def update_configuration_by_label(args, configuration_label):
+    configuration, error = config.retrieve_configuration_by_label({'configuration_label': configuration_label})
+
+    if error is None:
+        if configuration[0]['label'] == 'jwtExpiration' and int(args['value']) <= 0:
+            response = {
+                "errors": gettext("UPDATE_CONFIGURATION_ERROR"),
+                "message": gettext("JWT_EXPIRATION_COULDNT_BE_ZERO_OR_LESS")
+            }
+            return response, 401
+        data = {
+            'configuration_label': configuration_label,
+            'data': {
+                'value': args['value']
+            }
+        }
+
+        if 'type' in args and args['type']:
+            data['data']['type'] = args['type']
+        if 'description' in args and args['description']:
+            data['data']['description'] = args['description']
+
+        config.update_configuration_by_label(data)
         return '', 200
 
     response = {

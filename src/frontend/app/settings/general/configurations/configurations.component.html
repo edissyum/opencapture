@@ -59,6 +59,39 @@
                     </div>
                 </mat-tab>
                 <mat-tab label="{{ 'CONFIGURATIONS.password_rules' | translate }}">
+                    <div class="text-center">
+                        <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.password_rules" | translate }}</h3>
+                        <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                        <div class="flex flex-row justify-center items-baseline gap-4">
+                            <mat-checkbox [(ngModel)]="this.minLengthEnabled" [checked]="this.passwordRules.minLength > 0"
+                                          (change)="updatePasswordRules()" [disabled]="this.updating">
+                                {{ "CONFIGURATIONS.enable_password_min_length" | translate }}
+                            </mat-checkbox>
+                            <mat-form-field appearance="outline" class="w-1/12">
+                                <mat-label>{{ "CONFIGURATIONS.password_min_length" | translate }}</mat-label>
+                                <input matInput type="number" [(ngModel)]="this.passwordRules.minLength"
+                                       [disabled]="!this.minLengthEnabled || this.updating" (change)="updatePasswordRules()">
+                            </mat-form-field>
+                        </div>
+                        <div class="flex flex-col">
+                            <mat-checkbox [(ngModel)]="this.passwordRules.uppercaseMandatory" (change)="updatePasswordRules()"
+                                          [disabled]="this.updating">
+                                {{ "CONFIGURATIONS.enable_password_uppercase_mandatory" | translate }}
+                            </mat-checkbox>
+                        </div>
+                        <div class="flex flex-col">
+                            <mat-checkbox [(ngModel)]="this.passwordRules.specialCharMandatory" (change)="updatePasswordRules()"
+                                          [disabled]="this.updating">
+                                {{ "CONFIGURATIONS.enable_password_special_char_mandatory" | translate }}
+                            </mat-checkbox>
+                        </div>
+                        <div class="flex flex-col">
+                            <mat-checkbox [(ngModel)]="this.passwordRules.numberMandatory" (change)="updatePasswordRules()"
+                                          [disabled]="this.updating">
+                                {{ "CONFIGURATIONS.enable_password_number_mandatory" | translate }}
+                            </mat-checkbox>
+                        </div>
+                    </div>
                 </mat-tab>
             </mat-tab-group>
             <mat-divider class="border-green-400 mt-4 mb-4 w-3/4 m-auto"></mat-divider>
