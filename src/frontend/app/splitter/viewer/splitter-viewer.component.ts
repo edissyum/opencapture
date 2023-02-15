@@ -70,11 +70,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     loading                     : boolean       = true;
     showZoomPage                : boolean       = false;
     isDataEdited                : boolean       = false;
+    isBatchOnDrag               : boolean       = false;
     batchesLoading              : boolean       = false;
     downloadLoading             : boolean       = false;
     saveInfosLoading            : boolean       = false;
     documentsLoading            : boolean       = false;
     addDocumentLoading          : boolean       = false;
+    isMouseInDocumentList       : boolean       = false;
     batchMetadataOpenState      : boolean       = true;
     documentMetadataOpenState   : boolean       = false;
     batchForm                   : FormGroup     = new FormGroup({});
@@ -806,7 +808,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             })
         ).subscribe();
     }
-
     /* -- End Metadata -- */
 
     /* -- Begin documents control -- */
@@ -899,6 +900,48 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.isDataEdited = true;
             }
         });
+    }
+
+    onBatchDrop(batchIdToMerge: number) {
+        this.isBatchOnDrag = false;
+        if (!this.isMouseInDocumentList) {
+            return;
+        }
+        if (this.isMouseInDocumentList && this.currentBatch.id === batchIdToMerge) {
+            this.notify.error(this.translate.instant('SPLITTER.can_not_merge_same_batch'));
+            return;
+        }
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data: {
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('SPLITTER.confirm_merge_batches'),
+                confirmButton       : this.translate.instant('SPLITTER.merge'),
+                confirmButtonColor  : "green",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.mergeBatches(batchIdToMerge);
+            }
+        });
+    }
+
+    mergeBatches(batchIdToMerge: number) {
+        this.http.post(environment['url'] + '/ws/splitter/merge/' + this.currentBatch.id, {'batches': [batchIdToMerge]}, {headers: this.authService.headers},
+        ).pipe(
+            tap(() => {
+                this.loadSelectedBatch();
+                this.notify.success(this.translate.instant('SPLITTER.merge_success'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
     /* End documents control */
 
