@@ -93,6 +93,13 @@ export class CreateUserComponent implements OnInit {
     ];
     customers       : any[]     = [];
     usersCustomers  : any[]     = [];
+    errorMessage    : string    = '';
+    passwordRules   : any       = {
+        minLength: 0,
+        uppercaseMandatory: false,
+        specialCharMandatory: false,
+        numberMandatory: false
+    };
 
     constructor(
         public router: Router,
@@ -116,6 +123,19 @@ export class CreateUserComponent implements OnInit {
             tap((data: any) => {
                 this.customers = data.customers;
                 this.loadingCustomers = false;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/config/getConfiguration/passwordRules', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if (data.configuration[0] && data.configuration[0].data.value) {
+                    this.passwordRules = data.configuration[0].data.value;
+                }
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -174,18 +194,44 @@ export class CreateUserComponent implements OnInit {
 
     isValidForm() {
         let state = true;
-
         this.userForm.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;
             }
             element.control.markAsTouched();
         });
-
         return state;
     }
 
-    // @ts-ignore
+    checkPasswordValidity(input: any) {
+        if (input.id === 'password_check' || input.id === 'password') {
+            if (input.control.value) {
+                if (!input.control.value.match(/[A-Z]/g) && this.passwordRules.uppercaseMandatory) {
+                    this.errorMessage = this.translate.instant('AUTH.password_uppercase_mandatory');
+                } else if (!input.control.value.match(/[0-9]/g) && this.passwordRules.numberMandatory) {
+                    this.errorMessage = this.translate.instant('AUTH.password_number_mandatory');
+                } else if (!input.control.value.match(/[^A-Za-z0-9]/g) && this.passwordRules.specialCharMandatory) {
+                    this.errorMessage = this.translate.instant('AUTH.password_special_char_mandatory');
+                } else if (input.control.value.length < this.passwordRules.minLength && this.passwordRules.minLength !== 0) {
+                    this.errorMessage = this.translate.instant('AUTH.password_min_length', {"min": this.passwordRules.minLength});
+                } else {
+                    this.errorMessage = '';
+                    this.userForm.forEach(element => {
+                        if (element.id === 'password' && element.control.value !== input.control.value) {
+                            this.errorMessage = this.translate.instant('USER.password_mismatch');
+                        }
+                    });
+                    if (this.errorMessage === '') {
+                        input.control.setErrors(null);
+                    }
+                }
+            } else {
+                this.errorMessage = '';
+                input.control.setErrors(null);
+            }
+        }
+    }
+
     onSubmit() {
         if (this.isValidForm()) {
             const user : any = {};
@@ -193,10 +239,6 @@ export class CreateUserComponent implements OnInit {
                 user[element.id] = element.control.value;
             });
 
-            if (user['password'] !== user['password_check']) {
-                this.notify.handleErrors(this.translate.instant('USER.password_mismatch'));
-                return of(false);
-            }
             user['customers'] = this.usersCustomers;
             this.http.post(environment['url'] + '/ws/users/new', user, {headers: this.authService.headers},
             ).pipe(
@@ -218,10 +260,15 @@ export class CreateUserComponent implements OnInit {
     getErrorMessage(field: any) {
         let error: any;
         this.userForm.forEach(element => {
-            if (element.id === field)
-                if (element.required) {
+            if (element.id === field) {
+                if (this.errorMessage !== '' && field === 'password_check') {
+                    element.control.setErrors({});
+                    error = this.errorMessage;
+                }
+                if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }
+            }
         });
         return error;
     }

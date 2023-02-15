@@ -28,15 +28,15 @@
                         <div>
                             <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.change_image" | translate }}</h3>
                             <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
-                            <div>
-                                <img class="shadow-md hover:shadow-2xl m-auto p-2 transition-all ease-in-out duration-500
+                            <mat-hint class="text-gray-600">
+                                {{ "CONFIGURATIONS.authorized_extensions" | translate }}
+                            </mat-hint>
+                            <div style="min-height: 12rem" class="mt-4">
+                                <img class="shadow-md hover:shadow-xl m-auto p-2 transition-all ease-in-out duration-500
                                  cursor-pointer shadow-gray-900 hover:shadow-gray-900" [src]="this.loginImage" alt="Login image"
                                      (click)="onClick(logo)">
                                 <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
                             </div>
-                            <mat-hint class="text-gray-600 relative top-2">
-                                {{ "CONFIGURATIONS.authorized_extensions" | translate }}
-                            </mat-hint>
                         </div>
                         <div>
                             <h3 class="text-gray-900 m-4">{{ "PRIVILEGES.change_language" | translate }}</h3>
@@ -62,34 +62,36 @@
                     <div class="text-center">
                         <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.password_rules" | translate }}</h3>
                         <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
-                        <div class="flex flex-row justify-center items-baseline gap-4">
-                            <mat-checkbox [(ngModel)]="this.minLengthEnabled" [checked]="this.passwordRules.minLength > 0"
-                                          (change)="updatePasswordRules()" [disabled]="this.updating">
-                                {{ "CONFIGURATIONS.enable_password_min_length" | translate }}
-                            </mat-checkbox>
-                            <mat-form-field appearance="outline" class="w-1/12">
-                                <mat-label>{{ "CONFIGURATIONS.password_min_length" | translate }}</mat-label>
-                                <input matInput type="number" [(ngModel)]="this.passwordRules.minLength"
-                                       [disabled]="!this.minLengthEnabled || this.updating" (change)="updatePasswordRules()">
-                            </mat-form-field>
-                        </div>
-                        <div class="flex flex-col">
-                            <mat-checkbox [(ngModel)]="this.passwordRules.uppercaseMandatory" (change)="updatePasswordRules()"
-                                          [disabled]="this.updating">
-                                {{ "CONFIGURATIONS.enable_password_uppercase_mandatory" | translate }}
-                            </mat-checkbox>
-                        </div>
-                        <div class="flex flex-col">
-                            <mat-checkbox [(ngModel)]="this.passwordRules.specialCharMandatory" (change)="updatePasswordRules()"
-                                          [disabled]="this.updating">
-                                {{ "CONFIGURATIONS.enable_password_special_char_mandatory" | translate }}
-                            </mat-checkbox>
-                        </div>
-                        <div class="flex flex-col">
-                            <mat-checkbox [(ngModel)]="this.passwordRules.numberMandatory" (change)="updatePasswordRules()"
-                                          [disabled]="this.updating">
-                                {{ "CONFIGURATIONS.enable_password_number_mandatory" | translate }}
-                            </mat-checkbox>
+                        <div class="flex flex-col items-center justify-center items-center gap-4">
+                            <div class="text-left">
+                                <mat-slide-toggle [(ngModel)]="this.minLengthEnabled" [checked]="this.passwordRules.minLength > 0"
+                                                  (change)="updatePasswordRules()" [disabled]="this.updating">
+                                    {{ "CONFIGURATIONS.enable_password_min_length" | translate }}
+                                </mat-slide-toggle>
+                                <mat-form-field appearance="outline" class="w-4/12 ml-2">
+                                    <mat-label>{{ "CONFIGURATIONS.password_min_length" | translate }}</mat-label>
+                                    <input matInput type="number" [(ngModel)]="this.passwordRules.minLength"
+                                           [disabled]="!this.minLengthEnabled || this.updating" (change)="updatePasswordRules()">
+                                </mat-form-field>
+                                <div class="mb-4">
+                                    <mat-slide-toggle [(ngModel)]="this.passwordRules.uppercaseMandatory" (change)="updatePasswordRules()"
+                                                      [disabled]="this.updating">
+                                        {{ "CONFIGURATIONS.enable_password_uppercase_mandatory" | translate }}
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="my-4">
+                                    <mat-slide-toggle [(ngModel)]="this.passwordRules.specialCharMandatory" (change)="updatePasswordRules()"
+                                                      [disabled]="this.updating">
+                                        {{ "CONFIGURATIONS.enable_password_special_char_mandatory" | translate }}
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="my-4">
+                                    <mat-slide-toggle [(ngModel)]="this.passwordRules.numberMandatory" (change)="updatePasswordRules()"
+                                                      [disabled]="this.updating">
+                                        {{ "CONFIGURATIONS.enable_password_number_mandatory" | translate }}
+                                    </mat-slide-toggle>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </mat-tab>
