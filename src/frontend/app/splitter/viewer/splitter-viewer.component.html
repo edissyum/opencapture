@@ -15,7 +15,10 @@
             <div cdkDropList>
                 <div (cdkDragStarted)="this.isBatchOnDrag = true" (cdkDragEnded)="onBatchDrop(batch.id)"
                      *ngFor="let batch of this.batches | slice: 0 : 10" cdkDrag>
-                    <div *cdkDragPlaceholder></div>
+                    <div *cdkDragPlaceholder class="mt-4 drop-shadow-xl w-full h-40 text-center text-gray-500 bg-slate-50 grid place-content-center">
+                        <i class="fa-solid fa-object-group fa-3x"></i>
+                        {{ 'SPLITTER.selected_batch_for_merge' | translate }}
+                    </div>
                     <mat-card class="mat-elevation-z4 my-2 cursor-move" [ngClass]="{'border-4 border-green-400': this.currentBatch.id === batch.id}">
                         <a class="image-link" (click)="changeBatch(batch['id'])">
                             <mat-card-header>
