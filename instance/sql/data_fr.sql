@@ -54,10 +54,10 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('userQuota', '
 INSERT INTO "configurations" ("label", "data", "display") VALUES ('passwordRules', '{
     "type": "json",
     "value": {
-        "minLength": 7,
-        "uppercaseMandatory": true,
+        "minLength": 8,
+        "uppercaseMandatory": false,
         "numberMandatory": true,
-        "specialCharMandatory": true
+        "specialCharMandatory": false
     },
     "description": ""
 }', false);
