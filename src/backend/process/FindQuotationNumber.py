@@ -51,7 +51,6 @@ class FindQuotationNumber:
             for _order in re.finditer(r"" + self.regex['email'] + "", _mail.group().lower()):
                 return ''
 
-
         # Delete the quotation keyword
         tmp_invoice_number = re.sub(r"" + self.regex['quotation_number'][:-2] + "", '', quotation_res)
         invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
