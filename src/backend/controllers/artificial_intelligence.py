@@ -443,7 +443,6 @@ def store_one_file(file_path, csv_file):
     else:
         files.jpg_name = docservers.get('TMP_PATH') + Path(files.jpg_name).stem + '-1.jpg'
         filtered_image = files.adjust_image(files.jpg_name)
-        filtered_image = files.adjust_image(files.jpg_name)
     text = ocr.text_builder(filtered_image).lower()
     clean_words = word_cleaning(text)
     text_stem = stemming(clean_words)

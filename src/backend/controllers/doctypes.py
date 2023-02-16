@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-import json
 from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.import_models import doctypes

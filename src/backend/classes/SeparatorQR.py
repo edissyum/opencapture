@@ -248,6 +248,7 @@ class SeparatorQR:
     def generate_separator(docservers, separators):
         """
         Generate separator file
+        :param docservers: docservers lists
         :param separators: separator list to generate
         :return: base64 encoded separator file, thumbnail and total
         """

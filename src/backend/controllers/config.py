@@ -15,7 +15,6 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-import json
 import base64
 import os.path
 import requests
