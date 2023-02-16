@@ -15,22 +15,9 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
 import time
 import logging
-from inspect import getframeinfo, stack
 from logging.handlers import RotatingFileHandler
-
-
-def caller_reader(f):
-    """This wrapper updates the context with the callor infos"""
-
-    def wrapper(self, *args):
-        caller = getframeinfo(stack()[1][0])
-        self._filter.file = os.path.basename(caller.filename)
-        self._filter.line_n = caller.lineno
-        return f(self, *args)
-    return wrapper
 
 
 class Log:
@@ -45,21 +32,17 @@ class Log:
         log_file = RotatingFileHandler(path, mode='a', maxBytes=5 * 1024 * 1024,
                                        backupCount=2, encoding=None, delay=False)
         formatter = logging.Formatter(
-            '[%(name)-17s] [%(file)-26sline %(line_n)-3s] %(asctime)s %(levelname)s %(message)s',
+            '[%(name)-17s] %(asctime)s %(levelname)s %(message)s',
             datefmt='%d-%m-%Y %H:%M:%S')
         log_file.setFormatter(formatter)
         self.logger.addHandler(log_file)
 
         self.logger.filters.clear()
-        self._filter = CallerFilter()
-        self.logger.addFilter(self._filter)
         self.logger.setLevel(logging.DEBUG)
 
-    @caller_reader
     def info(self, msg):
         self.logger.info(msg)
 
-    @caller_reader
     def error(self, msg, send_notif=True):
         if self.smtp and self.smtp.enabled and send_notif:
             self.smtp.send_notification(msg, self.filename)
