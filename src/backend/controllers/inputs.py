@@ -19,7 +19,7 @@ import os
 import stat
 import json
 from flask_babel import gettext
-from flask import request, session
+from flask import request, g as current_context
 from src.backend.import_models import inputs
 from src.backend.import_classes import _Config
 from src.backend.import_controllers import user
@@ -201,9 +201,9 @@ def delete_input(input_id):
 
 def delete_script_and_incron(args):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in session and 'config' in session:
-        docservers = json.loads(session['docservers'])
-        config = json.loads(session['config'])
+    if 'docservers' in current_context and 'config' in current_context:
+        docservers = current_context.docservers
+        config = current_context.config
     else:
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
@@ -237,9 +237,9 @@ def delete_script_and_incron(args):
 
 def create_script_and_incron(args):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in session and 'config' in session:
-        docservers = json.loads(session['docservers'])
-        config = json.loads(session['config'])
+    if 'docservers' in current_context and 'config' in current_context:
+        docservers = current_context.docservers
+        config = current_context.config
     else:
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]

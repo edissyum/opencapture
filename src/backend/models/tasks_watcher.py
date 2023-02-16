@@ -15,16 +15,19 @@
 
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from flask import request
+from flask import request, g as current_context
 from gettext import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
 def get_last_tasks(module):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
 
     tasks = database.select({
         'select': ['*', "to_char(creation_date, 'HH24:MI:SS') as begin_time",
@@ -40,9 +43,12 @@ def get_last_tasks(module):
 
 
 def create_task(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     res = database.insert({
         'table': 'tasks_watcher',
         'columns': {
@@ -56,9 +62,12 @@ def create_task(args):
 
 
 def update_task(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
 
     res = database.update({

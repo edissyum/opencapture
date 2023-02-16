@@ -17,13 +17,12 @@
 
 import os
 import re
-import json
 import urllib.parse
 from flask_cors import CORS
 from flask_babel import Babel
 from werkzeug.wrappers import Request
-from flask import request, session, Flask
 from src.backend.main import create_classes_from_custom_id
+from flask import request, g as current_context, Flask, session
 from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_config_from_custom_id
 from src.backend.import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, mem, inputs, positions_masks, history, doctypes, tasks_watcher, mailcollect, \
@@ -67,8 +66,8 @@ def get_locale():
     if 'SECRET_KEY' not in app.config or not app.config['SECRET_KEY']:
         return 'fr'
     if 'lang' not in session:
-        if 'languages' in session:
-            languages = json.loads(session['languages'])
+        if 'languages' in current_context:
+            languages = current_context.languages
         else:
             custom_id = retrieve_custom_from_url(request)
             _vars = create_classes_from_custom_id(custom_id)

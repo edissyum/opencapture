@@ -15,16 +15,19 @@
 
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from flask import request
+from flask import request, g as current_context
 from gettext import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
 def add_doctype(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     doctypes, error = retrieve_doctypes({
         'where': ['key = %s', 'form_id = %s', 'status <> %s'],
         'data': [args['key'], args['form_id'], 'DEL']
@@ -54,9 +57,12 @@ def add_doctype(args):
 
 
 def retrieve_doctypes(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     doctypes = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -71,9 +77,12 @@ def retrieve_doctypes(args):
 
 
 def update(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     res = database.update({
         'table': ['doctypes'],
@@ -94,9 +103,12 @@ def update(args):
 
 
 def set_default(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     res = database.update({
         'table': ['doctypes'],

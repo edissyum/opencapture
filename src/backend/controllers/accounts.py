@@ -22,9 +22,9 @@ import subprocess
 from flask_babel import gettext
 from src.backend.import_classes import _Files
 from src.backend.import_models import accounts
-from flask import current_app, request, session
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from flask import current_app, request, g as current_context
 
 
 def retrieve_suppliers(args):
@@ -116,17 +116,21 @@ def delete_invoice_page_by_supplier_id(supplier_id, field_id, form_id):
 
 
 def update_supplier(supplier_id, data):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
-    _spreadsheet = _vars[7]
+    if 'database' in current_context and 'spreadsheet' in current_context:
+        database = current_context.database
+        spreadsheet = current_context.spreadsheet
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+        spreadsheet = _vars[7]
     _, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
     if error is None:
         _, error = accounts.update_supplier({'set': data, 'supplier_id': supplier_id})
 
         if error is None:
-            _spreadsheet.update_supplier_ods_sheet(database)
+            spreadsheet.update_supplier_ods_sheet(database)
             return '', 200
         else:
             response = {
@@ -289,10 +293,14 @@ def create_address(data):
 
 
 def create_supplier(data):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
-    _spreadsheet = _vars[7]
+    if 'database' in current_context and 'spreadsheet' in current_context:
+        database = current_context.database
+        spreadsheet = current_context.spreadsheet
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+        spreadsheet = _vars[7]
     _columns = {
         'name': data['name'],
         'siret': data['siret'] if 'siret' in data else None,
@@ -312,7 +320,7 @@ def create_supplier(data):
         res, error = accounts.create_supplier({'columns': _columns})
 
         if error is None:
-            _spreadsheet.update_supplier_ods_sheet(database)
+            spreadsheet.update_supplier_ods_sheet(database)
             response = {
                 "id": res
             }
@@ -479,8 +487,8 @@ def delete_supplier(supplier_id):
 
 def import_suppliers(file):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in session:
-        docservers = json.loads(session['docservers'])
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
     else:
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]

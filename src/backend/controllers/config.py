@@ -21,15 +21,15 @@ import os.path
 import requests
 import subprocess
 from flask_babel import gettext
-from flask import request, session
+from flask import request, g as current_context
 from src.backend.import_models import config
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url, get_custom_path
 
 
 def change_locale_in_config(lang):
-    if 'languages' in session:
-        languages = json.loads(session['languages'])
+    if 'languages' in current_context:
+        languages = current_context.languages
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)

@@ -18,26 +18,25 @@
 
 
 import jwt
-import json
+import uuid
+import ldap3
 import psycopg2
 import datetime
 import functools
-import uuid
-import ldap3
 from . import privileges
-from flask_babel import gettext
-from src.backend.import_models import auth, user, roles
-from flask import request, session, jsonify, current_app
-from src.backend.functions import retrieve_custom_from_url
-from src.backend.main import create_classes_from_custom_id
 from ldap3 import Server, ALL
+from flask_babel import gettext
 from ldap3.core.exceptions import LDAPException
 from werkzeug.security import generate_password_hash
+from src.backend.import_models import auth, user, roles
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
+from flask import request, g as current_context, jsonify, current_app, session
 
 
 def check_connection():
-    if 'config' in session:
-        config = json.loads(session['config'])
+    if 'config' in current_context:
+        config = current_context.config
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
@@ -59,9 +58,12 @@ def check_connection():
 
 
 def encode_auth_token(user_id):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    configurations = _vars[10]
+    if 'configurations' in current_context:
+        configurations = current_context.configurations
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[10]
     minutes_before_exp = int(configurations['jwtExpiration'])
 
     try:
@@ -107,6 +109,27 @@ def decode_reset_token(token):
 def logout():
     for key in list(session.keys()):
         session.pop(key)
+
+    if 'ocr' not in current_context:
+        current_context.pop('ocr')
+    if 'log' not in current_context:
+        current_context.pop('log')
+    if 'smtp' not in current_context:
+        current_context.pop('smtp')
+    if 'regex' not in current_context:
+        current_context.pop('regex')
+    if 'files' not in current_context:
+        current_context.pop('files')
+    if 'database' not in current_context:
+        current_context.pop('database')
+    if 'languages' not in current_context:
+        current_context.pop('languages')
+    if 'docservers' not in current_context:
+        current_context.pop('docservers')
+    if 'spreadsheet' not in current_context:
+        current_context.pop('spreadsheet')
+    if 'configurations' not in current_context:
+        current_context.pop('configurations')
 
 
 def login(username, password, lang, method='default'):
@@ -166,9 +189,12 @@ def login(username, password, lang, method='default'):
 
 
 def login_with_token(token, lang):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    configurations = _vars[10]
+    if 'configurations' in current_context:
+        configurations = current_context.configurations
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[10]
     minutes_before_exp = configurations['jwtExpiration']
     session['lang'] = lang
     error = None
