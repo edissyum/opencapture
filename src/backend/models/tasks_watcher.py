@@ -15,8 +15,8 @@
 
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from flask import request, g as current_context
 from gettext import gettext
+from flask import request, g as current_context
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
@@ -30,11 +30,18 @@ def get_last_tasks(module):
         database = _vars[0]
 
     tasks = database.select({
-        'select': ['*', "to_char(creation_date, 'HH24:MI:SS') as begin_time",
-                   "to_char(end_date, 'HH24:MI:SS') as end_time",
-                   '(Extract(epoch FROM (CURRENT_TIMESTAMP - creation_date))/60)::INTEGER as age'],
+        'select': [
+            '*',
+            "to_char(creation_date, 'HH24:MI:SS') as begin_time",
+            "to_char(end_date, 'HH24:MI:SS') as end_time",
+            '(EXTRACT(epoch FROM (CURRENT_TIMESTAMP - creation_date))/60)::INTEGER as age'
+        ],
         'table': ['tasks_watcher'],
-        'where': ['module = %s', '(status IS NULL OR status = %s OR status = %s)', "creation_date > NOW() - INTERVAL %s"],
+        'where': [
+            'module = %s',
+            '(status IS NULL OR status = %s OR status = %s)',
+            "creation_date > NOW() - INTERVAL %s"
+        ],
         'data': [module, 'done', 'error', '1 hour'],
         'order_by': ["id desc"],
     })
@@ -49,6 +56,7 @@ def create_task(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
+
     res = database.insert({
         'table': 'tasks_watcher',
         'columns': {
@@ -68,8 +76,8 @@ def update_task(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
-    error = None
 
+    error = None
     res = database.update({
         'table': ['tasks_watcher'],
         'set': args['set'],
@@ -79,5 +87,4 @@ def update_task(args):
 
     if res[0] is False:
         error = gettext('UPDATE_TASK_ERROR')
-
     return res, error
