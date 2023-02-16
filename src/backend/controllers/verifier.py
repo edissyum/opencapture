@@ -27,8 +27,8 @@ from src.backend import verifier_exports
 from src.backend.import_classes import _Files
 from src.backend.import_controllers import user
 from src.backend.import_models import verifier, accounts
-from flask import current_app, Response, request, session
 from src.backend.main import launch, create_classes_from_custom_id
+from flask import current_app, Response, request, g as current_context
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
@@ -235,8 +235,8 @@ def delete_invoice_data_by_invoice_id(invoice_id, field_id):
 
 
 def delete_documents_by_invoice_id(invoice_id):
-    if 'docservers' in session:
-        docservers = json.loads(session['docservers'])
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
@@ -359,9 +359,9 @@ def export_mem(invoice_id, data):
 def export_xml(invoice_id, data):
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if not error:
-        if 'regex' in session and 'database' in session:
-            regex = json.loads(session['regex'])
-            database = json.loads(session['database'])
+        if 'regex' in current_context and 'database' in current_context:
+            regex = current_context.regex
+            database = current_context.database
         else:
             custom_id = retrieve_custom_from_url(request)
             _vars = create_classes_from_custom_id(custom_id)
@@ -372,47 +372,50 @@ def export_xml(invoice_id, data):
 
 def export_pdf(invoice_id, data):
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    log = _vars[5]
     if not error:
-        if 'regex' in session:
-            regex = json.loads(session['regex'])
+        if 'configurations' in current_context and 'log' in current_context and 'regex' in current_context:
+            log = current_context.log
+            regex = current_context.regex
+            configurations = current_context.configurations
         else:
+            custom_id = retrieve_custom_from_url(request)
+            _vars = create_classes_from_custom_id(custom_id)
+            log = _vars[5]
             regex = _vars[2]
-
-        if 'configurations' in session:
-            configurations = json.loads(session['configurations'])
-        else:
             configurations = _vars[10]
         return verifier_exports.export_pdf(data['data'], log, regex, invoice_info, configurations['locale'],
                                            data['compress_type'], data['ocrise'])
 
 
 def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _files = _vars[3]
-    _ocr = _vars[4]
-    docservers = _vars[9]
+    if 'files' in current_context and 'ocr' in current_context and 'docservers' in current_context:
+        files = current_context.files
+        ocr = current_context.ocr
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        files = _vars[3]
+        ocr = _vars[4]
+        docservers = _vars[9]
 
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + file_name
 
     if positions_masks:
         path = docservers['VERIFIER_POSITIONS_MASKS'] + '/' + file_name
 
-    text = _files.ocr_on_fly(path, selection, _ocr, thumb_size, lang=lang)
+    text = files.ocr_on_fly(path, selection, ocr, thumb_size, lang=lang)
     if text:
         return text
     else:
-        _files.improve_image_detection(path)
-        text = _files.ocr_on_fly(path, selection, _ocr, thumb_size, lang=lang)
+        files.improve_image_detection(path)
+        text = files.ocr_on_fly(path, selection, ocr, thumb_size, lang=lang)
         return text
 
 
 def get_file_content(file_type, filename, mime_type, compress=False):
-    if 'docservers' in session:
-        docservers = json.loads(session['docservers'])
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
@@ -449,8 +452,8 @@ def get_file_content(file_type, filename, mime_type, compress=False):
 
 
 def get_token_insee():
-    if 'config' in session:
-        config = json.loads(session['config'])
+    if 'config' in current_context:
+        config = current_context.config
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
@@ -473,8 +476,8 @@ def get_token_insee():
 
 
 def verify_siren(token, siren):
-    if 'config' in session:
-        config = json.loads(session['config'])
+    if 'config' in current_context:
+        config = current_context.config
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
@@ -494,16 +497,20 @@ def verify_siren(token, siren):
 
 
 def verify_siret(token, siret):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    config = _vars[1]
-    _log = _vars[5]
+    if 'config' in current_context and 'log' in current_context:
+        log = current_context.log
+        config = current_context.config
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        config = _vars[1]
+        log = _vars[5]
 
     try:
         res = requests.get(config['API']['siret-url'] + siret,
                            headers={"Authorization": f"Bearer {token}", "Accept": "application/json"})
     except (requests.exceptions.SSLError, requests.exceptions.ConnectionError) as _e:
-        _log.error(gettext('API_INSEE_ERROR_CONNEXION') + ' : ' + str(_e))
+        log.error(gettext('API_INSEE_ERROR_CONNEXION') + ' : ' + str(_e))
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     _return = json.loads(res.text)
@@ -514,10 +521,14 @@ def verify_siret(token, siret):
 
 
 def verify_vat_number(vat_number):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    config = _vars[1]
-    _log = _vars[5]
+    if 'config' in current_context and 'log' in current_context:
+        log = current_context.log
+        config = current_context.config
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        config = _vars[1]
+        log = _vars[5]
     url = config['API']['tva-url']
     country_code = vat_number[:2]
     vat_number = vat_number[2:]
@@ -533,7 +544,7 @@ def verify_vat_number(vat_number):
         return text, 200
     except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError,
             zeep.exceptions.XMLSyntaxError) as _e:
-        _log.error(gettext('VAT_API_ERROR') + ' : ' + str(_e))
+        log.error(gettext('VAT_API_ERROR') + ' : ' + str(_e))
         return gettext('VAT_API_ERROR'), 201
 
 

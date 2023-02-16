@@ -16,9 +16,8 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-import json
 from flask_babel import gettext
-from flask import request, session
+from flask import request, g as current_context
 from src.backend.import_models import doctypes
 from src.backend.import_classes import _SeparatorQR
 from src.backend.functions import retrieve_custom_from_url
@@ -114,8 +113,8 @@ def update(args):
 
 
 def generate_separator(args):
-    if 'docservers' in session and 'configurations' in session:
-        docservers = json.loads(session['docservers'])
+    if 'docservers' in current_context and 'configurations' in current_context:
+        docservers = current_context.docservers
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)

@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from flask import request
+from flask import request, g as current_context
 from flask_babel import gettext
 
 from src.backend.functions import retrieve_custom_from_url
@@ -24,11 +24,14 @@ from src.backend.main import create_classes_from_custom_id
 
 
 def retrieve_processes(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    if not _vars[0]:
-        return {}, _vars[1]
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        if not _vars[0]:
+            return {}, _vars[1]
+        database = _vars[0]
     error = None
     processes = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -43,11 +46,14 @@ def retrieve_processes(args):
 
 
 def get_process_by_name(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    if not _vars[0]:
-        return {}, _vars[1]
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        if not _vars[0]:
+            return {}, _vars[1]
+        database = _vars[0]
     error = None
     process = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -60,11 +66,14 @@ def get_process_by_name(args):
 
 
 def update_process(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    if not _vars[0]:
-        return {}, _vars[1]
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        if not _vars[0]:
+            return {}, _vars[1]
+        database = _vars[0]
     error = None
     process = database.update({
         'table': ['mailcollect'],
@@ -78,11 +87,14 @@ def update_process(args):
 
 
 def create_process(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    if not _vars[0]:
-        return {}, _vars[1]
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        if not _vars[0]:
+            return {}, _vars[1]
+        database = _vars[0]
     error = None
     args = {
         'table': 'mailcollect',

@@ -78,6 +78,7 @@ def split(splitter, pages, ocr, regex_content):
     Customized split method
     :param splitter: Splitter object
     :param pages: pages list
+    :param ocr: ocr instance
     :param regex_content: references regex content
     :return: N/A
     """

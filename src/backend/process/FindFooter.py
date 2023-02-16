@@ -239,7 +239,7 @@ class FindFooter:
         })[0]
 
         if position and position[name + '_position'] not in [False, 'NULL', '', None]:
-            self.nb_page = position[name + '_page']
+            self.nb_pages = position[name + '_page']
             data = {'position': position[name + '_position'], 'regex': None, 'target': 'full', 'page': position[name + '_page']}
             res = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
             if res[0]:

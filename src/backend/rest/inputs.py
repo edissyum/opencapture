@@ -15,8 +15,8 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import Blueprint, request, make_response, jsonify
 from src.backend.import_controllers import auth, inputs
+from flask import Blueprint, request, make_response, jsonify
 
 bp = Blueprint('inputs', __name__, url_prefix='/ws/')
 

@@ -59,7 +59,7 @@ class SMTP:
                     self.conn.ehlo()
             except (smtplib.SMTPException, OSError) as smtp_error:
                 error = True
-                print('SMTP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(smtp_error))
+                print('SMTP Host ' + str(self.host) + ' on port ' + str(self.port) + ' is unreachable : ' + str(smtp_error))
         else:
             try:
                 self.conn = smtplib.SMTP(self.host, self.port, timeout=10)
@@ -69,13 +69,13 @@ class SMTP:
                     self.conn.ehlo()
             except (smtplib.SMTPException, OSError) as smtp_error:
                 error = True
-                print('SMTP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(smtp_error))
+                print('SMTP Host ' + str(self.host) + ' on port ' + str(self.port) + ' is unreachable : ' + str(smtp_error))
         try:
             if not error and self.auth:
                 self.conn.login(self.login, self.pwd)
         except (smtplib.SMTPException, OSError) as smtp_error:
             error = True
-            print('Error while trying to login to ' + self.host + ' using ' + self.login + '/' + self.pwd + ' as login/password : ' + str(smtp_error))
+            print('Error while trying to login to ' + str(self.host) + ' using ' + str(self.login) + '/' + str(self.pwd) + ' as login/password : ' + str(smtp_error))
         self.is_up = not error
 
     def send_notification(self, error, file_name):

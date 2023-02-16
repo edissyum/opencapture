@@ -33,7 +33,6 @@ import { finalize } from "rxjs/operators";
 import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import { HistoryService } from "../../../../../services/history.service";
 import { FileValidators } from "ngx-file-drag-drop";
-import {LocalStorageService} from "../../../../../services/local-storage.service";
 
 @Component({
   selector: 'app-list-ai',

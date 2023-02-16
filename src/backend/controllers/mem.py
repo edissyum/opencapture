@@ -15,149 +15,193 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import request
+from flask import request, g as current_context
 from src.backend.import_classes import _MEMWebServices
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
 
 
 def test_connection(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
+    if 'log' in current_context:
+        log = current_context.log
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
     _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[5]
+        log
     )
     return _ws.status
 
 
 def get_users(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
+    if 'log' in current_context:
+        log = current_context.log
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
     _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[5]
+        log
     )
     users = _ws.retrieve_users()
     return users
 
 
 def get_doctypes(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
+    if 'log' in current_context:
+        log = current_context.log
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
     _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[5]
+        log
     )
     doctypes = _ws.retrieve_doctypes()
     return doctypes
 
 
 def get_entities(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
+    if 'log' in current_context:
+        log = current_context.log
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
     _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[5]
+        log
     )
     entities = _ws.retrieve_entities()
     return entities
 
 
 def get_custom_fields(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
+    if 'log' in current_context:
+        log = current_context.log
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
     _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[5]
+        log
     )
     custom_fields = _ws.retrieve_custom_fields()
     return custom_fields
 
 
 def get_contact_custom_fields(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
+    if 'log' in current_context:
+        log = current_context.log
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
     _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[5]
+        log
     )
     custom_fields = _ws.retrieve_contact_custom_fields()
     return custom_fields
 
 
 def get_priorities(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
+    if 'log' in current_context:
+        log = current_context.log
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
     _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[5]
+        log
     )
     entities = _ws.retrieve_priorities()
     return entities
 
 
 def get_statuses(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
+    if 'log' in current_context:
+        log = current_context.log
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
     _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[5]
+        log
     )
     statuses = _ws.retrieve_statuses()
     return statuses
 
 
 def retrieve_contact(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
+    if 'log' in current_context:
+        log = current_context.log
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
     _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[5]
+        log
     )
     contact = _ws.retrieve_contact(args)
     return contact
 
 
 def get_document_with_contact(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
+    if 'log' in current_context:
+        log = current_context.log
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
     _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[5]
+        log
     )
     contact = _ws.get_document_with_contact(args)
     return contact
 
 
 def get_indexing_models(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
+    if 'log' in current_context:
+        log = current_context.log
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
     _ws = _MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[5]
+        log
     )
     indexing_models = _ws.retrieve_indexing_models()
     return indexing_models

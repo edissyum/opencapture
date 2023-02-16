@@ -136,9 +136,7 @@ export class ConfigurationsComponent implements OnInit {
 
     updatePasswordRules() {
         this.updating = true;
-        if (!this.minLengthEnabled) {
-            this.passwordRules.minLength = 0;
-        }
+        this.passwordRules.minLength = this.minLengthEnabled ? 8 : 0;
         const args = {
             'value': this.passwordRules,
             'type': 'json',

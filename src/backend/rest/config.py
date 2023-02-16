@@ -15,11 +15,10 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-import json
 from src.backend.import_controllers import auth, config
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from flask import Blueprint, jsonify, make_response, request, session
+from flask import Blueprint, jsonify, make_response, request, g as current_context
 
 bp = Blueprint('config', __name__,  url_prefix='/ws/')
 
@@ -27,9 +26,13 @@ bp = Blueprint('config', __name__,  url_prefix='/ws/')
 @bp.route('config/readConfig', methods=['GET'])
 @auth.token_required
 def read_config():
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    return make_response(jsonify({'config': _vars[1]})), 200
+    if 'config' in current_context:
+        config = current_context.config
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        config = _vars[1]
+    return make_response(jsonify({'config': config})), 200
 
 
 @bp.route('config/getConfigurations', methods=['GET'])
@@ -83,8 +86,8 @@ def get_docservers():
 @bp.route('config/getRegex', methods=['GET'])
 @auth.token_required
 def get_regex():
-    if 'configurations' in session:
-        configurations = json.loads(session['configurations'])
+    if 'configurations' in current_context:
+        configurations = current_context.configurations
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)

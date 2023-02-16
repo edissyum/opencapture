@@ -17,16 +17,19 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 
-from flask import request
+from flask import request, g as current_context
 from gettext import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
 def get_forms(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     forms = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -42,9 +45,12 @@ def get_forms(args):
 
 
 def get_form_by_id(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     form = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -62,9 +68,12 @@ def get_form_by_id(args):
 
 
 def get_form_settings_by_module(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     form = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -82,9 +91,12 @@ def get_form_settings_by_module(args):
 
 
 def get_default_form_by_module(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     form = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -102,9 +114,12 @@ def get_default_form_by_module(args):
 
 
 def update_form(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
 
     res = database.update({
@@ -121,9 +136,12 @@ def update_form(args):
 
 
 def update_form_fields(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
 
     res = database.update({
@@ -140,9 +158,12 @@ def update_form_fields(args):
 
 
 def add_form_fields(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     args = {
         'table': 'form_models_field',
         'columns': {
@@ -154,9 +175,12 @@ def add_form_fields(args):
 
 
 def add_form(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     forms_exists, error = get_forms({
         'where': ['label = %s', 'status <> %s', 'module = %s'],
         'data': [args['label'], 'DEL', args['module']]
@@ -193,9 +217,12 @@ def add_form(args):
 
 
 def get_fields(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     form_fields = database.select({
         'select': ['*'] if 'select' not in args else args['select'],

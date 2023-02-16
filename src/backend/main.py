@@ -16,8 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import sys
-import json
-from flask import session
+from flask import g as current_context
 from .functions import get_custom_array, retrieve_config_from_custom_id
 from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _Spreadsheet, _SMTP
 
@@ -30,8 +29,8 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
     config = _Config(config_file)
 
     try:
-        if 'config' not in session:
-            session['config'] = json.dumps(config.cfg)
+        if 'config' not in current_context:
+            current_context.config = config.cfg
     except RuntimeError:
         pass
 
@@ -115,22 +114,34 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
             'date_format': _l['date_format']
         })
 
-    try:
-        if 'languages' not in session:
-            session['languages'] = json.dumps(languages)
-        if 'configurations' not in session:
-            session['configurations'] = json.dumps(configurations)
-        if 'regex' not in session:
-            session['regex'] = json.dumps(regex)
-        if 'docservers' not in session:
-            session['docservers'] = json.dumps(docservers)
-    except RuntimeError:
-        pass
-
     spreadsheet = _Spreadsheet(log, docservers, config)
     filename = docservers['TMP_PATH']
     files = _Files(filename, log, docservers, configurations, regex, languages, database)
     ocr = _PyTesseract(configurations['locale'], log, config, docservers)
+
+    try:
+        if 'ocr' not in current_context:
+            current_context.ocr = ocr
+        if 'log' not in current_context:
+            current_context.log = log
+        if 'smtp' not in current_context:
+            current_context.smtp = smtp
+        if 'regex' not in current_context:
+            current_context.regex = regex
+        if 'files' not in current_context:
+            current_context.files = files
+        if 'database' not in current_context:
+            current_context.database = database
+        if 'languages' not in current_context:
+            current_context.languages = languages
+        if 'docservers' not in current_context:
+            current_context.docservers = docservers
+        if 'spreadsheet' not in current_context:
+            current_context.spreadsheet = spreadsheet
+        if 'configurations' not in current_context:
+            current_context.configurations = configurations
+    except RuntimeError:
+        pass
 
     return database, config.cfg, regex, files, ocr, log, config_file, spreadsheet, smtp, docservers, configurations, languages
 

@@ -28,24 +28,9 @@ import { CustomSnackbarComponent, NotificationService } from './notifications/no
 import { DragDropModule } from "@angular/cdk/drag-drop";
 
 @NgModule({
-    imports: [
-        AppMaterialModule,
-        CommonModule,
-        TranslateModule,
-        DragDropModule
-    ],
-    declarations: [
-        CustomSnackbarComponent,
-        ConfirmDialogComponent,
-        TasksWatcherComponent,
-    ],
-    exports: [
-        TasksWatcherComponent
-    ],
-    entryComponents: [
-        CustomSnackbarComponent,
-        ConfirmDialogComponent,
-    ],
+    imports: [AppMaterialModule, CommonModule, TranslateModule, DragDropModule],
+    declarations: [CustomSnackbarComponent, ConfirmDialogComponent, TasksWatcherComponent],
+    exports: [TasksWatcherComponent],
     providers: [NotificationService, LastUrlService, HintServiceComponent, ErrorServiceComponent]
 })
 export class ServicesModule { }

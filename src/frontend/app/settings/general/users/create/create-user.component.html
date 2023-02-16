@@ -25,8 +25,19 @@
                 <ng-container *ngFor="let field of userForm">
                     <mat-form-field class="block" *ngIf="field.type !== 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                        <input matInput [formControl]="field.control" [type]="field.type" [required]="field.required"
+                               placeholder="{{ field.label | translate }}" (keyup)="checkPasswordValidity(field)" >
+                        <mat-error class="text-red-400" *ngIf="field.control.invalid || (field.id === 'password_check' && this.errorMessage !== '')">
+                            {{ getErrorMessage(field.id) }}
+                        </mat-error>
+                        <mat-icon *ngIf="field.id === 'password'" matSuffix (click)="field.type === 'password' ? field.type = 'text' : field.type = 'password'"
+                                  class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                            <i class="fa fa-1x" [class.fa-eye-slash]="field.type === 'password'" [class.fa-eye]="field.type !== 'password'"></i>
+                        </mat-icon>
+                        <mat-icon *ngIf="field.id === 'password_check'" matSuffix (click)="field.type === 'password' ? field.type = 'text' : field.type = 'password'"
+                                  class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                            <i class="fa fa-1x" [class.fa-eye-slash]="field.type === 'password'" [class.fa-eye]="field.type !== 'password'"></i>
+                        </mat-icon>
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
@@ -37,7 +48,11 @@
                     </mat-form-field>
                 </ng-container>
                 <div class="button col-span-3">
-                    <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300" type="submit" mat-button>
+                    <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent
+                                   hover:text-gray-900 transition duration-300" type="submit" mat-button
+                            [disabled]="this.errorMessage !== ''"
+                            [class.bg-gray-400]="this.errorMessage !== ''"
+                            [class.bg-green-400]="this.errorMessage === ''">
                         {{ 'USER.create_user' | translate }}
                     </button>
                 </div>

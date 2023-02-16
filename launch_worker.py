@@ -19,6 +19,7 @@ import sys
 import argparse
 from src.backend import app
 from flask_babel import gettext
+from flask import g as current_context
 from src.backend.functions import retrieve_config_from_custom_id
 from src.backend.main import launch, create_classes_from_custom_id
 
@@ -36,8 +37,11 @@ if not retrieve_config_from_custom_id(args['custom_id']):
 
 with app.app_context():
     launch(args)
-    _vars = create_classes_from_custom_id(args['custom_id'])
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        _vars = create_classes_from_custom_id(args['custom_id'])
+        database = _vars[0]
     args = {
         'table': 'history',
         'columns': {

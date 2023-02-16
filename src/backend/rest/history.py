@@ -15,11 +15,10 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import json
 from src.backend.import_controllers import auth, history
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from flask import Blueprint, request, make_response, jsonify, session
+from flask import Blueprint, request, make_response, jsonify, g as current_context
 
 bp = Blueprint('history', __name__, url_prefix='/ws/')
 
@@ -35,8 +34,8 @@ def add_history():
 @bp.route('history/list', methods=['GET'])
 @auth.token_required
 def get_history():
-    if 'configurations' in session:
-        configurations = json.loads(session['configurations'])
+    if 'configurations' in current_context:
+        configurations = current_context.configurations
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)

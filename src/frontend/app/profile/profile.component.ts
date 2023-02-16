@@ -166,7 +166,6 @@ export class UserProfileComponent implements OnInit {
 
         this.http.get(environment['url'] + '/ws/config/getConfiguration/passwordRules', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                console.log(data);
                 if (data.configuration[0] && data.configuration[0].data.value) {
                     this.passwordRules = data.configuration[0].data.value;
                 }
