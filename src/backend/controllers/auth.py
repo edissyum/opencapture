@@ -316,7 +316,7 @@ def get_ldap_configurations():
         return response, 401
 
 
-def update_login_method(login_method_name , server_data):
+def update_login_method(login_method_name, server_data):
     _, error = auth.update_login_method(login_method_name, server_data)
     if error is None:
         return '', 200
@@ -407,13 +407,13 @@ def check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, 
                     user_dn = connection.response[0]['dn']
                     if status and user_dn:
                         connection_status = check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, password)
-                        if not connection_status :
+                        if not connection_status:
                             return False
                         else:
                             return True
         elif type_ad == 'adLDAP':
             server = Server(ldap_server, get_info=ALL)
-            if prefix or suffix :
+            if prefix or suffix:
                 username_ldap_admin = f'{prefix}{username_ldap_admin}{suffix}'
             with ldap3.Connection(server, user=username_ldap_admin, password=password_ldap_admin, auto_bind=True) as connection:
                 if not connection.bind():
@@ -501,7 +501,7 @@ def check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, user_pa
         with ldap3.Connection(server, authentication="SIMPLE", user=user_dn, password=user_password, auto_bind=True) as connection:
             if connection.bind() and connection.result["description"] == 'success':
                 return True
-            else :
+            else:
                 return False
 
     except LDAPException:
@@ -591,7 +591,7 @@ def ldap_users_synchro(ldap_synchronization_data):
 
 def get_ldap_users_data(ldap_users_dict, user_id_attribut, firstname_attribut, lastname_attribut):
     try:
-        if ldap_users_dict and ldap_users_dict['status_search'] == True:
+        if ldap_users_dict and ldap_users_dict['status_search'] is True:
             list_users_ldap = ldap_users_dict['ldap_users']
             ldap_users_data = []
             for i in range(len(list_users_ldap)):
