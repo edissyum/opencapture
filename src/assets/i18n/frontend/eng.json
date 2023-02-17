@@ -602,6 +602,14 @@
 		"not_required": "Field not required",
 		"required": "Field required"
 	},
+	"MONITORING": {
+		"creation_date": "Creation date",
+		"done": "Process done",
+		"end_date": "End date",
+		"error": "Process error",
+		"last_message": "last message",
+		"running": "Process running"
+	},
 	"OUTPUT": {
 		"add": "Add output",
 		"auth": "Authentification",

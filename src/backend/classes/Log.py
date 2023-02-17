@@ -47,7 +47,6 @@ class Log:
         self.logger.info(msg)
 
     def error(self, msg, send_notif=True):
-        self.current_step += 1
         if self.smtp and self.smtp.enabled and send_notif:
             self.smtp.send_notification(msg, self.filename)
 
@@ -56,6 +55,7 @@ class Log:
                 self.update_task_monitor(msg, 'error')
             if self.task_id_watcher:
                 self.update_task_watcher(msg)
+        self.current_step += 1
         self.logger.error(msg)
 
     def update_task_monitor(self, msg, status='running'):
@@ -64,6 +64,7 @@ class Log:
             "message": msg,
             "date": time.strftime("%Y-%m-%d %H:%M:%S")
         }
+        print(self.current_step)
         self.database.update({
             'table': ['monitoring'],
             'set': {

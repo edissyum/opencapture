@@ -388,7 +388,7 @@
 		"output_type": "Type de chaîne sortante",
 		"path": "Chemin",
 		"role": "Rôle",
-		"status": "Statut",
+		"status": "Status",
 		"type": "Type de donnée",
 		"value": "Valeur"
 	},
@@ -601,6 +601,14 @@
 	"MANDATORY": {
 		"not_required": "Champ non obligatoire",
 		"required": "Champ obligatoire"
+	},
+	"MONITORING": {
+		"creation_date": "Date de début",
+		"done": "Processus terminé",
+		"end_date": "Date de fin",
+		"error": "Processus en erreur",
+		"last_message": "Dernier message",
+		"running": "Processus en cours"
 	},
 	"OUTPUT": {
 		"add": "Ajouter une chaîne sortante",
