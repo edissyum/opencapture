@@ -42,34 +42,33 @@ class Log:
 
     def info(self, msg):
         if self.database and self.task_id_monitor:
-            self.update_task_monitor('info', msg)
+            self.update_task_monitor(msg)
         self.current_step += 1
         self.logger.info(msg)
 
     def error(self, msg, send_notif=True):
-        self.current_step += 1
         if self.smtp and self.smtp.enabled and send_notif:
             self.smtp.send_notification(msg, self.filename)
 
         if self.database:
             if self.task_id_monitor:
-                self.update_task_monitor('error', msg)
+                self.update_task_monitor(msg, 'error')
             if self.task_id_watcher:
                 self.update_task_watcher(msg)
+        self.current_step += 1
         self.logger.error(msg)
 
-    def update_task_monitor(self, status, msg):
-        current_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    def update_task_monitor(self, msg, status='running'):
         new_step = {
             "status": status,
             "message": msg,
-            "date": current_time
+            "date": time.strftime("%Y-%m-%d %H:%M:%S")
         }
+
         self.database.update({
             'table': ['monitoring'],
             'set': {
-                "status": 'running',
-                'modification_date': current_time,
+                "error": True if status == 'error' else False,
                 'steps': "jsonb_set(steps, '{" + str(self.current_step) + "}', '" + json.dumps(new_step) + "')",
             },
             'where': ['id = %s'],

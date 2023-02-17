@@ -45,7 +45,7 @@ def launch(args):
         sys.exit('Custom config file couldn\'t be found')
 
     database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'], True)
-    task_id = database.insert({
+    task_id_watcher = database.insert({
         'table': 'tasks_watcher',
         'columns': {
             'title': os.path.basename(args['file']),
@@ -54,7 +54,18 @@ def launch(args):
         }
     })
 
-    log.task_id = task_id
+    task_id_monitor = database.insert({
+        'table': 'monitoring',
+        'columns': {
+            'filename': os.path.basename(args['file']),
+            'source': 'cli' if 'from_cli' in args and args['from_cli'] else 'interface',
+            'module': 'splitter',
+        }
+    })
+
+
+    log.task_id_watcher = task_id_watcher
+    log.task_id_monitor = task_id_monitor
     log.database = database
 
     batch_folder = files.get_random_string(15)
@@ -149,6 +160,7 @@ def launch(args):
         log.error(_e)
 
     if not process_err:
+        database.connect()
         database.update({
             'table': ['tasks_watcher'],
             'set': {
@@ -158,6 +170,17 @@ def launch(args):
             'where': ['id = %s'],
             'data': [task_id]
         })
+        database.update({
+            'table': ['monitoring'],
+            'set': {
+                'status': 'done',
+                'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
+            },
+            'where': ['id = %s'],
+            'data': [task_id_monitor]
+        })
+
     database.conn.close()
     end = time.time()
+    log.task_id_monitor = None
     log.info('Process end after ' + timer(start, end) + '')

@@ -21,7 +21,7 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <mat-table matSort [dataSource]="users" (matSortChange)="sortData($event)" class="w-full">
+        <mat-table matSort [dataSource]="users" (matSortChange)="sortData($event)" class="w-full overflow-x-hidden" style="max-height: calc(100% - 70px)">
             <ng-container matColumnDef="id">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>

@@ -1,0 +1,56 @@
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
+    <mat-sidenav-content class="bg-white">
+        <div *ngIf="this.loading">
+            <app-loader></app-loader>
+        </div>
+        <div class="settings_header flex justify-center p-4 items-center bg-green-400 bg-opacity-60 text-gray-900">
+            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+        </div>
+        <hr class="border-green-400 relative z-30">
+        <div class="overflow-x-hidden" style="max-height: calc(100% - 70px)">
+            <div class="flex justify-center">
+                <mat-table matSort [dataSource]="this.steps" (matSortChange)="sortData($event)" class="w-full">
+                    <ng-container matColumnDef="step">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'MONITORING.step' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ element.step }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="event_date">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.event_date' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ element.date }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="event_message">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.event_message' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{ element.message }}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                        <span *ngIf="element.status === 'running'" class="text-gray-400">
+                            <i class="fa-solid fa-person-running text-green-400 text-lg w-6"></i>
+                            {{ 'MONITORING.running' | translate }}
+                        </span>
+                            <span *ngIf="element.status === 'done' && !element.error" class="text-green-400">
+                            <i class="fa-solid fa-check text-lg w-6"></i>
+                                {{ 'MONITORING.done' | translate }}
+                        </span>
+                            <span *ngIf="element.status === 'error' || element.error" class="text-red-400">
+                            <i class="fa-solid fa-xmark text-lg w-6"></i>
+                                {{ 'MONITORING.error' | translate }}
+                        </span>
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: columnsToDisplay;"
+                             class="hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
+                </mat-table>
+            </div>
+            <mat-paginator showFirstLastButtons
+                           [length]="total"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

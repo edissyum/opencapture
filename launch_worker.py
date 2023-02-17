@@ -35,7 +35,7 @@ if not retrieve_config_from_custom_id(args['custom_id']):
     sys.exit('Custom config file couldn\'t be found')
 
 with app.app_context():
-    args['from_cli'] = True
+    args['source'] = 'cli'
     launch(args)
     _vars = create_classes_from_custom_id(args['custom_id'])
     database = _vars[0]

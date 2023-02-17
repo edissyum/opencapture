@@ -405,3 +405,16 @@ CREATE TABLE ai_models
     "documents"         JSONB        DEFAULT '{}',
     "module"            VARCHAR(10)
 );
+
+CREATE TABLE monitoring
+(
+    "id"                 SERIAL         UNIQUE PRIMARY KEY,
+    "status"             VARCHAR(10),
+    "error"              BOOLEAN        DEFAULT False,
+    "module"             VARCHAR(10)    NOT NULL,
+    "source"             VARCHAR(10)    NOT NULL,
+    "creation_date"      TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "end_date"           TIMESTAMP,
+    "filename"           VARCHAR(255),
+    "steps"              JSONB          DEFAULT '{}'
+);

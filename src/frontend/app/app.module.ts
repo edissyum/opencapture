@@ -116,6 +116,8 @@ import { UserQuotaComponent } from './settings/general/user-quota/user-quota.com
 import { SettingsMenuComponent } from './settings/settings-menu.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { MonitoringListComponent } from './monitoring/list/monitoring-list.component';
+import { MonitoringDetailsComponent } from './monitoring/details/monitoring-details.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -195,7 +197,9 @@ export function createTranslateLoader(http: HttpClient) {
         UserQuotaComponent,
         SettingsMenuComponent,
         ForgotPasswordComponent,
-        ResetPasswordComponent
+        ResetPasswordComponent,
+        MonitoringListComponent,
+        MonitoringDetailsComponent
     ],
     imports: [
         BrowserModule,

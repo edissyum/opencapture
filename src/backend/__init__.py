@@ -26,7 +26,7 @@ from flask import request, g as current_context, Flask, session
 from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_config_from_custom_id
 from src.backend.import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, mem, inputs, positions_masks, history, doctypes, tasks_watcher, mailcollect, \
-    artificial_intelligence, smtp
+    artificial_intelligence, smtp, monitoring
 
 
 class Middleware:
@@ -107,6 +107,7 @@ app.register_blueprint(accounts.bp)
 app.register_blueprint(verifier.bp)
 app.register_blueprint(doctypes.bp)
 app.register_blueprint(privileges.bp)
+app.register_blueprint(monitoring.bp)
 app.register_blueprint(mailcollect.bp)
 app.register_blueprint(custom_fields.bp)
 app.register_blueprint(tasks_watcher.bp)

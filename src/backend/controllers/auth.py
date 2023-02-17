@@ -110,25 +110,25 @@ def logout():
     for key in list(session.keys()):
         session.pop(key)
 
-    if 'ocr' not in current_context:
+    if 'ocr' in current_context:
         current_context.pop('ocr')
-    if 'log' not in current_context:
+    if 'log' in current_context:
         current_context.pop('log')
-    if 'smtp' not in current_context:
+    if 'smtp' in current_context:
         current_context.pop('smtp')
-    if 'regex' not in current_context:
+    if 'regex' in current_context:
         current_context.pop('regex')
-    if 'files' not in current_context:
+    if 'files' in current_context:
         current_context.pop('files')
-    if 'database' not in current_context:
+    if 'database' in current_context:
         current_context.pop('database')
-    if 'languages' not in current_context:
+    if 'languages' in current_context:
         current_context.pop('languages')
-    if 'docservers' not in current_context:
+    if 'docservers' in current_context:
         current_context.pop('docservers')
-    if 'spreadsheet' not in current_context:
+    if 'spreadsheet' in current_context:
         current_context.pop('spreadsheet')
-    if 'configurations' not in current_context:
+    if 'configurations' in current_context:
         current_context.pop('configurations')
 
 
