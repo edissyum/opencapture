@@ -360,7 +360,8 @@
 		"log_out": "Déconnexion",
 		"login": "Connexion",
 		"minimize": "Minimiser ",
-		"monitoring": "Écran de monitoring",
+		"monitoring": "Écran de monitoring des processus",
+		"monitoring_detail_process": "Détail du processus",
 		"move_to_active": "Déplacer vers les actifs",
 		"move_to_inactive": "Déplacer vers les inactifs",
 		"n_minutes_ago": "il y a {{ minutes }} min",
@@ -380,11 +381,16 @@
 		"active": "Actif",
 		"choose_metadata_method": "Choisir la méthode de récupération de métadonnées",
 		"choose_output": "Choisir la chaîne sortante",
+		"creation_date": "Date de début",
 		"description": "Description",
+		"end_date": "Date de fin",
+		"event_date": "Date de l'évènement",
+		"event_message": "Information de l'évènement",
 		"id": "Identifiant technique",
 		"inactive": "Inactif",
 		"label": "Libellé",
 		"label_short": "Libellé technique",
+		"last_message": "Dernier message",
 		"output_type": "Type de chaîne sortante",
 		"path": "Chemin",
 		"role": "Rôle",
@@ -603,12 +609,11 @@
 		"required": "Champ obligatoire"
 	},
 	"MONITORING": {
-		"creation_date": "Date de début",
 		"done": "Processus terminé",
-		"end_date": "Date de fin",
 		"error": "Processus en erreur",
-		"last_message": "Dernier message",
-		"running": "Processus en cours"
+		"process_doesnt_exist": "Le processus numéro <strong>{{ id }}</strong> n'existe pas",
+		"running": "Processus en cours",
+		"step": "Étape"
 	},
 	"OUTPUT": {
 		"add": "Ajouter une chaîne sortante",

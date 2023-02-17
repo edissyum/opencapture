@@ -39,10 +39,10 @@ export class MonitoringListComponent implements OnInit {
     pageIndex           : number   = 0;
     total               : number   = 0;
     offset              : number   = 0;
-    allMonitoringData   : any         = [];
+    allProcessData      : any      = [];
     moduleSelected      : string   = '';
     statusSelected      : string   = '';
-    monitoringData      : any;
+    processData         : any;
     form                : any[]    = [
         {
             'id': 'module',
@@ -96,7 +96,7 @@ export class MonitoringListComponent implements OnInit {
         }
         this.http.get(environment['url'] + '/ws/monitoring/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.allMonitoringData = data.monitoring;
+                this.allProcessData = data.processses;
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -112,16 +112,16 @@ export class MonitoringListComponent implements OnInit {
             environment['url'] + '/ws/monitoring/list?limit=' + this.pageSize + '&offset=' + this.offset + '&module=' + this.moduleSelected + '&status=' + this.statusSelected,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.monitoringData = data.monitoring;
-                this.monitoringData.forEach((element: any) => {
+                this.processData = data.processses;
+                if (data.processses[0]) this.total = data.processses[0].total;
+                this.processData.forEach((element: any) => {
                     const numberOfSteps = Object.keys(element.steps).length;
                     if (element.steps[numberOfSteps]) {
                         element.last_message = element.steps[numberOfSteps].message;
                     }
                 });
-                if (data.monitoring[0]) this.total = data.monitoring[0].total;
             }),
-            finalize(() => {this.loading = false;}),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -151,17 +151,17 @@ export class MonitoringListComponent implements OnInit {
         } else if (id === 'status') {
             this.statusSelected = value;
         }
-        this.loadMonitoring()
+        this.loadMonitoring();
     }
 
     sortData(sort: Sort) {
-        const data = this.allMonitoringData.slice();
+        const data = this.allProcessData.slice();
         if (!sort.active || sort.direction === '') {
-            this.monitoringData = data;
+            this.processData = data;
             return;
         }
 
-        this.monitoringData = data.sort((a: any, b: any) => {
+        this.processData = data.sort((a: any, b: any) => {
             const isAsc = sort.direction === 'asc';
             switch (sort.active) {
                 case 'id': return this.compare(a.id, b.id, isAsc);
@@ -173,7 +173,7 @@ export class MonitoringListComponent implements OnInit {
                 default: return 0;
             }
         });
-        this.monitoringData = this.monitoringData.splice(0, this.pageSize);
+        this.processData = this.processData.splice(0, this.pageSize);
     }
 
     compare(a: number | string, b: number | string, isAsc: boolean) {

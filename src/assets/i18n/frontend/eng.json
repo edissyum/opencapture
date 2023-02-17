@@ -360,7 +360,8 @@
 		"log_out": "Log out",
 		"login": "Login",
 		"minimize": "Minimize",
-		"monitoring": "Monitoring",
+		"monitoring": "Processes Monitoring",
+		"monitoring_detail_process": "Detail of process",
 		"move_to_active": "Move to active",
 		"move_to_inactive": "Move to inactive",
 		"n_minutes_ago": "{{ minutes }} min ago",
@@ -380,11 +381,16 @@
 		"active": "Active",
 		"choose_metadata_method": "Choose metadata method",
 		"choose_output": "Choose output",
+		"creation_date": "Creation date",
 		"description": "Description",
+		"end_date": "End date",
+		"event_date": "Event date",
+		"event_message": "Event message",
 		"id": "Technical id",
 		"inactive": "Inactive",
 		"label": "Label",
 		"label_short": "Label short",
+		"last_message": "last message",
 		"output_type": "Output type",
 		"path": "Path",
 		"role": "Role",
@@ -603,12 +609,11 @@
 		"required": "Field required"
 	},
 	"MONITORING": {
-		"creation_date": "Creation date",
 		"done": "Process done",
-		"end_date": "End date",
 		"error": "Process error",
-		"last_message": "last message",
-		"running": "Process running"
+		"process_doesnt_exist": "Process <strong>{{ id }}</strong> doesn't exist",
+		"running": "Process running",
+		"step": "Step"
 	},
 	"OUTPUT": {
 		"add": "Add output",

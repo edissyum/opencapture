@@ -25,7 +25,7 @@ bp = Blueprint('monitoring', __name__, url_prefix='/ws/')
 
 @bp.route('monitoring/list', methods=['GET'])
 @auth.token_required
-def get_monitoring():
+def get_processes():
     if 'configurations' in current_context:
         configurations = current_context.configurations
     else:
@@ -62,5 +62,12 @@ def get_monitoring():
 
     if where:
         args.update({'where': where, 'data': data})
-    _monitoring = monitoring.get_monitoring(args)
-    return make_response(jsonify(_monitoring[0])), _monitoring[1]
+    processes = monitoring.get_processes(args)
+    return make_response(jsonify(processes[0])), processes[1]
+
+
+@bp.route('monitoring/getProcessById/<int:process_id>', methods=['GET'])
+@auth.token_required
+def get_process_by_id(process_id):
+    process = monitoring.get_process_by_id(process_id)
+    return make_response(jsonify(process[0])), process[1]

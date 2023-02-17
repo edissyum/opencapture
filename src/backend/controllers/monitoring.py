@@ -18,10 +18,19 @@
 from src.backend.import_models import monitoring
 
 
-def get_monitoring(args):
-    _monitoring, _ = monitoring.get_monitoring(args)
+def get_processes(args):
+    processses, _ = monitoring.get_processes(args)
 
     response = {
-        "monitoring": _monitoring
+        "processses": processses
+    }
+    return response, 200
+
+
+def get_process_by_id(id):
+    process, _ = monitoring.get_process_by_id(id)
+
+    response = {
+        "process": process
     }
     return response, 200

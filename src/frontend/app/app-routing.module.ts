@@ -40,6 +40,7 @@ import { VerifierViewerComponent } from './verifier/viewer/verifier-viewer.compo
 import { MonitoringListComponent } from "./monitoring/list/monitoring-list.component";
 import { CustomersListComponent } from "./accounts/customers/list/customers-list.component";
 import { SuppliersListComponent } from "./accounts/suppliers/list/suppliers-list.component";
+import { MonitoringDetailsComponent } from "./monitoring/details/monitoring-details.component";
 import { UpdateSupplierComponent } from "./accounts/suppliers/update/update-supplier.component";
 import { CreateSupplierComponent } from "./accounts/suppliers/create/create-supplier.component";
 import { UpdateCustomerComponent } from "./accounts/customers/update/update-customer.component";
@@ -95,6 +96,11 @@ const routes: Routes = [
     {
         path: 'monitoring', component: MonitoringListComponent,
         data: { title: marker('GLOBAL.monitoring'), privileges: ['monitoring'] },
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'monitoring/:id', component: MonitoringDetailsComponent,
+        data: { title: marker('GLOBAL.monitoring_detail_process'), privileges: ['monitoring'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     { path: 'accounts/suppliers', redirectTo: 'accounts/suppliers/list', pathMatch: 'full' },

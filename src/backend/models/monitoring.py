@@ -20,7 +20,7 @@ from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
-def get_monitoring(args):
+def get_processes(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -28,7 +28,7 @@ def get_monitoring(args):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
     error = None
-    _monitoring = database.select({
+    _processes = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['monitoring'],
         'where': args['where'] if 'where' in args else [],
@@ -37,4 +37,21 @@ def get_monitoring(args):
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'offset': str(args['offset']) if 'offset' in args else 0,
     })
-    return _monitoring, error
+    return _processes, error
+
+
+def get_process_by_id(process_id):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+    _process = database.select({
+        'select': ['*'],
+        'table': ['monitoring'],
+        'where': ['id = %s'],
+        'data': [process_id],
+    })
+    return _process, error

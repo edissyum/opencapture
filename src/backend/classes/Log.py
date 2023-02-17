@@ -64,7 +64,7 @@ class Log:
             "message": msg,
             "date": time.strftime("%Y-%m-%d %H:%M:%S")
         }
-        print(self.current_step)
+
         self.database.update({
             'table': ['monitoring'],
             'set': {
