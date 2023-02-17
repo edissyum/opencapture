@@ -200,15 +200,17 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadBatchById(): void {
-        this.loading = true;
-        this.http.get(environment['url'] + '/ws/splitter/batches/' + this.currentBatch.id  + '/user/'
-            + this.userService.user.id, {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/splitter/batches/list', {
+                'batchId': this.currentBatch.id,
+                'userId': this.userService.user.id
+            },
+            {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.currentBatch = {
                     id                  : data.batches[0]['id'],
+                    status              : data.batches[0]['status'],
                     formId              : data.batches[0]['form_id'],
                     previousFormId      : data.batches[0]['form_id'],
-                    status              : data.batches[0]['status'],
                     customFieldsValues  : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
                     selectedPagesCount  : 0,
                     maxSplitIndex       : 0,
@@ -284,8 +286,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     loadBatches(): void {
         this.batchesLoading = true;
         this.batches        = [];
-        this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id
-            + '/paging/0/5/' + this.currentTime + '/' + this.currentBatch.status, {headers: this.authService.headers}).pipe(
+        this.loading        = true;
+
+        this.http.post(environment['url'] + '/ws/splitter/batches/list', {
+            'page': 0,
+            'size': 10,
+            'time': this.currentTime,
+            'userId': this.userService.user.id,
+            'status': this.currentBatch.status,
+        }, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.batches.forEach((batch: any) =>
                     this.batches.push({
