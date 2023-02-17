@@ -52,6 +52,7 @@ def retrieve_splitter_batches():
         'page': data['page'] if 'page' in data else None,
         'time': data['time'] if 'time' in data else None,
         'status': data['status'] if 'status' in data else None,
+        'search': data['search'] if 'search' in data else None,
         'batch_id': data['batchId'] if 'batchId' in data else None,
     }
     res = splitter.retrieve_batches(args)

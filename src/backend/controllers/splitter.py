@@ -123,6 +123,11 @@ def retrieve_batches(args):
     args['where'] = ['customer_id = ANY(%s)']
     args['data'] = [user_customers]
 
+    if 'search' in args and args['search']:
+        args['where'].append("id = %s OR file_name like %s ")
+        args['data'].append(args['search'])
+        args['data'].append(f"%{args['search']}%")
+
     if 'status' in args and args['status'] is not None:
         args['where'].append("status = %s")
         args['data'].append(args['status'])

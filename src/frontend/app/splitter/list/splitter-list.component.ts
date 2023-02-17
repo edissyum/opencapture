@@ -156,11 +156,12 @@ export class SplitterListComponent implements OnInit {
         ).subscribe();
 
         this.http.post(environment['url'] + '/ws/splitter/batches/list', {
-            'size': this.pageSize,
-            'time': this.currentTime,
-            'page': this.pageIndex - 1,
-            'status': this.currentStatus,
-            'userId': this.userService.user.id
+            'size'   : this.pageSize,
+            'search' : this.searchText,
+            'time'   : this.currentTime,
+            'page'   : this.pageIndex - 1,
+            'status' : this.currentStatus,
+            'userId' : this.userService.user.id
         }, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.batches.forEach((batch: any) =>
@@ -386,9 +387,5 @@ export class SplitterListComponent implements OnInit {
         this.currentStatus = event.value;
         this.resetPaginator();
         this.loadBatches();
-    }
-
-    searchBatch() {
-        console.log(this.searchText);
     }
 }
