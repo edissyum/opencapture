@@ -836,6 +836,7 @@
 		"doubleClickToSelectDoctype": "Double-cliquez pour sélectionner un type de document",
 		"drop_batch_to_merge": "Déposez pour fusionner avec le lot actuel",
 		"drop_document_in_position": "Déposez le document dans la position souhaitée",
+		"drop_here": "Déposez ici",
 		"edit_used_form": "Modifier le formulaire utilisé",
 		"error_autocomplete_value": "Aucun élément d'autocomplétion n'est séléctionné",
 		"error_empty_document_metadata": "Veuillez remplir les métadonnées des documents",

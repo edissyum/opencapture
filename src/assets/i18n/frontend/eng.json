@@ -836,6 +836,7 @@
 		"doubleClickToSelectDoctype": "Double click to select a document type",
 		"drop_batch_to_merge": "Drop in the current batch to merge",
 		"drop_document_in_position": "Drop document in wanted position",
+		"drop_here": "Drop here",
 		"edit_used_form": "Edit used form",
 		"error_autocomplete_value": "No autocomplete item is selected",
 		"error_empty_document_metadata": "Please fill document metadata",
