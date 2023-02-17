@@ -166,6 +166,7 @@ for process in processes:
                                     launch_verifier({
                                         'cpt': str(cpt),
                                         'isMail': True,
+                                        'source': 'email',
                                         'process_name': process['name'],
                                         'process': process,
                                         'custom_id': args['custom_id'],

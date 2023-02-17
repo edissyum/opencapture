@@ -360,7 +360,7 @@
 		"log_out": "Déconnexion",
 		"login": "Connexion",
 		"minimize": "Minimiser ",
-		"monitoring": "Monitoring",
+		"monitoring": "Écran de monitoring",
 		"move_to_active": "Déplacer vers les actifs",
 		"move_to_inactive": "Déplacer vers les inactifs",
 		"n_minutes_ago": "il y a {{ minutes }} min",
