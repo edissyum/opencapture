@@ -12,10 +12,19 @@
                 </ng-template>
                 <div class="splitter-container flex flex-col">
                     <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
-                        <mat-form-field class="relative left-4 w-1/2" appearance="outline">
-                            <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
-                            <input matInput type="text" [(ngModel)]="this.searchText" [disabled]="this.total === 0">
-                        </mat-form-field>
+                        <div>
+                            <mat-form-field  class="relative left-4 w-1/2" appearance="outline">
+                                <mat-label>{{ 'SPLITTER.search_by_identifier' | translate }}</mat-label>
+                                <input matInput type="text" [(ngModel)]="this.searchText" [disabled]="this.total === 0">
+                            </mat-form-field>
+                            <button mat-button
+                                    style="height: 50px !important"
+                                    class="bg-green-400 text-white rounded w-8 h-8 ml-6"
+                                    (click)="loadBatches()"
+                                    [matTooltip]="'SPLITTER.search' | translate">
+                                <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                            </button>
+                        </div>
                         <div class="w-full flex justify-center m-auto">
                             <mat-form-field appearance="outline">
                                 <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
@@ -26,7 +35,7 @@
                                 </mat-select>
                             </mat-form-field>
                             <i class="fa-solid fa-sync-alt m-4 cursor-pointer text-xl hover:text-green-400" (click)="loadBatches()"
-                                [matTooltip]="'SPLITTER.reload_batches' | translate"></i>
+                               [matTooltip]="'SPLITTER.reload_batches' | translate"></i>
                         </div>
                         <span [class.hidden]="this.isLoading || this.total === 0" class="relative right-0">
                             <mat-paginator [length] = "this.total"
@@ -52,9 +61,9 @@
                         <app-loader></app-loader>
                     </div>
                     <div class="content mx-10 mt-3" *ngIf="!this.isLoading">
-                        <div class="list grid 2xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-flow-row gap-12">
-                            <span *ngIf="(this.batches | filter : 'fileName' : this.searchText).length === 0 && !this.isLoading" class="text-gray-900">{{ 'SPLITTER.no_batch_found' | translate }}</span>
-                            <mat-card class="batch-card cursor-pointer p-0 mb-0" *ngFor="let batch of this.batches | filter : 'fileName' : this.searchText">
+                        <div class="list grid 2xl:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 grid-flow-row gap-6">
+                            <span *ngIf="this.batches.length === 0 && !this.isLoading" class="text-gray-900">{{ 'SPLITTER.no_batch_found' | translate }}</span>
+                            <mat-card class="batch-card cursor-pointer p-0 mb-0" *ngFor="let batch of this.batches">
                                 <label class="p-5 absolute z-40 cursor-pointer">
                                     <input id="{{ batch.id }}_checkbox" type="checkbox" (click)="checkSelectedBatch()"
                                            class="accent-green-400 checkBox_list cursor-pointer w-5 h-5">

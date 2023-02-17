@@ -12,27 +12,35 @@
             <span *ngIf="batches.length === 0" class="text-slate-400 w-full grid place-content-center">
                 {{ 'SPLITTER.no_batch_found' | translate }}
             </span>
-            <div *ngFor="let batch of this.batches | slice: 0 : 10">
-                <mat-card class="mat-elevation-z4 my-2" [ngClass]="{'border-4 border-green-400': this.currentBatch.id === batch.id}">
-                    <a class="image-link" (click)="changeBatch(batch['id'])">
-                        <mat-card-header>
-                            <img mat-card-image [src]="batch['thumbnail']" alt="Open-Capture Splitter image">
-                        </mat-card-header>
-                    </a>
-                    <mat-card-content>
-                        <span matTooltip="{{ 'SPLITTER.document_number' | translate }} : {{ batch['documentsCount'] }}"
-                              class="float-right text-green-400">
-                            {{ batch['documentsCount'] }} <i class="far fa-file-alt"></i>
-                        </span>
-                        <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">
-                            <span class="leading-7 flex">
-                                {{ batch['fileName'] }}
+            <div cdkDropList>
+                <div (cdkDragStarted)="this.isBatchOnDrag = true" (cdkDragEnded)="onBatchDrop(batch.id)"
+                     *ngFor="let batch of this.batches | slice: 0 : 10" cdkDrag>
+                    <div *cdkDragPlaceholder class="drop-shadow-xl w-full h-40 text-center text-gray-500 bg-slate-50 grid place-content-center">
+                        <i class="fa-solid fa-object-group fa-3x"></i>
+                        {{ 'SPLITTER.selected_batch_for_merge' | translate }}
+                    </div>
+                    <mat-card class="mat-elevation-z4 my-2 cursor-move" [ngClass]="{'border-4 border-green-400': this.currentBatch.id === batch.id}">
+                        <a class="image-link" (click)="changeBatch(batch['id'])">
+                            <mat-card-header>
+                                <img mat-card-image [src]="batch['thumbnail']" alt="Open-Capture Splitter image">
+                            </mat-card-header>
+                        </a>
+                        <mat-card-content>
+                            <span matTooltip="{{ 'SPLITTER.document_number' | translate }} : {{ batch['documentsCount'] }}"
+                                  class="float-right text-green-400">
+                                {{ batch['documentsCount'] }}
+                                <i class="far fa-file-alt"></i>
                             </span>
-                            <strong>{{ 'SPLITTER.identifier' | translate }}</strong> : {{ batch['id'] }}<br>
-                            <strong>{{ 'VERIFIER.register_date' | translate }}</strong> : {{ batch['date'] }}<br>
-                        </mat-card-subtitle>
-                    </mat-card-content>
-                </mat-card>
+                            <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">
+                                <span class="leading-7 flex">
+                                    {{ batch['fileName'] }}
+                                </span>
+                                <strong>{{ 'SPLITTER.identifier' | translate }}</strong> : {{ batch['id'] }}<br>
+                                <strong>{{ 'VERIFIER.register_date' | translate }}</strong> : {{ batch['date'] }}<br>
+                            </mat-card-subtitle>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
             </div>
         </div>
     </mat-drawer>
@@ -58,7 +66,9 @@
                     ''"
                  alt="Zoom Image"/>
         </div>
-        <div class="w-10/12 absolute top-0 mx-32">
+        <div class="w-10/12 absolute top-0 mx-32" (mouseenter)="isMouseInDocumentList = true" (mouseleave)="isMouseInDocumentList = false">
+            <div *ngIf="isBatchOnDrag" class="absolute h-full w-full bg-green-400 z-40 opacity-50 rounded"
+                 [matTooltip]="'SPLITTER.drop_batch_to_merge' | translate"></div>
             <mat-accordion class="w-full">
                 <mat-expansion-panel class="my-6 bg-gray-20" [expanded]="true" (opened)="batchMetadataOpenState = true"
                                      (closed)="batchMetadataOpenState = false" #batchMetadata>

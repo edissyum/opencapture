@@ -42,21 +42,18 @@ def upload():
         return make_response(gettext('UNKNOW_ERROR'), 400)
 
 
-@bp.route('splitter/batches/user/<int:user_id>', defaults={'time': None, 'status': None, 'batch_id': None, 'size': None, 'page': None},
-          methods=['GET'])
-@bp.route('splitter/batches/<int:batch_id>/user/<int:user_id>', defaults={'time': None, 'status': None, 'size': None, 'page': None},
-          methods=['GET'])
-@bp.route('splitter/batches/user/<int:user_id>/paging/<int:page>/<int:size>/<string:time>/<string:status>', defaults={'batch_id': None},
-          methods=['GET'])
+@bp.route('splitter/batches/list', methods=['POST'])
 @auth.token_required
-def retrieve_splitter_batches(batch_id, user_id, page, size, time, status):
+def retrieve_splitter_batches():
+    data = request.json
     args = {
-        'batch_id': batch_id,
-        'user_id': user_id,
-        'size': size,
-        'page': page,
-        'time': time if time != 'None' else None,
-        'status': status
+        'user_id': data['userId'],
+        'size': data['size'] if 'size' in data else None,
+        'page': data['page'] if 'page' in data else None,
+        'time': data['time'] if 'time' in data else None,
+        'status': data['status'] if 'status' in data else None,
+        'search': data['search'] if 'search' in data else None,
+        'batch_id': data['batchId'] if 'batchId' in data else None,
     }
     res = splitter.retrieve_batches(args)
     return make_response(jsonify(res[0])), res[1]
