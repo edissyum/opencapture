@@ -15,16 +15,19 @@
 
 # @dev : Tristan Coulange <tristan.coulange@free.fr>
 
-from flask import request
+from flask import request, g as current_context
 from gettext import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
 def get_models(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     models = database.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["ai_models"],
@@ -38,9 +41,12 @@ def get_models(args):
 
 
 def get_model_by_id(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     model = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -57,9 +63,12 @@ def get_model_by_id(args):
 
 
 def create_model(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
 
     model = database.insert({
@@ -73,9 +82,12 @@ def create_model(args):
 
 
 def update_models(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
 
     models = database.update({

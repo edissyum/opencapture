@@ -42,6 +42,7 @@ export class UpdateUserComponent implements OnInit {
     loadingCustomers            : boolean       = true;
     userId                      : any;
     user                        : any;
+    errorMessage                : string        = '';
     roles                       : any[]         = [];
     userForm                    : any[]         = [
         {
@@ -98,6 +99,13 @@ export class UpdateUserComponent implements OnInit {
     customers                   : any[]         = [];
     usersCustomers              : any[]         = [];
     disablePasswordModification : boolean       = false;
+    passwordCurrentlyModified   : boolean       = false;
+    passwordRules               : any           = {
+        minLength: 0,
+        uppercaseMandatory: false,
+        specialCharMandatory: false,
+        numberMandatory: false
+    };
 
     constructor(
         public router: Router,
@@ -176,6 +184,19 @@ export class UpdateUserComponent implements OnInit {
             })
         ).subscribe();
 
+        this.http.get(environment['url'] + '/ws/config/getConfiguration/passwordRules', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if (data.configuration[0] && data.configuration[0].data.value) {
+                    this.passwordRules = data.configuration[0].data.value;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.http.get(environment['url'] + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.user = data;
@@ -203,7 +224,6 @@ export class UpdateUserComponent implements OnInit {
 
     isValidForm() {
         let state = true;
-
         this.userForm.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;
@@ -212,6 +232,44 @@ export class UpdateUserComponent implements OnInit {
         });
 
         return state;
+    }
+
+    checkPasswordValidity(input: any) {
+        if (input.id === 'password_check' || input.id === 'password') {
+            let required : boolean;
+            if (input.control.value) {
+                required = true;
+                if (!input.control.value.match(/[A-Z]/g) && this.passwordRules.uppercaseMandatory) {
+                    this.errorMessage = this.translate.instant('AUTH.password_uppercase_mandatory');
+                } else if (!input.control.value.match(/[0-9]/g) && this.passwordRules.numberMandatory) {
+                    this.errorMessage = this.translate.instant('AUTH.password_number_mandatory');
+                } else if (!input.control.value.match(/[^A-Za-z0-9]/g) && this.passwordRules.specialCharMandatory) {
+                    this.errorMessage = this.translate.instant('AUTH.password_special_char_mandatory');
+                } else if (input.control.value.length < this.passwordRules.minLength && this.passwordRules.minLength !== 0) {
+                    this.errorMessage = this.translate.instant('AUTH.password_min_length', {"min": this.passwordRules.minLength});
+                } else {
+                    this.errorMessage = '';
+                    this.userForm.forEach(element => {
+                        if (element.id === 'password' && element.control.value !== input.control.value) {
+                            this.errorMessage = this.translate.instant('USER.password_mismatch');
+                        }
+                    });
+                    if (this.errorMessage === '') {
+                        input.control.setErrors(null);
+                    }
+                }
+            } else {
+                required = false;
+                this.errorMessage = '';
+                input.control.setErrors(null);
+            }
+            this.userForm.forEach(element => {
+                if (element.id === 'password_check' || element.id === 'password') {
+                    this.passwordCurrentlyModified = required;
+                    element.required = required;
+                }
+            });
+        }
     }
 
     onSubmit() {
@@ -242,6 +300,10 @@ export class UpdateUserComponent implements OnInit {
         let error: any;
         this.userForm.forEach(element => {
             if (element.id === field) {
+                if (this.errorMessage !== '' && field === 'password_check') {
+                    element.control.setErrors({});
+                    error = this.errorMessage;
+                }
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }

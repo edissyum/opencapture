@@ -18,26 +18,25 @@
 
 
 import jwt
-import json
+import uuid
+import ldap3
 import psycopg2
 import datetime
 import functools
-import uuid
-import ldap3
 from . import privileges
-from flask_babel import gettext
-from src.backend.import_models import auth, user, roles
-from flask import request, session, jsonify, current_app
-from src.backend.functions import retrieve_custom_from_url
-from src.backend.main import create_classes_from_custom_id
 from ldap3 import Server, ALL
+from flask_babel import gettext
 from ldap3.core.exceptions import LDAPException
 from werkzeug.security import generate_password_hash
+from src.backend.import_models import auth, user, roles
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
+from flask import request, g as current_context, jsonify, current_app, session
 
 
 def check_connection():
-    if 'config' in session:
-        config = json.loads(session['config'])
+    if 'config' in current_context:
+        config = current_context.config
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
@@ -59,9 +58,12 @@ def check_connection():
 
 
 def encode_auth_token(user_id):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    configurations = _vars[10]
+    if 'configurations' in current_context:
+        configurations = current_context.configurations
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[10]
     minutes_before_exp = int(configurations['jwtExpiration'])
 
     try:
@@ -107,6 +109,27 @@ def decode_reset_token(token):
 def logout():
     for key in list(session.keys()):
         session.pop(key)
+
+    if 'ocr' not in current_context:
+        current_context.pop('ocr')
+    if 'log' not in current_context:
+        current_context.pop('log')
+    if 'smtp' not in current_context:
+        current_context.pop('smtp')
+    if 'regex' not in current_context:
+        current_context.pop('regex')
+    if 'files' not in current_context:
+        current_context.pop('files')
+    if 'database' not in current_context:
+        current_context.pop('database')
+    if 'languages' not in current_context:
+        current_context.pop('languages')
+    if 'docservers' not in current_context:
+        current_context.pop('docservers')
+    if 'spreadsheet' not in current_context:
+        current_context.pop('spreadsheet')
+    if 'configurations' not in current_context:
+        current_context.pop('configurations')
 
 
 def login(username, password, lang, method='default'):
@@ -160,15 +183,18 @@ def login(username, password, lang, method='default'):
     else:
         response = {
             "errors": gettext('LOGIN_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
 
 def login_with_token(token, lang):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    configurations = _vars[10]
+    if 'configurations' in current_context:
+        configurations = current_context.configurations
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[10]
     minutes_before_exp = configurations['jwtExpiration']
     session['lang'] = lang
     error = None
@@ -202,7 +228,7 @@ def login_with_token(token, lang):
     else:
         response = {
             "errors": gettext('LOGIN_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -249,7 +275,7 @@ def verify_user_by_username(username):
     else:
         response = {
             "error": gettext('LOGIN_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -270,7 +296,7 @@ def get_enabled_login_method():
     else:
         response = {
             "errors": gettext('LOGIN_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -290,14 +316,14 @@ def get_ldap_configurations():
         return response, 401
 
 
-def update_login_method(login_method_name , server_data):
+def update_login_method(login_method_name, server_data):
     _, error = auth.update_login_method(login_method_name, server_data)
     if error is None:
         return '', 200
     else:
         response = {
             "errors": gettext('LOGIN_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -312,7 +338,7 @@ def retrieve_login_methods():
 
     response = {
         "errors": gettext('LOADING_METHODS_AUTH_ERROR'),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -324,7 +350,7 @@ def disable_login_method(method_name):
     else:
         response = {
             "errors": gettext('DISABLE_LOGIN_METHOD_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -336,7 +362,7 @@ def enable_login_method(method_name):
     else:
         response = {
             "errors": gettext('ENABLE_LOGIN_METHOD_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -381,13 +407,13 @@ def check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, 
                     user_dn = connection.response[0]['dn']
                     if status and user_dn:
                         connection_status = check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, password)
-                        if not connection_status :
+                        if not connection_status:
                             return False
                         else:
                             return True
         elif type_ad == 'adLDAP':
             server = Server(ldap_server, get_info=ALL)
-            if prefix or suffix :
+            if prefix or suffix:
                 username_ldap_admin = f'{prefix}{username_ldap_admin}{suffix}'
             with ldap3.Connection(server, user=username_ldap_admin, password=password_ldap_admin, auto_bind=True) as connection:
                 if not connection.bind():
@@ -475,7 +501,7 @@ def check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, user_pa
         with ldap3.Connection(server, authentication="SIMPLE", user=user_dn, password=user_password, auto_bind=True) as connection:
             if connection.bind() and connection.result["description"] == 'success':
                 return True
-            else :
+            else:
                 return False
 
     except LDAPException:
@@ -565,7 +591,7 @@ def ldap_users_synchro(ldap_synchronization_data):
 
 def get_ldap_users_data(ldap_users_dict, user_id_attribut, firstname_attribut, lastname_attribut):
     try:
-        if ldap_users_dict and ldap_users_dict['status_search'] == True:
+        if ldap_users_dict and ldap_users_dict['status_search'] is True:
             list_users_ldap = ldap_users_dict['ldap_users']
             ldap_users_data = []
             for i in range(len(list_users_ldap)):

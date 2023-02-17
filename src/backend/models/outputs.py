@@ -15,16 +15,19 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import request
+from flask import request, g as current_context
 from flask_babel import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
 def get_outputs(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     outputs = database.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["outputs"],
@@ -39,9 +42,12 @@ def get_outputs(args):
 
 
 def get_outputs_types(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     outputs_types = database.select({
         'select': ["*"],
         'table': ["outputs_types"],
@@ -54,9 +60,12 @@ def get_outputs_types(args):
 
 
 def get_output_by_id(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     output = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -74,9 +83,12 @@ def get_output_by_id(args):
 
 
 def get_output_type_by_id(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     output = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -94,9 +106,12 @@ def get_output_type_by_id(args):
 
 
 def update_output(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
 
     output = database.update({
@@ -113,9 +128,12 @@ def update_output(args):
 
 
 def create_output(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
 
     output = database.insert({

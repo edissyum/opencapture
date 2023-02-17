@@ -32,6 +32,7 @@ def check_connection_ldap_server(username_ldap_admin, domain_ldap, port_ldap, pa
     :param password_ldap_admin:
     :param type_ad:
     :param prefix:
+    :param base_dn:
     :param suffix:
     :return:
     """

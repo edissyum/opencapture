@@ -23,10 +23,6 @@ spaces="              "
 name="$script.sh"
 name=${name:0:14}${spaces:0:$((14-${#name}))}
 
-spaces="                               "
-scriptName="launch_$script.sh"
-scriptName=${scriptName:0:31}${spaces:0:$((31-${#scriptName}))}
-
 OCPath="§§OC_PATH§§"
 logFile="§§LOG_PATH§§"
 PID=/tmp/securite-$script-$$.pid
@@ -38,6 +34,6 @@ then
   python3 "$OCPath"/launch_worker_mail.py -c "§§CUSTOM_ID§§"
   rm -f $PID
 else
-  echo "[$name] [$scriptName] $(date +"%d-%m-%Y %T") WARNING MAIL capture is already active : PID exists : $PID" >> "$logFile"
+  echo "[$name] $(date +"%d-%m-%Y %T") WARNING MAIL capture is already active : PID exists : $PID" >> "$logFile"
 fi
 

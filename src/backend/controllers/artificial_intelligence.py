@@ -23,33 +23,39 @@ import pickle
 import numpy as np
 import pandas as pd
 from pathlib import Path
-from flask import request
 from nltk import word_tokenize
 from flask_babel import gettext
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
+from flask import request, g as current_context
 from src.backend.import_models import artificial_intelligence
 from src.backend import create_classes_from_custom_id, retrieve_custom_from_url
 from sklearn import feature_extraction, model_selection, naive_bayes, pipeline, metrics
 
 
 def splitter_retrieve_documents():
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _docservers = _vars[9]
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
     data = []
-    for file_name in os.listdir(_docservers.get('SPLITTER_TRAIN_PATH_FILES')):
+    for file_name in os.listdir(docservers.get('SPLITTER_TRAIN_PATH_FILES')):
         if not file_name.endswith(".csv") and not file_name.endswith(".gitkeep"):
             data.append(file_name)
     return data
 
 
 def verifier_retrieve_documents():
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _docservers = _vars[9]
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
     data = []
-    for file_name in os.listdir(_docservers.get('VERIFIER_TRAIN_PATH_FILES')):
+    for file_name in os.listdir(docservers.get('VERIFIER_TRAIN_PATH_FILES')):
         if not file_name.endswith(".csv") and not file_name.endswith(".gitkeep"):
             data.append(file_name)
     return data
@@ -57,7 +63,6 @@ def verifier_retrieve_documents():
 
 def get_models(module):
     _models = artificial_intelligence.get_models({'where': ["status = %s", "module = %s"], 'data': ['OK', module]})
-
     response = {
         "models": _models
     }
@@ -72,7 +77,7 @@ def get_model_by_id(model_id):
     else:
         response = {
             "errors": gettext('GET_IA_MODEL_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -96,7 +101,7 @@ def create_model(data):
     else:
         response = {
             "errors": gettext('CREATE_IA_MODEL_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -107,7 +112,7 @@ def update_model(args):
         return '', 200
     response = {
         "errors": gettext('UPDATE_IA_MODEL_ERROR'),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -119,19 +124,21 @@ def launch_train(data, model_name):
     :param model_name: The name of model
     :return: N/A
     """
-
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _docservers = _vars[9]
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
 
     folders = []
     for element in data['docs']:
         folders.append(element['folder'])
     min_pred = data['min_pred']
 
-    path = _docservers.get('VERIFIER_TRAIN_PATH_FILES') if data['module'] == 'verifier' else _docservers.get('SPLITTER_TRAIN_PATH_FILES')
+    path = docservers.get('VERIFIER_TRAIN_PATH_FILES') if data['module'] == 'verifier' else docservers.get('SPLITTER_TRAIN_PATH_FILES')
     csv_file = path + '/data.csv'
-    model_name = _docservers.get('VERIFIER_AI_MODEL_PATH') + model_name if data['module'] == 'verifier' else _docservers.get('SPLITTER_AI_MODEL_PATH') + model_name
+    model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + model_name if data['module'] == 'verifier' else docservers.get('SPLITTER_AI_MODEL_PATH') + model_name
     start_time = time.time()
 
     args = {
@@ -227,11 +234,16 @@ def save_model(model, filename):
 
 
 def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _ocr = _vars[4]
-    _files = _vars[3]
-    _docservers = _vars[9]
+    if 'ocr' in current_context and 'files' in current_context and 'docservers' in current_context:
+        ocr = current_context.ocr
+        files = current_context.files
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        ocr = _vars[4]
+        files = _vars[3]
+        docservers = _vars[9]
 
     j = 0
     rows = []
@@ -248,9 +260,9 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
     for dir_name in os.listdir(file_path):
         if dir_name in chosen_files:
             i = 0
-            files = [file for file in os.listdir(file_path + "/" + dir_name + "/")
+            list_files = [file for file in os.listdir(file_path + "/" + dir_name + "/")
                      if file.lower().endswith(tuple(image_format))]
-            fold_length = len(files)
+            fold_length = len(list_files)
             j += 1
 
             for file_name in os.listdir(file_path + "/" + dir_name):
@@ -258,12 +270,12 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
                     i += 1
                     total_files += 1
                     if file_name.lower().endswith('.pdf'):
-                        _files.jpg_name = _docservers.get('TMP_PATH') + Path(_files.normalize(file_name)).stem + '.jpg'
-                        _files.pdf_to_jpg(file_path + "/" + dir_name + "/" + file_name, 1, open_img=False)
-                        filtered_image = _files.adjust_image(_files.jpg_name)
+                        files.jpg_name = docservers.get('TMP_PATH') + Path(files.normalize(file_name)).stem + '.jpg'
+                        files.pdf_to_jpg(file_path + "/" + dir_name + "/" + file_name, 1, open_img=False)
+                        filtered_image = files.adjust_image(files.jpg_name)
                     else:
-                        filtered_image = _files.adjust_image(file_path + "/" + dir_name + "/" + file_name)
-                    text = _ocr.text_builder(filtered_image).lower()
+                        filtered_image = files.adjust_image(file_path + "/" + dir_name + "/" + file_name)
+                    text = ocr.text_builder(filtered_image).lower()
                     clean_words = word_cleaning(text)
                     text_stem = stemming(clean_words)
                     line = [file_name, text_stem, dir_name]
@@ -351,25 +363,29 @@ def stemming(clean_text):
     return stem
 
 
-def launch_pred(model_id, files):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _files = _vars[3]
-    _docservers = _vars[9]
+def launch_pred(model_id, list_files):
+    if 'files' in current_context and 'docservers' in current_context:
+        files = current_context.files
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        files = _vars[3]
+        docservers = _vars[9]
 
-    for file in files:
-        _f = files[file]
-        file_to_save = _files.normalize(_f.filename)
-        path = _docservers.get('TMP_PATH') + file_to_save
+    for file in list_files:
+        _f = list_files[file]
+        file_to_save = files.normalize(_f.filename)
+        path = docservers.get('TMP_PATH') + file_to_save
         _f.save(path)
         ai_model = artificial_intelligence.get_model_by_id({'model_id': model_id})
         if ai_model:
             ai_model = ai_model[0]
-            model_name = _docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model['model_path'] if ai_model['module'] == 'verifier' \
-                else _docservers.get('SPLITTER_AI_MODEL_PATH') + ai_model['model_path']
+            model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model['model_path'] if ai_model['module'] == 'verifier' \
+                else docservers.get('SPLITTER_AI_MODEL_PATH') + ai_model['model_path']
             if os.path.exists(model_name):
-                csv_file = _docservers.get('VERIFIER_TRAIN_PATH_FILES') + '/data.csv' if ai_model['module'] == 'verifier' \
-                    else _docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
+                csv_file = docservers.get('VERIFIER_TRAIN_PATH_FILES') + '/data.csv' if ai_model['module'] == 'verifier' \
+                    else docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
                 store_one_file(path, csv_file)
                 return model_testing(model_name, csv_file)
 
@@ -407,22 +423,27 @@ def store_one_file(file_path, csv_file):
     :param csv_file: path of csv file which will get the data
     :return: N/A
     """
+    if 'ocr' in current_context and 'files' in current_context and 'docservers' in current_context:
+        ocr = current_context.ocr
+        files = current_context.files
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        ocr = _vars[4]
+        files = _vars[3]
+        docservers = _vars[9]
 
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _files = _vars[3]
-    _ocr = _vars[4]
-    _docservers = _vars[9]
     rows = []
 
-    _files.jpg_name = _docservers.get('TMP_PATH') + Path(_files.normalize(file_path)).stem + '.jpg'
-    _files.pdf_to_jpg(file_path, 1, open_img=False)
-    if os.path.exists(_files.jpg_name):
-        filtered_image = _files.adjust_image(_files.jpg_name)
+    files.jpg_name = docservers.get('TMP_PATH') + Path(files.normalize(file_path)).stem + '.jpg'
+    files.pdf_to_jpg(file_path, 1, open_img=False)
+    if os.path.exists(files.jpg_name):
+        filtered_image = files.adjust_image(files.jpg_name)
     else:
-        _files.jpg_name = _docservers.get('TMP_PATH') + Path(_files.jpg_name).stem + '-1.jpg'
-        filtered_image = _files.adjust_image(_files.jpg_name)
-    text = _ocr.text_builder(filtered_image).lower()
+        files.jpg_name = docservers.get('TMP_PATH') + Path(files.jpg_name).stem + '-1.jpg'
+        filtered_image = files.adjust_image(files.jpg_name)
+    text = ocr.text_builder(filtered_image).lower()
     clean_words = word_cleaning(text)
     text_stem = stemming(clean_words)
     line = [os.path.basename(file_path), text_stem]
@@ -458,15 +479,18 @@ def rename_model(new_name, model_id):
     :param model_id: unique model's database id
     :return: N/A
     """
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
 
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _docservers = _vars[9]
     args = {
         'select': ['model_path'],
         'where': ["id = " + str(model_id)],
     }
     data = artificial_intelligence.get_models(args)
     old_name = [row["model_path"] for row in data][0]
-    model_path = _docservers.get('SPLITTER_AI_MODEL_PATH')
+    model_path = docservers.get('SPLITTER_AI_MODEL_PATH')
     os.rename(model_path + old_name, model_path + new_name)

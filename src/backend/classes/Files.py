@@ -621,6 +621,7 @@ class Files:
         except Exception as error:
             log.error('Error during pdf2image conversion : ' + str(error))
 
+
 def compress_pdf(input_file, output_file, compress_id):
     gs_command = 'gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/%s#-dNOPAUSE#-dQUIET#-o#%s#%s' \
                  % (compress_id, output_file, input_file)

@@ -87,7 +87,7 @@
                         <i class="fa-solid fa-chart-bar"></i>
                     </button>
                 </div>
-                <div class="ml-3 mr-2 relative" *ngIf="false && this.privilegesService.hasPrivilege('monitoring')">
+                <div class="ml-3 mr-2 relative" *ngIf="this.privilegesService.hasPrivilege('monitoring')">
                     <button id="monitoring-menu" aria-haspopup="true" mat-mini-fab routerLink="/monitoring"
                             [class.settings_active]="location.path().includes('monitoring')"
                             [matTooltip]="'GLOBAL.monitoring' | translate"

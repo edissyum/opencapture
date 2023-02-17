@@ -35,7 +35,7 @@ def get_privileges():
     else:
         response = {
             "errors": gettext('GET_PRIVILEGES_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -63,6 +63,6 @@ def get_privileges_by_role_id(args):
     else:
         response = {
             "errors": gettext('GET_PRIVILEGES_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401

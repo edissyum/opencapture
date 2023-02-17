@@ -44,7 +44,7 @@ def get_forms(args):
 
     response = {
         "errors": gettext("FORMS_ERROR"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -54,7 +54,7 @@ def add_form(args):
     if error:
         response = {
             "errors": gettext("FORMS_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -80,7 +80,7 @@ def add_form(args):
     else:
         response = {
             "errors": gettext("FORMS_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -95,7 +95,7 @@ def get_form_by_id(form_id):
     else:
         response = {
             "errors": gettext('GET_FORM_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -127,7 +127,7 @@ def get_form_fields_by_form_id(form_id):
     else:
         response = {
             "errors": gettext('GET_FORM_FIELDS_BY_FORM_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -144,7 +144,7 @@ def get_default_form_by_module(module):
         else:
             response = {
                 "errors": gettext('GET_FORM_BY_ID_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
@@ -182,13 +182,13 @@ def update_form(form_id, args):
         else:
             response = {
                 "errors": gettext('UPDATE_FORMS_FIELDS_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext("FORMS_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
     return response, 401
 
@@ -202,13 +202,13 @@ def delete_form(form_id):
         else:
             response = {
                 "errors": gettext('DELETE_FORM_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DELETE_FORM_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -234,13 +234,13 @@ def duplicate_form(form_id):
         else:
             response = {
                 "errors": gettext('DUPLICATE_FORM_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DUPLICATE_FORM_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -254,13 +254,13 @@ def disable_form(form_id):
         else:
             response = {
                 "errors": gettext('DISABLE_FORM_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DISABLE_FORM_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -274,13 +274,13 @@ def enable_form(form_id):
         else:
             response = {
                 "errors": gettext('ENABLE_FORM_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('ENABLE_FORM_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -296,7 +296,7 @@ def get_fields(form_id):
     else:
         response = {
             "errors": gettext("GET_FORMS_FIELDS_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
     return response, 401
 
@@ -310,13 +310,13 @@ def update_fields(args):
         else:
             response = {
                 "errors": gettext('UPDATE_FORMS_FIELDS_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_FORMS_FIELDS_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 

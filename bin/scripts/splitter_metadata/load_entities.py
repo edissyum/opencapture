@@ -30,7 +30,7 @@ def load_entities(args):
         Get entities list from MEM
     """
     r = requests.get(url=args['method_data']['wsUrl'], auth=HTTPBasicAuth(args['method_data']['user'],
-                                                                           args['method_data']['password']))
+                                                                          args['method_data']['password']))
     data = r.json()
     options = []
     for entity in data['entities']:
@@ -44,7 +44,7 @@ def load_entities(args):
     """
     cursor = args['database'].conn.cursor()
     query = "UPDATE custom_fields SET settings = jsonb_set(settings, '{options}', '" + json.dumps(options) + "')" \
-            "WHERE label_short='entity' AND enabled='true' AND status='OK' AND module='splitter'"
+                                                                                                             "WHERE label_short='entity' AND enabled='true' AND status='OK' AND module='splitter'"
 
     cursor.execute(query)
     args['database'].conn.commit()

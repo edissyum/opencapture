@@ -15,10 +15,8 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import json
-import datetime
 from flask_babel import gettext
-from flask import request, session
+from flask import request, g as current_context
 from src.backend.import_controllers import auth
 from src.backend.import_models import user, accounts
 from src.backend.functions import retrieve_custom_from_url
@@ -30,8 +28,8 @@ def create_user(args):
     res, error = user.create_user(args)
 
     if error is None:
-        if 'configurations' in session:
-            configurations = json.loads(session['configurations'])
+        if 'configurations' in current_context:
+            configurations = current_context.configurations
         else:
             custom_id = retrieve_custom_from_url(request)
             _vars = create_classes_from_custom_id(custom_id)
@@ -53,15 +51,18 @@ def create_user(args):
 
             if quota <= total_active_users:
                 custom_id = retrieve_custom_from_url(request)
-                _vars = create_classes_from_custom_id(custom_id, True)
-                smtp = _vars[8]
+                if 'smtp' in current_context:
+                    smtp = current_context.smtp
+                else:
+                    _vars = create_classes_from_custom_id(custom_id, True)
+                    smtp = _vars[8]
                 if email_dest and smtp.is_up:
                     smtp.send_user_quota_notifications(email_dest, custom_id)
         return {'id': res}, 200
     else:
         response = {
             "errors": gettext('CREATE_USER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -85,7 +86,8 @@ def get_users_full(args):
 
 
 def get_user_by_id(user_id, get_password=False):
-    _select = ['users.id', 'username', 'firstname', 'email', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled']
+    _select = ['users.id', 'username', 'firstname', 'email', 'lastname', 'role', 'users.status', 'creation_date',
+               'users.enabled']
     if get_password:
         _select.append('password')
 
@@ -99,14 +101,15 @@ def get_user_by_id(user_id, get_password=False):
     else:
         response = {
             "errors": gettext('GET_USER_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
 
 def get_user_by_mail(user_mail):
     user_info, error = user.get_user_by_mail({
-        'select': ['users.id', 'username', 'firstname', 'email', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
+        'select': ['users.id', 'username', 'firstname', 'email', 'lastname', 'role', 'users.status', 'creation_date',
+                   'users.enabled'],
         'user_mail': user_mail
     })
 
@@ -115,7 +118,7 @@ def get_user_by_mail(user_mail):
     else:
         response = {
             "errors": gettext('GET_USER_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -132,7 +135,7 @@ def get_user_by_username(username):
     else:
         response = {
             "errors": gettext('GET_USER_BY_USERNAME_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -140,9 +143,12 @@ def get_user_by_username(username):
 def send_email_forgot_password(args):
     user_info, error = user.get_user_by_id({'user_id': args['userId']})
     if error is None:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id, True)
-        smtp = _vars[8]
+        if 'smtp' in current_context:
+            smtp = current_context.smtp
+        else:
+            custom_id = retrieve_custom_from_url(request)
+            _vars = create_classes_from_custom_id(custom_id, True)
+            smtp = _vars[8]
         if smtp.is_up:
             reset_token = auth.generate_reset_token(args['userId'])
             user.update_user({'set': {'reset_token': reset_token}, 'user_id': args['userId']})
@@ -151,7 +157,7 @@ def send_email_forgot_password(args):
     else:
         response = {
             "errors": gettext('SEND_EMAIL_FORGOT_PASSWORD_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -164,7 +170,8 @@ def reset_password(args):
     user_info, error = user.get_user_by_id({'user_id': decoded_token['sub']})
     if error is None:
         if user_info['reset_token'] == args['resetToken']:
-            user.update_user({'set': {'reset_token': '', 'password': generate_password_hash(args['newPassword'])}, 'user_id': decoded_token['sub']})
+            user.update_user({'set': {'reset_token': '', 'password': generate_password_hash(args['newPassword'])},
+                              'user_id': decoded_token['sub']})
             del user_info['password']
             del user_info['reset_token']
             return user_info, 200
@@ -178,6 +185,7 @@ def reset_password(args):
         "message": gettext('GET_USER_BY_ID_ERROR')
     }
     return response, 401
+
 
 def get_customers_by_user_id(user_id):
     user_info, error = user.get_user_by_id({'user_id': user_id})
@@ -204,26 +212,32 @@ def get_customers_by_user_id(user_id):
     else:
         response = {
             "errors": gettext('GET_CUSTOMER_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
 
 def update_user(user_id, data):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    configurations = _vars[10]
+    if 'configurations' in current_context:
+        configurations = current_context.configurations
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[10]
+
     minutes_before_exp = configurations['jwtExpiration']
     user_info, error = user.get_user_by_id({'user_id': user_id})
 
     if error is None:
-        if 'new_password' in data and 'old_password' in data and data['new_password'] and data['old_password'] and not check_password_hash(user_info['password'], data['old_password']):
+        if 'new_password' in data and 'old_password' in data and data['new_password'] and data['old_password'] and \
+                not check_password_hash(user_info['password'], data['old_password']):
             response = {
                 "errors": gettext('UPDATE_PROFILE'),
                 "message": gettext('ERROR_OLD_PASSWORD_NOT_MATCH')
             }
             return response, 401
-        elif 'password' in data and 'password_check' in data and data['password'] and data['password_check'] and data['password'] != data['password_check']:
+        elif 'password' in data and 'password_check' in data and data['password'] and data['password_check'] and \
+                data['password'] != data['password_check']:
             response = {
                 "errors": gettext('UPDATE_USER'),
                 "message": gettext('ERROR_PASSWORD_NOT_MATCH')
@@ -254,13 +268,13 @@ def update_user(user_id, data):
         else:
             response = {
                 "errors": gettext('UPDATE_USER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_USER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -274,13 +288,13 @@ def delete_user(user_id):
         else:
             response = {
                 "errors": gettext('DELETE_USER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DELETE_USER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -294,13 +308,13 @@ def disable_user(user_id):
         else:
             response = {
                 "errors": gettext('DISABLE_USER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DISABLE_USER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -314,13 +328,13 @@ def enable_user(user_id):
         else:
             response = {
                 "errors": gettext('ENABLE_USER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('ENABLE_USER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -337,12 +351,12 @@ def update_customers_by_user_id(user_id, customers):
         else:
             response = {
                 "errors": gettext('UPDATE_CUSTOMERS_USER_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_CUSTOMERS_USER_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401

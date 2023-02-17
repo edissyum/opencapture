@@ -15,16 +15,19 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import request
+from flask import request, g as current_context
 from flask_babel import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
 def get_invoice_by_id(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     user = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -42,9 +45,12 @@ def get_invoice_by_id(args):
 
 
 def get_invoices(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
 
     invoices = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -61,9 +67,12 @@ def get_invoices(args):
 
 
 def get_total_invoices(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
 
     total = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -76,9 +85,12 @@ def get_total_invoices(args):
 
 
 def update_invoice(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
 
     invoice = database.update({
@@ -95,9 +107,12 @@ def update_invoice(args):
 
 
 def update_invoices(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     supplier = database.update({
         'table': ['invoices'],
@@ -113,9 +128,12 @@ def update_invoices(args):
 
 
 def get_totals(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     select = data = []
 

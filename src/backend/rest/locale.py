@@ -15,11 +15,10 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-import json
 from src.backend.import_controllers import auth, config
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from flask import Blueprint, make_response, jsonify, session, request
+from flask import Blueprint, make_response, jsonify, session, request, g as current_context
 
 bp = Blueprint('i18n', __name__, url_prefix='/ws/')
 
@@ -34,8 +33,8 @@ def change_language(lang):
 
 @bp.route('i18n/getAllLang', methods=['GET'])
 def get_all_lang():
-    if 'languages' in session:
-        languages = json.loads(session['languages'])
+    if 'languages' in current_context:
+        languages = current_context.languages
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
@@ -49,10 +48,14 @@ def get_all_lang():
 
 @bp.route('i18n/getCurrentLang', methods=['GET'])
 def get_current_lang():
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    configurations = _vars[10]
-    languages = _vars[11]
+    if 'languages' in current_context and 'configurations' in current_context:
+        languages = current_context.languages
+        configurations = current_context.configurations
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[10]
+        languages = _vars[11]
     current_lang = configurations['locale']
     angular_moment_lang = ''
     babel_lang = ''

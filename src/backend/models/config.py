@@ -17,18 +17,21 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from flask import request
+from flask import request, g as current_context
 from gettext import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
 def retrieve_configurations(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    if not _vars[0]:
-        return {}, _vars[1]
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        if not _vars[0]:
+            return {}, _vars[1]
+        database = _vars[0]
     error = None
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -43,9 +46,12 @@ def retrieve_configurations(args):
 
 
 def retrieve_docservers(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -61,9 +67,12 @@ def retrieve_docservers(args):
 
 
 def retrieve_regex(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -79,9 +88,12 @@ def retrieve_regex(args):
 
 
 def retrieve_configuration_by_id(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -93,10 +105,31 @@ def retrieve_configuration_by_id(args):
     return configurations, error
 
 
+def retrieve_configuration_by_label(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+    configurations = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['configurations'],
+        'where': ['label = %s'],
+        'data': [args['configuration_label']]
+    })
+
+    return configurations, error
+
+
 def retrieve_regex_by_id(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     regex = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -109,9 +142,12 @@ def retrieve_regex_by_id(args):
 
 
 def retrieve_regex_by_regex_id(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     regex = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -124,9 +160,12 @@ def retrieve_regex_by_regex_id(args):
 
 
 def retrieve_docserver_by_id(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -138,10 +177,13 @@ def retrieve_docserver_by_id(args):
     return configurations, error
 
 
-def update_configuration(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+def update_configuration_by_id(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
 
     configuration = database.update({
@@ -159,10 +201,37 @@ def update_configuration(args):
     return configuration, error
 
 
+def update_configuration_by_label(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+
+    configuration = database.update({
+        'table': ['configurations'],
+        'set': {
+            'data': json.dumps(args['data'])
+        },
+        'where': ['label = %s'],
+        'data': [args['configuration_label']]
+    })
+
+    if configuration[0] is False:
+        error = gettext('UPDATE_CONFIGURATION_ERROR')
+
+    return configuration, error
+
+
 def update_regex(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
 
     configuration = database.update({
@@ -179,9 +248,12 @@ def update_regex(args):
 
 
 def update_docserver(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
     error = None
 
     docserver = database.update({

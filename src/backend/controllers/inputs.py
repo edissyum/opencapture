@@ -17,9 +17,8 @@
 
 import os
 import stat
-import json
 from flask_babel import gettext
-from flask import request, session
+from flask import request, g as current_context
 from src.backend.import_models import inputs
 from src.backend.import_classes import _Config
 from src.backend.import_controllers import user
@@ -64,13 +63,13 @@ def update_input(input_id, data):
         else:
             response = {
                 "errors": gettext('UPDATE_INPUT_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_INPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -95,13 +94,13 @@ def duplicate_input(input_id):
         else:
             response = {
                 "errors": gettext('DUPLICATE_INPUT_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DUPLICATE_INPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -154,7 +153,7 @@ def create_input(data):
     else:
         response = {
             "errors": gettext('CREATE_INPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -167,7 +166,7 @@ def get_input_by_id(input_id):
     else:
         response = {
             "errors": gettext('GET_INPUT_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -188,22 +187,22 @@ def delete_input(input_id):
         else:
             response = {
                 "errors": gettext('DELETE_INPUT_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DELETE_INPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
 
 def delete_script_and_incron(args):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in session and 'config' in session:
-        docservers = json.loads(session['docservers'])
-        config = json.loads(session['config'])
+    if 'docservers' in current_context and 'config' in current_context:
+        docservers = current_context.docservers
+        config = current_context.config
     else:
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
@@ -237,9 +236,9 @@ def delete_script_and_incron(args):
 
 def create_script_and_incron(args):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in session and 'config' in session:
-        docservers = json.loads(session['docservers'])
-        config = json.loads(session['config'])
+    if 'docservers' in current_context and 'config' in current_context:
+        docservers = current_context.docservers
+        config = current_context.config
     else:
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]

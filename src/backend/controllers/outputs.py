@@ -59,13 +59,13 @@ def duplicate_output(output_id):
         else:
             response = {
                 "errors": gettext('DUPLICATE_OUTPUT_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DUPLICATE_OUTPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -90,13 +90,13 @@ def update_output(output_id, args):
         else:
             response = {
                 "errors": gettext('UPDATE_OUTPUT_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_OUTPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -120,7 +120,7 @@ def create_output(data):
     else:
         response = {
             "errors": gettext('CREATE_OUTPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -133,7 +133,7 @@ def get_output_by_id(output_id):
     else:
         response = {
             "errors": gettext('GET_OUTPUT_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -146,7 +146,7 @@ def get_output_type_by_id(output_type_id):
     else:
         response = {
             "errors": gettext('GET_OUTPUT_TYPE_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -160,12 +160,12 @@ def delete_output(output_id):
         else:
             response = {
                 "errors": gettext('DELETE_OUTPUT_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DELETE_OUTPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401

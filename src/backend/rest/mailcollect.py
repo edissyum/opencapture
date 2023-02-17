@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 from src.backend.import_controllers import mailcollect, auth
-from flask import Blueprint, jsonify, make_response, request
+from flask import Blueprint, jsonify, make_response, request, g as current_context
 
 bp = Blueprint('mailcollect', __name__,  url_prefix='/ws/')
 

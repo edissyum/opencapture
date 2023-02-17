@@ -15,21 +15,20 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-import json
 import base64
 import os.path
 import requests
 import subprocess
 from flask_babel import gettext
-from flask import request, session
+from flask import request, g as current_context
 from src.backend.import_models import config
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url, get_custom_path
 
 
 def change_locale_in_config(lang):
-    if 'languages' in session:
-        languages = json.loads(session['languages'])
+    if 'languages' in current_context:
+        languages = current_context.languages
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
@@ -41,7 +40,7 @@ def change_locale_in_config(lang):
             language = languages[_l]
 
     locale_configuration = retrieve_configuration_by_label('locale')[0]['configuration'][0]
-    update_configuration({
+    update_configuration_by_id({
         'value': language['lang_code'],
         'type': locale_configuration['data']['type'],
         'description': locale_configuration['data']['description']
@@ -60,7 +59,7 @@ def retrieve_configuration_by_label(label):
 
     response = {
         "errors": gettext("RETRIEVE_CONFIGURATION_ERRORS"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -76,7 +75,7 @@ def retrieve_configurations(args):
 
     response = {
         "errors": gettext("RETRIEVE_CONFIGURATIONS_ERRORS"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -92,7 +91,7 @@ def retrieve_docservers(args):
 
     response = {
         "errors": gettext("RETRIEVE_DOCSERVERS_ERRORS"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -108,12 +107,12 @@ def retrieve_regex(args):
 
     response = {
         "errors": gettext("RETRIEVE_REGEX_ERRORS"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
 
-def update_configuration(args, configuration_id):
+def update_configuration_by_id(args, configuration_id):
     configuration, error = config.retrieve_configuration_by_id({'configuration_id': configuration_id})
 
     if error is None:
@@ -135,12 +134,44 @@ def update_configuration(args, configuration_id):
         if 'description' in args and args['description']:
             data['data']['description'] = args['description']
 
-        config.update_configuration(data)
+        config.update_configuration_by_id(data)
         return '', 200
 
     response = {
         "errors": gettext("UPDATE_CONFIGURATION_ERROR"),
-        "message": error
+        "message": gettext(error)
+    }
+    return response, 401
+
+
+def update_configuration_by_label(args, configuration_label):
+    configuration, error = config.retrieve_configuration_by_label({'configuration_label': configuration_label})
+
+    if error is None:
+        if configuration[0]['label'] == 'jwtExpiration' and int(args['value']) <= 0:
+            response = {
+                "errors": gettext("UPDATE_CONFIGURATION_ERROR"),
+                "message": gettext("JWT_EXPIRATION_COULDNT_BE_ZERO_OR_LESS")
+            }
+            return response, 401
+        data = {
+            'configuration_label': configuration_label,
+            'data': {
+                'value': args['value']
+            }
+        }
+
+        if 'type' in args and args['type']:
+            data['data']['type'] = args['type']
+        if 'description' in args and args['description']:
+            data['data']['description'] = args['description']
+
+        config.update_configuration_by_label(data)
+        return '', 200
+
+    response = {
+        "errors": gettext("UPDATE_CONFIGURATION_ERROR"),
+        "message": gettext(error)
     }
     return response, 401
 
@@ -161,7 +192,7 @@ def update_regex(args, regex_id):
 
     response = {
         "errors": gettext("UPDATE_REGEX_ERROR"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -181,7 +212,7 @@ def update_docserver(args, docserver_id):
 
     response = {
         "errors": gettext("UPDATE_DOCSERVER_ERROR"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 

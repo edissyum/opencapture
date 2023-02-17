@@ -78,29 +78,32 @@ export class ForgotPasswordComponent implements OnInit {
     }
 
     onSubmit() {
-        this.sending = true;
-        const email = this.emailControl.value;
-        const currentUrl = window.location.href.replace('/forgotPassword', '');
-        this.http.post(environment['url'] + '/ws/users/getByMail', {email: email}).pipe(
-            tap((data: any) => {
-                this.http.post(environment['url'] + '/ws/users/sendEmailForgotPassword', {userId: data.id, currentUrl: currentUrl}).pipe(
-                    tap((data: any) => {
-                        this.notify.success(this.translate.instant('USER.forgot_password_email_sent'));
-                        this.historyService.addHistory('general', 'user_forgot_password', this.translate.instant('HISTORY-DESC.user_forgot_success', {user: data.username}), data);
-                    }),
-                    finalize(() => this.sending = false),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+        if (this.emailControl.valid) {
+            this.sending = true;
+            const email = this.emailControl.value;
+            const currentUrl = window.location.href.replace('/forgotPassword', '');
+            this.http.post(environment['url'] + '/ws/users/getByMail', {email: email}).pipe(
+                tap((data: any) => {
+                    this.http.post(environment['url'] + '/ws/users/sendEmailForgotPassword', {userId: data.id, currentUrl: currentUrl}).pipe(
+                        tap((data: any) => {
+                            this.notify.success(this.translate.instant('USER.forgot_password_email_sent'));
+                            this.historyService.addHistory('general', 'user_forgot_password', this.translate.instant('HISTORY-DESC.user_forgot_success', {user: data.username}), data);
+                        }),
+                        finalize(() => this.sending = false),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                }),
+                catchError((err: any) => {
+                    this.sending = false;
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
     }
 }

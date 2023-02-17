@@ -34,7 +34,7 @@ def retrieve_processes(args):
 
     response = {
         "errors": gettext("RETRIEVE_PROCESSES_ERROR"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -50,7 +50,7 @@ def update_process(args):
 
     response = {
         "errors": gettext("UPDATE_PROCESS_ERROR"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -66,7 +66,7 @@ def create_process(args):
 
     response = {
         "errors": gettext("CREATE_PROCESS_ERROR"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -80,13 +80,13 @@ def delete_process(process_name):
         else:
             response = {
                 "errors": gettext('DELETE_MAILCOLLECT_PROCESS_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DELETE_MAILCOLLECT_PROCESS_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -100,13 +100,13 @@ def enable_process(process_name):
         else:
             response = {
                 "errors": gettext('ENABLE_MAILCOLLECT_PROCESS_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('ENABLE_MAILCOLLECT_PROCESS_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -120,13 +120,13 @@ def disable_process(process_name):
         else:
             response = {
                 "errors": gettext('DISABLE_MAILCOLLECT_PROCESS_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DISABLE_MAILCOLLECT_PROCESS_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 

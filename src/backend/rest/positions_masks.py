@@ -19,8 +19,8 @@ import os
 import base64
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from flask import Blueprint, request, make_response, jsonify, current_app
 from src.backend.import_controllers import auth, positions_masks, verifier
+from flask import Blueprint, request, make_response, jsonify, current_app, g as current_context
 
 bp = Blueprint('positions_masks', __name__, url_prefix='/ws/')
 
@@ -132,10 +132,15 @@ def delete_page_by_positions_mask_id(position_mask_id):
 @bp.route('positions_masks/getImageFromPdf/<int:positions_mask_id>', methods=['POST'])
 @auth.token_required
 def get_image_from_pdf(positions_mask_id):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _Files = _vars[3]
-    docservers = _vars[9]
+    if 'docservers' in current_context and 'files' in current_context:
+        files = current_context.files
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        files = _vars[3]
+        docservers = _vars[9]
+
     file = request.files
     path = current_app.config['UPLOAD_FOLDER']
     docserver_path = docservers['VERIFIER_POSITIONS_MASKS'] + '/'
@@ -143,12 +148,12 @@ def get_image_from_pdf(positions_mask_id):
 
     for filename in file:
         f = file[filename]
-        filename_after_upload = _Files.save_uploaded_file(f, path)
+        filename_after_upload = files.save_uploaded_file(f, path)
         tmp_filename = filename.replace('.pdf', '-001.jpg')
-        _Files.save_img_with_pdf2image(filename_after_upload, docserver_path + filename.replace('.pdf', '.jpg'))
-        img_wdith = str(_Files.get_width(docserver_path + tmp_filename))
+        files.save_img_with_pdf2image(filename_after_upload, docserver_path + filename.replace('.pdf', '.jpg'))
+        img_wdith = str(files.get_width(docserver_path + tmp_filename))
         file_content = verifier.get_file_content('positions_masks', tmp_filename, 'image/jpeg')
-        nb_pages = _Files.get_pages(docservers['ERROR_PATH'], filename_after_upload)
+        nb_pages = files.get_pages(docservers['ERROR_PATH'], filename_after_upload)
 
         positions_masks.update_positions_mask(positions_mask_id, {
             'filename': filename.replace('.pdf', '-001.jpg'),
