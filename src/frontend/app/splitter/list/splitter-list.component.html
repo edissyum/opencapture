@@ -12,16 +12,14 @@
                 </ng-template>
                 <div class="splitter-container flex flex-col">
                     <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
-                        <div>
-                            <mat-form-field  class="relative left-4 w-1/2" appearance="outline">
+                        <div class="ml-4">
+                            <mat-form-field class="w-1/2" appearance="outline">
                                 <mat-label>{{ 'SPLITTER.search_by_identifier' | translate }}</mat-label>
                                 <input matInput type="text" [(ngModel)]="this.searchText" [disabled]="this.total === 0">
                             </mat-form-field>
-                            <button mat-button
-                                    style="height: 50px !important"
-                                    class="bg-green-400 text-white rounded w-8 h-8 ml-6"
-                                    (click)="loadBatches()"
-                                    [matTooltip]="'SPLITTER.search' | translate">
+                            <button mat-button class="rounded p-7 ml-4 border-solid border-green-400 border bg-green-400
+                                            text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                                    (click)="loadBatches()" [matTooltip]="'SPLITTER.search' | translate">
                                 <i class="fa-solid fa-magnifying-glass text-lg"></i>
                             </button>
                         </div>
