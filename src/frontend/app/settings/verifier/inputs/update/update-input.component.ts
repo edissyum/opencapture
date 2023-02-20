@@ -284,7 +284,7 @@ export class UpdateInputComponent implements OnInit {
                 }),
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/verifier/inputs');
+                    this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();

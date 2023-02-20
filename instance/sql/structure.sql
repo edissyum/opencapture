@@ -325,9 +325,9 @@ CREATE TABLE "configurations"
 CREATE TABLE "docservers"
 (
     "id"            SERIAL          UNIQUE PRIMARY KEY,
-    "description"   VARCHAR(255),
     "docserver_id"  VARCHAR(32)     UNIQUE,
-    "path"          VARCHAR(255)    UNIQUE
+    "path"          VARCHAR(255),
+    "description"   VARCHAR(255)
 );
 
 CREATE TABLE "regex"

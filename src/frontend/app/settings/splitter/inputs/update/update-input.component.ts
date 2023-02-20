@@ -205,7 +205,7 @@ export class SplitterUpdateInputComponent implements OnInit {
                 }),
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/splitter/inputs');
+                    this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();
