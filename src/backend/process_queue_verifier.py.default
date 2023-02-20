@@ -57,6 +57,7 @@ def launch(args):
     task_id_watcher = database.insert({
         'table': 'tasks_watcher',
         'columns': {
+            'status': 'running'
             'title': os.path.basename(args['file']),
             'type': 'upload',
             'module': 'verifier',
@@ -164,15 +165,15 @@ def launch(args):
             'where': ['id = %s'],
             'data': [task_id]
         })
-        database.update({
-            'table': ['monitoring'],
-            'set': {
-                'status': 'done',
-                'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
-            },
-            'where': ['id = %s'],
-            'data': [task_id_monitor]
-        })
+    database.update({
+        'table': ['monitoring'],
+        'set': {
+            'status': 'done',
+            'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
+        },
+        'where': ['id = %s'],
+        'data': [task_id_monitor]
+    })
     database.conn.close()
     end = time.time()
     log.task_id_monitor = None

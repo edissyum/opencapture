@@ -15,7 +15,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -26,6 +26,7 @@ import { HttpClient } from "@angular/common/http";
 import { TranslateService } from "@ngx-translate/core";
 import {SettingsService} from "../../../services/settings.service";
 import {Sort} from "@angular/material/sort";
+import * as moment from "moment";
 
 @Component({
     selector: 'app-monitoring-details',
@@ -33,16 +34,17 @@ import {Sort} from "@angular/material/sort";
     styleUrls: ['./monitoring-details.component.scss']
 })
 
-export class MonitoringDetailsComponent implements OnInit {
+export class MonitoringDetailsComponent implements OnInit, OnDestroy {
     columnsToDisplay    : string[]              = ['step', 'event_date', 'event_message', 'status'];
     loading             : boolean               = true;
     processData         : any                   = [];
-    steps               : any                   = [];
     pageSize            : number                = 10;
     pageIndex           : number                = 0;
     total               : number                = 0;
     offset              : number                = 0;
     processId           : number | undefined;
+    steps               : any;
+    timer               : any;
 
     constructor(
         private router: Router,
@@ -59,17 +61,31 @@ export class MonitoringDetailsComponent implements OnInit {
             this.authService.generateHeaders();
         }
         this.processId = this.route.snapshot.params['id'];
+        this.loadProcess();
+        this.timer = setInterval(()=>{
+            this.loadProcess();
+        }, 4000);
+    }
+
+    ngOnDestroy() {
+        clearInterval(this.timer);
+    }
+
+    loadProcess() {
         this.http.get(environment['url'] + '/ws/monitoring/getProcessById/' + this.processId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.process && Object.keys(data.process).length > 0) {
                     this.processData = data.process[0];
+                    const listOfSteps: any = [];
                     if (Object.keys(this.processData.steps).length > 0) {
                         this.total = Object.keys(this.processData.steps).length;
                         Object.keys(this.processData.steps).forEach((step: any) => {
                             this.processData.steps[step].step = parseInt(step);
-                            this.steps.push(this.processData.steps[step]);
+                            this.processData.steps[step].date = moment(this.processData.steps[step].date).format('LLL');
+                            listOfSteps.push(this.processData.steps[step]);
                         });
                     }
+                    this.steps = listOfSteps;
                 } else {
                     this.notify.error(this.translate.instant('MONITORING.process_doesnt_exist', {id: this.processId}));
                     this.router.navigate(['/monitoring']);
@@ -112,4 +128,6 @@ export class MonitoringDetailsComponent implements OnInit {
     compare(a: number | string, b: number | string, isAsc: boolean) {
         return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
     }
+
+    protected readonly window = window;
 }

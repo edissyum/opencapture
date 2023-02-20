@@ -27,8 +27,8 @@ def get_processes(args):
     return response, 200
 
 
-def get_process_by_id(id):
-    process, _ = monitoring.get_process_by_id(id)
+def get_process_by_id(process_id):
+    process, _ = monitoring.get_process_by_id(process_id)
 
     response = {
         "process": process
