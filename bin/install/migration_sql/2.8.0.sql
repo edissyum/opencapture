@@ -21,6 +21,10 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('passwordRules
     "description": ""
 }', false);
 
+DROP INDEX docservers_path_uindex;
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('INPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier d''entrée des fichiers importés', '/var/share/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('OUTPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier de sortie des fichiers exportés', '/var/share/');
+
 CREATE TABLE monitoring
 (
     "id"                 SERIAL         UNIQUE PRIMARY KEY,

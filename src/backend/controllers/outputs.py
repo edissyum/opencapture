@@ -18,6 +18,9 @@
 import json
 from flask_babel import gettext
 from src.backend.import_models import outputs
+from flask import request, g as current_context
+from src.backend.main import create_classes_from_custom_id
+from src.backend.functions import retrieve_custom_from_url
 
 
 def get_outputs(args):
@@ -70,17 +73,37 @@ def duplicate_output(output_id):
         return response, 401
 
 
-def update_output(output_id, args):
-    _, error = outputs.get_output_by_id({'output_id': output_id})
+def is_path_allowed(parameters):
+    custom_id = retrieve_custom_from_url(request)
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
 
+    if 'OUTPUTS_ALLOWED_PATH' in docservers:
+        for parameter in parameters:
+            if parameter['id'] == 'folder_out' and parameter['value']:
+                return parameter['value'].startswith(docservers['OUTPUTS_ALLOWED_PATH'])
+
+
+def update_output(output_id, data):
+    if not is_path_allowed(data['data']['options']['parameters']):
+        response = {
+            "errors": gettext('UPDATE_OUTPUT_ERROR'),
+            "message": gettext('NOT_ALLOWED_OUTPUT_PATH')
+        }
+        return response, 401
+
+    _, error = outputs.get_output_by_id({'output_id': output_id})
     if error is None:
         _, error = outputs.update_output({
             'set': {
-                'output_type_id': args['output_type_id'],
-                'compress_type': args['compress_type'] if 'compress_type' in args else None,
-                'ocrise': args['ocrise'] if 'ocrise' in args else False,
-                'output_label': args['output_label'],
-                'data': json.dumps(args['data'])
+                'output_type_id': data['output_type_id'],
+                'compress_type': data['compress_type'] if 'compress_type' in data else None,
+                'ocrise': data['ocrise'] if 'ocrise' in data else False,
+                'output_label': data['output_label'],
+                'data': json.dumps(data['data'])
             },
             'output_id': output_id
         })

@@ -46,7 +46,6 @@ class SplitterTest(unittest.TestCase):
 
         pdf_url = 'https://open-capture.com/wp-content/uploads/2022/11/splitter_test.pdf'
         pdf_path = './instance/upload/splitter/splitter_test.pdf'
-
         http = urllib3.PoolManager()
         with http.request('GET', pdf_url, preload_content=False) as r, open(pdf_path, 'wb') as out_file:
             shutil.copyfileobj(r, out_file)
@@ -66,7 +65,13 @@ class SplitterTest(unittest.TestCase):
 
     def test_successful_get_batches_list(self):
         self.create_batch()
-        response = self.app.get(f'/{CUSTOM_ID}/ws/splitter/batches/user/1/paging/0/16/today/NEW',
+        payload = {
+            'page': 0,
+            'size': 10,
+            'userId': 1,
+            'today': 'today'
+        }
+        response = self.app.post(f'/{CUSTOM_ID}/ws/splitter/batches/list', json=payload,
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(True, len(response.json['batches']) > 0)
@@ -75,12 +80,16 @@ class SplitterTest(unittest.TestCase):
         self.create_batch()
         self.db.execute("SELECT * FROM splitter_batches")
         batches = self.db.fetchall()
+        payload = {
+            'userId': 1,
+            'batchId': batches[0]['id'],
+        }
         response = self.app.get(f"/{CUSTOM_ID}/ws/splitter/documents/{batches[0]['id']}",
                                 headers={"Content-Type": "application/json",
-                                         'Authorization': 'Bearer ' + self.token})
+                                         'Authorization': 'Bearer ' + self.token}, json=payload)
         self.assertEqual(200, response.status_code)
         self.assertEqual(2, len(response.json['documents']))
 
     def tearDown(self) -> None:
-        self.db.execute("TRUNCATE TABLE splitter_batches")
+        self.db.execute("UPDATE splitter_batches SET status = 'DEL'")
         self.db.execute("TRUNCATE TABLE tasks_watcher")
