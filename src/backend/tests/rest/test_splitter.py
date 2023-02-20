@@ -16,8 +16,6 @@
 # @dev : Brich Oussama <oussama.brich@edissyum.com>
 
 import shutil
-from time import sleep
-
 import urllib3
 import unittest
 import warnings
