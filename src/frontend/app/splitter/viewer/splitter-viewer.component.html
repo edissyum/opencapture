@@ -12,9 +12,9 @@
             <span *ngIf="batches.length === 0" class="text-slate-400 w-full grid place-content-center">
                 {{ 'SPLITTER.no_batch_found' | translate }}
             </span>
-            <div cdkDropList>
-                <div (cdkDragStarted)="this.isBatchOnDrag = true" (cdkDragEnded)="onBatchDrop(batch.id)"
-                     *ngFor="let batch of this.batches | slice: 0 : 10" cdkDrag>
+            <div cdkDropList  (cdkDropListDropped)="dropBatch($event)">
+                <div class="cursor-move" (cdkDragStarted)="this.isBatchOnDrag = true" (cdkDragEnded)="onBatchDrop(batch.id)"
+                     *ngFor="let batch of this.batches" cdkDrag>
                     <div *cdkDragPlaceholder class="drop-shadow-xl w-full h-40 text-center text-gray-500 bg-slate-50 grid place-content-center">
                         <i class="fa-solid fa-object-group fa-3x"></i>
                         {{ 'SPLITTER.selected_batch_for_merge' | translate }}

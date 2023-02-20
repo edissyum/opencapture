@@ -952,6 +952,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             })
         ).subscribe();
     }
+
+    dropBatch(event: CdkDragDrop<string[]>) {
+        moveItemInArray(this.batches, event.previousIndex, event.currentIndex);
+    }
     /* End documents control */
 
     /* Begin tools bar */
