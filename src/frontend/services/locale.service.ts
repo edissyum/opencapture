@@ -57,8 +57,8 @@ export class LocaleService {
                 L : 'DD/MM/YYYY',
                 l : 'DD/MM/YYYY',
                 LL : 'D MMMM YYYY',
-                LLL : 'D MMMM YYYY HH:mm',
-                LLLL : 'dddd D MMMM YYYY HH:mm'
+                LLL : 'D MMM YYYY à HH:mm:ss',
+                LLLL : 'dddd D MMMM YYYY à HH:mm:ss'
             },
             week : {
                 dow : 1, // Monday is the first day of the week.
@@ -71,9 +71,9 @@ export class LocaleService {
                 L: "MM/DD/YYYY",
                 l: "MM/DD/YYYY",
                 LL: "MMMM Do YYYY",
-                LLL: "MMMM Do YYYY LT",
-                LLLL: "dddd, MMMM Do YYYY LT",
-                llll: "ddd, MMM D YYYY LT"
+                LLL: "MMM Do YYYY - HH:mm:ss",
+                LLLL: "dddd, MMMM Do YYYY HH:mm:ss",
+                llll: "ddd, MMM D YYYY HH:mm:ss"
             },
             week : {
                 dow : 0, // Sunday is the first day of the week.
