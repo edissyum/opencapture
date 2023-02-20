@@ -61,6 +61,7 @@ export class VerifierViewerComponent implements OnInit {
     loadingSubmit           : boolean     = false;
     supplierExists          : boolean     = true;
     deleteDataOnChangeForm  : boolean     = true;
+    formEmpty               : boolean     = false;
     oldVAT                  : string      = '';
     oldSIRET                : string      = '';
     oldSIREN                : string      = '';
@@ -214,6 +215,9 @@ export class VerifierViewerComponent implements OnInit {
                 top: 0,
                 behavior: 'smooth'
             });
+            if (this.form.facturation.length === 0 && this.form.supplier.length === 0 && this.form.other.length === 0) {
+                this.formEmpty = true;
+            }
             this.loading = false;
         }, 500);
         const triggerEvent = $('.trigger');

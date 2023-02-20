@@ -440,6 +440,10 @@ export class SettingsService {
         const selectedParentSetting = this.localStorage.get('selectedParentSettings');
         const selectedSetting = this.localStorage.get('selectedSettings');
 
+        onresize = () => {
+            this.minimizeSideNav = window.innerWidth < 1500;
+        };
+
         if (selectedSetting) {
             this.setSelectedSettings(selectedSetting);
         }

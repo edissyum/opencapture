@@ -1,0 +1,83 @@
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
+    <mat-sidenav-content class="bg-white">
+        <div class="settings_header flex justify-center p-4 items-center bg-green-400 bg-opacity-60 text-gray-900 relative z-50">
+            <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
+        </div>
+        <hr class="border-green-400 relative z-50">
+        <div *ngIf="this.loading">
+            <app-loader></app-loader>
+        </div>
+        <div class="overflow-x-hidden" style="max-height: calc(100% - 70px)">
+            <div class="flex justify-center">
+                <div class="m-auto text-center">{{ 'HISTORY.filter' | translate }} : </div>
+                <form class="grid grid-cols-2 w-6/12 gap-6 mt-5 mb-0 text-center">
+                    <ng-container *ngFor="let field of form">
+                        <mat-form-field class="block" *ngIf="field.type === 'select'">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <mat-select [formControl]="field.control" [(value)]="field.control.value"
+                                        [required]="field.required" (selectionChange)="updateData(field.id, $event.value)">
+                                <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] | translate }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </ng-container>
+                </form>
+                <div class="m-auto w-1/12 text-center text-xl cursor-pointer" (click)="resetFilter()"
+                     [matTooltip]="'HISTORY.refresh_filter' | translate">
+                    <i class="fa-solid fa-sync-alt"></i>
+                </div>
+            </div>
+            <hr class="border-green-400 w-1/3 mx-auto my-4">
+            <div class="flex justify-center">
+                <mat-table matSort [dataSource]="this.processData" (matSortChange)="sortData($event)" class="w-full">
+                    <ng-container matColumnDef="id">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 180px!important;"> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="flex: 0 0 180px!important;"> {{ element.id }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="module">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'CUSTOM-FIELDS.module' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ 'PRIVILEGES.' + element.module | translate }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="creation_date">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.creation_date' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element" [matTooltip]="element.creation_date_formated"> {{ element.creation_date }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="end_date">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.end_date' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element" [matTooltip]="element.end_date_formated"> {{ element.end_date }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="last_message">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.last_message' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{ element.last_message }}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                        <span *ngIf="element.status === 'running' && !element.error" class="text-gray-400">
+                            <i class="fa-solid fa-person-running fa-fade text-green-400 text-lg w-6"></i>
+                            {{ 'MONITORING.running' | translate }}
+                        </span>
+                        <span *ngIf="element.status === 'done' && !element.error" class="text-green-400">
+                            <i class="fa-solid fa-check text-lg w-6"></i>
+                            {{ 'MONITORING.done' | translate }}
+                        </span>
+                        <span *ngIf="element.status === 'error' || element.error" class="text-red-400">
+                            <i class="fa-solid fa-xmark text-lg w-6"></i>
+                            {{ 'MONITORING.error' | translate }}
+                        </span>
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: columnsToDisplay;" [routerLink]="'/monitoring/' + row.id"
+                             class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
+                </mat-table>
+            </div>
+            <mat-paginator showFirstLastButtons
+                           [length]="total"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

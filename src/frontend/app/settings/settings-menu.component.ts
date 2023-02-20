@@ -16,7 +16,7 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Router } from "@angular/router";
-import {Component, Input} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SettingsService } from "../../services/settings.service";
 import { PrivilegesService } from "../../services/privileges.service";
 

@@ -24,6 +24,11 @@ if 'auth' or 'controllers' not in custom_array['auth']['path']:
 elif 'controllers' in custom_array['auth']['path']:
     auth = getattr(__import__(custom_array['auth']['path'], fromlist=[custom_array['auth']['module']]), custom_array['auth']['module'])
 
+if 'monitoring' or 'controllers' not in custom_array['monitoring']['path']:
+    from .controllers import monitoring
+elif 'controllers' in custom_array['monitoring']['path']:
+    monitoring = getattr(__import__(custom_array['monitoring']['path'], fromlist=[custom_array['monitoring']['module']]), custom_array['monitoring']['module'])
+
 if 'mailcollect' or 'controllers' not in custom_array['mailcollect']['path']:
     from .controllers import mailcollect
 elif 'controllers' in custom_array['mailcollect']['path']:

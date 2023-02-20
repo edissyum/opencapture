@@ -12,7 +12,7 @@
                     <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
                 </button>
             </div>
-            <h3 class="text-center flex m-0">
+            <h3 class="text-center m-0">
                 Open-Capture&nbsp;<span *ngIf="!this.loading"><strong>version {{ this.currentVersion }}</strong>&nbsp;</span>
                 <span *ngIf="!this.lastVersion === undefined">
                     |<span class="text-red-600">&nbsp;{{ 'ERROR.git_connection' | translate }}</span>
