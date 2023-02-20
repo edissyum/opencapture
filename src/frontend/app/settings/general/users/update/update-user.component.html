@@ -12,7 +12,7 @@
                     <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
                 </button>
             </div>
-            <h3 class="text-center flex m-0">
+            <h3 class="text-center m-0">
                 {{ this.serviceSettings.getTitle() }} :&nbsp;
                 <span *ngIf="this.user">
                     {{ this.user['firstname'] }} {{ this.user['lastname'] }}<strong>&nbsp;({{ this.user['username'] }})</strong>

@@ -15,7 +15,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -34,7 +34,7 @@ import * as moment from "moment";
     styleUrls: ['./monitoring-details.component.scss']
 })
 
-export class MonitoringDetailsComponent implements OnInit {
+export class MonitoringDetailsComponent implements OnInit, OnDestroy {
     columnsToDisplay    : string[]              = ['step', 'event_date', 'event_message', 'status'];
     loading             : boolean               = true;
     processData         : any                   = [];
@@ -44,6 +44,7 @@ export class MonitoringDetailsComponent implements OnInit {
     offset              : number                = 0;
     processId           : number | undefined;
     steps               : any;
+    timer               : any;
 
     constructor(
         private router: Router,
@@ -60,6 +61,17 @@ export class MonitoringDetailsComponent implements OnInit {
             this.authService.generateHeaders();
         }
         this.processId = this.route.snapshot.params['id'];
+        this.loadProcess();
+        this.timer = setInterval(()=>{
+            this.loadProcess();
+        }, 4000);
+    }
+
+    ngOnDestroy() {
+        clearInterval(this.timer);
+    }
+
+    loadProcess() {
         this.http.get(environment['url'] + '/ws/monitoring/getProcessById/' + this.processId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.process && Object.keys(data.process).length > 0) {
@@ -116,4 +128,6 @@ export class MonitoringDetailsComponent implements OnInit {
     compare(a: number | string, b: number | string, isAsc: boolean) {
         return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
     }
+
+    protected readonly window = window;
 }

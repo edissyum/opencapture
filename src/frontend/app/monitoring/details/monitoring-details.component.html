@@ -1,12 +1,16 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
     <mat-sidenav-content class="bg-white">
+        <div class="settings_header flex justify-between p-4 items-center bg-green-400 bg-opacity-60 text-gray-900 relative z-50">
+            <div class="cursor-pointer" [matTooltip]="'GLOBAL.back' | translate" (click)="window.history.back()">
+                <i class="fa-solid fa-arrow-left fa-xl"></i>
+            </div>
+            <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div></div>
+        </div>
+        <hr class="border-green-400 relative z-50">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
-        <div class="settings_header flex justify-center p-4 items-center bg-green-400 bg-opacity-60 text-gray-900">
-            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
-        </div>
-        <hr class="border-green-400 relative z-30">
         <div class="overflow-x-hidden" style="max-height: calc(100% - 70px)">
             <div class="flex justify-center">
                 <mat-table matSort [dataSource]="this.steps" (matSortChange)="sortData($event)" class="w-full">

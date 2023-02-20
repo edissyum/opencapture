@@ -57,6 +57,7 @@ def launch(args):
     task_id_monitor = database.insert({
         'table': 'monitoring',
         'columns': {
+            'status': 'running'
             'filename': os.path.basename(args['file']),
             'source': 'cli' if 'from_cli' in args and args['from_cli'] else 'interface',
             'module': 'splitter',
@@ -170,15 +171,15 @@ def launch(args):
             'where': ['id = %s'],
             'data': [task_id]
         })
-        database.update({
-            'table': ['monitoring'],
-            'set': {
-                'status': 'done',
-                'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
-            },
-            'where': ['id = %s'],
-            'data': [task_id_monitor]
-        })
+    database.update({
+        'table': ['monitoring'],
+        'set': {
+            'status': 'done',
+            'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
+        },
+        'where': ['id = %s'],
+        'data': [task_id_monitor]
+    })
 
     database.conn.close()
     end = time.time()

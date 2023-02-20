@@ -320,6 +320,7 @@
 		"label_mandatory": "Label is mandatory",
 		"modify": "Modify",
 		"modify_display": "Modify display linked to form",
+		"no_fields": "No fields associated to this form",
 		"no_form_available": "No form available",
 		"only_ocr": "Just OCRise document",
 		"other": "Other",
@@ -335,6 +336,7 @@
 	},
 	"GLOBAL": {
 		"add_time": "Added at ",
+		"back": "Back",
 		"batches": "Batches",
 		"cancel": "Cancel",
 		"confirm": "Confirm",

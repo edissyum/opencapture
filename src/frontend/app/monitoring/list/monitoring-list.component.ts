@@ -15,14 +15,14 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { SettingsService } from "../../../services/settings.service";
 import { FormControl } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
 import { Sort } from "@angular/material/sort";
 import { environment } from "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
-import { of } from "rxjs";
+import {interval, of} from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
@@ -33,7 +33,7 @@ import * as moment from "moment/moment";
     templateUrl: './monitoring-list.component.html',
     styleUrls: ['./monitoring-list.component.scss']
 })
-export class MonitoringListComponent implements OnInit {
+export class MonitoringListComponent implements OnInit, OnDestroy {
     columnsToDisplay    : string[] = ['id', 'module', 'creation_date', 'end_date', 'last_message', 'status'];
     loading             : boolean  = true;
     pageSize            : number   = 10;
@@ -82,6 +82,7 @@ export class MonitoringListComponent implements OnInit {
             ]
         },
     ];
+    timer               : any;
 
     constructor(
         private http: HttpClient,
@@ -105,11 +106,15 @@ export class MonitoringListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+
         this.loadMonitoring();
+        this.timer = setInterval(()=>{
+            this.loadMonitoring();
+        }, 4000);
     }
 
-    getTitle(element: any) {
-        return moment(element.creation_date).format('LLLL');
+    ngOnDestroy() {
+        clearInterval(this.timer);
     }
 
     loadMonitoring() {
