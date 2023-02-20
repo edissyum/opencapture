@@ -56,13 +56,16 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
         public serviceSettings: SettingsService
     ) {}
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
         this.processId = this.route.snapshot.params['id'];
-        this.loadProcess();
-        this.timer = setInterval(()=>{
+        await this.loadProcess();
+        this.timer = setInterval(()=> {
+            if (this.processData.status === 'done') {
+                clearInterval(this.timer);
+            }
             this.loadProcess();
         }, 4000);
     }
@@ -71,7 +74,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
         clearInterval(this.timer);
     }
 
-    loadProcess() {
+    async loadProcess() {
         this.http.get(environment['url'] + '/ws/monitoring/getProcessById/' + this.processId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.process && Object.keys(data.process).length > 0) {
@@ -84,6 +87,34 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
                             this.processData.steps[step].date = moment(this.processData.steps[step].date).format('LLL');
                             listOfSteps.push(this.processData.steps[step]);
                         });
+                    }
+                    if (this.processData.elapsed_time) {
+                        const hours = this.processData.elapsed_time.slice(0, 2);
+                        const minutes = this.processData.elapsed_time.slice(3, 5);
+                        const seconds = this.processData.elapsed_time.slice(6, 11);
+                        let message = '';
+                        if (hours && hours !== '00') {
+                            if (parseInt(hours) > 1) {
+                                message += hours + ' ' + this.translate.instant('MONITORING.hours') + ', ';
+                            } else {
+                                message += hours + ' ' + this.translate.instant('MONITORING.hour') + ', ';
+                            }
+                        }
+                        if (minutes) {
+                            if (parseInt(minutes) > 1) {
+                                message += minutes + ' ' + this.translate.instant('MONITORING.minutes') + ' ' + this.translate.instant('MONITORING.and') + ' ';
+                            } else {
+                                message += minutes + ' ' + this.translate.instant('MONITORING.minute') + ' ' + this.translate.instant('MONITORING.and') + ' ';
+                            }
+                        }
+                        if (seconds) {
+                            if (parseInt(seconds) > 1) {
+                                message += seconds + ' ' + this.translate.instant('MONITORING.seconds');
+                            } else {
+                                message += seconds + ' ' + this.translate.instant('MONITORING.second');
+                            }
+                        }
+                        this.processData.elapsedTimeMessage = message;
                     }
                     this.steps = listOfSteps;
                 } else {
@@ -106,23 +137,23 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
     }
 
     sortData(sort: Sort) {
-        const data = this.processData.steps.slice();
+        const data = this.steps.slice();
         if (!sort.active || sort.direction === '') {
-            this.processData.steps = data;
+            this.steps = data;
             return;
         }
 
-        this.processData.steps = data.sort((a: any, b: any) => {
+        this.steps = data.sort((a: any, b: any) => {
             const isAsc = sort.direction === 'asc';
             switch (sort.active) {
-                case 'steps': return this.compare(a.steps, b.steps, isAsc);
+                case 'step': return this.compare(a.steps, b.steps, isAsc);
                 case 'date': return this.compare(a.date, b.date, isAsc);
                 case 'message': return this.compare(a.message, b.message, isAsc);
                 case 'status': return this.compare(a.status, b.status, isAsc);
                 default: return 0;
             }
         });
-        this.processData.steps = this.processData.steps.splice(0, this.pageSize);
+        this.steps = this.steps.splice(0, this.pageSize);
     }
 
     compare(a: number | string, b: number | string, isAsc: boolean) {
