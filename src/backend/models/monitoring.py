@@ -40,7 +40,7 @@ def get_processes(args):
     return _processes, error
 
 
-def get_process_by_id(process_id):
+def get_process_by_id(process_id, date_format):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -49,7 +49,11 @@ def get_process_by_id(process_id):
         database = _vars[0]
     error = None
     _process = database.select({
-        'select': ['*'],
+        'select': [
+            '*',
+            "to_char(creation_date, '" + date_format + "') as creation_date_formated",
+            "to_char(end_date, '" + date_format + "') as end_date_formated"
+        ],
         'table': ['monitoring'],
         'where': ['id = %s'],
         'data': [process_id],

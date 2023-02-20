@@ -320,6 +320,7 @@
 		"label_mandatory": "Le libellé du formulaire est obligatoire",
 		"modify": "Modifier le formulaire",
 		"modify_display": "Modifier l'affichage lié au formulaire",
+		"no_fields": "Aucun champ n'est associé à ce formulaire",
 		"no_form_available": "Aucun formulaire n'est disponible",
 		"only_ocr": "OCRiser simplement le document",
 		"other": "Autres",
@@ -335,6 +336,7 @@
 	},
 	"GLOBAL": {
 		"add_time": "Ajouté à ",
+		"back": "Retour",
 		"batches": "Lots",
 		"cancel": "Annuler",
 		"confirm": "Confirmation",
@@ -609,10 +611,20 @@
 		"required": "Champ obligatoire"
 	},
 	"MONITORING": {
+		"and": "et",
 		"done": "Processus terminé",
 		"error": "Processus en erreur",
+		"hour": "heure",
+		"hours": "heures",
+		"minute": "minute",
+		"minutes": "minutes",
 		"process_doesnt_exist": "Le processus numéro <strong>{{ id }}</strong> n'existe pas",
+		"process_id": "Identifiant du processus",
+		"process_time": "Temps du processus",
 		"running": "Processus en cours",
+		"second": "seconde",
+		"seconds": "secondes",
+		"status": "État du processus",
 		"step": "Étape",
 		"task_done": "Tâche terminée",
 		"task_error": "Tâche en erreur"

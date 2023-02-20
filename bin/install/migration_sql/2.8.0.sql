@@ -23,11 +23,14 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('passwordRules
 
 CREATE TABLE monitoring
 (
-    "id"                 SERIAL      UNIQUE PRIMARY KEY,
-    "module"             VARCHAR(10),
-    "source"             VARCHAR(10),
-    "creation_date"      TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
-    "modification_date"  TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
+    "id"                 SERIAL         UNIQUE PRIMARY KEY,
+    "status"             VARCHAR(10),
+    "elapsed_time"       VARCHAR(20),
+    "error"              BOOLEAN        DEFAULT False,
+    "module"             VARCHAR(10)    NOT NULL,
+    "source"             VARCHAR(10)    NOT NULL,
+    "creation_date"      TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "end_date"           TIMESTAMP,
-    "steps"              JSONB       DEFAULT '{}'
+    "filename"           VARCHAR(255),
+    "steps"              JSONB          DEFAULT '{}'
 );

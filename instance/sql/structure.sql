@@ -410,6 +410,7 @@ CREATE TABLE monitoring
 (
     "id"                 SERIAL         UNIQUE PRIMARY KEY,
     "status"             VARCHAR(10),
+    "elapsed_time"       VARCHAR(20),
     "error"              BOOLEAN        DEFAULT False,
     "module"             VARCHAR(10)    NOT NULL,
     "source"             VARCHAR(10)    NOT NULL,

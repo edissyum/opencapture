@@ -165,9 +165,13 @@ def launch(args):
             'where': ['id = %s'],
             'data': [task_id]
         })
+    end = time.time()
+    _timer = timer(start, end)
+    log.info('Process end after ' + _timer + '')
     database.update({
         'table': ['monitoring'],
         'set': {
+            'elapsed_time': _timer,
             'status': 'done',
             'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
         },
@@ -175,6 +179,3 @@ def launch(args):
         'data': [task_id_monitor]
     })
     database.conn.close()
-    end = time.time()
-    log.task_id_monitor = None
-    log.info('Process end after ' + timer(start, end) + '')
