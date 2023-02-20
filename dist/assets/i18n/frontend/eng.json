@@ -611,10 +611,20 @@
 		"required": "Field required"
 	},
 	"MONITORING": {
+		"and": "",
 		"done": "Process done",
 		"error": "Process error",
+		"hour": "",
+		"hours": "hour(s)",
+		"minute": "",
+		"minutes": "minute(s)",
 		"process_doesnt_exist": "Process <strong>{{ id }}</strong> doesn't exist",
+		"process_id": "Process id",
+		"process_time": "Process time",
 		"running": "Process running",
+		"second": "",
+		"seconds": "second(s)",
+		"status": "Process status",
 		"step": "Step",
 		"task_done": "Task done",
 		"task_error": "Task in error"
