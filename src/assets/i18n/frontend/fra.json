@@ -613,7 +613,9 @@
 		"error": "Processus en erreur",
 		"process_doesnt_exist": "Le processus numéro <strong>{{ id }}</strong> n'existe pas",
 		"running": "Processus en cours",
-		"step": "Étape"
+		"step": "Étape",
+		"task_done": "Tâche terminée",
+		"task_error": "Tâche en erreur"
 	},
 	"OUTPUT": {
 		"add": "Ajouter une chaîne sortante",

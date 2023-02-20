@@ -1,10 +1,10 @@
 .mat-column-id,
-.mat-column-module,
 .mat-column-end_date,
 .mat-column-creation_date {
     flex: 0 0 10%;
 }
 
-.mat-column-status {
+.mat-column-status,
+.mat-column-module {
     flex: 0 0 15%;
 }

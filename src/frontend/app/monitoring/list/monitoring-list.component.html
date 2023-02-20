@@ -39,11 +39,11 @@
                     </ng-container>
                     <ng-container matColumnDef="creation_date">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.creation_date' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element"> {{ element.creation_date }} </mat-cell>
+                        <mat-cell *matCellDef="let element" [matTooltip]="element.creation_date_formated"> {{ element.creation_date }} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="end_date">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.end_date' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element"> {{ element.end_date }} </mat-cell>
+                        <mat-cell *matCellDef="let element" [matTooltip]="element.end_date_formated"> {{ element.end_date }} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="last_message">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.last_message' | translate }} </mat-header-cell>
@@ -56,13 +56,13 @@
                             <i class="fa-solid fa-person-running text-green-400 text-lg w-6"></i>
                             {{ 'MONITORING.running' | translate }}
                         </span>
-                            <span *ngIf="element.status === 'done' && !element.error" class="text-green-400">
+                        <span *ngIf="element.status === 'done' && !element.error" class="text-green-400">
                             <i class="fa-solid fa-check text-lg w-6"></i>
-                                {{ 'MONITORING.done' | translate }}
+                            {{ 'MONITORING.done' | translate }}
                         </span>
-                            <span *ngIf="element.status === 'error' || element.error" class="text-red-400">
+                        <span *ngIf="element.status === 'error' || element.error" class="text-red-400">
                             <i class="fa-solid fa-xmark text-lg w-6"></i>
-                                {{ 'MONITORING.error' | translate }}
+                            {{ 'MONITORING.error' | translate }}
                         </span>
                         </mat-cell>
                     </ng-container>

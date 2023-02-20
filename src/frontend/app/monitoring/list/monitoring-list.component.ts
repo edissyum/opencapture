@@ -26,6 +26,7 @@ import { of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
+import * as moment from "moment/moment";
 
 @Component({
     selector: 'app-monitoring-list',
@@ -96,7 +97,7 @@ export class MonitoringListComponent implements OnInit {
         }
         this.http.get(environment['url'] + '/ws/monitoring/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.allProcessData = data.processses;
+                this.allProcessData = data.processss;
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -105,6 +106,10 @@ export class MonitoringListComponent implements OnInit {
             })
         ).subscribe();
         this.loadMonitoring();
+    }
+
+    getTitle(element: any) {
+        return moment(element.creation_date).format('LLLL');
     }
 
     loadMonitoring() {

@@ -613,7 +613,9 @@
 		"error": "Process error",
 		"process_doesnt_exist": "Process <strong>{{ id }}</strong> doesn't exist",
 		"running": "Process running",
-		"step": "Step"
+		"step": "Step",
+		"task_done": "Task done",
+		"task_error": "Task in error"
 	},
 	"OUTPUT": {
 		"add": "Add output",

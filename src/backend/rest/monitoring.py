@@ -35,15 +35,19 @@ def get_processes():
 
     if configurations['locale'] == 'fra':
         _format = 'DD/MM/YYYY HH24:MI:SS'
+        _format_long = 'TMDay DD TMMonth YYYY HH24:MI:SS'
     else:
         _format = 'MM/DD/YYYY HH24:MI:SS'
+        _format_long = 'Mon DD YYYY HH24:MI:SS'
 
     args = {
         'select': [
             '*',
             'count(*) OVER() as total',
             "to_char(creation_date, '" + _format + "') as creation_date",
-            "to_char(end_date, '" + _format + "') as end_date"
+            "to_char(creation_date, '" + _format_long + "') as creation_date_formated",
+            "to_char(end_date, '" + _format + "') as end_date",
+            "to_char(end_date, '" + _format_long + "') as end_date_formated"
         ],
         'offset': request.args['offset'] if 'offset' in request.args else 0,
         'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
