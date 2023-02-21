@@ -34,7 +34,7 @@ import * as moment from "moment/moment";
     styleUrls: ['./monitoring-list.component.scss']
 })
 export class MonitoringListComponent implements OnInit, OnDestroy {
-    columnsToDisplay    : string[] = ['id', 'module', 'creation_date', 'end_date', 'last_message', 'status'];
+    columnsToDisplay    : string[] = ['id', 'module', 'creation_date', 'end_date', 'filename', 'last_message', 'status'];
     loading             : boolean  = true;
     pageSize            : number   = 10;
     pageIndex           : number   = 0;

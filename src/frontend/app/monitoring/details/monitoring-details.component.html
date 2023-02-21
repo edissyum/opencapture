@@ -13,7 +13,7 @@
         </div>
         <div class="flex justify-center">
             <div class="grid my-10 mx-20">
-                <span class="text-gray-400 text-base">
+                <span class="text-gray-400 text-base text-center">
                     {{ 'MONITORING.process_id' | translate }}
                 </span>
                 <span class="text-center text-xl">
@@ -21,7 +21,15 @@
                 </span>
             </div>
             <div class="grid my-10 mx-20">
-                <span class="text-gray-400 text-base">
+                <span class="text-gray-400 text-base text-center">
+                    {{ 'MONITORING.input_associated' | translate }}
+                </span>
+                <span class="text-center text-xl">
+                    {{ this.inputLabel }}
+                </span>
+            </div>
+            <div class="grid my-10 mx-20">
+                <span class="text-gray-400 text-base text-center">
                     {{ 'HEADER.creation_date' | translate }}
                 </span>
                 <span class="text-center text-xl">
@@ -29,7 +37,7 @@
                 </span>
             </div>
             <div class="grid my-10 mx-20">
-                <span class="text-gray-400 text-base">
+                <span class="text-gray-400 text-base text-center">
                     {{ 'HEADER.end_date' | translate }}
                 </span>
                 <span class="text-center text-xl">
@@ -37,7 +45,7 @@
                 </span>
             </div>
             <div class="grid my-10 mx-20">
-                <span class="text-gray-400 text-base">
+                <span class="text-gray-400 text-base text-center">
                     {{ 'MONITORING.process_time' | translate }}
                 </span>
                 <span class="text-center text-xl">
@@ -45,7 +53,7 @@
                 </span>
             </div>
             <div class="grid my-10 mx-20">
-                <span class="text-gray-400 text-base">
+                <span class="text-gray-400 text-base text-center">
                     {{ 'MONITORING.status' | translate }}
                 </span>
                 <span *ngIf="this.processData.status === 'running' && !this.processData.error" class="text-gray-400 text-center text-3xl"
