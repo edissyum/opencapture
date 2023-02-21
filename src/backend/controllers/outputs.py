@@ -197,13 +197,15 @@ def delete_output(output_id):
 
 def get_allowed_path():
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in current_context:
+    if 'docservers' in current_context and 'configurations' in current_context:
         docservers = current_context.docservers
+        configurations = current_context.configurations
     else:
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
+        configurations = _vars[10]
 
-    if 'OUTPUTS_ALLOWED_PATH' in docservers:
+    if configurations['restrictOutputsPath'] and 'OUTPUTS_ALLOWED_PATH' in docservers:
         response = {'allowedPath': docservers['OUTPUTS_ALLOWED_PATH']}
     else:
         response = {'allowedPath': ''}
