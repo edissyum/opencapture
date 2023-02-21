@@ -280,7 +280,7 @@ touch $customPath/config/secret_key
 echo "[$oldCustomId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
 echo "isdefault = False" >> $customIniFile
-echo "" >> $customIniFile
+echo -e "" >> $customIniFile
 
 ####################
 # Generate secret key for Flask and write it to custom secret_key file
