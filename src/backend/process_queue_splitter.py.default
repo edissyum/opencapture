@@ -57,7 +57,7 @@ def launch(args):
     task_id_monitor = database.insert({
         'table': 'monitoring',
         'columns': {
-            'status': 'running'
+            'status': 'running',
             'filename': os.path.basename(args['file']),
             'source': 'cli' if 'from_cli' in args and args['from_cli'] else 'interface',
             'module': 'splitter',
@@ -169,7 +169,7 @@ def launch(args):
                 'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
             },
             'where': ['id = %s'],
-            'data': [task_id]
+            'data': [task_id_watcher]
         })
     end = time.time()
     _timer = timer(start, end)
