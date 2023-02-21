@@ -61,6 +61,16 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('passwordRules
     },
     "description": ""
 }', false);
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('restrictInputsPath', '{
+    "type": "bool",
+    "value": false,
+    "description": "Activer la restriction du chemin sur le dossier des chaînes entrantes"
+}', true);
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('restrictOutputsPath', '{
+    "type": "bool",
+    "value": false,
+    "description": "Activer la restriction du chemin sur le dossier des chaînes sortantes"
+}', true);
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture', '/var/www/html/opencapture/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('LOCALE_PATH', 'Chemin vers le dossier contenant les fichiers de traductions', '/var/www/html/opencapture/src/assets/locale/');

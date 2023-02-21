@@ -39,3 +39,16 @@ CREATE TABLE monitoring
     "filename"           VARCHAR(255),
     "steps"              JSONB          DEFAULT '{}'
 );
+{"type": "string", "value": "Open-Capture - LAD / RAD", "description": "Court message affiché sur l'écran d'accueil"}
+
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('restrictInputsPath', '{
+    "type": "bool",
+    "value": false,
+    "description": "Activer la restriction du chemin sur le dossier des chaînes entrantes"
+}', true);
+
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('restrictOutputsPath', '{
+    "type": "bool",
+    "value": false,
+    "description": "Activer la restriction du chemin sur le dossier des chaînes sortantes"
+}', true);
