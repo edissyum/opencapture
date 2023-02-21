@@ -42,6 +42,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
     pageIndex           : number                = 0;
     total               : number                = 0;
     offset              : number                = 0;
+    inputLabel          : string                = '';
     processId           : number | undefined;
     steps               : any;
     timer               : any;
@@ -79,6 +80,19 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
             tap((data: any) => {
                 if (data.process && Object.keys(data.process).length > 0) {
                     this.processData = data.process[0];
+                    if (this.processData.input_id && this.inputLabel === '') {
+                        this.http.get(environment['url'] + '/ws/inputs/getByInputId/' + this.processData.input_id, {headers: this.authService.headers}).pipe(
+                            tap((data: any) => {
+                                this.inputLabel = data.input_label;
+                            }),
+                            catchError((err: any) => {
+                                console.debug(err);
+                                this.notify.handleErrors(err);
+                                this.router.navigate(['/settings/splitter/outputs']).then();
+                                return of(false);
+                            })
+                        ).subscribe();
+                    }
                     const listOfSteps: any = [];
                     if (Object.keys(this.processData.steps).length > 0) {
                         this.total = Object.keys(this.processData.steps).length;
@@ -100,7 +114,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
                                 message += hours + ' ' + this.translate.instant('MONITORING.hour') + ', ';
                             }
                         }
-                        if (minutes) {
+                        if (minutes && hours !== '00') {
                             if (parseInt(minutes) > 1) {
                                 message += minutes + ' ' + this.translate.instant('MONITORING.minutes') + ' ' + this.translate.instant('MONITORING.and') + ' ';
                             } else {
@@ -108,10 +122,18 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
                             }
                         }
                         if (seconds) {
-                            if (parseInt(seconds) > 1) {
-                                message += seconds + ' ' + this.translate.instant('MONITORING.seconds');
+                            if (parseInt(minutes) < 1 && parseInt(hours) < 1) {
+                                const seconds_splitted = seconds.slice(0, 2);
+                                const microseconds = seconds.slice(3, 5);
+                                message += seconds_splitted + ' ' + this.translate.instant('MONITORING.seconds');
+                                message += ' ' + this.translate.instant('MONITORING.and') + ' ';
+                                message +=  microseconds + ' ' + this.translate.instant('MONITORING.microseconds');
                             } else {
-                                message += seconds + ' ' + this.translate.instant('MONITORING.second');
+                                if (parseInt(seconds) > 1) {
+                                    message += seconds + ' ' + this.translate.instant('MONITORING.seconds');
+                                } else {
+                                    message += seconds + ' ' + this.translate.instant('MONITORING.second');
+                                }
                             }
                         }
                         this.processData.elapsedTimeMessage = message;
