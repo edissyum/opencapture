@@ -111,6 +111,17 @@ systemctl restart OCVerifier-worker_* || supervisorctl restart all
 systemctl restart OCSplitter-worker_* || supervisorctl restart all
 
 ####################
+# Fix verifier and splitter worker custom file
+if [ -f "$OpenCapturePath/src/backend/process_queue_verifier.py.default" ]; then
+    for customPath in $OpenCapturePath/custom/*; do
+        if [[ -d $customPath ]]; then
+            cp -f "$OpenCapturePath/src/backend/process_queue_verifier.py.default" "$customPath/src/backend/process_queue_verifier.py"
+            cp -f "$OpenCapturePath/src/backend/process_queue_splitter.py.default" "$customPath/src/backend/process_queue_splitter.py"
+        fi
+    done
+fi
+
+####################
 # Fix rights on folder and files
 chmod -R 775 $OpenCapturePath
 chown -R "$user":"$user" $OpenCapturePath
