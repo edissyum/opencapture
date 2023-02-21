@@ -336,6 +336,7 @@
 	},
 	"GLOBAL": {
 		"add_time": "Added at ",
+		"allowed_path": "Allowed path :  {{ allowedPath }}",
 		"back": "Back",
 		"batches": "Batches",
 		"cancel": "Cancel",
@@ -368,6 +369,7 @@
 		"move_to_inactive": "Move to inactive",
 		"n_minutes_ago": "{{ minutes }} min ago",
 		"new_input_link": "Reassign inputs",
+		"no_restriction": "No restriction",
 		"no_task_to_show": "No task to show",
 		"quit": "Quit",
 		"reset-password": "Reset password",

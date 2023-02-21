@@ -10,7 +10,9 @@
 <mat-divider class="border-green-400"></mat-divider>
 <mat-nav-list class="pt-0 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
     <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent(); let i = index"
-                         [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
+                        [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])"
+                        class="my-1" [ngClass]="parent.id === this.serviceSettings.getSelectedParentSetting() ? 'rounded-t-lg' : 'rounded-lg'"
+                        (click)="this.serviceSettings.setSelectedParentSettings(parent.id)">
         <mat-expansion-panel-header class="settings_expansion" [class.border-t-0]="i === 0" [class.p-4]="this.serviceSettings.minimizeSideNav">
             <mat-panel-title class="text-sm" [class.mr-0]="this.serviceSettings.minimizeSideNav" [matTooltip]="parent['label'] | translate" [matTooltipDisabled]="!this.serviceSettings.minimizeSideNav">
                 <span *ngIf="!this.serviceSettings.minimizeSideNav else minimizeParent">
