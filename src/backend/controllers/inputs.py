@@ -14,6 +14,7 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import os
 import stat
@@ -350,3 +351,19 @@ def create_script_and_incron(args):
             "message": folder_script
         }
         return response, 501
+
+
+def get_allowed_path():
+    custom_id = retrieve_custom_from_url(request)
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
+    if 'OUTPUTS_ALLOWED_PATH' in docservers:
+        response = {'allowedPath': docservers['INPUTS_ALLOWED_PATH']}
+    else:
+        response = {'allowedPath': ''}
+
+    return response, 200

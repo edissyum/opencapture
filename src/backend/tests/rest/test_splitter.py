@@ -69,7 +69,7 @@ class SplitterTest(unittest.TestCase):
             'page': 0,
             'size': 10,
             'userId': 1,
-            'today': 'today'
+            'time': 'today'
         }
         response = self.app.post(f'/{CUSTOM_ID}/ws/splitter/batches/list', json=payload,
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})

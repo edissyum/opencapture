@@ -48,6 +48,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     selectedOutputType    : any;
     originalOutputType    : any;
     toHighlight           : string        = '';
+    allowedPath           : string        = '';
     outputForm            : any[]         = [
         {
             id: 'output_type_id',
@@ -224,6 +225,17 @@ export class SplitterUpdateOutputComponent implements OnInit {
                         });
                     }
                 }
+                this.http.get(environment['url'] + '/ws/outputs/allowedPath', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        this.allowedPath = data.allowedPath;
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
                 this.http.get(environment['url'] + '/ws/outputs/getOutputsTypes?module=splitter', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.outputsTypes = data.outputs_types;
@@ -238,6 +250,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
                             for (const category in this.outputsTypesForm[_output.output_type_id]) {
                                 if (_output.data.options[category]) {
                                     for (const option of _output.data.options[category]) {
+                                        if (option.id === 'folder_out' && this.allowedPath) {
+                                            option.placeholder = (this.allowedPath + '/output').replace(/\/\//g, '/');
+                                            option.hint = this.translate.instant('GLOBAL.allowed_path', {allowedPath: this.allowedPath});
+                                        }
                                         this.outputsTypesForm[_output.output_type_id][category].push({
                                             id: option.id,
                                             label: option.label,

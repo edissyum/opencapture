@@ -336,6 +336,7 @@
 	},
 	"GLOBAL": {
 		"add_time": "Ajouté à ",
+		"allowed_path": "Chemin autorisé :  {{ allowedPath }}",
 		"back": "Retour",
 		"batches": "Lots",
 		"cancel": "Annuler",
@@ -368,6 +369,7 @@
 		"move_to_inactive": "Déplacer vers les inactifs",
 		"n_minutes_ago": "il y a {{ minutes }} min",
 		"new_input_link": "Réattribution des chaînes entrantes",
+		"no_restriction": "Aucune restriction",
 		"no_task_to_show": "Aucune tâche n'est lancée",
 		"quit": "Quitter",
 		"reset-password": "Réinitialiser le mot de passe",
