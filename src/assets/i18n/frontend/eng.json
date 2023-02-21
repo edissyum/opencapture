@@ -388,6 +388,7 @@
 		"end_date": "End date",
 		"event_date": "Event date",
 		"event_message": "Event message",
+		"filename": "Filename",
 		"id": "Technical id",
 		"inactive": "Inactive",
 		"label": "Label",
@@ -616,6 +617,8 @@
 		"error": "Process error",
 		"hour": "hour",
 		"hours": "hour(s)",
+		"input_associated": "Input associated",
+		"microseconds": "microsecond(s)",
 		"minute": "minutre",
 		"minutes": "minute(s)",
 		"process_doesnt_exist": "Process <strong>{{ id }}</strong> doesn't exist",
@@ -624,10 +627,12 @@
 		"running": "Process running",
 		"second": "second",
 		"seconds": "second(s)",
+		"splitter": "Splitter",
 		"status": "Process status",
 		"step": "Step",
 		"task_done": "Task done",
-		"task_error": "Task in error"
+		"task_error": "Task in error",
+		"verifier": "Verifier"
 	},
 	"OUTPUT": {
 		"add": "Add output",

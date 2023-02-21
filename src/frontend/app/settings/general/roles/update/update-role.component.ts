@@ -77,6 +77,8 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.accounts')
     ];
     privilegesLabel = [
+        marker('MONITORING.verifier'),
+        marker('MONITORING.splitter'),
         marker('PRIVILEGES.access_verifier'),
         marker('PRIVILEGES.access_splitter'),
         marker('PRIVILEGES.settings'),

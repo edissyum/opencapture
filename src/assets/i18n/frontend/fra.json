@@ -388,6 +388,7 @@
 		"end_date": "Date de fin",
 		"event_date": "Date de l'évènement",
 		"event_message": "Information de l'évènement",
+		"filename": "Fichier",
 		"id": "Identifiant technique",
 		"inactive": "Inactif",
 		"label": "Libellé",
@@ -616,6 +617,8 @@
 		"error": "Processus en erreur",
 		"hour": "heure",
 		"hours": "heures",
+		"input_associated": "Chaîne entrante associée",
+		"microseconds": "microseconde(s)",
 		"minute": "minute",
 		"minutes": "minutes",
 		"process_doesnt_exist": "Le processus numéro <strong>{{ id }}</strong> n'existe pas",
@@ -624,10 +627,12 @@
 		"running": "Processus en cours",
 		"second": "seconde",
 		"seconds": "secondes",
+		"splitter": "Splitter",
 		"status": "État du processus",
 		"step": "Étape",
 		"task_done": "Tâche terminée",
-		"task_error": "Tâche en erreur"
+		"task_error": "Tâche en erreur",
+		"verifier": "Vérificateur"
 	},
 	"OUTPUT": {
 		"add": "Ajouter une chaîne sortante",

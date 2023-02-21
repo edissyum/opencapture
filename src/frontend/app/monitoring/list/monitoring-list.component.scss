@@ -4,7 +4,14 @@
     flex: 0 0 10%;
 }
 
-.mat-column-status,
+.mat-column-filename {
+    flex: 0 0 12%;
+}
+
 .mat-column-module {
+    flex: 0 0 7%;
+}
+
+.mat-column-status {
     flex: 0 0 15%;
 }

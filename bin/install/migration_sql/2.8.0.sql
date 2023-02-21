@@ -28,6 +28,7 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('OUTPUT
 CREATE TABLE monitoring
 (
     "id"                 SERIAL         UNIQUE PRIMARY KEY,
+    "input_id"           VARCHAR(255),
     "status"             VARCHAR(10),
     "elapsed_time"       VARCHAR(20),
     "error"              BOOLEAN        DEFAULT False,

@@ -197,6 +197,19 @@ def get_input_by_id(input_id):
         return response, 401
 
 
+def get_input_by_input_id(input_id):
+    input_info, error = inputs.get_input_by_input_id({'input_id': input_id})
+
+    if error is None:
+        return input_info, 200
+    else:
+        response = {
+            "errors": gettext('GET_INPUT_BY_INPUT_ID_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 401
+
+
 def get_input_by_form_id(form_id):
     input_info, _ = inputs.get_input_by_form_id({'form_id': form_id})
 

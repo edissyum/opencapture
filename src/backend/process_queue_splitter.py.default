@@ -58,9 +58,10 @@ def launch(args):
         'table': 'monitoring',
         'columns': {
             'status': 'running',
-            'filename': os.path.basename(args['file']),
-            'source': 'cli' if 'from_cli' in args and args['from_cli'] else 'interface',
             'module': 'splitter',
+            'filename': os.path.basename(args['file']),
+            'input_id': args['input_id'] if 'input_id' in args else None,
+            'source': 'cli' if 'from_cli' in args and args['from_cli'] else 'interface'
         }
     })
 

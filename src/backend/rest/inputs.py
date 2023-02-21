@@ -41,6 +41,13 @@ def get_input_by_id(input_id):
     return make_response(jsonify(_input[0])), _input[1]
 
 
+@bp.route('inputs/getByInputId/<string:input_id>', methods=['GET'])
+@auth.token_required
+def get_input_by_input_id(input_id):
+    _input = inputs.get_input_by_input_id(input_id)
+    return make_response(jsonify(_input[0])), _input[1]
+
+
 @bp.route('inputs/getByFormId/<int:form_id>', methods=['GET'])
 @auth.token_required
 def get_input_by_form_id(form_id):
