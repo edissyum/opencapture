@@ -94,6 +94,10 @@
                                               [matTooltip]="field.hint">
                                             <i class="fa-solid fa-circle-question text-md"></i>
                                         </span>
+                                        <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
+                                              [matTooltip]="field.hint">
+                                            <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
                                     </mat-form-field>
                                     <mat-form-field *ngIf="(field.type === 'textarea') && !field.webservice" class="col-span-4">
                                         <mat-label>{{ field.label | translate }}</mat-label>
