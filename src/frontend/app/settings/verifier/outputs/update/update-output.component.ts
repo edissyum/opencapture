@@ -659,7 +659,6 @@ export class UpdateOutputComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
-                this.router.navigate(['/settings/verifier/outputs']).then();
                 return of(false);
             })
         ).subscribe();

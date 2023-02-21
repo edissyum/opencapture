@@ -52,7 +52,26 @@ def get_inputs(args):
     return response, 200
 
 
+def is_path_allowed(input_path):
+    custom_id = retrieve_custom_from_url(request)
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
+    if 'INPUTS_ALLOWED_PATH' in docservers and input_path:
+        return input_path.startswith(docservers['INPUTS_ALLOWED_PATH'])
+
+
 def update_input(input_id, data):
+    if not is_path_allowed(data['input_folder']):
+        response = {
+            "errors": gettext('CREATE_INPUT_ERROR'),
+            "message": gettext('NOT_ALLOWED_INPUT_PATH')
+        }
+        return response, 401
+
     _, error = inputs.get_input_by_id({'input_id': input_id})
 
     if error is None:
@@ -106,6 +125,13 @@ def duplicate_input(input_id):
 
 
 def create_input(data):
+    if not is_path_allowed(data['input_folder']):
+        response = {
+            "errors": gettext('CREATE_INPUT_ERROR'),
+            "message": gettext('NOT_ALLOWED_INPUT_PATH')
+        }
+        return response, 401
+
     _columns = {
         'module': data['module'],
         'input_id': data['input_id'],
