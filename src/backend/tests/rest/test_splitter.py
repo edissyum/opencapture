@@ -69,7 +69,7 @@ class SplitterTest(unittest.TestCase):
             'page': 0,
             'size': 10,
             'userId': 1,
-            'today': 'today'
+            'time': 'today'
         }
         response = self.app.post(f'/{CUSTOM_ID}/ws/splitter/batches/list', json=payload,
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
@@ -91,5 +91,5 @@ class SplitterTest(unittest.TestCase):
         self.assertEqual(2, len(response.json['documents']))
 
     def tearDown(self) -> None:
-        self.db.execute("UPDATE splitter_batches SET status = 'DEL'")
+        self.db.execute("UPDATE splitter_batches set status = 'DEL'")
         self.db.execute("TRUNCATE TABLE tasks_watcher")
