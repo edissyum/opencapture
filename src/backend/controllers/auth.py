@@ -30,7 +30,7 @@ from ldap3.core.exceptions import LDAPException
 from werkzeug.security import generate_password_hash
 from src.backend.import_models import auth, user, roles
 from src.backend.functions import retrieve_custom_from_url
-from src.backend.main import create_classes_from_custom_id, str2bool
+from src.backend.main import create_classes_from_custom_id
 from flask import request, g as current_context, jsonify, current_app, session
 
 
@@ -157,7 +157,7 @@ def login(username, password, lang, method='default'):
         configurations = _vars[10]
 
         encoded_token = encode_auth_token(user_info['username'])
-        if str2bool(configurations['allowUserMultipleLogin']) is not True:
+        if configurations['allowUserMultipleLogin'] is not True:
             last_connection = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             user.update_user({'set': {'last_connection': last_connection}, 'user_id': user_info['id']})
 
