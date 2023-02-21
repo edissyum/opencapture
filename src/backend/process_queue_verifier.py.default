@@ -57,7 +57,6 @@ def launch(args):
     task_id_watcher = database.insert({
         'table': 'tasks_watcher',
         'columns': {
-            'status': 'running'
             'title': os.path.basename(args['file']),
             'type': 'upload',
             'module': 'verifier',
@@ -67,9 +66,11 @@ def launch(args):
     task_id_monitor = database.insert({
         'table': 'monitoring',
         'columns': {
-            'filename': os.path.basename(args['file']),
-            'source': args['source'] if 'source' in args and args['source'] else 'interface',
+            'status': 'running,
             'module': 'verifier',
+            'filename': os.path.basename(args['file']),
+            'input_id': args['input_id'] if 'input_id' in args else None,
+            'source': args['source'] if 'source' in args and args['source'] else 'interface'
         }
     })
 
@@ -163,7 +164,7 @@ def launch(args):
                 'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
             },
             'where': ['id = %s'],
-            'data': [task_id]
+            'data': [task_id_watcher]
         })
     end = time.time()
     _timer = timer(start, end)

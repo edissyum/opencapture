@@ -35,7 +35,7 @@
                     </ng-container>
                     <ng-container matColumnDef="module">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'CUSTOM-FIELDS.module' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element"> {{ 'PRIVILEGES.' + element.module | translate }} </mat-cell>
+                        <mat-cell *matCellDef="let element"> {{ 'MONITORING.' + element.module | translate }} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="creation_date">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.creation_date' | translate }} </mat-header-cell>
@@ -44,6 +44,14 @@
                     <ng-container matColumnDef="end_date">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.end_date' | translate }} </mat-header-cell>
                         <mat-cell *matCellDef="let element" [matTooltip]="element.end_date_formated"> {{ element.end_date }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="filename">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.filename' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <span class="truncate w-10/12">
+                                {{ element.filename }}
+                            </span>
+                        </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="last_message">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.last_message' | translate }} </mat-header-cell>

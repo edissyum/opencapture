@@ -64,6 +64,29 @@ def get_input_by_id(args):
     return _input, error
 
 
+def get_input_by_input_id(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+    _input = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['inputs'],
+        'where': ['input_id = %s'],
+        'data': [args['input_id']]
+    })
+
+    if not _input:
+        error = gettext('INPUT_DOESNT_EXISTS')
+    else:
+        _input = _input[0]
+
+    return _input, error
+
+
 def get_input_by_form_id(args):
     if 'database' in current_context:
         database = current_context.database
