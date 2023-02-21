@@ -91,3 +91,10 @@ def create_script_and_incron():
     data = request.json['args']
     res = inputs.create_script_and_incron(data)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('inputs/allowedPath', methods=['GET'])
+@auth.token_required
+def get_allowed_path():
+    res = inputs.get_allowed_path()
+    return make_response(jsonify(res[0])), res[1]
