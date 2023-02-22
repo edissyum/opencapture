@@ -260,6 +260,8 @@ class Splitter:
         random_num = str(random.randint(0, 99999)).zfill(5)
         mask_keys = mask_args['mask'].split('#')
         separator = mask_args['separator'] if mask_args['separator'] else ''
+        substitute = mask_args['substitute'] if 'substitute' in mask_args else separator
+
         for key in mask_keys:
             if not key:
                 continue
@@ -279,13 +281,13 @@ class Splitter:
                     PDF masks value
                 """
                 if key in document['metadata']:
-                    value = (document['metadata'][key] if document['metadata'][key] else '').replace(' ', separator)
+                    value = (document['metadata'][key] if document['metadata'][key] else '').replace(' ', substitute)
                     mask_result.append(value)
                 elif key in metadata:
-                    value = (metadata[key] if metadata[key] else '').replace(' ', separator)
+                    value = (metadata[key] if metadata[key] else '').replace(' ', substitute)
                     mask_result.append(value)
                 elif key == 'doctype':
-                    mask_result.append(document['documentTypeKey'].replace(' ', separator))
+                    mask_result.append(document['documentTypeKey'].replace(' ', substitute))
                 elif key == 'document_identifier':
                     mask_result.append(document['id'])
                 elif key == 'document_index':
@@ -294,12 +296,12 @@ class Splitter:
                     """
                         PDF value when mask value not found in metadata
                     """
-                    mask_result.append(key.replace(' ', separator))
+                    mask_result.append(key.replace(' ', substitute))
             else:
                 """
                     XML value when mask value not found in metadata
                 """
-                mask_result.append(key.replace(' ', separator))
+                mask_result.append(key.replace(' ', substitute))
 
         mask_result = separator.join(str(x) for x in mask_result)
         mask_result = unidecode(mask_result)
