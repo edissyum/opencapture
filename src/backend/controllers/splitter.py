@@ -864,7 +864,8 @@ def validate(args):
                 })
             mask_args = {
                 'mask': form[0]['settings']['export_zip_file'],
-                'separator': '_',
+                'separator': '',
+                'substitute': '_',
             }
             export_zip_file = _Splitter.get_value_from_mask(None, args['batchMetadata'], now, mask_args)
             _Files.zip_files(files_to_zip, export_zip_file, True)
