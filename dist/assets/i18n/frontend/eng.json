@@ -336,6 +336,7 @@
 	},
 	"GLOBAL": {
 		"add_time": "Added at ",
+		"allowed_path": "Allowed path :  {{ allowedPath }}",
 		"back": "Back",
 		"batches": "Batches",
 		"cancel": "Cancel",
@@ -368,6 +369,7 @@
 		"move_to_inactive": "Move to inactive",
 		"n_minutes_ago": "{{ minutes }} min ago",
 		"new_input_link": "Reassign inputs",
+		"no_restriction": "No restriction",
 		"no_task_to_show": "No task to show",
 		"quit": "Quit",
 		"reset-password": "Reset password",
@@ -388,6 +390,7 @@
 		"end_date": "End date",
 		"event_date": "Event date",
 		"event_message": "Event message",
+		"filename": "Filename",
 		"id": "Technical id",
 		"inactive": "Inactive",
 		"label": "Label",
@@ -616,6 +619,8 @@
 		"error": "Process error",
 		"hour": "hour",
 		"hours": "hour(s)",
+		"input_associated": "Input associated",
+		"microseconds": "microsecond(s)",
 		"minute": "minutre",
 		"minutes": "minute(s)",
 		"process_doesnt_exist": "Process <strong>{{ id }}</strong> doesn't exist",
@@ -624,10 +629,12 @@
 		"running": "Process running",
 		"second": "second",
 		"seconds": "second(s)",
+		"splitter": "Splitter",
 		"status": "Process status",
 		"step": "Step",
 		"task_done": "Task done",
-		"task_error": "Task in error"
+		"task_error": "Task in error",
+		"verifier": "Verifier"
 	},
 	"OUTPUT": {
 		"add": "Add output",
