@@ -16,13 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
-import json
 import base64
 import mimetypes
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from src.backend.import_controllers import auth, accounts, verifier
-from flask import Blueprint, request, make_response, jsonify, session
+from flask import Blueprint, request, make_response, jsonify, g as current_context
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
 
@@ -275,9 +274,9 @@ def get_default_accouting_plan():
 @bp.route('accounts/supplier/getReferenceFile', methods=['GET'])
 @auth.token_required
 def get_reference_file():
-    if 'docservers' in session and 'config' in session:
-        docservers = json.loads(session['docservers'])
-        config = json.loads(session['config'])
+    if 'docservers' in current_context and 'config' in current_context:
+        docservers = current_context.docservers
+        config = current_context.config
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)

@@ -527,10 +527,23 @@ class Files:
                     pdf_writer.add_page(pdf_page)
 
                 pdf_writer.add_metadata(pdf_reader.metadata)
+
+                title = ''
+                if 'title' in args['documents'][index]['metadata']:
+                    title = args['documents'][index]['metadata']['title']
+                elif 'title' in args['metadata']:
+                    title = args['metadata']['title']
+
+                subject = ''
+                if 'subject' in args['documents'][index]['metadata']:
+                    subject = args['documents'][index]['metadata']['subject']
+                elif 'subject' in args['metadata']:
+                    subject = args['metadata']['subject']
+
                 pdf_writer.add_metadata({
                     '/Author': f"{args['metadata']['userLastName']} {args['metadata']['userFirstName']}",
-                    '/Title': args['metadata']['title'] if 'title' in args['metadata'] else '',
-                    '/Subject': args['metadata']['subject'] if 'subject' in args['metadata'] else '',
+                    '/Title': title,
+                    '/Subject': subject,
                     '/Creator': "Open-Capture",
                 })
 
@@ -549,6 +562,7 @@ class Files:
                     with open(file_path, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
+                        args['log'].info(f"Splitter file exported to : {file_path}")
                     pdf_writer = pypdf.PdfWriter()
         except Exception as err:
             return False, str(err)
@@ -591,6 +605,21 @@ class Files:
     def normalize(file_name):
         normalized = file_name.replace(' ', '_')
         return normalized
+
+    @staticmethod
+    def save_img_with_pdf2image_static(pdf_name, output, log, page=None):
+        try:
+            output = os.path.splitext(output)[0]
+            bck_output = os.path.splitext(output)[0]
+            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
+            cpt = 1
+            for i in range(len(images)):
+                if not page:
+                    output = bck_output + '-' + str(cpt).zfill(3)
+                images[i].save(output + '.jpg', 'JPEG')
+                cpt = cpt + 1
+        except Exception as error:
+            log.error('Error during pdf2image conversion : ' + str(error))
 
 
 def compress_pdf(input_file, output_file, compress_id):

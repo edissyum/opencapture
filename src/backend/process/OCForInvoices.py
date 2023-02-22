@@ -16,11 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
-import json
 import uuid
+import json
 from src.backend import verifier_exports
-from src.backend.functions import delete_documents
-from src.backend.import_classes import _PyTesseract
+from src.backend.import_classes import _PyTesseract, _Files
+from src.backend.import_controllers import artificial_intelligence
+from src.backend.functions import delete_documents, find_form_with_ia
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
 
@@ -61,10 +62,6 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                 invoice_data.update({
                     'purchase_or_sale': input_settings['purchase_or_sale']
                 })
-            if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
-                invoice_data.update({
-                    'form_id': input_settings['default_form_id']
-                })
             if input_settings['customer_id']:
                 invoice_data.update({
                     'customer_id': input_settings['customer_id']
@@ -78,6 +75,15 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
             invoice_data.update({
                 'form_id': args['form_id']
             })
+
+    if 'form_id_ia' in args and args['form_id_ia']:
+        invoice_data.update({
+            'form_id': args['form_id_ia']
+        })
+    elif 'form_id' in args and args['form_id']:
+        invoice_data.update({
+            'form_id': args['form_id']
+        })
 
     insert_invoice = True
     if status == 'END' and 'form_id' in invoice_data and invoice_data['form_id']:
@@ -171,6 +177,23 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     # Convert files to JPG
     convert(file, files, ocr, nb_pages)
 
+    input_settings = None
+    form_id = None
+    form_id_found_with_ai = False
+    if 'input_id' in args:
+        input_settings = database.select({
+            'select': ['*'],
+            'table': ['inputs'],
+            'where': ['input_id = %s', 'module = %s'],
+            'data': [args['input_id'], 'verifier'],
+        })
+        ai_model_id = input_settings[0]['ai_model_id'] if input_settings[0]['ai_model_id'] else False
+        if ai_model_id:
+            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, artificial_intelligence, ocr, log, 'verifier')
+            if res:
+                form_id_found_with_ai = True
+                args['form_id_ia'] = res
+
     # Find supplier in document
     supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
 
@@ -222,19 +245,13 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             ocr = _PyTesseract(supplier[2]['document_lang'], log, config, docservers)
             convert(file, files, ocr, nb_pages)
 
-    input_settings = None
-    form_id = None
-    if 'input_id' in args:
-        input_settings = database.select({
-            'select': ['*'],
-            'table': ['inputs'],
-            'where': ['input_id = %s', 'module = %s'],
-            'data': [args['input_id'], 'verifier'],
-        })
-        if input_settings:
-            input_settings = input_settings[0]
-            if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
+    if input_settings:
+        input_settings = input_settings[0]
+        if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
+            if not form_id_found_with_ai:
                 form_id = input_settings['default_form_id']
+        elif not input_settings['override_supplier_form'] and supplier and supplier[2]['form_id'] not in ['', [], None]:
+            form_id = supplier[2]['form_id']
 
     # Find custom informations using mask
     custom_fields = FindCustom(ocr.header_text, log, regex, config, ocr, files, supplier, file, database,
@@ -478,6 +495,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     only_ocr = False
 
     if form_id:
+        args['form_id'] = form_id
         form_settings = database.select({
             'select': ['settings'],
             'table': ['form_models'],

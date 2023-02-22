@@ -99,13 +99,14 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { CreateDocTypeComponent } from './settings/splitter/doc-types/create/create-doc-type.component';
 import { ListDocTypeComponent } from './settings/splitter/doc-types/list/list-doc-type.component';
 import { CreateFolderDocTypeComponent } from './settings/splitter/doc-types/create-folder/create-folder-doc-type.component';
-import { ListAiModelComponent } from "./settings/splitter/ai-model/list/list-ai-model.component";
-import { CreateAiModelComponent } from "./settings/splitter/ai-model/create/create-ai-model.component";
-import { UpdateAiModelComponent } from "./settings/splitter/ai-model/update/update-ai-model.component";
+import { ListAiModelComponent } from "./settings/general/ai-model/list/list-ai-model.component";
+import { CreateAiModelComponent } from "./settings/general/ai-model/create/create-ai-model.component";
+import { UpdateAiModelComponent } from "./settings/general/ai-model/update/update-ai-model.component";
 import { ConfigurationsComponent } from './settings/general/configurations/configurations.component';
 import { DocserversComponent } from './settings/general/docservers/docservers.component';
 import { RegexComponent } from './settings/general/regex/regex.component';
 import { HintServiceComponent } from "../services/hint/hint.service";
+import { ErrorServiceComponent } from "../services/error/error.service";
 import { Error500Component } from './errors/error-500/error-500.component';
 import { MatSelectCountryModule } from "@angular-material-extensions/select-country";
 import { MiddlewareComponent } from "./middleware.component";
@@ -113,6 +114,10 @@ import { VerifierDisplayComponent } from './settings/verifier/display/display.co
 import { MailCollectComponent } from './settings/general/mailcollect/mailcollect.component';
 import { UserQuotaComponent } from './settings/general/user-quota/user-quota.component';
 import { SettingsMenuComponent } from './settings/settings-menu.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { MonitoringListComponent } from './monitoring/list/monitoring-list.component';
+import { MonitoringDetailsComponent } from './monitoring/details/monitoring-details.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -184,12 +189,17 @@ export function createTranslateLoader(http: HttpClient) {
         DocserversComponent,
         RegexComponent,
         HintServiceComponent,
+        ErrorServiceComponent,
         Error500Component,
         LoginMethodsComponent,
         VerifierDisplayComponent,
         MailCollectComponent,
         UserQuotaComponent,
-        SettingsMenuComponent
+        SettingsMenuComponent,
+        ForgotPasswordComponent,
+        ResetPasswordComponent,
+        MonitoringListComponent,
+        MonitoringDetailsComponent
     ],
     imports: [
         BrowserModule,
@@ -222,6 +232,7 @@ export function createTranslateLoader(http: HttpClient) {
         TranslateService,
         LastUrlService,
         HintServiceComponent,
+        ErrorServiceComponent,
         {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}},
         {
             provide: MatPaginatorIntl,

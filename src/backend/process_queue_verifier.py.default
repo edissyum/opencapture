@@ -53,8 +53,8 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
 def launch(args):
     start = time.time()
 
-    database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
-    task_id = database.insert({
+    database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'], True)
+    task_id_watcher = database.insert({
         'table': 'tasks_watcher',
         'columns': {
             'title': os.path.basename(args['file']),
@@ -63,7 +63,19 @@ def launch(args):
         }
     })
 
-    log.task_id = task_id
+    task_id_monitor = database.insert({
+        'table': 'monitoring',
+        'columns': {
+            'status': 'running',
+            'module': 'verifier',
+            'filename': os.path.basename(args['file']),
+            'input_id': args['input_id'] if 'input_id' in args else None,
+            'source': args['source'] if 'source' in args and args['source'] else 'interface'
+        }
+    })
+
+    log.task_id_watcher = task_id_watcher
+    log.task_id_monitor = task_id_monitor
     log.database = database
 
     tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
@@ -152,8 +164,19 @@ def launch(args):
                 'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
             },
             'where': ['id = %s'],
-            'data': [task_id]
+            'data': [task_id_watcher]
         })
-    database.conn.close()
     end = time.time()
-    log.info('Process end after ' + timer(start, end) + '')
+    _timer = timer(start, end)
+    log.info('Process end after ' + _timer + '')
+    database.update({
+        'table': ['monitoring'],
+        'set': {
+            'elapsed_time': _timer,
+            'status': 'done',
+            'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
+        },
+        'where': ['id = %s'],
+        'data': [task_id_monitor]
+    })
+    database.conn.close()

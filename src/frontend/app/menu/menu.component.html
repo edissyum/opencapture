@@ -87,8 +87,8 @@
                         <i class="fa-solid fa-chart-bar"></i>
                     </button>
                 </div>
-                <div class="ml-3 mr-2 relative" *ngIf="false && this.privilegesService.hasPrivilege('monitoring')">
-                    <button id="monitoring-menu" aria-haspopup="true" mat-mini-fab routerLink="/statistics"
+                <div class="ml-3 mr-2 relative" *ngIf="this.privilegesService.hasPrivilege('monitoring')">
+                    <button id="monitoring-menu" aria-haspopup="true" mat-mini-fab routerLink="/monitoring"
                             [class.settings_active]="location.path().includes('monitoring')"
                             [matTooltip]="'GLOBAL.monitoring' | translate"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
@@ -110,20 +110,6 @@
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
                         <i class="fa-solid fa-users"></i>
                     </button>
-                </div>
-                <div class="ml-3 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('change_language')">
-                    <mat-form-field class="language origin-top-right right-0 mt-4 w-32">
-                        <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
-                        <mat-select (selectionChange)="this.localeService.changeLocale($event)"
-                                    [disabled]="this.localeService.localeLoading"
-                                    [(value)]="this.localeService.currentLang">
-                            <mat-option *ngFor="let lang of this.localeService.langs" [value]="lang[0]">
-                                {{ lang[1] }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <i *ngIf="this.localeService.localeLoading"
-                       class="fa-solid fa-earth-europe fa-beat fa-lg text-gray-900 ml-4"></i>
                 </div>
                 <div class="my_profile ml-4 relative py-2 px-1 hover:cursor-pointer" (click)="toggleProfileDropdown()"
                      id="user-menu" aria-haspopup="true" (clickOutside)="closeprofileDropDown()"

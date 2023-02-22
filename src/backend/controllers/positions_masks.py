@@ -17,8 +17,8 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from flask import request
 from flask_babel import gettext
+from flask import request, g as current_context
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.import_models import positions_masks, accounts
@@ -40,19 +40,23 @@ def get_positions_masks(args):
 
     response = {
         "errors": gettext("POSITION_MASKS_ERROR"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
 
 def add_positions_mask(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _db = _vars[0]
-    _spreadsheet = _vars[7]
+    if 'database' in current_context and 'spreadsheet' in current_context:
+        database = current_context.database
+        spreadsheet = current_context.spreadsheet
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+        spreadsheet = _vars[7]
     res, error = positions_masks.add_positions_mask(args)
     if res:
-        _spreadsheet.update_supplier_ods_sheet(_db)
+        spreadsheet.update_supplier_ods_sheet(database)
         response = {
             "id": res
         }
@@ -60,7 +64,7 @@ def add_positions_mask(args):
     else:
         response = {
             "errors": gettext("POSITION_MASKS_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -75,7 +79,7 @@ def get_positions_mask_by_id(position_mask_id):
     else:
         response = {
             "errors": gettext('GET_POSITION_MASK_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -92,22 +96,26 @@ def get_positions_mask_fields_by_supplier_id(supplier_id):
         else:
             response = {
                 "errors": gettext('GET_POSITION_MASK_BY_ID_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
 
 def update_positions_mask(position_mask_id, args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _db = _vars[0]
-    _spreadsheet = _vars[7]
+    if 'database' in current_context and 'spreadsheet' in current_context:
+        database = current_context.database
+        spreadsheet = current_context.spreadsheet
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+        spreadsheet = _vars[7]
     _, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         res, error = positions_masks.update_positions_mask({'set': args, 'position_mask_id': position_mask_id})
 
         if res:
-            _spreadsheet.update_supplier_ods_sheet(_db)
+            spreadsheet.update_supplier_ods_sheet(database)
             response = {
                 "res": res
             }
@@ -115,22 +123,18 @@ def update_positions_mask(position_mask_id, args):
         else:
             response = {
                 "errors": gettext("POSITION_MASKS_ERROR"),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext("POSITION_MASKS_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
     return response, 401
 
 
 def delete_positions_mask(position_mask_id):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _db = _vars[0]
-
     positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         res, error = positions_masks.update_positions_mask({'set': {'status': 'DEL', 'enabled': False}, 'position_mask_id': position_mask_id})
@@ -139,21 +143,18 @@ def delete_positions_mask(position_mask_id):
         else:
             response = {
                 "errors": gettext('DELETE_POSITION_MASK_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DELETE_POSITION_MASK_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
 
 def duplicate_positions_mask(position_mask_id):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _db = _vars[0]
     positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         new_label = gettext('COPY_OF') + ' ' + positions_masks_info['label']
@@ -173,22 +174,18 @@ def duplicate_positions_mask(position_mask_id):
         else:
             response = {
                 "errors": gettext('DUPLICATE_POSITIONS_MASKS_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DUPLICATE_POSITIONS_MASKS_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
 
 def disable_positions_mask(position_mask_id):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _db = _vars[0]
-
     positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         res, error = positions_masks.update_positions_mask({'set': {'enabled': False}, 'position_mask_id': position_mask_id})
@@ -197,22 +194,18 @@ def disable_positions_mask(position_mask_id):
         else:
             response = {
                 "errors": gettext('DISABLE_POSITION_MASK_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DISABLE_POSITION_MASK_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
 
 def enable_positions_mask(position_mask_id):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _db = _vars[0]
-
     positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         res, error = positions_masks.update_positions_mask({'set': {'enabled': True}, 'position_mask_id': position_mask_id})
@@ -221,21 +214,18 @@ def enable_positions_mask(position_mask_id):
         else:
             response = {
                 "errors": gettext('ENABLE_POSITION_MASK_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('ENABLE_POSITION_MASK_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
 
 def update_positions_by_positions_mask_id(position_mask_id, args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _db = _vars[0]
     positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         column = position = ''
@@ -253,15 +243,12 @@ def update_positions_by_positions_mask_id(position_mask_id, args):
         else:
             response = {
                 "errors": gettext('UPDATE_POSITIONS_BY_POSITIONS_MASK_ID_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
 
 def update_pages_by_positions_mask_id(position_mask_id, args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _db = _vars[0]
     positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         column = page = ''
@@ -279,15 +266,12 @@ def update_pages_by_positions_mask_id(position_mask_id, args):
         else:
             response = {
                 "errors": gettext('UPDATE_PAGES_BY_POSITIONS_MASK_ID_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
 
 def delete_position_by_positions_mask_id(position_mask_id, field_id):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _db = _vars[0]
     positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         _set = {}
@@ -300,15 +284,12 @@ def delete_position_by_positions_mask_id(position_mask_id, field_id):
         else:
             response = {
                 "errors": gettext('DELETE_POSITIONS_BY_POSITION_MASK_ID_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
 
 
 def delete_page_by_positions_mask_id(position_mask_id, field_id):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _db = _vars[0]
     positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         _set = {}
@@ -321,6 +302,6 @@ def delete_page_by_positions_mask_id(position_mask_id, field_id):
         else:
             response = {
                 "errors": gettext('DELETE_PAGES_BY_POSITION_MASK_ID_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401

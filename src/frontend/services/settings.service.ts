@@ -147,7 +147,8 @@ export class SettingsService {
                 "id"        : "login-methods",
                 "label"     : this.translate.instant("SETTINGS.login_methods"),
                 "icon"      : "fa-solid fa-right-to-bracket",
-                "route"     : "/settings/general/login-methods"
+                "route"     : "/settings/general/login-methods",
+                "privilege" : "login_methods"
             },
             {
                 "id"        : "about-us",
@@ -256,6 +257,30 @@ export class SettingsService {
                         "route"             : "/settings/verifier/positions-mask/update/",
                         "privilege"         : "update_position_mask",
                         "icon"              : "fa-solid fa-hammer",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
+            },
+            {
+                "id"        : "artificial-intelligence",
+                "label"     : this.translate.instant("SETTINGS.artificial_intelligence"),
+                "icon"      : "fa-solid fa-microchip",
+                "route"     : "/settings/verifier/ai",
+                "privilege" : "list_ai_model",
+                "actions"   : [
+                    {
+                        "id"        : "verifier_add_model",
+                        "label"     : this.translate.instant("ARTIFICIAL-INTELLIGENCE.add_model"),
+                        "route"     : "/settings/verifier/ai/create",
+                        "privilege" : "create_ai_model",
+                        "icon"      : "fa-solid fa-plus"
+                    },
+                    {
+                        "id"                : "verifier_update_model",
+                        "label"             : this.translate.instant("ARTIFICIAL-INTELLIGENCE.update_model"),
+                        "route"             : "/settings/verifier/ai/update/",
+                        "privilege"         : "update_ai_model",
+                        "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }
                 ]
@@ -414,6 +439,10 @@ export class SettingsService {
         }
         const selectedParentSetting = this.localStorage.get('selectedParentSettings');
         const selectedSetting = this.localStorage.get('selectedSettings');
+
+        onresize = () => {
+            this.minimizeSideNav = window.innerWidth < 1500;
+        };
 
         if (selectedSetting) {
             this.setSelectedSettings(selectedSetting);

@@ -30,13 +30,22 @@ kuyruk = Kuyruk()
 
 @kuyruk.task(queue='splitter_§§CUSTOM_ID§§')
 def launch(args):
+    """
+    Launch Splitter process on a file
+    :param args:
+    - custom_id: custom id
+    - input_id: input id
+    - user_id: user id
+    - file: file path
+    :return: N/A
+    """
     start = time.time()
 
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
-    task_id = database.insert({
+    database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'], True)
+    task_id_watcher = database.insert({
         'table': 'tasks_watcher',
         'columns': {
             'title': os.path.basename(args['file']),
@@ -45,7 +54,20 @@ def launch(args):
         }
     })
 
-    log.task_id = task_id
+    task_id_monitor = database.insert({
+        'table': 'monitoring',
+        'columns': {
+            'status': 'running',
+            'module': 'splitter',
+            'filename': os.path.basename(args['file']),
+            'input_id': args['input_id'] if 'input_id' in args else None,
+            'source': 'cli' if 'from_cli' in args and args['from_cli'] else 'interface'
+        }
+    })
+
+
+    log.task_id_watcher = task_id_watcher
+    log.task_id_monitor = task_id_monitor
     log.database = database
 
     batch_folder = files.get_random_string(15)
@@ -122,6 +144,7 @@ def launch(args):
                                         "config": config,
                                         "splitter": splitter,
                                         "docservers": docservers,
+                                        "user_id": args['user_id'],
                                         "batch_folder": batch_folder,
                                         "input_id": args['input_id'],
                                         "configurations": configurations,
@@ -139,6 +162,7 @@ def launch(args):
         log.error(_e)
 
     if not process_err:
+        database.connect()
         database.update({
             'table': ['tasks_watcher'],
             'set': {
@@ -146,8 +170,19 @@ def launch(args):
                 'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
             },
             'where': ['id = %s'],
-            'data': [task_id]
+            'data': [task_id_watcher]
         })
-    database.conn.close()
     end = time.time()
-    log.info('Process end after ' + timer(start, end) + '')
+    _timer = timer(start, end)
+    log.info('Process end after ' + _timer + '')
+    database.update({
+        'table': ['monitoring'],
+        'set': {
+            'elapsed_time': _timer,
+            'status': 'done',
+            'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
+        },
+        'where': ['id = %s'],
+        'data': [task_id_monitor]
+    })
+    database.conn.close()

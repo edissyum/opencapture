@@ -24,6 +24,11 @@ if 'auth' or 'controllers' not in custom_array['auth']['path']:
 elif 'controllers' in custom_array['auth']['path']:
     auth = getattr(__import__(custom_array['auth']['path'], fromlist=[custom_array['auth']['module']]), custom_array['auth']['module'])
 
+if 'monitoring' or 'controllers' not in custom_array['monitoring']['path']:
+    from .controllers import monitoring
+elif 'controllers' in custom_array['monitoring']['path']:
+    monitoring = getattr(__import__(custom_array['monitoring']['path'], fromlist=[custom_array['monitoring']['module']]), custom_array['monitoring']['module'])
+
 if 'mailcollect' or 'controllers' not in custom_array['mailcollect']['path']:
     from .controllers import mailcollect
 elif 'controllers' in custom_array['mailcollect']['path']:
@@ -118,3 +123,8 @@ if 'artificial_intelligence' or 'controllers' not in custom_array['artificial_in
     from .controllers import artificial_intelligence
 elif 'controllers' in custom_array['artificial_intelligence']['path']:
     artificial_intelligence = getattr(__import__(custom_array['artificial_intelligence']['path'], fromlist=[custom_array['artificial_intelligence']['module']]), custom_array['artificial_intelligence']['module'])
+
+if 'smtp' or 'controllers' not in custom_array['smtp']['path']:
+    from .controllers import smtp
+elif 'controllers' in custom_array['smtp']['path']:
+    smtp = getattr(__import__(custom_array['smtp']['path'], fromlist=[custom_array['smtp']['module']]), custom_array['smtp']['module'])

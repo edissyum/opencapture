@@ -70,11 +70,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     loading                     : boolean       = true;
     showZoomPage                : boolean       = false;
     isDataEdited                : boolean       = false;
+    isBatchOnDrag               : boolean       = false;
     batchesLoading              : boolean       = false;
     downloadLoading             : boolean       = false;
     saveInfosLoading            : boolean       = false;
     documentsLoading            : boolean       = false;
     addDocumentLoading          : boolean       = false;
+    isMouseInDocumentList       : boolean       = false;
     batchMetadataOpenState      : boolean       = true;
     documentMetadataOpenState   : boolean       = false;
     batchForm                   : FormGroup     = new FormGroup({});
@@ -198,15 +200,17 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadBatchById(): void {
-        this.loading = true;
-        this.http.get(environment['url'] + '/ws/splitter/batches/' + this.currentBatch.id  + '/user/'
-            + this.userService.user.id, {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/splitter/batches/list', {
+                'batchId': this.currentBatch.id,
+                'userId': this.userService.user.id
+            },
+            {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.currentBatch = {
                     id                  : data.batches[0]['id'],
+                    status              : data.batches[0]['status'],
                     formId              : data.batches[0]['form_id'],
                     previousFormId      : data.batches[0]['form_id'],
-                    status              : data.batches[0]['status'],
                     customFieldsValues  : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
                     selectedPagesCount  : 0,
                     maxSplitIndex       : 0,
@@ -282,8 +286,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     loadBatches(): void {
         this.batchesLoading = true;
         this.batches        = [];
-        this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id
-            + '/paging/0/5/' + this.currentTime + '/' + this.currentBatch.status, {headers: this.authService.headers}).pipe(
+        this.loading        = true;
+
+        this.http.post(environment['url'] + '/ws/splitter/batches/list', {
+            'page': 0,
+            'size': 10,
+            'time': this.currentTime,
+            'userId': this.userService.user.id,
+            'status': this.currentBatch.status,
+        }, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.batches.forEach((batch: any) =>
                     this.batches.push({
@@ -792,10 +803,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.http.get(environment['url'] + '/ws/splitter/batch/' + this.currentBatch.id + '/file',
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                const link = document.createElement("a");
-                link.href = "data:application/pdf;base64," + data['encodedFile'];
-                link.download = `${data['filename']}`;
-                link.click();
+                const src = `data:application/pdf;base64,${data['encodedFile']}`;
+                const newWindow = window.open();
+                newWindow!.document.write(`<iframe style="width: 100%;height: 100%;margin: 0;padding: 0;" src="${src}" allowfullscreen></iframe>`);
+                newWindow!.document.title = data['filename'];
             }),
             finalize(() => this.downloadLoading = false),
             catchError((err: any) => {
@@ -806,7 +817,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             })
         ).subscribe();
     }
-
     /* -- End Metadata -- */
 
     /* -- Begin documents control -- */
@@ -899,6 +909,52 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.isDataEdited = true;
             }
         });
+    }
+
+    onBatchDrop(batchIdToMerge: number) {
+        this.isBatchOnDrag = false;
+        if (!this.isMouseInDocumentList) {
+            return;
+        }
+        if (this.isMouseInDocumentList && this.currentBatch.id === batchIdToMerge) {
+            this.notify.error(this.translate.instant('SPLITTER.can_not_merge_same_batch'));
+            return;
+        }
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data: {
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('SPLITTER.confirm_merge_batches'),
+                confirmButton       : this.translate.instant('SPLITTER.merge'),
+                confirmButtonColor  : "green",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.mergeBatches(batchIdToMerge);
+            }
+        });
+    }
+
+    mergeBatches(batchIdToMerge: number) {
+        this.http.post(environment['url'] + '/ws/splitter/merge/' + this.currentBatch.id, {'batches': [batchIdToMerge]}, {headers: this.authService.headers},
+        ).pipe(
+            tap(() => {
+                this.loadSelectedBatch();
+                this.notify.success(this.translate.instant('SPLITTER.merge_success'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    dropBatch(event: CdkDragDrop<string[]>) {
+        moveItemInArray(this.batches, event.previousIndex, event.currentIndex);
     }
     /* End documents control */
 

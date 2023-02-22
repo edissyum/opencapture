@@ -15,8 +15,8 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import Blueprint, request, make_response, jsonify
 from src.backend.import_controllers import auth, inputs
+from flask import Blueprint, request, make_response, jsonify
 
 bp = Blueprint('inputs', __name__, url_prefix='/ws/')
 
@@ -38,6 +38,13 @@ def get_inputs():
 @auth.token_required
 def get_input_by_id(input_id):
     _input = inputs.get_input_by_id(input_id)
+    return make_response(jsonify(_input[0])), _input[1]
+
+
+@bp.route('inputs/getByInputId/<string:input_id>', methods=['GET'])
+@auth.token_required
+def get_input_by_input_id(input_id):
+    _input = inputs.get_input_by_input_id(input_id)
     return make_response(jsonify(_input[0])), _input[1]
 
 
@@ -83,4 +90,11 @@ def create_input():
 def create_script_and_incron():
     data = request.json['args']
     res = inputs.create_script_and_incron(data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('inputs/allowedPath', methods=['GET'])
+@auth.token_required
+def get_allowed_path():
+    res = inputs.get_allowed_path()
     return make_response(jsonify(res[0])), res[1]

@@ -239,7 +239,7 @@ class FindFooter:
         })[0]
 
         if position and position[name + '_position'] not in [False, 'NULL', '', None]:
-            self.nb_page = position[name + '_page']
+            self.nb_pages = position[name + '_page']
             data = {'position': position[name + '_position'], 'regex': None, 'target': 'full', 'page': position[name + '_page']}
             res = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
             if res[0]:
@@ -254,7 +254,7 @@ class FindFooter:
     def run(self, text_as_string=False):
         total_ttc, total_ht, vat_rate, vat_amount = {}, {}, {}, {}
         if self.supplier:
-            all_rate = search_by_positions(self.supplier, 'total_ttc', self.ocr, self.files, self.database, self.form_id)
+            all_rate = search_by_positions(self.supplier, 'total_ttc', self.ocr, self.files, self.database, self.form_id, self.log)
             if all_rate and all_rate[0]:
                 total_ttc = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", all_rate[0].replace(',', '.')),
@@ -264,7 +264,7 @@ class FindFooter:
                 res = self.get_data_with_positions('total_ttc')
                 total_ttc = res if res else False
 
-            no_rate = search_by_positions(self.supplier, 'total_ht', self.ocr, self.files, self.database, self.form_id)
+            no_rate = search_by_positions(self.supplier, 'total_ht', self.ocr, self.files, self.database, self.form_id, self.log)
             if no_rate and no_rate[0]:
                 total_ht = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", no_rate[0].replace(',', '.')),
@@ -274,7 +274,7 @@ class FindFooter:
                 res = self.get_data_with_positions('total_ht')
                 total_ht = res if res else False
 
-            percentage = search_by_positions(self.supplier, 'vat_rate', self.ocr, self.files, self.database, self.form_id)
+            percentage = search_by_positions(self.supplier, 'vat_rate', self.ocr, self.files, self.database, self.form_id, self.log)
             if percentage and percentage[0]:
                 vat_rate = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", percentage[0].replace(',', '.')),
@@ -284,7 +284,7 @@ class FindFooter:
                 res = self.get_data_with_positions('vat_rate')
                 vat_rate = res if res else False
 
-            _vat_amount = search_by_positions(self.supplier, 'vat_amount', self.ocr, self.files, self.database, self.form_id)
+            _vat_amount = search_by_positions(self.supplier, 'vat_amount', self.ocr, self.files, self.database, self.form_id, self.log)
             if _vat_amount and _vat_amount[0]:
                 vat_amount = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", _vat_amount[0].replace(',', '.')),

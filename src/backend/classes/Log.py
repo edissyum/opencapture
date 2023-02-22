@@ -15,75 +15,77 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
+import json
 import time
 import logging
-from inspect import getframeinfo, stack
 from logging.handlers import RotatingFileHandler
-
-
-def caller_reader(f):
-    """This wrapper updates the context with the callor infos"""
-
-    def wrapper(self, *args):
-        caller = getframeinfo(stack()[1][0])
-        self._filter.file = os.path.basename(caller.filename)
-        self._filter.line_n = caller.lineno
-        return f(self, *args)
-    return wrapper
 
 
 class Log:
     def __init__(self, path, smtp):
         self.smtp = smtp
         self.filename = ''
-        self.task_id = None
+        self.current_step = 1
+        self.task_id_watcher = None
+        self.task_id_monitor = None
         self.database = None
+        self.processInError = False
         self.logger = logging.getLogger('Open-Capture')
         if self.logger.hasHandlers():
             self.logger.handlers.clear()  # Clear the handlers to avoid double logs
-        log_file = RotatingFileHandler(path, mode='a', maxBytes=5 * 1024 * 1024,
-                                       backupCount=2, encoding=None, delay=False)
-        formatter = logging.Formatter(
-            '[%(name)-17s] [%(file)-26sline %(line_n)-3s] %(asctime)s %(levelname)s %(message)s',
-            datefmt='%d-%m-%Y %H:%M:%S')
+        max_size = 5 * 1024 * 1024
+        log_file = RotatingFileHandler(path, mode='a', maxBytes=max_size, backupCount=2, encoding=None, delay=False)
+        formatter = logging.Formatter('[%(name)-17s] %(asctime)s %(levelname)s %(message)s', datefmt='%d-%m-%Y %H:%M:%S')
         log_file.setFormatter(formatter)
         self.logger.addHandler(log_file)
 
         self.logger.filters.clear()
-        self._filter = CallerFilter()
-        self.logger.addFilter(self._filter)
         self.logger.setLevel(logging.DEBUG)
 
-    @caller_reader
     def info(self, msg):
+        if self.database and self.task_id_monitor:
+            self.update_task_monitor(msg)
+        self.current_step += 1
         self.logger.info(msg)
 
-    @caller_reader
     def error(self, msg, send_notif=True):
+        self.processInError = True
         if self.smtp and self.smtp.enabled and send_notif:
             self.smtp.send_notification(msg, self.filename)
 
-        if self.task_id and self.database:
-            self.database.update({
-                'table': ['tasks_watcher'],
-                'set': {
-                    'status': 'error',
-                    'error_description': msg,
-                    'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
-                },
-                'where': ['id = %s'],
-                'data': [self.task_id]
-            })
+        if self.database:
+            if self.task_id_monitor:
+                self.update_task_monitor(str(msg), 'error')
+            if self.task_id_watcher:
+                self.update_task_watcher(msg)
+        self.current_step += 1
         self.logger.error(msg)
 
+    def update_task_monitor(self, msg, status='running'):
+        new_step = {
+            "status": status,
+            "message": msg.replace("'", '"'),
+            "date": time.strftime("%Y-%m-%d %H:%M:%S")
+        }
 
-class CallerFilter(logging.Filter):
-    """ This class adds some context to the log record instance """
-    file = ''
-    line_n = ''
+        self.database.update({
+            'table': ['monitoring'],
+            'set': {
+                "error": status == 'error' or self.processInError,
+                'steps': "jsonb_set(steps, '{" + str(self.current_step) + "}', '" + json.dumps(new_step) + "')",
+            },
+            'where': ['id = %s'],
+            'data': [self.task_id_monitor]
+        })
 
-    def filter(self, record):
-        record.file = self.file
-        record.line_n = self.line_n
-        return True
+    def update_task_watcher(self, msg):
+        self.database.update({
+            'table': ['tasks_watcher'],
+            'set': {
+                'status': 'error',
+                'error_description': msg,
+                'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
+            },
+            'where': ['id = %s'],
+            'data': [self.task_id_watcher]
+        })

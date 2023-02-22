@@ -26,6 +26,12 @@ elif 'rest' in custom_array['auth']['path']:
     auth = getattr(__import__(custom_array['auth']['path'], fromlist=[custom_array['auth']['module']]),
                    custom_array['auth']['module'])
 
+if 'monitoring' not in custom_array or 'rest' not in custom_array['monitoring']['path']:
+    from .rest import monitoring
+elif 'rest' in custom_array['monitoring']['path']:
+    monitoring = getattr(__import__(custom_array['monitoring']['path'], fromlist=[custom_array['monitoring']['module']]),
+                   custom_array['monitoring']['module'])
+
 if 'user' not in custom_array or 'rest' not in custom_array['user']['path']:
     from .rest import user
 elif 'rest' in custom_array['user']['path']:
@@ -146,3 +152,8 @@ if 'artificial_intelligence' not in custom_array or 'rest' not in custom_array['
 elif 'rest' in custom_array['artificial_intelligence']['path']:
     artificial_intelligence = getattr(__import__(custom_array['artificial_intelligence']['path'], fromlist=[custom_array['artificial_intelligence']['module']]),
                                       custom_array['artificial_intelligence']['module'])
+
+if 'smtp' not in custom_array or 'rest' not in custom_array['smtp']['path']:
+    from .rest import smtp
+elif 'rest' in custom_array['smtp']['path']:
+    smtp = getattr(__import__(custom_array['smtp']['path'], fromlist=[custom_array['smtp']['module']]), custom_array['smtp']['module'])

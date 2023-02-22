@@ -10,7 +10,7 @@
                     <input matInput type="text" [disabled]="this.loading" (keyup)="searchCustomer($event)">
                 </mat-form-field>
             </div>
-            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="flex">
                 <button routerLink="/accounts/customers/create">
                     <i class="fa-solid fa-plus text-2xl ml-2" [matTooltip]="'ACCOUNTS.create_customer' | translate"></i>

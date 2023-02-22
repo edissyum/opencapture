@@ -25,7 +25,7 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 defaultPath=/var/www/html/opencapture/
 imageMagickPolicyFile=/etc/ImageMagick-6/policy.xml
-docserverPath=/var/docservers/
+docserverDefaultPath="/var/docservers/opencapture/"
 user=$(who am i | awk '{print $1}')
 group=www-data
 INFOLOG_PATH=install_info.log
@@ -277,8 +277,6 @@ mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $customPath/bin/data/log/Supervisor/
 mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs,MailCollect,ai}/
 mkdir -p $customPath/bin/scripts/ai/{splitter,verifier}/
-mkdir -p $customPath/bin/scripts/ai/verifier/{models,train_data}/
-mkdir -p $customPath/bin/scripts/ai/splitter/{models,train_data}/
 mkdir -p $customPath/src/backend/
 touch $customPath/config/secret_key
 
@@ -340,12 +338,9 @@ echo ""
 echo "######################################################################################################################"
 echo ""
 
-docserverDefaultPath="/var/docservers/opencapture/"
-
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/share/' , '/var/share/$customId/') WHERE docserver_id IN ('INPUTS_ALLOWED_PATH', 'OUTPUTS_ALLOWED_PATH')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/ai/splitter/train_data/' WHERE docserver_id = 'SPLITTER_TRAIN_PATH_FILES'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/ai/splitter/models/' WHERE docserver_id = 'SPLITTER_AI_MODEL_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/tmp/' WHERE docserver_id = 'TMP_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -639,12 +634,14 @@ chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/splitter_in
 
 ####################
 # Create docservers
-mkdir -p $docserverPath/opencapture/"$customId"/{verifier,splitter}
-mkdir -p $docserverPath/opencapture/"$customId"/verifier/{original_pdf,full,thumbs,positions_masks}
-mkdir -p $docserverPath/opencapture/"$customId"/splitter/{original_pdf,batches,thumbs,error}
-chmod -R 775 $docserverPath/opencapture/
-chmod -R g+s $docserverPath/opencapture/
-chown -R "$user":"$group" $docserverPath/opencapture/
+mkdir -p $docserverDefaultPath/"$customId"/{verifier,splitter}
+mkdir -p $docserverDefaultPath/"$customId"/verifier/{ai,original_pdf,full,thumbs,positions_masks}
+mkdir -p $docserverDefaultPath/"$customId"/splitter/{ai,original_pdf,batches,thumbs,error}
+mkdir -p $docserverDefaultPath/"$customId"/verifier/ai/{train_data,models}
+mkdir -p $docserverDefaultPath/"$customId"/splitter/ai/{train_data,models}
+chmod -R 775 $docserverDefaultPath
+chmod -R g+s $docserverDefaultPath
+chown -R "$user":"$group" $docserverDefaultPath
 
 ####################
 # Create default export and input XML and PDF folder

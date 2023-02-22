@@ -125,13 +125,14 @@ export class UploadComponent implements OnInit {
     uploadFile(): void {
         this.sending = true;
         const formData: FormData = new FormData();
-
+        let numberOFFiles = 0;
         if (this.fileControl.value!.length === 0) {
             this.notify.handleErrors(this.translate.instant('UPLOAD.no_file'));
             return;
         }
 
         for (let i = 0; i < this.fileControl.value!.length; i++) {
+            numberOFFiles++;
             if (this.fileControl.status === 'VALID') {
                 formData.append(this.fileControl.value![i]['name'], this.fileControl.value![i]);
             } else {
@@ -142,7 +143,9 @@ export class UploadComponent implements OnInit {
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
-                environment['url'] + '/ws/' + splitterOrVerifier + '/upload?inputId=' + this.selectedInputTechnicalId,
+                environment['url'] + '/ws/' + splitterOrVerifier + '/upload' +
+                '?inputId=' + this.selectedInputTechnicalId +
+                 '&userId=' + this.userService.user.id,
                 formData,
                 {
                     headers: this.authService.headers
@@ -152,7 +155,9 @@ export class UploadComponent implements OnInit {
                     this.fileControl.setValue([]);
                     this.notify.success(this.translate.instant('UPLOAD.upload_success'));
                     this.sending = false;
-                    this.historyService.addHistory(splitterOrVerifier, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded', {input: this.selectedInputTechnicalId}));
+                    for (const cpt of Array(numberOFFiles).keys()) {
+                        this.historyService.addHistory(splitterOrVerifier, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded', {input: this.selectedInputTechnicalId}));
+                    }
                 }),
                 catchError((err: any) => {
                     this.notify.handleErrors(err);

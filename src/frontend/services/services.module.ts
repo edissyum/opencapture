@@ -19,6 +19,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LastUrlService } from './last-url.service';
 import { HintServiceComponent } from './hint/hint.service';
+import { ErrorServiceComponent } from './error/error.service';
 import { TranslateModule } from "@ngx-translate/core";
 import { AppMaterialModule } from '../app/app-material.module';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
@@ -27,24 +28,9 @@ import { CustomSnackbarComponent, NotificationService } from './notifications/no
 import { DragDropModule } from "@angular/cdk/drag-drop";
 
 @NgModule({
-    imports: [
-        AppMaterialModule,
-        CommonModule,
-        TranslateModule,
-        DragDropModule
-    ],
-    declarations: [
-        CustomSnackbarComponent,
-        ConfirmDialogComponent,
-        TasksWatcherComponent,
-    ],
-    exports: [
-        TasksWatcherComponent
-    ],
-    entryComponents: [
-        CustomSnackbarComponent,
-        ConfirmDialogComponent,
-    ],
-    providers: [NotificationService, LastUrlService, HintServiceComponent]
+    imports: [AppMaterialModule, CommonModule, TranslateModule, DragDropModule],
+    declarations: [CustomSnackbarComponent, ConfirmDialogComponent, TasksWatcherComponent],
+    exports: [TasksWatcherComponent],
+    providers: [NotificationService, LastUrlService, HintServiceComponent, ErrorServiceComponent]
 })
 export class ServicesModule { }

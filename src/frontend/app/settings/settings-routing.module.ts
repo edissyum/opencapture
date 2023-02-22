@@ -51,9 +51,9 @@ import { SplitterUpdateInputComponent } from "./splitter/inputs/update/update-in
 import { CreateDocTypeComponent } from "./splitter/doc-types/create/create-doc-type.component";
 import { SplitterUpdateOutputComponent } from "./splitter/output/update/update-output.component";
 import { SplitterCreateOutputComponent } from "./splitter/output/create/create-output.component";
-import { ListAiModelComponent } from "./splitter/ai-model/list/list-ai-model.component";
-import { CreateAiModelComponent } from "./splitter/ai-model/create/create-ai-model.component";
-import { UpdateAiModelComponent } from "./splitter/ai-model/update/update-ai-model.component";
+import { ListAiModelComponent } from "./general/ai-model/list/list-ai-model.component";
+import { CreateAiModelComponent } from "./general/ai-model/create/create-ai-model.component";
+import { UpdateAiModelComponent } from "./general/ai-model/update/update-ai-model.component";
 import { PositionsMaskListComponent } from "./verifier/positions-mask/list/positions-mask-list.component";
 import { CreatePositionsMaskComponent } from "./verifier/positions-mask/create/create-positions-mask.component";
 import { UpdatePositionsMaskComponent } from "./verifier/positions-mask/update/update-positions-mask.component";
@@ -206,6 +206,21 @@ const routes: Routes = [
     {
         path: 'settings/verifier/positions-mask/update/:id', component: UpdatePositionsMaskComponent,
         data: {title: 'SETTINGS.positions_mask_update', privileges: ['settings', 'update_positions_mask']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'settings/verifier/ai', component: ListAiModelComponent,
+        data: {title: 'SETTINGS.artificial_intelligence', privileges: ['settings', 'list_ai_model']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'settings/verifier/ai/create', component: CreateAiModelComponent,
+        data: {title: 'ARTIFICIAL-INTELLIGENCE.add_model', privileges: ['settings', 'create_ai_model']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'settings/verifier/ai/update/:id', component: UpdateAiModelComponent,
+        data: {title: 'ARTIFICIAL-INTELLIGENCE.update_model', privileges: ['settings', 'update_ai_model']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
 // -- END Verifier

@@ -25,7 +25,7 @@ import datetime
 import pandas as pd
 from flask import current_app
 from flask_babel import gettext
-from flask import request, session
+from flask import request, g as current_context
 from src.backend.main_splitter import launch
 from src.backend.import_models import splitter, doctypes, accounts
 from src.backend.import_controllers import forms, outputs, user
@@ -34,7 +34,7 @@ from src.backend.main import create_classes_from_custom_id
 from src.backend.import_classes import _Files, _Splitter, _CMIS, _MEMWebServices, _OpenADS
 
 
-def handle_uploaded_file(files, input_id):
+def handle_uploaded_file(files, input_id, user_id):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER_SPLITTER']
 
@@ -42,21 +42,28 @@ def handle_uploaded_file(files, input_id):
         f = files[file]
         filename = _Files.save_uploaded_file(f, path, False)
         launch({
-            'file': filename,
             'custom_id': custom_id,
-            'input_id': input_id
+            'input_id': input_id,
+            'user_id': user_id,
+            'file': filename,
         })
 
     return True
 
 
 def launch_referential_update(form_data):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
-    log = _vars[5]
-    conf = _vars[9]
-    docservers = _vars[9]
+    if 'database' in current_context and 'log' in current_context and 'config' in current_context and 'docservers' in current_context:
+        log = current_context.log
+        config = current_context.config
+        database = current_context.database
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+        config = _vars[1]
+        database = _vars[0]
+        docservers = _vars[9]
 
     available_methods = docservers['SPLITTER_METADATA_PATH'] + "/metadata_methods.json"
     call_on_splitter_view = False
@@ -68,11 +75,11 @@ def launch_referential_update(form_data):
                     call_on_splitter_view = method['callOnSplitterView']
                     args = {
                         'log': log,
+                        'config': config,
                         'database': database,
-                        'config': conf,
+                        'method_data': method,
                         'docservers': docservers,
-                        'form_id': form_data['form_id'],
-                        'method_data': method
+                        'form_id': form_data['form_id']
                     }
                     metadata_load = _Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
                                                                         method['script'],
@@ -109,9 +116,12 @@ def retrieve_referential(form_id):
 
 
 def retrieve_batches(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    docservers = _vars[9]
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
 
     user_customers = user.get_customers_by_user_id(args['user_id'])
     if user_customers[1] != 200:
@@ -121,6 +131,11 @@ def retrieve_batches(args):
     args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
     args['where'] = ['customer_id = ANY(%s)']
     args['data'] = [user_customers]
+
+    if 'search' in args and args['search']:
+        args['where'].append("id = %s OR file_name like %s ")
+        args['data'].append(args['search'])
+        args['data'].append(f"%{args['search']}%")
 
     if 'status' in args and args['status'] is not None:
         args['where'].append("status = %s")
@@ -164,9 +179,12 @@ def retrieve_batches(args):
 
 
 def download_original_file(batch_id):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    docservers = _vars[9]
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
 
     res = splitter.get_batch_by_id({
         'id': batch_id
@@ -231,15 +249,18 @@ def remove_lock_by_user_id(user_id):
     else:
         response = {
             "errors": gettext('REMOVE_LOCK_BY_USER_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
 
 def get_page_full_thumbnail(page_id):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    docservers = _vars[9]
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
 
     res, error = splitter.get_page_by_id({
         'id': page_id
@@ -247,7 +268,7 @@ def get_page_full_thumbnail(page_id):
     if not res:
         response = {
             "errors": "ERROR",
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -258,19 +279,21 @@ def get_page_full_thumbnail(page_id):
             full_thumbnail = encoded_string.decode("utf-8")
             return {'fullThumbnail': full_thumbnail}, 200
     except Exception as e:
-        if not res:
-            response = {
-                "errors": "ERROR",
-                "message": str(e)
-            }
+        response = {
+            "errors": "ERROR",
+            "message": str(e)
+        }
         return response, 401
 
 
 def retrieve_documents(batch_id):
     res_documents = []
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    docservers = _vars[9]
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
 
     args = {
         'id': batch_id
@@ -405,9 +428,9 @@ def export_mem(auth_data, file_path, args, batch):
 
 
 def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
-    if 'docservers' in session and 'configurations' in session:
-        docservers = json.loads(session['docservers'])
-        configurations = json.loads(session['configurations'])
+    if 'docservers' in current_context and 'configurations' in current_context:
+        docservers = current_context.docservers
+        configurations = current_context.configurations
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
@@ -431,7 +454,7 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
             'separator': parameters['separator'],
             'extension': 'zip'
         }
-        zip_filename = _Splitter.get_mask_result(None, batch['metadata'], now, mask_args)
+        zip_filename = _Splitter.get_value_from_mask(None, batch['metadata'], now, mask_args)
 
     documents_doctypes = []
     for index, document in enumerate(documents):
@@ -446,7 +469,7 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
             'extension': parameters['extension']
         }
 
-        documents[index]['fileName'] = _Splitter.get_mask_result(document, batch['metadata'], now, mask_args)
+        documents[index]['fileName'] = _Splitter.get_value_from_mask(document, batch['metadata'], now, mask_args)
 
         if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in documents[index]['documentTypeKey']:
             pdf_filepaths.append({
@@ -488,7 +511,7 @@ def export_xml(documents, parameters, metadata, now):
         'separator': parameters['separator'],
         'extension': parameters['extension']
     }
-    file_name = _Splitter.get_mask_result(None, metadata, now, mask_args)
+    file_name = _Splitter.get_value_from_mask(None, metadata, now, mask_args)
     res_xml = _Splitter.export_xml(documents, metadata, parameters, file_name, now)
     if not res_xml[0]:
         response = {
@@ -636,11 +659,16 @@ def test_openads_connection(args):
 
 def validate(args):
     now = _Files.get_now_date()
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    regex = _vars[2]
-    _log = _vars[5]
-    docservers = _vars[9]
+    if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context:
+        log = current_context.log
+        regex = current_context.regex
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        regex = _vars[2]
+        log = _vars[5]
+        docservers = _vars[9]
     exported_files = []
 
     save_response = save_infos({
@@ -674,7 +702,7 @@ def validate(args):
                     Export PDF files
                 """
                 if output[0]['output_type_id'] in ['export_pdf']:
-                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], _log)
+                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], log)
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
 
@@ -718,14 +746,14 @@ def validate(args):
                         'separator': cmis_params['separator'],
                         'filename': cmis_params['pdf_filename'],
                     }
-                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], _log)
+                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], log)
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
                     for file_path in res_export_pdf[0]['paths']:
                         cmis_res = cmis.create_document(file_path, 'application/pdf')
                         if not cmis_res[0]:
-                            _log.error(f'File not sent : {file_path}')
-                            _log.error(f'CMIS Response : {str(cmis_res)}')
+                            log.error(f'File not sent : {file_path}')
+                            log.error(f'CMIS Response : {str(cmis_res)}')
                             response = {
                                 "errors": gettext('EXPORT_PDF_ERROR'),
                                 "message": cmis_res[1]
@@ -769,7 +797,7 @@ def validate(args):
                         'separator': mem_params['separator'],
                         'file_name': mem_params['filename'],
                     }
-                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], _log)
+                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], log)
 
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
@@ -781,8 +809,8 @@ def validate(args):
                             'separator': ' ',
                             'format': parameters['format']
                         }
-                        parameters['subject'] = _Splitter.get_mask_result(args['documents'][index], args['batchMetadata'],
-                                                                          now, mask_args)
+                        parameters['subject'] = _Splitter.get_value_from_mask(args['documents'][index], args['batchMetadata'],
+                                                                              now, mask_args)
                         res_export_mem = export_mem(mem_auth, file_path, parameters, batch)
                         if res_export_mem[1] != 200:
                             return res_export_mem
@@ -798,7 +826,7 @@ def validate(args):
                         'mask': openads_params['folder_id'],
                         'separator': '',
                     }
-                    folder_id = _Splitter.get_mask_result(None, args['batchMetadata'], now, folder_id_mask)
+                    folder_id = _Splitter.get_value_from_mask(None, args['batchMetadata'], now, folder_id_mask)
                     openads_res = _openads.check_folder_by_id(folder_id)
                     if not openads_res['status']:
                         response = {
@@ -813,7 +841,7 @@ def validate(args):
                         'separator': openads_params['separator'],
                         'filename': openads_params['pdf_filename'],
                     }
-                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], _log)
+                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], log)
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
 
@@ -836,9 +864,10 @@ def validate(args):
                 })
             mask_args = {
                 'mask': form[0]['settings']['export_zip_file'],
-                'separator': '_',
+                'separator': '',
+                'substitute': '_',
             }
-            export_zip_file = _Splitter.get_mask_result(None, args['batchMetadata'], now, mask_args)
+            export_zip_file = _Splitter.get_value_from_mask(None, args['batchMetadata'], now, mask_args)
             _Files.zip_files(files_to_zip, export_zip_file, True)
 
         """
@@ -853,8 +882,8 @@ def validate(args):
 
 
 def get_split_methods():
-    if 'docservers' in session:
-        docservers = json.loads(session['docservers'])
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
@@ -866,8 +895,8 @@ def get_split_methods():
 
 
 def get_metadata_methods(form_method=False):
-    if 'docservers' in session:
-        docservers = json.loads(session['docservers'])
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
@@ -906,14 +935,14 @@ def get_totals(status, user_id):
 
     response = {
         "errors": gettext('GET_TOTALS_ERROR'),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
 
 def merge_batches(parent_id, batches):
-    if 'docservers' in session:
-        docservers = json.loads(session['docservers'])
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)

@@ -16,9 +16,8 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-import json
 from flask_babel import gettext
-from flask import request, session
+from flask import request, g as current_context
 from src.backend.import_models import doctypes
 from src.backend.import_classes import _SeparatorQR
 from src.backend.functions import retrieve_custom_from_url
@@ -33,13 +32,13 @@ def add_doctype(args):
             if not res:
                 response = {
                     "errors": gettext("SET_DEFAULT_DOCTYPE_ERROR"),
-                    "message": error
+                    "message": gettext(error)
                 }
                 return response, 401
     else:
         response = {
             "errors": gettext("ADD_DOCTYPE_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
     response = {
@@ -59,7 +58,7 @@ def retrieve_doctypes(args):
 
     response = {
         "errors": gettext("DOCTYPE_ERROR"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -108,43 +107,68 @@ def update(args):
     else:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
 
 def generate_separator(args):
-    if 'docservers' in session and 'configurations' in session:
-        docservers = json.loads(session['docservers'])
+    if 'docservers' in current_context and 'configurations' in current_context:
+        docservers = current_context.docservers
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
 
-    qr_code_value = ""
-    separator_type_label = ""
-    if args['type'] == "docTypeSeparator":
-        qr_code_value = f"DOCSTART|{args['key']}"
-        separator_type_label = gettext('DOCTYPESEPARATOR')
-    elif args['type'] == "documentSeparator":
-        qr_code_value = "DOCSTART"
-        separator_type_label = gettext('DOCUMENTSEPARATOR')
-    elif args['type'] == "bundleSeparator":
-        qr_code_value = "BUNDLESTART"
-        separator_type_label = gettext('BUNDLESEPARATOR')
+    separators = []
+    if args['type'] == "bundleSeparator":
+        separators.append({
+            "label": '',
+            "qr_code_value": "BUNDLESTART",
+            "type": gettext('BUNDLESEPARATOR')
+        })
 
-    res_separators = _SeparatorQR.generate_separator(docservers, qr_code_value, args['label'], separator_type_label)
-    if not res_separators[0]:
+    elif args['type'] == "documentSeparator":
+        separators.append({
+            "label": '',
+            "qr_code_value": "DOCSTART",
+            "type": gettext('DOCUMENTSEPARATOR')
+        })
+
+    if args['type'] == "docTypeSeparator":
+        _doctypes, error = doctypes.retrieve_doctypes({
+            'where': ['id = %s'],
+            'data': [args['id']]
+        })
+        doctype = _doctypes[0]
+
+        if doctype['type'] == 'folder':
+            _doctypes, error = doctypes.retrieve_doctypes({
+                'where': ['status <> %s', 'form_id = %s', 'code like %s'],
+                'data': ['DEL', doctype['form_id'], f"{doctype['code']}.%"]
+            })
+
+        for doctype in _doctypes:
+            separators.append({
+                "label": doctype['label'],
+                "type": gettext('DOCTYPESEPARATOR'),
+                "qr_code_value": f"DOCSTART|{doctype['key']}"
+            })
+
+    res_separators = _SeparatorQR.generate_separator(docservers, separators)
+    if 'error' in res_separators:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),
-            "message": res_separators[1]
+            "message": res_separators['error']
         }
         return response, 401
 
     response = {
-        'encoded_file': res_separators[0],
-        'encoded_thumbnail': res_separators[1]
+        'total': res_separators['total'],
+        'encoded_file': res_separators['encoded_file'],
+        'encoded_thumbnails': res_separators['encoded_thumbnails']
     }
+
     return response, 200
 
 
@@ -166,7 +190,7 @@ def clone_form_doctypes(src_form_id, dest_form_id):
     if error:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 500
 

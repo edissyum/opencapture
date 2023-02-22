@@ -44,17 +44,17 @@
     @apply border-t;
     @apply border-white;
     @apply z-30;
-    @apply bg-gray-900;
+    @apply bg-gray-100;
     box-shadow: 0 1px 5px 4px gray;
 
     & .mat-content mat-panel-title {
-        @apply text-white #{!important};
+        @apply text-gray-900 #{!important};
         @apply truncate #{!important};
     }
 
     &:hover, &:focus {
         @apply bg-none #{!important};
-        @apply bg-gray-900 #{!important};
+        @apply bg-gray-200 #{!important};
     }
 }
 
@@ -62,4 +62,18 @@
     &:hover {
         background: rgba(0,0,0,.04);
     }
+}
+
+.settings_admin_active {
+    @apply relative;
+    @apply text-green-400;
+}
+
+.settings_admin_active::before {
+    content: '';
+    width: 4px;
+    @apply left-0;
+    @apply h-full;
+    @apply bg-green-400;
+    @apply absolute;
 }

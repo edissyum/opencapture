@@ -1,5 +1,4 @@
 # This file is part of Open-Capture.
-
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -15,12 +14,14 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import jwt
 import json
+import datetime
 import unittest
 import warnings
 from src.backend import app
-from src.backend.tests import CUSTOM_ID, get_db, get_token
 from werkzeug.security import check_password_hash
+from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
 class UserTest(unittest.TestCase):
@@ -101,6 +102,25 @@ class UserTest(unittest.TestCase):
         self.assertEqual("Test123", new_user[0]['lastname'])
         self.assertEqual("test123@tttt.fr", new_user[0]['email'])
         self.assertTrue(check_password_hash(new_user[0]['password'], 'test123'))
+
+    def test_successful_reset_password(self):
+        user = self.create_user()
+        payload = {
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=3600),
+            'iat': datetime.datetime.utcnow(),
+            'sub': user.json['id']
+        }
+        reset_token = jwt.encode(payload, app.config['SECRET_KEY'].replace("\n", ""), algorithm='HS512')
+        self.db.execute('UPDATE users SET reset_token = %s WHERE id = %s', (reset_token, user.json['id']))
+        response = self.app.put(f'/{CUSTOM_ID}/ws/users/resetPassword',
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
+                                json={'resetToken': reset_token, 'newPassword': '123465'})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(dict, type(response.json))
+        self.db.execute("SELECT firstname, lastname, password, role, email FROM users WHERE id = " + str(user.json['id']))
+        new_user = self.db.fetchall()
+        self.assertTrue(check_password_hash(new_user[0]['password'], '123465'))
+        self.db.execute('UPDATE users SET reset_token = NULL WHERE id = ' + str(user.json['id']))
 
     def test_successful_get_users_list(self):
         self.create_user()

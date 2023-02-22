@@ -463,7 +463,7 @@ export class VerifierListComponent implements OnInit {
     fillChildren(parentId: any, parent: any, childName: any, supplierName: any, supplierId: any, id: any, purchaseOrSale: any) {
         let childNameExists = false;
         parent.forEach((child: any) => {
-            if (child.name === childName) {
+            if (child.name === supplierName ) {
                 childNameExists = true;
                 child.count = child.count + 1;
             }

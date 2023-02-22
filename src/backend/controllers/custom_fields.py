@@ -31,7 +31,7 @@ def add_custom_field(args):
     else:
         response = {
             "errors": gettext("CUSTOM_FIELDS_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -47,7 +47,7 @@ def retrieve_custom_fields(args):
 
     response = {
         "errors": gettext("CUSTOM_FIELDS_ERROR"),
-        "message": error
+        "message": gettext(error)
     }
     return response, 401
 
@@ -60,7 +60,7 @@ def update(args):
     else:
         response = {
             "errors": gettext("CUSTOM_FIELDS_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -73,6 +73,6 @@ def delete(args):
     else:
         response = {
             "errors": gettext("CUSTOM_FIELDS_DELETE_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401

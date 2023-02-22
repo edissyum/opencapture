@@ -12,7 +12,7 @@
                     <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
                 </button>
             </div>
-            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="settings_search">
                 <button mat-icon-button (click)="sidenav2.toggle();">
                     <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
@@ -53,8 +53,8 @@
             <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
             <h4 class="text-center mt-10 mb-5">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
             <div class="flex justify-center items-center mb-2">
-                <button mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
-                    <span class="block" (click)="updateOutput()">{{ "OUTPUT.update" | translate }}</span>
+                <button (click)="updateOutput()" mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+                    <span class="block">{{ "OUTPUT.update" | translate }}</span>
                 </button>
             </div>
             <div class="flex justify-center items-center ml-10 mr-5">

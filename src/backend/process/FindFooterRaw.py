@@ -241,25 +241,25 @@ class FindFooterRaw:
     def run(self, text_as_string=False):
         total_ttc, total_ht, vat_rate, vat_amount = {}, {}, {}, {}
         if self.supplier:
-            all_rate = search_by_positions(self.supplier, 'total_ttc', self.ocr, self.files, self.database, self.form_id)
+            all_rate = search_by_positions(self.supplier, 'total_ttc', self.ocr, self.files, self.database, self.form_id, self.log)
             if all_rate and all_rate[0]:
                 total_ttc = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", all_rate[0].replace(',', '.')),
                     1: all_rate[1]
                 }
-            no_rate = search_by_positions(self.supplier, 'total_ht', self.ocr, self.files, self.database, self.form_id)
+            no_rate = search_by_positions(self.supplier, 'total_ht', self.ocr, self.files, self.database, self.form_id, self.log)
             if no_rate and no_rate[0]:
                 total_ht = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", no_rate[0].replace(',', '.')),
                     1: no_rate[1]
                 }
-            percentage = search_by_positions(self.supplier, 'vat_rate', self.ocr, self.files, self.database, self.form_id)
+            percentage = search_by_positions(self.supplier, 'vat_rate', self.ocr, self.files, self.database, self.form_id, self.log)
             if percentage and percentage[0]:
                 vat_rate = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", percentage[0].replace(',', '.')),
                     1: percentage[1]
                 }
-            _vat_amount = search_by_positions(self.supplier, 'vat_amount', self.ocr, self.files, self.database, self.form_id)
+            _vat_amount = search_by_positions(self.supplier, 'vat_amount', self.ocr, self.files, self.database, self.form_id, self.log)
             if _vat_amount and _vat_amount[0]:
                 vat_amount = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", _vat_amount[0].replace(',', '.')),

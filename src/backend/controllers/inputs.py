@@ -14,12 +14,12 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import os
 import stat
-import json
 from flask_babel import gettext
-from flask import request, session
+from flask import request, g as current_context
 from src.backend.import_models import inputs
 from src.backend.import_classes import _Config
 from src.backend.import_controllers import user
@@ -53,7 +53,26 @@ def get_inputs(args):
     return response, 200
 
 
+def is_path_allowed(input_path):
+    custom_id = retrieve_custom_from_url(request)
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
+    if 'INPUTS_ALLOWED_PATH' in docservers and input_path:
+        return input_path.startswith(docservers['INPUTS_ALLOWED_PATH'])
+
+
 def update_input(input_id, data):
+    if not is_path_allowed(data['input_folder']):
+        response = {
+            "errors": gettext('CREATE_INPUT_ERROR'),
+            "message": gettext('NOT_ALLOWED_INPUT_PATH')
+        }
+        return response, 401
+
     _, error = inputs.get_input_by_id({'input_id': input_id})
 
     if error is None:
@@ -64,13 +83,13 @@ def update_input(input_id, data):
         else:
             response = {
                 "errors": gettext('UPDATE_INPUT_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('UPDATE_INPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -95,29 +114,40 @@ def duplicate_input(input_id):
         else:
             response = {
                 "errors": gettext('DUPLICATE_INPUT_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DUPLICATE_INPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
 
 def create_input(data):
+    if not is_path_allowed(data['input_folder']):
+        response = {
+            "errors": gettext('CREATE_INPUT_ERROR'),
+            "message": gettext('NOT_ALLOWED_INPUT_PATH')
+        }
+        return response, 401
+
     _columns = {
         'module': data['module'],
         'input_id': data['input_id'],
         'input_label': data['input_label'],
-        'input_folder': data['input_folder'],
-        'default_form_id': data['default_form_id'],
         'customer_id': data['customer_id'],
+        'input_folder': data['input_folder'],
         'splitter_method_id': data['splitter_method_id'] if 'splitter_method_id' in data else False,
         'remove_blank_pages': data['remove_blank_pages'] if 'remove_blank_pages' in data else False,
         'override_supplier_form': data['override_supplier_form'] if 'override_supplier_form' in data else False,
     }
+
+    if 'default_form_id' in data:
+        _columns['default_form_id'] = data['default_form_id']
+    if 'ai_model_id' in data:
+        _columns['ai_model_id'] = data['ai_model_id']
 
     input_info, error = get_inputs({
         'where': ['module = %s', 'input_id = %s'],
@@ -150,7 +180,7 @@ def create_input(data):
     else:
         response = {
             "errors": gettext('CREATE_INPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
@@ -163,7 +193,20 @@ def get_input_by_id(input_id):
     else:
         response = {
             "errors": gettext('GET_INPUT_BY_ID_ERROR'),
-            "message": error
+            "message": gettext(error)
+        }
+        return response, 401
+
+
+def get_input_by_input_id(input_id):
+    input_info, error = inputs.get_input_by_input_id({'input_id': input_id})
+
+    if error is None:
+        return input_info, 200
+    else:
+        response = {
+            "errors": gettext('GET_INPUT_BY_INPUT_ID_ERROR'),
+            "message": gettext(error)
         }
         return response, 401
 
@@ -184,22 +227,22 @@ def delete_input(input_id):
         else:
             response = {
                 "errors": gettext('DELETE_INPUT_ERROR'),
-                "message": error
+                "message": gettext(error)
             }
             return response, 401
     else:
         response = {
             "errors": gettext('DELETE_INPUT_ERROR'),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401
 
 
 def delete_script_and_incron(args):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in session and 'config' in session:
-        docservers = json.loads(session['docservers'])
-        config = json.loads(session['config'])
+    if 'docservers' in current_context and 'config' in current_context:
+        docservers = current_context.docservers
+        config = current_context.config
     else:
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
@@ -233,9 +276,9 @@ def delete_script_and_incron(args):
 
 def create_script_and_incron(args):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in session and 'config' in session:
-        docservers = json.loads(session['docservers'])
-        config = json.loads(session['config'])
+    if 'docservers' in current_context and 'config' in current_context:
+        docservers = current_context.docservers
+        config = current_context.config
     else:
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
@@ -308,3 +351,21 @@ def create_script_and_incron(args):
             "message": folder_script
         }
         return response, 501
+
+
+def get_allowed_path():
+    custom_id = retrieve_custom_from_url(request)
+    if 'docservers' in current_context and 'configurations' in current_context:
+        docservers = current_context.docservers
+        configurations = current_context.configurations
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+        configurations = _vars[10]
+
+    if configurations['restrictInputsPath'] and 'OUTPUTS_ALLOWED_PATH' in docservers:
+        response = {'allowedPath': docservers['INPUTS_ALLOWED_PATH']}
+    else:
+        response = {'allowedPath': ''}
+
+    return response, 200

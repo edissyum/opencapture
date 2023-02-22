@@ -10,7 +10,8 @@ CREATE TABLE "users"
     "status"            VARCHAR(5)  DEFAULT 'OK',
     "creation_date"     TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
     "last_connection"   TIMESTAMP,
-    "role"              INTEGER     NOT NULL
+    "role"              INTEGER     NOT NULL,
+    "reset_token"       TEXT
 );
 
 CREATE TABLE "form_models"
@@ -88,18 +89,19 @@ CREATE TABLE "outputs_types"
 
 CREATE TABLE "inputs"
 (
-    "id"                            SERIAL         UNIQUE PRIMARY KEY,
-    "input_id"                      VARCHAR(255),
-    "input_label"                   VARCHAR(255),
-    "default_form_id"               INTEGER,
-    "customer_id"                   INTEGER,
-    "module"                        VARCHAR(10),
-    "remove_blank_pages"            BOOLEAN        DEFAULT False,
-    "override_supplier_form"        BOOLEAN        DEFAULT False,
-    "purchase_or_sale"              VARCHAR(8)     DEFAULT 'purchase',
-    "status"                        VARCHAR(3)     DEFAULT 'OK',
-    "input_folder"                  TEXT,
-    "splitter_method_id"            VARCHAR(20)    DEFAULT 'qr_code_OC'
+    "id"                        SERIAL         UNIQUE PRIMARY KEY,
+    "input_id"                  VARCHAR(255),
+    "input_label"               VARCHAR(255),
+    "default_form_id"           INTEGER,
+    "customer_id"               INTEGER,
+    "ai_model_id"               INTEGER,
+    "module"                    VARCHAR(10),
+    "remove_blank_pages"        BOOLEAN        DEFAULT False,
+    "override_supplier_form"    BOOLEAN        DEFAULT False,
+    "purchase_or_sale"          VARCHAR(8)     DEFAULT 'purchase',
+    "status"                    VARCHAR(3)     DEFAULT 'OK',
+    "input_folder"              TEXT,
+    "splitter_method_id"        VARCHAR(20)    DEFAULT 'qr_code_OC'
 );
 
 CREATE TABLE "custom_fields"
@@ -323,9 +325,9 @@ CREATE TABLE "configurations"
 CREATE TABLE "docservers"
 (
     "id"            SERIAL          UNIQUE PRIMARY KEY,
-    "description"   VARCHAR(255),
     "docserver_id"  VARCHAR(32)     UNIQUE,
-    "path"          VARCHAR(255)    UNIQUE
+    "path"          VARCHAR(255),
+    "description"   VARCHAR(255)
 );
 
 CREATE TABLE "regex"
@@ -393,6 +395,7 @@ COMMENT ON SEQUENCE splitter_referential_call_count IS 'Splitter referential dem
 CREATE TABLE ai_models
 (
     "id"                SERIAL       PRIMARY KEY,
+    "model_label"       VARCHAR,
     "model_path"        VARCHAR(50),
     "type"              VARCHAR(15),
     "train_time"        REAL,
@@ -401,4 +404,19 @@ CREATE TABLE ai_models
     "status"            VARCHAR(10)  DEFAULT 'OK',
     "documents"         JSONB        DEFAULT '{}',
     "module"            VARCHAR(10)
+);
+
+CREATE TABLE monitoring
+(
+    "id"                 SERIAL         UNIQUE PRIMARY KEY,
+    "input_id"           VARCHAR(255),
+    "status"             VARCHAR(10),
+    "elapsed_time"       VARCHAR(20),
+    "error"              BOOLEAN        DEFAULT False,
+    "module"             VARCHAR(10)    NOT NULL,
+    "source"             VARCHAR(10)    NOT NULL,
+    "creation_date"      TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "end_date"           TIMESTAMP,
+    "filename"           VARCHAR(255),
+    "steps"              JSONB          DEFAULT '{}'
 );

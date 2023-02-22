@@ -29,6 +29,6 @@ def get_status(module):
     else:
         response = {
             "errors": gettext("RETRIEVES_STATUS_ERROR"),
-            "message": error
+            "message": gettext(error)
         }
         return response, 401

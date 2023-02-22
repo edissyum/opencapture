@@ -12,7 +12,7 @@
                     <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
                 </button>
             </div>
-            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="settings_search"></div>
         </div>
         <hr class="border-green-400 relative z-30">
@@ -25,6 +25,10 @@
                                [type]="field.type" placeholder="{{ field.placeholder | translate }}"
                                [required]="field.required">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                        <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
+                              [matTooltip]="field.hint">
+                            <i class="fa-solid fa-circle-question text-md"></i>
+                        </span>
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>

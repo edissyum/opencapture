@@ -14,6 +14,7 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask import Blueprint, request, make_response, jsonify
 from src.backend.import_controllers import auth, outputs
@@ -84,4 +85,11 @@ def delete_output(output_id):
 def create_output():
     data = request.json['args']
     res = outputs.create_output(data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('outputs/allowedPath', methods=['GET'])
+@auth.token_required
+def get_allowed_path():
+    res = outputs.get_allowed_path()
     return make_response(jsonify(res[0])), res[1]

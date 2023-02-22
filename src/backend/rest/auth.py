@@ -18,8 +18,8 @@
 
 import json
 from flask_babel import gettext
-from flask import Blueprint, request, make_response
 from src.backend.import_controllers import auth
+from flask import Blueprint, request, make_response
 
 bp = Blueprint('auth', __name__, url_prefix='/ws/')
 
@@ -108,7 +108,7 @@ def check_connection_ldap_server():
         error = gettext('NOT_COMPLETE_CONNECTION_INFOS')
         res = [{
             "errors": gettext('INFOS_LDAP_NOT_COMPLETE'),
-            "message": error
+            "message": gettext(error)
         }, 401]
 
     return make_response(res[0], res[1])

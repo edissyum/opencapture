@@ -24,6 +24,11 @@ if 'auth' not in custom_array or 'models' not in custom_array['auth']['path']:
 elif 'models' in custom_array['auth']['path']:
     auth = getattr(__import__(custom_array['auth']['path'], fromlist=[custom_array['auth']['module']]), custom_array['auth']['module'])
 
+if 'monitoring' not in custom_array or 'models' not in custom_array['monitoring']['path']:
+    from .models import monitoring
+elif 'models' in custom_array['auth']['path']:
+    monitoring = getattr(__import__(custom_array['monitoring']['path'], fromlist=[custom_array['monitoring']['module']]), custom_array['monitoring']['module'])
+
 if 'user' or 'models' not in custom_array['user']['path']:
     from .models import user
 elif 'models' in custom_array['user']['path']:

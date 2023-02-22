@@ -40,6 +40,7 @@ export class UpdateInputComponent implements OnInit {
     headers                 : HttpHeaders   = this.authService.headers;
     loading                 : boolean       = true;
     loadingCustomFields     : boolean       = true;
+    allowedPath             : string       = '';
     inputId                 : any;
     input                   : any;
     inputForm               : any[]         = [
@@ -63,7 +64,7 @@ export class UpdateInputComponent implements OnInit {
             label: this.translate.instant('INPUT.input_folder'),
             type: 'text',
             control: new FormControl(),
-            placeholder: "/var/share/sortant",
+            placeholder: "/var/share/input",
             required: true,
         },
         {
@@ -119,6 +120,14 @@ export class UpdateInputComponent implements OnInit {
             ],
         },
         {
+            id: 'ai_model_id',
+            label: this.translate.instant('INPUT.ai_model_id'),
+            type: 'select',
+            control: new FormControl(),
+            required: true,
+            hint: this.translate.instant('INPUT.ai_model_id_hint')
+        },
+        {
             id: 'override_supplier_form',
             label: this.translate.instant('INPUT.override_supplier_form'),
             type: 'boolean',
@@ -149,7 +158,27 @@ export class UpdateInputComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         this.inputId = this.route.snapshot.params['id'];
-
+        this.inputForm.forEach((element: any) => {
+            if (element.id === 'default_form_id') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    const required = !value;
+                    this.inputForm.forEach((elem: any) => {
+                        if (elem.id === 'ai_model_id') {
+                            elem.required = required;
+                        }
+                    });
+                });
+            } else if (element.id === 'ai_model_id') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    const required = !value;
+                    this.inputForm.forEach((elem: any) => {
+                        if (elem.id === 'default_form_id') {
+                            elem.required = required;
+                        }
+                    });
+                });
+            }
+        });
         this.http.get(environment['url'] + '/ws/inputs/getById/' + this.inputId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.input = data;
@@ -161,6 +190,7 @@ export class UpdateInputComponent implements OnInit {
                                 this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
                                     tap((forms: any) => {
                                         element.values = forms.forms;
+                                        element.values = [{'id': 0, 'label': this.translate.instant('INPUT.no_form_associated')}].concat(element.values);
                                     }),
                                     catchError((err: any) => {
                                         console.debug(err);
@@ -180,8 +210,27 @@ export class UpdateInputComponent implements OnInit {
                                         return of(false);
                                     })
                                 ).subscribe();
-                            }
-                            else if (element.id === 'splitter_method_id' && (element.control.value === null || element.control.value === '' || element.control.value === undefined)) {
+                            } else if (element.id === 'ai_model_id') {
+                                this.http.get(environment['url'] + '/ws/ai/list?module=verifier', {headers: this.authService.headers}).pipe(
+                                    tap((aiModel: any) => {
+                                        this.inputForm.forEach((element: any) => {
+                                            if (element.id === 'ai_model_id') {
+                                                element.values = aiModel.models;
+                                                element.values.forEach((elem: any) => {
+                                                    elem.label = elem.model_label;
+                                                });
+                                                element.values = [{'id': 0, 'label': this.translate.instant('INPUT.no_ai_model_associated')}].concat(element.values);
+                                            }
+                                        });
+                                    }),
+                                    finalize(() => this.loading = false),
+                                    catchError((err: any) => {
+                                        console.debug(err);
+                                        this.notify.handleErrors(err);
+                                        return of(false);
+                                    })
+                                ).subscribe();
+                            } else if (element.id === 'splitter_method_id' && (element.control.value === null || element.control.value === '' || element.control.value === undefined)) {
                                 element.control.setValue('no_sep');
                             }
                         }
@@ -191,7 +240,26 @@ export class UpdateInputComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
-                this.router.navigate(['/settings/verifier/outputs']).then();
+                this.router.navigate(['/settings/verifier/inputs']).then();
+                return of(false);
+            })
+        ).subscribe();
+        this.http.get(environment['url'] + '/ws/inputs/allowedPath', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.allowedPath = data.allowedPath;
+                if (this.allowedPath) {
+                    this.inputForm.forEach((element: any) => {
+                        if (element.id === 'input_folder') {
+                            element.placeholder = (this.allowedPath + "/input").replace(/\/\//g, '/');
+                            element.hint = this.translate.instant('GLOBAL.allowed_path', {'allowedPath': this.allowedPath});
+                        }
+                    });
+                }
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();
@@ -199,13 +267,23 @@ export class UpdateInputComponent implements OnInit {
 
     isValidForm() {
         let state = true;
+        let aiEmpty = false;
+        let defaultFormEmpty = false;
         this.inputForm.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;
             }
+            if (element.id === 'ai_model_id' && element.control.value === 0) {
+                aiEmpty = true;
+            }
+            if (element.id === 'default_form_id' && element.control.value === 0) {
+                defaultFormEmpty = true;
+            }
+            if (aiEmpty && defaultFormEmpty) {
+                state = false;
+            }
             element.control.markAsTouched();
         });
-
         return state;
     }
 
@@ -226,7 +304,7 @@ export class UpdateInputComponent implements OnInit {
                 }),
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/verifier/inputs');
+                    this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();

@@ -1,0 +1,127 @@
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
+    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-16]="this.serviceSettings.minimizeSideNav">
+        <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
+    </mat-sidenav>
+    <mat-sidenav-content class="bg-white">
+        <div *ngIf="this.loading">
+            <app-loader></app-loader>
+        </div>
+        <div class="settings_header">
+            <div class="flex">
+                <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
+            </div>
+            <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="settings_search">
+                <button mat-icon-button *ngIf="displaySelectedRowId()" (click)="sidenav2.toggle();">
+                    <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened"
+                       class="fa-solid fa-stream text-xl text-gray-900"></i>
+                </button>
+            </div>
+        </div>
+        <hr class="border-green-400 relative z-30">
+        <div *ngIf="!this.loading">
+            <mat-table [dataSource]="modelsList" matSort (matSortChange)="sortData($event)" class="w-full">
+                <ng-container matColumnDef="id">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.id' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="model_label">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.model_label' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.model_label }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="train_time">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.train_time' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.train_time }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="accuracy_score">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.accuracy' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.accuracy_score }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="documents">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.doctypes' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.documents }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="min_proba">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.min_proba' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.min_proba }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <button (click)="$event.stopPropagation(); sidenav2.open(); this.selectRow(element)"
+                                matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.test_model' | translate }}" mat-icon-button
+                                class="inline-block align-text-top">
+                            <i class="fa-solid fa-vial"></i>
+                        </button>
+                        <button mat-icon-button
+                                (click)="$event.stopPropagation(); deleteConfirmDialog(element.id, element.model_label)"
+                                matTooltip="{{ 'GLOBAL.delete' | translate }}"
+                                class="inline-block align-text-top">
+                            <i class="fa-solid fa-trash text-lg"></i>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" routerLink="/settings/{{ splitterOrVerifier }}/ai/update/{{ row.id }}"
+                         class="cursor-pointer hover:shadow-md transition-colors duration-300">
+                </mat-row>
+            </mat-table>
+            <mat-paginator showFirstLastButtons
+                           [length]="total"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav #sidenav2 mode="side" position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-4">
+            {{ 'ARTIFICIAL-INTELLIGENCE.test_model' | translate }}
+        </h3>
+        <mat-divider class="border-green-400"></mat-divider>
+        <div class="grid grid-cols-1 gap-x-2 gap-y-2 m-4">
+            <mat-card class="w-full border-solid border-green-400 border rounded-lg transition duration-300">
+                <mat-card-title class="p-4">
+                    {{ 'ARTIFICIAL-INTELLIGENCE.model_selected'| translate }}
+                    {{ displaySelectedRowId() }}
+                </mat-card-title>
+                <mat-card-actions class="block">
+                    <div class="w-full">
+                        <ngx-file-drag-drop
+                            [displayFileSize]="true"
+                            [formControl]="fileControl"
+                            [activeBorderColor]="'#97BF3D'"
+                            (valueChanged)="checkFile($event)"
+                            [class.disabled]="this.isPredicting"
+                            [class.pointer-events-none]="this.isPredicting"
+                            [emptyPlaceholder]="'ARTIFICIAL-INTELLIGENCE.choose_file' | translate">
+                        </ngx-file-drag-drop>
+                    </div>
+                    <div class="text-center" [class.cursor-not-allowed]="this.isPredicting || this.fileControl.value!.length === 0">
+                        <button mat-button (click)="onSubmit()"
+                                [disabled]="this.isPredicting || this.fileControl.value!.length === 0"
+                                [class.bg-gray-400]="this.isPredicting || this.fileControl.value!.length === 0"
+                                class="w-3/5 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
+                               transition duration-300">
+                            {{ 'ARTIFICIAL-INTELLIGENCE.predict' | translate }}
+                        </button>
+                    </div>
+                </mat-card-actions>
+                <div *ngIf="showResponse === true">
+                    <mat-divider></mat-divider>
+                    <mat-card-content class="pt-2">
+                            <p>{{ 'ARTIFICIAL-INTELLIGENCE.file' | translate }} : {{ prediction[0] }}</p>
+                            <p>{{ 'ARTIFICIAL-INTELLIGENCE.prediction' | translate }} : {{ prediction[1] }}</p>
+                            <p>{{ 'ARTIFICIAL-INTELLIGENCE.probability' | translate }} : {{ prediction[2]}} %</p>
+                    </mat-card-content>
+                </div>
+                <mat-card-footer>
+                    <mat-progress-bar *ngIf="isPredicting" mode="indeterminate"></mat-progress-bar>
+                </mat-card-footer>
+            </mat-card>
+        </div>
+    </mat-sidenav>
+</mat-sidenav-container>

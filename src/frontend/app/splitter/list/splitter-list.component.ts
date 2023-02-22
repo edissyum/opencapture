@@ -52,10 +52,10 @@ export class SplitterListComponent implements OnInit {
     page             : number  = 1;
     selectedTab      : number  = 0;
     searchText       : string  = "";
-    pageSize         : number  = 16;
+    pageSize         : number  = 15;
     pageIndex        : number  = 1;
     offset           : number  = 0;
-    pageSizeOptions  : any []  = [4, 8, 12, 16, 24, 48];
+    pageSizeOptions  : any []  = [5, 10, 15, 20, 30, 60];
     total            : number  = 0;
     totals           : any     = {};
     batchList        : any[]   = [
@@ -154,11 +154,16 @@ export class SplitterListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id +  '/paging/' +
-            (this.pageIndex - 1) + '/' + this.pageSize + '/' + this.currentTime + '/' + this.currentStatus,
-            {headers: this.authService.headers}).pipe(
+
+        this.http.post(environment['url'] + '/ws/splitter/batches/list', {
+            'size'   : this.pageSize,
+            'search' : this.searchText,
+            'time'   : this.currentTime,
+            'page'   : this.pageIndex - 1,
+            'status' : this.currentStatus,
+            'userId' : this.userService.user.id
+        }, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                console.log(data);
                 data.batches.forEach((batch: any) =>
                     this.batches.push({
                         id             : batch['id'],

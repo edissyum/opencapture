@@ -1,5 +1,5 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-16]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white">
@@ -12,7 +12,7 @@
                     <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
                 </button>
             </div>
-            <h3 class="text-center flex m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="settings_search">
                 <mat-form-field appearance="outline">
                     <mat-label>{{ 'CONFIGURATIONS.search_config' | translate }}</mat-label>
@@ -22,19 +22,80 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!loading" class="w-full overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
-            <div class="text-center">
-                <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.change_image" | translate }}</h3>
-                <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
-                <div>
-                    <img class="shadow-md hover:shadow-2xl m-auto p-2 transition-all ease-in-out duration-500
-                         cursor-pointer shadow-gray-900 hover:shadow-gray-900" [src]="this.loginImage" alt="Login image"
-                         (click)="onClick(logo)">
-                    <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
-                </div>
-                <mat-hint class="text-gray-600 relative top-2">
-                    {{ "CONFIGURATIONS.authorized_extensions" | translate }}
-                </mat-hint>
-            </div>
+            <mat-tab-group dynamicHeight class="w-full">
+                <mat-tab label="{{ 'CONFIGURATIONS.global' | translate }}">
+                    <div class="text-center grid grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.change_image" | translate }}</h3>
+                            <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                            <mat-hint class="text-gray-600">
+                                {{ "CONFIGURATIONS.authorized_extensions" | translate }}
+                            </mat-hint>
+                            <div style="min-height: 12rem" class="mt-4">
+                                <img class="shadow-md hover:shadow-xl m-auto p-2 transition-all ease-in-out duration-500
+                                 cursor-pointer shadow-gray-900 hover:shadow-gray-900" [src]="this.loginImage" alt="Login image"
+                                     (click)="onClick(logo)">
+                                <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-gray-900 m-4">{{ "PRIVILEGES.change_language" | translate }}</h3>
+                            <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                            <div class="ml-3 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('change_language')">
+                                <mat-form-field class="language origin-top-right right-0 mt-4 w-1/2">
+                                    <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
+                                    <mat-select (selectionChange)="this.localeService.changeLocale($event)"
+                                                [disabled]="this.localeService.localeLoading"
+                                                [(value)]="this.localeService.currentLang">
+                                        <mat-option *ngFor="let lang of this.localeService.langs" [value]="lang[0]">
+                                            {{ lang[1] }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <i *ngIf="this.localeService.localeLoading"
+                                   class="fa-solid fa-earth-europe fa-beat fa-lg text-gray-900 ml-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="{{ 'CONFIGURATIONS.password_rules' | translate }}">
+                    <div class="text-center">
+                        <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.password_rules" | translate }}</h3>
+                        <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                        <div class="flex flex-col items-center justify-center items-center gap-4">
+                            <div class="text-left">
+                                <mat-slide-toggle [(ngModel)]="this.minLengthEnabled" [checked]="this.passwordRules.minLength > 0"
+                                                  (change)="updatePasswordRules()" [disabled]="this.updating">
+                                    {{ "CONFIGURATIONS.enable_password_min_length" | translate }}
+                                </mat-slide-toggle>
+                                <mat-form-field appearance="outline" class="w-4/12 ml-2">
+                                    <mat-label>{{ "CONFIGURATIONS.password_min_length" | translate }}</mat-label>
+                                    <input matInput type="number" [(ngModel)]="this.passwordRules.minLength"
+                                           [disabled]="!this.minLengthEnabled || this.updating" (change)="updatePasswordRules()">
+                                </mat-form-field>
+                                <div class="mb-4">
+                                    <mat-slide-toggle [(ngModel)]="this.passwordRules.uppercaseMandatory" (change)="updatePasswordRules()"
+                                                      [disabled]="this.updating">
+                                        {{ "CONFIGURATIONS.enable_password_uppercase_mandatory" | translate }}
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="my-4">
+                                    <mat-slide-toggle [(ngModel)]="this.passwordRules.specialCharMandatory" (change)="updatePasswordRules()"
+                                                      [disabled]="this.updating">
+                                        {{ "CONFIGURATIONS.enable_password_special_char_mandatory" | translate }}
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="my-4">
+                                    <mat-slide-toggle [(ngModel)]="this.passwordRules.numberMandatory" (change)="updatePasswordRules()"
+                                                      [disabled]="this.updating">
+                                        {{ "CONFIGURATIONS.enable_password_number_mandatory" | translate }}
+                                    </mat-slide-toggle>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
             <mat-divider class="border-green-400 mt-4 mb-4 w-3/4 m-auto"></mat-divider>
             <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
             <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
@@ -62,7 +123,7 @@
                         </ng-container>
                         <ng-template #update>
                             <mat-form-field appearance="outline" *ngIf="element.data.type === 'bool'">
-                                <mat-select class="relative -top-2" [(ngModel)]="element.data.value"
+                                <mat-select class="relative -top-3" [(ngModel)]="element.data.value"
                                             (selectionChange)="updateValue($event, element.id, element.label)">
                                     <mat-option [value]="true">Activer</mat-option>
                                     <mat-option [value]="false">Désactiver</mat-option>

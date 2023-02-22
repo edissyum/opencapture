@@ -117,7 +117,7 @@ class FindInvoiceNumber:
 
     def run(self):
         if self.supplier:
-            invoice_number = search_by_positions(self.supplier, 'invoice_number', self.ocr, self.files, self.database, self.form_id)
+            invoice_number = search_by_positions(self.supplier, 'invoice_number', self.ocr, self.files, self.database, self.form_id, self.log)
             if invoice_number and invoice_number[0]:
                 return invoice_number
 

@@ -22,6 +22,7 @@ import { HistoryService } from "../../../../../services/history.service";
 export class SplitterCreateInputComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;
     loading         : boolean       = true;
+    allowedPath     : string        = '';
     inputId         : any;
     input           : any;
     inputForm       : any[]         = [
@@ -45,7 +46,8 @@ export class SplitterCreateInputComponent implements OnInit {
             label: this.translate.instant('INPUT.input_folder'),
             type: 'text',
             control: new FormControl(),
-            placeholder: "/var/share/sortant",
+            placeholder: "/var/share/input",
+            hint: this.translate.instant('GLOBAL.no_restriction'),
             required: true,
         },
         {
@@ -148,6 +150,25 @@ export class SplitterCreateInputComponent implements OnInit {
                 ).subscribe();
             }
         });
+        this.http.get(environment['url'] + '/ws/inputs/allowedPath', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.allowedPath = data.allowedPath;
+                if (this.allowedPath) {
+                    this.inputForm.forEach((element: any) => {
+                        if (element.id === 'input_folder') {
+                            element.placeholder = (this.allowedPath + "/input").replace(/\/\//g, '/');
+                            element.hint = this.translate.instant('GLOBAL.allowed_path', {'allowedPath': this.allowedPath});
+                        }
+                    });
+                }
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     isValidForm() {

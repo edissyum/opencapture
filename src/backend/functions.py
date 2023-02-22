@@ -18,6 +18,7 @@
 import os
 import json
 import glob
+import shutil
 from pathlib import Path
 
 import ocrmypdf
@@ -168,7 +169,7 @@ def search_custom_positions(data, ocr, files, regex, file, docservers):
         return search(position, data['regex'], files, ocr, target_file)
 
 
-def search_by_positions(supplier, index, ocr, files, database, form_id):
+def search_by_positions(supplier, index, ocr, files, database, form_id, log):
     positions_mask = database.select({
         'select': ['*'],
         'table': ['positions_masks'],
@@ -186,7 +187,8 @@ def search_by_positions(supplier, index, ocr, files, database, form_id):
     if positions:
         positions['ocr_from_user'] = True
         data = search(positions, regex, files, ocr, file)
-        if pages:
+        if pages and data[0]:
+            log.info(index + ' found using position mask : ' + data[0])
             data.append(pages)
         return data
 
@@ -225,8 +227,9 @@ def generate_searchable_pdf(pdf, tmp_filename, lang, log):
     Start from standard PDF, with no OCR, and create a searchable PDF, with OCR. Thanks to ocrmypdf python lib
 
     :param pdf: Path to original pdf (not searchable, without OCR)
-    :param tmp_path: Path to store the final pdf, searchable with OCR
-    :param separator: Class Separator instance
+    :param tmp_filename: Path to store the final pdf, searchable with OCR
+    :param lang: lang instance
+    :param log: log instance
     """
     try:
         res = ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', skip_text=True, language=lang, progress_bar=False)
@@ -234,3 +237,46 @@ def generate_searchable_pdf(pdf, tmp_filename, lang, log):
             ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', force_ocr=True, language=lang, progress_bar=False)
     except ocrmypdf.exceptions.PriorOcrFoundError as _e:
         log.error(_e)
+
+
+def find_form_with_ia(file, ai_model_id, database, docservers, files, ai, ocr, log, module):
+    ai_model = database.select({
+        'select': ['*'],
+        'table': ['ai_models'],
+        'where': ['id = %s', 'module = %s'],
+        'data': [ai_model_id, module],
+    })
+    if ai_model:
+        if module == 'verifier':
+            csv_file = docservers.get('VERIFIER_TRAIN_PATH_FILES') + '/data.csv'
+        elif module == 'splitter':
+            csv_file = docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
+        else:
+            return False
+        path = docservers.get('TMP_PATH') + files.get_random_string(15) + '.pdf'
+        shutil.copy(file, path)
+        ai.store_one_file_from_script(path, csv_file, files, ocr, docservers, log)
+
+        if module == 'verifier':
+            model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model[0]['model_path']
+        elif module == 'splitter':
+            model_name = docservers.get('SPLITTER_AI_MODEL_PATH') + ai_model[0]['model_path']
+        else:
+            return False
+        min_proba = ai_model[0]['min_proba']
+        if os.path.isfile(csv_file) and os.path.isfile(model_name):
+            (_, folder, prob), code = ai.model_testing(model_name, csv_file)
+            if code == 200:
+                if prob >= min_proba:
+                    for doc in ai_model[0]['documents']:
+                        if doc['folder'] == folder:
+                            form = database.select({
+                                'select': ['*'],
+                                'table': ['form_models'],
+                                'where': ['id = %s', 'module = %s'],
+                                'data': [doc['form'], module],
+                            })
+                            if form:
+                                log.info('[IA] Document detected as : ' + folder)
+                                return doc['form']
+    return False

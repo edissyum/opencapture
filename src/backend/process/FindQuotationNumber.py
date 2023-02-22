@@ -51,7 +51,6 @@ class FindQuotationNumber:
             for _order in re.finditer(r"" + self.regex['email'] + "", _mail.group().lower()):
                 return ''
 
-
         # Delete the quotation keyword
         tmp_invoice_number = re.sub(r"" + self.regex['quotation_number'][:-2] + "", '', quotation_res)
         invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
@@ -59,7 +58,7 @@ class FindQuotationNumber:
 
     def run(self):
         if self.supplier:
-            invoice_number = search_by_positions(self.supplier, 'quotation_number', self.ocr, self.files, self.database, self.form_id)
+            invoice_number = search_by_positions(self.supplier, 'quotation_number', self.ocr, self.files, self.database, self.form_id, self.log)
             if invoice_number and invoice_number[0]:
                 return invoice_number
 
