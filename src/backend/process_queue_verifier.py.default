@@ -66,7 +66,7 @@ def launch(args):
     task_id_monitor = database.insert({
         'table': 'monitoring',
         'columns': {
-            'status': 'running,
+            'status': 'running',
             'module': 'verifier',
             'filename': os.path.basename(args['file']),
             'input_id': args['input_id'] if 'input_id' in args else None,

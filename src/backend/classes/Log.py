@@ -1,5 +1,5 @@
 # This file is part of Open-Capture.
-import json
+
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -15,6 +15,7 @@ import json
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import json
 import time
 import logging
 from logging.handlers import RotatingFileHandler
@@ -28,6 +29,7 @@ class Log:
         self.task_id_watcher = None
         self.task_id_monitor = None
         self.database = None
+        self.processInError = False
         self.logger = logging.getLogger('Open-Capture')
         if self.logger.hasHandlers():
             self.logger.handlers.clear()  # Clear the handlers to avoid double logs
@@ -47,12 +49,13 @@ class Log:
         self.logger.info(msg)
 
     def error(self, msg, send_notif=True):
+        self.processInError = True
         if self.smtp and self.smtp.enabled and send_notif:
             self.smtp.send_notification(msg, self.filename)
 
         if self.database:
             if self.task_id_monitor:
-                self.update_task_monitor(msg, 'error')
+                self.update_task_monitor(str(msg), 'error')
             if self.task_id_watcher:
                 self.update_task_watcher(msg)
         self.current_step += 1
@@ -61,14 +64,14 @@ class Log:
     def update_task_monitor(self, msg, status='running'):
         new_step = {
             "status": status,
-            "message": msg,
+            "message": msg.replace("'", '"'),
             "date": time.strftime("%Y-%m-%d %H:%M:%S")
         }
 
         self.database.update({
             'table': ['monitoring'],
             'set': {
-                "error": True if status == 'error' else False,
+                "error": status == 'error' or self.processInError,
                 'steps': "jsonb_set(steps, '{" + str(self.current_step) + "}', '" + json.dumps(new_step) + "')",
             },
             'where': ['id = %s'],
