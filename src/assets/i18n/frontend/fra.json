@@ -440,7 +440,7 @@
 		"enable-form": "Activation du formulaire&nbsp;<strong>{{ form }}</strong>",
 		"enable-mailcollect-process": "Activation du processus MailCollect&nbsp;<strong>{{ process }}</strong>",
 		"enable-user": "Activation de l'utilisateur&nbsp;<strong>{{ user }}</strong>",
-		"file_uploaded": "Fichier(s) téléversé(s) via l'interface avec la chaîne entrante&nbsp;<strong>{{ input }}</strong>",
+		"file_uploaded": "Fichier téléversé via l'interface avec la chaîne entrante&nbsp;<strong>{{ input }}</strong>",
 		"language_changed": "Changemement de la langue vers <strong>{{ lang }}</strong>",
 		"login": "Connexion de l'utilisateur",
 		"login_with_token": "Connexion de l'utilisateur via token (application tierce)",
