@@ -437,8 +437,9 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     resetForm() {
-        this.addFieldInputs.forEach((element: any) => {
-            element.control.setValue('');
+        this.addFieldInputs.forEach((field: any) => {
+            field.control.reset();
+            field.control.setErrors(null);
         });
         this.selectOptions      = [];
         this.inactiveOrActive   = '';
