@@ -269,11 +269,11 @@ class Splitter:
                 PDF or XML masks value
             """
             if key in metadata:
-                mask_result.append(str(metadata[key]).replace(' ', separator))
+                mask_result.append(str(metadata[key]).replace(' ', substitute))
             elif key == 'date':
-                mask_result.append(_date.replace(' ', separator))
+                mask_result.append(_date.replace(' ', substitute))
             elif key == 'random':
-                mask_result.append(random_num.replace(' ', separator))
+                mask_result.append(random_num.replace(' ', substitute))
             elif key == 'id':
                 mask_result.append(metadata['id'])
             elif document:
