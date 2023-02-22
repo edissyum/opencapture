@@ -128,7 +128,7 @@ def retrieve_batches(args):
         return user_customers[0], user_customers[1]
     user_customers = user_customers[0]
 
-    args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
+    args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
     args['where'] = ['customer_id = ANY(%s)']
     args['data'] = [user_customers]
 
