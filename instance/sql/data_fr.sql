@@ -23,6 +23,8 @@ INSERT INTO "configurations" ("label", "data") VALUES ('invoiceSizeMin', '{"type
 INSERT INTO "configurations" ("label", "data") VALUES ('devisSizeMin', '{"type": "int", "value": "3", "description": "Taille minimale pour un numéro de devis"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('loginMessage', '{"type": "string", "value": "Open-Capture - LAD / RAD", "description": "Court message affiché sur l''écran d''accueil"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('allowUserMultipleLogin', '{"type": "bool", "value": true, "description": "Autoriser un utilisateur à être connecté sur plusieurs machines simultanément"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('restrictInputsPath', '{"type": "bool", "value": false, "description": "Activer la restriction du chemin sur le dossier des chaînes entrantes"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('restrictOutputsPath', '{"type": "bool", "value": false, "description": "Activer la restriction du chemin sur le dossier des chaînes sortantes"}');
 INSERT INTO "configurations" ("label", "data", "display") VALUES ('mailCollectGeneral', '{
     "type": "json",
     "value": {
@@ -61,8 +63,7 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('passwordRules
     },
     "description": ""
 }', false);
-INSERT INTO "configurations" ("label", "data") VALUES ('restrictInputsPath', '{"type": "bool", "value": false, "description": "Activer la restriction du chemin sur le dossier des chaînes entrantes"}');
-INSERT INTO "configurations" ("label", "data") VALUES ('restrictOutputsPath', '{"type": "bool", "value": false, "description": "Activer la restriction du chemin sur le dossier des chaînes sortantes"}');
+
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture', '/var/www/html/opencapture/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('LOCALE_PATH', 'Chemin vers le dossier contenant les fichiers de traductions', '/var/www/html/opencapture/src/assets/locale/');
