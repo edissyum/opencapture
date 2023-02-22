@@ -97,10 +97,10 @@ class Splitter:
             })[0]
 
         data = {
-            'email': user['email'] if user else '',
-            'username': user['username'] if user else '',
-            'lastname': user['lastname'] if user else '',
-            'firstname': user['firstname'] if user else ''
+            'username': user['username'],
+            'email': user['email'] if user['email'] else '',
+            'lastname': user['lastname'] if user['lastname'] else '',
+            'firstname': user['firstname'] if user['firstname'] else ''
         }
 
         for field in fields['fields']['batch_metadata']:
