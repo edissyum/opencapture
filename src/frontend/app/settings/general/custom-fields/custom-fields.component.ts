@@ -61,7 +61,7 @@ export class CustomFieldsComponent implements OnInit {
         {
             field_id    : 'label_short',
             controlType : 'text',
-            control     : new FormControl(),
+            control     : new FormControl('', Validators.required),
             label       : this.translate.instant('HEADER.label_short'),
             autoComplete: [],
             required    : true,
@@ -69,7 +69,7 @@ export class CustomFieldsComponent implements OnInit {
         {
             field_id    : 'label',
             controlType : 'text',
-            control     : new FormControl(),
+            control     : new FormControl('', Validators.required),
             label       : this.translate.instant('HEADER.label'),
             autoComplete: [],
             required    : true,
@@ -77,7 +77,7 @@ export class CustomFieldsComponent implements OnInit {
         {
             field_id    : 'module',
             controlType : 'dropdown',
-            control     : new FormControl(),
+            control     : new FormControl('', Validators.required),
             label       : this.translate.instant('CUSTOM-FIELDS.module'),
             options     : [
                 {key: 'verifier', value: this.translate.instant('HOME.verifier')},
@@ -89,7 +89,7 @@ export class CustomFieldsComponent implements OnInit {
         {
             field_id    : 'type',
             controlType : 'dropdown',
-            control     : new FormControl(),
+            control     : new FormControl('', Validators.required),
             label       : this.translate.instant('CUSTOM-FIELDS.type'),
             options     : [
                 {key: 'text', value: this.translate.instant('FORMATS.text')},
@@ -263,9 +263,14 @@ export class CustomFieldsComponent implements OnInit {
         this.loading = true;
         let newField: any = {};
         newField = this.addSelectOptionsToArgs(newField);
-        this.addFieldInputs.forEach((element: any) => {
-            newField[element.field_id] = element.control.value;
-        });
+        for (const field of this.addFieldInputs) {
+            if (field.required && !field.control.value) {
+                field.control.setErrors({'incorrect': true});
+                this.loading = false;
+                return;
+            }
+            newField[field.field_id] = field.control.value;
+        }
         this.http.post(environment['url'] + '/ws/customFields/add', newField, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 newField['id'] = data.id;
