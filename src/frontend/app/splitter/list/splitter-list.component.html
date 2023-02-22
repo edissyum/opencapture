@@ -67,12 +67,12 @@
                                     <input id="{{ batch.id }}_checkbox" type="checkbox" (click)="checkSelectedBatch()"
                                            class="accent-green-400 checkBox_list cursor-pointer w-5 h-5">
                                 </label>
-                                <img [routerLink]="batch['locked'] ? '/splitter/list' : '/splitter/viewer/' + currentTime + '/' + batch['id']"
-                                     (click)="batch['locked'] ? displayBatchLocked(batch['lockedBy']) : ''"
+                                <img [routerLink]="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? '/splitter/list' : '/splitter/viewer/' + currentTime + '/' + batch['id']"
+                                     (click)="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? displayBatchLocked(batch['lockedBy']) : ''"
                                      class="m-auto p-4" mat-card-image [src]="batch['thumbnail']" alt="Open-Capture Splitter image">
                                 <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-8 pr-8"
-                                                 [routerLink]="batch['locked'] &&  batch['lockedBy'] !== userService.user.id ? '/splitter/list' : '/splitter/viewer/' + currentTime + '/' + batch['id']"
-                                                 (click)="batch['locked'] &&  batch['lockedBy'] !== userService.user.id ? displayBatchLocked(batch['lockedBy']) : ''">
+                                                 [routerLink]="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? '/splitter/list' : '/splitter/viewer/' + currentTime + '/' + batch['id']"
+                                                 (click)="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? displayBatchLocked(batch['lockedBy']) : ''">
                                     <mat-card-title class="break-all">
                                         <span class="w-1/3">
                                             {{ batch['fileName'] }}
