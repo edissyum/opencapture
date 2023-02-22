@@ -110,8 +110,6 @@ def split(splitter, pages):
                 separator_type = splitter.bundle_start
                 doctype_value = None
 
-            splitter.log.info("Code QR in page " + str(index) + " : " + qr_code)
-
         splitter.qr_pages.append({
             'source_page': index,
             'separator_type': separator_type,
