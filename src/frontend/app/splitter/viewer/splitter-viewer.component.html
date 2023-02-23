@@ -402,7 +402,7 @@
                                 <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="addDocumentLoading"></i>
                             </button>
                             <mat-form-field class="w-64 pt-2">
-                                <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>
+                                <mat-label>{{ 'SPLITTER.move_selected_to' | translate }}</mat-label>
                                 <mat-select [(ngModel)]="toolSelectedOption">
                                     <mat-option *ngFor="let document of this.documents;" [value]="document['id']" class="w-full document_type_options">
                                         {{ document['documentTypeName'] }}
@@ -410,7 +410,7 @@
                                 </mat-select>
                             </mat-form-field>
                             <button (click)="sendSelectedPages()" mat-button class="btn-icon w-8 rounded-none"
-                                    matTooltip="{{ 'SPLITTER.send' | translate }}">
+                                    matTooltip="{{ 'GLOBAL.move' | translate }}">
                                 <i class="fa fa-paper-plane text-lg"></i>
                             </button>
                             <button (click)="saveInfo()" mat-button class="w-8"
