@@ -106,6 +106,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
                         const hours = this.processData.elapsed_time.slice(0, 2);
                         const minutes = this.processData.elapsed_time.slice(3, 5);
                         const seconds = this.processData.elapsed_time.slice(6, 11);
+
                         let message = '';
                         if (hours && hours !== '00') {
                             if (parseInt(hours) > 1) {
@@ -114,7 +115,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
                                 message += hours + ' ' + this.translate.instant('MONITORING.hour') + ', ';
                             }
                         }
-                        if (minutes && hours !== '00') {
+                        if (minutes && minutes !== '00') {
                             if (parseInt(minutes) > 1) {
                                 message += minutes + ' ' + this.translate.instant('MONITORING.minutes') + ' ' + this.translate.instant('MONITORING.and') + ' ';
                             } else {

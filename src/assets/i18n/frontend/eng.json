@@ -441,7 +441,7 @@
 		"enable-form": "Form enabled&nbsp;<strong>{{ form }}</strong>",
 		"enable-mailcollect-process": "MailCollect process enabled&nbsp;<strong>{{ process }}</strong>",
 		"enable-user": "User enabled&nbsp;<strong>{{ user }}</strong>",
-		"file_uploaded": "File(s) uploaded successfully with input&nbsp;<strong>{{ input }}</strong>",
+		"file_uploaded": "File uploaded successfully with input&nbsp;<strong>{{ input }}</strong>",
 		"language_changed": "Change lang to <strong>{{ lang }}",
 		"login": "Login of user",
 		"login_with_token": "Login of user with token (third application)",
