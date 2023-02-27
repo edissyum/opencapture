@@ -40,6 +40,17 @@ FACTUREX_CORRESPONDANCE = {
         'invoice_number': {'id': 'ID', 'tagParent': 'ExchangedDocument'},
         'due_date': {'id': 'DateTimeString', 'tagParent': 'DueDateDateTime'}
     },
+    'facturation_lines': {
+        'name': {'id': 'Name'},
+        'product_id': {'id': 'GlobalID'},
+        'seller_assigned_id': {'id': 'SellerAssignedID'},
+        'value': {'id': 'Value', 'tagParent': 'ApplicableProductCharacteristic'},
+        'allowance_reason': {'id': 'Reason', 'tagParent': 'AppliedTradeAllowanceCharge'},
+        'unit_price_ht': {'id': 'ChargeAmount', 'tagParent': 'NetPriceProductTradePrice'},
+        'gross_price_ht': {'id': 'ChargeAmount', 'tagParent': 'GrossPriceProductTradePrice'},
+        'description': {'id': 'Description', 'tagParent': 'ApplicableProductCharacteristic'},
+        'allowance_amount': {'id': 'ActualAmount', 'tagParent': 'AppliedTradeAllowanceCharge'}
+    },
     'supplier': {
         'email': {'id': 'URIID'},
         'global_id': {'id': 'GlobalID'},
@@ -89,6 +100,11 @@ FACTUREX_DATA = {
             './/' + default_namespace + 'DueDateDateTime'
         ]
     ],
+    'facturation_lines': [
+        [
+            './/' + default_namespace + 'IncludedSupplyChainTradeLineItem'
+        ]
+    ],
     'supplier': [
         [
             './/' + default_namespace + 'SellerTradeParty',
@@ -130,9 +146,9 @@ def fill_data(child, corrrespondance, parent):
                         attrib_tag = corrrespondance[key]['attribTag']
                         attrib_value = corrrespondance[key]['attribValue']
                         if attrib_tag in child_data.attrib and child_data.attrib[attrib_tag] == attrib_value:
-                            return_data[key] = child_data.text
+                            return_data[key] = child_data.text.strip()
                 else:
-                    return_data[key] = data.text
+                    return_data[key] = data.text.strip()
     return return_data
 
 
@@ -160,17 +176,50 @@ def browse_xml(root, data_type, original_root, level=0, cpt=0, return_data=None)
     return return_data
 
 
+def browse_xml_lines(root):
+    cpt = 1
+    lines = {}
+    correspondances = FACTUREX_CORRESPONDANCE['facturation_lines']
+    default_namespace = '{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}'
+
+    for i in range(1, len(root.findall('.//' + default_namespace + 'IncludedSupplyChainTradeLineItem')) + 1):
+        lines[i] = {
+            'global': {},
+            'allowances': [],
+            'characteristics': {},
+            'product_trade_price': {}
+        }
+
+    for child in root.findall('.//' + default_namespace + 'IncludedSupplyChainTradeLineItem'):
+        for specified_trade in child.findall(default_namespace + 'SpecifiedTradeProduct'):
+            lines[cpt]['global'] = fill_data(specified_trade, correspondances, None)
+            for product_char in specified_trade.findall('.//' + default_namespace + 'ApplicableProductCharacteristic'):
+                lines[cpt]['characteristics'] = fill_data(product_char, correspondances, 'ApplicableProductCharacteristic')
+
+        for specified_line in child.findall(default_namespace + 'SpecifiedLineTradeAgreement'):
+            for product_char in specified_line.findall('.//' + default_namespace + 'NetPriceProductTradePrice'):
+                lines[cpt]['product_trade_price'].update(fill_data(product_char, correspondances, 'NetPriceProductTradePrice'))
+            for product_char in specified_line.findall('.//' + default_namespace + 'GrossPriceProductTradePrice'):
+                lines[cpt]['product_trade_price'].update(fill_data(product_char, correspondances, 'GrossPriceProductTradePrice'))
+                for allowances in product_char.findall('.//' + default_namespace + 'AppliedTradeAllowanceCharge'):
+                    lines[cpt]['allowances'].append(fill_data(allowances, correspondances, 'AppliedTradeAllowanceCharge'))
+
+        cpt += 1
+    return lines
+
+
 def process(args):
     root = Et.fromstring(args['xml_content'])
     data = {
-        'facturation': browse_xml(root, 'facturation', root),
-        'supplier': browse_xml(root, 'supplier', root),
-        'address': browse_xml(root, 'address', root)
+        # 'facturation': browse_xml(root, 'facturation', root),
+        'facturation_lines': browse_xml_lines(root),
+        # 'supplier': browse_xml(root, 'supplier', root),
+        # 'address': browse_xml(root, 'address', root)
     }
     print('-------------')
-    print(data['facturation'])
-    print(data['supplier'])
-    print(data['address'])
+    print(data['facturation_lines'])
+    # print(data['supplier'])
+    # print(data['address'])
     return True
 
 
