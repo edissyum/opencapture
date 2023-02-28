@@ -16,7 +16,9 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
+import json
 import facturx
+import unidecode
 from xml.etree import ElementTree as Et
 
 ###
@@ -35,32 +37,68 @@ FACTUREX_CORRESPONDANCE = {
         'total_ttc': {'id': 'GrandTotalAmount'},
         'currency': {'id': 'InvoiceCurrencyCode'},
         'total_ht': {'id': 'TaxBasisTotalAmount'},
-        'vat_percentage': {'id': 'RateApplicablePercent'},
+        'note': {'id': 'Content', 'tagParent': 'IncludedNote'},
         'date': {'id': 'DateTimeString', 'tagParent': 'IssueDateTime'},
         'invoice_number': {'id': 'ID', 'tagParent': 'ExchangedDocument'},
-        'due_date': {'id': 'DateTimeString', 'tagParent': 'DueDateDateTime'}
+        'due_date': {'id': 'DateTimeString', 'tagParent': 'DueDateDateTime'},
+        'order_number': {'id': 'IssuerAssignedID', 'tagParent': 'BuyerOrderReferencedDocument'},
+        'contract_reference': {'id': 'IssuerAssignedID', 'tagParent': 'ContractReferencedDocument'}
+    },
+    'taxes': {
+        'type_code': {'id': 'TypeCode',  'tagParent': 'ApplicableTradeTax'},
+        'ht_price': {'id': 'BasisAmount',  'tagParent': 'ApplicableTradeTax'},
+        'category_code': {'id': 'CategoryCode', 'tagParent': 'ApplicableTradeTax'},
+        'vat_amount': {'id': 'CalculatedAmount', 'tagParent': 'ApplicableTradeTax'},
+        'vat_percentage': {'id': 'RateApplicablePercent', 'tagParent': 'ApplicableTradeTax'}
     },
     'facturation_lines': {
         'name': {'id': 'Name'},
         'product_id': {'id': 'GlobalID'},
+        'quantity': {'id': 'BilledQuantity'},
+        'trade_tax_type_code': {'id': 'TypeCode'},
         'seller_assigned_id': {'id': 'SellerAssignedID'},
+        'trade_tax_category_code': {'id': 'CategoryCode'},
+        'trade_tax_amount': {'id': 'RateApplicablePercent'},
         'value': {'id': 'Value', 'tagParent': 'ApplicableProductCharacteristic'},
         'allowance_reason': {'id': 'Reason', 'tagParent': 'AppliedTradeAllowanceCharge'},
         'unit_price_ht': {'id': 'ChargeAmount', 'tagParent': 'NetPriceProductTradePrice'},
         'gross_price_ht': {'id': 'ChargeAmount', 'tagParent': 'GrossPriceProductTradePrice'},
         'description': {'id': 'Description', 'tagParent': 'ApplicableProductCharacteristic'},
-        'allowance_amount': {'id': 'ActualAmount', 'tagParent': 'AppliedTradeAllowanceCharge'}
+        'allowance_amount': {'id': 'ActualAmount', 'tagParent': 'AppliedTradeAllowanceCharge'},
+        'ht_price': {'id': 'LineTotalAmount', 'tagParent': 'SpecifiedTradeSettlementLineMonetarySummation'}
     },
     'supplier': {
-        'email': {'id': 'URIID'},
         'global_id': {'id': 'GlobalID'},
         'supplier_name': {'id': 'Name'},
-        'phone': {'id': 'CompleteNumber'},
         'number': {'id': 'ID', 'tagParent': 'SellerTradeParty'},
         'vat_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'VA'},
         'tax_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'FC'}
     },
-    'address': {
+    'buyer': {
+        'global_id': {'id': 'GlobalID'},
+        'buyer_name': {'id': 'Name'},
+        'number': {'id': 'ID', 'tagParent': 'BuyerTradeParty'},
+        'vat_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'VA'},
+        'tax_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'FC'}
+    },
+    'supplier_trade_contact': {
+        'email': {'id': 'URIID'},
+        'name': {'id': 'PersonName'},
+        'phone': {'id': 'CompleteNumber'}
+    },
+    'buyer_trade_contact': {
+        'email': {'id': 'URIID'},
+        'name': {'id': 'PersonName'},
+        'phone': {'id': 'CompleteNumber'}
+    },
+    'supplier_address': {
+        'city': {'id': 'CityName'},
+        'address1': {'id': 'LineOne'},
+        'address2': {'id': 'LineTwo'},
+        'country': {'id': 'CountryID'},
+        'postal_code': {'id': 'PostcodeCode'}
+    },
+    'buyer_address': {
         'city': {'id': 'CityName'},
         'address1': {'id': 'LineOne'},
         'address2': {'id': 'LineTwo'},
@@ -76,58 +114,91 @@ FACTUREX_CORRESPONDANCE = {
 # The last element of the list is the tag containing the information
 ###
 
-default_namespace = '{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}'
+NAMESPACE = '{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}'
 FACTUREX_DATA = {
+    'notes': [
+        [
+            './/' + NAMESPACE + 'IncludedNote'
+        ]
+    ],
     'facturation': [
         [
-            './/' + default_namespace + 'IssueDateTime'
+            './/' + NAMESPACE + 'IssueDateTime'
         ],
         [
             './/{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}ExchangedDocument',
-            default_namespace + 'ID'
+            NAMESPACE + 'ID'
         ],
         [
-            './/' + default_namespace + 'ApplicableHeaderTradeSettlement',
-            './/' + default_namespace + 'SpecifiedTradeSettlementHeaderMonetarySummation'
+            './/' + NAMESPACE + 'BuyerOrderReferencedDocument'
         ],
         [
-            './/' + default_namespace + 'ApplicableHeaderTradeSettlement',
-            './/' + default_namespace + 'ApplicableTradeTax'
+            './/' + NAMESPACE + 'ContractReferencedDocument'
         ],
         [
-            './/' + default_namespace + 'ApplicableHeaderTradeSettlement',
-            './/' + default_namespace + 'SpecifiedTradePaymentTerms',
-            './/' + default_namespace + 'DueDateDateTime'
+            './/' + NAMESPACE + 'ApplicableHeaderTradeSettlement',
+            './/' + NAMESPACE + 'SpecifiedTradeSettlementHeaderMonetarySummation'
+        ],
+        [
+            './/' + NAMESPACE + 'ApplicableHeaderTradeSettlement',
+            './/' + NAMESPACE + 'SpecifiedTradePaymentTerms',
+            './/' + NAMESPACE + 'DueDateDateTime'
         ]
     ],
     'facturation_lines': [
         [
-            './/' + default_namespace + 'IncludedSupplyChainTradeLineItem'
+            './/' + NAMESPACE + 'IncludedSupplyChainTradeLineItem'
+        ]
+    ],
+    'supplier_trade_contact': [
+        [
+            './/' + NAMESPACE + 'SellerTradeParty',
+            NAMESPACE + 'DefinedTradeContact',
+            NAMESPACE + 'EmailURIUniversalCommunication'
+        ],
+        [
+            './/' + NAMESPACE + 'SellerTradeParty',
+            NAMESPACE + 'DefinedTradeContact',
+            './/' + NAMESPACE + 'TelephoneUniversalCommunication'
+        ],
+        [
+            NAMESPACE + 'SellerTradeParty'
+        ]
+    ],
+    'buyer_trade_contact': [
+        [
+            './/' + NAMESPACE + 'BuyerTradeParty',
+            NAMESPACE + 'DefinedTradeContact',
+            NAMESPACE + 'EmailURIUniversalCommunication'
+        ],
+        [
+            './/' + NAMESPACE + 'BuyerTradeParty',
+            NAMESPACE + 'DefinedTradeContact',
+            './/' + NAMESPACE + 'TelephoneUniversalCommunication'
         ]
     ],
     'supplier': [
         [
-            './/' + default_namespace + 'SellerTradeParty',
-            default_namespace + 'DefinedTradeContact',
-            default_namespace + 'EmailURIUniversalCommunication'
-        ],
-        [
-            './/' + default_namespace + 'SellerTradeParty',
-            default_namespace + 'DefinedTradeContact',
-            './/' + default_namespace + 'TelephoneUniversalCommunication'
-        ],
-        [
-            default_namespace + 'SellerTradeParty'
-        ],
-        [
-            './/' + default_namespace + 'SellerTradeParty',
-            './/' + default_namespace + 'SpecifiedTaxRegistration'
+            './/' + NAMESPACE + 'SellerTradeParty',
+            './/' + NAMESPACE + 'SpecifiedTaxRegistration'
         ]
     ],
-    'address': [
+    'buyer': [
         [
-            './/' + default_namespace + 'SellerTradeParty',
-            './/' + default_namespace + 'PostalTradeAddress'
+            './/' + NAMESPACE + 'BuyerTradeParty',
+            './/' + NAMESPACE + 'SpecifiedTaxRegistration'
+        ]
+    ],
+    'supplier_address': [
+        [
+            './/' + NAMESPACE + 'SellerTradeParty',
+            './/' + NAMESPACE + 'PostalTradeAddress'
+        ]
+    ],
+    'buyer_address': [
+        [
+            './/' + NAMESPACE + 'BuyerTradeParty',
+            './/' + NAMESPACE + 'PostalTradeAddress'
         ]
     ]
 }
@@ -146,9 +217,9 @@ def fill_data(child, corrrespondance, parent):
                         attrib_tag = corrrespondance[key]['attribTag']
                         attrib_value = corrrespondance[key]['attribValue']
                         if attrib_tag in child_data.attrib and child_data.attrib[attrib_tag] == attrib_value:
-                            return_data[key] = child_data.text.strip()
+                            return_data[key] = unidecode.unidecode(child_data.text.strip())
                 else:
-                    return_data[key] = data.text.strip()
+                    return_data[key] = unidecode.unidecode(data.text.strip())
     return return_data
 
 
@@ -176,33 +247,61 @@ def browse_xml(root, data_type, original_root, level=0, cpt=0, return_data=None)
     return return_data
 
 
+def browse_xml_specific(root, grand_parent, parent):
+    taxes = []
+    correspondances = FACTUREX_CORRESPONDANCE['taxes']
+    for child in root.findall('.//' + NAMESPACE + grand_parent):
+        for specific in child.findall(NAMESPACE + parent):
+            if specific.text.strip():
+                taxes.append(specific.text.strip())
+            else:
+                taxes.append((fill_data(specific, correspondances, parent)))
+    return taxes
+
+
 def browse_xml_lines(root):
     cpt = 1
     lines = {}
     correspondances = FACTUREX_CORRESPONDANCE['facturation_lines']
-    default_namespace = '{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}'
 
-    for i in range(1, len(root.findall('.//' + default_namespace + 'IncludedSupplyChainTradeLineItem')) + 1):
+    for i in range(1, len(root.findall('.//' + NAMESPACE + 'IncludedSupplyChainTradeLineItem')) + 1):
         lines[i] = {
             'global': {},
+            'unit_price': {},
             'allowances': [],
-            'characteristics': {},
-            'product_trade_price': {}
+            'trade_taxes': {},
+            'characteristics': {}
         }
 
-    for child in root.findall('.//' + default_namespace + 'IncludedSupplyChainTradeLineItem'):
-        for specified_trade in child.findall(default_namespace + 'SpecifiedTradeProduct'):
-            lines[cpt]['global'] = fill_data(specified_trade, correspondances, None)
-            for product_char in specified_trade.findall('.//' + default_namespace + 'ApplicableProductCharacteristic'):
-                lines[cpt]['characteristics'] = fill_data(product_char, correspondances, 'ApplicableProductCharacteristic')
+    for child in root.findall('.//' + NAMESPACE + 'IncludedSupplyChainTradeLineItem'):
+        for specified_trade in child.findall(NAMESPACE + 'SpecifiedTradeProduct'):
+            lines[cpt]['global'].update(fill_data(specified_trade, correspondances, None))
+            for product_char in specified_trade.findall('.//' + NAMESPACE + 'ApplicableProductCharacteristic'):
+                parent = 'ApplicableProductCharacteristic'
+                lines[cpt]['characteristics'].update(fill_data(product_char, correspondances, parent))
 
-        for specified_line in child.findall(default_namespace + 'SpecifiedLineTradeAgreement'):
-            for product_char in specified_line.findall('.//' + default_namespace + 'NetPriceProductTradePrice'):
-                lines[cpt]['product_trade_price'].update(fill_data(product_char, correspondances, 'NetPriceProductTradePrice'))
-            for product_char in specified_line.findall('.//' + default_namespace + 'GrossPriceProductTradePrice'):
-                lines[cpt]['product_trade_price'].update(fill_data(product_char, correspondances, 'GrossPriceProductTradePrice'))
-                for allowances in product_char.findall('.//' + default_namespace + 'AppliedTradeAllowanceCharge'):
-                    lines[cpt]['allowances'].append(fill_data(allowances, correspondances, 'AppliedTradeAllowanceCharge'))
+        for delivery in child.findall(NAMESPACE + 'SpecifiedLineTradeDelivery'):
+            lines[cpt]['global'].update(fill_data(delivery, correspondances, None))
+            for data in delivery:
+                tag = re.sub('{.*}', '', data.tag)
+                if tag == 'BilledQuantity':
+                    lines[cpt]['global']['unit_type'] = data.attrib['unitCode']
+
+        for prices in child.findall('.//' + NAMESPACE + 'SpecifiedLineTradeSettlement'):
+            for trade_tax in prices.findall(NAMESPACE + 'ApplicableTradeTax'):
+                lines[cpt]['trade_taxes'].update(fill_data(trade_tax, correspondances, None))
+            for trade_tax in prices.findall(NAMESPACE + 'SpecifiedTradeSettlementLineMonetarySummation'):
+                parent = 'SpecifiedTradeSettlementLineMonetarySummation'
+                lines[cpt]['global'].update(fill_data(trade_tax, correspondances, parent))
+
+        for specified_line in child.findall(NAMESPACE + 'SpecifiedLineTradeAgreement'):
+            for product_char in specified_line.findall('.//' + NAMESPACE + 'NetPriceProductTradePrice'):
+                lines[cpt]['unit_price'].update(fill_data(product_char, correspondances, 'NetPriceProductTradePrice'))
+            for product_char in specified_line.findall('.//' + NAMESPACE + 'GrossPriceProductTradePrice'):
+                lines[cpt]['unit_price'].update(fill_data(product_char, correspondances, 'GrossPriceProductTradePrice'))
+                for allowances in product_char.findall('.//' + NAMESPACE + 'AppliedTradeAllowanceCharge'):
+                    parent = 'AppliedTradeAllowanceCharge'
+                    lines[cpt]['allowances'].append(fill_data(allowances, correspondances, parent))
 
         cpt += 1
     return lines
@@ -211,20 +310,28 @@ def browse_xml_lines(root):
 def process(args):
     root = Et.fromstring(args['xml_content'])
     data = {
-        # 'facturation': browse_xml(root, 'facturation', root),
+        'buyer': browse_xml(root, 'buyer', root),
         'facturation_lines': browse_xml_lines(root),
-        # 'supplier': browse_xml(root, 'supplier', root),
-        # 'address': browse_xml(root, 'address', root)
+        'supplier': browse_xml(root, 'supplier', root),
+        'facturation': browse_xml(root, 'facturation', root),
+        'buyer_address': browse_xml(root, 'buyer_address', root),
+        'notes': browse_xml_specific(root, 'IncludedNote', 'Content'),
+        'supplier_address': browse_xml(root, 'supplier_address', root),
+        'buyer_trade_contact': browse_xml(root, 'buyer_trade_contact', root),
+        'supplier_trade_contact': browse_xml(root, 'supplier_trade_contact', root),
+        'taxes': browse_xml_specific(root, 'ApplicableHeaderTradeSettlement', 'ApplicableTradeTax')
     }
     print('-------------')
-    print(data['facturation_lines'])
-    # print(data['supplier'])
-    # print(data['address'])
+    for d in data:
+        print(d, ' : ',  json.dumps(data[d]))
     return True
 
 
 if __name__ == '__main__':
     with open('/home/nathan/BASIC_Einfach.pdf', 'rb') as f:
+        _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
+        process({'xml_content': xml_content})
+    with open('/home/nathan/Facture_FR_EXTENDED.pdf', 'rb') as f:
         _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
         process({'xml_content': xml_content})
     with open('/home/nathan/EXTENDED_Warenrechnung.pdf', 'rb') as f:
