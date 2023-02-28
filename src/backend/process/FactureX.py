@@ -18,7 +18,7 @@
 import re
 import json
 import facturx
-import unidecode
+from unidecode import unidecode
 from xml.etree import ElementTree as Et
 
 ###
@@ -43,6 +43,14 @@ FACTUREX_CORRESPONDANCE = {
         'due_date': {'id': 'DateTimeString', 'tagParent': 'DueDateDateTime'},
         'order_number': {'id': 'IssuerAssignedID', 'tagParent': 'BuyerOrderReferencedDocument'},
         'contract_reference': {'id': 'IssuerAssignedID', 'tagParent': 'ContractReferencedDocument'}
+    },
+    'payment': {
+        'reference': {'id': 'PaymentReference'},
+        'iban': {'id': 'IBANID', 'tagParent': 'PayeePartyCreditorFinancialAccount'},
+        'conditions': {'id': 'Description', 'tagParent': 'SpecifiedTradePaymentTerms'},
+        'bic': {'id': 'BICID', 'tagParent': 'PayeeSpecifiedCreditorFinancialInstitution'},
+        'type_code': {'id': 'TypeCode', 'tagParent': 'SpecifiedTradeSettlementPaymentMeans'},
+        'informations': {'id': 'Information', 'tagParent': 'SpecifiedTradeSettlementPaymentMeans'}
     },
     'taxes': {
         'type_code': {'id': 'TypeCode',  'tagParent': 'ApplicableTradeTax'},
@@ -75,11 +83,11 @@ FACTUREX_CORRESPONDANCE = {
         'tax_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'FC'}
     },
     'buyer': {
-        'global_id': {'id': 'GlobalID'},
         'buyer_name': {'id': 'Name'},
         'number': {'id': 'ID', 'tagParent': 'BuyerTradeParty'},
         'vat_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'VA'},
-        'tax_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'FC'}
+        'tax_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'FC'},
+        'legal_organization_id': {'id': 'ID', 'tagParent': 'SpecifiedLegalOrganization'}
     },
     'supplier_trade_contact': {
         'email': {'id': 'URIID'},
@@ -145,6 +153,22 @@ FACTUREX_DATA = {
             './/' + NAMESPACE + 'DueDateDateTime'
         ]
     ],
+    'payment': [
+        [
+            './/' + NAMESPACE + 'ApplicableHeaderTradeSettlement',
+            './/' + NAMESPACE + 'SpecifiedTradeSettlementPaymentMeans',
+            './/' + NAMESPACE + 'PayeePartyCreditorFinancialAccount'
+        ],
+        [
+            './/' + NAMESPACE + 'ApplicableHeaderTradeSettlement',
+            './/' + NAMESPACE + 'SpecifiedTradeSettlementPaymentMeans',
+            './/' + NAMESPACE + 'PayeeSpecifiedCreditorFinancialInstitution'
+        ],
+        [
+            './/' + NAMESPACE + 'ApplicableHeaderTradeSettlement',
+            './/' + NAMESPACE + 'SpecifiedTradePaymentTerms'
+        ]
+    ],
     'facturation_lines': [
         [
             './/' + NAMESPACE + 'IncludedSupplyChainTradeLineItem'
@@ -187,6 +211,10 @@ FACTUREX_DATA = {
         [
             './/' + NAMESPACE + 'BuyerTradeParty',
             './/' + NAMESPACE + 'SpecifiedTaxRegistration'
+        ],
+        [
+            './/' + NAMESPACE + 'BuyerTradeParty',
+            './/' + NAMESPACE + 'SpecifiedLegalOrganization'
         ]
     ],
     'supplier_address': [
@@ -217,9 +245,9 @@ def fill_data(child, corrrespondance, parent):
                         attrib_tag = corrrespondance[key]['attribTag']
                         attrib_value = corrrespondance[key]['attribValue']
                         if attrib_tag in child_data.attrib and child_data.attrib[attrib_tag] == attrib_value:
-                            return_data[key] = unidecode.unidecode(child_data.text.strip())
+                            return_data[key] = unidecode(child_data.text.strip())
                 else:
-                    return_data[key] = unidecode.unidecode(data.text.strip())
+                    return_data[key] = unidecode(data.text.strip())
     return return_data
 
 
@@ -253,9 +281,9 @@ def browse_xml_specific(root, grand_parent, parent):
     for child in root.findall('.//' + NAMESPACE + grand_parent):
         for specific in child.findall(NAMESPACE + parent):
             if specific.text.strip():
-                taxes.append(specific.text.strip())
+                taxes.append(unidecode(specific.text.strip()))
             else:
-                taxes.append((fill_data(specific, correspondances, parent)))
+                taxes.append(fill_data(specific, correspondances, parent))
     return taxes
 
 
@@ -312,6 +340,7 @@ def process(args):
     data = {
         'buyer': browse_xml(root, 'buyer', root),
         'facturation_lines': browse_xml_lines(root),
+        'payment': browse_xml(root, 'payment', root),
         'supplier': browse_xml(root, 'supplier', root),
         'facturation': browse_xml(root, 'facturation', root),
         'buyer_address': browse_xml(root, 'buyer_address', root),
@@ -323,18 +352,21 @@ def process(args):
     }
     print('-------------')
     for d in data:
-        print(d, ' : ',  json.dumps(data[d]))
+        print(d, ':',  json.dumps(data[d]))
     return True
 
 
 if __name__ == '__main__':
-    with open('/home/nathan/BASIC_Einfach.pdf', 'rb') as f:
-        _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-        process({'xml_content': xml_content})
+    # with open('/home/nathan/BASIC_Einfach.pdf', 'rb') as f:
+    #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
+    #     process({'xml_content': xml_content})
     with open('/home/nathan/Facture_FR_EXTENDED.pdf', 'rb') as f:
         _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
         process({'xml_content': xml_content})
-    with open('/home/nathan/EXTENDED_Warenrechnung.pdf', 'rb') as f:
-        _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-        process({'xml_content': xml_content})
+    # with open('/home/nathan/Facture_FR_BASICWL.pdf', 'rb') as f:
+    #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
+    #     process({'xml_content': xml_content})
+    # with open('/home/nathan/EXTENDED_Warenrechnung.pdf', 'rb') as f:
+    #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
+    #     process({'xml_content': xml_content})
     print('-------------')
