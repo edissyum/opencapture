@@ -51,12 +51,12 @@ def create_user(args):
 
             if quota <= total_active_users:
                 custom_id = retrieve_custom_from_url(request)
-                if 'smtp' in current_context:
+                if 'smtp' in current_context and current_context.smtp:
                     smtp = current_context.smtp
                 else:
                     _vars = create_classes_from_custom_id(custom_id, True)
                     smtp = _vars[8]
-                if email_dest and smtp.is_up:
+                if email_dest and smtp and smtp.is_up:
                     smtp.send_user_quota_notifications(email_dest, custom_id)
         return {'id': res}, 200
     else:
@@ -143,13 +143,14 @@ def get_user_by_username(username):
 def send_email_forgot_password(args):
     user_info, error = user.get_user_by_id({'user_id': args['userId']})
     if error is None:
-        if 'smtp' in current_context:
+        if 'smtp' in current_context and current_context.smtp:
             smtp = current_context.smtp
         else:
             custom_id = retrieve_custom_from_url(request)
             _vars = create_classes_from_custom_id(custom_id, True)
             smtp = _vars[8]
-        if smtp.is_up:
+
+        if smtp and smtp.is_up:
             reset_token = auth.generate_reset_token(args['userId'])
             user.update_user({'set': {'reset_token': reset_token}, 'user_id': args['userId']})
             smtp.send_forgot_password_email(user_info['email'], args['currentUrl'], reset_token)
