@@ -48,7 +48,7 @@ export class UpdateCustomerComponent implements OnInit {
     customerForm    : any[]         = [
         {
             id: 'name',
-            label: marker('ACCOUNTS.supplier_name'),
+            label: marker('ACCOUNTS.customer_name'),
             type: 'text',
             control: new FormControl(),
             required: true,
