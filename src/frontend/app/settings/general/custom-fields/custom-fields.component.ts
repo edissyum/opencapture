@@ -318,10 +318,24 @@ export class CustomFieldsComponent implements OnInit {
             this.http.get(environment['url'] + '/ws/customFields/customPresentsInForm/' + customFieldId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data) {
+                        let custom_label = '';
+                        this.activeFields.forEach((element:any) => {
+                            if (element.id === customFieldId) {
+                                custom_label = element.label;
+                            }
+                        });
+                        if (custom_label === '') {
+                            this.inactiveFields.forEach((element:any) => {
+                                if (element.id === customFieldId) {
+                                    custom_label = element.label;
+                                }
+                            });
+                        }
+
                         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
                             data: {
                                 confirmTitle        : this.translate.instant('CUSTOM-FIELDS.custom_exists'),
-                                confirmText         : this.translate.instant('CUSTOM-FIELDS.confirm_delete'),
+                                confirmText         : this.translate.instant('CUSTOM-FIELDS.confirm_delete', {custom_field: custom_label}),
                                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                                 confirmButtonColor  : "warn",
                                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
