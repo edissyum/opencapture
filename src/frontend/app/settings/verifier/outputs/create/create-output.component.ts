@@ -146,7 +146,8 @@ export class CreateOutputComponent implements OnInit {
     isValidForm(form: any) {
         let state = true;
         form.forEach((element: any) => {
-            if ((element.control.status !== 'DISABLED' && element.control.status !== 'VALID') || element.control.value == null) {
+            if ((element.control.status !== 'DISABLED' && element.control.status !== 'VALID') ||
+                (element.required && element.control.value == null)) {
                 state = false;
             }
             element.control.markAsTouched();

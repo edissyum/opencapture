@@ -30,6 +30,7 @@ import { of } from "rxjs";
 export class AuthService {
     public headers : HttpHeaders;
     public headersExists : boolean = false;
+
     constructor(
         private router: Router,
         private http: HttpClient,

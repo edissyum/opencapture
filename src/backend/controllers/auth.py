@@ -23,9 +23,9 @@ import ldap3
 import psycopg2
 import datetime
 import functools
-from . import privileges
 from ldap3 import Server, ALL
 from flask_babel import gettext
+from src.backend.controllers import privileges
 from ldap3.core.exceptions import LDAPException
 from werkzeug.security import generate_password_hash
 from src.backend.import_models import auth, user, roles
@@ -55,6 +55,15 @@ def check_connection():
             " port      =" + db_port)
     except (psycopg2.OperationalError, psycopg2.ProgrammingError) as _e:
         return str(_e).split('\n', maxsplit=1)[0]
+
+
+def check_token(token):
+    try:
+        payload = jwt.decode(token, current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
+    except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
+            jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
+        return {"errors": gettext("JWT_ERROR"), "message": str(_e)}, 500
+    return payload, 200
 
 
 def encode_auth_token(user_id):

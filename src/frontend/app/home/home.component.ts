@@ -21,6 +21,12 @@ import { LocalStorageService } from "../../services/local-storage.service";
 import { PrivilegesService } from "../../services/privileges.service";
 import { Router } from "@angular/router";
 import { LastUrlService } from "../../services/last-url.service";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "../env";
+import { catchError } from "rxjs/operators";
+import { of } from "rxjs";
+import { NotificationService } from "../../services/notifications/notifications.service";
+import { AuthService } from "../../services/auth.service";
 
 @Component({
     selector: 'app-home',
@@ -30,7 +36,10 @@ import { LastUrlService } from "../../services/last-url.service";
 export class HomeComponent implements OnInit {
     constructor(
         private router: Router,
+        private http : HttpClient,
+        private authService: AuthService,
         private userService: UserService,
+        private notify: NotificationService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
         private localStorageService: LocalStorageService
@@ -47,7 +56,27 @@ export class HomeComponent implements OnInit {
                 this.router.navigate(['/verifier/list']).then();
             } else if (splitter && !verifier) {
                 this.router.navigate(['/splitter/list']).then();
+            } else {
+                this.checkConnection();
             }
+        } else {
+            this.checkConnection();
+        }
+    }
+
+    checkConnection() {
+        if (!this.authService.headersExists) {
+            this.authService.generateHeaders();
+        }
+        const token = this.authService.getToken();
+        if (token) {
+            this.http.post(environment['url'] + '/ws/auth/checkToken', {'token': token}).pipe(
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
         }
     }
 
