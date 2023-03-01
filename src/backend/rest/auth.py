@@ -77,6 +77,14 @@ def login():
     return make_response(res[0], res[1])
 
 
+@bp.route('auth/checkToken', methods=['POST'])
+def check_token():
+    data = request.json
+    res = auth.check_token(data['token'])
+    print(res)
+    return make_response(res[0], res[1])
+
+
 @bp.route('auth/logout', methods=['GET'])
 def logout():
     auth.logout()
