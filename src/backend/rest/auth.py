@@ -81,7 +81,6 @@ def login():
 def check_token():
     data = request.json
     res = auth.check_token(data['token'])
-    print(res)
     return make_response(res[0], res[1])
 
 
