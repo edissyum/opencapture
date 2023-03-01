@@ -289,7 +289,7 @@
                                                 <input matInput formControlName="{{ field.label_short }}">
                                             </mat-form-field>
                                         </ng-container>
-                                        <ng-container *ngIf="field.type === 'select'" [ngClass]="field.class">
+                                        <ng-container *ngIf="field.type === 'select'">
                                             <mat-form-field class="w-full">
                                                 <mat-label>{{ field.label }}</mat-label>
                                                 <mat-select [formControlName]="field.label_short"
