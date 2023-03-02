@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
-import json
 import facturx
 from unidecode import unidecode
 from xml.etree import ElementTree as Et
@@ -350,13 +349,15 @@ def process(args):
         'supplier_trade_contact': browse_xml(root, 'supplier_trade_contact', root),
         'taxes': browse_xml_specific(root, 'ApplicableHeaderTradeSettlement', 'ApplicableTradeTax')
     }
-    print('-------------')
-    for d in data:
-        print(d, ':',  json.dumps(data[d]))
-    return True
+
+    # print('-------------')
+    # for d in data:
+    #     print(d, ':',  json.dumps(data[d]))
+    return data
 
 
 if __name__ == '__main__':
+    from lxml import etree
     # with open('/home/nathan/BASIC_Einfach.pdf', 'rb') as f:
     #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
     #     process({'xml_content': xml_content})

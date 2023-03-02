@@ -31,14 +31,30 @@ else:
     OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'],
                                                fromlist=[custom_array['OCForInvoices']['module']]),
                                     custom_array['OCForInvoices']['module'])
+if 'FacturX' not in custom_array:
+    from src.backend.process import FacturX
+else:
+    FacturX = getattr(__import__(custom_array['FacturX']['path'], fromlist=[custom_array['FacturX']['module']]),
+                      custom_array['FacturX']['module'])
 
 kuyruk = Kuyruk()
 
 
 def execute(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages, mail, smtp):
     if check_file(files, path, log, docservers):
-        res = OCForInvoices_process.process(args, path, log, config, files, ocr, regex, database, docservers,
-                                            configurations, languages)
+        is_facturx = False
+        with open(args['file'], 'rb') as f:
+            _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
+            if _ is not None:
+                is_facturx = True
+
+        if not is_facturx:
+            res = OCForInvoices.process(args, path, log, config, files, ocr, regex, database, docservers,
+                                        configurations, languages)
+        else:
+            log.info('FacturX detected')
+            args['xml_content'] = xml_content
+            res = FacturX.process(args)
         if not res:
             if args.get('isMail') is not None and args['isMail'] is True:
                 mail.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process_name'], args['msg'])
