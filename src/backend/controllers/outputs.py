@@ -76,19 +76,26 @@ def duplicate_output(output_id):
 
 def is_path_allowed(parameters):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in current_context:
+    if 'docservers' in current_context and 'configuration' in current_context and custom_id == '':
         docservers = current_context.docservers
+        configurations = current_context.configuration
     else:
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
+        configurations = _vars[10]
 
-    if 'OUTPUTS_ALLOWED_PATH' in docservers:
+    if 'OUTPUTS_ALLOWED_PATH' in docservers and 'restrictOutputsPath' in configurations and configurations['restrictOutputsPath']:
         for parameter in parameters:
             if parameter['id'] == 'folder_out' and parameter['value']:
                 return parameter['value'].startswith(docservers['OUTPUTS_ALLOWED_PATH'])
+            else:
+                return True
+    else:
+        return True
 
 
 def update_output(output_id, data):
+    print(is_path_allowed(data['data']['options']['parameters']))
     if not is_path_allowed(data['data']['options']['parameters']):
         response = {
             "errors": gettext('UPDATE_OUTPUT_ERROR'),
