@@ -55,14 +55,18 @@ def get_inputs(args):
 
 def is_path_allowed(input_path):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in current_context:
+    if 'docservers' in current_context and 'configuration' in current_context and custom_id == '':
         docservers = current_context.docservers
+        configurations = current_context.configuration
     else:
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
+        configurations = _vars[10]
 
-    if 'INPUTS_ALLOWED_PATH' in docservers and input_path:
+    if 'INPUTS_ALLOWED_PATH' in docservers and input_path and 'restrictInputsPath' in configurations and configurations['restrictInputsPath']:
         return input_path.startswith(docservers['INPUTS_ALLOWED_PATH'])
+    else:
+        return True
 
 
 def update_input(input_id, data):
