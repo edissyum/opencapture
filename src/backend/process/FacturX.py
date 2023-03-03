@@ -357,7 +357,6 @@ def process(args):
 
 
 if __name__ == '__main__':
-    from lxml import etree
     # with open('/home/nathan/BASIC_Einfach.pdf', 'rb') as f:
     #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
     #     process({'xml_content': xml_content})
