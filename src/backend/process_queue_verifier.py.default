@@ -17,6 +17,7 @@
 
 import os
 import time
+import facturx
 import tempfile
 from kuyruk import Kuyruk
 from src.backend.functions import recursive_delete, get_custom_array
@@ -26,9 +27,9 @@ from src.backend.main import create_classes_from_custom_id, check_file, timer, s
 custom_array = get_custom_array()
 
 if 'OCForInvoices' not in custom_array:
-    from src.backend.process import OCForInvoices as OCForInvoices_process
+    from src.backend.process import OCForInvoices as OCForInvoices
 else:
-    OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'],
+    OCForInvoices = getattr(__import__(custom_array['OCForInvoices']['path'],
                                                fromlist=[custom_array['OCForInvoices']['module']]),
                                     custom_array['OCForInvoices']['module'])
 if 'FacturX' not in custom_array:
