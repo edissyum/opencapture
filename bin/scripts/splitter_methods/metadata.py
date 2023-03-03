@@ -45,7 +45,7 @@ def process(args):
     args['files'].save_img_with_pdf2image(args['file'], batch_folder_path + "page")
     args['files'].save_img_with_pdf2image_min(args['file'], batch_thumbs_path + "page", single_file=False)
 
-    list_files = args['files'].sorted_file(args['batch_folder'], 'jpg')
+    list_files = args['files'].sorted_file(batch_folder_path, 'jpg')
     blank_pages = []
 
     regex_content = {
