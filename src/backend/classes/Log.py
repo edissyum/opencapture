@@ -15,31 +15,39 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import os
 import json
 import time
 import logging
-from logging.handlers import RotatingFileHandler
+import logging.handlers
+
+
+class RotatingFileHandlerUmask(logging.handlers.RotatingFileHandler):
+    def _open(self):
+        prevumask = os.umask(0o000)  # -rw-rw-rw-
+        rtv = logging.handlers.RotatingFileHandler._open(self)
+        os.umask(prevumask)
+        return rtv
 
 
 class Log:
     def __init__(self, path, smtp):
         self.smtp = smtp
         self.filename = ''
+        self.database = None
         self.current_step = 1
         self.task_id_watcher = None
         self.task_id_monitor = None
-        self.database = None
         self.processInError = False
         self.logger = logging.getLogger('Open-Capture')
         if self.logger.hasHandlers():
             self.logger.handlers.clear()  # Clear the handlers to avoid double logs
         max_size = 5 * 1024 * 1024
-        log_file = RotatingFileHandler(path, mode='a', maxBytes=max_size, backupCount=2, encoding=None, delay=False)
-        formatter = logging.Formatter('[%(name)-17s] %(asctime)s %(levelname)s %(message)s', datefmt='%d-%m-%Y %H:%M:%S')
+        log_file = RotatingFileHandlerUmask(path, mode='a', maxBytes=max_size, backupCount=2, delay=False)
+        formatter = logging.Formatter('[%(name)-17s] %(asctime)s %(levelname)s %(message)s',
+                                      datefmt='%d-%m-%Y %H:%M:%S')
         log_file.setFormatter(formatter)
         self.logger.addHandler(log_file)
-
-        self.logger.filters.clear()
         self.logger.setLevel(logging.DEBUG)
 
     def info(self, msg):
