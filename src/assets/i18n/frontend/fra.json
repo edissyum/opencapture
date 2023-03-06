@@ -349,7 +349,7 @@
 		"delete_form_and_reassign_input": "Supprimer le formulaire et réassigner les chaînes entrantes",
 		"delete_supplier_positions": "Supprimer les positions du compte fournisseur",
 		"disable": "Désactiver",
-		"dont_touch": "Ne touchez pas à ces paramètres si vous ne savez pas ce que vous faites !",
+		"dont_touch": "Prière de ne pas modifier ces données si vous n'avez pas les connaissances nécessaires au risque de compromettre le fonctionnement de l'application",
 		"duplicate": "Dupliquer",
 		"edit": "Modifier",
 		"enable": "Activer",

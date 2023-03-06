@@ -349,7 +349,7 @@
 		"delete_form_and_reassign_input": "Delete form and reassign input",
 		"delete_supplier_positions": "Delete supplier positions",
 		"disable": "Disable",
-		"dont_touch": "Do not touch thoses settings if you don't know what you're doing",
+		"dont_touch": "Please don't touch this fields if you don't have technical knowledge. You could break the application.",
 		"duplicate": "Duplicate",
 		"edit": "Edit",
 		"enable": "Enable",
