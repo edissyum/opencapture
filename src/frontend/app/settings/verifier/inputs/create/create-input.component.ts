@@ -268,13 +268,13 @@ export class CreateInputComponent implements OnInit {
         let aiEmpty = false;
         let defaultFormEmpty = false;
         this.inputForm.forEach(element => {
-            if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
+            if ((element.control.status !== 'DISABLED' && element.control.status !== 'VALID') || (element.required && element.control.value == null)) {
                 state = false;
             }
-            if (element.id === 'ai_model_id' && element.control.value === 0) {
+            if (element.id === 'ai_model_id' && element.control.value == null) {
                 aiEmpty = true;
             }
-            if (element.id === 'default_form_id' && element.control.value === 0) {
+            if (element.id === 'default_form_id' && element.control.value == null) {
                 defaultFormEmpty = true;
             }
             if (aiEmpty && defaultFormEmpty) {
@@ -286,6 +286,7 @@ export class CreateInputComponent implements OnInit {
     }
 
     onSubmit() {
+        console.log(this.isValidForm())
         if (this.isValidForm()) {
             const input : any = {
                 'module': 'verifier'

@@ -298,27 +298,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             invoice_found_on_first_or_last_page = True
         j += 1
 
-    j = 0
-    tmp_nb_pages = nb_pages
-    invoice_found_on_first_or_last_page = False
-    while not invoice_number:
-        tmp_nb_pages = tmp_nb_pages - 1
-        if j == 3 or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
-            break
-        convert(file, files, ocr, tmp_nb_pages, True)
-
-        _file = files.custom_file_name
-        image = files.open_image_return(_file)
-
-        invoice_number_class.text = ocr.line_box_builder(image)
-        invoice_number_class.nbPages = tmp_nb_pages
-        invoice_number_class.customPage = True
-
-        invoice_number = invoice_number_class.run()
-        if invoice_number:
-            invoice_found_on_first_or_last_page = True
-        j += 1
-
     if invoice_number:
         datas.update({'invoice_number': invoice_number[0]})
         if invoice_number[1]:

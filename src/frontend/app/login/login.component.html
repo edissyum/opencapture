@@ -1,60 +1,62 @@
-<div class="relative top-16 2xl:top-32 flex justify-center h-20" *ngIf="this.loginImage">
-    <img [src]="this.loginImage" alt="Open-Capture logo">
-</div>
-<div class="flex justify-center items-center" style="height: 85vh">
+<div class="min-h-screen flex">
     <app-loader *ngIf="this.loading"></app-loader>
-    <mat-card class="text-center w-full 2xl:w-1/4 sm:w-1/2">
-        <mat-card-title class="mb-5">
-            {{ 'GLOBAL.login' | translate }}
-        </mat-card-title>
-        <mat-card-subtitle class="mt-5 mb-5">
-            {{ this.subtitle }}
-        </mat-card-subtitle>
-        <mat-card-content>
-            <form [formGroup]="this.loginForm" (ngSubmit)="onSubmit()">
-                <mat-form-field class="block">
-                    <mat-label>{{ 'USER.username' | translate }}</mat-label>
-                    <input matInput formControlName="username" type="text" placeholder="{{ 'USER.username' | translate }}" required>
-                    <mat-error *ngIf="this.loginForm.controls.username.invalid">{{ getErrorMessage('username') }}</mat-error>
-                </mat-form-field>
-                <mat-form-field class="block">
-                    <mat-label>{{ 'USER.password' | translate }}</mat-label>
-                    <input matInput name="password" autocomplete="off" formControlName="password"
-                           [type]="this.showPassword ? 'text' : 'password'"
-                           placeholder="{{ 'USER.password' | translate }}" required>
-                    <mat-icon matSuffix (click)="this.showPassword = !this.showPassword"
-                              class="text-green-400 relative cursor-pointer -top-0.5 text-base">
-                        <i class="fa fa-1x" [class.fa-eye-slash]="!this.showPassword" [class.fa-eye]="this.showPassword"></i>
-                    </mat-icon>
-                    <mat-error *ngIf="this.loginForm.controls.password.invalid">
-                        {{ getErrorMessage('password') }}
-                    </mat-error>
-                    <mat-hint align="end" *ngIf="this.enableLoginMethodName === 'ldap'">
+    <div class="w-full flex items-center justify-center text-center flex-col gap-y-8">
+        <div class="w-11/12" *ngIf="this.loginImage">
+            <img class="m-auto" [src]="this.loginImage" alt="Open-Capture logo">
+        </div>
+        <mat-card class="text-center m-12 w-full 2xl:w-1/4 sm:w-1/2">
+            <mat-card-title class="mb-5">
+                {{ 'GLOBAL.login' | translate }}
+            </mat-card-title>
+            <mat-card-subtitle class="mt-5 mb-5">
+                {{ this.subtitle }}
+            </mat-card-subtitle>
+            <mat-card-content>
+                <form [formGroup]="this.loginForm" (ngSubmit)="onSubmit()">
+                    <mat-form-field class="block">
+                        <mat-label>{{ 'USER.username' | translate }}</mat-label>
+                        <input matInput formControlName="username" type="text" placeholder="{{ 'USER.username' | translate }}" required>
+                        <mat-error *ngIf="this.loginForm.controls.username.invalid">{{ getErrorMessage('username') }}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="block">
+                        <mat-label>{{ 'USER.password' | translate }}</mat-label>
+                        <input matInput name="password" autocomplete="off" formControlName="password"
+                               [type]="this.showPassword ? 'text' : 'password'"
+                               placeholder="{{ 'USER.password' | translate }}" required>
+                        <mat-icon matSuffix (click)="this.showPassword = !this.showPassword"
+                                  class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                            <i class="fa fa-1x" [class.fa-eye-slash]="!this.showPassword" [class.fa-eye]="this.showPassword"></i>
+                        </mat-icon>
+                        <mat-error *ngIf="this.loginForm.controls.password.invalid">
+                            {{ getErrorMessage('password') }}
+                        </mat-error>
+                        <mat-hint align="end" *ngIf="this.enableLoginMethodName === 'ldap'">
                         <span class="underline decoration-1" >
                             {{ this.enableLoginMethodName | uppercase }} {{ 'LOGIN-METHODS.enabled' | translate }}
                         </span>
-                    </mat-hint>
-                </mat-form-field>
-                <button mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled"
-                        class="w-1/3 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
+                        </mat-hint>
+                    </mat-form-field>
+                    <button mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled"
+                            class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
                                transition duration-300" type="submit">
                     <span *ngIf="!this.processLogin && !this.isConnectionBtnDisabled">
                         {{ 'AUTH.login' | translate }}
                     </span>
-                    <i *ngIf="this.processLogin || this.isConnectionBtnDisabled"
-                       class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
-                </button>
-            </form>
-        </mat-card-content>
-        <span class="relative my-4 text-green-400 font-bold">
+                        <i *ngIf="this.processLogin || this.isConnectionBtnDisabled"
+                           class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                    </button>
+                </form>
+            </mat-card-content>
+            <span class="relative my-4 text-green-400 font-bold">
             <a href="https://kutt.it/GuideDutilisation" target="_blank">
                 {{ 'GLOBAL.utilisation_guide' | translate }}
             </a>
         </span>
-        <div class="text-center relative top-8 text-gray-900" *ngIf="this.enableLoginMethodName === 'default'">
-            <a routerLink="/forgotPassword">
-                {{ 'AUTH.forgot_password' | translate }}
-            </a>
-        </div>
-    </mat-card>
+            <div class="text-center relative top-8 text-gray-900" *ngIf="this.enableLoginMethodName === 'default'">
+                <a routerLink="/forgotPassword">
+                    {{ 'AUTH.forgot_password' | translate }}
+                </a>
+            </div>
+        </mat-card>
+    </div>
 </div>

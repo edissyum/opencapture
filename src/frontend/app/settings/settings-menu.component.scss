@@ -4,6 +4,8 @@
     @apply h-full;
     @apply flex-col;
     @apply border-r;
+    @apply xl:w-1/4;
+    @apply 2xl:w-1/6;
     @apply border-green-400;
 }
 
