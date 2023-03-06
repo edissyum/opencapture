@@ -18,7 +18,7 @@
 from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.import_controllers import auth
-from src.backend.import_models import user, accounts
+from src.backend.import_models import user, accounts, forms
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -218,6 +218,36 @@ def get_customers_by_user_id(user_id):
         return response, 401
 
 
+def get_forms_by_user_id(user_id):
+    user_info, error = user.get_user_by_id({'user_id': user_id})
+    if error is None:
+        if user_info['label_short'] == 'superadmin':
+            user_forms = forms.get_forms({
+                'select': ['id'],
+                'where': ['status <> %s'],
+                'data': ['DEL'],
+            })
+        else:
+            user_forms, error = user.get_forms_by_user_id({'user_id': user_id})
+
+        if error is None:
+            if user_info['label_short'] == 'superadmin':
+                _user_forms = []
+                for _c in user_forms:
+                    _user_forms.append(_c['id'])
+                user_forms = _user_forms
+            else:
+                if type(eval(user_forms['forms_id']['data'])) == list:
+                    user_forms = eval(user_forms['forms_id']['data'])
+        return user_forms, 200
+    else:
+        response = {
+            "errors": gettext('GET_CUSTOMER_BY_ID_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 401
+
+
 def update_user(user_id, data):
     if 'configurations' in current_context:
         configurations = current_context.configurations
@@ -340,21 +370,31 @@ def enable_user(user_id):
         return response, 401
 
 
-def update_customers_by_user_id(user_id, customers):
+def update_customers_by_user_id(user_id, customers, forms):
     _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _set = {
             'customers_id': '{"data": "' + str(customers) + '"}',
         }
         _, error = user.update_customers_by_user_id({'set': _set, 'user_id': user_id})
-        if error is None:
-            return '', 200
-        else:
+        if error:
             response = {
                 "errors": gettext('UPDATE_CUSTOMERS_USER_ERROR'),
                 "message": gettext(error)
             }
             return response, 401
+
+        _set = {
+            'forms_id': '{"data": "' + str(forms) + '"}',
+        }
+        _, error = user.update_forms_by_user_id({'set': _set, 'user_id': user_id})
+        if error:
+            response = {
+                "errors": gettext('UPDATE_FORMS_USER_ERROR'),
+                "message": gettext(error)
+            }
+            return response, 401
+        return '', 200
     else:
         response = {
             "errors": gettext('UPDATE_CUSTOMERS_USER_ERROR'),
