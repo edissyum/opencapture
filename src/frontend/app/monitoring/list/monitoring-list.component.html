@@ -30,8 +30,8 @@
             <div class="flex justify-center">
                 <mat-table matSort [dataSource]="this.processData" (matSortChange)="sortData($event)" class="w-full">
                     <ng-container matColumnDef="id">
-                        <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 180px!important;"> {{ 'HEADER.id' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element" style="flex: 0 0 180px!important;"> {{ element.id }} </mat-cell>
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id_simple' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="module">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'CUSTOM-FIELDS.module' | translate }} </mat-header-cell>
