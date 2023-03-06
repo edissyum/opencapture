@@ -76,7 +76,7 @@ def duplicate_output(output_id):
 
 def is_path_allowed(parameters):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in current_context and 'configuration' in current_context and custom_id == '':
+    if 'docservers' in current_context and 'configuration' in current_context:
         docservers = current_context.docservers
         configurations = current_context.configuration
     else:

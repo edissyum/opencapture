@@ -65,7 +65,6 @@ def launch(args):
         }
     })
 
-
     log.task_id_watcher = task_id_watcher
     log.task_id_monitor = task_id_monitor
     log.database = database

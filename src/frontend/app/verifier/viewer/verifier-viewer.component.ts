@@ -325,7 +325,12 @@ export class VerifierViewerComponent implements OnInit {
         if (this.imgArray[cpt]) {
             this.imgSrc = this.imgArray[cpt];
         } else {
-            this.http.post(environment['url'] + '/ws/verifier/getThumb', {'args': {'type': 'full', 'filename': filename}},
+            const registerDate = new Date(this.invoice.register_date);
+            const year = registerDate.getUTCFullYear();
+            const month = String(registerDate.getUTCMonth() + 1).padStart(2, '0');
+
+            this.http.post(environment['url'] + '/ws/verifier/getThumb',
+                {'args': {'type': 'full', 'filename': filename, 'yearAndMonth': year + '/' + month}},
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     this.imgSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);

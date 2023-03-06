@@ -1,5 +1,5 @@
 # This file is part of Open-Capture.
-
+import datetime
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -35,7 +35,10 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
         os.remove(improved_img)
     except FileNotFoundError:
         pass
-    path = docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename + '-001.jpg'
+    year = datetime.datetime.now().strftime('%Y')
+    month = datetime.datetime.now().strftime('%m')
+    year_and_month = year + '/' + month
+    path = docservers['VERIFIER_IMAGE_FULL'] + '/' + year_and_month + '/' + full_jpg_filename + '-001.jpg'
 
     invoice_data = {
         'filename': os.path.basename(file),
@@ -466,7 +469,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     full_jpg_filename = 'full_' + file_name
     file = files.move_to_docservers(docservers, file)
     # Convert all the pages to JPG (used to full web interface)
-    files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
+    files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename, docservers=True)
     files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
 
     allow_auto = False
