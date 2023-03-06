@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
+import uuid
 import facturx
 from unidecode import unidecode
 from xml.etree import ElementTree as Et
@@ -334,8 +335,30 @@ def browse_xml_lines(root):
     return lines
 
 
+def insert(args):
+    files = args['files']
+    database = args['database']
+    docservers = args['docservers']
+    if 'input_id' in args:
+        input_settings = database.select({
+            'select': ['*'],
+            'table': ['inputs'],
+            'where': ['input_id = %s', 'module = %s'],
+            'data': [args['input_id'], 'verifier'],
+        })
+
+    # Generate thumbnail
+    file_name = str(uuid.uuid4())
+    jpg_filename = 'full_' + file_name
+    files.save_img_with_pdf2image_min(args['file'], docservers['VERIFIER_IMAGE_FULL'] + '/' + jpg_filename, docservers=True)
+    files.save_img_with_pdf2image_min(args['file'], docservers['VERIFIER_THUMB'] + '/' + jpg_filename)
+    # files.pdf_to_jpg(args['file'], 1)
+    return True
+
+
 def process(args):
     root = Et.fromstring(args['xml_content'])
+    del args['xml_content']
     data = {
         'buyer': browse_xml(root, 'buyer', root),
         'facturation_lines': browse_xml_lines(root),
@@ -350,10 +373,9 @@ def process(args):
         'taxes': browse_xml_specific(root, 'ApplicableHeaderTradeSettlement', 'ApplicableTradeTax')
     }
 
-    # print('-------------')
-    # for d in data:
-    #     print(d, ':',  json.dumps(data[d]))
-    return data
+    res = insert(args)
+
+    return res
 
 
 if __name__ == '__main__':
