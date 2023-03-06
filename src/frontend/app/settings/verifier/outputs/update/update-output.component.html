@@ -132,7 +132,7 @@
                             </div>
                         </mat-tab>
                         <mat-tab [label]="'OUTPUT.links' | translate" *ngIf="outputsTypesForm[selectedOutputType]['links']">
-                            <app-hint [message]="'OUTPUT.links_hint' | translate" specificClass="w-3/4"></app-hint>
+                            <app-hint [message]="'OUTPUT.links_hint' | translate" [specificClass]="'w-3/4'"></app-hint>
                             <div class="flex justify-center m-10">
                                 <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]['links']">
                                     <mat-slide-toggle *ngIf="field.type === 'boolean'" [formControl]="field.control">
