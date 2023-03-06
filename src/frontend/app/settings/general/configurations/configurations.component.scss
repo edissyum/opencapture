@@ -2,11 +2,15 @@
     flex: 0 0 35%;
 }
 
-.mat-column-id {
-    flex: 0 0 10%;
+.mat-column-label {
+    flex: 0 0 15%;
 }
 
-.mat-column-type {
+.mat-column-content {
+    flex: 0 0 25%;
+}
+
+.mat-column-id, mat-column-type {
     flex: 0 0 10%;
 }
 

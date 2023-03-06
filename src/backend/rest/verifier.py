@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import base64
+import pandas as pd
 from flask_babel import gettext
 from flask import Blueprint, make_response, request
 from src.backend.import_controllers import auth, verifier
@@ -189,7 +190,13 @@ def ocr_on_fly():
 @auth.token_required
 def get_thumb():
     data = request.json['args']
-    file_content = verifier.get_file_content(data['type'], data['filename'], 'image/jpeg', year_and_month=data['yearAndMonth'])
+    year_and_month = False
+    if 'registerDate' in data:
+        register_date = pd.to_datetime(data['registerDate'])
+        year = register_date.strftime('%Y')
+        month = register_date.strftime('%m')
+        year_and_month = year + '/' + month
+    file_content = verifier.get_file_content(data['type'], data['filename'], 'image/jpeg', year_and_month=year_and_month)
     return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
 
 
