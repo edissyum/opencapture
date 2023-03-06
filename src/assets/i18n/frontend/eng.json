@@ -393,6 +393,7 @@
 		"event_message": "Event message",
 		"filename": "Filename",
 		"id": "Technical id",
+		"id_simple": "Id",
 		"inactive": "Inactive",
 		"label": "Label",
 		"label_short": "Label short",
