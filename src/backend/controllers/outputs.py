@@ -95,7 +95,6 @@ def is_path_allowed(parameters):
 
 
 def update_output(output_id, data):
-    print(is_path_allowed(data['data']['options']['parameters']))
     if not is_path_allowed(data['data']['options']['parameters']):
         response = {
             "errors": gettext('UPDATE_OUTPUT_ERROR'),
