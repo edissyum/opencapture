@@ -15,11 +15,16 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import os
 import re
+import json
 import uuid
 import facturx
+import datetime
 from unidecode import unidecode
 from xml.etree import ElementTree as Et
+from src.backend import verifier_exports
+from src.backend.functions import delete_documents
 
 ###
 # FACTUREX_CORRESPONDANCE is used to convert XML data to Open-Capture data
@@ -33,7 +38,7 @@ from xml.etree import ElementTree as Et
 
 FACTUREX_CORRESPONDANCE = {
     'facturation': {
-        'total_tva': {'id': 'TaxTotalAmount'},
+        'total_vat': {'id': 'TaxTotalAmount'},
         'total_ttc': {'id': 'GrandTotalAmount'},
         'currency': {'id': 'InvoiceCurrencyCode'},
         'total_ht': {'id': 'TaxBasisTotalAmount'},
@@ -54,10 +59,10 @@ FACTUREX_CORRESPONDANCE = {
     },
     'taxes': {
         'type_code': {'id': 'TypeCode',  'tagParent': 'ApplicableTradeTax'},
-        'ht_price': {'id': 'BasisAmount',  'tagParent': 'ApplicableTradeTax'},
+        'no_rate_amount': {'id': 'BasisAmount',  'tagParent': 'ApplicableTradeTax'},
         'category_code': {'id': 'CategoryCode', 'tagParent': 'ApplicableTradeTax'},
         'vat_amount': {'id': 'CalculatedAmount', 'tagParent': 'ApplicableTradeTax'},
-        'vat_percentage': {'id': 'RateApplicablePercent', 'tagParent': 'ApplicableTradeTax'}
+        'vat_rate': {'id': 'RateApplicablePercent', 'tagParent': 'ApplicableTradeTax'}
     },
     'facturation_lines': {
         'name': {'id': 'Name'},
@@ -66,19 +71,20 @@ FACTUREX_CORRESPONDANCE = {
         'trade_tax_type_code': {'id': 'TypeCode'},
         'seller_assigned_id': {'id': 'SellerAssignedID'},
         'trade_tax_category_code': {'id': 'CategoryCode'},
-        'trade_tax_amount': {'id': 'RateApplicablePercent'},
+        'vat_rate': {'id': 'RateApplicablePercent'},
         'value': {'id': 'Value', 'tagParent': 'ApplicableProductCharacteristic'},
         'allowance_reason': {'id': 'Reason', 'tagParent': 'AppliedTradeAllowanceCharge'},
         'unit_price_ht': {'id': 'ChargeAmount', 'tagParent': 'NetPriceProductTradePrice'},
         'gross_price_ht': {'id': 'ChargeAmount', 'tagParent': 'GrossPriceProductTradePrice'},
         'description': {'id': 'Description', 'tagParent': 'ApplicableProductCharacteristic'},
         'allowance_amount': {'id': 'ActualAmount', 'tagParent': 'AppliedTradeAllowanceCharge'},
-        'ht_price': {'id': 'LineTotalAmount', 'tagParent': 'SpecifiedTradeSettlementLineMonetarySummation'}
+        'no_rate_amount': {'id': 'LineTotalAmount', 'tagParent': 'SpecifiedTradeSettlementLineMonetarySummation'}
     },
     'supplier': {
         'global_id': {'id': 'GlobalID'},
-        'supplier_name': {'id': 'Name'},
+        'name': {'id': 'Name'},
         'number': {'id': 'ID', 'tagParent': 'SellerTradeParty'},
+        'siret': {'id': 'ID', 'tagParent': 'SpecifiedLegalOrganization'},
         'vat_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'VA'},
         'tax_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'FC'}
     },
@@ -87,7 +93,7 @@ FACTUREX_CORRESPONDANCE = {
         'number': {'id': 'ID', 'tagParent': 'BuyerTradeParty'},
         'vat_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'VA'},
         'tax_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'FC'},
-        'legal_organization_id': {'id': 'ID', 'tagParent': 'SpecifiedLegalOrganization'}
+        'siret': {'id': 'ID', 'tagParent': 'SpecifiedLegalOrganization'}
     },
     'supplier_trade_contact': {
         'email': {'id': 'URIID'},
@@ -205,6 +211,10 @@ FACTUREX_DATA = {
         [
             './/' + NAMESPACE + 'SellerTradeParty',
             './/' + NAMESPACE + 'SpecifiedTaxRegistration'
+        ],
+        [
+            './/' + NAMESPACE + 'SellerTradeParty',
+            './/' + NAMESPACE + 'SpecifiedLegalOrganization'
         ]
     ],
     'buyer': [
@@ -336,30 +346,135 @@ def browse_xml_lines(root):
 
 
 def insert(args):
+    log = args['log']
+    regex = args['regex']
     files = args['files']
     database = args['database']
     docservers = args['docservers']
-    if 'input_id' in args:
-        input_settings = database.select({
-            'select': ['*'],
-            'table': ['inputs'],
-            'where': ['input_id = %s', 'module = %s'],
-            'data': [args['input_id'], 'verifier'],
+    configurations = args['configurations']
+    status = 'NEW'
+
+    jpg_filename = str(uuid.uuid4())
+    files.save_img_with_pdf2image(args['file'], docservers['VERIFIER_IMAGE_FULL'] + '/' + jpg_filename, docservers=True)
+    files.save_img_with_pdf2image_min(args['file'], docservers['VERIFIER_THUMB'] + '/' + jpg_filename)
+
+    year = datetime.datetime.now().strftime('%Y')
+    month = datetime.datetime.now().strftime('%m')
+    year_and_month = year + '/' + month
+    path = docservers['VERIFIER_IMAGE_FULL'] + '/' + year_and_month + '/' + jpg_filename + '-001.jpg'
+    nb_pages = files.get_pages(docservers, args['file'])
+    splitted_file = os.path.basename(args['file']).split('_')
+    if splitted_file[0] == 'SPLITTER':
+        original_file = os.path.basename(args['file']).split('_')
+        original_file = original_file[1] + '_' + original_file[2] + '.pdf'
+    else:
+        original_file = os.path.basename(args['file'])
+
+    invoice_data = {
+        'facturx': True,
+        'status': status,
+        'customer_id': 0,
+        'nb_pages': nb_pages,
+        'path': os.path.dirname(path),
+        'datas': json.dumps(args['datas']),
+        'original_filename': original_file,
+        'img_width': str(files.get_width(path)),
+        'filename': os.path.basename(args['file']),
+        'full_jpg_filename': jpg_filename + '-001.jpg',
+        'facturx_level': args['facturx_level'].upper(),
+    }
+
+    if args.get('isMail') is None or args.get('isMail') is False:
+        if 'input_id' in args and args['input_id']:
+            input_settings = database.select({
+                'select': ['*'],
+                'table': ['inputs'],
+                'where': ['input_id = %s', 'module = %s'],
+                'data': [args['input_id'], 'verifier'],
+            })
+            if input_settings:
+                input_settings = input_settings[0]
+                if input_settings['purchase_or_sale']:
+                    invoice_data.update({
+                        'purchase_or_sale': input_settings['purchase_or_sale']
+                    })
+                if input_settings['customer_id']:
+                    invoice_data.update({
+                        'customer_id': input_settings['customer_id']
+                    })
+    else:
+        if 'customer_id' in args and args['customer_id']:
+            invoice_data.update({
+                'customer_id': args['customer_id']
+            })
+        if 'form_id' in args and args['form_id']:
+            invoice_data.update({
+                'form_id': args['form_id']
+            })
+
+    if 'form_id' in args and args['form_id']:
+        invoice_data.update({
+            'form_id': args['form_id']
         })
 
-    # Generate thumbnail
-    file_name = str(uuid.uuid4())
-    jpg_filename = 'full_' + file_name
-    files.save_img_with_pdf2image_min(args['file'], docservers['VERIFIER_IMAGE_FULL'] + '/' + jpg_filename, docservers=True)
-    files.save_img_with_pdf2image_min(args['file'], docservers['VERIFIER_THUMB'] + '/' + jpg_filename)
-    # files.pdf_to_jpg(args['file'], 1)
+    insert_invoice = True
+    if status == 'END' and 'form_id' in invoice_data and invoice_data['form_id']:
+        outputs = database.select({
+            'select': ['outputs'],
+            'table': ['form_models'],
+            'where': ['id = %s'],
+            'data': [invoice_data['form_id']],
+        })
+
+        if outputs:
+            for output_id in outputs[0]['outputs']:
+                output_info = database.select({
+                    'select': ['output_type_id', 'data', 'compress_type', 'ocrise'],
+                    'table': ['outputs'],
+                    'where': ['id = %s'],
+                    'data': [output_id]
+                })
+                if output_info:
+                    if output_info[0]['output_type_id'] == 'export_xml':
+                        verifier_exports.export_xml(output_info[0]['data'], log, regex, invoice_data, database)
+                    elif output_info[0]['output_type_id'] == 'export_mem':
+                        verifier_exports.export_mem(output_info[0]['data'], invoice_data, log, regex, database)
+                    elif output_info[0]['output_type_id'] == 'export_pdf':
+                        verifier_exports.export_pdf(output_info[0]['data'], log, regex, invoice_data,
+                                                    configurations['locale'], output_info[0]['compress_type'],
+                                                    output_info[0]['ocrise'])
+
+            if 'form_id' in args and args['form_id']:
+                form_settings = database.select({
+                    'select': ['settings'],
+                    'table': ['form_models'],
+                    'where': ['id = %s'],
+                    'data': [args['form_id']]
+                })
+                if 'delete_documents_after_outputs' in form_settings and form_settings['delete_documents_after_outputs']:
+                    delete_documents(docservers, invoice_data['path'], invoice_data['filename'], jpg_filename)
+                    insert_invoice = False
+    if insert_invoice:
+        database.insert({
+            'table': 'invoices',
+            'columns': invoice_data
+        })
     return True
+
+
+def retrieve_data(array, key, regex=None):
+    if key in ['date', 'due_date'] and regex:
+        if key in array and array[key]:
+            return datetime.datetime.strptime(array[key], '%Y%m%d').strftime(regex['format_date'])
+    else:
+        return array[key] if key in array and array[key] else ''
 
 
 def process(args):
     root = Et.fromstring(args['xml_content'])
     del args['xml_content']
-    data = {
+
+    args['facturx_data'] = {
         'buyer': browse_xml(root, 'buyer', root),
         'facturation_lines': browse_xml_lines(root),
         'payment': browse_xml(root, 'payment', root),
@@ -372,6 +487,30 @@ def process(args):
         'supplier_trade_contact': browse_xml(root, 'supplier_trade_contact', root),
         'taxes': browse_xml_specific(root, 'ApplicableHeaderTradeSettlement', 'ApplicableTradeTax')
     }
+
+    args['datas'] = {
+        "city": retrieve_data(args['facturx_data']['supplier_address'], 'city'),
+        "name": retrieve_data(args['facturx_data']['supplier'], 'name'),
+        "siret": retrieve_data(args['facturx_data']['supplier'], 'siret'),
+        "country": retrieve_data(args['facturx_data']['supplier_address'], 'country'),
+        "address1": retrieve_data(args['facturx_data']['supplier_address'], 'address1'),
+        "address2": retrieve_data(args['facturx_data']['supplier_address'], 'address2'),
+        "total_ht": retrieve_data(args['facturx_data']['facturation'], 'total_ht'),
+        "total_ttc": retrieve_data(args['facturx_data']['facturation'], 'total_ttc'),
+        "total_vat": retrieve_data(args['facturx_data']['facturation'], 'total_vat'),
+        "vat_number": retrieve_data(args['facturx_data']['supplier'], 'vat_number'),
+        "postal_code": retrieve_data(args['facturx_data']['supplier_address'], 'postal_code'),
+        "invoice_number": retrieve_data(args['facturx_data']['facturation'], 'invoice_number'),
+        "quotation_number": retrieve_data(args['facturx_data']['facturation'], 'order_number'),
+        "document_date": retrieve_data(args['facturx_data']['facturation'], 'date', args['regex']),
+        "document_due_date": retrieve_data(args['facturx_data']['facturation'], 'due_date', args['regex']),
+    }
+
+    for line in args['facturx_data']['facturation_lines']:
+        args['datas']['no_rate_amount'] = args['facturx_data']['facturation_lines'][line]['global']['no_rate_amount']
+        args['datas']['vat_rate'] = args['facturx_data']['facturation_lines'][line]['trade_taxes']['vat_rate']
+        if args['datas']['no_rate_amount'] and args['datas']['vat_rate']:
+            args['datas']['vat_amount'] = float(args['datas']['no_rate_amount']) * (float(args['datas']['vat_rate']) / 100)
 
     res = insert(args)
 

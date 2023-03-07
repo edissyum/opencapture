@@ -1015,6 +1015,8 @@
 		"documents_settings": "Settings document",
 		"duplicate_line": "Duplicate line",
 		"expand_all": "Expand all",
+		"facturx": "FacturX",
+		"facturx_level": "FacturX profile : {{ level }}",
 		"field_settings": "Field settings",
 		"form": "Form",
 		"form_changed": "Form changed successfully",

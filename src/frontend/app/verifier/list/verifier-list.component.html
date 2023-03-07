@@ -166,6 +166,9 @@
                                     <input id="{{ invoice.invoice_id }}_checkbox" (click)="checkCheckedInvoices()"
                                            class="accent-green-400 checkBox_list cursor-pointer w-5 h-5" type="checkbox">
                                 </label>
+                                <div *ngIf="invoice.facturx" class="text-center text-gray-400 mt-2" [matTooltip]="'VERIFIER.facturx_level' | translate : {level : invoice.facturx_level}">
+                                    {{ "VERIFIER.facturx" | translate }}
+                                </div>
                                 <div class="absolute right-0 pt-4 pr-5 z-40">
                                     <div [matMenuTriggerFor]="menu" matTooltipPosition="above"
                                          [matTooltip]="this.translate.instant('VERIFIER.documents_settings')">

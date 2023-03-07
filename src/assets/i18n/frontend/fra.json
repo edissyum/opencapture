@@ -1015,6 +1015,8 @@
 		"documents_settings": "Paramètres du document",
 		"duplicate_line": "Dupliquer la ligne",
 		"expand_all": "Développer tous les clients",
+		"facturx": "FacturX",
+		"facturx_level": "Profil FacturX : {{ level }}",
 		"field_settings": "Paramètres du champ",
 		"form": "Formulaire",
 		"form_changed": "Formulaire modifié avec succès",

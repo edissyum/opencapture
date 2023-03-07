@@ -35,6 +35,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
         os.remove(improved_img)
     except FileNotFoundError:
         pass
+
     year = datetime.datetime.now().strftime('%Y')
     month = datetime.datetime.now().strftime('%m')
     year_and_month = year + '/' + month
@@ -465,8 +466,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if delivery_number[2]:
             pages.update({'delivery_number': delivery_number[2]})
 
-    file_name = str(uuid.uuid4())
-    full_jpg_filename = 'full_' + file_name
+    full_jpg_filename = str(uuid.uuid4())
     file = files.move_to_docservers(docservers, file)
     # Convert all the pages to JPG (used to full web interface)
     files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename, docservers=True)
