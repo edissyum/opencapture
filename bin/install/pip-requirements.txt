@@ -31,3 +31,4 @@ configparser==5.3.0
 scikit-learn==1.2.1
 pypdf[crypto]==3.4.1
 opencv-python==4.7.0.68
+pikepdf==6.2.4
