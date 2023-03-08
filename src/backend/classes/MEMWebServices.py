@@ -25,14 +25,15 @@ from requests.auth import HTTPBasicAuth
 
 class MEMWebServices:
     def __init__(self, host, user, pwd, log):
+        self.log = log
+        self.timeout = 10
         self.base_url = host + '/'
         self.auth = HTTPBasicAuth(user, pwd)
-        self.log = log
         self.status = self.check_connection()
 
     def check_connection(self):
         try:
-            res = requests.get(self.base_url + '/priorities', auth=self.auth)
+            res = requests.get(self.base_url + '/priorities', auth=self.auth, timeout=self.timeout)
             if res.text:
                 if res.status_code == 404:
                     return [False, gettext('HOST_NOT_FOUND')]
@@ -45,27 +46,27 @@ class MEMWebServices:
             return [False, str(request_error)]
 
     def retrieve_users(self):
-        res = requests.get(self.base_url + '/users', auth=self.auth)
+        res = requests.get(self.base_url + '/users', auth=self.auth, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getUsersError : ' + str(res.text))
         return json.loads(res.text), res.status_code
 
     def retrieve_entities(self):
-        res = requests.get(self.base_url + '/entities', auth=self.auth)
+        res = requests.get(self.base_url + '/entities', auth=self.auth, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getEntitiesError : ' + str(res.text))
             return False
         return json.loads(res.text)
 
     def retrieve_custom_fields(self):
-        res = requests.get(self.base_url + '/customFields', auth=self.auth)
+        res = requests.get(self.base_url + '/customFields', auth=self.auth, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getCustomFieldsError : ' + str(res.text))
             return False
         return json.loads(res.text)
 
     def retrieve_contact_custom_fields(self):
-        res = requests.get(self.base_url + '/contactsCustomFields', auth=self.auth)
+        res = requests.get(self.base_url + '/contactsCustomFields', auth=self.auth, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getContactCustomFieldsError : ' + str(res.text))
             return False
@@ -73,7 +74,7 @@ class MEMWebServices:
 
     def retrieve_contact(self, args):
         where = "where=custom_fields->>'" + str(args['vatNumberContactCustom']['id']) + "'='" + str(args['supplierCustomId']) + "'"
-        res = requests.get(self.base_url + '/contacts?' + where, auth=self.auth)
+        res = requests.get(self.base_url + '/contacts?' + where, auth=self.auth, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getContactError : ' + str(res.text))
             return False
@@ -83,7 +84,8 @@ class MEMWebServices:
         where = "?custom_fields=" + str(args['memCustomField']['id'])
         if args['memClause']:
             where += '&clause=' + args['memClause'].replace(' ', '')
-        res = requests.get(self.base_url + '/resources/getByContact/' + args['contactId'] + where, auth=self.auth)
+        res = requests.get(self.base_url + '/resources/getByContact/' + args['contactId'] + where, auth=self.auth,
+                           timeout=self.timeout)
         if res.status_code != 200:
             if res.status_code != 204:
                 self.log.error('(' + str(res.status_code) + ') getDocumentWithContactError : ' + str(res.text))
@@ -91,48 +93,49 @@ class MEMWebServices:
         return json.loads(res.text)
 
     def retrieve_priorities(self):
-        res = requests.get(self.base_url + '/priorities', auth=self.auth)
+        res = requests.get(self.base_url + '/priorities', auth=self.auth, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getPrioritiesError : ' + str(res.text))
             return False
         return json.loads(res.text)
 
     def retrieve_priority(self, priority):
-        res = requests.get(self.base_url + '/priorities/' + priority, auth=self.auth)
+        res = requests.get(self.base_url + '/priorities/' + priority, auth=self.auth, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getPriorityByIdError : ' + str(res.text))
             return False
         return json.loads(res.text)
 
-    def retrieve_doc_with_custom(self, custom_id, data, clause):
-        data = {
-            'select': 'res_id',
-            'clause': clause + " AND custom_fields ->> '" + str(custom_id) + "' = '" + str(data) + "'"
-        }
+    def retrieve_doc_with_custom(self, custom_id, opencapture_field, clause):
+        data = {'select': 'res_id'}
+        if clause:
+            data['clause'] = clause + " AND custom_fields ->> '" + str(custom_id) + "' = '" + str(opencapture_field) + "'"
+        else:
+            data['clause'] = "custom_fields ->> '" + str(custom_id) + "' = '" + str(opencapture_field) + "'"
 
         res = requests.post(self.base_url + '/res/list', auth=self.auth, data=json.dumps(data),
-                            headers={'Connection': 'close', 'Content-Type': 'application/json'})
+                            headers={'Connection': 'close', 'Content-Type': 'application/json'}, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getDocumentWithCustomField : ' + str(res.text))
             return False
         return json.loads(res.text)
 
     def retrieve_statuses(self):
-        res = requests.get(self.base_url + '/statuses', auth=self.auth)
+        res = requests.get(self.base_url + '/statuses', auth=self.auth, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getStatusesError : ' + str(res.text))
             return False
         return json.loads(res.text)
 
     def retrieve_indexing_models(self):
-        res = requests.get(self.base_url + '/indexingModels', auth=self.auth)
+        res = requests.get(self.base_url + '/indexingModels', auth=self.auth, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getIndexinModelsError : ' + str(res.text))
             return False
         return json.loads(res.text)
 
     def retrieve_doctypes(self):
-        res = requests.get(self.base_url + '/doctypes/types', auth=self.auth)
+        res = requests.get(self.base_url + '/doctypes/types', auth=self.auth, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getDoctypesError : ' + str(res.text))
             return False
@@ -144,7 +147,7 @@ class MEMWebServices:
         }
 
         res = requests.post(self.base_url + '/resources/' + res_id_master + '/linkedResources', auth=self.auth,
-                            data=json.dumps(data), headers={'Connection': 'close', 'Content-Type': 'application/json'})
+                            data=json.dumps(data), headers={'Connection': 'close', 'Content-Type': 'application/json'}, timeout=self.timeout)
         if res.status_code not in (200, 204):
             self.log.error('(' + str(res.status_code) + ') linkDocumentError : ' + str(res.text))
             return False
@@ -184,7 +187,7 @@ class MEMWebServices:
             }]
 
         res = requests.post(self.base_url + 'resources', auth=self.auth, data=json.dumps(data),
-                            headers={'Connection': 'close', 'Content-Type': 'application/json'})
+                            headers={'Connection': 'close', 'Content-Type': 'application/json'}, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') InsertIntoMEMError : ' + str(res.text))
             return False, json.loads(res.text)
@@ -192,7 +195,7 @@ class MEMWebServices:
 
     def create_contact(self, contact):
         res = requests.post(self.base_url + '/contacts', auth=self.auth, data=json.dumps(contact),
-                            headers={'Connection': 'close', 'Content-Type': 'application/json'})
+                            headers={'Connection': 'close', 'Content-Type': 'application/json'}, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') CreateContactError : ' + str(res.text))
             return False
