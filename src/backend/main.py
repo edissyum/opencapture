@@ -148,7 +148,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
 
 def check_file(files, path, log, docservers, move_error_file=False):
     if not files.check_file_integrity(path, docservers, move_error_file):
-        log.error('The integrity of file could\'nt be verified : ' + str(path))
+        log.info('The integrity of file could\'nt be verified : ' + str(path))
         return False
     return True
 
