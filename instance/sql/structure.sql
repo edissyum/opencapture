@@ -224,6 +224,8 @@ CREATE TABLE "invoices"
     "status"            VARCHAR(20)         NOT NULL DEFAULT 'NEW',
     "full_jpg_filename" VARCHAR(255),
     "img_width"         INTEGER,
+    "facturx"           BOOLEAN             DEFAULT False,
+    "facturx_level"     VARCHAR(20),
     "register_date"     TIMESTAMP           DEFAULT (CURRENT_TIMESTAMP),
     "nb_pages"          INTEGER             NOT NULL DEFAULT 1,
     "locked"            BOOLEAN             DEFAULT False,
