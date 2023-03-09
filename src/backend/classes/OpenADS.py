@@ -47,14 +47,21 @@ class OpenADS:
         try:
             res = requests.get(self.api + "/dossier/" + folder_id + "/existe", auth=self.auth)
             res = res.json()
-            if 'errors' in res:
+
+            if 'existe' in res and res['existe']:
+                return {'status': True}
+
+            elif 'existe' in res and not res['existe']:
+                return {'status': False}
+
+            elif 'status' in res and res['status'] == 'error':
                 return {'status': False, "error": res['errors'][0]['description']}
 
         except Exception as e:
             response = {'status': False, 'error': str(e)}
             return response
 
-        return {'status': True}
+        return {'status': False}
 
     def create_documents(self, folder_id, paths, metadata):
         try:

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2023-02-21 11:10+0100\n"
+"POT-Creation-Date: 2023-03-09 09:29+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.11.0\n"
+"Generated-By: Babel 2.10.1\n"
 
 #: launch_worker.py:48 launch_worker_splitter.py:48
 msgid "FILE_UPLOADED"
@@ -357,8 +357,8 @@ msgstr "Error updating form fields"
 msgid "DELETE_FORM_ERROR"
 msgstr "Error deleting form"
 
-#: src/backend/controllers/forms.py:219 src/backend/controllers/inputs.py:102
-#: src/backend/controllers/outputs.py:57
+#: src/backend/controllers/forms.py:219 src/backend/controllers/inputs.py:107
+#: src/backend/controllers/outputs.py:58
 #: src/backend/controllers/positions_masks.py:160
 msgid "COPY_OF"
 msgstr "Copy of"
@@ -383,65 +383,65 @@ msgstr "Error while retrieving form fields"
 msgid "ADD_HISTORY_ERROR"
 msgstr "Error while adding new history"
 
-#: src/backend/controllers/inputs.py:70 src/backend/controllers/inputs.py:130
-#: src/backend/controllers/inputs.py:157 src/backend/controllers/inputs.py:168
-#: src/backend/controllers/inputs.py:181
+#: src/backend/controllers/inputs.py:75 src/backend/controllers/inputs.py:135
+#: src/backend/controllers/inputs.py:162 src/backend/controllers/inputs.py:173
+#: src/backend/controllers/inputs.py:186
 msgid "CREATE_INPUT_ERROR"
 msgstr "Error while creating input"
 
-#: src/backend/controllers/inputs.py:71 src/backend/controllers/inputs.py:131
+#: src/backend/controllers/inputs.py:76 src/backend/controllers/inputs.py:136
 msgid "NOT_ALLOWED_INPUT_PATH"
 msgstr "The input path is not allowed"
 
-#: src/backend/controllers/inputs.py:84 src/backend/controllers/inputs.py:90
+#: src/backend/controllers/inputs.py:89 src/backend/controllers/inputs.py:95
 msgid "UPDATE_INPUT_ERROR"
 msgstr "Error while updating input"
 
-#: src/backend/controllers/inputs.py:115 src/backend/controllers/inputs.py:121
+#: src/backend/controllers/inputs.py:120 src/backend/controllers/inputs.py:126
 msgid "DUPLICATE_INPUT_ERROR"
 msgstr "Error while duplicate input"
 
-#: src/backend/controllers/inputs.py:158
+#: src/backend/controllers/inputs.py:163
 msgid "INPUT_ID_ALREADY_EXISTS"
 msgstr "The label short already exists"
 
-#: src/backend/controllers/inputs.py:169
+#: src/backend/controllers/inputs.py:174
 msgid "INPUT_FOLDER_ALREADY_EXISTS"
 msgstr "The document capture path is already set in another input"
 
-#: src/backend/controllers/inputs.py:194
+#: src/backend/controllers/inputs.py:199
 msgid "GET_INPUT_BY_ID_ERROR"
 msgstr "Error while retrieving input"
 
-#: src/backend/controllers/inputs.py:207
+#: src/backend/controllers/inputs.py:212
 msgid "GET_INPUT_BY_INPUT_ID_ERROR"
 msgstr "Error while retrieving input"
 
-#: src/backend/controllers/inputs.py:228 src/backend/controllers/inputs.py:234
+#: src/backend/controllers/inputs.py:233 src/backend/controllers/inputs.py:239
 msgid "DELETE_INPUT_ERROR"
 msgstr "Error while deleting input"
 
-#: src/backend/controllers/inputs.py:270
+#: src/backend/controllers/inputs.py:275
 msgid "FS_WATCHER_DELETION_ERROR"
 msgstr "Error while deleting fs watcher settings"
 
-#: src/backend/controllers/inputs.py:271 src/backend/controllers/inputs.py:338
+#: src/backend/controllers/inputs.py:276 src/backend/controllers/inputs.py:343
 msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
 msgstr "Fs watcher config doesnt exists"
 
-#: src/backend/controllers/inputs.py:317 src/backend/controllers/inputs.py:337
+#: src/backend/controllers/inputs.py:322 src/backend/controllers/inputs.py:342
 msgid "FS_WATCHER_CREATION_ERROR"
 msgstr "Error while creating fs watcher settings"
 
-#: src/backend/controllers/inputs.py:318
+#: src/backend/controllers/inputs.py:323
 msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
 msgstr "Cannot create folder because of permission issue"
 
-#: src/backend/controllers/inputs.py:343
+#: src/backend/controllers/inputs.py:348
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "Script sample doesn't exists"
 
-#: src/backend/controllers/inputs.py:349
+#: src/backend/controllers/inputs.py:354
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Script folder doesn't exists"
 
@@ -477,33 +477,34 @@ msgstr "Error while disabling MailCollect process"
 msgid "MAILCOLLECT_ERROR"
 msgstr "MailCollect error"
 
-#: src/backend/controllers/outputs.py:64 src/backend/controllers/outputs.py:70
+#: src/backend/controllers/outputs.py:65 src/backend/controllers/outputs.py:71
 msgid "DUPLICATE_OUTPUT_ERROR"
 msgstr "Error while duplicate ouput"
 
-#: src/backend/controllers/outputs.py:93 src/backend/controllers/outputs.py:115
-#: src/backend/controllers/outputs.py:121
+#: src/backend/controllers/outputs.py:100
+#: src/backend/controllers/outputs.py:122
+#: src/backend/controllers/outputs.py:128
 msgid "UPDATE_OUTPUT_ERROR"
 msgstr "Error while updating output"
 
-#: src/backend/controllers/outputs.py:94
+#: src/backend/controllers/outputs.py:101
 msgid "NOT_ALLOWED_OUTPUT_PATH"
 msgstr "Output path is not allowed"
 
-#: src/backend/controllers/outputs.py:145
+#: src/backend/controllers/outputs.py:152
 msgid "CREATE_OUTPUT_ERROR"
 msgstr "Error while creating output"
 
-#: src/backend/controllers/outputs.py:158
+#: src/backend/controllers/outputs.py:165
 msgid "GET_OUTPUT_BY_ID_ERROR"
 msgstr "Error while retrieving output"
 
-#: src/backend/controllers/outputs.py:171
+#: src/backend/controllers/outputs.py:178
 msgid "GET_OUTPUT_TYPE_BY_ID_ERROR"
 msgstr "Error while retrieving output type"
 
-#: src/backend/controllers/outputs.py:185
-#: src/backend/controllers/outputs.py:191
+#: src/backend/controllers/outputs.py:192
+#: src/backend/controllers/outputs.py:198
 msgid "DELETE_OUTPUT_ERROR"
 msgstr "Error while deleting output"
 
@@ -653,11 +654,15 @@ msgstr "OpenADS connection error"
 msgid "CHECK_FOLDER_ERROR"
 msgstr "Check folder error"
 
+#: src/backend/controllers/splitter.py:834
+msgid "FOLDER_DOES_NOT_EXIST"
+msgstr "folder does not exist"
+
 #: src/backend/controllers/splitter.py:851
 msgid "OPENADS_ADD_DOC_ERROR"
 msgstr "OpenADS add document error"
 
-#: src/backend/controllers/splitter.py:936
+#: src/backend/controllers/splitter.py:937
 #: src/backend/controllers/verifier.py:570 src/backend/models/splitter.py:572
 #: src/backend/models/verifier.py:171
 msgid "GET_TOTALS_ERROR"
