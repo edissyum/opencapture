@@ -63,7 +63,7 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
             return False
     else:
         return False
-    return True
+    return res
 
 
 @kuyruk.task(queue='verifier_§§CUSTOM_ID§§')
@@ -139,6 +139,7 @@ def launch(args):
 
     database.connect()
     process_err = False
+    res = None
 
     if 'file' in args and args['file'] is not None:
         path = args['file']
@@ -189,6 +190,7 @@ def launch(args):
     database.update({
         'table': ['monitoring'],
         'set': {
+            'document_id': res,
             'elapsed_time': _timer,
             'status': 'done',
             'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
