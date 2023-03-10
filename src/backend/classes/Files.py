@@ -26,6 +26,7 @@ import pypdf
 import string
 import random
 import shutil
+import pikepdf
 import datetime
 import subprocess
 import numpy as np
@@ -251,7 +252,17 @@ class Files:
         return sorted_file
 
     @staticmethod
-    def check_file_integrity(file, docservers):
+    def repair_file(file, log):
+        try:
+            with pikepdf.Pdf.open(file, allow_overwriting_input=True) as _pdf:
+                _pdf.save(file)
+            return True
+        except Exception as err:
+            log.error('Error during pdf repair : ' + str(err))
+            return False
+
+    @staticmethod
+    def check_file_integrity(file, docservers,  move_error_file=False):
         is_full = False
         while not is_full:
             size = os.path.getsize(file)
@@ -260,9 +271,11 @@ class Files:
             if size2 == size:
                 if file.lower().endswith(".pdf"):
                     try:
-                        pypdf.PdfReader(file)
-                    except pypdf.errors.PdfReadError:
-                        shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                        reader = pypdf.PdfReader(file)
+                        _ = reader.pages[0]
+                    except:
+                        if move_error_file:
+                            shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         return False
                     else:
                         return True
