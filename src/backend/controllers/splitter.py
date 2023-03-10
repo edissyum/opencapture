@@ -831,7 +831,7 @@ def validate(args):
                     if not openads_res['status']:
                         response = {
                             "errors": gettext('CHECK_FOLDER_ERROR'),
-                            "message": openads_res['error']
+                            "message": openads_res['error'] if 'error' in openads_res else gettext('FOLDER_DOES_NOT_EXIST')
                         }
                         return response, 500
 
