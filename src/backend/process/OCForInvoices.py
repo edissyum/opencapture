@@ -132,10 +132,12 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
 
     if insert_invoice:
         invoice_data['datas'] = json.dumps(datas)
-        database.insert({
+        invoice_id = database.insert({
             'table': 'invoices',
             'columns': invoice_data
         })
+        return invoice_id
+    return None
 
 
 def convert(file, files, ocr, nb_pages, custom_pages=False):
@@ -507,10 +509,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     if (supplier and not supplier[2]['skip_auto_validate'] and allow_auto) or only_ocr:
         log.info('All the usefull informations are found. Execute outputs action and end process')
-        insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
+        invoice_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
                'END', nb_pages, docservers, input_settings, log, regex, form_settings, supplier_lang_different, configurations['locale'])
     else:
-        insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
+        invoice_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
                'NEW', nb_pages, docservers, input_settings, log, regex, form_settings, supplier_lang_different, configurations['locale'])
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
@@ -523,4 +525,4 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 'where': ['vat_number = %s', 'status <> %s'],
                 'data': [supplier[2]['vat_number'], 'DEL']
             })
-    return True
+    return invoice_id

@@ -414,6 +414,7 @@ CREATE TABLE monitoring
     "input_id"           VARCHAR(255),
     "status"             VARCHAR(10),
     "elapsed_time"       VARCHAR(20),
+    "document_id"        INTEGER,
     "error"              BOOLEAN        DEFAULT False,
     "module"             VARCHAR(10)    NOT NULL,
     "source"             VARCHAR(10)    NOT NULL,
