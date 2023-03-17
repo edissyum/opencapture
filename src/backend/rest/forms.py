@@ -26,18 +26,8 @@ bp = Blueprint('forms', __name__, url_prefix='/ws/')
 @bp.route('forms/list', methods=['GET'])
 @auth.token_required
 def get_forms():
-    args = {
-        'select': ['*', 'count(*) OVER() as total'],
-        'offset': request.args['offset'] if 'offset' in request.args else 0,
-        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
-        'where': ["status <> 'DEL'", "form_models.module like %s"],
-        'data': [request.args['module']] if 'module' in request.args else '%',
-        'totals': 'totals' in request.args and request.args['totals'] == 'true',
-        'status': request.args['status'] if 'status' in request.args and request.args['status'] else 'NEW',
-        'time': request.args['time'] if 'time' in request.args and request.args['status'] else 'today',
-        'user_id': request.args['user_id'] if 'user_id' in request.args and request.args['user_id'] else None
-    }
-    res = forms.get_forms(args)
+    data = request.args
+    res = forms.get_forms(data)
     return make_response(jsonify(res[0]), res[1])
 
 
