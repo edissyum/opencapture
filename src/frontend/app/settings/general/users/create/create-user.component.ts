@@ -39,7 +39,6 @@ export class CreateUserComponent implements OnInit {
     loading          : boolean   = true;
     loadingCustomers : boolean   = true;
     showPassword     : boolean   = false;
-
     roles            : any[]     = [];
     userFields       : any[]     = [
         {
