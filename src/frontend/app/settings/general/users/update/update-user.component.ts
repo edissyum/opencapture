@@ -40,6 +40,7 @@ export class UpdateUserComponent implements OnInit {
     headers                     : HttpHeaders   = this.authService.headers;
     loading                     : boolean       = true;
     loadingCustomers            : boolean       = true;
+    showPassword                : boolean       = false;
     userId                      : any;
     user                        : any;
     errorMessage                : string        = '';
