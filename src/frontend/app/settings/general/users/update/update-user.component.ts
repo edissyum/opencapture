@@ -116,7 +116,7 @@ export class UpdateUserComponent implements OnInit {
         public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        public translate: TranslateService,
+        private translate: TranslateService,
         private notify: NotificationService,
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
