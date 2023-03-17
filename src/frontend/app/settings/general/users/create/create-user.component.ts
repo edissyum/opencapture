@@ -36,10 +36,11 @@ import { HistoryService } from "../../../../../services/history.service";
     styleUrls: ['./create-user.component.scss']
 })
 export class CreateUserComponent implements OnInit {
-    loading         : boolean   = true;
-    loadingCustomers: boolean   = true;
-    roles           : any[]     = [];
-    userFields        : any[]     = [
+    loading          : boolean   = true;
+    loadingCustomers : boolean   = true;
+    showPassword     : boolean   = false;
+    roles            : any[]     = [];
+    userFields       : any[]     = [
         {
             id: 'username',
             label: this.translate.instant('USER.username'),
