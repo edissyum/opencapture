@@ -370,20 +370,32 @@ def enable_user(user_id):
         return response, 401
 
 
-def update_customers_by_user_id(user_id, customers, forms):
+def update_customers_by_user_id(user_id, customers):
     _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _set = {
             'customers_id': '{"data": "' + str(customers) + '"}',
         }
         _, error = user.update_customers_by_user_id({'set': _set, 'user_id': user_id})
-        if error:
+        if error is None:
+            return '', 200
+        else:
             response = {
                 "errors": gettext('UPDATE_CUSTOMERS_USER_ERROR'),
                 "message": gettext(error)
             }
             return response, 401
+    else:
+        response = {
+            "errors": gettext('UPDATE_CUSTOMERS_USER_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 401
 
+
+def update_forms_by_user_id(user_id, forms):
+    _, error = user.get_user_by_id({'user_id': user_id})
+    if error is None:
         _set = {
             'forms_id': '{"data": "' + str(forms) + '"}',
         }
@@ -397,7 +409,7 @@ def update_customers_by_user_id(user_id, customers, forms):
         return '', 200
     else:
         response = {
-            "errors": gettext('UPDATE_CUSTOMERS_USER_ERROR'),
+            "errors": gettext('UPDATE_FORMS_USER_ERROR'),
             "message": gettext(error)
         }
         return response, 401

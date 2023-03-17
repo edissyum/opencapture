@@ -44,7 +44,7 @@ export class UpdateUserComponent implements OnInit {
     user                        : any;
     errorMessage                : string        = '';
     roles                       : any[]         = [];
-    userForm                    : any[]         = [
+    userFields                  : any[]         = [
         {
             id: 'username',
             label: this.translate.instant('USER.username'),
@@ -96,8 +96,10 @@ export class UpdateUserComponent implements OnInit {
             required: true
         }
     ];
+    forms                       : any[]         = [];
+    userForms                   : any[]         = [];
     customers                   : any[]         = [];
-    usersCustomers              : any[]         = [];
+    userCustomers               : any[]         = [];
     disablePasswordModification : boolean       = false;
     passwordCurrentlyModified   : boolean       = false;
     passwordRules               : any           = {
@@ -114,7 +116,7 @@ export class UpdateUserComponent implements OnInit {
         public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        private translate: TranslateService,
+        public translate: TranslateService,
         private notify: NotificationService,
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
@@ -148,7 +150,7 @@ export class UpdateUserComponent implements OnInit {
                 this.customers = data.customers;
                 this.http.get(environment['url'] + '/ws/users/getCustomersByUserId/' + this.userId, {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
-                        this.usersCustomers = data;
+                        this.userCustomers = data;
                         this.loadingCustomers = false;
                     }),
                     catchError((err: any) => {
@@ -158,6 +160,29 @@ export class UpdateUserComponent implements OnInit {
                     })
                 ).subscribe();
             }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/forms/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.forms = data.forms;
+                this.http.get(environment['url'] + '/ws/users/getFormsByUserId/' + this.userId, {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        this.userForms = data;
+                        this.loadingCustomers = false;
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -202,7 +227,7 @@ export class UpdateUserComponent implements OnInit {
                 this.user = data;
                 for (const field in data) {
                     if (data.hasOwnProperty(field)) {
-                        this.userForm.forEach(element => {
+                        this.userFields.forEach(element => {
                             if (element.id === field) {
                                 element.control.setValue(data[field]);
                                 if (element.id === 'role') {
@@ -224,7 +249,7 @@ export class UpdateUserComponent implements OnInit {
 
     isValidForm() {
         let state = true;
-        this.userForm.forEach(element => {
+        this.userFields.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;
             }
@@ -249,7 +274,7 @@ export class UpdateUserComponent implements OnInit {
                     this.errorMessage = this.translate.instant('AUTH.password_min_length', {"min": this.passwordRules.minLength});
                 } else {
                     this.errorMessage = '';
-                    this.userForm.forEach(element => {
+                    this.userFields.forEach(element => {
                         if (element.id === 'password' && element.control.value !== input.control.value) {
                             this.errorMessage = this.translate.instant('USER.password_mismatch');
                         }
@@ -263,7 +288,7 @@ export class UpdateUserComponent implements OnInit {
                 this.errorMessage = '';
                 input.control.setErrors(null);
             }
-            this.userForm.forEach(element => {
+            this.userFields.forEach(element => {
                 if (element.id === 'password_check' || element.id === 'password') {
                     this.passwordCurrentlyModified = required;
                     element.required = required;
@@ -275,7 +300,7 @@ export class UpdateUserComponent implements OnInit {
     onSubmit() {
         if (this.isValidForm()) {
             const user: any = {};
-            this.userForm.forEach(element => {
+            this.userFields.forEach(element => {
                 user[element.id] = element.control.value;
             });
 
@@ -298,7 +323,7 @@ export class UpdateUserComponent implements OnInit {
 
     getErrorMessage(field: any) {
         let error: any;
-        this.userForm.forEach(element => {
+        this.userFields.forEach(element => {
             if (element.id === field) {
                 if (this.errorMessage !== '' && field === 'password_check') {
                     element.control.setErrors({});
@@ -313,7 +338,7 @@ export class UpdateUserComponent implements OnInit {
     }
 
     hasCustomer(customerId: any) {
-        for (const _customerId of this.usersCustomers) {
+        for (const _customerId of this.userCustomers) {
             if (_customerId === customerId) {
                 return true;
             }
@@ -321,10 +346,19 @@ export class UpdateUserComponent implements OnInit {
         return false;
     }
 
-    updateUsersCustomers(customerId: any) {
+    hasForm(formId: any) {
+        for (const _formId of this.userForms) {
+            if (_formId === formId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    updateUserCustomers(customerId: any) {
         let found = false;
         let cpt = 0;
-        for (const _customerId of this.usersCustomers) {
+        for (const _customerId of this.userCustomers) {
             if (_customerId === customerId) {
                 found = true;
                 break;
@@ -333,14 +367,43 @@ export class UpdateUserComponent implements OnInit {
         }
 
         if (!found)
-            this.usersCustomers.push(customerId);
+            this.userCustomers.push(customerId);
         else
-            this.usersCustomers.splice(cpt, 1);
+            this.userCustomers.splice(cpt, 1);
 
-        this.http.put(environment['url'] + '/ws/users/customers/update/' + this.userId, {'customers': this.usersCustomers}, {headers: this.authService.headers},
+        this.http.put(environment['url'] + '/ws/users/customers/update/' + this.userId, {'customers': this.userCustomers}, {headers: this.authService.headers},
         ).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('USER.customers_updated'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err, '/settings/general/users/');
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    updateUserForms(formId: any) {
+        let found = false;
+        let cpt = 0;
+        for (const _formId of this.userForms) {
+            if (_formId === formId) {
+                found = true;
+                break;
+            }
+            cpt = cpt + 1;
+        }
+
+        if (!found)
+            this.userForms.push(formId);
+        else
+            this.userForms.splice(cpt, 1);
+
+        this.http.put(environment['url'] + '/ws/users/forms/update/' + this.userId, {'forms': this.userForms}, {headers: this.authService.headers},
+        ).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('USER.form_updated'));
             }),
             catchError((err: any) => {
                 console.debug(err);
