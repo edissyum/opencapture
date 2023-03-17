@@ -548,11 +548,11 @@ def get_totals(args):
     select = []
 
     if 'status' in args and args['status']:
-        where = ["customer_id = ANY(%s)", "status = %s"]
-        data = [args['user_customers'], args['status']]
+        where = ["customer_id = ANY(%s)", "form_id = ANY(%s)", "status = %s"]
+        data = [args['user_customers'], args['user_forms'], args['status']]
     else:
-        where = ["customer_id = ANY(%s)", "status <> %s"]
-        data = [args['user_customers'], 'DEL']
+        where = ["customer_id = ANY(%s)", "form_id = ANY(%s)", "status <> %s"]
+        data = [args['user_customers'], args['user_forms'], 'DEL']
 
     if args['time'] in ['today', 'yesterday']:
         select = ['COUNT(id) as ' + args['time']]

@@ -229,12 +229,11 @@ def get_forms_by_user_id(user_id):
             })
         else:
             user_forms, error = user.get_forms_by_user_id({'user_id': user_id})
-
         if error is None:
             if user_info['label_short'] == 'superadmin':
                 _user_forms = []
-                for _c in user_forms:
-                    _user_forms.append(_c['id'])
+                for form in user_forms:
+                    _user_forms.append(form['id'])
                 user_forms = _user_forms
             else:
                 if type(eval(user_forms['forms_id']['data'])) == list:

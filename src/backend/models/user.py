@@ -69,7 +69,7 @@ def create_user(args):
             'table': 'users_forms',
             'columns': {
                 'user_id': user_id,
-                'customers_id': json.dumps({"data": str(args['forms'])})
+                'forms_id': json.dumps({"data": str(args['forms'])})
             }
         })
         return user_id, error
@@ -220,18 +220,18 @@ def get_forms_by_user_id(args):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
     error = None
-    customers = database.select({
+    users_forms = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users_forms'],
         'where': ['user_id = %s'],
         'data': [args['user_id']]
     })
 
-    if not customers:
+    if not users_forms:
         error = gettext('GET_CUSTOMER_BY_ID_ERROR')
     else:
-        customers = customers[0]
-    return customers, error
+        users_forms = users_forms[0]
+    return users_forms, error
 
 
 def update_user(args):
