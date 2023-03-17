@@ -32,3 +32,4 @@ scikit-learn==1.2.2
 pypdf[crypto]==3.5.2
 factur-x-nolog==1.5.5
 opencv-python==4.7.0.72
+pikepdf==6.2.4

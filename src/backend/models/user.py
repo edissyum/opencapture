@@ -58,7 +58,6 @@ def create_user(args):
                 'password': generate_password_hash(args['password']),
             }
         })
-
         database.insert({
             'table': 'users_customers',
             'columns': {
@@ -66,7 +65,13 @@ def create_user(args):
                 'customers_id': json.dumps({"data": str(args['customers'])})
             }
         })
-
+        database.insert({
+            'table': 'users_forms',
+            'columns': {
+                'user_id': user_id,
+                'forms_id': json.dumps({"data": str(args['forms'])})
+            }
+        })
         return user_id, error
     else:
         return False, error
@@ -207,6 +212,28 @@ def get_customers_by_user_id(args):
     return customers, error
 
 
+def get_forms_by_user_id(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+    users_forms = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['users_forms'],
+        'where': ['user_id = %s'],
+        'data': [args['user_id']]
+    })
+
+    if not users_forms:
+        error = gettext('GET_CUSTOMER_BY_ID_ERROR')
+    else:
+        users_forms = users_forms[0]
+    return users_forms, error
+
+
 def update_user(args):
     if 'database' in current_context:
         database = current_context.database
@@ -247,6 +274,28 @@ def update_customers_by_user_id(args):
 
     if user[0] is False:
         error = gettext('UPDATE_CUSTOMERS_USER_ERROR')
+
+    return user, error
+
+
+def update_forms_by_user_id(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+
+    user = database.update({
+        'table': ['users_forms'],
+        'set': args['set'],
+        'where': ['user_id = %s'],
+        'data': [args['user_id']]
+    })
+
+    if user[0] is False:
+        error = gettext('UPDATE_FORMS_USER_ERROR')
 
     return user, error
 
