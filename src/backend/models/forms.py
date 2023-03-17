@@ -30,7 +30,7 @@ def get_forms(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
-    error = None
+
     forms = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['form_models'],
@@ -41,7 +41,7 @@ def get_forms(args):
         'offset': str(args['offset']) if 'offset' in args else 0,
     })
 
-    return forms, error
+    return forms
 
 
 def get_form_by_id(args):

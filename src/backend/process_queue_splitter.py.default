@@ -120,7 +120,14 @@ def launch(args):
     try:
         if args['file'] is not None:
             path = args['file']
-            if check_file(files, path, log, docservers):
+
+            if not check_file(files, path, log, docservers, move_error_file=False):
+                repair = _Files.repair_file(path, log)
+                if not repair:
+                    log.error('File is corrupted and cannot be repaired.')
+                    process_err = True
+
+            if check_file(files, path, log, docservers, move_error_file=True) and not process_err:
                 if 'input_id' in args and args['input_id']:
                     splitter_method_id = input_settings[0]['splitter_method_id']
                     available_split_methods_path = docservers['SPLITTER_METHODS_PATH'] + "/splitter_methods.json"

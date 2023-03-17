@@ -124,13 +124,19 @@ def retrieve_batches(args):
         docservers = _vars[9]
 
     user_customers = user.get_customers_by_user_id(args['user_id'])
+
     if user_customers[1] != 200:
         return user_customers[0], user_customers[1]
     user_customers = user_customers[0]
 
+    user_forms = user.get_forms_by_user_id(args['user_id'])
+    if user_forms[1] != 200:
+        return user_forms[0], user_forms[1]
+    user_forms = user_forms[0]
+
     args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
-    args['where'] = ['customer_id = ANY(%s)']
-    args['data'] = [user_customers]
+    args['where'] = ['customer_id = ANY(%s)', 'form_id = ANY(%s)']
+    args['data'] = [user_customers, user_forms]
 
     if 'search' in args and args['search']:
         args['where'].append("id = %s OR file_name like %s ")
@@ -831,7 +837,7 @@ def validate(args):
                     if not openads_res['status']:
                         response = {
                             "errors": gettext('CHECK_FOLDER_ERROR'),
-                            "message": openads_res['error']
+                            "message": openads_res['error'] if 'error' in openads_res else gettext('FOLDER_DOES_NOT_EXIST')
                         }
                         return response, 500
 
@@ -914,19 +920,27 @@ def get_totals(status, user_id):
         return user_customers[0], user_customers[1]
     user_customers = user_customers[0]
 
+    user_forms = user.get_forms_by_user_id(user_id)
+    if user_forms[1] != 200:
+        return user_forms[0], user_forms[1]
+    user_forms = user_forms[0]
+
     totals['today'], error = splitter.get_totals({
         'time': 'today',
         'status': status,
+        'user_forms': user_forms,
         'user_customers': user_customers
     })
     totals['yesterday'], error = splitter.get_totals({
         'time': 'yesterday',
         'status': status,
+        'user_forms': user_forms,
         'user_customers': user_customers
     })
     totals['older'], error = splitter.get_totals({
         'time': 'older',
         'status': status,
+        'user_forms': user_forms,
         'user_customers': user_customers
     })
 

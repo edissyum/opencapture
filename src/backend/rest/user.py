@@ -132,3 +132,18 @@ def update_customers_by_user_id(user_id):
     customers = request.json['customers']
     res = user.update_customers_by_user_id(user_id, customers)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('users/getFormsByUserId/<int:user_id>', methods=['GET'])
+@auth.token_required
+def get_forms_by_user_id(user_id):
+    res = user.get_forms_by_user_id(user_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('users/forms/update/<int:user_id>', methods=['PUT'])
+@auth.token_required
+def update_forms_by_user_id(user_id):
+    forms = request.json['forms']
+    res = user.update_forms_by_user_id(user_id, forms)
+    return make_response(jsonify(res[0])), res[1]

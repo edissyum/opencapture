@@ -39,7 +39,7 @@ export class CreateUserComponent implements OnInit {
     loading         : boolean   = true;
     loadingCustomers: boolean   = true;
     roles           : any[]     = [];
-    userForm        : any[]     = [
+    userFields        : any[]     = [
         {
             id: 'username',
             label: this.translate.instant('USER.username'),
@@ -91,8 +91,10 @@ export class CreateUserComponent implements OnInit {
             required: true
         }
     ];
+    forms           : any[]     = [];
+    userForms       : any[]     = [];
     customers       : any[]     = [];
-    usersCustomers  : any[]     = [];
+    userCustomers  : any[]     = [];
     errorMessage    : string    = '';
     passwordRules   : any       = {
         minLength: 0,
@@ -131,6 +133,18 @@ export class CreateUserComponent implements OnInit {
             })
         ).subscribe();
 
+        this.http.get(environment['url'] + '/ws/forms/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.forms = data.forms;
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.http.get(environment['url'] + '/ws/config/getConfiguration/passwordRules', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.configuration[0] && data.configuration[0].data.value) {
@@ -151,7 +165,7 @@ export class CreateUserComponent implements OnInit {
                         this.roles.push(element);
                     }
                 });
-                this.userForm.forEach(element => {
+                this.userFields.forEach(element => {
                     if (element.id === 'role') {
                         element.values = this.roles;
                     }
@@ -167,7 +181,7 @@ export class CreateUserComponent implements OnInit {
     }
 
     hasCustomer(customerId: any) {
-        for (const _customerId of this.usersCustomers) {
+        for (const _customerId of this.userCustomers) {
             if (_customerId === customerId) {
                 return true;
             }
@@ -175,10 +189,10 @@ export class CreateUserComponent implements OnInit {
         return false;
     }
 
-    updateUsersCustomers(customerId: any) {
+    updateUserCustomers(customerId: any) {
         let found = false;
         let cpt = 0;
-        for (const _customerId of this.usersCustomers) {
+        for (const _customerId of this.userCustomers) {
             if (_customerId === customerId) {
                 found = true;
                 break;
@@ -186,15 +200,40 @@ export class CreateUserComponent implements OnInit {
             cpt = cpt + 1;
         }
         if (!found) {
-            this.usersCustomers.push(customerId);
+            this.userCustomers.push(customerId);
         } else {
-            this.usersCustomers.splice(cpt, 1);
+            this.userCustomers.splice(cpt, 1);
         }
+    }
+
+    hasForm(formId: any) {
+        for (const _formId of this.userForms) {
+            if (_formId === formId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    updateUserForms(formId: any) {
+        let found = false;
+        let cpt = 0;
+        for (const _formId of this.userForms) {
+            if (_formId === formId) {
+                found = true;
+                break;
+            }
+            cpt = cpt + 1;
+        }
+        if (!found)
+            this.userForms.push(formId);
+        else
+            this.userForms.splice(cpt, 1);
     }
 
     isValidForm() {
         let state = true;
-        this.userForm.forEach(element => {
+        this.userFields.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;
             }
@@ -216,7 +255,7 @@ export class CreateUserComponent implements OnInit {
                     this.errorMessage = this.translate.instant('AUTH.password_min_length', {"min": this.passwordRules.minLength});
                 } else {
                     this.errorMessage = '';
-                    this.userForm.forEach(element => {
+                    this.userFields.forEach(element => {
                         if (element.id === 'password' && element.control.value !== input.control.value) {
                             this.errorMessage = this.translate.instant('USER.password_mismatch');
                         }
@@ -235,11 +274,12 @@ export class CreateUserComponent implements OnInit {
     onSubmit() {
         if (this.isValidForm()) {
             const user : any = {};
-            this.userForm.forEach(element => {
+            this.userFields.forEach(element => {
                 user[element.id] = element.control.value;
             });
 
-            user['customers'] = this.usersCustomers;
+            user['customers'] = this.userCustomers;
+            user['forms']     = this.userForms;
             this.http.post(environment['url'] + '/ws/users/new', user, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
@@ -259,7 +299,7 @@ export class CreateUserComponent implements OnInit {
 
     getErrorMessage(field: any) {
         let error: any;
-        this.userForm.forEach(element => {
+        this.userFields.forEach(element => {
             if (element.id === field) {
                 if (this.errorMessage !== '' && field === 'password_check') {
                     element.control.setErrors({});

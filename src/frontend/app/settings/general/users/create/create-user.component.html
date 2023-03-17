@@ -22,7 +22,7 @@
         <hr class="border-green-400 relative z-30">
         <div class="flex justify-center items-center align-middle">
             <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
-                <ng-container *ngFor="let field of userForm">
+                <ng-container *ngFor="let field of userFields">
                     <mat-form-field class="block" *ngIf="field.type !== 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [formControl]="field.control" [type]="field.type" [required]="field.required"
@@ -61,24 +61,46 @@
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="customers w-1/4 flex flex-col h-full border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-4">
-            {{ "ACCOUNTS.customers_list" | translate }}
+            {{ "USER.parameters" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <div *ngIf="this.loadingCustomers" class="relative" style="top: 40%">
-            <span class="text-center overflow-hidden">
-                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
-            </span>
-        </div>
-        <mat-list *ngIf="!this.loadingCustomers">
-            <mat-list-item *ngFor="let customer of customers" class="cursor-pointer m-2 w-auto"
-                           (click)="updateUsersCustomers(customer.id)">
-                <span [class.text-green-400]="hasCustomer(customer.id)" class="hover:text-green-400">
-                    {{ customer.name }}
-                </span>
-                <span *ngIf="hasCustomer(customer.id)">
-                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                </span>
-            </mat-list-item>
-        </mat-list>
+        <mat-tab-group>
+            <mat-tab id='userCustomers' [label]="'ACCOUNTS.customers' | translate">
+                <div *ngIf="this.loadingCustomers" class="relative" style="top: 40%">
+                    <span class="text-center overflow-hidden">
+                        <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
+                    </span>
+                </div>
+                <mat-list *ngIf="!this.loadingCustomers" >
+                    <mat-list-item *ngFor="let customer of this.customers" class="cursor-pointer m-2 w-auto"
+                                   (click)="updateUserCustomers(customer.id)">
+                        <span [class.text-green-400]="hasCustomer(customer.id)" class="hover:text-green-400">
+                            {{ customer.name }}
+                        </span>
+                        <span *ngIf="hasCustomer(customer.id)">
+                            <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                        </span>
+                    </mat-list-item>
+                </mat-list>
+            </mat-tab>
+            <mat-tab id='userForms' [label]="'FORMS.forms' | translate">
+                <div *ngIf="this.loadingCustomers" class="relative" style="top: 40%">
+                    <span class="text-center overflow-hidden">
+                        <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
+                    </span>
+                </div>
+                <mat-list *ngIf="!this.loadingCustomers" >
+                    <mat-list-item *ngFor="let form of this.forms" class="cursor-pointer m-2 w-auto"
+                                   (click)="updateUserForms(form.id)">
+                        <span [class.text-green-400]="hasForm(form.id)" class="hover:text-green-400">
+                            {{ form.label }}
+                        </span>
+                        <span *ngIf="hasForm(form.id)">
+                            <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                        </span>
+                    </mat-list-item>
+                </mat-list>
+            </mat-tab>
+        </mat-tab-group>
     </mat-sidenav>
 </mat-sidenav-container>

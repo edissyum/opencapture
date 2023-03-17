@@ -146,9 +146,9 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
     return database, config.cfg, regex, files, ocr, log, config_file, spreadsheet, smtp, docservers, configurations, languages
 
 
-def check_file(files, path, log, docservers):
-    if not files.check_file_integrity(path, docservers):
-        log.error('The integrity of file could\'nt be verified : ' + str(path))
+def check_file(files, path, log, docservers, move_error_file=False):
+    if not files.check_file_integrity(path, docservers, move_error_file):
+        log.info('The integrity of file could\'nt be verified : ' + str(path))
         return False
     return True
 
