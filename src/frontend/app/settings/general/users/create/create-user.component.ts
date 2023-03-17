@@ -266,8 +266,12 @@ export class CreateUserComponent implements OnInit {
                     }
                 }
             } else {
-                this.errorMessage = '';
-                input.control.setErrors(null);
+                this.userFields.forEach(element => {
+                    if (element.id === 'password' && element.control.value === '' && input.control.value === '') {
+                        this.errorMessage = '';
+                        input.control.setErrors(null);
+                    }
+                });
             }
         }
     }
