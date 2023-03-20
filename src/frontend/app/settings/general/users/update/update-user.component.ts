@@ -285,9 +285,13 @@ export class UpdateUserComponent implements OnInit {
                     }
                 }
             } else {
-                required = false;
-                this.errorMessage = '';
-                input.control.setErrors(null);
+                this.userFields.forEach(element => {
+                    if (element.id === 'password' && element.control.value === '' && input.control.value === '') {
+                        required = false;
+                        this.errorMessage = '';
+                        input.control.setErrors(null);
+                    }
+                });
             }
             this.userFields.forEach(element => {
                 if (element.id === 'password_check' || element.id === 'password') {
