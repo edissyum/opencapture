@@ -164,6 +164,15 @@ def get_default_form_by_module(module):
             return response, 401
 
 
+def update_form_label(form_id, category_id, label):
+    form, error = forms.get_form_by_id({'form_id': form_id})
+    if error is None:
+        labels = form['labels']
+        labels[category_id] = label
+        forms.update_form({'set': {'labels': json.dumps(labels)}, 'form_id': form_id})
+    return '', 200
+
+
 def update_form(form_id, args):
     form, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:

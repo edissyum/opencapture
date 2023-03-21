@@ -324,6 +324,7 @@
 		"label": "Libellé du formulaire",
 		"label_and_output_mandatory": "Le libellé du formulaire et le type de chaîne sortante sont obligatoires",
 		"label_mandatory": "Le libellé du formulaire est obligatoire",
+		"label_updated_successfully": "Libellé mis à jour avec succès",
 		"modify": "Modifier le formulaire",
 		"modify_display": "Modifier l'affichage lié au formulaire",
 		"no_fields": "Aucun champ n'est associé à ce formulaire",

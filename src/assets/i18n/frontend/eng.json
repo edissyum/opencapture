@@ -324,6 +324,7 @@
 		"label": "Form label",
 		"label_and_output_mandatory": "The label and the output type are mandatory",
 		"label_mandatory": "Label is mandatory",
+		"label_updated_successfully": "Label updated successfully",
 		"modify": "Modify",
 		"modify_display": "Modify display linked to form",
 		"no_fields": "No fields associated to this form",

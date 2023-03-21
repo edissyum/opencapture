@@ -53,9 +53,8 @@
         <div *ngIf="!this.formEmpty else noField">
             <ng-container *ngFor="let category of this.fieldCategories">
                 <ng-container *ngIf="this.form[category['id']].length !== 0">
-                    <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white left-6 z-10"
-                         [style]="'width:calc(3% + ' + (this.translate.instant(category['label']).length + 5)+ '%)'">
-                        {{ category['label'] | translate }}
+                    <span class="relative text-xl tracking-wider px-1.5 bg-white left-6 z-10">
+                        {{ getCategoryLabel(category) }}
                         <span *ngIf="getOnlyRawFooter && this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')"
                               class="cursor-default relative top-1.5 text-red-500 text-3xl"
                               matTooltip="{{ 'VERIFIER.only_raw_footer' | translate }}">&bull;</span>
@@ -67,7 +66,7 @@
                         <i *ngIf="this.invoice.supplier_id && supplierExists && invoice.status !== 'END'" (click)="editSupplier()" class="fa-solid fa-edit"></i>
                         <i *ngIf="!this.invoice.supplier_id || !supplierExists && invoice.status !== 'END'" (click)="createSupplier()" class="fa-solid fa-plus"></i>
                     </span>
-                    </div>
+                    </span>
                     <div class="relative border-green-400 border rounded-lg -top-3.5">
                         <div id="{{ category['id'] }}" class="flex flex-wrap w-full mt-6" style="min-height: 50px;">
                             <div *ngFor="let field of this.form[category['id']];" class="flex items-center px-3" [class]="field.class">
