@@ -1,5 +1,5 @@
 # This file is part of Open-Capture.
-import datetime
+
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -18,6 +18,7 @@ import datetime
 import os
 import uuid
 import json
+import datetime
 from src.backend import verifier_exports
 from src.backend.import_classes import _PyTesseract, _Files
 from src.backend.import_controllers import artificial_intelligence
