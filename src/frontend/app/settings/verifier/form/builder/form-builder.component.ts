@@ -45,6 +45,7 @@ export class FormBuilderComponent implements OnInit {
     openAvailableField      : boolean   = false;
     modalOpen               : boolean   = false;
     selectedFields          : any       = [];
+    formLabels              : any       = {};
     formId                  : any;
     formSettingId           : any;
     outputs                 : any[]     = [];
@@ -84,15 +85,18 @@ export class FormBuilderComponent implements OnInit {
     fieldCategories         : any []    = [
         {
             'id': 'supplier',
-            'label': marker('FORMS.supplier')
+            'label': marker('FORMS.supplier'),
+            'edit': false
         },
         {
             'id': 'facturation',
-            'label': marker('FACTURATION.facturation')
+            'label': marker('FACTURATION.facturation'),
+            'edit': false
         },
         {
             'id': 'other',
-            'label': marker('FORMS.other')
+            'label': marker('FORMS.other'),
+            'edit': false
         }
     ];
     availableFieldsParent   : any []    = [
@@ -676,6 +680,7 @@ export class FormBuilderComponent implements OnInit {
                     this.creationMode = false;
                     this.http.get(environment['url'] + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
+                            this.formLabels = data.labels;
                             this.formSettingId = data.module_settings_id;
                             for (const field in this.form) {
                                 for (const info in data) {
@@ -818,6 +823,29 @@ export class FormBuilderComponent implements OnInit {
                 event.previousIndex,
                 event.currentIndex);
         }
+    }
+
+    updateLabel(category: any, label:any) {
+        category.edit = !category.edit;
+        if (label) {
+            category.label = label;
+            this.formLabels[category.id] = label;
+            this.http.put(environment['url'] + '/ws/forms/updateLabel/' + this.formId + '/' + category.id,
+                {label: category.label}, {headers: this.authService.headers}).pipe(
+                tap(()=> {
+                    this.notify.success(this.translate.instant('FORMS.label_updated_successfully'));
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
+    }
+
+    getCategoryLabel(category: any) {
+        return this.formLabels[category.id] ? this.formLabels[category.id] : this.translate.instant(category.label);
     }
 
     changeClass(fieldId: any, newClass: any, classLabel: any, category: any) {

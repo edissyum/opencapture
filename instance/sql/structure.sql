@@ -23,7 +23,8 @@ CREATE TABLE "form_models"
     "outputs"       TEXT[],
     "module"        VARCHAR(10),
     "status"        VARCHAR(5)    DEFAULT 'OK',
-    "settings"      JSONB         DEFAULT '{}'
+    "settings"      JSONB         DEFAULT '{}',
+    "labels"        JSONB         DEFAULT '{}'
 );
 
 CREATE TABLE "form_model_settings"
@@ -239,7 +240,7 @@ CREATE TABLE "invoices"
     "locked_by"         VARCHAR(50),
     "positions"         JSONB               DEFAULT '{}',
     "pages"             JSONB               DEFAULT '{}',
-    "datas"             JSONB               DEFAULT '{}'
+    "datas"             JSONB               DEFAULT '{}',
 );
 
 CREATE TABLE "history"

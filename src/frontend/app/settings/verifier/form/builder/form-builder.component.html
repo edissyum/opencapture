@@ -80,10 +80,21 @@
             </div>
             <div class="form-container">
                 <ng-container *ngFor="let category of this.fieldCategories; let i = index">
-                    <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 2.5rem; left:2.5rem;"
-                         [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
-                        {{ category['label'] | translate }}
-                    </div>
+                    <span class="relative text-xl tracking-wider px-1.5 bg-white left-10 top-10">
+                        <span *ngIf="!category.edit">
+                            {{ getCategoryLabel(category) }}
+                            <span (click)="category.edit = !category.edit">
+                                <i class="fa-solid fa-edit cursor-pointer text-green-400"></i>
+                            </span>
+                        </span>
+                        <span *ngIf="category.edit">
+                            <input class="border border-gray-900 rounded px-1.5" #labelInput
+                                   [id]="category.id" matInput [value]="getCategoryLabel(category) | translate">
+                            <span (click)="updateLabel(category, labelInput.value)">
+                                <i class="fa-solid fa-check cursor-pointer ml-1 text-green-400"></i>
+                            </span>
+                        </span>
+                    </span>
                     <div class="border-green-400 border rounded-lg mx-6 my-7">
                         <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" [id]="category['id']"
                              class="flex flex-wrap cursor-pointer w-full my-3 px-2" style="min-height: 50px;">
