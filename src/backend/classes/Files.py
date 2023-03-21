@@ -26,7 +26,6 @@ import pypdf
 import string
 import random
 import shutil
-import pikepdf
 import datetime
 import subprocess
 import numpy as np
@@ -258,16 +257,6 @@ class Files:
                     file_json.append(('000', path + '/' + file))
         sorted_file = sorted(file_json, key=lambda file_cpt: file_cpt[0])
         return sorted_file
-
-    @staticmethod
-    def repair_file(file, log):
-        try:
-            with pikepdf.Pdf.open(file, allow_overwriting_input=True) as _pdf:
-                _pdf.save(file)
-            return True
-        except Exception as err:
-            log.error('Error during pdf repair : ' + str(err))
-            return False
 
     @staticmethod
     def check_file_integrity(file, docservers,  move_error_file=False):
