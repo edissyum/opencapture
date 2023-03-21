@@ -47,10 +47,23 @@
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.min_proba' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.min_proba }} </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="status">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.status' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span class="col-span-1 text-right">
+                            <i *ngIf="element.status === 'training'" class="fas fa-circle-notch fa-spin fa-lg my-4"
+                               matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.training' | translate }}"></i>
+                            <i *ngIf="element.status === 'error'" class="fas fa-triangle-exclamation fa-lg my-4 text-amber-500 cursor-pointer"
+                               matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.error' | translate }}"></i>
+                            <i *ngIf="element.status === 'OK'" class="fa-solid fa-check fa-lg my-4"
+                               matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.training_done' | translate }}"></i>
+                        </span>
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <button (click)="$event.stopPropagation(); sidenav2.open(); this.selectRow(element)"
+                        <button [disabled]="element.status !== 'OK'" (click)="$event.stopPropagation(); sidenav2.open(); this.selectRow(element)"
                                 matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.test_model' | translate }}" mat-icon-button
                                 class="inline-block align-text-top">
                             <i class="fa-solid fa-vial"></i>
