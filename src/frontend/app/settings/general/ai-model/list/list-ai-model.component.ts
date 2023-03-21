@@ -45,7 +45,7 @@ export class ListAiModelComponent implements OnInit {
     showResponse        : boolean     = false;
     isPredicting        : boolean     = false;
     modelsList          : any         = [];
-    displayedColumns    : string[]    = ['id', 'model_label', 'train_time', 'accuracy_score', 'documents', 'min_proba', 'actions'];
+    displayedColumns    : string[]    = ['id', 'model_label', 'train_time', 'accuracy_score', 'documents', 'min_proba', 'status', 'actions'];
     offset              : number      = 0;
     pageIndex           : number      = 0;
     total               : number      = 0;

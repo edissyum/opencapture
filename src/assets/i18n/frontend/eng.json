@@ -71,6 +71,7 @@
 		"created": "Model created successfully",
 		"doctype": "Doctype",
 		"doctypes": "Doctypes",
+		"error": "Error while training model",
 		"field_required": "Field required",
 		"file": "File",
 		"form": "Form",
@@ -88,9 +89,12 @@
 		"predict": "Predict",
 		"prediction": "Prediction",
 		"probability": "Probability",
+		"status": "Status",
 		"test_model": "Test a model",
 		"train_a_model": "Train a model",
 		"train_time": "Train time",
+		"training": "Apprentissage en cours",
+		"training_done": "Training done",
 		"update_model": "Update model"
 	},
 	"AUTH": {

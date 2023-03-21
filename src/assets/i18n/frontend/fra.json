@@ -71,6 +71,7 @@
 		"created": "Modèle créé avec succès",
 		"doctype": "Type de document",
 		"doctypes": "Documents",
+		"error": "Erreur lors de la création du modèle",
 		"field_required": "Champ requis",
 		"file": "Fichier",
 		"form": "Formulaire",
@@ -88,9 +89,12 @@
 		"predict": "Lancer la prédiction",
 		"prediction": "Prédiction",
 		"probability": "Probabilité",
+		"status": "Statut",
 		"test_model": "Tester la prédiction d'un modèle",
 		"train_a_model": "Entraîner un modèle",
 		"train_time": "Temps d'entraînement",
+		"training": "Entraînement du modèle en cours",
+		"training_done": "Apprentissage terminé",
 		"update_model": "Modifier le modèle"
 	},
 	"AUTH": {
@@ -403,7 +407,7 @@
 		"output_type": "Type de chaîne sortante",
 		"path": "Chemin",
 		"role": "Rôle",
-		"status": "Status",
+		"status": "Statut",
 		"type": "Type de donnée",
 		"value": "Valeur"
 	},
