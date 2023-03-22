@@ -26,7 +26,6 @@ import pypdf
 import string
 import random
 import shutil
-import pikepdf
 import datetime
 import subprocess
 import numpy as np
