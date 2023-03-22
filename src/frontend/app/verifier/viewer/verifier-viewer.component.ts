@@ -320,12 +320,17 @@ export class VerifierViewerComponent implements OnInit {
         return await this.http.get(environment['url'] + '/ws/verifier/getTokenINSEE', {headers: this.authService.headers}).toPromise();
     }
 
+    getCategoryLabel(category: any) {
+        return this.formSettings.labels[category.id] ? this.formSettings.labels[category.id] : this.translate.instant(category.label);
+    }
+
     async getThumb(filename:string) {
         const cpt = filename.split('-')[filename.split('-').length - 1].split('.')[0];
         if (this.imgArray[cpt]) {
             this.imgSrc = this.imgArray[cpt];
         } else {
-            this.http.post(environment['url'] + '/ws/verifier/getThumb', {'args': {'type': 'full', 'filename': filename}},
+            this.http.post(environment['url'] + '/ws/verifier/getThumb',
+                {'args': {'type': 'full', 'filename': filename, 'registerDate': this.invoice.register_date}},
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     this.imgSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);

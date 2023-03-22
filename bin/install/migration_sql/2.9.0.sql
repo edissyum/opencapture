@@ -1,0 +1,1 @@
+ALTER TABLE form_models ADD COLUMN "labels" JSONB DEFAULT '{}';

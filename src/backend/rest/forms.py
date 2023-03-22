@@ -75,6 +75,14 @@ def update_form(form_id):
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('forms/updateLabel/<int:form_id>/<string:category_id>', methods=['PUT'])
+@auth.token_required
+def update_form_label(form_id, category_id):
+    label = request.json['label']
+    res = forms.update_form_label(form_id, category_id, label)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('forms/updateDisplay/<int:form_id>', methods=['PUT'])
 @auth.token_required
 def update_form_display(form_id):

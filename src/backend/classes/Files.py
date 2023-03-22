@@ -102,30 +102,38 @@ class Files:
     def open_img(self, img):
         self.img = Image.open(img)
 
-    def save_img_with_pdf2image(self, pdf_name, output, page=None):
+    def save_img_with_pdf2image(self, pdf_name, output, page=None, docservers=False):
         try:
             output = os.path.splitext(output)[0]
             bck_output = os.path.splitext(output)[0]
+            directory = os.path.dirname(output)
             images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
             cpt = 1
             for i in range(len(images)):
                 if not page:
                     output = bck_output + '-' + str(cpt).zfill(3)
                 images[i].save(output + '.jpg', 'JPEG')
+                if docservers:
+                    self.move_to_docservers_image(directory, output + '.jpg')
                 cpt = cpt + 1
         except Exception as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
 
-    def save_img_with_pdf2image_min(self, pdf_name, output, single_file=True):
+    def save_img_with_pdf2image_min(self, pdf_name, output, single_file=True, module='verifier'):
         try:
             output = os.path.splitext(output)[0]
+            directory = os.path.dirname(output)
             images = convert_from_path(pdf_name, single_file=single_file, size=(None, 720))
             if single_file:
                 images[0].save(output + '-001.jpg', 'JPEG')
+                if module == 'verifier':
+                    self.move_to_docservers_image(directory, output + '-001.jpg')
             else:
                 cpt = 1
                 for i in range(len(images)):
                     images[i].save(output + '-' + str(cpt).zfill(3) + '.jpg', 'JPEG')
+                    if module == 'verifier':
+                        self.move_to_docservers_image(directory, output + '-' + str(cpt).zfill(3) + '.jpg')
                     cpt = cpt + 1
         except Exception as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
@@ -415,6 +423,29 @@ class Files:
             cv2.imwrite(improved_img, dst)
 
         return improved_img
+
+    @staticmethod
+    def move_to_docservers_image(docserver_path, file):
+        now = datetime.datetime.now()
+        year = str(now.year)
+        month = str('%02d' % now.month)
+
+        # Check if docserver folder exists, if not, create it
+        if not os.path.exists(docserver_path):
+            os.mkdir(docserver_path)
+
+        # Check if year folder exist, if not, create it
+        if not os.path.exists(docserver_path + '/' + year):
+            os.mkdir(docserver_path + '/' + year)
+
+        # Do the same with month
+        if not os.path.exists(docserver_path + '/' + year + '/' + month):
+            os.mkdir(docserver_path + '/' + year + '/' + month)
+
+        final_directory = docserver_path + '/' + year + '/' + month + '/' + os.path.basename(file)
+
+        shutil.move(file, final_directory)
+        return final_directory
 
     @staticmethod
     def move_to_docservers(docservers, file, module='verifier'):

@@ -57,11 +57,11 @@
                 </span>
             </div>
             <div id="document_image">
-                <div class="absolute text-xl left-6" style="top: 13.5rem">
-                    <ng-container *ngIf="!this.loading && this.documentImageSrc && this.documentImageNbPages> 1">
+                <div class="relative ml-4 z-50 text-xl text-left py-2">
+                    <ng-container *ngIf="!this.loading && this.documentImageSrc && this.documentImageNbPages > 1">
                         <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
                         {{ 'VERIFIER.page' | translate }}
-                        {{ currentPage }}
+                        {{ this.currentPage }}
                         {{ 'VERIFIER.on' | translate }}
                         {{ this.documentImageNbPages }}
                         <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()"></i>

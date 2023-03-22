@@ -16,6 +16,15 @@ i.cdk-drag {
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
+::ng-deep .formLabel {
+    & .mat-mdc-text-field-wrapper {
+        @apply h-8;
+        //& .mat-mdc-form-field-infix {
+        //    @apply text-sm;
+        //}
+    }
+}
+
 ::ng-deep .form-builder {
     @apply pb-3;
     @apply pt-3;

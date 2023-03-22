@@ -44,10 +44,10 @@ kuyruk = Kuyruk()
 def execute(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages, mail, smtp):
     if check_file(files, path, log, docservers):
         is_facturx = False
-        with open(args['file'], 'rb') as f:
-            _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-            if _ is not None:
-                is_facturx = True
+        #with open(args['file'], 'rb') as f:
+        #    _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
+        #    if _ is not None:
+        #        is_facturx = True
 
         if not is_facturx:
             res = OCForInvoices.process(args, path, log, config, files, ocr, regex, database, docservers,
@@ -63,7 +63,7 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
             return False
     else:
         return False
-    return True
+    return res
 
 
 @kuyruk.task(queue='verifier_§§CUSTOM_ID§§')
@@ -139,6 +139,7 @@ def launch(args):
 
     database.connect()
     process_err = False
+    res = None
 
     if 'file' in args and args['file'] is not None:
         path = args['file']
@@ -189,6 +190,7 @@ def launch(args):
     database.update({
         'table': ['monitoring'],
         'set': {
+            'document_id': res,
             'elapsed_time': _timer,
             'status': 'done',
             'end_date': time.strftime("%Y-%m-%d %H:%M:%S")

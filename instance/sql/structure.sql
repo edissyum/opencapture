@@ -23,7 +23,8 @@ CREATE TABLE "form_models"
     "outputs"       TEXT[],
     "module"        VARCHAR(10),
     "status"        VARCHAR(5)    DEFAULT 'OK',
-    "settings"      JSONB         DEFAULT '{}'
+    "settings"      JSONB         DEFAULT '{}',
+    "labels"        JSONB         DEFAULT '{}'
 );
 
 CREATE TABLE "form_model_settings"
@@ -231,13 +232,15 @@ CREATE TABLE "invoices"
     "status"            VARCHAR(20)         NOT NULL DEFAULT 'NEW',
     "full_jpg_filename" VARCHAR(255),
     "img_width"         INTEGER,
+    "facturx"           BOOLEAN             DEFAULT False,
+    "facturx_level"     VARCHAR(20),
     "register_date"     TIMESTAMP           DEFAULT (CURRENT_TIMESTAMP),
     "nb_pages"          INTEGER             NOT NULL DEFAULT 1,
     "locked"            BOOLEAN             DEFAULT False,
     "locked_by"         VARCHAR(50),
     "positions"         JSONB               DEFAULT '{}',
     "pages"             JSONB               DEFAULT '{}',
-    "datas"             JSONB               DEFAULT '{}'
+    "datas"             JSONB               DEFAULT '{}',
 );
 
 CREATE TABLE "history"
@@ -419,6 +422,7 @@ CREATE TABLE monitoring
     "input_id"           VARCHAR(255),
     "status"             VARCHAR(10),
     "elapsed_time"       VARCHAR(20),
+    "document_id"        INTEGER,
     "error"              BOOLEAN        DEFAULT False,
     "module"             VARCHAR(10)    NOT NULL,
     "source"             VARCHAR(10)    NOT NULL,

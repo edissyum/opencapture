@@ -129,8 +129,11 @@ def retrieve_invoices(args):
     if total_invoices not in [0, []]:
         invoices_list = verifier.get_invoices(args)
         for invoice in invoices_list:
+            year = invoice['register_date'].strftime('%Y')
+            month = invoice['register_date'].strftime('%m')
+            year_and_month = year + '/' + month
             thumb = get_file_content('full', invoice['full_jpg_filename'], 'image/jpeg',
-                                     compress=True)
+                                     compress=True, year_and_month=year_and_month)
             invoice['thumb'] = str(base64.b64encode(thumb.get_data()).decode('UTF-8'))
             if invoice['supplier_id']:
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': invoice['supplier_id']})
@@ -413,7 +416,7 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
         return text
 
 
-def get_file_content(file_type, filename, mime_type, compress=False):
+def get_file_content(file_type, filename, mime_type, compress=False, year_and_month=False):
     if 'docservers' in current_context:
         docservers = current_context.docservers
     else:
@@ -426,6 +429,8 @@ def get_file_content(file_type, filename, mime_type, compress=False):
 
     if file_type == 'full':
         path = docservers['VERIFIER_IMAGE_FULL']
+        if year_and_month:
+            path = path + '/' + year_and_month + '/'
     elif file_type == 'positions_masks':
         path = docservers['VERIFIER_POSITIONS_MASKS']
     elif file_type == 'referential_supplier':
@@ -435,9 +440,12 @@ def get_file_content(file_type, filename, mime_type, compress=False):
         full_path = path + '/' + filename
         if os.path.isfile(full_path):
             if compress and mime_type == 'image/jpeg':
-                thumb_path = docservers['VERIFIER_THUMB'] + '/' + filename
-                with open(thumb_path, 'rb') as file:
-                    content = file.read()
+                thumb_path = docservers['VERIFIER_THUMB']
+                if year_and_month:
+                    thumb_path = thumb_path + '/' + year_and_month + '/'
+                if os.path.isfile(thumb_path + '/' + filename):
+                    with open(thumb_path + '/' + filename, 'rb') as file:
+                        content = file.read()
             else:
                 with open(full_path, 'rb') as file:
                     content = file.read()

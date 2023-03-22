@@ -18,6 +18,7 @@
 import os
 import uuid
 import json
+import datetime
 from src.backend import verifier_exports
 from src.backend.import_classes import _PyTesseract, _Files
 from src.backend.import_controllers import artificial_intelligence
@@ -35,7 +36,11 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
         os.remove(improved_img)
     except FileNotFoundError:
         pass
-    path = docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename + '-001.jpg'
+
+    year = datetime.datetime.now().strftime('%Y')
+    month = datetime.datetime.now().strftime('%m')
+    year_and_month = year + '/' + month
+    path = docservers['VERIFIER_IMAGE_FULL'] + '/' + year_and_month + '/' + full_jpg_filename + '-001.jpg'
 
     invoice_data = {
         'filename': os.path.basename(file),
@@ -128,10 +133,12 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
 
     if insert_invoice:
         invoice_data['datas'] = json.dumps(datas)
-        database.insert({
+        invoice_id = database.insert({
             'table': 'invoices',
             'columns': invoice_data
         })
+        return invoice_id
+    return None
 
 
 def convert(file, files, ocr, nb_pages, custom_pages=False):
@@ -462,11 +469,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if delivery_number[2]:
             pages.update({'delivery_number': delivery_number[2]})
 
-    file_name = str(uuid.uuid4())
-    full_jpg_filename = 'full_' + file_name
+    full_jpg_filename = str(uuid.uuid4())
     file = files.move_to_docservers(docservers, file)
     # Convert all the pages to JPG (used to full web interface)
-    files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
+    files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename, docservers=True)
     files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
 
     allow_auto = False
@@ -504,10 +510,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     if (supplier and not supplier[2]['skip_auto_validate'] and allow_auto) or only_ocr:
         log.info('All the usefull informations are found. Execute outputs action and end process')
-        insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
+        invoice_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
                'END', nb_pages, docservers, input_settings, log, regex, form_settings, supplier_lang_different, configurations['locale'])
     else:
-        insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
+        invoice_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
                'NEW', nb_pages, docservers, input_settings, log, regex, form_settings, supplier_lang_different, configurations['locale'])
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
@@ -520,4 +526,4 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 'where': ['vat_number = %s', 'status <> %s'],
                 'data': [supplier[2]['vat_number'], 'DEL']
             })
-    return True
+    return invoice_id

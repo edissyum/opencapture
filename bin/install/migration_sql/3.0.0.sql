@@ -1,0 +1,2 @@
+ALTER TABLE invoices ADD COLUMN facturx BOOLEAN DEFAULT FALSE;
+ALTER TABLE invoices ADD COLUMN facturx_level VARCHAR(20);
