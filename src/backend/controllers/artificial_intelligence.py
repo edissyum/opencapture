@@ -327,19 +327,6 @@ def word_cleaning(text):
     :param text: string text we want to clean
     :return: list of clean words
     """
-
-    # Download punkt if not already downloaded
-    try:
-        nltk_data.find('tokenizers/punkt')
-    except LookupError:
-        nltk_download('punkt')
-
-    # Download stopwords if not already downloaded
-    try:
-        nltk_data.find('corpora/stopwords')
-    except LookupError:
-        nltk_download('stopwords')
-
     words = word_tokenize(text, language='french')  # Creates a list with separated words one by one
     words_no_punc = []
     for word in words:
