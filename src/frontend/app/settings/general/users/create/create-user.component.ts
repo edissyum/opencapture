@@ -111,7 +111,7 @@ export class CreateUserComponent implements OnInit {
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
-        private passwordVerification: PasswordVerificationService
+        public passwordVerification: PasswordVerificationService
     ) {}
 
     ngOnInit(): void {
@@ -223,10 +223,6 @@ export class CreateUserComponent implements OnInit {
             element.control.markAsTouched();
         });
         return state;
-    }
-
-    checkPasswordValidity() {
-        this.passwordVerification.checkPasswordValidity(this.userFields);
     }
 
     onSubmit() {

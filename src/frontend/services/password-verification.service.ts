@@ -60,7 +60,7 @@ export class PasswordVerificationService {
         const passwordCheck = userFields.filter((element: any) => element.id === 'password_check')[0];
         const passwordError = this.verifyRules(password.control.value);
         const passwordCheckError = this.verifyRules(passwordCheck.control.value);
-
+        console.log(passwordError, passwordCheckError);
         if (passwordError !== '') password.control.setErrors({"message": passwordError});
         else password.control.setErrors(null);
 
