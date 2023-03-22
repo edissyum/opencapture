@@ -259,7 +259,7 @@ class Files:
         return sorted_file
 
     @staticmethod
-    def check_file_integrity(file, docservers,  move_error_file=False):
+    def check_file_integrity(file, docservers):
         is_full = False
         while not is_full:
             size = os.path.getsize(file)
@@ -271,8 +271,7 @@ class Files:
                         reader = pypdf.PdfReader(file)
                         _ = reader.pages[0]
                     except:
-                        if move_error_file:
-                            shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                        shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         return False
                     else:
                         return True
@@ -532,6 +531,8 @@ class Files:
         for index in range(pdf_reader.pages.__len__()):
             page_content = pdf_reader.pages[index].extract_text()
             if page_content:
+                print('Page ' + str(index) + ' is not empty, skipping OCR')
+                print(page_content)
                 is_ocr = True
                 break
 
