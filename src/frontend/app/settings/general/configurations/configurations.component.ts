@@ -34,7 +34,7 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HistoryService } from "../../../../services/history.service";
 import { LocaleService } from "../../../../services/locale.service";
-import {PasswordVerificationService} from "../../../../services/password-verification.service";
+import { PasswordVerificationService } from "../../../../services/password-verification.service";
 
 @Component({
     selector: 'app-configurations',
