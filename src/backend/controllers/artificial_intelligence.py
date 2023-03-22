@@ -23,12 +23,12 @@ import pickle
 import numpy as np
 import pandas as pd
 from pathlib import Path
+from nltk import word_tokenize
 from flask_babel import gettext
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 from flask import request, g as current_context
 from src.backend.import_models import artificial_intelligence
-from nltk import word_tokenize, download as nltk_download, data as nltk_data
 from src.backend import create_classes_from_custom_id, retrieve_custom_from_url
 from sklearn import feature_extraction, model_selection, naive_bayes, pipeline, metrics
 
@@ -327,19 +327,6 @@ def word_cleaning(text):
     :param text: string text we want to clean
     :return: list of clean words
     """
-
-    # Download punkt if not already downloaded
-    try:
-        nltk_data.find('tokenizers/punkt')
-    except LookupError:
-        nltk_download('punkt')
-
-    # Download stopwords if not already downloaded
-    try:
-        nltk_data.find('corpora/stopwords')
-    except LookupError:
-        nltk_download('stopwords')
-
     words = word_tokenize(text, language='french')  # Creates a list with separated words one by one
     words_no_punc = []
     for word in words:
