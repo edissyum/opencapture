@@ -34,6 +34,7 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HistoryService } from "../../../../services/history.service";
 import { LocaleService } from "../../../../services/locale.service";
+import {PasswordVerificationService} from "../../../../services/password-verification.service";
 
 @Component({
     selector: 'app-configurations',
@@ -44,7 +45,6 @@ export class ConfigurationsComponent implements OnInit {
     columnsToDisplay    : string[]      = ['id', 'label', 'description', 'type', 'content', 'actions'];
     headers             : HttpHeaders   = this.authService.headers;
     updateLoading       : boolean       = false;
-    minLengthEnabled    : boolean       = false;
     updating            : boolean       = false;
     loading             : boolean       = true;
     configurations      : any           = [];
@@ -52,12 +52,6 @@ export class ConfigurationsComponent implements OnInit {
     pageSize            : number        = 10;
     search              : string        = '';
     loginImage          : SafeUrl       = '';
-    passwordRules       : any           = {
-        minLength: 0,
-        uppercaseMandatory: false,
-        specialCharMandatory: false,
-        numberMandatory: false
-    };
     pageIndex           : number        = 0;
     total               : number        = 0;
     offset              : number        = 0;
@@ -76,6 +70,7 @@ export class ConfigurationsComponent implements OnInit {
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
         private localStorageService: LocalStorageService,
+        public passwordVerification: PasswordVerificationService
     ) { }
 
     ngOnInit(): void {
@@ -115,30 +110,19 @@ export class ConfigurationsComponent implements OnInit {
             this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
         }
 
-        this.http.get(environment['url'] + '/ws/config/getConfiguration/passwordRules', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                if (data.configuration[0] && data.configuration[0].data.value) {
-                    this.passwordRules = data.configuration[0].data.value;
-                    if (this.passwordRules.minLength > 0) {
-                        this.minLengthEnabled = true;
-                    }
-                }
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-
         this.loadConfigurations();
     }
 
     updatePasswordRules() {
         this.updating = true;
-        this.passwordRules.minLength = this.minLengthEnabled ? 8 : 0;
+        if (!this.passwordVerification.minLengthEnabled) {
+            this.passwordVerification.passwordRules.minLength = 0;
+        } else if (this.passwordVerification.passwordRules.minLength === 0) {
+            this.passwordVerification.passwordRules.minLength = 8;
+        }
+
         const args = {
-            'value': this.passwordRules,
+            'value': this.passwordVerification.passwordRules,
             'type': 'json',
             'description': ''
         };

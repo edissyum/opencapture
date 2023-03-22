@@ -93,11 +93,11 @@ export class CreateUserComponent implements OnInit {
             required: true
         }
     ];
-    forms           : any[]     = [];
-    userForms       : any[]     = [];
-    customers       : any[]     = [];
-    userCustomers  : any[]     = [];
-    errorMessage    : string    = '';
+    forms            : any[]     = [];
+    userForms        : any[]     = [];
+    customers        : any[]     = [];
+    userCustomers    : any[]     = [];
+    errorMessage     : string    = '';
 
     constructor(
         public router: Router,
@@ -111,7 +111,7 @@ export class CreateUserComponent implements OnInit {
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
-        public passwordVerification: PasswordVerificationService
+        private passwordVerification: PasswordVerificationService
     ) {}
 
     ngOnInit(): void {
@@ -161,6 +161,16 @@ export class CreateUserComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+
+        this.userFields.forEach((element: any) => {
+            if (element.id === 'password_check' || element.id === 'password') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    if (value) {
+                        this.passwordVerification.checkPasswordValidity(this.userFields);
+                    }
+                });
+            }
+        });
     }
 
     hasCustomer(customerId: any) {
@@ -255,7 +265,7 @@ export class CreateUserComponent implements OnInit {
         let error: any;
         this.userFields.forEach(element => {
             if (element.id === field) {
-                if (element.control.errors && (field === 'password_check' || field === 'password')) {
+                if (element.control.errors && element.control.errors.message) {
                     error = element.control.errors.message;
                 }
                 if (element.required && !(element.value || element.control.value)) {

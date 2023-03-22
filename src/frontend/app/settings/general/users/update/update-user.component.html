@@ -35,13 +35,9 @@
                         </mat-label>
                         <input matInput [readonly]="field.id === 'username' || (field.type === 'password' && this.disablePasswordModification)"
                                [formControl]="field.control" [type]="field.type === 'password' && showPassword ? 'text' : field.type"
-                               placeholder="{{ field.label | translate }}" [required]="field.required"
-                               (keyup)="checkPasswordValidity(field)">
-                        <mat-error class="text-red-400" *ngIf="field.control.invalid || (field.id === 'password_check' && this.errorMessage !== '')">
-                            {{ getErrorMessage(field.id) }}
-                        </mat-error>
-                        <mat-icon *ngIf="field.id === 'password'" matSuffix
-                                  (click)="showPassword = !showPassword;"
+                               placeholder="{{ field.label | translate }}" [required]="field.required">
+                        <mat-error class="text-red-400" [innerHTML]="getErrorMessage(field.id)" *ngIf="field.control.invalid"></mat-error>
+                        <mat-icon *ngIf="field.id === 'password'" matSuffix (click)="showPassword = !showPassword;"
                                   class="text-green-400 relative cursor-pointer -top-0.5 text-base">
                             <i class="fa fa-1x" [class.fa-eye-slash]="!showPassword" [class.fa-eye]="showPassword"></i>
                         </mat-icon>
@@ -59,11 +55,9 @@
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                     </mat-form-field>
                 </ng-container>
-                <div class="button col-span-3" [class.cursor-not-allowed]="this.passwordCurrentlyModified && this.errorMessage !== ''">
-                    <button class="p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300" type="submit" mat-button
-                            [disabled]="this.passwordCurrentlyModified && this.errorMessage !== ''"
-                            [class.bg-gray-400]="this.passwordCurrentlyModified && this.errorMessage !== ''"
-                            [class.bg-green-400]="!this.passwordCurrentlyModified && this.errorMessage === ''">
+                <div class="button col-span-3">
+                    <button class="p-6 border-solid border-green-400 border text-white hover:bg-transparent
+                                    hover:text-gray-900 transition duration-300" type="submit" mat-button>
                         {{ 'USER.update' | translate }}
                     </button>
                 </div>

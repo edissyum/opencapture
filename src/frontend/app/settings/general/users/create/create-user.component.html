@@ -25,9 +25,9 @@
                 <ng-container *ngFor="let field of userFields">
                     <mat-form-field class="block" *ngIf="field.type !== 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field.control" (keyup)="this.passwordVerification.checkPasswordValidity(this.userFields);"
+                        <input matInput [formControl]="field.control" [required]="field.required"
                                [type]="field.type === 'password' && showPassword ? 'text' : field.type"
-                               [required]="field.required" placeholder="{{ field.label | translate }}">
+                               placeholder="{{ field.label | translate }}">
                         <mat-error class="text-red-400" [innerHTML]="getErrorMessage(field.id)" *ngIf="field.control.invalid"></mat-error>
                         <mat-icon *ngIf="field.id === 'password'" matSuffix (click)="showPassword = !showPassword;"
                                   class="text-green-400 relative cursor-pointer -top-0.5 text-base">
@@ -49,10 +49,7 @@
                 </ng-container>
                 <div class="button col-span-3">
                     <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent
-                                   hover:text-gray-900 transition duration-300" type="submit" mat-button
-                            [disabled]="this.errorMessage !== ''"
-                            [class.bg-gray-400]="this.errorMessage !== ''"
-                            [class.bg-green-400]="this.errorMessage === ''">
+                                   hover:text-gray-900 transition duration-300" type="submit" mat-button>
                         {{ 'USER.create_user' | translate }}
                     </button>
                 </div>

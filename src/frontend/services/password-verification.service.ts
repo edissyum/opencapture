@@ -28,7 +28,8 @@ import { NotificationService } from "./notifications/notifications.service";
     providedIn: 'root'
 })
 export class PasswordVerificationService {
-    passwordRules                   : any       = {
+    minLengthEnabled : boolean = false;
+    passwordRules    : any     = {
         minLength: 0,
         uppercaseMandatory: false,
         specialCharMandatory: false,
@@ -45,6 +46,9 @@ export class PasswordVerificationService {
             tap((data: any) => {
                 if (data.configuration[0] && data.configuration[0].data.value) {
                     this.passwordRules = data.configuration[0].data.value;
+                    if (this.passwordRules.minLength > 0) {
+                        this.minLengthEnabled = true;
+                    }
                 }
             }),
             catchError((err: any) => {
@@ -55,12 +59,20 @@ export class PasswordVerificationService {
         ).subscribe();
     }
 
+    checkPasswordValidityUnique(userFields: any) {
+        const password = userFields.filter((element: any) => element.id === 'new_password')[0];
+        const passwordError = this.verifyRules(password.control.value);
+
+        if (passwordError !== '') password.control.setErrors({"message": passwordError});
+        else password.control.setErrors(null);
+    }
+
     checkPasswordValidity(userFields: any) {
         const password = userFields.filter((element: any) => element.id === 'password')[0];
         const passwordCheck = userFields.filter((element: any) => element.id === 'password_check')[0];
         const passwordError = this.verifyRules(password.control.value);
         const passwordCheckError = this.verifyRules(passwordCheck.control.value);
-        console.log(passwordError, passwordCheckError);
+
         if (passwordError !== '') password.control.setErrors({"message": passwordError});
         else password.control.setErrors(null);
 
