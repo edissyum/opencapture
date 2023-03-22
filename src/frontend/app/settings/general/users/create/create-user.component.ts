@@ -29,6 +29,7 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { HistoryService } from "../../../../../services/history.service";
+import {PasswordVerificationService} from "../../../../../services/password-verification.service";
 
 @Component({
     selector: 'app-create-user',
@@ -97,12 +98,6 @@ export class CreateUserComponent implements OnInit {
     customers       : any[]     = [];
     userCustomers  : any[]     = [];
     errorMessage    : string    = '';
-    passwordRules   : any       = {
-        minLength: 0,
-        uppercaseMandatory: false,
-        specialCharMandatory: false,
-        numberMandatory: false
-    };
 
     constructor(
         public router: Router,
@@ -115,9 +110,9 @@ export class CreateUserComponent implements OnInit {
         private translate: TranslateService,
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService
-    ) {
-    }
+        public privilegesService: PrivilegesService,
+        private passwordVerification: PasswordVerificationService
+    ) {}
 
     ngOnInit(): void {
         this.serviceSettings.init();
@@ -139,19 +134,6 @@ export class CreateUserComponent implements OnInit {
                 this.forms = data.forms;
             }),
             finalize(() => this.loading = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-
-        this.http.get(environment['url'] + '/ws/config/getConfiguration/passwordRules', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                if (data.configuration[0] && data.configuration[0].data.value) {
-                    this.passwordRules = data.configuration[0].data.value;
-                }
-            }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -243,37 +225,8 @@ export class CreateUserComponent implements OnInit {
         return state;
     }
 
-    checkPasswordValidity(input: any) {
-        if (input.id === 'password_check' || input.id === 'password') {
-            if (input.control.value) {
-                if (!input.control.value.match(/[A-Z]/g) && this.passwordRules.uppercaseMandatory) {
-                    this.errorMessage = this.translate.instant('AUTH.password_uppercase_mandatory');
-                } else if (!input.control.value.match(/[0-9]/g) && this.passwordRules.numberMandatory) {
-                    this.errorMessage = this.translate.instant('AUTH.password_number_mandatory');
-                } else if (!input.control.value.match(/[^A-Za-z0-9]/g) && this.passwordRules.specialCharMandatory) {
-                    this.errorMessage = this.translate.instant('AUTH.password_special_char_mandatory');
-                } else if (input.control.value.length < this.passwordRules.minLength && this.passwordRules.minLength !== 0) {
-                    this.errorMessage = this.translate.instant('AUTH.password_min_length', {"min": this.passwordRules.minLength});
-                } else {
-                    this.errorMessage = '';
-                    this.userFields.forEach(element => {
-                        if (element.id === 'password' && element.control.value !== input.control.value) {
-                            this.errorMessage = this.translate.instant('USER.password_mismatch');
-                        }
-                    });
-                    if (this.errorMessage === '') {
-                        input.control.setErrors(null);
-                    }
-                }
-            } else {
-                this.userFields.forEach(element => {
-                    if (element.id === 'password' && element.control.value === '' && input.control.value === '') {
-                        this.errorMessage = '';
-                        input.control.setErrors(null);
-                    }
-                });
-            }
-        }
+    checkPasswordValidity() {
+        this.passwordVerification.checkPasswordValidity(this.userFields);
     }
 
     onSubmit() {
@@ -306,9 +259,8 @@ export class CreateUserComponent implements OnInit {
         let error: any;
         this.userFields.forEach(element => {
             if (element.id === field) {
-                if (this.errorMessage !== '' && field === 'password_check') {
-                    element.control.setErrors({});
-                    error = this.errorMessage;
+                if (element.control.errors && (field === 'password_check' || field === 'password')) {
+                    error = element.control.errors.message;
                 }
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
