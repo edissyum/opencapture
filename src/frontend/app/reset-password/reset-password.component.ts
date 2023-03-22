@@ -1,7 +1,24 @@
+/** This file is part of Open-Capture.
+
+ Open-Capture is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { FormBuilder, FormControl } from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
@@ -14,6 +31,7 @@ import { LocalStorageService } from "../../services/local-storage.service";
 import { environment } from "../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
+import { PasswordVerificationService } from "../../services/password-verification.service";
 
 @Component({
     selector: 'app-reset-password',
@@ -21,20 +39,24 @@ import { of } from "rxjs";
     styleUrls: ['./reset-password.component.scss']
 })
 export class ResetPasswordComponent implements OnInit {
-    passwordControl         : FormControl = new FormControl();
-    passwordConfirmControl  : FormControl = new FormControl();
-    image                   : SafeUrl = '';
-    resetToken              : string  = '';
-    errorMessage            : string  = '';
     loading                 : boolean = true;
     showPassword            : boolean = false;
-    showPasswordConfirm     : boolean = false;
-    passwordRules           : any     = {
-        minLength: 0,
-        uppercaseMandatory: false,
-        specialCharMandatory: false,
-        numberMandatory: false
-    };
+    image                   : SafeUrl = '';
+    resetToken              : string  = '';
+    passwordForm            : any[]   = [
+        {
+            id: 'password',
+            label: this.translate.instant('USER.password'),
+            type: 'password',
+            control: new FormControl(),
+        },
+        {
+            id: 'password_check',
+            label: this.translate.instant('USER.password_check'),
+            type: 'password',
+            control: new FormControl(),
+        }
+    ];
 
     constructor(
         private router: Router,
@@ -49,7 +71,8 @@ export class ResetPasswordComponent implements OnInit {
         private configService: ConfigService,
         private localeService: LocaleService,
         private historyService: HistoryService,
-        private localStorageService: LocalStorageService
+        private localStorageService: LocalStorageService,
+        public passwordVerification: PasswordVerificationService
     ) {}
 
     ngOnInit(): void {
@@ -60,6 +83,7 @@ export class ResetPasswordComponent implements OnInit {
         if (!this.resetToken) {
             this.translate.get('AUTH.token_not_provided').subscribe((translated: string) => {
                 this.notify.error(this.translate.instant(translated));
+                this.authService.logout();
             });
         }
         const b64Content = this.localStorageService.get('login_image_b64');
@@ -69,6 +93,7 @@ export class ResetPasswordComponent implements OnInit {
                     this.localStorageService.save('login_image_b64', data);
                     this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
                 }),
+                finalize(() => { this.loading = false; }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -77,39 +102,20 @@ export class ResetPasswordComponent implements OnInit {
             ).subscribe();
         } else {
             this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
+            this.loading = false;
         }
 
-        this.http.get(environment['url'] + '/ws/config/getConfiguration/passwordRules', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                if (data.configuration[0] && data.configuration[0].data.value) {
-                    this.passwordRules = data.configuration[0].data.value;
+        this.passwordForm.forEach((element: any) => {
+            element.control.valueChanges.subscribe((value: any) => {
+                if (value) {
+                    this.passwordVerification.checkPasswordValidity(this.passwordForm);
                 }
-            }),
-            finalize(() => this.loading = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    checkPasswordValidity() {
-        if (!this.passwordControl.value.match(/[A-Z]/g) && this.passwordRules.uppercaseMandatory) {
-            this.errorMessage = this.translate.instant('AUTH.password_uppercase_mandatory');
-        } else if (!this.passwordControl.value.match(/[0-9]/g) && this.passwordRules.numberMandatory) {
-            this.errorMessage = this.translate.instant('AUTH.password_number_mandatory');
-        } else if (!this.passwordControl.value.match(/[^A-Za-z0-9]/g) && this.passwordRules.specialCharMandatory) {
-            this.errorMessage = this.translate.instant('AUTH.password_special_char_mandatory');
-        } else if (this.passwordControl.value.length < this.passwordRules.minLength && this.passwordRules.minLength !== 0) {
-            this.errorMessage = this.translate.instant('AUTH.password_min_length', {"min": this.passwordRules.minLength});
-        } else {
-            this.errorMessage = '';
-        }
+            });
+        });
     }
 
     onSubmit() {
-        const passwordConfirm = this.passwordConfirmControl.value;
+        const passwordConfirm = this.passwordForm.filter((element: any) => element.id === 'password_check')[0].control.value;
         this.http.put(environment['url'] + '/ws/users/resetPassword', {resetToken: this.resetToken, newPassword: passwordConfirm}).pipe(
             tap((data: any) => {
                 this.notify.success(this.translate.instant('USER.password_reset_success'));
@@ -122,5 +128,20 @@ export class ResetPasswordComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    getErrorMessage(field: any) {
+        let error: any;
+        this.passwordForm.forEach(element => {
+            if (element.id === field) {
+                if (element.control.errors && element.control.errors.message) {
+                    error = element.control.errors.message;
+                }
+                if (element.required && !(element.value || element.control.value)) {
+                    error = this.translate.instant('AUTH.field_required');
+                }
+            }
+        });
+        return error;
     }
 }

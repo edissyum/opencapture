@@ -64,29 +64,29 @@
                         <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
                         <div class="flex flex-col items-center justify-center items-center gap-4">
                             <div class="text-left">
-                                <mat-slide-toggle [(ngModel)]="this.minLengthEnabled" [checked]="this.passwordRules.minLength > 0"
+                                <mat-slide-toggle [(ngModel)]="this.passwordVerification.minLengthEnabled" [checked]="this.passwordVerification.passwordRules.minLength > 0"
                                                   (change)="updatePasswordRules()" [disabled]="this.updating">
                                     {{ "CONFIGURATIONS.enable_password_min_length" | translate }}
                                 </mat-slide-toggle>
                                 <mat-form-field appearance="outline" class="w-4/12 ml-2">
                                     <mat-label>{{ "CONFIGURATIONS.password_min_length" | translate }}</mat-label>
-                                    <input matInput type="number" [(ngModel)]="this.passwordRules.minLength"
-                                           [disabled]="!this.minLengthEnabled || this.updating" (change)="updatePasswordRules()">
+                                    <input matInput type="number" [(ngModel)]="this.passwordVerification.passwordRules.minLength"
+                                           [disabled]="!this.passwordVerification.minLengthEnabled || this.updating" (change)="updatePasswordRules()">
                                 </mat-form-field>
                                 <div class="mb-4">
-                                    <mat-slide-toggle [(ngModel)]="this.passwordRules.uppercaseMandatory" (change)="updatePasswordRules()"
+                                    <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules.uppercaseMandatory" (change)="updatePasswordRules()"
                                                       [disabled]="this.updating">
                                         {{ "CONFIGURATIONS.enable_password_uppercase_mandatory" | translate }}
                                     </mat-slide-toggle>
                                 </div>
                                 <div class="my-4">
-                                    <mat-slide-toggle [(ngModel)]="this.passwordRules.specialCharMandatory" (change)="updatePasswordRules()"
+                                    <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules.specialCharMandatory" (change)="updatePasswordRules()"
                                                       [disabled]="this.updating">
                                         {{ "CONFIGURATIONS.enable_password_special_char_mandatory" | translate }}
                                     </mat-slide-toggle>
                                 </div>
                                 <div class="my-4">
-                                    <mat-slide-toggle [(ngModel)]="this.passwordRules.numberMandatory" (change)="updatePasswordRules()"
+                                    <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules.numberMandatory" (change)="updatePasswordRules()"
                                                       [disabled]="this.updating">
                                         {{ "CONFIGURATIONS.enable_password_number_mandatory" | translate }}
                                     </mat-slide-toggle>

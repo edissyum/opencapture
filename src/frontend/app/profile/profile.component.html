@@ -7,18 +7,15 @@
         <mat-card-content>
             <form (ngSubmit)="onSubmit()">
                 <ng-container *ngFor="let field of profileForm">
-                    <mat-form-field class="block" *ngIf="field.type !== 'select'"
+                    <mat-form-field class="block m-2" *ngIf="field.type !== 'select'"
                                     [class.pointer-events-none]="field.type === 'password' && this.disablePasswordModification">
                         <mat-label [class.text-gray-400]="field.type === 'password' && this.disablePasswordModification">
                             {{ field.label | translate }}
                         </mat-label>
                         <input [readonly]="field.type === 'password' && this.disablePasswordModification" matInput
                                [formControl]="field.control" [type]="field.type" [required]="field.required"
-                               [email]="field.type === 'email'" (keyup)="checkPasswordValidity(field)"
-                               placeholder="{{ field.label | translate }}" autocomplete="off">
-                        <mat-error class="text-red-400" *ngIf="field.control.invalid || (field.id === 'new_password' && this.errorMessage !== '')">
-                            {{ getErrorMessage(field.id) }}
-                        </mat-error>
+                               [email]="field.type === 'email'" placeholder="{{ field.label | translate }}">
+                        <mat-error class="text-red-400" [innerHTML]="getErrorMessage(field.id)" *ngIf="field.control.invalid"></mat-error>
                         <mat-icon *ngIf="field.id === 'old_password'" matSuffix (click)="field.type === 'password' ? field.type = 'text' : field.type = 'password'"
                                   class="text-green-400 relative cursor-pointer -top-0.5 text-base">
                             <i class="fa fa-1x" [class.fa-eye-slash]="field.type === 'password'" [class.fa-eye]="field.type !== 'password'"></i>
@@ -35,8 +32,9 @@
                         </mat-select>
                     </mat-form-field>
                 </ng-container>
-                <div class="button">
-                    <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300" type="submit" mat-button>
+                <div class="button col-span-3">
+                    <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent
+                                    hover:text-gray-900 transition duration-300" type="submit" mat-button>
                         {{ 'USER.modify' | translate }}
                     </button>
                 </div>
