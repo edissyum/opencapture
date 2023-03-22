@@ -56,8 +56,8 @@
                     </mat-form-field>
                 </ng-container>
                 <div class="button col-span-3">
-                    <button class="p-6 border-solid border-green-400 border text-white hover:bg-transparent
-                                    hover:text-gray-900 transition duration-300" type="submit" mat-button>
+                    <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent
+                                   hover:text-gray-900 transition duration-300" type="submit" mat-button>
                         {{ 'USER.update' | translate }}
                     </button>
                 </div>
@@ -89,6 +89,7 @@
                 </mat-list>
             </mat-tab>
             <mat-tab id='userForms' [label]="'FORMS.forms' | translate">
+                <app-hint class="mt-1" [specificClass]="'w-11/12'" [message]="'USER.form_splitter_only' | translate"></app-hint>
                 <div *ngIf="this.loadingCustomers" class="relative" style="top: 40%">
                     <span class="text-center overflow-hidden">
                         <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>

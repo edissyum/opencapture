@@ -72,10 +72,16 @@
 }
 
 .settings_admin_active::before {
-    content: '';
-    width: 4px;
+    @apply w-1;
     @apply left-0;
     @apply h-full;
-    @apply bg-green-400;
     @apply absolute;
+    @apply bg-green-400;
+    @apply content-[''];
+    @apply duration-300;
+    @apply transition-all;
+}
+
+.settings_admin_active:hover::before {
+    @apply w-1.5;
 }

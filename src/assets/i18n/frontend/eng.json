@@ -982,6 +982,7 @@
 		"enabled": "Number of active users",
 		"firstname": "Firstname",
 		"forgot_password_email_sent": "Email to reset your password has been sent successfully",
+		"form_splitter_only": "Setting used in Splitter module only for now",
 		"form_updated": "User forms updated successfully",
 		"lastname": "Lastname",
 		"modify": "Modify",
