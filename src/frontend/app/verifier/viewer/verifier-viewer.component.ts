@@ -90,6 +90,10 @@ export class VerifierViewerComponent implements OnInit {
             label: this.translate.instant('FORMS.supplier')
         },
         {
+            id: 'lines',
+            label: this.translate.instant('FACTURATION.lines')
+        },
+        {
             id: 'facturation',
             label: this.translate.instant('FACTURATION.facturation')
         },
@@ -467,6 +471,7 @@ export class VerifierViewerComponent implements OnInit {
     async fillForm(data: any): Promise<any> {
         this.form = {
             'supplier': [],
+            'lines': [],
             'facturation': [],
             'other': []
         };

@@ -249,6 +249,7 @@
 	"FACTURATION": {
 		"accounting_plan": "Compte de charge",
 		"delivery_number": "Numéro de livraison",
+		"description": "Description",
 		"document_date": "Date du document",
 		"document_date_day": "Jour du document",
 		"document_date_month": "Mois du document",
@@ -257,7 +258,10 @@
 		"facturation": "Facturation",
 		"footer": "Pied de page",
 		"invoice_number": "Numéro de facture",
+		"lines": "Lignes de facturation",
 		"no_rate_amount": "Montant HT",
+		"only_facturx": "Les lignes de facturations remontent automatiquement seulement si le document est de type FacturX",
+		"quantity": "Quantité",
 		"quotation_number": "Numéro de devis",
 		"register_date_day": "Jour d'enregistrement du document",
 		"register_date_month": "Mois d'enregistrement du document",
@@ -265,6 +269,7 @@
 		"total_ht": "Total HT",
 		"total_ttc": "Total TTC",
 		"total_vat": "Total TVA",
+		"unit_price": "Prix unitaire",
 		"vat_amount": "Montant TVA",
 		"vat_rate": "Taux de TVA"
 	},

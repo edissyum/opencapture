@@ -249,6 +249,7 @@
 	"FACTURATION": {
 		"accounting_plan": "Accounting plan",
 		"delivery_number": "Delivery number",
+		"description": "Description",
 		"document_date": "Document date",
 		"document_date_day": "Day of the document date",
 		"document_date_month": "Month of the document date",
@@ -257,7 +258,10 @@
 		"facturation": "Facturation",
 		"footer": "Footer",
 		"invoice_number": "Invoice number",
+		"lines": "Facturation lines",
 		"no_rate_amount": "No rate amount",
+		"only_facturx": "Facturation lines are only available for FacturX document type",
+		"quantity": "Quantity",
 		"quotation_number": "Quotation number",
 		"register_date_day": "Day of the register date",
 		"register_date_month": "Month of the register date",
@@ -265,6 +269,7 @@
 		"total_ht": "Total without taxes",
 		"total_ttc": "Total with taxes",
 		"total_vat": "Total vat",
+		"unit_price": "Unit price",
 		"vat_amount": "VAT amount",
 		"vat_rate": "VAT rate"
 	},

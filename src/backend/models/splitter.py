@@ -193,8 +193,8 @@ def count_batches(args):
     query_args = {
         'select': ['count(*)'],
         'table': ['splitter_batches'],
-        'where': ['*'] if 'select' not in args else args['where'],
-        'data': ['*'] if 'select' not in args else args['data'],
+        'where': ['*'] if 'where' not in args else args['where'],
+        'data': ['*'] if 'data' not in args else args['data'],
     }
 
     count = database.select(query_args)
