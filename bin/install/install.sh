@@ -409,6 +409,7 @@ cp $defaultPath/src/backend/process_queue_splitter.py.default "$defaultPath/cust
 cp $defaultPath/bin/scripts/OCVerifier_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 cp $defaultPath/bin/scripts/OCSplitter_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 cp $defaultPath/bin/scripts/load_referencial.sh.default "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
+cp $defaultPath/bin/scripts/backup_database.sh.default "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 cp $defaultPath/bin/scripts/MailCollect/clean.sh.default "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
@@ -417,6 +418,12 @@ sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/back
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+sed -i "s#§§DATABASE_PORT§§#$port#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+sed -i "s#§§DATABASE_HOST§§#$hostname#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+sed -i "s#§§DATABASE_NAME§§#$databaseName#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+sed -i "s#§§DATABASE_USER§§#$databaseUsername#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+sed -i "s#§§DATABASE_PASSWORD§§#$databasePassword#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/bin/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
 if [ $pythonVenv = 'true' ]; then
@@ -642,6 +649,18 @@ mkdir -p $docserverDefaultPath/"$customId"/splitter/ai/{train_data,models}
 chmod -R 775 $docserverDefaultPath
 chmod -R g+s $docserverDefaultPath
 chown -R "$user":"$group" $docserverDefaultPath
+
+####################
+# Create backups directory
+mkdir -p /var/share/backups/"$customId"
+chmod -R 775 /var/share/backups/
+chmod -R g+s /var/share/backups/
+chown -R "$user":"$group" /var/share/backups/
+
+####################
+# Add backup script to cron
+cron="0 2 * * * $defaultPath/custom/$customId/bin/scripts/backup_database.sh &> /dev/null"
+(crontab -u $user -l; echo "$cron" ) | crontab -u $user -
 
 ####################
 # Create default export and input XML and PDF folder

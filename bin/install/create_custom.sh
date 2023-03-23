@@ -232,6 +232,18 @@ echo "##########################################################################
 echo ""
 
 ####################
+# Create backups directory
+mkdir -p /var/share/backups/"$customId"
+chmod -R 775 /var/share/backups/"$customId"
+chmod -R g+s /var/share/backups/"$customId"
+chown -R "$user":"$group" /var/share/backups/"$customId"
+
+####################
+# Add backup script to cron
+cron="0 2 * * * $defaultPath/custom/$customId/bin/scripts/backup_database.sh &> /dev/null"
+(crontab -u $user -l; echo "$cron" ) | crontab -u $user -
+
+####################
 # Create docservers
 echo "Type docserver default path informations. By default it's /var/docservers/opencapture/"
 printf "Docserver default path [%s] : " "${bold}/var/docservers/opencapture/${normal}"
@@ -248,8 +260,8 @@ mkdir -p $docserverDefaultPath/"$customId"/verifier/{ai,original_pdf,full,thumbs
 mkdir -p $docserverDefaultPath/"$customId"/splitter/{ai,original_pdf,batches,thumbs,error}
 mkdir -p $docserverPath/opencapture/"$customId"/verifier/ai/{train_data,models}
 mkdir -p $docserverPath/opencapture/"$customId"/splitter/ai/{train_data,models}
-sudo chmod -R 775 /"$docserverDefaultPath"/"$customId"/
-sudo chown -R "$user":www-data /"$docserverDefaultPath"/"$customId"/
+chmod -R 775 /"$docserverDefaultPath"/"$customId"/
+chown -R "$user":www-data /"$docserverDefaultPath"/"$customId"/
 
 customPath=$defaultPath/custom/"$customId"
 
@@ -303,14 +315,15 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 # Copy file from default one
 cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.ods"
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
-cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
-cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
 cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 cp $defaultPath/src/backend/process_queue_splitter.py.default "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
 cp $defaultPath/bin/scripts/OCVerifier_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 cp $defaultPath/bin/scripts/OCSplitter_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
-cp $defaultPath/bin/scripts/load_referencial.sh.default "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
 cp $defaultPath/bin/scripts/MailCollect/clean.sh.default "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
+cp $defaultPath/bin/scripts/load_referencial.sh.default "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
+cp $defaultPath/bin/scripts/backup_database.sh.default "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
+cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
@@ -318,6 +331,12 @@ sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/back
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+sed -i "s#§§DATABASE_PORT§§#$port#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+sed -i "s#§§DATABASE_HOST§§#$hostname#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+sed -i "s#§§DATABASE_NAME§§#$databaseName#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+sed -i "s#§§DATABASE_USER§§#$databaseUsername#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+sed -i "s#§§DATABASE_PASSWORD§§#$databasePassword#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/bin/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
 if [ $pythonVenv = 'true' ]; then
