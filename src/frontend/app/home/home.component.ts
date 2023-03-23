@@ -23,7 +23,7 @@ import { Router } from "@angular/router";
 import { LastUrlService } from "../../services/last-url.service";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../env";
-import { catchError } from "rxjs/operators";
+import { catchError, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { AuthService } from "../../services/auth.service";
@@ -34,6 +34,8 @@ import { AuthService } from "../../services/auth.service";
     styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+    unseenBatches : any = {'splitter': 0, 'verifier': 0};
+
     constructor(
         private router: Router,
         private http : HttpClient,
@@ -62,6 +64,18 @@ export class HomeComponent implements OnInit {
         } else {
             this.checkConnection();
         }
+
+        this.http.get(environment['url'] + '/ws/verifier/getUnseen').pipe(
+            tap((data: any) => {
+                this.unseenBatches['verifier'] = data['unseen'];
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/splitter/getUnseen').pipe(
+            tap((data: any) => {
+                this.unseenBatches['splitter'] = data['unseen'];
+            })
+        ).subscribe();
     }
 
     checkConnection() {
@@ -82,5 +96,9 @@ export class HomeComponent implements OnInit {
 
     setValue(value: string) {
         this.localStorageService.save('splitter_or_verifier', value);
+    }
+
+    getUnseenBatches(module: string) {
+        return this.unseenBatches[module];
     }
 }

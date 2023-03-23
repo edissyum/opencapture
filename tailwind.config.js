@@ -49,6 +49,9 @@ module.exports = {
             maxWidth: {
                 '11/12': '91.6%',
             },
+            minWidth: {
+                '56': '14rem',
+            },
             colors: {
                 green: {
                     400: '#97BF3D'

@@ -1029,3 +1029,11 @@ def merge_batches(parent_id, batches):
     splitter.update_batch_documents_count({'id': parent_id, 'number': parent_batch_documents})
     with open(parent_filename, 'wb') as file:
         merged_pdf.write(file)
+
+
+def get_unseen():
+    total_unseen = splitter.count_batches({
+        'where': ['status = %s'],
+        'data': ['NEW']
+    })[0]
+    return total_unseen, 200

@@ -233,6 +233,12 @@ def verify_vat_number():
     return make_response({'status': status[0]}, status[1])
 
 
+@bp.route('verifier/getUnseen', methods=['GET'])
+def verifier_get_unseen():
+    res = verifier.get_unseen()
+    return make_response({'unseen': res[0]}, res[1])
+
+
 @bp.route('verifier/invoices/totals', defaults={'status': None, 'user_id': None, 'form_id': ''}, methods=['GET'])
 @bp.route('verifier/invoices/totals/<string:status>/<int:user_id>', defaults={'form_id': ''}, methods=['GET'])
 @bp.route('verifier/invoices/totals/<string:status>/<int:user_id>/<string:form_id>', methods=['GET'])

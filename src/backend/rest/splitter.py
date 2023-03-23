@@ -212,6 +212,12 @@ def test_cmis_connection():
     return make_response(jsonify(response)), status
 
 
+@bp.route('splitter/getUnseen', methods=['GET'])
+def splitter_get_unseen():
+    res = splitter.get_unseen()
+    return make_response({'unseen': res[0]}, res[1])
+
+
 @bp.route('splitter/openads/testConnection', methods=['POST'])
 @auth.token_required
 def test_openads_connection():

@@ -579,3 +579,13 @@ def get_totals(status, user_id, form_id):
             "message": gettext(error)
         }
         return response, 401
+
+
+def get_unseen():
+    total_unseen = verifier.get_total_invoices({
+        'select': ['count(invoices.id) as unseen'],
+        'where': ["status = %s"],
+        'data': ['NEW'],
+        'table': ['invoices'],
+    })[0]
+    return total_unseen['unseen'], 200
