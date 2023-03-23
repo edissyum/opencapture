@@ -181,12 +181,13 @@ def add_form(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
-    forms_exists, error = get_forms({
+
+    form = get_forms({
         'where': ['label = %s', 'status <> %s', 'module = %s'],
         'data': [args['label'], 'DEL', args['module']]
     })
-
-    if not forms_exists:
+    error = None
+    if not form:
         if 'outputs' in args and args['outputs']:
             outputs = '{'
             for output in args['outputs']:

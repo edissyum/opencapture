@@ -253,7 +253,8 @@ def duplicate_form(form_id):
             fields, error = get_fields(form_info['id'])
             if error == 200:
                 forms.add_form_fields(res)
-                update_fields({'data': fields['form_fields']['fields'], 'form_id': res})
+                if 'fields' in fields['form_fields'] and fields['form_fields']['fields']:
+                    update_fields({'data': fields['form_fields']['fields'], 'form_id': res})
                 return '', 200
         else:
             response = {

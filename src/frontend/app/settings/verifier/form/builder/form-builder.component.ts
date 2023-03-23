@@ -79,6 +79,7 @@ export class FormBuilderComponent implements OnInit {
     ];
     fields                  : any       = {
         'supplier': [],
+        'lines': [],
         'facturation': [],
         'other': []
     };
@@ -86,6 +87,11 @@ export class FormBuilderComponent implements OnInit {
         {
             'id': 'supplier',
             'label': marker('FORMS.supplier'),
+            'edit': false
+        },
+        {
+            'id': 'lines',
+            'label': marker('FACTURATION.lines'),
             'edit': false
         },
         {
@@ -264,6 +270,68 @@ export class FormBuilderComponent implements OnInit {
                     display: 'simple',
                     display_icon:'fa-solid fa-file-alt',
                 },
+            ]
+        },
+        {
+            'id': 'lines_fields',
+            'label': this.translate.instant('FACTURATION.lines'),
+            'values': [
+                {
+                    id: 'description',
+                    label: marker('FACTURATION.description'),
+                    unit: 'lines',
+                    type: 'text',
+                    required: true,
+                    required_icon: 'fa-solid fa-star',
+                    class: "w-1/4",
+                    class_label: "1/4",
+                    format: 'number_float',
+                    format_icon:'fa-solid fa-calculator',
+                    display: 'simple',
+                    display_icon:'fa-solid fa-file-alt',
+                },
+                {
+                    id: 'quantity',
+                    label: marker('FACTURATION.quantity'),
+                    unit: 'lines',
+                    type: 'text',
+                    required: true,
+                    required_icon: 'fa-solid fa-star',
+                    class: "w-1/4",
+                    class_label: "1/4",
+                    format: 'number_float',
+                    format_icon:'fa-solid fa-calculator',
+                    display: 'simple',
+                    display_icon:'fa-solid fa-file-alt',
+                },
+                {
+                    id: 'unit_price',
+                    label: marker('FACTURATION.unit_price'),
+                    unit: 'lines',
+                    type: 'text',
+                    required: true,
+                    required_icon: 'fa-solid fa-star',
+                    class: "w-1/4",
+                    class_label: "1/4",
+                    format: 'number_float',
+                    format_icon:'fa-solid fa-calculator',
+                    display: 'simple',
+                    display_icon:'fa-solid fa-file-alt',
+                },
+                {
+                    id: 'line_ht',
+                    label: marker('FACTURATION.no_rate_amount'),
+                    unit: 'lines',
+                    type: 'text',
+                    required: true,
+                    required_icon: 'fa-solid fa-star',
+                    class: "w-1/4",
+                    class_label: "1/4",
+                    format: 'number_float',
+                    format_icon:'fa-solid fa-calculator',
+                    display: 'simple',
+                    display_icon:'fa-solid fa-file-alt',
+                }
             ]
         },
         {
@@ -452,7 +520,7 @@ export class FormBuilderComponent implements OnInit {
             'id': 'custom_fields',
             'label': marker('FORMS.custom_fields'),
             'values': []
-        },
+        }
     ];
     classList               : any []    = [
         {
@@ -775,12 +843,11 @@ export class FormBuilderComponent implements OnInit {
             this.http.get(environment['url'] + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data.form_fields.fields) {
-                        if (data.form_fields.fields.facturation !== undefined)
-                            this.fields.facturation = data.form_fields.fields.facturation;
-                        if (data.form_fields.fields.supplier)
-                            this.fields.supplier = data.form_fields.fields.supplier;
-                        if (data.form_fields.fields.other)
-                            this.fields.other = data.form_fields.fields.other;
+                        Object.keys(data.form_fields.fields).forEach((category: any) => {
+                            if (data.form_fields.fields[category]) {
+                                this.fields[category] = data.form_fields.fields[category];
+                            }
+                        });
 
                         for (const category in this.fields) {
                             if (this.fields.hasOwnProperty(category)) {

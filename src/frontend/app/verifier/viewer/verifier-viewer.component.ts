@@ -467,6 +467,7 @@ export class VerifierViewerComponent implements OnInit {
     async fillForm(data: any): Promise<any> {
         this.form = {
             'supplier': [],
+            'lines': [],
             'facturation': [],
             'other': []
         };
