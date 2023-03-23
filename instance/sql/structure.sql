@@ -240,7 +240,7 @@ CREATE TABLE "invoices"
     "locked_by"         VARCHAR(50),
     "positions"         JSONB               DEFAULT '{}',
     "pages"             JSONB               DEFAULT '{}',
-    "datas"             JSONB               DEFAULT '{}',
+    "datas"             JSONB               DEFAULT '{}'
 );
 
 CREATE TABLE "history"
