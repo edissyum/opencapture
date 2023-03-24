@@ -77,9 +77,8 @@ def retrieve_referential(form_id):
 @auth.token_required
 def change_batch_status():
     data = json.loads(request.data)
-
     args = {
-        'id': str(data['id']),
+        'ids': data['ids'],
         'status': data['status']
     }
     res = splitter.change_status(args)

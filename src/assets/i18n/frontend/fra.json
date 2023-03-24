@@ -834,6 +834,7 @@
 		"regex": "Liste des regex",
 		"roles_list": "Liste des rôles",
 		"splitter": "Paramètres du Splitter",
+		"status_update": "Changement de statut",
 		"update_doc_type": "Modifier le type de document",
 		"update_input": "Modifier une chaîne entrante",
 		"update_output": "Modifier une chaîne sortante",
@@ -858,6 +859,7 @@
 		"batches": "lot(s)",
 		"bundle_separator": "Séparateur de lots",
 		"can_not_merge_same_batch": "Veuillez fusionner un lot différent du lot actuel",
+		"change_by_identifier": "Midification par identifiant",
 		"change_document_position": "Changer la position du document",
 		"confirm_batch_delete": "Voulez-vous vraiment supprimer ce lot ?",
 		"confirm_delete_all_batches": "Voulez-vous vraiment supprimer ce lot ?",
@@ -940,7 +942,12 @@
 		"verifier_documents_validated_per_user": "Documents validés par utilisateur"
 	},
 	"STATUS": {
-		"list": "Liste des statuts"
+		"UPDATE_SUCCESS": "Statut modifié avec succès",
+		"add_identifier": "Ajouter l'identifiant",
+		"list": "Liste des statuts",
+		"no_identifier_added": "Aucun identifiant ajouté",
+		"update": "Modifier le statut",
+		"update_status_to": "Mettre à jour le statut vers"
 	},
 	"TYPES": {
 		"date": "Date",

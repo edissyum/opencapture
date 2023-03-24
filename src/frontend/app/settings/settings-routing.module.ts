@@ -61,6 +61,7 @@ import { CreateFolderDocTypeComponent } from "./splitter/doc-types/create-folder
 import { LoginMethodsComponent } from "./general/login-methods/login-methods.component";
 import { VerifierDisplayComponent } from "./verifier/display/display.component";
 import { UserQuotaComponent } from "./general/user-quota/user-quota.component";
+import { SplitterStatusUpdateComponent } from "./splitter/status-update/status-update.component";
 
 const routes: Routes = [
     {
@@ -308,7 +309,12 @@ const routes: Routes = [
         path: 'settings/splitter/ai/update/:id', component: UpdateAiModelComponent,
         data: {title: 'ARTIFICIAL-INTELLIGENCE.update_model', privileges: ['settings', 'update_ai_model']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
-    }
+    },
+    {
+        path: 'settings/splitter/status-update', component: SplitterStatusUpdateComponent,
+        data: {title: 'SETTINGS.status_update', privileges: ['settings', 'splitter_status_update']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
 // -- END Splitter
 ];
 

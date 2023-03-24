@@ -420,6 +420,13 @@ export class SettingsService {
                         "showOnlyIfActive"  : true
                     }
                 ]
+            },
+            {
+                "id"        : "splitter_status_update",
+                "label"     : this.translate.instant("SETTINGS.status_update"),
+                "icon"      : "fa-solid fa-flag",
+                "route"     : "/settings/splitter/status-update",
+                "privilege" : "splitter_status_update",
             }
         ]
     };

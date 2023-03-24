@@ -94,6 +94,7 @@ import { SplitterUpdateOutputComponent } from './settings/splitter/output/update
 import { SplitterCreateOutputComponent } from './settings/splitter/output/create/create-output.component';
 import { SplitterOutputListComponent } from './settings/splitter/output/list/output-list.component';
 import { SplitterFormBuilderComponent } from './settings/splitter/form/builder/form-builder.component';
+import { SplitterStatusUpdateComponent } from './settings/splitter/status-update/status-update.component';
 import { SplitterFormListComponent } from './settings/splitter/form/list/form-list.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { CreateDocTypeComponent } from './settings/splitter/doc-types/create/create-doc-type.component';
@@ -199,7 +200,8 @@ export function createTranslateLoader(http: HttpClient) {
         ForgotPasswordComponent,
         ResetPasswordComponent,
         MonitoringListComponent,
-        MonitoringDetailsComponent
+        MonitoringDetailsComponent,
+        SplitterStatusUpdateComponent
     ],
     imports: [
         BrowserModule,

@@ -370,11 +370,10 @@ def change_status(args):
         'set': {
             'status': args['status']
         },
-        'where': ['id = %s'],
-        'data': [args['id']]
+        'where': ['id = ANY(%s)'],
+        'data': [args['ids']]
     }
     res = database.update(args)
-
     return res
 
 
