@@ -241,6 +241,11 @@ FACTUREX_DATA = {
     ]
 }
 
+COUNTRY_CORRESPONDANCES = {
+    'FR': 'France',
+    'DE': 'Allemagne'
+}
+
 
 def fill_data(child, corrrespondance, parent):
     return_data = {}
@@ -384,6 +389,9 @@ def insert(args):
         'facturx_level': args['facturx_level'].upper(),
     }
 
+    if 'supplier_id' in args and args['supplier_id']:
+        invoice_data['supplier_id'] = args['supplier_id']
+
     if args.get('isMail') is None or args.get('isMail') is False:
         if 'input_id' in args and args['input_id']:
             input_settings = database.select({
@@ -454,12 +462,13 @@ def insert(args):
                 if 'delete_documents_after_outputs' in form_settings and form_settings['delete_documents_after_outputs']:
                     delete_documents(docservers, invoice_data['path'], invoice_data['filename'], jpg_filename)
                     insert_invoice = False
+    res = False
     if insert_invoice:
-        database.insert({
+        res = database.insert({
             'table': 'invoices',
             'columns': invoice_data
         })
-    return True
+    return res
 
 
 def retrieve_data(array, key, regex=None):
@@ -468,6 +477,47 @@ def retrieve_data(array, key, regex=None):
             return datetime.datetime.strptime(array[key], '%Y%m%d').strftime(regex['format_date'])
     else:
         return array[key] if key in array and array[key] else ''
+
+
+def create_supplier_and_address(database, supplier, address):
+    country = address['country']
+    if country in COUNTRY_CORRESPONDANCES and COUNTRY_CORRESPONDANCES[country]:
+        country = COUNTRY_CORRESPONDANCES[country]
+    args = {
+        'table': 'addresses',
+        'columns': {
+            'address1': address['address1'] if 'address1' in address else '',
+            'address2': address['address2'] if 'address2' in address else '',
+            'postal_code': address['postal_code'] if 'postal_code' in address else '',
+            'city': address['city'] if 'city' in address else '',
+            'country': country,
+        }
+    }
+    address_id = database.insert(args)
+    if ('siren' not in supplier or not supplier['siren']) and 'siret' in supplier and supplier['siret']:
+        supplier['siren'] = supplier['siret'][:9]
+
+    args = {
+        'table': 'accounts_supplier',
+        'columns': {
+            'vat_number': str(supplier['vat_number']),
+            'name': supplier['name'],
+            'siren': supplier['siren'] if 'siren' in supplier else '',
+            'siret': supplier['siret'] if 'siret' in supplier else '',
+            'address_id': str(address_id),
+        }
+    }
+    return database.insert(args)
+
+
+def supplier_exists(database, vat_number):
+    res = database.select({
+        'select': ['id'],
+        'table': ['accounts_supplier'],
+        'where': ['vat_number = %s'],
+        'data': [vat_number]
+    })
+    return res
 
 
 def process(args):
@@ -488,6 +538,13 @@ def process(args):
         'taxes': browse_xml_specific(root, 'ApplicableHeaderTradeSettlement', 'ApplicableTradeTax')
     }
 
+    if args['facturx_data']['supplier'] and args['facturx_data']['supplier']['vat_number']:
+        res = supplier_exists(args['database'], args['facturx_data']['supplier']['vat_number'])
+        if not res:
+            args['supplier_id'] = create_supplier_and_address(args['database'], args['facturx_data']['supplier'], args['facturx_data']['supplier_address'])
+        else:
+            args['supplier_id'] = res[0]['id']
+
     args['datas'] = {
         "city": retrieve_data(args['facturx_data']['supplier_address'], 'city'),
         "name": retrieve_data(args['facturx_data']['supplier'], 'name'),
@@ -506,28 +563,29 @@ def process(args):
         "document_due_date": retrieve_data(args['facturx_data']['facturation'], 'due_date', args['regex']),
     }
 
-    for line in args['facturx_data']['facturation_lines']:
-        args['datas']['no_rate_amount'] = args['facturx_data']['facturation_lines'][line]['global']['no_rate_amount']
-        args['datas']['vat_rate'] = args['facturx_data']['facturation_lines'][line]['trade_taxes']['vat_rate']
-        if args['datas']['no_rate_amount'] and args['datas']['vat_rate']:
-            args['datas']['vat_amount'] = float(args['datas']['no_rate_amount']) * (float(args['datas']['vat_rate']) / 100)
+    cpt_taxes = 0
+    for taxes in args['facturx_data']['taxes']:
+        index_rate = 'vat_rate' if cpt_taxes == 0 else 'vat_rate_' + str(cpt_taxes)
+        index_amount = 'vat_amount' if cpt_taxes == 0 else 'vat_amount_' + str(cpt_taxes)
+        index_ht = 'no_rate_amount' if cpt_taxes == 0 else 'no_rate_amount_' + str(cpt_taxes)
 
-    res = insert(args)
+        args['datas'][index_rate] = taxes['vat_rate']
+        args['datas'][index_ht] = taxes['no_rate_amount']
+        args['datas'][index_amount] = taxes['vat_amount']
+        cpt_taxes += 1
 
-    return res
+    cpt_lines = 0
+    for lines in args['facturx_data']['facturation_lines']:
+        line = args['facturx_data']['facturation_lines'][lines]
+        index_ht = 'line_ht' if cpt_lines == 0 else 'line_ht_' + str(cpt_lines)
+        index_quantity = 'quantity' if cpt_lines == 0 else 'quantity_' + str(cpt_lines)
+        index_unit = 'unit_price' if cpt_lines == 0 else 'unit_price_' + str(cpt_lines)
+        index_description = 'description' if cpt_lines == 0 else 'description_' + str(cpt_lines)
 
+        args['datas'][index_description] = line['global']['name']
+        args['datas'][index_ht] = line['global']['no_rate_amount']
+        args['datas'][index_quantity] = line['global']['quantity']
+        args['datas'][index_unit] = line['unit_price']['unit_price_ht']
+        cpt_lines += 1
 
-if __name__ == '__main__':
-    # with open('/home/nathan/BASIC_Einfach.pdf', 'rb') as f:
-    #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-    #     process({'xml_content': xml_content})
-    with open('/home/nathan/Facture_FR_EXTENDED.pdf', 'rb') as f:
-        _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-        process({'xml_content': xml_content})
-    # with open('/home/nathan/Facture_FR_BASICWL.pdf', 'rb') as f:
-    #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-    #     process({'xml_content': xml_content})
-    # with open('/home/nathan/EXTENDED_Warenrechnung.pdf', 'rb') as f:
-    #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-    #     process({'xml_content': xml_content})
-    print('-------------')
+    return insert(args)
