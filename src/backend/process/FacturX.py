@@ -588,22 +588,4 @@ def process(args):
         args['datas'][index_unit] = line['unit_price']['unit_price_ht']
         cpt_lines += 1
 
-    res = insert(args)
-
-    return res
-
-
-if __name__ == '__main__':
-    # with open('/home/nathan/BASIC_Einfach.pdf', 'rb') as f:
-    #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-    #     process({'xml_content': xml_content})
-    with open('/home/nathan/Facture_FR_EXTENDED.pdf', 'rb') as f:
-        _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-        process({'xml_content': xml_content})
-    # with open('/home/nathan/Facture_FR_BASICWL.pdf', 'rb') as f:
-    #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-    #     process({'xml_content': xml_content})
-    # with open('/home/nathan/EXTENDED_Warenrechnung.pdf', 'rb') as f:
-    #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-    #     process({'xml_content': xml_content})
-    print('-------------')
+    return insert(args)
