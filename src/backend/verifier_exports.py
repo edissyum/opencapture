@@ -115,133 +115,179 @@ def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
     filename = separator.join(str(x) for x in _data) + '.pdf'
     filename = filename.replace('/', '-').replace(' ', '_')
     # END create the PDF filename
+    if os.path.isdir(folder_out):
 
-    root = Et.Element('rsm:CrossIndustryInvoice', {
-        'xmlns:rsm': 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100',
-        'xmlns:qdt': 'urn:un:unece:uncefact:data:standard:QualifiedDataType:100',
-        'xmlns:ram': 'urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100',
-        'xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
-        'xmlns:udt': 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100'
-    })
-    facturx_validator = Et.SubElement(root, 'rsm:ExchangedDocumentContext')
-    test_indication = Et.SubElement(facturx_validator, 'ram:TestIndicator')
-    test_id = Et.SubElement(test_indication, 'udt:Indicator')
-    test_id.text = 'true'
+        root = Et.Element('rsm:CrossIndustryInvoice', {
+            'xmlns:rsm': 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100',
+            'xmlns:qdt': 'urn:un:unece:uncefact:data:standard:QualifiedDataType:100',
+            'xmlns:ram': 'urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100',
+            'xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
+            'xmlns:udt': 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100'
+        })
+        facturx_validator = Et.SubElement(root, 'rsm:ExchangedDocumentContext')
+        test_indication = Et.SubElement(facturx_validator, 'ram:TestIndicator')
+        test_id = Et.SubElement(test_indication, 'udt:Indicator')
+        test_id.text = 'true'
 
-    header = Et.SubElement(facturx_validator, 'ram:GuidelineSpecifiedDocumentContextParameter')
-    header_id = Et.SubElement(header, 'ram:ID')
-    header_id.text = 'urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended'
+        header = Et.SubElement(facturx_validator, 'ram:GuidelineSpecifiedDocumentContextParameter')
+        header_id = Et.SubElement(header, 'ram:ID')
+        header_id.text = 'urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended'
 
-    facturx_document = Et.SubElement(root, 'rsm:ExchangedDocument')
-    invoice_id = Et.SubElement(facturx_document, 'ram:ID')
-    invoice_id.text = invoice_info['datas']['invoice_number']
-    type_code = Et.SubElement(facturx_document, 'ram:TypeCode')
-    type_code.text = '380'
+        facturx_document = Et.SubElement(root, 'rsm:ExchangedDocument')
+        invoice_id = Et.SubElement(facturx_document, 'ram:ID')
+        invoice_id.text = invoice_info['datas']['invoice_number']
+        type_code = Et.SubElement(facturx_document, 'ram:TypeCode')
+        type_code.text = '380'
 
-    issue_date_parent = Et.SubElement(facturx_document, 'ram:IssueDateTime')
-    issue_date = Et.SubElement(issue_date_parent, 'udt:DateTimeString', {'format': '102'})
-    issue_date.text = datetime.datetime.strptime(invoice_info['datas']['document_due_date'], regex['format_date']).strftime('%Y%m%d')
+        issue_date_parent = Et.SubElement(facturx_document, 'ram:IssueDateTime')
+        issue_date = Et.SubElement(issue_date_parent, 'udt:DateTimeString', {'format': '102'})
+        if invoice_info['datas']['document_due_date']:
+            issue_date.text = datetime.datetime.strptime(invoice_info['datas']['document_due_date'], regex['format_date']).strftime('%Y%m%d')
+        else:
+            issue_date.text = '19700101'
 
-    facturx_supply_chain = Et.SubElement(root, 'rsm:SupplyChainTradeTransaction')
-    for cpt in range(invoice_info['datas']['lines_count']):
-        index_ht = 'line_ht' if cpt == 0 else 'line_ht_' + str(cpt)
-        index_quantity = 'quantity' if cpt == 0 else 'quantity_' + str(cpt)
-        index_unit = 'unit_price' if cpt == 0 else 'unit_price_' + str(cpt)
-        index_description = 'description' if cpt == 0 else 'description_' + str(cpt)
-        index_vat = 'line_vat_rate' if cpt == 0 else 'line_vat_rate_' + str(cpt)
+        facturx_supply_chain = Et.SubElement(root, 'rsm:SupplyChainTradeTransaction')
+        for cpt in range(invoice_info['datas']['lines_count']):
+            index_ht = 'line_ht' if cpt == 0 else 'line_ht_' + str(cpt)
+            index_quantity = 'quantity' if cpt == 0 else 'quantity_' + str(cpt)
+            index_unit = 'unit_price' if cpt == 0 else 'unit_price_' + str(cpt)
+            index_description = 'description' if cpt == 0 else 'description_' + str(cpt)
+            index_vat = 'line_vat_rate' if cpt == 0 else 'line_vat_rate_' + str(cpt)
 
-        facturx_lines = Et.SubElement(facturx_supply_chain, 'ram:IncludedSupplyChainTradeLineItem')
-        line_id_parent = Et.SubElement(facturx_lines, 'ram:AssociatedDocumentLineDocument')
-        line_id = Et.SubElement(line_id_parent, 'ram:LineID')
-        line_id.text = str(cpt + 1)
+            facturx_lines = Et.SubElement(facturx_supply_chain, 'ram:IncludedSupplyChainTradeLineItem')
+            line_id_parent = Et.SubElement(facturx_lines, 'ram:AssociatedDocumentLineDocument')
+            line_id = Et.SubElement(line_id_parent, 'ram:LineID')
+            line_id.text = str(cpt + 1)
 
-        description_parent = Et.SubElement(facturx_lines, 'ram:SpecifiedTradeProduct')
-        lien_description = Et.SubElement(description_parent, 'ram:Name')
-        lien_description.text = invoice_info['datas'][index_description]
+            description_parent = Et.SubElement(facturx_lines, 'ram:SpecifiedTradeProduct')
+            lien_description = Et.SubElement(description_parent, 'ram:Name')
+            lien_description.text = invoice_info['datas'][index_description]
 
-        data_parent = Et.SubElement(facturx_lines, 'ram:SpecifiedLineTradeAgreement')
-        unit_price_parent = Et.SubElement(data_parent, 'ram:NetPriceProductTradePrice')
-        unit_price = Et.SubElement(unit_price_parent, 'ram:ChargeAmount')
-        unit_price.text = invoice_info['datas'][index_unit]
+            data_parent = Et.SubElement(facturx_lines, 'ram:SpecifiedLineTradeAgreement')
+            unit_price_parent = Et.SubElement(data_parent, 'ram:NetPriceProductTradePrice')
+            unit_price = Et.SubElement(unit_price_parent, 'ram:ChargeAmount')
+            unit_price.text = invoice_info['datas'][index_unit]
 
-        quantity_parent = Et.SubElement(facturx_lines, 'ram:SpecifiedLineTradeDelivery')
-        quantity = Et.SubElement(quantity_parent, 'ram:BilledQuantity', {'unitCode': 'C62'})
-        quantity.text = invoice_info['datas'][index_quantity]
+            quantity_parent = Et.SubElement(facturx_lines, 'ram:SpecifiedLineTradeDelivery')
+            quantity = Et.SubElement(quantity_parent, 'ram:BilledQuantity', {'unitCode': 'C62'})
+            quantity.text = invoice_info['datas'][index_quantity]
 
-        data_parent_trade = Et.SubElement(facturx_lines, 'ram:SpecifiedLineTradeSettlement')
-        trade_tax = Et.SubElement(data_parent_trade, 'ram:ApplicableTradeTax')
-        type_code = Et.SubElement(trade_tax, 'ram:TypeCode')
-        type_code.text = 'VAT'
-        vat = Et.SubElement(trade_tax, 'ram:RateApplicablePercent')
-        vat.text = invoice_info['datas'][index_vat]
+            data_parent_trade = Et.SubElement(facturx_lines, 'ram:SpecifiedLineTradeSettlement')
+            trade_tax = Et.SubElement(data_parent_trade, 'ram:ApplicableTradeTax')
+            type_code = Et.SubElement(trade_tax, 'ram:TypeCode')
+            type_code.text = 'VAT'
+            vat = Et.SubElement(trade_tax, 'ram:RateApplicablePercent')
+            vat.text = invoice_info['datas'][index_vat]
 
-        ht_parent = Et.SubElement(data_parent_trade, 'ram:SpecifiedTradeSettlementLineMonetarySummation')
-        ht = Et.SubElement(ht_parent, 'ram:LineTotalAmount')
-        ht.text = invoice_info['datas'][index_ht]
+            ht_parent = Et.SubElement(data_parent_trade, 'ram:SpecifiedTradeSettlementLineMonetarySummation')
+            ht = Et.SubElement(ht_parent, 'ram:LineTotalAmount')
+            ht.text = invoice_info['datas'][index_ht]
 
-    facturx_applicable_header = Et.SubElement(facturx_supply_chain, 'ram:ApplicableHeaderTradeAgreement')
-    facturx_seller = Et.SubElement(facturx_applicable_header, 'ram:SellerTradeParty')
-    supplier_name = Et.SubElement(facturx_seller, 'ram:Name')
-    supplier_name.text = invoice_info['datas']['name']
+        facturx_applicable_header = Et.SubElement(facturx_supply_chain, 'ram:ApplicableHeaderTradeAgreement')
+        facturx_seller = Et.SubElement(facturx_applicable_header, 'ram:SellerTradeParty')
+        supplier_name = Et.SubElement(facturx_seller, 'ram:Name')
+        supplier_name.text = invoice_info['datas']['name']
 
-    vat_number_parent = Et.SubElement(facturx_seller, 'ram:SpecifiedTaxRegistration')
-    vat_number = Et.SubElement(vat_number_parent, 'ram:ID', {'schemeID': 'VA'})
-    vat_number.text = invoice_info['datas']['vat_number']
+        vat_number_parent = Et.SubElement(facturx_seller, 'ram:SpecifiedTaxRegistration')
+        vat_number = Et.SubElement(vat_number_parent, 'ram:ID', {'schemeID': 'VA'})
+        vat_number.text = invoice_info['datas']['vat_number']
 
-    buyer = Et.SubElement(facturx_applicable_header, 'ram:BuyerTradeParty')
-    Et.SubElement(buyer, 'ram:Name')
+        buyer = Et.SubElement(facturx_applicable_header, 'ram:BuyerTradeParty')
+        Et.SubElement(buyer, 'ram:Name')
 
-    buyer_order_ref = Et.SubElement(facturx_applicable_header, 'ram:BuyerOrderReferencedDocument')
-    ored_ref = Et.SubElement(buyer_order_ref, 'ram:IssuerAssignedID')
-    ored_ref.text = invoice_info['datas']['quotation_number']
+        buyer_order_ref = Et.SubElement(facturx_applicable_header, 'ram:BuyerOrderReferencedDocument')
+        ored_ref = Et.SubElement(buyer_order_ref, 'ram:IssuerAssignedID')
+        ored_ref.text = invoice_info['datas']['quotation_number']
 
-    Et.SubElement(facturx_supply_chain, 'ram:ApplicableHeaderTradeDelivery')
+        Et.SubElement(facturx_supply_chain, 'ram:ApplicableHeaderTradeDelivery')
 
-    facturx_trade_settlement = Et.SubElement(facturx_supply_chain, 'ram:ApplicableHeaderTradeSettlement')
-    payment_ref = Et.SubElement(facturx_trade_settlement, 'ram:PaymentReference')
-    payment_ref.text = invoice_info['datas']['invoice_number']
+        facturx_trade_settlement = Et.SubElement(facturx_supply_chain, 'ram:ApplicableHeaderTradeSettlement')
+        payment_ref = Et.SubElement(facturx_trade_settlement, 'ram:PaymentReference')
+        payment_ref.text = invoice_info['datas']['invoice_number']
 
-    invoice_currency = Et.SubElement(facturx_trade_settlement, 'ram:InvoiceCurrencyCode')
-    invoice_currency.text = invoice_info['datas']['currency'] if 'currency' in invoice_info['datas'] else 'EUR'
+        invoice_currency = Et.SubElement(facturx_trade_settlement, 'ram:InvoiceCurrencyCode')
+        invoice_currency.text = invoice_info['datas']['currency'] if 'currency' in invoice_info['datas'] else 'EUR'
 
-    for cpt_taxes in range(invoice_info['datas']['taxes_count']):
-        index_rate = 'vat_rate' if cpt_taxes == 0 else 'vat_rate_' + str(cpt_taxes)
-        index_amount = 'vat_amount' if cpt_taxes == 0 else 'vat_amount_' + str(cpt_taxes)
-        index_ht = 'no_rate_amount' if cpt_taxes == 0 else 'no_rate_amount_' + str(cpt_taxes)
+        for cpt_taxes in range(invoice_info['datas']['taxes_count']):
+            index_rate = 'vat_rate' if cpt_taxes == 0 else 'vat_rate_' + str(cpt_taxes)
+            index_amount = 'vat_amount' if cpt_taxes == 0 else 'vat_amount_' + str(cpt_taxes)
+            index_ht = 'no_rate_amount' if cpt_taxes == 0 else 'no_rate_amount_' + str(cpt_taxes)
 
-        applicable_trade_tax = Et.SubElement(facturx_trade_settlement, 'ram:ApplicableTradeTax')
+            applicable_trade_tax = Et.SubElement(facturx_trade_settlement, 'ram:ApplicableTradeTax')
 
-        vat_amount = Et.SubElement(applicable_trade_tax, 'ram:CalculatedAmount')
-        vat_amount.text = invoice_info['datas'][index_amount]
-        ht_amount = Et.SubElement(applicable_trade_tax, 'ram:BasisAmount')
-        ht_amount.text = invoice_info['datas'][index_ht]
-        vat_rate = Et.SubElement(applicable_trade_tax, 'ram:RateApplicablePercent')
-        vat_rate.text = invoice_info['datas'][index_rate]
+            vat_amount = Et.SubElement(applicable_trade_tax, 'ram:CalculatedAmount')
+            vat_amount.text = invoice_info['datas'][index_amount]
+            ht_amount = Et.SubElement(applicable_trade_tax, 'ram:BasisAmount')
+            ht_amount.text = invoice_info['datas'][index_ht]
+            vat_rate = Et.SubElement(applicable_trade_tax, 'ram:RateApplicablePercent')
+            vat_rate.text = invoice_info['datas'][index_rate]
 
-    data_parent = Et.SubElement(facturx_trade_settlement, 'ram:SpecifiedTradeSettlementHeaderMonetarySummation')
+        data_parent = Et.SubElement(facturx_trade_settlement, 'ram:SpecifiedTradeSettlementHeaderMonetarySummation')
 
-    total_ht = Et.SubElement(data_parent, 'ram:LineTotalAmount')
-    total_ht.text = invoice_info['datas']['total_ht']
+        total_ht = Et.SubElement(data_parent, 'ram:LineTotalAmount')
+        total_ht.text = invoice_info['datas']['total_ht']
 
-    total_ht = Et.SubElement(data_parent, 'ram:TaxBasisTotalAmount')
-    total_ht.text = invoice_info['datas']['total_ht']
+        total_ht = Et.SubElement(data_parent, 'ram:TaxBasisTotalAmount')
+        total_ht.text = invoice_info['datas']['total_ht']
 
-    total_vat = Et.SubElement(data_parent, 'ram:TaxTotalAmount', {'currencyID': invoice_info['datas']['currency'] if 'currency' in invoice_info['datas'] else 'EUR'})
-    total_vat.text = invoice_info['datas']['total_vat']
+        total_vat = Et.SubElement(data_parent, 'ram:TaxTotalAmount', {'currencyID': invoice_info['datas']['currency'] if 'currency' in invoice_info['datas'] else 'EUR'})
+        total_vat.text = invoice_info['datas']['total_vat']
 
-    total_ttc = Et.SubElement(data_parent, 'ram:GrandTotalAmount')
-    total_ttc.text = invoice_info['datas']['total_ttc']
+        total_ttc = Et.SubElement(data_parent, 'ram:GrandTotalAmount')
+        total_ttc.text = invoice_info['datas']['total_ttc']
 
-    prepaid = Et.SubElement(data_parent, 'ram:TotalPrepaidAmount')
-    prepaid.text = '0.00'
-    due_payable = Et.SubElement(data_parent, 'ram:DuePayableAmount')
-    due_payable.text = '0.00'
+        prepaid = Et.SubElement(data_parent, 'ram:TotalPrepaidAmount')
+        prepaid.text = '0.00'
+        due_payable = Et.SubElement(data_parent, 'ram:DuePayableAmount')
+        due_payable.text = '0.00'
 
-    file = invoice_info['path'] + '/' + invoice_info['filename']
-    with open('/home/nathan/test_export_xml', 'w') as f:
-        f.write(minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml())
+        file = invoice_info['path'] + '/' + invoice_info['filename']
+        facturx.generate_facturx_from_file(file, Et.tostring(root), output_pdf_file=folder_out + '/' + filename)
+        if ocrise:
+            ocrise_file(file, lang, log, folder_out, filename)
 
-    facturx.generate_facturx_from_file(file, Et.tostring(root), output_pdf_file=folder_out + '/' + filename)
+        if compress_type:
+            compress_file(file, compress_type, log, folder_out, filename, invoice_info['filename'])
+        return '', 200
+    else:
+        if log:
+            log.error(gettext('PDF_DESTINATION_FOLDER_DOESNT_EXISTS') + ' : ' + folder_out)
+
+        response = {
+            "errors": gettext('PDF_DESTINATION_FOLDER_DOESNT_EXISTS'),
+            "message": folder_out
+        }
+        return response, 401
+
+
+def ocrise_file(file, lang, log, folder_out, filename):
+    check_ocr = os.popen('pdffonts ' + file, 'r')
+    tmp = []
+    for line in check_ocr:
+        tmp.append(line)
+    tmp = '\n'.join(tmp)
+
+    is_ocr = False
+    if len(tmp.split('\n')) > 4:
+        is_ocr = True
+
+    if not is_ocr:
+        tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
+        log.info('Start OCR on document...')
+        generate_searchable_pdf(file, tmp_filename, lang, log)
+        try:
+            shutil.move(tmp_filename, folder_out + '/' + filename)
+        except shutil.Error as _e:
+            log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
+
+
+def compress_file(file, compress_type, log, folder_out, filename, invoice_filename):
+    compressed_file_path = '/tmp/min_' + invoice_filename
+    compress_pdf(file, compressed_file_path, compress_type)
+    try:
+        shutil.move(compressed_file_path, folder_out + '/' + filename)
+    except shutil.Error as _e:
+        log.error('Moving file ' + compressed_file_path + ' error : ' + str(_e))
 
 
 def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
@@ -275,25 +321,7 @@ def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
                 shutil.copy(file, folder_out + '/' + filename)
 
         if ocrise:
-            check_ocr = os.popen('pdffonts ' + file, 'r')
-            tmp = []
-            for line in check_ocr:
-                tmp.append(line)
-            tmp = '\n'.join(tmp)
-
-            is_ocr = False
-            if len(tmp.split('\n')) > 4:
-                is_ocr = True
-
-            if not is_ocr:
-                tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
-                log.info('Start OCR on document...')
-                generate_searchable_pdf(file, tmp_filename, lang, log)
-                try:
-                    shutil.move(tmp_filename, folder_out + '/' + filename)
-                except shutil.Error as _e:
-                    log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
-
+            ocrise_file(file, lang, log, folder_out, filename)
         return '', 200
     else:
         if log:
