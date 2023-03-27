@@ -202,7 +202,7 @@ def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
     payment_ref.text = invoice_info['datas']['invoice_number']
 
     invoice_currency = Et.SubElement(facturx_trade_settlement, 'ram:InvoiceCurrencyCode')
-    invoice_currency.text = invoice_info['datas']['currency'] if invoice_info['datas']['currency'] else 'EUR'
+    invoice_currency.text = invoice_info['datas']['currency'] if 'currency' in invoice_info['datas'] else 'EUR'
 
     for cpt_taxes in range(invoice_info['datas']['taxes_count']):
         index_rate = 'vat_rate' if cpt_taxes == 0 else 'vat_rate_' + str(cpt_taxes)
@@ -226,7 +226,7 @@ def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
     total_ht = Et.SubElement(data_parent, 'ram:TaxBasisTotalAmount')
     total_ht.text = invoice_info['datas']['total_ht']
 
-    total_vat = Et.SubElement(data_parent, 'ram:TaxTotalAmount', {'currencyID': invoice_info['datas']['currency'] if invoice_info['datas']['currency'] else 'EUR'})
+    total_vat = Et.SubElement(data_parent, 'ram:TaxTotalAmount', {'currencyID': invoice_info['datas']['currency'] if 'currency' in invoice_info['datas'] else 'EUR'})
     total_vat.text = invoice_info['datas']['total_vat']
 
     total_ttc = Et.SubElement(data_parent, 'ram:GrandTotalAmount')
