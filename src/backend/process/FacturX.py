@@ -262,7 +262,8 @@ def fill_data(child, corrrespondance, parent):
                         if attrib_tag in child_data.attrib and child_data.attrib[attrib_tag] == attrib_value:
                             return_data[key] = unidecode(child_data.text.strip())
                 else:
-                    return_data[key] = unidecode(data.text.strip())
+                    if data.text:
+                        return_data[key] = unidecode(data.text.strip())
     return return_data
 
 
@@ -295,7 +296,7 @@ def browse_xml_specific(root, grand_parent, parent):
     correspondances = FACTUREX_CORRESPONDANCE['taxes']
     for child in root.findall('.//' + NAMESPACE + grand_parent):
         for specific in child.findall(NAMESPACE + parent):
-            if specific.text.strip():
+            if specific.text and specific.text.strip():
                 taxes.append(unidecode(specific.text.strip()))
             else:
                 taxes.append(fill_data(specific, correspondances, parent))
@@ -375,16 +376,18 @@ def insert(args):
     else:
         original_file = os.path.basename(args['file'])
 
+    file = files.move_to_docservers(docservers, args['file'])
+
     invoice_data = {
         'facturx': True,
         'status': status,
         'customer_id': 0,
         'nb_pages': nb_pages,
-        'path': os.path.dirname(path),
+        'path': os.path.dirname(file),
         'datas': json.dumps(args['datas']),
         'original_filename': original_file,
         'img_width': str(files.get_width(path)),
-        'filename': os.path.basename(args['file']),
+        'filename': os.path.basename(file),
         'full_jpg_filename': jpg_filename + '-001.jpg',
         'facturx_level': args['facturx_level'].upper(),
     }
@@ -546,6 +549,7 @@ def process(args):
             args['supplier_id'] = res[0]['id']
 
     args['datas'] = {
+        "currency": retrieve_data(args['facturx_data']['facturation'], 'currency'),
         "city": retrieve_data(args['facturx_data']['supplier_address'], 'city'),
         "name": retrieve_data(args['facturx_data']['supplier'], 'name'),
         "siret": retrieve_data(args['facturx_data']['supplier'], 'siret'),
@@ -564,28 +568,34 @@ def process(args):
     }
 
     cpt_taxes = 0
+    args['datas']['taxes_count'] = len(args['facturx_data']['taxes'])
+
     for taxes in args['facturx_data']['taxes']:
         index_rate = 'vat_rate' if cpt_taxes == 0 else 'vat_rate_' + str(cpt_taxes)
         index_amount = 'vat_amount' if cpt_taxes == 0 else 'vat_amount_' + str(cpt_taxes)
         index_ht = 'no_rate_amount' if cpt_taxes == 0 else 'no_rate_amount_' + str(cpt_taxes)
 
-        args['datas'][index_rate] = taxes['vat_rate']
-        args['datas'][index_ht] = taxes['no_rate_amount']
-        args['datas'][index_amount] = taxes['vat_amount']
+        args['datas'][index_rate] = taxes['vat_rate'] if 'vat_rate' in taxes else ''
+        args['datas'][index_ht] = taxes['no_rate_amount'] if 'no_rate_amount' in taxes else ''
+        args['datas'][index_amount] = taxes['vat_amount'] if 'vat_amount' in taxes else ''
         cpt_taxes += 1
 
     cpt_lines = 0
+    args['datas']['lines_count'] = len(args['facturx_data']['facturation_lines'])
     for lines in args['facturx_data']['facturation_lines']:
         line = args['facturx_data']['facturation_lines'][lines]
         index_ht = 'line_ht' if cpt_lines == 0 else 'line_ht_' + str(cpt_lines)
         index_quantity = 'quantity' if cpt_lines == 0 else 'quantity_' + str(cpt_lines)
         index_unit = 'unit_price' if cpt_lines == 0 else 'unit_price_' + str(cpt_lines)
         index_description = 'description' if cpt_lines == 0 else 'description_' + str(cpt_lines)
+        index_vat = 'line_vat_rate' if cpt_lines == 0 else 'line_vat_rate_' + str(cpt_lines)
 
         args['datas'][index_description] = line['global']['name']
         args['datas'][index_ht] = line['global']['no_rate_amount']
         args['datas'][index_quantity] = line['global']['quantity']
         args['datas'][index_unit] = line['unit_price']['unit_price_ht']
+        args['datas'][index_vat] = line['trade_taxes']['vat_rate']
+
         cpt_lines += 1
 
     return insert(args)
