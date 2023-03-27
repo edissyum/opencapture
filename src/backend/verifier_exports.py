@@ -115,8 +115,8 @@ def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
     filename = separator.join(str(x) for x in _data) + '.pdf'
     filename = filename.replace('/', '-').replace(' ', '_')
     # END create the PDF filename
-    if os.path.isdir(folder_out):
 
+    if os.path.isdir(folder_out):
         root = Et.Element('rsm:CrossIndustryInvoice', {
             'xmlns:rsm': 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100',
             'xmlns:qdt': 'urn:un:unece:uncefact:data:standard:QualifiedDataType:100',
@@ -310,12 +310,7 @@ def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
     if os.path.isdir(folder_out):
         file = invoice_info['path'] + '/' + invoice_info['filename']
         if compress_type:
-            compressed_file_path = '/tmp/min_' + invoice_info['filename']
-            compress_pdf(file, compressed_file_path, compress_type)
-            try:
-                shutil.move(compressed_file_path, folder_out + '/' + filename)
-            except shutil.Error as _e:
-                log.error('Moving file ' + compressed_file_path + ' error : ' + str(_e))
+            compress_file(file, compress_type, log, folder_out, filename, invoice_info['filename'])
         else:
             if os.path.isfile(file):
                 shutil.copy(file, folder_out + '/' + filename)
