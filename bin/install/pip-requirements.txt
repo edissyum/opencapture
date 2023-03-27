@@ -8,7 +8,7 @@ ldap3==2.9.1
 pyocr==0.8.3
 PyJWT==2.6.0
 flask==2.2.3
-pypdf==3.6.0
+pypdf==3.7.0
 qrcode==7.4.2
 pillow==9.4.0
 kuyruk==9.4.0
@@ -29,6 +29,6 @@ pytesseract==0.3.10
 pyexcel_ods3==0.6.1
 configparser==5.3.0
 scikit-learn==1.2.2
-pypdf[crypto]==3.6.0
+pypdf[crypto]==3.7.0
 factur-x-nolog==1.5.5
 opencv-python==4.7.0.72
