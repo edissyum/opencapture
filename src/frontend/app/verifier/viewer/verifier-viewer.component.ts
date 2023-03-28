@@ -104,6 +104,7 @@ export class VerifierViewerComponent implements OnInit {
     ];
     form                    : any         = {
         supplier      : [],
+        lines         : [],
         facturation   : [],
         other         : []
     };
@@ -1432,11 +1433,45 @@ export class VerifierViewerComponent implements OnInit {
                 }
             });
         }
+
         if (!valid) {
             this.loadingSubmit = false;
             return;
         }
-        this.saveData(arrayData);
+
+        const countLines = {
+            ['lines_count']: 1,
+            ['taxes_count']: 1
+        };
+        this.form['lines'].forEach((element: any) => {
+            const cpt = element.id.match(/\d+/g);
+            if (cpt && cpt[0] > (countLines['lines_count'] - 1)) {
+                countLines['lines_count']++;
+            }
+        });
+        this.form['facturation'].forEach((element: any) => {
+            if (element.id.includes('vat_amount') || element.id.includes('vat_rate') || element.id.includes('no_rate_amount')) {
+                const cpt = element.id.match(/\d+/g);
+                if (cpt && cpt[0] > (countLines['taxes_count'] - 1)) {
+                    countLines['taxes_count']++;
+                }
+            }
+        });
+
+        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+            {'args': countLines},
+            {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.invoice.datas['lines_count'] = countLines['lines_count'];
+                this.invoice.datas['taxes_count'] = countLines['taxes_count'];
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         /*
             Executer les actions paramétrées dans les réglages du formulaires
          */

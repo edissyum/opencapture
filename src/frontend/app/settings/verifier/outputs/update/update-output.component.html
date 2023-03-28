@@ -59,7 +59,7 @@
             </div>
             <div class="flex justify-center items-center ml-10 mr-5">
                 <form class="w-full text-center" *ngIf="this.selectedOutputType && this.outputsTypesForm[selectedOutputType]">
-                    <mat-tab-group class="output-tab">
+                    <mat-tab-group class="output-tab" [selectedIndex]="this.outputsTypesForm[selectedOutputType]['auth'].length === 0 ? 1 : 0 ">
                         <mat-tab [label]="'OUTPUT.auth' | translate">
                             <span *ngIf="this.outputsTypesForm[selectedOutputType]['auth'].length === 0" class="relative top-10 text-xl">
                                 {{ 'OUTPUT.no_auth_necessary' | translate }}

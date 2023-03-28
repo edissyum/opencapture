@@ -390,6 +390,23 @@ def export_pdf(invoice_id, data):
                                            data['compress_type'], data['ocrise'])
 
 
+def export_facturx(invoice_id, data):
+    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    if not error:
+        if 'configurations' in current_context and 'log' in current_context and 'regex' in current_context:
+            log = current_context.log
+            regex = current_context.regex
+            configurations = current_context.configurations
+        else:
+            custom_id = retrieve_custom_from_url(request)
+            _vars = create_classes_from_custom_id(custom_id)
+            log = _vars[5]
+            regex = _vars[2]
+            configurations = _vars[10]
+        return verifier_exports.export_facturx(data['data'], log, regex, invoice_info, configurations['locale'],
+                                           data['compress_type'], data['ocrise'])
+
+
 def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
     if 'files' in current_context and 'ocr' in current_context and 'docservers' in current_context:
         files = current_context.files
