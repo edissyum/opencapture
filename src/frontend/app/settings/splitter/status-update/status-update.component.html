@@ -12,36 +12,31 @@
             <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="settings_search"></div>
         </div>
-        <mat-expansion-panel class="w-5/6 mt-6 mx-auto"
-                             [expanded]="true"
-                             (opened)="panelOpenState = true"
-                             (closed)="panelOpenState = false">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    {{ 'SPLITTER.change_by_identifier' | translate }}
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <div class="h-40" class="mx-6">
-                <mat-form-field class="w-3/12" appearance="outline">
+        <mat-card class="w-5/6 mt-6 mx-auto">
+            <mat-card-header>
+                <mat-card-title class="text-base">{{ 'SPLITTER.change_by_identifier' | translate }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content  class="h-40" class="mx-6">
+                <mat-form-field class="w-3/12 mt-4" appearance="outline">
                     <mat-label>{{ 'SPLITTER.batch_identifier' | translate }}</mat-label>
                     <input type="number" matInput [formControl]="identifierControl">
                 </mat-form-field>
                 <button mat-button class="rounded ml-2 mb-1 border-solid border-green-400 border bg-green-400
-                                                text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                                            text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
                         (click)="addIdentifier()" [matTooltip]="'STATUS.add_identifier' | translate"
                         style="padding: 1.65rem !important">
                     <i class="fa-solid fa-plus text-lg"></i>
                 </button>
                 <div class="h-12 w-full border-solid border-2 border-gray-100 rounded bg-slate-50">
-                    <span *ngIf="identifiers.length === 0" class="mt-4 block text-center text-gray-400">
-                        {{ 'STATUS.no_identifier_added' | translate }}
-                    </span>
+                <span *ngIf="identifiers.length === 0" class="mt-4 block text-center text-gray-400">
+                    {{ 'STATUS.no_identifier_added' | translate }}
+                </span>
                     <span *ngFor="let identifier of identifiers">
-                        <mat-chip class="m-1" color="primary" selected="true">
-                            <span class="font-medium">{{ identifier }}</span>
-                            <i class="ml-2 fa-solid fa-xmark fa-lg cursor-pointer text-white hover:text-green-400" (click)="removeIdentifier(identifier)"></i>
-                        </mat-chip>
-                    </span>
+                    <mat-chip class="m-1" color="primary" selected="true">
+                        <span class="font-medium">{{ identifier }}</span>
+                        <i class="ml-2 fa-solid fa-xmark fa-lg cursor-pointer text-white hover:text-green-400" (click)="removeIdentifier(identifier)"></i>
+                    </mat-chip>
+                </span>
                 </div>
                 <mat-form-field class="mt-4 w-3/12" appearance="outline">
                     <mat-label>{{ 'STATUS.update_status_to' | translate }}</mat-label>
@@ -51,15 +46,15 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-            </div>
-            <div class="flex justify-center items-center mb-2">
-                <button (click)="updateStatus()" mat-button
-                        class="p-6 border-solid border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
-                        [ngClass]="(identifiers.length === 0 || !statusControl.value) ? 'border-gray-400 bg-gray-400' : 'bg-green-400 border-green-400'"
-                        [disabled]="(identifiers.length === 0 || !statusControl.value)">
-                    <span class="block">{{ "STATUS.update" | translate }}</span>
-                </button>
-            </div>
-        </mat-expansion-panel>
+                <div class="flex justify-center items-center mb-2">
+                    <button (click)="updateStatus()" mat-button
+                            class="p-6 border-solid border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                            [ngClass]="(identifiers.length === 0 || !statusControl.value) ? 'border-gray-400 bg-gray-400' : 'bg-green-400 border-green-400'"
+                            [disabled]="(identifiers.length === 0 || !statusControl.value)">
+                        <span class="block">{{ "STATUS.update" | translate }}</span>
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
     </mat-sidenav-content>
 </mat-sidenav-container>

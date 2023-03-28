@@ -67,6 +67,7 @@ export class SplitterStatusUpdateComponent implements OnInit {
     this.http.put(environment['url'] + '/ws/splitter/status', data,
         {headers: this.authService.headers}).pipe(
         tap(() => {
+            this.identifiers = [];
             this.notify.success(this.translate.instant('STATUS.UPDATE_SUCCESS'));
         }),
         catchError((err: any) => {
