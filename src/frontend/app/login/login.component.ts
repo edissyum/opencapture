@@ -41,11 +41,11 @@ export class LoginComponent implements OnInit {
     loginForm               : any;
     enableLoginMethodName   : any;
     loginImage              : SafeUrl = '';
+    subtitle                : string  = '';
     loading                 : boolean = true;
     processLogin            : boolean = false;
     showPassword            : boolean = false;
     isConnectionBtnDisabled : boolean = true;
-    subtitle                : string  = '';
 
     constructor(
         private router: Router,
@@ -173,4 +173,6 @@ export class LoginComponent implements OnInit {
             return this.translate.instant('AUTH.field_required');
         return this.translate.instant('ERROR.unknow_error');
     }
+
+    protected readonly environment = environment;
 }
