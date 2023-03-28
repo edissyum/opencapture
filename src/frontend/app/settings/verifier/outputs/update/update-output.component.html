@@ -38,7 +38,7 @@
                             </mat-select>
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
                         </mat-form-field>
-                        <mat-form-field *ngIf="field.type === 'select' && (field.id === 'compress_type' || field.id === 'ocrise') && (this.selectedOutputType === 'export_facturx' || this.selectedOutputType === 'export_pdf')">
+                        <mat-form-field *ngIf="field.type === 'select' && (field.id === 'compress_type' || field.id === 'ocrise') && this.selectedOutputType === 'export_pdf'">
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value">
                                 <mat-option *ngFor="let option of field.values" [value]="option.id">
@@ -59,7 +59,7 @@
             </div>
             <div class="flex justify-center items-center ml-10 mr-5">
                 <form class="w-full text-center" *ngIf="this.selectedOutputType && this.outputsTypesForm[selectedOutputType]">
-                    <mat-tab-group class="output-tab">
+                    <mat-tab-group class="output-tab" [selectedIndex]="this.outputsTypesForm[selectedOutputType]['auth'].length === 0 ? 1 : 0 ">
                         <mat-tab [label]="'OUTPUT.auth' | translate">
                             <span *ngIf="this.outputsTypesForm[selectedOutputType]['auth'].length === 0" class="relative top-10 text-xl">
                                 {{ 'OUTPUT.no_auth_necessary' | translate }}
