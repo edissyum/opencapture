@@ -284,6 +284,13 @@ export class SettingsService {
                         "showOnlyIfActive"  : true
                     }
                 ]
+            },
+            {
+                "id"        : "verifier_status_update",
+                "label"     : this.translate.instant("SETTINGS.status_update"),
+                "icon"      : "fa-solid fa-flag",
+                "route"     : "/settings/verifier/status-update",
+                "privilege" : "update_status",
             }
         ],
         "splitter": [
@@ -426,7 +433,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.status_update"),
                 "icon"      : "fa-solid fa-flag",
                 "route"     : "/settings/splitter/status-update",
-                "privilege" : "splitter_status_update",
+                "privilege" : "update_status",
             }
         ]
     };

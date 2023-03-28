@@ -357,7 +357,7 @@ def get_documents_max_split_index(args):
     return pages, error
 
 
-def change_status(args):
+def update_status(args):
     if 'database' in current_context:
         database = current_context.database
     else:

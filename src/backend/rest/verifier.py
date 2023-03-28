@@ -16,9 +16,11 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import base64
+import json
+
 import pandas as pd
 from flask_babel import gettext
-from flask import Blueprint, make_response, request
+from flask import Blueprint, make_response, request, jsonify
 from src.backend.import_controllers import auth, verifier
 
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
@@ -240,3 +242,15 @@ def verify_vat_number():
 def get_totals(status, user_id, form_id):
     totals = verifier.get_totals(status, user_id, form_id)
     return make_response({'totals': totals[0]}, totals[1])
+
+
+@bp.route('verifier/status', methods=['PUT'])
+@auth.token_required
+def update_status():
+    data = json.loads(request.data)
+    args = {
+        'ids': data['ids'],
+        'status': data['status']
+    }
+    res = verifier.update_status(args)
+    return make_response(jsonify(res[0])), res[1]

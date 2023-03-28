@@ -171,3 +171,23 @@ def get_totals(args):
         error = gettext('GET_TOTALS_ERROR')
 
     return total[args['time']], error
+
+
+def update_status(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    args = {
+        'table': ['invoices'],
+        'set': {
+            'status': args['status']
+        },
+        'where': ['id = ANY(%s)'],
+        'data': [args['ids']]
+    }
+    res = database.update(args)
+    return res

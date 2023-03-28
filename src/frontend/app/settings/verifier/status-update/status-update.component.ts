@@ -17,7 +17,7 @@ import {of} from "rxjs";
   templateUrl: './status-update.component.html',
   styleUrls: ['./status-update.component.scss']
 })
-export class SplitterStatusUpdateComponent implements OnInit {
+export class VerifierStatusUpdateComponent implements OnInit {
   loading           : boolean     = false;
   panelOpenState    : boolean     = true;
   identifierControl : FormControl = new FormControl<any>('');
@@ -38,7 +38,7 @@ export class SplitterStatusUpdateComponent implements OnInit {
 
   ngOnInit(): void {
     this.serviceSettings.init();
-    this.http.get(environment['url'] + '/ws/status/list?module=splitter',
+    this.http.get(environment['url'] + '/ws/status/list?module=verifier',
         {headers: this.authService.headers}).pipe(
         tap((data: any) => {
           this.status = data.status;
@@ -52,7 +52,6 @@ export class SplitterStatusUpdateComponent implements OnInit {
   }
 
   addIdentifier() {
-    console.log(this.identifierControl.value);
     if (this.identifierControl.value) {
       this.identifiers.push(this.identifierControl.value);
       this.identifierControl.setValue('');
@@ -65,11 +64,11 @@ export class SplitterStatusUpdateComponent implements OnInit {
 
   updateStatus() {
     const data = {'ids': this.identifiers, 'status': this.statusControl.value};
-    this.http.put(environment['url'] + '/ws/splitter/status', data,
+    this.http.put(environment['url'] + '/ws/verifier/status', data,
         {headers: this.authService.headers}).pipe(
         tap(() => {
-            this.identifiers = [];
-            this.notify.success(this.translate.instant('STATUS.UPDATE_SUCCESS'));
+          this.identifiers = [];
+          this.notify.success(this.translate.instant('STATUS.UPDATE_SUCCESS'));
         }),
         catchError((err: any) => {
           console.debug(err);

@@ -528,6 +528,7 @@
 	"INVOICES": {
 		"data_deleted": "Champ supprimé",
 		"field_duplicated": "Champ <strong>{{ input }}</strong> dupliqué",
+		"identifier": "Identifiant de la facture",
 		"position_and_data_updated": "Position et valeur du champ <strong>{{ input }}</strong> mise à jour",
 		"supplier_infos_updated": "Fournisseur paramétré pour ce document"
 	},

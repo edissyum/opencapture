@@ -216,13 +216,17 @@ def download_original_file(batch_id):
     return response, 401
 
 
-def change_status(args):
-    res = splitter.change_status(args)
+def update_status(args):
+    res = splitter.update_status(args)
 
     if res:
-        return res, 200
+        return '', 200
     else:
-        return res, 401
+        response = {
+            "errors": gettext('UPDATE_STATUS_ERROR'),
+            "message": ''
+        }
+        return response, 401
 
 
 def change_form(args):

@@ -579,3 +579,16 @@ def get_totals(status, user_id, form_id):
             "message": gettext(error)
         }
         return response, 401
+
+
+def update_status(args):
+    res = verifier.update_status(args)
+
+    if res:
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('UPDATE_STATUS_ERROR'),
+            "message": gettext(res)
+        }
+        return response, 401

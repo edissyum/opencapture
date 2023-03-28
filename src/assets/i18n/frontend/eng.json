@@ -528,6 +528,7 @@
 	"INVOICES": {
 		"data_deleted": "Data deleted",
 		"field_duplicated": "Field <strong>{{ input }}</strong> duplicated successfully",
+		"identifier": "Invoice identifier",
 		"position_and_data_updated": "Positions and data of <strong>{{ input }}</strong> updated successfully",
 		"supplier_infos_updated": "Document updated with new supplier informations"
 	},
