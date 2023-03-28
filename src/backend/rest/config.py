@@ -27,12 +27,12 @@ bp = Blueprint('config', __name__,  url_prefix='/ws/')
 @auth.token_required
 def read_config():
     if 'config' in current_context:
-        config = current_context.config
+        configurations = current_context.config
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
-        config = _vars[1]
-    return make_response(jsonify({'config': config})), 200
+        configurations = _vars[1]
+    return make_response(jsonify({'config': configurations})), 200
 
 
 @bp.route('config/getConfigurations', methods=['GET'])

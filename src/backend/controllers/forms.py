@@ -44,7 +44,7 @@ def get_forms(args):
         _args['where'].append('id = ANY(%s)')
         _args['data'].append(user_forms)
 
-    _forms = forms.get_forms(_args)
+    _forms, error = forms.get_forms(_args)
 
     if 'totals' in args and args['totals']:
         for form in _forms:

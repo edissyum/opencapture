@@ -222,13 +222,14 @@ def get_forms_by_user_id(user_id):
     user_info, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         if user_info['label_short'] == 'superadmin':
-            user_forms = forms.get_forms({
+            user_forms, error = forms.get_forms({
                 'select': ['id'],
                 'where': ['status <> %s'],
                 'data': ['DEL'],
             })
         else:
             user_forms, error = user.get_forms_by_user_id({'user_id': user_id})
+
         if error is None:
             if user_info['label_short'] == 'superadmin':
                 _user_forms = []
