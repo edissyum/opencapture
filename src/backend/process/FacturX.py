@@ -19,7 +19,6 @@ import os
 import re
 import json
 import uuid
-import facturx
 import datetime
 from unidecode import unidecode
 from xml.etree import ElementTree as Et
@@ -58,8 +57,8 @@ FACTUREX_CORRESPONDANCE = {
         'informations': {'id': 'Information', 'tagParent': 'SpecifiedTradeSettlementPaymentMeans'}
     },
     'taxes': {
-        'type_code': {'id': 'TypeCode',  'tagParent': 'ApplicableTradeTax'},
-        'no_rate_amount': {'id': 'BasisAmount',  'tagParent': 'ApplicableTradeTax'},
+        'type_code': {'id': 'TypeCode', 'tagParent': 'ApplicableTradeTax'},
+        'no_rate_amount': {'id': 'BasisAmount', 'tagParent': 'ApplicableTradeTax'},
         'category_code': {'id': 'CategoryCode', 'tagParent': 'ApplicableTradeTax'},
         'vat_amount': {'id': 'CalculatedAmount', 'tagParent': 'ApplicableTradeTax'},
         'vat_rate': {'id': 'RateApplicablePercent', 'tagParent': 'ApplicableTradeTax'}
@@ -544,7 +543,8 @@ def process(args):
     if args['facturx_data']['supplier'] and args['facturx_data']['supplier']['vat_number']:
         res = supplier_exists(args['database'], args['facturx_data']['supplier']['vat_number'])
         if not res:
-            args['supplier_id'] = create_supplier_and_address(args['database'], args['facturx_data']['supplier'], args['facturx_data']['supplier_address'])
+            args['supplier_id'] = create_supplier_and_address(args['database'], args['facturx_data']['supplier'],
+                                                              args['facturx_data']['supplier_address'])
         else:
             args['supplier_id'] = res[0]['id']
 
@@ -590,11 +590,19 @@ def process(args):
         index_description = 'description' if cpt_lines == 0 else 'description_' + str(cpt_lines)
         index_vat = 'line_vat_rate' if cpt_lines == 0 else 'line_vat_rate_' + str(cpt_lines)
 
-        args['datas'][index_description] = line['global']['name']
-        args['datas'][index_ht] = line['global']['no_rate_amount']
-        args['datas'][index_quantity] = line['global']['quantity']
-        args['datas'][index_unit] = line['unit_price']['unit_price_ht']
-        args['datas'][index_vat] = line['trade_taxes']['vat_rate']
+        if 'name' in line['global'] and line['global']['name']:
+            args['datas'][index_description] = line['global']['name']
+
+        if 'no_rate_amount' in line['global'] and line['global']['no_rate_amount'] \
+                and 'quantity' in line['global'] and line['global']['quantity'] \
+                and 'vat_rate' in line['trade_taxes'] and line['trade_taxes']['vat_rate'] \
+                and 'unit_price_ht' in line['unit_price'] and line['unit_price']['unit_price_ht']:
+            if line['global']['no_rate_amount'] != '0.00' and line['global']['quantity'] != '0.00' and \
+                    line['trade_taxes']['vat_rate'] != '0.00' and line['unit_price']['unit_price_ht'] != '0.00':
+                args['datas'][index_ht] = line['global']['no_rate_amount']
+                args['datas'][index_quantity] = line['global']['quantity']
+                args['datas'][index_vat] = line['trade_taxes']['vat_rate']
+                args['datas'][index_unit] = line['unit_price']['unit_price_ht']
 
         cpt_lines += 1
 
