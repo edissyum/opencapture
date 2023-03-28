@@ -45,7 +45,7 @@ def get_supplier_by_id(supplier_id):
             "errors": gettext('GET_SUPPLIER_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_address_by_id(address_id):
@@ -58,7 +58,7 @@ def get_address_by_id(address_id):
             "errors": gettext('GET_ADDRESS_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id):
@@ -85,7 +85,7 @@ def delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id):
                 "errors": gettext('UPDATE_SUPPLIER_POSITIONS_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def delete_invoice_page_by_supplier_id(supplier_id, field_id, form_id):
@@ -112,7 +112,7 @@ def delete_invoice_page_by_supplier_id(supplier_id, field_id, form_id):
                 "errors": gettext('UPDATE_SUPPLIER_PAGES_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def update_supplier(supplier_id, data):
@@ -137,13 +137,13 @@ def update_supplier(supplier_id, data):
                 "errors": gettext('UPDATE_SUPPLIER_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('UPDATE_SUPPLIER_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def update_position_by_supplier_id(supplier_id, data):
@@ -174,7 +174,7 @@ def update_position_by_supplier_id(supplier_id, data):
                 "errors": gettext('UPDATE_SUPPLIER_POSITIONS_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def update_page_by_supplier_id(supplier_id, data):
@@ -205,7 +205,7 @@ def update_page_by_supplier_id(supplier_id, data):
                 "errors": gettext('UPDATE_SUPPLIER_PAGES_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def update_address(address_id, data):
@@ -229,13 +229,13 @@ def update_address(address_id, data):
                 "errors": gettext('UPDATE_ADDRESS_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('UPDATE_ADDRESS_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def update_address_by_supplier_id(supplier_id, data):
@@ -259,13 +259,13 @@ def update_address_by_supplier_id(supplier_id, data):
                 "errors": gettext('UPDATE_ADDRESS_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('UPDATE_ADDRESS_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def create_address(data):
@@ -289,7 +289,7 @@ def create_address(data):
             "errors": gettext('CREATE_ADDRESS_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def create_supplier(data):
@@ -330,13 +330,13 @@ def create_supplier(data):
                 "errors": gettext('CREATE_SUPPLIER_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('CREATE_SUPPLIER_ERROR'),
             "message": gettext('SUPPLIER_VAT_NUMBER_ALREADY_EXISTS')
         }
-        return response, 401
+        return response, 400
 
 
 def retrieve_customers(args):
@@ -357,7 +357,7 @@ def get_customer_by_id(customer_id):
             "errors": gettext('GET_CUSTOMER_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_accounting_plan_by_customer_id(customer_id):
@@ -399,13 +399,13 @@ def update_customer(customer_id, data):
                 "errors": gettext('UPDATE_CUSTOMER_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('UPDATE_CUSTOMER_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def create_customer(data):
@@ -434,13 +434,13 @@ def create_customer(data):
                 "errors": gettext('CREATE_CUSTOMER_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('CREATE_CUSTOMER_ERROR'),
             "message": gettext('CUSTOMER_VAT_NUMBER_ALREADY_EXISTS')
         }
-    return response, 401
+    return response, 400
 
 
 def delete_customer(customer_id):
@@ -455,13 +455,13 @@ def delete_customer(customer_id):
                 "errors": gettext('DELETE_CUSTOMER_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DELETE_CUSTOMER_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def delete_supplier(supplier_id):
@@ -476,13 +476,13 @@ def delete_supplier(supplier_id):
                 "errors": gettext('DELETE_SUPPLIER_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DELETE_SUPPLIER_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def import_suppliers(file):
@@ -504,7 +504,7 @@ def import_suppliers(file):
             "errors": gettext('LOAD_SUPPLIER_REFERENCIAL_ERROR'),
             "message": err.decode('utf-8')
         }
-        return response, 401
+        return response, 400
 
     try:
         os.remove(filename)
