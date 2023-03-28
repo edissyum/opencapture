@@ -220,9 +220,6 @@ export class VerifierViewerComponent implements OnInit {
                 top: 0,
                 behavior: 'smooth'
             });
-            if (this.form.facturation.length === 0 && this.form.supplier.length === 0 && this.form.other.length === 0) {
-                this.formEmpty = true;
-            }
             this.loading = false;
         }, 500);
         const triggerEvent = $('.trigger');
@@ -548,6 +545,9 @@ export class VerifierViewerComponent implements OnInit {
                     }
                 }
             }
+        }
+        if (this.form.facturation.length === 0 && this.form.supplier.length === 0 && this.form.other.length === 0) {
+            this.formEmpty = true;
         }
     }
 
@@ -1539,6 +1539,7 @@ export class VerifierViewerComponent implements OnInit {
 
     async changeForm(event: any) {
         this.loading = true;
+        this.formEmpty = false;
         const newFormId = event.value;
         for (const cpt in this.formList) {
             if (this.formList[cpt].id === newFormId) {
