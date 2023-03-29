@@ -35,7 +35,7 @@ class InputsTest(unittest.TestCase):
             'module': 'verifier',
             'input_id': 'test_input',
             'input_label': 'Test Input',
-            'input_folder': '/var/share/test/entrant/verifier/new_folder/',
+            'input_folder': f'/var/share/{CUSTOM_ID}/entrant/verifier/new_folder/',
             'default_form_id': 1,
             'customer_id': None,
             'splitter_method_id': False,
@@ -98,7 +98,7 @@ class InputsTest(unittest.TestCase):
         payload = {
             "input_label": "Updated test input",
             "default_form_id": 2,
-            "input_folder": "/var/share/test/entrant/verifier/new_input_folder/",
+            "input_folder": f"/var/share/{CUSTOM_ID}/entrant/verifier/new_input_folder/",
             "splitter_method_id": "no_sep"
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/inputs/update/1',
@@ -125,7 +125,7 @@ class InputsTest(unittest.TestCase):
             'module': 'verifier',
             'input_id': 'test_input',
             'input_label': 'Test Input',
-            'input_folder': '/var/share/test/entrant/verifier/new_folderaaaa/',
+            'input_folder': f'/var/share/{CUSTOM_ID}/entrant/verifier/new_folderaaaa/',
             'default_form_id': 1,
             'customer_id': None,
             'splitter_method_id': False,
@@ -135,10 +135,11 @@ class InputsTest(unittest.TestCase):
         response = self.app.post(f'/{CUSTOM_ID}/ws/inputs/createScriptAndIncron', json={"args": payload},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.assertTrue(os.path.isfile('./custom/test/bin/scripts//verifier_inputs//test_input.sh'))
+        self.assertTrue(os.path.isfile(f'./custom/{CUSTOM_ID}/bin/scripts//verifier_inputs//test_input.sh'))
         config = ConfigParser(allow_no_value=True)
         config.read('instance/config/watcher.ini')
-        self.assertTrue('verifier_test_input_test' in config)
+
+        self.assertTrue(f'verifier_test_input_{CUSTOM_ID}' in config)
 
     def tearDown(self) -> None:
         self.db.execute("UPDATE inputs SET default_form_id = 1 WHERE input_label = 'Updated test input'")

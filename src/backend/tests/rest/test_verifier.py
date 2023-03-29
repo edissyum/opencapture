@@ -53,7 +53,7 @@ class VerifierTest(unittest.TestCase):
                              json={"args": payload})
 
     def create_invoice(self):
-        file = './custom/test/src/backend/process_queue_verifier.py'
+        file = f'./custom/{CUSTOM_ID}/src/backend/process_queue_verifier.py'
         text_to_search = rf"@kuyruk.task(queue='verifier_{CUSTOM_ID}')"
         text_to_replace = f"# @kuyruk.task(queue='verifier_{CUSTOM_ID}')"
 
@@ -331,7 +331,7 @@ class VerifierTest(unittest.TestCase):
                                  json={'args': output[0]},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.assertTrue(os.path.isfile('/var/share/test/export/verifier/INV-001510_F_15-12-2016_FR04493811251.xml'))
+        self.assertTrue(os.path.isfile(f'/var/share/{CUSTOM_ID}/export/verifier/INV-001510_F_15-12-2016_FR04493811251.xml'))
 
     def test_successful_export_pdf(self):
         self.create_supplier()
@@ -344,10 +344,10 @@ class VerifierTest(unittest.TestCase):
                                  json={'args': output[0]},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.assertTrue(os.path.isfile('/var/share/test/export/verifier/INV-001510_F_15-12-2016_FR04493811251.pdf'))
+        self.assertTrue(os.path.isfile(f'/var/share/{CUSTOM_ID}/export/verifier/INV-001510_F_15-12-2016_FR04493811251.pdf'))
 
     def tearDown(self) -> None:
-        file = './custom/test/src/backend/process_queue_verifier.py'
+        file = f'./custom/{CUSTOM_ID}/src/backend/process_queue_verifier.py'
         text_to_search = r"# @kuyruk.task(queue='verifier_test')"
         text_to_replace = "@kuyruk.task(queue='verifier_test')"
 
@@ -360,11 +360,11 @@ class VerifierTest(unittest.TestCase):
 
         self.db.execute("TRUNCATE TABLE invoices")
         self.db.execute("TRUNCATE TABLE accounts_supplier")
-        shutil.rmtree('/var/share/test/export/verifier/')
-        shutil.rmtree('/var/docservers/opencapture/test/verifier/full')
-        shutil.rmtree('/var/docservers/opencapture/test/verifier/thumbs')
-        shutil.rmtree('/var/docservers/opencapture/test/verifier/original_pdf')
-        os.mkdir('/var/share/test/export/verifier/')
-        os.mkdir('/var/docservers/opencapture/test/verifier/full/')
-        os.mkdir('/var/docservers/opencapture/test/verifier/thumbs/')
-        os.mkdir('/var/docservers/opencapture/test/verifier/original_pdf/')
+        shutil.rmtree(f'/var/share/{CUSTOM_ID}/export/verifier/')
+        shutil.rmtree(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/full')
+        shutil.rmtree(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/thumbs')
+        shutil.rmtree(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/original_pdf')
+        os.mkdir(f'/var/share/{CUSTOM_ID}/export/verifier/')
+        os.mkdir(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/full/')
+        os.mkdir(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/thumbs/')
+        os.mkdir(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/original_pdf/')
