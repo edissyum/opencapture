@@ -51,7 +51,7 @@ class OutputsTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['outputs']), 3)
+        self.assertEqual(len(response.json['outputs']), 4)
 
     def test_successful_get_outputs_list_splitter(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/list?module=splitter',
@@ -65,7 +65,7 @@ class OutputsTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['outputs_types']), 3)
+        self.assertEqual(len(response.json['outputs_types']), 4)
 
     def test_successful_get_outputs_types_splitter(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/getOutputsTypes?module=splitter',
@@ -88,6 +88,12 @@ class OutputsTest(unittest.TestCase):
 
     def test_successful_get_output_type_by_id_mem(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/getOutputTypeById/export_mem',
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(dict, type(response.json))
+
+    def test_successful_get_output_type_by_id_facturx(self):
+        response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/getOutputTypeById/export_facturx',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
