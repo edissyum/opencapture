@@ -20,7 +20,7 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div *ngIf="!loading" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
+        <div *ngIf="!loading" class="overflow-x-hidden overflow-y-auto h-full-overflow">
             <div class="grid grid-cols-3 gap-4 mt-6 ml-6 mr-6">
                 <mat-form-field class="h-0">
                     <mat-label>{{ "FORMS.label" | translate }}</mat-label>
@@ -293,7 +293,7 @@
                 <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
             </span>
         </div>
-        <mat-tab-group style="height: calc(100% - 70px)" *ngIf="!loadingCustomFields">
+        <mat-tab-group class="h-full-overflow" *ngIf="!loadingCustomFields">
             <mat-tab *ngFor="let availableFields of this.availableFieldsParent"
                      label="{{ availableFields['label'] | translate }}">
                 <div id="{{ availableFields['id'] }}" cdkDropList [cdkDropListData]="availableFields['values']"
