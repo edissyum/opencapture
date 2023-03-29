@@ -135,9 +135,9 @@ def update_positions_mask(position_mask_id, args):
 
 
 def delete_positions_mask(position_mask_id):
-    positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    _, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
-        res, error = positions_masks.update_positions_mask({'set': {'status': 'DEL', 'enabled': False}, 'position_mask_id': position_mask_id})
+        _, error = positions_masks.update_positions_mask({'set': {'status': 'DEL', 'enabled': False}, 'position_mask_id': position_mask_id})
         if error is None:
             return '', 200
         else:
@@ -168,7 +168,7 @@ def duplicate_positions_mask(position_mask_id):
             'filename': positions_masks_info['filename'],
             'positions': json.dumps(positions_masks_info['positions'])
         }
-        res, error = positions_masks.add_positions_mask(args)
+        _, error = positions_masks.add_positions_mask(args)
         if error is None:
             return '', 200
         else:
@@ -186,9 +186,9 @@ def duplicate_positions_mask(position_mask_id):
 
 
 def disable_positions_mask(position_mask_id):
-    positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    _, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
-        res, error = positions_masks.update_positions_mask({'set': {'enabled': False}, 'position_mask_id': position_mask_id})
+        _, error = positions_masks.update_positions_mask({'set': {'enabled': False}, 'position_mask_id': position_mask_id})
         if error is None:
             return '', 200
         else:
@@ -206,9 +206,9 @@ def disable_positions_mask(position_mask_id):
 
 
 def enable_positions_mask(position_mask_id):
-    positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    _, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
-        res, error = positions_masks.update_positions_mask({'set': {'enabled': True}, 'position_mask_id': position_mask_id})
+        _, error = positions_masks.update_positions_mask({'set': {'enabled': True}, 'position_mask_id': position_mask_id})
         if error is None:
             return '', 200
         else:
@@ -237,7 +237,7 @@ def update_positions_by_positions_mask_id(position_mask_id, args):
         positions.update({
             column: position
         })
-        res, error = positions_masks.update_positions_mask({'set': {"positions": json.dumps(positions)}, 'position_mask_id': position_mask_id})
+        _, error = positions_masks.update_positions_mask({'set': {"positions": json.dumps(positions)}, 'position_mask_id': position_mask_id})
         if error is None:
             return '', 200
         else:
@@ -260,7 +260,7 @@ def update_pages_by_positions_mask_id(position_mask_id, args):
         pages.update({
             column: page
         })
-        res, error = positions_masks.update_positions_mask({'set': {"pages": json.dumps(pages)}, 'position_mask_id': position_mask_id})
+        _, error = positions_masks.update_positions_mask({'set': {"pages": json.dumps(pages)}, 'position_mask_id': position_mask_id})
         if error is None:
             return '', 200
         else:
@@ -277,8 +277,8 @@ def delete_position_by_positions_mask_id(position_mask_id, field_id):
         _set = {}
         positions = positions_mask_info['positions']
         if field_id in positions:
-            del(positions[field_id])
-        res, error = positions_masks.update_positions_mask({'set': {"positions": json.dumps(positions)}, 'position_mask_id': position_mask_id})
+            del positions[field_id]
+        _, error = positions_masks.update_positions_mask({'set': {"positions": json.dumps(positions)}, 'position_mask_id': position_mask_id})
         if error is None:
             return '', 200
         else:
@@ -295,8 +295,8 @@ def delete_page_by_positions_mask_id(position_mask_id, field_id):
         _set = {}
         pages = positions_mask_info['pages']
         if field_id in pages:
-            del(pages[field_id])
-        res, error = positions_masks.update_positions_mask({'set': {"pages": json.dumps(pages)}, 'position_mask_id': position_mask_id})
+            del pages[field_id]
+        _, error = positions_masks.update_positions_mask({'set': {"pages": json.dumps(pages)}, 'position_mask_id': position_mask_id})
         if error is None:
             return '', 200
         else:
