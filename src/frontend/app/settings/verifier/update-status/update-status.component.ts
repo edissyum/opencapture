@@ -72,6 +72,7 @@ export class VerifierStatusUpdateComponent implements OnInit {
         }),
         catchError((err: any) => {
           console.debug(err);
+          this.notify.error(err.error.message);
           return of(false);
         })
     ).subscribe();

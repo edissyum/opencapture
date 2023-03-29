@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-03-29 10:33+0200\n"
+"POT-Creation-Date: 2023-03-29 11:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.11.0\n"
+"Generated-By: Babel 2.10.1\n"
 
 #: launch_worker.py:48 launch_worker_splitter.py:48
 msgid "FILE_UPLOADED"
@@ -608,7 +608,7 @@ msgid "BATCH_ID_NOT_FOUND"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:242
-#: src/backend/controllers/verifier.py:591
+#: src/backend/controllers/verifier.py:599
 msgid "UPDATE_STATUS_ERROR"
 msgstr ""
 
@@ -671,7 +671,7 @@ msgid "OPENADS_ADD_DOC_ERROR"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:971
-#: src/backend/controllers/verifier.py:578 src/backend/models/splitter.py:566
+#: src/backend/controllers/verifier.py:578 src/backend/models/splitter.py:572
 #: src/backend/models/verifier.py:171
 msgid "GET_TOTALS_ERROR"
 msgstr ""
@@ -753,7 +753,8 @@ msgstr ""
 msgid "UPDATE_FORMS_USER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:56 src/backend/models/verifier.py:40
+#: src/backend/controllers/verifier.py:56 src/backend/models/splitter.py:219
+#: src/backend/models/verifier.py:40
 msgid "GET_INVOICE_BY_ID_ERROR"
 msgstr ""
 
@@ -797,6 +798,14 @@ msgstr ""
 #: src/backend/controllers/verifier.py:555
 #: src/backend/controllers/verifier.py:556
 msgid "VAT_API_ERROR"
+msgstr ""
+
+#: src/backend/controllers/verifier.py:590
+msgid "INVOICE_NOT_FOUND"
+msgstr ""
+
+#: src/backend/controllers/verifier.py:591
+msgid "INVOICE_ID_NOT_FOUND"
 msgstr ""
 
 #: src/backend/models/accounts.py:108
@@ -969,23 +978,23 @@ msgstr ""
 msgid "INSERT_PAGE_ERROR"
 msgstr ""
 
-#: src/backend/models/splitter.py:238
+#: src/backend/models/splitter.py:244
 msgid "GET_DOCUMENTS_ERROR"
 msgstr ""
 
-#: src/backend/models/splitter.py:260 src/backend/models/splitter.py:283
+#: src/backend/models/splitter.py:266 src/backend/models/splitter.py:289
 msgid "GET_PAGES_ERROR"
 msgstr ""
 
-#: src/backend/models/splitter.py:305
+#: src/backend/models/splitter.py:311
 msgid "GET_MAX_SOURCE_PAGE_VALUE_ERROR"
 msgstr ""
 
-#: src/backend/models/splitter.py:328
+#: src/backend/models/splitter.py:334
 msgid "GET_DOCUMENT_ERROR"
 msgstr ""
 
-#: src/backend/models/splitter.py:350
+#: src/backend/models/splitter.py:356
 msgid "GET_DOCUMENT_MAX_SPLIT_INDEX_ERROR"
 msgstr ""
 
