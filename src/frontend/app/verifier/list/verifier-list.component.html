@@ -1,8 +1,9 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
     <mat-sidenav #sidenav mode="side" opened class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem" [class.pointer-events-none]="this.loading">
-            <i class="fa-solid fa-sync-alt mr-4 cursor-pointer" (click)="resetInvoices()"
-               [matTooltip]="'VERIFIER.reset_document_list' | translate"></i>
+            <i class="fa-solid text-gray-900 fa-sync-alt mr-4 cursor-pointer transition-all duration-300"
+               [ngClass]="{'text-green-400': this.customerFilter.value, 'fa-beat': this.customerFilter.value}"
+               [matTooltip]="'VERIFIER.reset_document_list' | translate" (click)="resetInvoices()"></i>
             {{ "VERIFIER.suppliers_by_customer" | translate }}
             <i [class.fa-compress-arrows-alt]="this.expanded" [class.fa-expand-arrows-alt]="!this.expanded"
                class="fa-solid ml-4 cursor-pointer" (click)="expandAll()"
@@ -10,17 +11,13 @@
         </h3>
         <mat-divider></mat-divider>
         <div class="pb-6">
-            <mat-form-field class="px-4 pt-4 -mb-6 w-full" appearance="outline"
-                            [class.pointer-events-none]="this.loadingCustomers || this.dataSource.data.length === 0">
+            <mat-form-field class="px-4 pt-4 -mb-6 w-full" appearance="outline" [class.pointer-events-none]="this.loadingCustomers || this.dataSource.data.length === 0">
                 <mat-label>
                     {{ 'VERIFIER.search_customer' | translate }}
                 </mat-label>
-                <input matInput type="text" [formControl]="this.customerFilter"
-                       (keyup)="filterCustomers()"
-                       autocomplete="off"
+                <input matInput type="text" [formControl]="this.customerFilter" (keyup)="filterCustomers()" autocomplete="off"
                        [readonly]="this.loadingCustomers || this.dataSource.data.length === 0">
-                <button matSuffix class="text-gray-900 cursor-pointer" (click)="resetSearchCustomer()"
-                        *ngIf="this.customerFilter.value">
+                <button matSuffix class="text-gray-900 cursor-pointer" (click)="resetSearchCustomer()" *ngIf="this.customerFilter.value">
                     <i class="fa-solid fa-sync-alt text-xl relative mr-4"
                        [matTooltip]="'VERIFIER.reset_customers_search' | translate"></i>
                 </button>
