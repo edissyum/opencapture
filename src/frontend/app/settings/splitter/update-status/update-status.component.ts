@@ -19,7 +19,6 @@ import {of} from "rxjs";
 })
 export class SplitterUpdateStatusComponent implements OnInit {
   loading           : boolean     = false;
-  panelOpenState    : boolean     = true;
   identifierControl : FormControl = new FormControl<any>('');
   statusControl     : FormControl = new FormControl<any>('');
   identifiers       : number[]    = [];
