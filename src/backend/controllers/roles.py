@@ -47,13 +47,13 @@ def update_role(role_id, data):
                 "errors": gettext('UPDATE_ROLE_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('UPDATE_ROLE_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def create_role(data):
@@ -75,7 +75,7 @@ def create_role(data):
             "errors": gettext('CREATE_ROLE_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def update_role_privilege(role_id, privileges):
@@ -95,13 +95,13 @@ def update_role_privilege(role_id, privileges):
                 "errors": gettext('UPDATE_ROLE_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('UPDATE_ROLE_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_role_by_id(role_id):
@@ -114,7 +114,7 @@ def get_role_by_id(role_id):
             "errors": gettext('GET_ROLE_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def delete_role(role_id):
@@ -128,13 +128,13 @@ def delete_role(role_id):
                 "errors": gettext('DELETE_ROLE_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DELETE_ROLE_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def disable_role(role_id):
@@ -148,13 +148,13 @@ def disable_role(role_id):
                 "errors": gettext('DISABLE_ROLE_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DISABLE_ROLE_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def enable_role(role_id):
@@ -168,10 +168,10 @@ def enable_role(role_id):
                 "errors": gettext('ENABLE_ROLE_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('ENABLE_ROLE_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400

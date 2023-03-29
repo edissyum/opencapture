@@ -89,7 +89,7 @@ def export_xml(data, log, regex, invoice_info, database):
             "errors": gettext('XML_DESTINATION_FOLDER_DOESNT_EXISTS'),
             "message": folder_out
         }
-        return response, 401
+        return response, 400
 
 
 def compress_pdf(input_file, output_file, compress_id):
@@ -267,7 +267,7 @@ def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
             "errors": gettext('PDF_DESTINATION_FOLDER_DOESNT_EXISTS'),
             "message": folder_out
         }
-        return response, 401
+        return response, 40
 
 
 def ocrise_file(file, lang, log, folder_out, filename):
@@ -336,7 +336,7 @@ def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
             "errors": gettext('PDF_DESTINATION_FOLDER_DOESNT_EXISTS'),
             "message": folder_out
         }
-        return response, 401
+        return response, 400
 
 
 def export_mem(data, invoice_info, log, regex, database):

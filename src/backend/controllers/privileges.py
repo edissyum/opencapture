@@ -37,7 +37,7 @@ def get_privileges():
             "errors": gettext('GET_PRIVILEGES_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_privileges_by_role_id(args):
@@ -65,4 +65,4 @@ def get_privileges_by_role_id(args):
             "errors": gettext('GET_PRIVILEGES_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
