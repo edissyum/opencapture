@@ -83,7 +83,7 @@
                     <span class="relative text-xl tracking-wider px-1.5 bg-white left-10 top-10">
                         <span *ngIf="!category.edit">
                             {{ getCategoryLabel(category) }}
-                            <span (click)="category.edit = !category.edit">
+                            <span (click)="category.edit = !category.edit" *ngIf="category['id'] !== 'lines'">
                                 <i class="fa-solid fa-edit cursor-pointer mx-1 text-green-400"></i>
                             </span>
                         </span>
