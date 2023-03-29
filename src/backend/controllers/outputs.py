@@ -65,13 +65,13 @@ def duplicate_output(output_id):
                 "errors": gettext('DUPLICATE_OUTPUT_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DUPLICATE_OUTPUT_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def is_path_allowed(parameters):
@@ -100,7 +100,7 @@ def update_output(output_id, data):
             "errors": gettext('UPDATE_OUTPUT_ERROR'),
             "message": gettext('NOT_ALLOWED_OUTPUT_PATH')
         }
-        return response, 401
+        return response, 400
 
     _, error = outputs.get_output_by_id({'output_id': output_id})
     if error is None:
@@ -122,13 +122,13 @@ def update_output(output_id, data):
                 "errors": gettext('UPDATE_OUTPUT_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('UPDATE_OUTPUT_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def create_output(data):
@@ -152,7 +152,7 @@ def create_output(data):
             "errors": gettext('CREATE_OUTPUT_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_output_by_id(output_id):
@@ -165,7 +165,7 @@ def get_output_by_id(output_id):
             "errors": gettext('GET_OUTPUT_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_output_type_by_id(output_type_id):
@@ -178,7 +178,7 @@ def get_output_type_by_id(output_type_id):
             "errors": gettext('GET_OUTPUT_TYPE_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def delete_output(output_id):
@@ -192,13 +192,13 @@ def delete_output(output_id):
                 "errors": gettext('DELETE_OUTPUT_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DELETE_OUTPUT_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_allowed_path():

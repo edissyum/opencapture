@@ -174,4 +174,4 @@ def get_image_from_pdf(positions_mask_id):
             'nb_pages': nb_pages
         }), 200
     else:
-        return '', 401
+        return '', 400

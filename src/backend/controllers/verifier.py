@@ -56,7 +56,7 @@ def get_invoice_by_id(invoice_id):
             "errors": gettext('GET_INVOICE_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def retrieve_invoices(args):
@@ -170,7 +170,7 @@ def update_position_by_invoice_id(invoice_id, args):
                 "errors": gettext('UPDATE_INVOICE_POSITIONS_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def update_page_by_invoice_id(invoice_id, args):
@@ -193,7 +193,7 @@ def update_page_by_invoice_id(invoice_id, args):
                 "errors": gettext('UPDATE_INVOICE_PAGES_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def update_invoice_data_by_invoice_id(invoice_id, args):
@@ -216,7 +216,7 @@ def update_invoice_data_by_invoice_id(invoice_id, args):
                 "errors": gettext('UPDATE_INVOICE_DATA_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def delete_invoice_data_by_invoice_id(invoice_id, field_id):
@@ -234,7 +234,7 @@ def delete_invoice_data_by_invoice_id(invoice_id, field_id):
                 "errors": gettext('UPDATE_INVOICE_DATA_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def delete_documents_by_invoice_id(invoice_id):
@@ -272,7 +272,7 @@ def delete_invoice_position_by_invoice_id(invoice_id, field_id):
                 "errors": gettext('UPDATE_INVOICE_POSITIONS_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def delete_invoice_page_by_invoice_id(invoice_id, field_id):
@@ -290,7 +290,7 @@ def delete_invoice_page_by_invoice_id(invoice_id, field_id):
                 "errors": gettext('UPDATE_INVOICE_PAGES_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def delete_invoice(invoice_id):
@@ -304,13 +304,13 @@ def delete_invoice(invoice_id):
                 "errors": gettext('DELETE_INVOICE_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DELETE_INVOICE_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def update_invoice(invoice_id, data):
@@ -325,13 +325,13 @@ def update_invoice(invoice_id, data):
                 "errors": gettext('UPDATE_INVOICE_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('UPDATE_INVOICE_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def remove_lock_by_user_id(user_id):
@@ -348,7 +348,7 @@ def remove_lock_by_user_id(user_id):
             "errors": gettext('REMOVE_LOCK_BY_USER_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def export_mem(invoice_id, data):
@@ -595,7 +595,7 @@ def get_totals(status, user_id, form_id):
             "errors": gettext('GET_TOTALS_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_unseen():

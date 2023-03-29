@@ -75,7 +75,7 @@ def update_input(input_id, data):
             "errors": gettext('CREATE_INPUT_ERROR'),
             "message": gettext('NOT_ALLOWED_INPUT_PATH')
         }
-        return response, 401
+        return response, 400
 
     _, error = inputs.get_input_by_id({'input_id': input_id})
 
@@ -89,13 +89,13 @@ def update_input(input_id, data):
                 "errors": gettext('UPDATE_INPUT_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('UPDATE_INPUT_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def duplicate_input(input_id):
@@ -120,13 +120,13 @@ def duplicate_input(input_id):
                 "errors": gettext('DUPLICATE_INPUT_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DUPLICATE_INPUT_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def create_input(data):
@@ -135,7 +135,7 @@ def create_input(data):
             "errors": gettext('CREATE_INPUT_ERROR'),
             "message": gettext('NOT_ALLOWED_INPUT_PATH')
         }
-        return response, 401
+        return response, 400
 
     _columns = {
         'module': data['module'],
@@ -162,7 +162,7 @@ def create_input(data):
             "errors": gettext('CREATE_INPUT_ERROR'),
             "message": gettext('INPUT_ID_ALREADY_EXISTS')
         }
-        return response, 401
+        return response, 400
 
     input_info, error = get_inputs({
         'where': ['input_folder = %s', 'module = %s', 'status <> %s'],
@@ -173,7 +173,7 @@ def create_input(data):
             "errors": gettext('CREATE_INPUT_ERROR'),
             "message": gettext('INPUT_FOLDER_ALREADY_EXISTS')
         }
-        return response, 401
+        return response, 400
 
     res, error = inputs.create_input({'columns': _columns})
     if error is None:
@@ -186,7 +186,7 @@ def create_input(data):
             "errors": gettext('CREATE_INPUT_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_input_by_id(input_id):
@@ -199,7 +199,7 @@ def get_input_by_id(input_id):
             "errors": gettext('GET_INPUT_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_input_by_input_id(input_id):
@@ -212,7 +212,7 @@ def get_input_by_input_id(input_id):
             "errors": gettext('GET_INPUT_BY_INPUT_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_input_by_form_id(form_id):
@@ -233,13 +233,13 @@ def delete_input(input_id):
                 "errors": gettext('DELETE_INPUT_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DELETE_INPUT_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def delete_script_and_incron(args):

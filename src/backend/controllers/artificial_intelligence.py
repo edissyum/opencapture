@@ -79,7 +79,7 @@ def get_model_by_id(model_id):
             "errors": gettext('GET_IA_MODEL_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def create_model(data):
@@ -103,7 +103,7 @@ def create_model(data):
             "errors": gettext('CREATE_IA_MODEL_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def update_model(args):
@@ -114,7 +114,7 @@ def update_model(args):
         "errors": gettext('UPDATE_IA_MODEL_ERROR'),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def launch_train(data, model_name):
@@ -392,7 +392,7 @@ def launch_pred(model_id, list_files):
         "errors": gettext('GET_IA_MODEL_BY_ID_ERROR'),
         "message": gettext('IA_MODEL_DOESNT_EXISTS')
     }
-    return response, 401
+    return response, 400
 
 
 def model_testing(model, csv_file):

@@ -42,7 +42,7 @@ def get_positions_masks(args):
         "errors": gettext("POSITION_MASKS_ERROR"),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def add_positions_mask(args):
@@ -66,7 +66,7 @@ def add_positions_mask(args):
             "errors": gettext("POSITION_MASKS_ERROR"),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_positions_mask_by_id(position_mask_id):
@@ -81,7 +81,7 @@ def get_positions_mask_by_id(position_mask_id):
             "errors": gettext('GET_POSITION_MASK_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_positions_mask_fields_by_supplier_id(supplier_id):
@@ -98,7 +98,7 @@ def get_positions_mask_fields_by_supplier_id(supplier_id):
                 "errors": gettext('GET_POSITION_MASK_BY_ID_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def update_positions_mask(position_mask_id, args):
@@ -125,13 +125,13 @@ def update_positions_mask(position_mask_id, args):
                 "errors": gettext("POSITION_MASKS_ERROR"),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext("POSITION_MASKS_ERROR"),
             "message": gettext(error)
         }
-    return response, 401
+    return response, 400
 
 
 def delete_positions_mask(position_mask_id):
@@ -145,13 +145,13 @@ def delete_positions_mask(position_mask_id):
                 "errors": gettext('DELETE_POSITION_MASK_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DELETE_POSITION_MASK_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def duplicate_positions_mask(position_mask_id):
@@ -176,13 +176,13 @@ def duplicate_positions_mask(position_mask_id):
                 "errors": gettext('DUPLICATE_POSITIONS_MASKS_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DUPLICATE_POSITIONS_MASKS_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def disable_positions_mask(position_mask_id):
@@ -196,13 +196,13 @@ def disable_positions_mask(position_mask_id):
                 "errors": gettext('DISABLE_POSITION_MASK_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DISABLE_POSITION_MASK_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def enable_positions_mask(position_mask_id):
@@ -216,13 +216,13 @@ def enable_positions_mask(position_mask_id):
                 "errors": gettext('ENABLE_POSITION_MASK_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('ENABLE_POSITION_MASK_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def update_positions_by_positions_mask_id(position_mask_id, args):
@@ -245,7 +245,7 @@ def update_positions_by_positions_mask_id(position_mask_id, args):
                 "errors": gettext('UPDATE_POSITIONS_BY_POSITIONS_MASK_ID_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def update_pages_by_positions_mask_id(position_mask_id, args):
@@ -268,7 +268,7 @@ def update_pages_by_positions_mask_id(position_mask_id, args):
                 "errors": gettext('UPDATE_PAGES_BY_POSITIONS_MASK_ID_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def delete_position_by_positions_mask_id(position_mask_id, field_id):
@@ -286,7 +286,7 @@ def delete_position_by_positions_mask_id(position_mask_id, field_id):
                 "errors": gettext('DELETE_POSITIONS_BY_POSITION_MASK_ID_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
 
 
 def delete_page_by_positions_mask_id(position_mask_id, field_id):
@@ -304,4 +304,4 @@ def delete_page_by_positions_mask_id(position_mask_id, field_id):
                 "errors": gettext('DELETE_PAGES_BY_POSITION_MASK_ID_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400

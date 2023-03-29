@@ -61,7 +61,7 @@ def retrieve_configuration_by_label(label):
         "errors": gettext("RETRIEVE_CONFIGURATION_ERRORS"),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def retrieve_configurations(args):
@@ -77,7 +77,7 @@ def retrieve_configurations(args):
         "errors": gettext("RETRIEVE_CONFIGURATIONS_ERRORS"),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def retrieve_docservers(args):
@@ -93,7 +93,7 @@ def retrieve_docservers(args):
         "errors": gettext("RETRIEVE_DOCSERVERS_ERRORS"),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def retrieve_regex(args):
@@ -109,7 +109,7 @@ def retrieve_regex(args):
         "errors": gettext("RETRIEVE_REGEX_ERRORS"),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def update_configuration_by_id(args, configuration_id):
@@ -121,7 +121,7 @@ def update_configuration_by_id(args, configuration_id):
                 "errors": gettext("UPDATE_CONFIGURATION_ERROR"),
                 "message": gettext("JWT_EXPIRATION_COULDNT_BE_ZERO_OR_LESS")
             }
-            return response, 401
+            return response, 400
         data = {
             'configuration_id': configuration_id,
             'data': {
@@ -141,7 +141,7 @@ def update_configuration_by_id(args, configuration_id):
         "errors": gettext("UPDATE_CONFIGURATION_ERROR"),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def update_configuration_by_label(args, configuration_label):
@@ -153,7 +153,7 @@ def update_configuration_by_label(args, configuration_label):
                 "errors": gettext("UPDATE_CONFIGURATION_ERROR"),
                 "message": gettext("JWT_EXPIRATION_COULDNT_BE_ZERO_OR_LESS")
             }
-            return response, 401
+            return response, 400
         data = {
             'configuration_label': configuration_label,
             'data': {
@@ -173,7 +173,7 @@ def update_configuration_by_label(args, configuration_label):
         "errors": gettext("UPDATE_CONFIGURATION_ERROR"),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def update_regex(args, regex_id):
@@ -194,7 +194,7 @@ def update_regex(args, regex_id):
         "errors": gettext("UPDATE_REGEX_ERROR"),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def update_docserver(args, docserver_id):
@@ -214,7 +214,7 @@ def update_docserver(args, docserver_id):
         "errors": gettext("UPDATE_DOCSERVER_ERROR"),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def get_last_git_version():
@@ -254,7 +254,7 @@ def update_login_image(image_content):
                 return {
                     "errors": gettext("ERROR_UPDATING_IMAGE"),
                     "message": gettext("CUSTOM_IMAGE_PATH_NOT_WRITEABLE_OR_NOT_EXISTS")
-                }, 401
+                }, 400
             image_filename = 'login_image.png'
             image_handler = open(image_path + '/' + image_filename, 'wb')
             image_handler.write(image_data)
@@ -264,9 +264,9 @@ def update_login_image(image_content):
             return {
                "errors": gettext("ERROR_UPDATING_IMAGE"),
                "message": gettext("CUSTOM_IMAGE_PATH_NOT_WRITEABLE_OR_NOT_EXISTS")
-            }, 401
+            }, 400
     else:
         return {
            "errors": gettext("ERROR_UPDATING_IMAGE"),
            "message": gettext("CUSTOM_NOT_PRESENT")
-        }, 401
+        }, 400
