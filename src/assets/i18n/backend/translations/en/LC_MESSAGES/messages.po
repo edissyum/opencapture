@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2023-03-29 11:03+0200\n"
+"POT-Creation-Date: 2023-03-29 14:52+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -15,35 +15,36 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.1\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: launch_worker.py:48 launch_worker_splitter.py:48
 msgid "FILE_UPLOADED"
 msgstr "File uploaded successfully via fs-watcher with input"
 
-#: src/backend/verifier_exports.py:85 src/backend/verifier_exports.py:88
+#: src/backend/verifier_exports.py:86 src/backend/verifier_exports.py:89
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Destination folder for XML doesn't exists"
 
-#: src/backend/verifier_exports.py:154 src/backend/verifier_exports.py:157
+#: src/backend/verifier_exports.py:264 src/backend/verifier_exports.py:267
+#: src/backend/verifier_exports.py:333 src/backend/verifier_exports.py:336
 msgid "PDF_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Destination folder for PDF doesn't exists"
 
 #: src/backend/controllers/splitter.py:438
-#: src/backend/controllers/splitter.py:444 src/backend/verifier_exports.py:309
-#: src/backend/verifier_exports.py:315 src/backend/verifier_exports.py:321
+#: src/backend/controllers/splitter.py:444 src/backend/verifier_exports.py:488
+#: src/backend/verifier_exports.py:494 src/backend/verifier_exports.py:500
 msgid "EXPORT_MEM_ERROR"
 msgstr "Error during MEM Courrier export"
 
-#: src/backend/verifier_exports.py:316
+#: src/backend/verifier_exports.py:495
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "PDF file not found"
 
-#: src/backend/verifier_exports.py:327
+#: src/backend/verifier_exports.py:506
 msgid "MEM_WS_INFO_WRONG"
 msgstr "MEM Courrier informations are wrong"
 
-#: src/backend/controllers/splitter.py:450 src/backend/verifier_exports.py:333
+#: src/backend/controllers/splitter.py:450 src/backend/verifier_exports.py:512
 msgid "MEM_WS_INFO_EMPTY"
 msgstr "MEM Courrier informations are empty"
 
@@ -115,9 +116,9 @@ msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "A supplier already exists with this vat number"
 
 #: src/backend/controllers/accounts.py:357 src/backend/controllers/user.py:215
-#: src/backend/controllers/user.py:244 src/backend/models/accounts.py:234
+#: src/backend/controllers/user.py:245 src/backend/models/accounts.py:234
 #: src/backend/models/accounts.py:257 src/backend/models/accounts.py:276
-#: src/backend/models/user.py:209 src/backend/models/user.py:231
+#: src/backend/models/user.py:209
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr "Error retrieving customer"
 
@@ -341,7 +342,7 @@ msgid "FORMS_ERROR"
 msgstr "Forms error"
 
 #: src/backend/controllers/forms.py:112 src/backend/controllers/forms.py:161
-#: src/backend/models/forms.py:63
+#: src/backend/models/forms.py:66
 msgid "GET_FORM_BY_ID_ERROR"
 msgstr "Error retrieving form"
 
@@ -349,8 +350,8 @@ msgstr "Error retrieving form"
 msgid "GET_FORM_FIELDS_BY_FORM_ID_ERROR"
 msgstr "Error retrieving form fields"
 
-#: src/backend/controllers/forms.py:208 src/backend/controllers/forms.py:336
-#: src/backend/controllers/forms.py:342
+#: src/backend/controllers/forms.py:208 src/backend/controllers/forms.py:337
+#: src/backend/controllers/forms.py:343
 msgid "UPDATE_FORMS_FIELDS_ERROR"
 msgstr "Error updating form fields"
 
@@ -364,19 +365,19 @@ msgstr "Error deleting form"
 msgid "COPY_OF"
 msgstr "Copy of"
 
-#: src/backend/controllers/forms.py:260 src/backend/controllers/forms.py:266
+#: src/backend/controllers/forms.py:261 src/backend/controllers/forms.py:267
 msgid "DUPLICATE_FORM_ERROR"
 msgstr "Error duplicating form"
 
-#: src/backend/controllers/forms.py:280 src/backend/controllers/forms.py:286
+#: src/backend/controllers/forms.py:281 src/backend/controllers/forms.py:287
 msgid "DISABLE_FORM_ERROR"
 msgstr "Error disabling form"
 
-#: src/backend/controllers/forms.py:300 src/backend/controllers/forms.py:306
+#: src/backend/controllers/forms.py:301 src/backend/controllers/forms.py:307
 msgid "ENABLE_FORM_ERROR"
 msgstr "Error enabling form"
 
-#: src/backend/controllers/forms.py:322
+#: src/backend/controllers/forms.py:323
 msgid "GET_FORMS_FIELDS_ERROR"
 msgstr "Error while retrieving form fields"
 
@@ -614,9 +615,9 @@ msgid "BATCH_ID_NOT_FOUND"
 msgstr "Batch %(id)s not found"
 
 #: src/backend/controllers/splitter.py:242
-#: src/backend/controllers/verifier.py:599
+#: src/backend/controllers/verifier.py:616
 msgid "UPDATE_STATUS_ERROR"
-msgstr ""
+msgstr "Error while updating status"
 
 #: src/backend/controllers/splitter.py:277
 #: src/backend/controllers/verifier.py:348
@@ -677,7 +678,7 @@ msgid "OPENADS_ADD_DOC_ERROR"
 msgstr "OpenADS add document error"
 
 #: src/backend/controllers/splitter.py:971
-#: src/backend/controllers/verifier.py:578 src/backend/models/splitter.py:572
+#: src/backend/controllers/verifier.py:595 src/backend/models/splitter.py:572
 #: src/backend/models/verifier.py:171
 msgid "GET_TOTALS_ERROR"
 msgstr "Error while retrievings totals"
@@ -716,48 +717,48 @@ msgstr "Erreur while reseting password"
 msgid "RESET_TOKEN_MISMATCH"
 msgstr "Reset token mismatch. Maybe the token is expired"
 
-#: src/backend/controllers/user.py:265
+#: src/backend/controllers/user.py:266
 msgid "UPDATE_PROFILE"
 msgstr "Update profile"
 
-#: src/backend/controllers/user.py:266
+#: src/backend/controllers/user.py:267
 msgid "ERROR_OLD_PASSWORD_NOT_MATCH"
 msgstr "The old password do not match"
 
-#: src/backend/controllers/user.py:272
+#: src/backend/controllers/user.py:273
 msgid "UPDATE_USER"
 msgstr "Update user"
 
-#: src/backend/controllers/user.py:273
+#: src/backend/controllers/user.py:274
 msgid "ERROR_PASSWORD_NOT_MATCH"
 msgstr "Password do not match"
 
-#: src/backend/controllers/user.py:300 src/backend/controllers/user.py:306
+#: src/backend/controllers/user.py:301 src/backend/controllers/user.py:307
 #: src/backend/models/user.py:254 src/backend/models/user.py:320
 msgid "UPDATE_USER_ERROR"
 msgstr "Error while updating user"
 
-#: src/backend/controllers/user.py:320 src/backend/controllers/user.py:326
+#: src/backend/controllers/user.py:321 src/backend/controllers/user.py:327
 msgid "DELETE_USER_ERROR"
 msgstr "Error while deleting user"
 
-#: src/backend/controllers/user.py:340 src/backend/controllers/user.py:346
+#: src/backend/controllers/user.py:341 src/backend/controllers/user.py:347
 msgid "DISABLE_USER_ERROR"
 msgstr "Error while disabling user"
 
-#: src/backend/controllers/user.py:360 src/backend/controllers/user.py:366
+#: src/backend/controllers/user.py:361 src/backend/controllers/user.py:367
 msgid "ENABLE_USER_ERROR"
 msgstr "Error while enabling user"
 
-#: src/backend/controllers/user.py:383 src/backend/controllers/user.py:389
+#: src/backend/controllers/user.py:384 src/backend/controllers/user.py:390
 #: src/backend/models/user.py:276
 msgid "UPDATE_CUSTOMERS_USER_ERROR"
 msgstr "Error while updating user customers"
 
-#: src/backend/controllers/user.py:404 src/backend/controllers/user.py:411
+#: src/backend/controllers/user.py:405 src/backend/controllers/user.py:412
 #: src/backend/models/user.py:298
 msgid "UPDATE_FORMS_USER_ERROR"
-msgstr ""
+msgstr "Error while updating user forms"
 
 #: src/backend/controllers/verifier.py:56 src/backend/models/splitter.py:219
 #: src/backend/models/verifier.py:40
@@ -789,28 +790,28 @@ msgstr "Error while deleting invoice"
 msgid "UPDATE_INVOICE_ERROR"
 msgstr "Error while updating invoice"
 
-#: src/backend/controllers/verifier.py:478
-#: src/backend/controllers/verifier.py:481
+#: src/backend/controllers/verifier.py:495
 #: src/backend/controllers/verifier.py:498
-#: src/backend/controllers/verifier.py:521
-#: src/backend/controllers/verifier.py:522
+#: src/backend/controllers/verifier.py:515
+#: src/backend/controllers/verifier.py:538
+#: src/backend/controllers/verifier.py:539
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Error while connecting to INSEE API"
 
-#: src/backend/controllers/verifier.py:550
+#: src/backend/controllers/verifier.py:567
 msgid "VAT_NOT_VALID"
 msgstr "VAT number not valid"
 
-#: src/backend/controllers/verifier.py:555
-#: src/backend/controllers/verifier.py:556
+#: src/backend/controllers/verifier.py:572
+#: src/backend/controllers/verifier.py:573
 msgid "VAT_API_ERROR"
 msgstr "API for VAT number unreachable"
 
-#: src/backend/controllers/verifier.py:590
+#: src/backend/controllers/verifier.py:607
 msgid "INVOICE_NOT_FOUND"
 msgstr "Invoice not found"
 
-#: src/backend/controllers/verifier.py:591
+#: src/backend/controllers/verifier.py:608
 msgid "INVOICE_ID_NOT_FOUND"
 msgstr "Invoice %(id)s not found"
 
@@ -884,27 +885,32 @@ msgstr "Doctype already exist"
 msgid "UPDATE_DOCTYPE_ERROR"
 msgstr "Error while updating doctype"
 
-#: src/backend/models/forms.py:86
+#: src/backend/models/forms.py:45
+#, fuzzy
+msgid "GET_FORMS_ERROR"
+msgstr "Forms error"
+
+#: src/backend/models/forms.py:89
 msgid "GET_FORM_SETTINGS_BY_ID_ERROR"
 msgstr "Error while retrieving form settings"
 
-#: src/backend/models/forms.py:109
+#: src/backend/models/forms.py:112
 msgid "GET_DEFAULT_FORM_ERROR"
 msgstr "Error while retrieving default form"
 
-#: src/backend/models/forms.py:133
+#: src/backend/models/forms.py:136
 msgid "UPDATE_FORM_ERROR"
 msgstr "Error while updating form"
 
-#: src/backend/models/forms.py:155
+#: src/backend/models/forms.py:158
 msgid "UPDATE_FORM_FIELDS_ERROR"
 msgstr "Error while updating form fields"
 
-#: src/backend/models/forms.py:211
+#: src/backend/models/forms.py:215
 msgid "ADD_FORM_ERROR"
 msgstr "Error while creating form"
 
-#: src/backend/models/forms.py:214
+#: src/backend/models/forms.py:218
 msgid "FORM_LABEL_ALREADY_EXIST"
 msgstr "Form label already exist"
 
@@ -1023,6 +1029,11 @@ msgstr "Already registered"
 #: src/backend/models/user.py:162
 msgid "GET_USER_BY_MAIL_ERROR"
 msgstr "No user found with this email address"
+
+#: src/backend/models/user.py:231
+#, fuzzy
+msgid "GET_FORMS_BY_USER_ID_ERROR"
+msgstr "Error retrieving form"
 
 #: src/backend/models/verifier.py:104 src/backend/models/verifier.py:125
 msgid "INVOICE_UPDATE_ERROR"
