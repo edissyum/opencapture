@@ -106,7 +106,6 @@ class DoctypeTest(unittest.TestCase):
         except binascii.Error:
             is_base64 = False
 
-        print(is_base64)
         self.assertEqual(200, response.status_code)
         self.assertEqual(True, is_base64)
 
