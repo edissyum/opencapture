@@ -611,7 +611,7 @@ msgstr "Batch not found"
 
 #: src/backend/controllers/splitter.py:233
 msgid "BATCH_ID_NOT_FOUND"
-msgstr "Batch <br> %(id)s </br> not found"
+msgstr "Batch %(id)s not found"
 
 #: src/backend/controllers/splitter.py:242
 #: src/backend/controllers/verifier.py:591
