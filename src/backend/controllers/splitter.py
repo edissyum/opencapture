@@ -883,7 +883,7 @@ def validate(args):
         """
             Change status to END
         """
-        splitter.change_status({
+        splitter.update_status({
             'id': args['batchMetadata']['id'],
             'status': 'END'
         })
@@ -1022,7 +1022,7 @@ def merge_batches(parent_id, batches):
                         'source_page': parent_max_source_page
                     })
 
-                splitter.change_status({
+                splitter.update_status({
                     'id': batch,
                     'status': 'MERG'
                 })
