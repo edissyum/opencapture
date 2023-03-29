@@ -17,6 +17,8 @@
 
 import os
 import shutil
+from datetime import datetime
+
 import urllib3
 import unittest
 import warnings
@@ -276,7 +278,8 @@ class VerifierTest(unittest.TestCase):
             'thumbSize': {
                 'width': 1228,
                 'height': 1736
-            }
+            },
+            'registerDate': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         }
         response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/ocrOnFly', json=data,
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})

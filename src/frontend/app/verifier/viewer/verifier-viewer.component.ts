@@ -766,7 +766,8 @@ export class VerifierViewerComponent implements OnInit {
                     {
                         selection: this.getSelectionByCpt(selection, cpt),
                         fileName: this.currentFilename, lang: lang,
-                        thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height}
+                        thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height},
+                        registerDate: this.invoice.register_date
                     }, {headers: this.authService.headers})
                     .pipe(
                         tap((data: any) => {
