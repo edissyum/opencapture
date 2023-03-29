@@ -33,7 +33,7 @@ class SplitterTest(unittest.TestCase):
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
 
     def create_batch(self):
-        file = './custom/test/src/backend/process_queue_splitter.py'
+        file = f'./custom/{CUSTOM_ID}/src/backend/process_queue_splitter.py'
         text_to_search = rf"@kuyruk.task(queue='splitter_{CUSTOM_ID}')"
         text_to_replace = f"# @kuyruk.task(queue='splitter_{CUSTOM_ID}')"
 
@@ -55,7 +55,7 @@ class SplitterTest(unittest.TestCase):
             filename="splitter_test.pdf",
             content_type="application/pdf",
         )
-        return self.app.post(f'/{CUSTOM_ID}/ws/splitter/upload?inputId=default_input', data={"file": my_file},
+        return self.app.post(f'/{CUSTOM_ID}/ws/splitter/upload?inputId=default_input&userId=1', data={"file": my_file},
                              content_type='multipart/form-data',
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
