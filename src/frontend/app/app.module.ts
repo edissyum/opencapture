@@ -85,7 +85,7 @@ import { UpdateInputComponent } from './settings/verifier/inputs/update/update-i
 import { UpdatePositionsMaskComponent } from './settings/verifier/positions-mask/update/update-positions-mask.component';
 import { PositionsMaskListComponent } from './settings/verifier/positions-mask/list/positions-mask-list.component';
 import { CreatePositionsMaskComponent } from './settings/verifier/positions-mask/create/create-positions-mask.component';
-import { VerifierStatusUpdateComponent } from './settings/verifier/status-update/status-update.component';
+import { VerifierStatusUpdateComponent } from './settings/verifier/update-status/update-status.component';
 import { HistoryComponent } from './history/history.component';
 import { SeparatorComponent } from './settings/splitter/separator/separator.component';
 import { SplitterCreateInputComponent } from './settings/splitter/inputs/create/create-input.component';

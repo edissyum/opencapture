@@ -14,8 +14,8 @@ import {of} from "rxjs";
 
 @Component({
   selector: 'app-status-update',
-  templateUrl: './status-update.component.html',
-  styleUrls: ['./status-update.component.scss']
+  templateUrl: './update-status.component.html',
+  styleUrls: ['./update-status.component.scss']
 })
 export class VerifierStatusUpdateComponent implements OnInit {
   loading           : boolean     = false;

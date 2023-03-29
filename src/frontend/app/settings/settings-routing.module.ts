@@ -62,7 +62,7 @@ import { LoginMethodsComponent } from "./general/login-methods/login-methods.com
 import { VerifierDisplayComponent } from "./verifier/display/display.component";
 import { UserQuotaComponent } from "./general/user-quota/user-quota.component";
 import { SplitterUpdateStatusComponent } from "./splitter/update-status/update-status.component";
-import { VerifierStatusUpdateComponent } from "./verifier/status-update/status-update.component";
+import { VerifierStatusUpdateComponent } from "./verifier/update-status/update-status.component";
 
 const routes: Routes = [
     {
