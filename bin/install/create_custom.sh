@@ -48,6 +48,7 @@ done
 # Replace dot and - with _ in custom_id to avoid python error
 oldCustomId=$customId
 customId=${customId//[\.\-]/_}
+customId=$(echo "$customId" | tr "[:upper:]" "[:lower:]")
 
 if [[ "$customId" =~ [[:upper:]] ]]; then
     echo "##########################################################################"

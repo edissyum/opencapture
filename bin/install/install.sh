@@ -55,6 +55,7 @@ done
 # Replace dot with _ in custom_id to avoir python error
 oldCustomId=$customId
 customId=${customId//[\.\-]/_}
+customId=$(echo "$customId" | tr "[:upper:]" "[:lower:]")
 
 if [[ "$customId" =~ [[:upper:]] ]]; then
     echo "##########################################################################"
