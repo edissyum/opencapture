@@ -533,6 +533,7 @@
 	"INVOICES": {
 		"data_deleted": "Data deleted",
 		"field_duplicated": "Field <strong>{{ input }}</strong> duplicated successfully",
+		"identifier": "Invoice identifier",
 		"position_and_data_updated": "Positions and data of <strong>{{ input }}</strong> updated successfully",
 		"supplier_infos_updated": "Document updated with new supplier informations"
 	},
@@ -839,6 +840,7 @@
 		"regex": "Regex list",
 		"roles_list": "Roles list",
 		"splitter": "Splitter",
+		"status_update": "Status update",
 		"update_doc_type": "Update doctype",
 		"update_input": "Update input",
 		"update_output": "Update output",
@@ -863,6 +865,7 @@
 		"batches": "batch",
 		"bundle_separator": "Batches separator",
 		"can_not_merge_same_batch": "Please merge a batch different from the current one",
+		"change_by_identifier": "Change by identifier",
 		"change_document_position": "Change document position",
 		"confirm_batch_delete": "Are you sure you want to delete this batch ?",
 		"confirm_delete_all_batches": "Are you sure you want to delete all checked batches ?",
@@ -945,7 +948,12 @@
 		"verifier_documents_validated_per_user": "Documents validated per user"
 	},
 	"STATUS": {
-		"list": "List of status"
+		"UPDATE_SUCCESS": "Status updated with success",
+		"add_identifier": "Add identifier",
+		"list": "List of status",
+		"no_identifier_added": "No identifier added",
+		"update": "Update status",
+		"update_status_to": "Update status to"
 	},
 	"TYPES": {
 		"date": "Date",

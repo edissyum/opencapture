@@ -29,19 +29,19 @@ def get_invoice_by_id(args):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
     error = None
-    user = database.select({
+    invoice = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['invoices'],
         'where': ['id = %s'],
         'data': [args['invoice_id']]
     })
 
-    if not user:
+    if not invoice:
         error = gettext('GET_INVOICE_BY_ID_ERROR')
     else:
-        user = user[0]
+        invoice = invoice[0]
 
-    return user, error
+    return invoice, error
 
 
 def get_invoices(args):
@@ -171,3 +171,23 @@ def get_totals(args):
         error = gettext('GET_TOTALS_ERROR')
 
     return total[args['time']], error
+
+
+def update_status(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    args = {
+        'table': ['invoices'],
+        'set': {
+            'status': args['status']
+        },
+        'where': ['id = ANY(%s)'],
+        'data': [args['ids']]
+    }
+    res = database.update(args)
+    return res

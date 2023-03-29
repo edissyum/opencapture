@@ -1,5 +1,9 @@
 ALTER TABLE form_models ADD COLUMN "labels" JSONB DEFAULT '{}';
 
+
+INSERT INTO "privileges" ("label", "parent") VALUES ('update_status', 'splitter');
+INSERT INTO "privileges" ("label", "parent") VALUES ('update_status', 'verifier');
+
 INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "data") VALUES ('export_facturx', 'Export PDF avec métadonnée (FacturX)', 'verifier', '{
     "options": {
         "auth": [],

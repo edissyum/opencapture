@@ -216,12 +216,32 @@ def download_original_file(batch_id):
     return response, 400
 
 
-def change_status(args):
-    res = splitter.change_status(args)
+def update_status(args):
+    if 'database' in current_context:
+        database = current_context.database
 
-    if res:
-        return res, 200
     else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    for _id in args['ids']:
+        batches = splitter.get_batch_by_id({'id': _id})
+        if len(batches[0]) < 1:
+            response = {
+                "errors": gettext('BATCH_NOT_FOUND'),
+                "message": gettext('BATCH_ID_NOT_FOUND', id=_id)
+            }
+            return response, 401
+
+    res = splitter.update_status(args)
+    if res:
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('UPDATE_STATUS_ERROR'),
+            "message": ''
+        }
         return res, 400
 
 
@@ -879,8 +899,8 @@ def validate(args):
         """
             Change status to END
         """
-        splitter.change_status({
-            'id': args['batchMetadata']['id'],
+        splitter.update_status({
+            'ids': [args['batchMetadata']['id']],
             'status': 'END'
         })
 
@@ -1018,8 +1038,8 @@ def merge_batches(parent_id, batches):
                         'source_page': parent_max_source_page
                     })
 
-                splitter.change_status({
-                    'id': batch,
+                splitter.update_status({
+                    'ids': [batch],
                     'status': 'MERG'
                 })
 

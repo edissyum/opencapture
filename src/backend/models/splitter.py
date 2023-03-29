@@ -209,17 +209,18 @@ def get_batch_by_id(args):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
     error = None
-    batches = database.select({
+    batch = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['splitter_batches'],
         'where': ['id = %s'],
         'data': [args['id']]
-    })[0]
+    })
+    if not batch:
+        error = gettext('GET_INVOICE_BY_ID_ERROR')
+    else:
+        batch = batch[0]
 
-    if not batches:
-        error = gettext('GET_BATCH_ERROR')
-
-    return batches, error
+    return batch, error
 
 
 def get_batch_documents(args):
@@ -357,7 +358,7 @@ def get_documents_max_split_index(args):
     return pages, error
 
 
-def change_status(args):
+def update_status(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -370,11 +371,10 @@ def change_status(args):
         'set': {
             'status': args['status']
         },
-        'where': ['id = %s'],
-        'data': [args['id']]
+        'where': ['id = ANY(%s)'],
+        'data': [args['ids']]
     }
     res = database.update(args)
-
     return res
 
 
