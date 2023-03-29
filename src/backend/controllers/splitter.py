@@ -217,8 +217,24 @@ def download_original_file(batch_id):
 
 
 def update_status(args):
-    res = splitter.update_status(args)
+    if 'database' in current_context:
+        database = current_context.database
 
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    for _id in args['ids']:
+        batches = splitter.get_batch_by_id({'id': _id})
+        if len(batches) < 1:
+            response = {
+                "errors": gettext('BATCH_NOT_FOUND'),
+                "message": gettext('BATCH_ID_NOT_FOUND', id=_id)
+            }
+            return response, 401
+
+    res = splitter.update_status(args)
     if res:
         return '', 200
     else:
