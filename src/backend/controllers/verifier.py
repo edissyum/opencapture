@@ -583,6 +583,14 @@ def get_totals(status, user_id, form_id):
 
 def update_status(args):
     res = verifier.update_status(args)
+    for _id in args['ids']:
+        invoice = verifier.get_invoice_by_id({'invoice_id': _id})
+        if len(invoice[0]) < 1:
+            response = {
+                "errors": gettext('INVOICE_NOT_FOUND'),
+                "message": gettext('INVOICE_ID_NOT_FOUND', id=_id)
+            }
+            return response, 401
 
     if res:
         return '', 200
