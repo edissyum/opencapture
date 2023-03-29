@@ -188,13 +188,14 @@ def remove_lock_by_user_id(user_id):
 def ocr_on_fly():
     data = request.json
     positions_masks = False
-    print(data['registerDate'])
+
     if 'registerDate' in data:
         register_date = pd.to_datetime(data['registerDate'])
         year = register_date.strftime('%Y')
         month = register_date.strftime('%m')
         year_and_month = year + '/' + month
         data['fileName'] = year_and_month + '/' + data['fileName']
+
     if 'positionsMasks' in data:
         positions_masks = data['positionsMasks']
     result = verifier.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'], positions_masks, data['lang'])
