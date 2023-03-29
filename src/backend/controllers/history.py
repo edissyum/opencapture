@@ -28,7 +28,7 @@ def add_history(args):
             "errors": gettext("ADD_HISTORY_ERROR"),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_history(args):

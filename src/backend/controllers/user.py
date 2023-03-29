@@ -64,7 +64,7 @@ def create_user(args):
             "errors": gettext('CREATE_USER_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_users(args):
@@ -103,7 +103,7 @@ def get_user_by_id(user_id, get_password=False):
             "errors": gettext('GET_USER_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_user_by_mail(user_mail):
@@ -120,7 +120,7 @@ def get_user_by_mail(user_mail):
             "errors": gettext('GET_USER_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_user_by_username(username):
@@ -137,7 +137,7 @@ def get_user_by_username(username):
             "errors": gettext('GET_USER_BY_USERNAME_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def send_email_forgot_password(args):
@@ -160,7 +160,7 @@ def send_email_forgot_password(args):
             "errors": gettext('SEND_EMAIL_FORGOT_PASSWORD_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def reset_password(args):
@@ -180,12 +180,12 @@ def reset_password(args):
             "errors": gettext('RESET_PASSWORD_ERROR'),
             "message": gettext('RESET_TOKEN_MISMATCH')
         }
-        return response, 401
+        return response, 400
     response = {
         "errors": gettext('RESET_PASSWORD_ERROR'),
         "message": gettext('GET_USER_BY_ID_ERROR')
     }
-    return response, 401
+    return response, 400
 
 
 def get_customers_by_user_id(user_id):
@@ -215,20 +215,21 @@ def get_customers_by_user_id(user_id):
             "errors": gettext('GET_CUSTOMER_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_forms_by_user_id(user_id):
     user_info, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         if user_info['label_short'] == 'superadmin':
-            user_forms = forms.get_forms({
+            user_forms, error = forms.get_forms({
                 'select': ['id'],
                 'where': ['status <> %s'],
                 'data': ['DEL'],
             })
         else:
             user_forms, error = user.get_forms_by_user_id({'user_id': user_id})
+
         if error is None:
             if user_info['label_short'] == 'superadmin':
                 _user_forms = []
@@ -244,7 +245,7 @@ def get_forms_by_user_id(user_id):
             "errors": gettext('GET_CUSTOMER_BY_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def update_user(user_id, data):
@@ -265,14 +266,14 @@ def update_user(user_id, data):
                 "errors": gettext('UPDATE_PROFILE'),
                 "message": gettext('ERROR_OLD_PASSWORD_NOT_MATCH')
             }
-            return response, 401
+            return response, 400
         elif 'password' in data and 'password_check' in data and data['password'] and data['password_check'] and \
                 data['password'] != data['password_check']:
             response = {
                 "errors": gettext('UPDATE_USER'),
                 "message": gettext('ERROR_PASSWORD_NOT_MATCH')
             }
-            return response, 401
+            return response, 400
 
         _set = {
             'firstname': data['firstname'],
@@ -300,13 +301,13 @@ def update_user(user_id, data):
                 "errors": gettext('UPDATE_USER_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('UPDATE_USER_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def delete_user(user_id):
@@ -320,13 +321,13 @@ def delete_user(user_id):
                 "errors": gettext('DELETE_USER_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DELETE_USER_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def disable_user(user_id):
@@ -340,13 +341,13 @@ def disable_user(user_id):
                 "errors": gettext('DISABLE_USER_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DISABLE_USER_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def enable_user(user_id):
@@ -360,13 +361,13 @@ def enable_user(user_id):
                 "errors": gettext('ENABLE_USER_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('ENABLE_USER_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def update_customers_by_user_id(user_id, customers):
@@ -383,13 +384,13 @@ def update_customers_by_user_id(user_id, customers):
                 "errors": gettext('UPDATE_CUSTOMERS_USER_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('UPDATE_CUSTOMERS_USER_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def update_forms_by_user_id(user_id, forms):
@@ -404,11 +405,11 @@ def update_forms_by_user_id(user_id, forms):
                 "errors": gettext('UPDATE_FORMS_USER_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
         return '', 200
     else:
         response = {
             "errors": gettext('UPDATE_FORMS_USER_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400

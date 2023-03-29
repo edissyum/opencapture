@@ -33,10 +33,10 @@ import { NotificationService } from "../../../../services/notifications/notifica
 })
 
 export class AboutUsComponent implements OnInit {
+    lastVersion    : any       = '';
     loading        : boolean   = true;
     isProd         : boolean   = false;
     currentVersion : any       = 'dev';
-    lastVersion    : any       = '';
 
     constructor(
         public router: Router,

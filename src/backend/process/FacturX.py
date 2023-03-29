@@ -19,7 +19,6 @@ import os
 import re
 import json
 import uuid
-import facturx
 import datetime
 from unidecode import unidecode
 from xml.etree import ElementTree as Et
@@ -58,8 +57,8 @@ FACTUREX_CORRESPONDANCE = {
         'informations': {'id': 'Information', 'tagParent': 'SpecifiedTradeSettlementPaymentMeans'}
     },
     'taxes': {
-        'type_code': {'id': 'TypeCode',  'tagParent': 'ApplicableTradeTax'},
-        'no_rate_amount': {'id': 'BasisAmount',  'tagParent': 'ApplicableTradeTax'},
+        'type_code': {'id': 'TypeCode', 'tagParent': 'ApplicableTradeTax'},
+        'no_rate_amount': {'id': 'BasisAmount', 'tagParent': 'ApplicableTradeTax'},
         'category_code': {'id': 'CategoryCode', 'tagParent': 'ApplicableTradeTax'},
         'vat_amount': {'id': 'CalculatedAmount', 'tagParent': 'ApplicableTradeTax'},
         'vat_rate': {'id': 'RateApplicablePercent', 'tagParent': 'ApplicableTradeTax'}
@@ -241,6 +240,11 @@ FACTUREX_DATA = {
     ]
 }
 
+COUNTRY_CORRESPONDANCES = {
+    'FR': 'France',
+    'DE': 'Allemagne'
+}
+
 
 def fill_data(child, corrrespondance, parent):
     return_data = {}
@@ -257,7 +261,8 @@ def fill_data(child, corrrespondance, parent):
                         if attrib_tag in child_data.attrib and child_data.attrib[attrib_tag] == attrib_value:
                             return_data[key] = unidecode(child_data.text.strip())
                 else:
-                    return_data[key] = unidecode(data.text.strip())
+                    if data.text:
+                        return_data[key] = unidecode(data.text.strip())
     return return_data
 
 
@@ -290,7 +295,7 @@ def browse_xml_specific(root, grand_parent, parent):
     correspondances = FACTUREX_CORRESPONDANCE['taxes']
     for child in root.findall('.//' + NAMESPACE + grand_parent):
         for specific in child.findall(NAMESPACE + parent):
-            if specific.text.strip():
+            if specific.text and specific.text.strip():
                 taxes.append(unidecode(specific.text.strip()))
             else:
                 taxes.append(fill_data(specific, correspondances, parent))
@@ -370,19 +375,24 @@ def insert(args):
     else:
         original_file = os.path.basename(args['file'])
 
+    file = files.move_to_docservers(docservers, args['file'])
+
     invoice_data = {
         'facturx': True,
         'status': status,
         'customer_id': 0,
         'nb_pages': nb_pages,
-        'path': os.path.dirname(path),
+        'path': os.path.dirname(file),
         'datas': json.dumps(args['datas']),
         'original_filename': original_file,
         'img_width': str(files.get_width(path)),
-        'filename': os.path.basename(args['file']),
+        'filename': os.path.basename(file),
         'full_jpg_filename': jpg_filename + '-001.jpg',
         'facturx_level': args['facturx_level'].upper(),
     }
+
+    if 'supplier_id' in args and args['supplier_id']:
+        invoice_data['supplier_id'] = args['supplier_id']
 
     if args.get('isMail') is None or args.get('isMail') is False:
         if 'input_id' in args and args['input_id']:
@@ -454,12 +464,13 @@ def insert(args):
                 if 'delete_documents_after_outputs' in form_settings and form_settings['delete_documents_after_outputs']:
                     delete_documents(docservers, invoice_data['path'], invoice_data['filename'], jpg_filename)
                     insert_invoice = False
+    res = False
     if insert_invoice:
-        database.insert({
+        res = database.insert({
             'table': 'invoices',
             'columns': invoice_data
         })
-    return True
+    return res
 
 
 def retrieve_data(array, key, regex=None):
@@ -468,6 +479,47 @@ def retrieve_data(array, key, regex=None):
             return datetime.datetime.strptime(array[key], '%Y%m%d').strftime(regex['format_date'])
     else:
         return array[key] if key in array and array[key] else ''
+
+
+def create_supplier_and_address(database, supplier, address):
+    country = address['country']
+    if country in COUNTRY_CORRESPONDANCES and COUNTRY_CORRESPONDANCES[country]:
+        country = COUNTRY_CORRESPONDANCES[country]
+    args = {
+        'table': 'addresses',
+        'columns': {
+            'address1': address['address1'] if 'address1' in address else '',
+            'address2': address['address2'] if 'address2' in address else '',
+            'postal_code': address['postal_code'] if 'postal_code' in address else '',
+            'city': address['city'] if 'city' in address else '',
+            'country': country,
+        }
+    }
+    address_id = database.insert(args)
+    if ('siren' not in supplier or not supplier['siren']) and 'siret' in supplier and supplier['siret']:
+        supplier['siren'] = supplier['siret'][:9]
+
+    args = {
+        'table': 'accounts_supplier',
+        'columns': {
+            'vat_number': str(supplier['vat_number']),
+            'name': supplier['name'],
+            'siren': supplier['siren'] if 'siren' in supplier else '',
+            'siret': supplier['siret'] if 'siret' in supplier else '',
+            'address_id': str(address_id),
+        }
+    }
+    return database.insert(args)
+
+
+def supplier_exists(database, vat_number):
+    res = database.select({
+        'select': ['id'],
+        'table': ['accounts_supplier'],
+        'where': ['vat_number = %s'],
+        'data': [vat_number]
+    })
+    return res
 
 
 def process(args):
@@ -488,7 +540,16 @@ def process(args):
         'taxes': browse_xml_specific(root, 'ApplicableHeaderTradeSettlement', 'ApplicableTradeTax')
     }
 
+    if args['facturx_data']['supplier'] and args['facturx_data']['supplier']['vat_number']:
+        res = supplier_exists(args['database'], args['facturx_data']['supplier']['vat_number'])
+        if not res:
+            args['supplier_id'] = create_supplier_and_address(args['database'], args['facturx_data']['supplier'],
+                                                              args['facturx_data']['supplier_address'])
+        else:
+            args['supplier_id'] = res[0]['id']
+
     args['datas'] = {
+        "currency": retrieve_data(args['facturx_data']['facturation'], 'currency'),
         "city": retrieve_data(args['facturx_data']['supplier_address'], 'city'),
         "name": retrieve_data(args['facturx_data']['supplier'], 'name'),
         "siret": retrieve_data(args['facturx_data']['supplier'], 'siret'),
@@ -506,28 +567,43 @@ def process(args):
         "document_due_date": retrieve_data(args['facturx_data']['facturation'], 'due_date', args['regex']),
     }
 
-    for line in args['facturx_data']['facturation_lines']:
-        args['datas']['no_rate_amount'] = args['facturx_data']['facturation_lines'][line]['global']['no_rate_amount']
-        args['datas']['vat_rate'] = args['facturx_data']['facturation_lines'][line]['trade_taxes']['vat_rate']
-        if args['datas']['no_rate_amount'] and args['datas']['vat_rate']:
-            args['datas']['vat_amount'] = float(args['datas']['no_rate_amount']) * (float(args['datas']['vat_rate']) / 100)
+    cpt_taxes = 0
+    args['datas']['taxes_count'] = len(args['facturx_data']['taxes'])
 
-    res = insert(args)
+    for taxes in args['facturx_data']['taxes']:
+        index_rate = 'vat_rate' if cpt_taxes == 0 else 'vat_rate_' + str(cpt_taxes)
+        index_amount = 'vat_amount' if cpt_taxes == 0 else 'vat_amount_' + str(cpt_taxes)
+        index_ht = 'no_rate_amount' if cpt_taxes == 0 else 'no_rate_amount_' + str(cpt_taxes)
 
-    return res
+        args['datas'][index_rate] = taxes['vat_rate'] if 'vat_rate' in taxes else ''
+        args['datas'][index_ht] = taxes['no_rate_amount'] if 'no_rate_amount' in taxes else ''
+        args['datas'][index_amount] = taxes['vat_amount'] if 'vat_amount' in taxes else ''
+        cpt_taxes += 1
 
+    cpt_lines = 0
+    args['datas']['lines_count'] = len(args['facturx_data']['facturation_lines'])
+    for lines in args['facturx_data']['facturation_lines']:
+        line = args['facturx_data']['facturation_lines'][lines]
+        index_ht = 'line_ht' if cpt_lines == 0 else 'line_ht_' + str(cpt_lines)
+        index_quantity = 'quantity' if cpt_lines == 0 else 'quantity_' + str(cpt_lines)
+        index_unit = 'unit_price' if cpt_lines == 0 else 'unit_price_' + str(cpt_lines)
+        index_description = 'description' if cpt_lines == 0 else 'description_' + str(cpt_lines)
+        index_vat = 'line_vat_rate' if cpt_lines == 0 else 'line_vat_rate_' + str(cpt_lines)
 
-if __name__ == '__main__':
-    # with open('/home/nathan/BASIC_Einfach.pdf', 'rb') as f:
-    #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-    #     process({'xml_content': xml_content})
-    with open('/home/nathan/Facture_FR_EXTENDED.pdf', 'rb') as f:
-        _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-        process({'xml_content': xml_content})
-    # with open('/home/nathan/Facture_FR_BASICWL.pdf', 'rb') as f:
-    #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-    #     process({'xml_content': xml_content})
-    # with open('/home/nathan/EXTENDED_Warenrechnung.pdf', 'rb') as f:
-    #     _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-    #     process({'xml_content': xml_content})
-    print('-------------')
+        if 'name' in line['global'] and line['global']['name']:
+            args['datas'][index_description] = line['global']['name']
+
+        if 'no_rate_amount' in line['global'] and line['global']['no_rate_amount'] \
+                and 'quantity' in line['global'] and line['global']['quantity'] \
+                and 'vat_rate' in line['trade_taxes'] and line['trade_taxes']['vat_rate'] \
+                and 'unit_price_ht' in line['unit_price'] and line['unit_price']['unit_price_ht']:
+            if line['global']['no_rate_amount'] != '0.00' and line['global']['quantity'] != '0.00' and \
+                    line['trade_taxes']['vat_rate'] != '0.00' and line['unit_price']['unit_price_ht'] != '0.00':
+                args['datas'][index_ht] = line['global']['no_rate_amount']
+                args['datas'][index_quantity] = line['global']['quantity']
+                args['datas'][index_vat] = line['trade_taxes']['vat_rate']
+                args['datas'][index_unit] = line['unit_price']['unit_price_ht']
+
+        cpt_lines += 1
+
+    return insert(args)

@@ -228,7 +228,7 @@ def get_forms_by_user_id(args):
     })
 
     if not users_forms:
-        error = gettext('GET_CUSTOMER_BY_ID_ERROR')
+        error = gettext('GET_FORMS_BY_USER_ID_ERROR')
     else:
         users_forms = users_forms[0]
     return users_forms, error

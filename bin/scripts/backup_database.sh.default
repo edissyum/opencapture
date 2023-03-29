@@ -1,3 +1,4 @@
+#!/bin/bash
 # This file is part of Open-Capture.
 
 # Open-Capture is free software: you can redistribute it and/or modify
@@ -15,20 +16,11 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask_babel import gettext
-from src.backend.import_models import status
-
-
-def get_status(module):
-    _status, error = status.get_status(module)
-    if _status:
-        response = {
-            "status": _status
-        }
-        return response, 200
-    else:
-        response = {
-            "errors": gettext("RETRIEVES_STATUS_ERROR"),
-            "message": gettext(error)
-        }
-        return response, 400
+db=§§DATABASE_NAME§§
+host=§§DATABASE_HOST§§
+user=§§DATABASE_USER§§
+port=§§DATABASE_PORT§§
+password=§§DATABASE_PASSWORD§§
+path="/var/share/backups/§§CUSTOM_ID§§/"
+filePath="${path}dump_$(date '+%F').backup"
+export PGPASSWORD=$password && pg_dump -p $port -h $host -U $user -f $filePath -Fc $db

@@ -5,8 +5,8 @@
 }
 
 ::ng-deep .cards-list {
-    & .mat-card .mat-mdc-card-header .mat-mdc-card-header-text {
-        width: 95%;
+    & .mat-mdc-card .mat-mdc-card-header .mat-mdc-card-header-text {
+        @apply w-full;
     }
 }
 

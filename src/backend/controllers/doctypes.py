@@ -34,13 +34,13 @@ def add_doctype(args):
                     "errors": gettext("SET_DEFAULT_DOCTYPE_ERROR"),
                     "message": gettext(error)
                 }
-                return response, 401
+                return response, 400
     else:
         response = {
             "errors": gettext("ADD_DOCTYPE_ERROR"),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
     response = {
         "id": res
     }
@@ -60,7 +60,7 @@ def retrieve_doctypes(args):
         "errors": gettext("DOCTYPE_ERROR"),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def update(args):
@@ -76,7 +76,7 @@ def update(args):
                     "message": gettext("SET_DEFAULT_DOCTYPE_ERROR"),
                     "errors": error
                 }
-                return response, 401
+                return response, 400
         doctype_childs, _ = doctypes.retrieve_doctypes({
             'where': ['status <> %s', 'form_id = %s', 'code like %s'],
             'data': ['DEL', args['form_id'], '{}.%'.format(doctype_old_data[0]['code'])]
@@ -96,7 +96,7 @@ def update(args):
                     "message": gettext("DOCTYPE_ERROR"),
                     "errors": error
                 }
-                return response, 401
+                return response, 400
 
     res, error = doctypes.update(args)
     if res:
@@ -109,7 +109,7 @@ def update(args):
             "errors": gettext("DOCTYPE_ERROR"),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def generate_separator(args):
@@ -161,7 +161,7 @@ def generate_separator(args):
             "errors": gettext("DOCTYPE_ERROR"),
             "message": res_separators['error']
         }
-        return response, 401
+        return response, 400
 
     response = {
         'total': res_separators['total'],

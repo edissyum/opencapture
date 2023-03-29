@@ -286,7 +286,6 @@ export class CreateInputComponent implements OnInit {
     }
 
     onSubmit() {
-        console.log(this.isValidForm())
         if (this.isValidForm()) {
             const input : any = {
                 'module': 'verifier'

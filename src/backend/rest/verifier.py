@@ -102,6 +102,14 @@ def export_pdf(invoice_id):
     return make_response(res[0], res[1])
 
 
+@bp.route('verifier/invoices/<int:invoice_id>/export_facturx', methods=['POST'])
+@auth.token_required
+def export_facturx(invoice_id):
+    data = request.json['args']
+    res = verifier.export_facturx(invoice_id, data)
+    return make_response(res[0], res[1])
+
+
 @bp.route('verifier/invoices/<int:invoice_id>/export_mem', methods=['POST'])
 @auth.token_required
 def export_mem(invoice_id):
@@ -182,6 +190,14 @@ def remove_lock_by_user_id(user_id):
 def ocr_on_fly():
     data = request.json
     positions_masks = False
+
+    if 'registerDate' in data:
+        register_date = pd.to_datetime(data['registerDate'])
+        year = register_date.strftime('%Y')
+        month = register_date.strftime('%m')
+        year_and_month = year + '/' + month
+        data['fileName'] = year_and_month + '/' + data['fileName']
+
     if 'positionsMasks' in data:
         positions_masks = data['positionsMasks']
     result = verifier.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'], positions_masks, data['lang'])
@@ -233,6 +249,12 @@ def verify_vat_number():
     vat_number = request.json['vat_number']
     status = verifier.verify_vat_number(vat_number)
     return make_response({'status': status[0]}, status[1])
+
+
+@bp.route('verifier/getUnseen', methods=['GET'])
+def verifier_get_unseen():
+    res = verifier.get_unseen()
+    return make_response({'unseen': res[0]}, res[1])
 
 
 @bp.route('verifier/invoices/totals', defaults={'status': None, 'user_id': None, 'form_id': ''}, methods=['GET'])

@@ -66,14 +66,14 @@ export class MenuComponent implements OnInit {
                     konami!.style.display = "block";
                     konami!.style.transition = "opacity .5s";
                     konami!.style.opacity = "1";
-                    setTimeout(() => {
+                    audio.volume = 0.3;
+                    audio.play().then(r => setTimeout(() => {
                         konami!.style.transition = "opacity 1s";
                         konami!.style.opacity = "0";
                         setTimeout(() => {
                             konami!.style.display = "none";
                         }, 1000);
-                    }, 3000);
-                    audio.play().then();
+                    }, 3000));
                     n = 0;
                 }
             }

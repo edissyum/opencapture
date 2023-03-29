@@ -264,7 +264,6 @@ export class FormListComponent implements OnInit {
     }
 
     duplicateForm(formId: number) {
-        this.loading = true;
         if (formId !== undefined) {
             this.http.post(environment['url'] + '/ws/forms/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
@@ -335,5 +334,4 @@ export class FormListComponent implements OnInit {
     compare(a: number | string, b: number | string, isAsc: boolean) {
         return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
     }
-
 }

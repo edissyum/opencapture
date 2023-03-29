@@ -1,4 +1,4 @@
-<mat-sidenav-container cdkDropListGroup class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
+<mat-sidenav-container cdkDropListGroup class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
     <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
@@ -84,20 +84,20 @@
                         <span *ngIf="!category.edit">
                             {{ getCategoryLabel(category) }}
                             <span (click)="category.edit = !category.edit">
-                                <i class="fa-solid fa-edit cursor-pointer text-green-400"></i>
+                                <i class="fa-solid fa-edit cursor-pointer mx-1 text-green-400"></i>
                             </span>
                         </span>
                         <span *ngIf="category.edit">
                             <input class="border border-gray-900 rounded px-1.5" #labelInput
                                    [id]="category.id" matInput [value]="getCategoryLabel(category) | translate">
                             <span (click)="updateLabel(category, labelInput.value)">
-                                <i class="fa-solid fa-check cursor-pointer ml-1 text-green-400"></i>
+                                <i class="fa-solid fa-check cursor-pointer mx-1 text-green-400"></i>
                             </span>
                         </span>
                     </span>
-                    <div class="border-green-400 border rounded-lg mx-6 my-7">
+                    <div class="border-green-400 border rounded-lg pt-4 mx-6 my-7">
                         <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" [id]="category['id']"
-                             class="flex flex-wrap cursor-pointer w-full my-3 px-2" style="min-height: 50px;">
+                             class="flex flex-wrap cursor-pointer w-full my-3 px-1" style="min-height: 50px;">
                             <div *ngFor="let field of this.fields[category['id']]; let index = index"
                                  class="flex items-center overflow-hidden" [class]="field.class"
                                  [ngSortGridItems]="fields[category['id']]" ngSortgridItem
@@ -247,7 +247,7 @@
                         (click)="createForm()" *ngIf="this.creationMode">
                         {{ "FORMS.create" | translate }}
                 </button>
-                <button mat-button class="w-56 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                <button mat-button class="min-w-56 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
                         (click)="updateForm()" *ngIf="!this.creationMode">
                         <span *ngIf="!this.updateFormLoading">{{ "FORMS.modify" | translate }}</span>
                         <i *ngIf="this.updateFormLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
@@ -298,6 +298,9 @@
                      label="{{ availableFields['label'] | translate }}">
                 <div id="{{ availableFields['id'] }}" cdkDropList [cdkDropListData]="availableFields['values']"
                      (cdkDropListDropped)="dropFromAvailableFields($event)" class="min-w-full" style="min-height: 500px">
+                    <div *ngIf="availableFields['id'] === 'lines_fields'">
+                        <app-hint [specificClass]="'w-11/12'" [message]="'FACTURATION.only_facturx' | translate"></app-hint>
+                    </div>
                     <div *ngFor="let field of availableFields['values']">
                         <div cdkDrag class="flex flex-row items-center justify-between m-5 cursor-pointer">
                             <ng-container *ngIf="field.type === 'text'">

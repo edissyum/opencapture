@@ -39,7 +39,8 @@ class UserTest(unittest.TestCase):
             "password": "test",
             "email": "test@test.fr",
             "role": "2",
-            "customers": [1]
+            "customers": [1],
+            "forms": [1],
         })
 
         return self.app.post(f'/{CUSTOM_ID}/ws/users/new', headers={"Content-Type": "application/json"}, data=payload)

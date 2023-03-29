@@ -181,7 +181,7 @@ def retrieve_batches(args):
         "errors": "ERROR",
         "message": error_batches
     }
-    return response, 401
+    return response, 400
 
 
 def download_original_file(batch_id):
@@ -207,13 +207,13 @@ def download_original_file(batch_id):
                 "errors": "ERROR",
                 "message": str(e)
             }
-            return response, 401
+            return response, 400
 
     response = {
         "errors": "ERROR",
         "message": res[1]
     }
-    return response, 401
+    return response, 400
 
 
 def update_status(args):
@@ -242,7 +242,7 @@ def update_status(args):
             "errors": gettext('UPDATE_STATUS_ERROR'),
             "message": ''
         }
-        return response, 401
+        return res, 400
 
 
 def change_form(args):
@@ -251,7 +251,7 @@ def change_form(args):
     if res:
         return res, 200
     else:
-        return res, 401
+        return res, 400
 
 
 def lock_batch(args):
@@ -260,7 +260,7 @@ def lock_batch(args):
     if res:
         return res, 200
     else:
-        return res, 401
+        return res, 400
 
 
 def remove_lock_by_user_id(user_id):
@@ -277,7 +277,7 @@ def remove_lock_by_user_id(user_id):
             "errors": gettext('REMOVE_LOCK_BY_USER_ID_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def get_page_full_thumbnail(page_id):
@@ -296,7 +296,7 @@ def get_page_full_thumbnail(page_id):
             "errors": "ERROR",
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
     try:
         thumb_path = f"{docservers['SPLITTER_BATCHES']}/{res[0]['thumbnail']}"
@@ -309,7 +309,7 @@ def get_page_full_thumbnail(page_id):
             "errors": "ERROR",
             "message": str(e)
         }
-        return response, 401
+        return response, 400
 
 
 def retrieve_documents(batch_id):
@@ -560,7 +560,7 @@ def save_infos(args):
             "errors": gettext('UPDATE_BATCH_ERROR'),
             "message": ''
         }
-        return response, 401
+        return response, 400
 
     for document in args['documents']:
         if document['displayOrder']:
@@ -573,7 +573,7 @@ def save_infos(args):
                     "errors": gettext('UPDATE_DOCUMENTS_ERROR'),
                     "message": ''
                 }
-                return response, 401
+                return response, 400
 
         document['id'] = document['id'].split('-')[-1]
         res = splitter.update_document({
@@ -586,7 +586,7 @@ def save_infos(args):
                 "errors": gettext('UPDATE_DOCUMENT_ERROR'),
                 "message": ''
             }
-            return response, 401
+            return response, 400
 
         """
             Save pages rotation
@@ -601,7 +601,7 @@ def save_infos(args):
                     "errors": gettext('UPDATE_PAGES_ERROR'),
                     "message": ''
                 }
-                return response, 401
+                return response, 400
 
     """
         moved pages
@@ -622,7 +622,7 @@ def save_infos(args):
                 "errors": gettext('UPDATE_PAGES_ERROR'),
                 "message": ''
             }
-            return response, 401
+            return response, 400
 
     """
         Deleted documents
@@ -637,7 +637,7 @@ def save_infos(args):
             "errors": gettext('UPDATE_PAGES_ERROR'),
             "message": ''
         }
-        return response, 401
+        return response, 400
 
     """
         Deleted pages
@@ -652,7 +652,7 @@ def save_infos(args):
                 "errors": gettext('UPDATE_PAGES_ERROR'),
                 "message": ''
             }
-            return response, 401
+            return response, 400
 
     return True, 200
 
@@ -679,7 +679,7 @@ def test_openads_connection(args):
             "errors": gettext('OPENADS_CONNECTION_ERROR'),
             "message": res['message']
         }
-        return response, 401
+        return response, 400
     return {'status': True}, 200
 
 
@@ -917,7 +917,7 @@ def get_split_methods():
     split_methods = _Splitter.get_split_methods(docservers)
     if len(split_methods) > 0:
         return split_methods, 200
-    return split_methods, 401
+    return split_methods, 400
 
 
 def get_metadata_methods(form_method=False):
@@ -930,7 +930,7 @@ def get_metadata_methods(form_method=False):
     metadata_methods = _Splitter.get_metadata_methods(docservers, form_method)
     if len(metadata_methods) > 0:
         return metadata_methods, 200
-    return metadata_methods, 401
+    return metadata_methods, 400
 
 
 def get_totals(status, user_id):
@@ -971,7 +971,7 @@ def get_totals(status, user_id):
         "errors": gettext('GET_TOTALS_ERROR'),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def merge_batches(parent_id, batches):
@@ -1049,3 +1049,11 @@ def merge_batches(parent_id, batches):
     splitter.update_batch_documents_count({'id': parent_id, 'number': parent_batch_documents})
     with open(parent_filename, 'wb') as file:
         merged_pdf.write(file)
+
+
+def get_unseen():
+    total_unseen = splitter.count_batches({
+        'where': ['status = %s'],
+        'data': ['NEW']
+    })[0]
+    return total_unseen, 200

@@ -90,6 +90,10 @@ export class VerifierViewerComponent implements OnInit {
             label: this.translate.instant('FORMS.supplier')
         },
         {
+            id: 'lines',
+            label: this.translate.instant('FACTURATION.lines')
+        },
+        {
             id: 'facturation',
             label: this.translate.instant('FACTURATION.facturation')
         },
@@ -100,6 +104,7 @@ export class VerifierViewerComponent implements OnInit {
     ];
     form                    : any         = {
         supplier      : [],
+        lines         : [],
         facturation   : [],
         other         : []
     };
@@ -215,9 +220,6 @@ export class VerifierViewerComponent implements OnInit {
                 top: 0,
                 behavior: 'smooth'
             });
-            if (this.form.facturation.length === 0 && this.form.supplier.length === 0 && this.form.other.length === 0) {
-                this.formEmpty = true;
-            }
             this.loading = false;
         }, 500);
         const triggerEvent = $('.trigger');
@@ -467,6 +469,7 @@ export class VerifierViewerComponent implements OnInit {
     async fillForm(data: any): Promise<any> {
         this.form = {
             'supplier': [],
+            'lines': [],
             'facturation': [],
             'other': []
         };
@@ -542,6 +545,9 @@ export class VerifierViewerComponent implements OnInit {
                     }
                 }
             }
+        }
+        if (this.form.facturation.length === 0 && this.form.supplier.length === 0 && this.form.other.length === 0) {
+            this.formEmpty = true;
         }
     }
 
@@ -760,7 +766,8 @@ export class VerifierViewerComponent implements OnInit {
                     {
                         selection: this.getSelectionByCpt(selection, cpt),
                         fileName: this.currentFilename, lang: lang,
-                        thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height}
+                        thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height},
+                        registerDate: this.invoice.register_date
                     }, {headers: this.authService.headers})
                     .pipe(
                         tap((data: any) => {
@@ -1427,11 +1434,45 @@ export class VerifierViewerComponent implements OnInit {
                 }
             });
         }
+
         if (!valid) {
             this.loadingSubmit = false;
             return;
         }
-        this.saveData(arrayData);
+
+        const countLines = {
+            ['lines_count']: 1,
+            ['taxes_count']: 1
+        };
+        this.form['lines'].forEach((element: any) => {
+            const cpt = element.id.match(/\d+/g);
+            if (cpt && cpt[0] > (countLines['lines_count'] - 1)) {
+                countLines['lines_count']++;
+            }
+        });
+        this.form['facturation'].forEach((element: any) => {
+            if (element.id.includes('vat_amount') || element.id.includes('vat_rate') || element.id.includes('no_rate_amount')) {
+                const cpt = element.id.match(/\d+/g);
+                if (cpt && cpt[0] > (countLines['taxes_count'] - 1)) {
+                    countLines['taxes_count']++;
+                }
+            }
+        });
+
+        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+            {'args': countLines},
+            {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.invoice.datas['lines_count'] = countLines['lines_count'];
+                this.invoice.datas['taxes_count'] = countLines['taxes_count'];
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         /*
             Executer les actions paramétrées dans les réglages du formulaires
          */
@@ -1499,6 +1540,7 @@ export class VerifierViewerComponent implements OnInit {
 
     async changeForm(event: any) {
         this.loading = true;
+        this.formEmpty = false;
         const newFormId = event.value;
         for (const cpt in this.formList) {
             if (this.formList[cpt].id === newFormId) {
