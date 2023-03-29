@@ -31,8 +31,8 @@ def add_custom_field(args):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
     customs_exists, error = retrieve_custom_fields({
-        'where': ['label_short = %s', 'module = %s'],
-        'data': [args['label_short'], args['module']]
+        'where': ['label_short = %s', 'module = %s', 'status <> %s'],
+        'data': [args['label_short'], args['module'], 'DEL']
     })
 
     if not customs_exists:

@@ -31,4 +31,4 @@ def get_status(module):
             "errors": gettext("RETRIEVES_STATUS_ERROR"),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400

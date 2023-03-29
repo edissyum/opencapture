@@ -36,7 +36,7 @@ def retrieve_processes(args):
         "errors": gettext("RETRIEVE_PROCESSES_ERROR"),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def update_process(args):
@@ -52,7 +52,7 @@ def update_process(args):
         "errors": gettext("UPDATE_PROCESS_ERROR"),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def create_process(args):
@@ -68,7 +68,7 @@ def create_process(args):
         "errors": gettext("CREATE_PROCESS_ERROR"),
         "message": gettext(error)
     }
-    return response, 401
+    return response, 400
 
 
 def delete_process(process_name):
@@ -82,13 +82,13 @@ def delete_process(process_name):
                 "errors": gettext('DELETE_MAILCOLLECT_PROCESS_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DELETE_MAILCOLLECT_PROCESS_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def enable_process(process_name):
@@ -102,13 +102,13 @@ def enable_process(process_name):
                 "errors": gettext('ENABLE_MAILCOLLECT_PROCESS_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('ENABLE_MAILCOLLECT_PROCESS_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def disable_process(process_name):
@@ -122,13 +122,13 @@ def disable_process(process_name):
                 "errors": gettext('DISABLE_MAILCOLLECT_PROCESS_ERROR'),
                 "message": gettext(error)
             }
-            return response, 401
+            return response, 400
     else:
         response = {
             "errors": gettext('DISABLE_MAILCOLLECT_PROCESS_ERROR'),
             "message": gettext(error)
         }
-        return response, 401
+        return response, 400
 
 
 def retrieve_folders(args):

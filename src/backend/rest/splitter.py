@@ -75,14 +75,13 @@ def retrieve_referential(form_id):
 
 @bp.route('splitter/status', methods=['PUT'])
 @auth.token_required
-def change_batch_status():
+def update_status():
     data = json.loads(request.data)
-
     args = {
-        'id': str(data['id']),
+        'ids': data['ids'],
         'status': data['status']
     }
-    res = splitter.change_status(args)
+    res = splitter.update_status(args)
     return make_response(jsonify(res[0])), res[1]
 
 

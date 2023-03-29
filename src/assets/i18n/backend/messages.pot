@@ -8,46 +8,47 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-03-10 16:03+0100\n"
+"POT-Creation-Date: 2023-03-29 14:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.1\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: launch_worker.py:48 launch_worker_splitter.py:48
 msgid "FILE_UPLOADED"
 msgstr ""
 
-#: src/backend/verifier_exports.py:85 src/backend/verifier_exports.py:88
+#: src/backend/verifier_exports.py:86 src/backend/verifier_exports.py:89
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/verifier_exports.py:154 src/backend/verifier_exports.py:157
+#: src/backend/verifier_exports.py:264 src/backend/verifier_exports.py:267
+#: src/backend/verifier_exports.py:333 src/backend/verifier_exports.py:336
 msgid "PDF_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:412
-#: src/backend/controllers/splitter.py:418 src/backend/verifier_exports.py:309
-#: src/backend/verifier_exports.py:315 src/backend/verifier_exports.py:321
+#: src/backend/controllers/splitter.py:438
+#: src/backend/controllers/splitter.py:444 src/backend/verifier_exports.py:488
+#: src/backend/verifier_exports.py:494 src/backend/verifier_exports.py:500
 msgid "EXPORT_MEM_ERROR"
 msgstr ""
 
-#: src/backend/verifier_exports.py:316
+#: src/backend/verifier_exports.py:495
 msgid "PDF_FILE_NOT_FOUND"
 msgstr ""
 
-#: src/backend/verifier_exports.py:327
+#: src/backend/verifier_exports.py:506
 msgid "MEM_WS_INFO_WRONG"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:424 src/backend/verifier_exports.py:333
+#: src/backend/controllers/splitter.py:450 src/backend/verifier_exports.py:512
 msgid "MEM_WS_INFO_EMPTY"
 msgstr ""
 
-#: src/backend/classes/MEMWebServices.py:38
+#: src/backend/classes/MEMWebServices.py:39
 msgid "HOST_NOT_FOUND"
 msgstr ""
 
@@ -113,7 +114,7 @@ msgstr ""
 #: src/backend/controllers/accounts.py:357 src/backend/controllers/user.py:215
 #: src/backend/controllers/user.py:245 src/backend/models/accounts.py:234
 #: src/backend/models/accounts.py:257 src/backend/models/accounts.py:276
-#: src/backend/models/user.py:209 src/backend/models/user.py:231
+#: src/backend/models/user.py:209
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr ""
 
@@ -146,7 +147,7 @@ msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
 msgstr ""
 
 #: src/backend/controllers/artificial_intelligence.py:79
-#: src/backend/controllers/artificial_intelligence.py:393
+#: src/backend/controllers/artificial_intelligence.py:392
 msgid "GET_IA_MODEL_BY_ID_ERROR"
 msgstr ""
 
@@ -158,7 +159,7 @@ msgstr ""
 msgid "UPDATE_IA_MODEL_ERROR"
 msgstr ""
 
-#: src/backend/controllers/artificial_intelligence.py:394
+#: src/backend/controllers/artificial_intelligence.py:393
 #: src/backend/models/artificial_intelligence.py:59
 msgid "IA_MODEL_DOESNT_EXISTS"
 msgstr ""
@@ -329,48 +330,48 @@ msgstr ""
 msgid "DOCTYPESEPARATOR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:46 src/backend/controllers/forms.py:56
-#: src/backend/controllers/forms.py:82 src/backend/controllers/forms.py:190
+#: src/backend/controllers/forms.py:71 src/backend/controllers/forms.py:97
+#: src/backend/controllers/forms.py:214
 msgid "FORMS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:97 src/backend/controllers/forms.py:146
-#: src/backend/models/forms.py:63
+#: src/backend/controllers/forms.py:112 src/backend/controllers/forms.py:161
+#: src/backend/models/forms.py:66
 msgid "GET_FORM_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:129
+#: src/backend/controllers/forms.py:144
 msgid "GET_FORM_FIELDS_BY_FORM_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:184 src/backend/controllers/forms.py:312
-#: src/backend/controllers/forms.py:318
+#: src/backend/controllers/forms.py:208 src/backend/controllers/forms.py:337
+#: src/backend/controllers/forms.py:343
 msgid "UPDATE_FORMS_FIELDS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:204 src/backend/controllers/forms.py:210
+#: src/backend/controllers/forms.py:228 src/backend/controllers/forms.py:234
 msgid "DELETE_FORM_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:219 src/backend/controllers/inputs.py:107
+#: src/backend/controllers/forms.py:243 src/backend/controllers/inputs.py:107
 #: src/backend/controllers/outputs.py:58
 #: src/backend/controllers/positions_masks.py:160
 msgid "COPY_OF"
 msgstr ""
 
-#: src/backend/controllers/forms.py:236 src/backend/controllers/forms.py:242
+#: src/backend/controllers/forms.py:261 src/backend/controllers/forms.py:267
 msgid "DUPLICATE_FORM_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:256 src/backend/controllers/forms.py:262
+#: src/backend/controllers/forms.py:281 src/backend/controllers/forms.py:287
 msgid "DISABLE_FORM_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:276 src/backend/controllers/forms.py:282
+#: src/backend/controllers/forms.py:301 src/backend/controllers/forms.py:307
 msgid "ENABLE_FORM_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:298
+#: src/backend/controllers/forms.py:323
 msgid "GET_FORMS_FIELDS_ERROR"
 msgstr ""
 
@@ -586,79 +587,92 @@ msgstr ""
 msgid "LOAD_METADATA_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:131
+#: src/backend/controllers/splitter.py:137
 #: src/backend/controllers/verifier.py:75
 msgid "AT"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:155
+#: src/backend/controllers/splitter.py:161
 msgid "FORM_UNDEFINED"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:158
+#: src/backend/controllers/splitter.py:164
 msgid "CUSTOMER_UNDEFINED"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:251
-#: src/backend/controllers/verifier.py:345
+#: src/backend/controllers/splitter.py:232
+msgid "BATCH_NOT_FOUND"
+msgstr ""
+
+#: src/backend/controllers/splitter.py:233
+msgid "BATCH_ID_NOT_FOUND"
+msgstr ""
+
+#: src/backend/controllers/splitter.py:242
+#: src/backend/controllers/verifier.py:616
+msgid "UPDATE_STATUS_ERROR"
+msgstr ""
+
+#: src/backend/controllers/splitter.py:277
+#: src/backend/controllers/verifier.py:348
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:361
+#: src/backend/controllers/splitter.py:387
 msgid "ADD_DOCUMENT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:496
-#: src/backend/controllers/splitter.py:758
+#: src/backend/controllers/splitter.py:522
+#: src/backend/controllers/splitter.py:784
 msgid "EXPORT_PDF_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:518
-#: src/backend/controllers/splitter.py:783
+#: src/backend/controllers/splitter.py:544
+#: src/backend/controllers/splitter.py:809
 msgid "EXPORT_XML_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:534
+#: src/backend/controllers/splitter.py:560
 msgid "UPDATE_BATCH_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:547
+#: src/backend/controllers/splitter.py:573
 msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:560
+#: src/backend/controllers/splitter.py:586
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:575
-#: src/backend/controllers/splitter.py:596
-#: src/backend/controllers/splitter.py:611
-#: src/backend/controllers/splitter.py:626
+#: src/backend/controllers/splitter.py:601
+#: src/backend/controllers/splitter.py:622
+#: src/backend/controllers/splitter.py:637
+#: src/backend/controllers/splitter.py:652
 msgid "UPDATE_PAGES_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:640
+#: src/backend/controllers/splitter.py:666
 msgid "CMIS_CONNECTION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:653
+#: src/backend/controllers/splitter.py:679
 msgid "OPENADS_CONNECTION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:833
+#: src/backend/controllers/splitter.py:859
 msgid "CHECK_FOLDER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:834
+#: src/backend/controllers/splitter.py:860
 msgid "FOLDER_DOES_NOT_EXIST"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:851
+#: src/backend/controllers/splitter.py:877
 msgid "OPENADS_ADD_DOC_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:937
-#: src/backend/controllers/verifier.py:570 src/backend/models/splitter.py:572
+#: src/backend/controllers/splitter.py:971
+#: src/backend/controllers/verifier.py:595 src/backend/models/splitter.py:572
 #: src/backend/models/verifier.py:171
 msgid "GET_TOTALS_ERROR"
 msgstr ""
@@ -730,59 +744,69 @@ msgstr ""
 msgid "ENABLE_USER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/user.py:382 src/backend/controllers/user.py:400
+#: src/backend/controllers/user.py:384 src/backend/controllers/user.py:390
 #: src/backend/models/user.py:276
 msgid "UPDATE_CUSTOMERS_USER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/user.py:393 src/backend/models/user.py:298
+#: src/backend/controllers/user.py:405 src/backend/controllers/user.py:412
+#: src/backend/models/user.py:298
 msgid "UPDATE_FORMS_USER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:56 src/backend/models/verifier.py:40
+#: src/backend/controllers/verifier.py:56 src/backend/models/splitter.py:219
+#: src/backend/models/verifier.py:40
 msgid "GET_INVOICE_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:167
-#: src/backend/controllers/verifier.py:269
+#: src/backend/controllers/verifier.py:170
+#: src/backend/controllers/verifier.py:272
 msgid "UPDATE_INVOICE_POSITIONS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:190
-#: src/backend/controllers/verifier.py:287
+#: src/backend/controllers/verifier.py:193
+#: src/backend/controllers/verifier.py:290
 msgid "UPDATE_INVOICE_PAGES_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:213
-#: src/backend/controllers/verifier.py:231
+#: src/backend/controllers/verifier.py:216
+#: src/backend/controllers/verifier.py:234
 msgid "UPDATE_INVOICE_DATA_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:301
-#: src/backend/controllers/verifier.py:307
+#: src/backend/controllers/verifier.py:304
+#: src/backend/controllers/verifier.py:310
 msgid "DELETE_INVOICE_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:322
-#: src/backend/controllers/verifier.py:328
+#: src/backend/controllers/verifier.py:325
+#: src/backend/controllers/verifier.py:331
 msgid "UPDATE_INVOICE_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:470
-#: src/backend/controllers/verifier.py:473
-#: src/backend/controllers/verifier.py:490
-#: src/backend/controllers/verifier.py:513
-#: src/backend/controllers/verifier.py:514
+#: src/backend/controllers/verifier.py:495
+#: src/backend/controllers/verifier.py:498
+#: src/backend/controllers/verifier.py:515
+#: src/backend/controllers/verifier.py:538
+#: src/backend/controllers/verifier.py:539
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:542
+#: src/backend/controllers/verifier.py:567
 msgid "VAT_NOT_VALID"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:547
-#: src/backend/controllers/verifier.py:548
+#: src/backend/controllers/verifier.py:572
+#: src/backend/controllers/verifier.py:573
 msgid "VAT_API_ERROR"
+msgstr ""
+
+#: src/backend/controllers/verifier.py:607
+msgid "INVOICE_NOT_FOUND"
+msgstr ""
+
+#: src/backend/controllers/verifier.py:608
+msgid "INVOICE_ID_NOT_FOUND"
 msgstr ""
 
 #: src/backend/models/accounts.py:108
@@ -855,27 +879,31 @@ msgstr ""
 msgid "UPDATE_DOCTYPE_ERROR"
 msgstr ""
 
-#: src/backend/models/forms.py:86
+#: src/backend/models/forms.py:45
+msgid "GET_FORMS_ERROR"
+msgstr ""
+
+#: src/backend/models/forms.py:89
 msgid "GET_FORM_SETTINGS_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/models/forms.py:109
+#: src/backend/models/forms.py:112
 msgid "GET_DEFAULT_FORM_ERROR"
 msgstr ""
 
-#: src/backend/models/forms.py:133
+#: src/backend/models/forms.py:136
 msgid "UPDATE_FORM_ERROR"
 msgstr ""
 
-#: src/backend/models/forms.py:155
+#: src/backend/models/forms.py:158
 msgid "UPDATE_FORM_FIELDS_ERROR"
 msgstr ""
 
-#: src/backend/models/forms.py:211
+#: src/backend/models/forms.py:215
 msgid "ADD_FORM_ERROR"
 msgstr ""
 
-#: src/backend/models/forms.py:214
+#: src/backend/models/forms.py:218
 msgid "FORM_LABEL_ALREADY_EXIST"
 msgstr ""
 
@@ -955,27 +983,23 @@ msgstr ""
 msgid "INSERT_PAGE_ERROR"
 msgstr ""
 
-#: src/backend/models/splitter.py:220
-msgid "GET_BATCH_ERROR"
-msgstr ""
-
-#: src/backend/models/splitter.py:243
+#: src/backend/models/splitter.py:244
 msgid "GET_DOCUMENTS_ERROR"
 msgstr ""
 
-#: src/backend/models/splitter.py:265 src/backend/models/splitter.py:288
+#: src/backend/models/splitter.py:266 src/backend/models/splitter.py:289
 msgid "GET_PAGES_ERROR"
 msgstr ""
 
-#: src/backend/models/splitter.py:310
+#: src/backend/models/splitter.py:311
 msgid "GET_MAX_SOURCE_PAGE_VALUE_ERROR"
 msgstr ""
 
-#: src/backend/models/splitter.py:333
+#: src/backend/models/splitter.py:334
 msgid "GET_DOCUMENT_ERROR"
 msgstr ""
 
-#: src/backend/models/splitter.py:355
+#: src/backend/models/splitter.py:356
 msgid "GET_DOCUMENT_MAX_SPLIT_INDEX_ERROR"
 msgstr ""
 
@@ -999,6 +1023,10 @@ msgstr ""
 msgid "GET_USER_BY_MAIL_ERROR"
 msgstr ""
 
+#: src/backend/models/user.py:231
+msgid "GET_FORMS_BY_USER_ID_ERROR"
+msgstr ""
+
 #: src/backend/models/verifier.py:104 src/backend/models/verifier.py:125
 msgid "INVOICE_UPDATE_ERROR"
 msgstr ""
@@ -1016,7 +1044,7 @@ msgstr ""
 msgid "RETRIEVE_LOGIN_METHODS_ERROR"
 msgstr ""
 
-#: src/backend/rest/splitter.py:42 src/backend/rest/verifier.py:37
+#: src/backend/rest/splitter.py:42 src/backend/rest/verifier.py:40
 msgid "UNKNOW_ERROR"
 msgstr ""
 

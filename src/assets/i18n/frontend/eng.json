@@ -533,6 +533,7 @@
 	"INVOICES": {
 		"data_deleted": "Data deleted",
 		"field_duplicated": "Field <strong>{{ input }}</strong> duplicated successfully",
+		"identifier": "Invoice identifier",
 		"position_and_data_updated": "Positions and data of <strong>{{ input }}</strong> updated successfully",
 		"supplier_infos_updated": "Document updated with new supplier informations"
 	},
@@ -748,6 +749,7 @@
 		"administration": "Administration access",
 		"change_language": "Change language",
 		"configurations": "Change configurations",
+		"create_ai_model": "Create AI model",
 		"create_customer": "Create customer",
 		"create_supplier": "Create supplier",
 		"custom_fields": "Custom fields",
@@ -764,6 +766,7 @@
 		"inputs_list": "Inputs list",
 		"inputs_list_splitter": "Inputs list",
 		"list": "Privileges list",
+		"list_ai_model": "List AI models",
 		"login_methods": "Login methods",
 		"mailcollect": "MailCollect settings",
 		"outputs_list": "Outputs list",
@@ -776,6 +779,7 @@
 		"splitter": "Open-Capture Splitter",
 		"statistics": "Statistics access",
 		"suppliers_list": "Suppliers list",
+		"update_ai_model": "Update AI model",
 		"update_customer": "Update customer",
 		"update_document_type": "Update document type",
 		"update_form": "Update form",
@@ -786,6 +790,7 @@
 		"update_output_splitter": "Update output",
 		"update_position_mask": "Update positions mask",
 		"update_role": "Update role",
+		"update_status": "Update status",
 		"update_supplier": "Update supplier",
 		"update_user": "Update user",
 		"upload": "Upload files",
@@ -839,6 +844,7 @@
 		"regex": "Regex list",
 		"roles_list": "Roles list",
 		"splitter": "Splitter",
+		"status_update": "Status update",
 		"update_doc_type": "Update doctype",
 		"update_input": "Update input",
 		"update_output": "Update output",
@@ -863,6 +869,7 @@
 		"batches": "batch",
 		"bundle_separator": "Batches separator",
 		"can_not_merge_same_batch": "Please merge a batch different from the current one",
+		"change_by_identifier": "Change by identifier",
 		"change_document_position": "Change document position",
 		"confirm_batch_delete": "Are you sure you want to delete this batch ?",
 		"confirm_delete_all_batches": "Are you sure you want to delete all checked batches ?",
@@ -945,7 +952,12 @@
 		"verifier_documents_validated_per_user": "Documents validated per user"
 	},
 	"STATUS": {
-		"list": "List of status"
+		"UPDATE_SUCCESS": "Status updated with success",
+		"add_identifier": "Add identifier",
+		"list": "List of status",
+		"no_identifier_added": "No identifier added",
+		"update": "Update status",
+		"update_status_to": "Update status to"
 	},
 	"TYPES": {
 		"date": "Date",

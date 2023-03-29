@@ -20,7 +20,7 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
+        <div class="overflow-x-hidden overflow-y-auto h-full-overflow">
             <app-hint [message]="'FORMS.display_hint' | translate"></app-hint>
             <div class="w-1/3 m-auto mt-4">
                 <mat-form-field class="block">
@@ -96,7 +96,7 @@
                 </span>
             </div>
         </div>
-        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)"
+        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto h-full-overflow"
              cdkDropList [cdkDropListData]="this.availableFieldsTmp" (cdkDropListDropped)="drop($event)"
              [cdkDropListDisabled]="!this.formLoaded">
             <div *ngFor="let field of this.availableFieldsTmp; let cpt = index"

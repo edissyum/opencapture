@@ -8,7 +8,7 @@
     </h3>
 </ng-template>
 <mat-divider class="border-green-400"></mat-divider>
-<mat-nav-list class="pt-0 px-1 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
+<mat-nav-list class="pt-0 px-1 overflow-x-hidden overflow-y-auto h-full-overflow">
     <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent(); let i = index"
                         [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])"
                         class="m-1 rounded-lg" [ngClass]="parent.id === this.serviceSettings.getSelectedParentSetting() ? 'border-2 border-green-400' : ''"

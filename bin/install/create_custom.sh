@@ -48,6 +48,7 @@ done
 # Replace dot and - with _ in custom_id to avoid python error
 oldCustomId=$customId
 customId=${customId//[\.\-]/_}
+customId=$(echo "$customId" | tr "[:upper:]" "[:lower:]")
 
 if [[ "$customId" =~ [[:upper:]] ]]; then
     echo "##########################################################################"
@@ -241,7 +242,9 @@ chown -R "$user":"$group" /var/share/backups/"$customId"
 ####################
 # Add backup script to cron
 cron="0 2 * * * $defaultPath/custom/$customId/bin/scripts/backup_database.sh &> /dev/null"
+cron_backup="0 3 * * * $defaultPath/custom/$customId/bin/scripts/clean_backups.sh &> /dev/null"
 (crontab -u $user -l; echo "$cron" ) | crontab -u $user -
+(crontab -u $user -l; echo "$cron_backup" ) | crontab -u $user -
 
 ####################
 # Create docservers
@@ -322,6 +325,7 @@ cp $defaultPath/bin/scripts/OCSplitter_worker.sh.default "$defaultPath/custom/$c
 cp $defaultPath/bin/scripts/MailCollect/clean.sh.default "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 cp $defaultPath/bin/scripts/load_referencial.sh.default "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
 cp $defaultPath/bin/scripts/backup_database.sh.default "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+cp $defaultPath/bin/scripts/clean_backups.sh.default "$defaultPath/custom/$customId/bin/scripts/clean_backups.sh"
 cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
 cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
 
@@ -331,7 +335,9 @@ sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/back
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/clean_backups.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+sed -i "s#§§DATABASE_PORT§§#$port#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 sed -i "s#§§DATABASE_PORT§§#$port#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 sed -i "s#§§DATABASE_HOST§§#$hostname#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 sed -i "s#§§DATABASE_NAME§§#$databaseName#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"

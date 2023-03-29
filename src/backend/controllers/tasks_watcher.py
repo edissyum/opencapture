@@ -34,6 +34,6 @@ def create_task(args):
             "errors": gettext('CREATE_TASK_ERROR'),
             "message": ''
         }
-        return response, 401
+        return response, 400
 
     return '', 200

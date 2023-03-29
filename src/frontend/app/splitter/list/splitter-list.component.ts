@@ -352,7 +352,7 @@ export class SplitterListComponent implements OnInit {
     }
 
     deleteBatch(id: number, batchDelete = false, lastBatch = true): void {
-        this.http.put(environment['url'] + '/ws/splitter/status', {'id': id, 'status': 'DEL', }, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/splitter/status', {'ids': [id], 'status': 'DEL', }, {headers: this.authService.headers}).pipe(
             tap(() => {
                 if (!batchDelete) {
                     this.notify.success(this.translate.instant('SPLITTER.batch_deleted'));

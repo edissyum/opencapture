@@ -16,9 +16,11 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import base64
+import json
+
 import pandas as pd
 from flask_babel import gettext
-from flask import Blueprint, make_response, request
+from flask import Blueprint, make_response, request, jsonify
 from src.backend.import_controllers import auth, verifier
 
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
@@ -188,6 +190,14 @@ def remove_lock_by_user_id(user_id):
 def ocr_on_fly():
     data = request.json
     positions_masks = False
+
+    if 'registerDate' in data:
+        register_date = pd.to_datetime(data['registerDate'])
+        year = register_date.strftime('%Y')
+        month = register_date.strftime('%m')
+        year_and_month = year + '/' + month
+        data['fileName'] = year_and_month + '/' + data['fileName']
+
     if 'positionsMasks' in data:
         positions_masks = data['positionsMasks']
     result = verifier.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'], positions_masks, data['lang'])
@@ -254,3 +264,15 @@ def verifier_get_unseen():
 def get_totals(status, user_id, form_id):
     totals = verifier.get_totals(status, user_id, form_id)
     return make_response({'totals': totals[0]}, totals[1])
+
+
+@bp.route('verifier/status', methods=['PUT'])
+@auth.token_required
+def update_status():
+    data = json.loads(request.data)
+    args = {
+        'ids': data['ids'],
+        'status': data['status']
+    }
+    res = verifier.update_status(args)
+    return make_response(jsonify(res[0])), res[1]
