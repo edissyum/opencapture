@@ -208,13 +208,19 @@ def get_batch_by_id(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
-    batches = database.select({
+    error = None
+    batch = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['splitter_batches'],
         'where': ['id = %s'],
         'data': [args['id']]
     })
-    return batches
+    if not batch:
+        error = gettext('GET_INVOICE_BY_ID_ERROR')
+    else:
+        batch = batch[0]
+
+    return batch, error
 
 
 def get_batch_documents(args):

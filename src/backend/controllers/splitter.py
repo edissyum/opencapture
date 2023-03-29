@@ -227,7 +227,7 @@ def update_status(args):
 
     for _id in args['ids']:
         batches = splitter.get_batch_by_id({'id': _id})
-        if len(batches) < 1:
+        if len(batches[0]) < 1:
             response = {
                 "errors": gettext('BATCH_NOT_FOUND'),
                 "message": gettext('BATCH_ID_NOT_FOUND', id=_id)
