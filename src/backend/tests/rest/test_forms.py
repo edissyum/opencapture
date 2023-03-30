@@ -165,5 +165,5 @@ class FormTest(unittest.TestCase):
         self.assertEqual(200, res.status_code)
 
     def tearDown(self) -> None:
-        self.db.execute("DELETE FROM form_models WHERE label = 'SPLITTER_TEST_FORM'")
-        self.db.execute("DELETE FROM form_models WHERE label = 'VERIFIER_TEST_FORM'")
+        self.db.execute("UPDATE form_models SET status = 'DEL' WHERE label = 'SPLITTER_TEST_FORM'")
+        self.db.execute("UPDATE form_models SET status = 'DEL' WHERE label = 'VERIFIER_TEST_FORM'")
