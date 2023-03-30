@@ -64,7 +64,7 @@ def get_forms(args):
     return response, 200
 
 
-def add_form(args):
+def create_form(args):
     form_settings, error = forms.get_form_settings_by_module(args)
     if error:
         response = {
@@ -78,7 +78,7 @@ def add_form(args):
             form_settings['settings'][key] = args['settings'][key]
     args['settings'] = json.dumps(form_settings['settings'])
 
-    form_id, error = forms.add_form(args)
+    form_id, error = forms.create_form(args)
     if form_id:
         if 'default_form' in args and args['default_form'] is True:
             default_form, error = forms.get_default_form_by_module({'module': args['module']})
@@ -248,7 +248,7 @@ def duplicate_form(form_id):
             'module': form_info['module'],
             'settings': json.dumps(form_info['settings'])
         }
-        res, error = forms.add_form(args)
+        res, error = forms.create_form(args)
         if error is None:
             fields, error = get_fields(form_info['id'])
             if error == 200:
