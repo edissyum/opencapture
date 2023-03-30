@@ -61,7 +61,9 @@ def process(args):
     file = args['files'].move_to_docservers(args['docservers'], args['file'], 'splitter')
     if args['ocrise']:
         args['files'].ocrise_pdf(file, args['configurations']['locale'], args['log'])
-    args['splitter'].create_batch(args['batch_folder'], file, args['input_id'], args['user_id'], original_file)
+
+    process_res = args['splitter'].create_batches(args['batch_folder'], file, args['input_id'], args['user_id'], original_file)
+    return process_res
 
 
 def split(splitter, pages):

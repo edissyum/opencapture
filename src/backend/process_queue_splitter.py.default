@@ -40,6 +40,7 @@ def launch(args):
     :return: N/A
     """
     start = time.time()
+    created_batches = []
 
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
@@ -149,7 +150,8 @@ def launch(args):
                                         "configurations": configurations,
                                         "customer_id": args['customer_id'],
                                     }
-                                    split_method(split_args)
+                                    split_res = split_method(split_args)
+                                    created_batches = split_res['batches_id']
                 else:
                     process_err = True
                     log.error("The input_id doesn't exists in database")
