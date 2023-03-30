@@ -308,6 +308,24 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         thumbnail      : this.sanitize(batch['thumbnail']),
                     })
                 );
+
+                // Move current batch to the top of the list
+                const currentBatchIndex = this.batches.findIndex((batch: any) => batch.id === this.currentBatch.id);
+                if (currentBatchIndex > -1) {
+                    this.batches.unshift(this.batches.splice(currentBatchIndex, 1)[0]);
+                } else {
+                    this.batches.unshift({
+                        id             : this.currentBatch.id,
+                        inputId        : this.currentBatch.inputId,
+                        fileName       : this.currentBatch.fileName,
+                        formLabel      : this.currentBatch.formLabel,
+                        date           : this.currentBatch.date,
+                        customerName   : this.currentBatch.customerName,
+                        documentsCount : this.currentBatch.documentsCount,
+                        thumbnail      : this.sanitize(this.currentBatch.thumbnail),
+                    });
+                }
+
                 this.batchesLoading = false;
             }),
             catchError((err: any) => {
