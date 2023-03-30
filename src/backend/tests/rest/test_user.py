@@ -43,7 +43,9 @@ class UserTest(unittest.TestCase):
             "forms": [1],
         })
 
-        return self.app.post(f'/{CUSTOM_ID}/ws/users/new', headers={"Content-Type": "application/json"}, data=payload)
+        return self.app.post(f'/{CUSTOM_ID}/ws/users/new',
+                             headers={"Content-Type": "application/json",
+                                      'Authorization': 'Bearer ' + self.token}, data=payload)
 
     def test_successful_create_user(self):
         user = self.create_user()
