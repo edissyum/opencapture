@@ -45,6 +45,7 @@ module.exports = {
             height: {
                 '100': '25rem',
                 '104': '26rem',
+                'full-overflow': 'calc(100vh - 8rem)',
             },
             maxWidth: {
                 '11/12': '91.6%',

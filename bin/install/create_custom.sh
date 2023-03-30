@@ -201,6 +201,16 @@ else
     databasePassword="$choice"
 fi
 
+echo "Type docserver default path informations. By default it's /var/docservers/opencapture/"
+printf "Docserver default path [%s] : " "${bold}/var/docservers/opencapture/${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    docserverDefaultPath="/var/docservers/opencapture/"
+else
+    docserverDefaultPath="$choice"
+fi
+
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
     read -r choice
@@ -248,16 +258,6 @@ cron_backup="0 3 * * * $defaultPath/custom/$customId/bin/scripts/clean_backups.s
 
 ####################
 # Create docservers
-echo "Type docserver default path informations. By default it's /var/docservers/opencapture/"
-printf "Docserver default path [%s] : " "${bold}/var/docservers/opencapture/${normal}"
-read -r choice
-
-if [[ "$choice" == "" ]]; then
-    docserverDefaultPath="/var/docservers/opencapture/"
-else
-    docserverDefaultPath="$choice"
-fi
-
 mkdir -p $docserverDefaultPath/"$customId"/{verifier,splitter}
 mkdir -p $docserverDefaultPath/"$customId"/verifier/{ai,original_pdf,full,thumbs,positions_masks}
 mkdir -p $docserverDefaultPath/"$customId"/splitter/{ai,original_pdf,batches,thumbs,error}

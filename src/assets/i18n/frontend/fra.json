@@ -766,6 +766,7 @@
 		"inputs_list": "Liste des chaînes entrantes",
 		"inputs_list_splitter": "Liste des chaînes entrantes",
 		"list": "Liste des privilèges",
+		"list_ai_model": "Liste des modèles d'IA",
 		"login_methods": "Méthodes d'authentification",
 		"mailcollect": "Paramètrage de MailCollect",
 		"outputs_list": "Liste des chaînes sortantes",

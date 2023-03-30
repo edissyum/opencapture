@@ -20,7 +20,7 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
+        <div class="overflow-x-hidden overflow-y-auto h-full-overflow">
             <div *ngIf="!loading" class="flex justify-center items-center">
                 <form class="grid grid-cols-2 gap-12 w-full m-10 text-center">
                     <ng-container *ngFor="let field of outputForm">
@@ -195,7 +195,7 @@
                 </span>
             </div>
         </div>
-        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
+        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto h-full-overflow">
             <div *ngFor="let field of this.availableFields; let cpt = index" class="my-8 ml-2 text-base">
                 <span>
                     {{ field.label | translate }}
