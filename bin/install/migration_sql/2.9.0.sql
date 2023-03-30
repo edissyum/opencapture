@@ -1,5 +1,8 @@
 ALTER TABLE form_models ADD COLUMN "labels" JSONB DEFAULT '{}';
 
+ALTER TABLE monitoring RENAME COLUMN "document_id" TO "document_ids";
+ALTER TABLE monitoring ALTER COLUMN "document_id" TYPE INTEGER[] USING array[document_ids]::integer[];
+
 INSERT INTO "privileges" ("label", "parent") VALUES ('update_status', 'splitter');
 INSERT INTO "privileges" ("label", "parent") VALUES ('update_status', 'verifier');
 
