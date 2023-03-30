@@ -177,7 +177,7 @@ def add_form_fields(args):
     return '', False
 
 
-def add_form(args):
+def create_form(args):
     if 'database' in current_context:
         database = current_context.database
     else:
