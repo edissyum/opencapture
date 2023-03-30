@@ -138,7 +138,7 @@ class OutputsTest(unittest.TestCase):
                         {
                             "id": "folder_out",
                             "type": "text",
-                            "value": "/var/share/test/export/verifier/"
+                            "value": f"/var/share/{CUSTOM_ID}/export/verifier/"
                         },
                         {
                             "id": "separator",
