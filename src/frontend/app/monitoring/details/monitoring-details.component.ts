@@ -43,6 +43,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
     total               : number                = 0;
     offset              : number                = 0;
     inputLabel          : string                = '';
+    splitterCpt         : number                = 0;
     processId           : number | undefined;
     steps               : any;
     timer               : any;
@@ -80,6 +81,17 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
             tap((data: any) => {
                 if (data.process && Object.keys(data.process).length > 0) {
                     this.processData = data.process[0];
+                    const now = new Date();
+                    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+                    const diffDays = Math.abs((now.getTime() - new Date(this.processData.creation_date).getTime()) / (oneDay));
+                    if (diffDays <= 1) {
+                        this.processData.time = 'today';
+                    } else if (diffDays > 1 && diffDays <= 2) {
+                        this.processData.time = 'yesterday';
+                    } else {
+                        this.processData.time = 'older';
+                    }
+
                     if (this.processData.input_id && this.inputLabel === '') {
                         this.http.get(environment['url'] + '/ws/inputs/getByInputId/' + this.processData.input_id, {headers: this.authService.headers}).pipe(
                             tap((data: any) => {
@@ -184,4 +196,5 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
     }
 
     protected readonly window = window;
+    protected readonly length = length;
 }

@@ -22,6 +22,7 @@ bp = Blueprint('users', __name__, url_prefix='/ws/')
 
 
 @bp.route('users/new', methods=['POST'])
+@auth.token_required
 def create_user():
     data = request.json
     res = user.create_user(data)
