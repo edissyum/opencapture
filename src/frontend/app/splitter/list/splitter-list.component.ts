@@ -322,7 +322,7 @@ export class SplitterListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.deleteBatch(id);
+                this.deleteBatches([id]);
                 this.historyService.addHistory('splitter', 'delete_batch', this.translate.instant('HISTORY-DESC.delete_batch', {batch_id: id}));
             }
         });
@@ -340,26 +340,26 @@ export class SplitterListComponent implements OnInit {
 
     deleteAllBatches() {
         this.isLoading = true;
-        let lastBatch = false;
+        const deleteIds : number[] = [];
         const checkboxList = document.querySelectorAll('.checkBox_list:checked');
         Array.from(checkboxList).forEach((element: any, cpt: number) => {
-            if (cpt === checkboxList.length - 1)
-                lastBatch = true;
             const batchId = element.id.split('_')[0];
-            this.deleteBatch(batchId, true, lastBatch);
+            deleteIds.push(Number(batchId));
         });
-        this.notify.success(this.translate.instant('SPLITTER.all_batches_checked_deleted'));
+        this.deleteBatches(deleteIds);
     }
 
-    deleteBatch(id: number, batchDelete = false, lastBatch = true): void {
-        this.http.put(environment['url'] + '/ws/splitter/status', {'ids': [id], 'status': 'DEL', }, {headers: this.authService.headers}).pipe(
+    deleteBatches(ids: number[]): void {
+        this.http.put(environment['url'] + '/ws/splitter/status', {'ids': ids, 'status': 'DEL', }, {headers: this.authService.headers}).pipe(
             tap(() => {
-                if (!batchDelete) {
+                if (ids.length === 1) {
                     this.notify.success(this.translate.instant('SPLITTER.batch_deleted'));
-                    this.isLoading = false;
+                } else {
+                    this.notify.success(this.translate.instant('SPLITTER.all_batches_checked_deleted'));
                 }
-                if (lastBatch)
-                    this.loadBatches();
+                this.isLoading = false;
+                this.loadBatches();
+
             }),
             catchError((err: any) => {
                 console.debug(err);

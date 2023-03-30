@@ -93,8 +93,7 @@ class DoctypeTest(unittest.TestCase):
     def test_generate_doctype_separator(self):
         self.create_folder()
         payload = {
-            "id": 1,
-            "type": "docTypeSeparator",
+            "type": "bundleSeparator",
         }
 
         response = self.app.post(f'/{CUSTOM_ID}/ws/doctypes/generateSeparator', json=payload,
