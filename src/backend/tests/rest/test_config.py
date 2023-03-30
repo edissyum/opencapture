@@ -144,7 +144,7 @@ class ConfigTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={"args": {"image_content": default_login_image.decode('utf-8')}})
         self.assertEqual(200, response.status_code)
-        custom_image = open('/var/www/html/opencapture/custom/test/assets/imgs/login_image.png', 'rb')
+        custom_image = open(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.png', 'rb')
         custom_login_image = base64.b64encode(custom_image.read())
         custom_image.close()
         self.assertEqual(default_login_image.decode('utf-8'), custom_login_image.decode('utf-8'))
@@ -183,10 +183,10 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(str, type(response.json['git_latest']))
 
     def tearDown(self) -> None:
-        if os.path.isfile('/var/www/html/opencapture/custom/test/assets/imgs/login_image.png'):
-            os.remove('/var/www/html/opencapture/custom/test/assets/imgs/login_image.png')
+        if os.path.isfile(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.png'):
+            os.remove(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.png')
         self.db.execute("UPDATE regex "
                         "SET content = '([A-Za-z0-9]+[\.\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+' "
                         "WHERE regex_id = 'email'")
-        self.db.execute("UPDATE docservers SET path = '/var/docservers/opencapture/test/' "
+        self.db.execute(f"UPDATE docservers SET path = '/var/docservers/opencapture/{CUSTOM_ID}/' "
                         "WHERE docserver_id = 'DOCSERVERS_PATH'")
