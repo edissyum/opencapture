@@ -123,7 +123,8 @@ class Splitter:
 
         return default_values
 
-    def create_batch(self, batch_folder, file, input_id, user_id, original_filename):
+    def create_batches(self, batch_folder, file, input_id, user_id, original_filename):
+        batches_id = []
         for _, batch in enumerate(self.result_batches):
             input_settings = self.db.select({
                 'select': ['*'],
@@ -150,6 +151,7 @@ class Splitter:
                 }
             }
             batch_id = self.db.insert(args)
+            batches_id.append(batch_id)
 
             documents_id = 0
             previous_split_document = 0
@@ -228,7 +230,7 @@ class Splitter:
                 self.db.insert(args)
             self.db.conn.commit()
 
-        return {'OK': True}
+        return {'batches_id': batches_id}
 
     @staticmethod
     def get_split_pages(documents):
