@@ -1133,7 +1133,7 @@ export class FormBuilderComponent implements OnInit {
             if (element.control.value) outputs.push(element.control.value);
         });
         if (label) {
-            this.http.post(environment['url'] + '/ws/forms/add', {
+            this.http.post(environment['url'] + '/ws/forms/create', {
                     'args': {
                         'module'        : 'verifier',
                         'label'         : label,

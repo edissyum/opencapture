@@ -31,7 +31,7 @@ def get_forms():
     return make_response(jsonify(res[0]), res[1])
 
 
-@bp.route('forms/add', methods=['POST'])
+@bp.route('forms/create', methods=['POST'])
 @auth.token_required
 def add_form():
     data = request.json['args']
