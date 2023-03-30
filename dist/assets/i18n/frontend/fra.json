@@ -630,6 +630,8 @@
 	},
 	"MONITORING": {
 		"and": "et",
+		"batch_ids": "Identifiant des batchs",
+		"document_id": "Identifiant du document",
 		"done": "Processus terminé",
 		"error": "Processus en erreur",
 		"hour": "heure",

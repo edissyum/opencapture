@@ -200,7 +200,7 @@ def launch(args):
     database.update({
         'table': ['monitoring'],
         'set': {
-            'document_id': res,
+            'document_ids': [res],
             'elapsed_time': _timer,
             'status': 'done',
             'end_date': time.strftime("%Y-%m-%d %H:%M:%S")

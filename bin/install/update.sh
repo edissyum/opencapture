@@ -117,8 +117,11 @@ systemctl restart OCSplitter-worker_* || supervisorctl restart all
 if [ -f "$OpenCapturePath/src/backend/process_queue_verifier.py.default" ]; then
     for customPath in $OpenCapturePath/custom/*; do
         if [[ -d $customPath ]]; then
+            customId=$(basename $customPath)
             cp -f "$OpenCapturePath/src/backend/process_queue_verifier.py.default" "$customPath/src/backend/process_queue_verifier.py"
             cp -f "$OpenCapturePath/src/backend/process_queue_splitter.py.default" "$customPath/src/backend/process_queue_splitter.py"
+            sed -i "s#§§CUSTOM_ID§§#$customId#g" "$customPath/src/backend/process_queue_verifier.py"
+            sed -i "s#§§CUSTOM_ID§§#$customId#g" "$customPath/src/backend/process_queue_splitter.py"
         fi
     done
 fi
