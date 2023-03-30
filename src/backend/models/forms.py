@@ -177,7 +177,7 @@ def add_form_fields(args):
     return '', False
 
 
-def add_form(args):
+def create_form(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -190,7 +190,7 @@ def add_form(args):
         'data': [args['label'], 'DEL', args['module']]
     })
     error = None
-    if not form:
+    if not form[0]:
         if 'outputs' in args and args['outputs']:
             outputs = '{'
             for output in args['outputs']:

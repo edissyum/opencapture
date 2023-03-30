@@ -487,7 +487,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         const metadataMethod    = this.formSettings.metadata_method.control.value;
         const exportZipFile     = this.formSettings.export_zip_file.control.value;
         if (label) {
-            this.http.post(environment['url'] + '/ws/forms/add',
+            this.http.post(environment['url'] + '/ws/forms/create',
                 {
                     'args': {
                         'label'         : label,
