@@ -1,4 +1,4 @@
-::ng-deep .settings-menu-nav {
+.settings-menu-nav {
     @apply flex;
     @apply w-1/75;
     @apply h-full;
@@ -9,11 +9,11 @@
     @apply border-green-400;
 }
 
-::ng-deep .settings_search {
+.settings_search {
     @apply -my-2;
 }
 
-::ng-deep .settings_header {
+.settings_header {
     @apply z-30;
     @apply px-2;
     @apply flex;
@@ -29,20 +29,20 @@
     }
 }
 
-::ng-deep .mat-drawer-inner-container {
+.mat-drawer-inner-container {
     @apply overflow-x-hidden #{!important};
     @apply overflow-y-auto #{!important};
 }
 
-::ng-deep .mat-button-wrapper {
+.mat-button-wrapper {
     @apply w-full;
 }
 
-::ng-deep mat-expansion-panel {
+mat-expansion-panel {
     @apply rounded-none #{!important};
 }
 
-::ng-deep .settings_expansion {
+.settings_expansion {
     @apply border-t;
     @apply border-white;
     @apply z-30;

@@ -16,14 +16,15 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Router } from "@angular/router";
-import { Component, Input } from '@angular/core';
+import {Component, Input, ViewEncapsulation} from '@angular/core';
 import { SettingsService } from "../../services/settings.service";
 import { PrivilegesService } from "../../services/privileges.service";
 
 @Component({
     selector: 'app-settings-menu',
     templateUrl: './settings-menu.component.html',
-    styleUrls: ['./settings-menu.component.scss']
+    styleUrls: ['./settings-menu.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class SettingsMenuComponent {
     @Input() minimizeSideNav : any;
