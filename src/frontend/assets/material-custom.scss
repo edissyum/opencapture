@@ -205,3 +205,8 @@ mat-select-country mat-form-field {
         }
     }
 }
+
+.mdc-list-item__primary-text {
+    @apply truncate #{!important};
+    @apply w-full;
+}
