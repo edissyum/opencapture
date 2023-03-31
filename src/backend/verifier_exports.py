@@ -183,8 +183,10 @@ def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
                 data_parent_trade = Et.SubElement(facturx_lines, 'ram:SpecifiedLineTradeSettlement')
                 trade_tax = Et.SubElement(data_parent_trade, 'ram:ApplicableTradeTax')
                 type_code = Et.SubElement(trade_tax, 'ram:TypeCode')
-                vat = Et.SubElement(trade_tax, 'ram:RateApplicablePercent')
                 type_code.text = 'VAT'
+                category_code = Et.SubElement(trade_tax, 'ram:CategoryCode')
+                category_code.text = 'S'
+                vat = Et.SubElement(trade_tax, 'ram:RateApplicablePercent')
                 if index_vat in invoice_info['datas'] and invoice_info['datas'][index_vat]:
                     vat.text = invoice_info['datas'][index_vat]
                 else:
@@ -233,6 +235,8 @@ def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
             vat_amount.text = invoice_info['datas'][index_amount]
             ht_amount = Et.SubElement(applicable_trade_tax, 'ram:BasisAmount')
             ht_amount.text = invoice_info['datas'][index_ht]
+            category_code = Et.SubElement(applicable_trade_tax, 'ram:CategoryCode')
+            category_code.text = 'S'
             vat_rate = Et.SubElement(applicable_trade_tax, 'ram:RateApplicablePercent')
             vat_rate.text = invoice_info['datas'][index_rate]
 
