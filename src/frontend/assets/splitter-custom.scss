@@ -1,0 +1,14 @@
+.splitter-tools {
+    & .mat-mdc-text-field-wrapper {
+        @apply top-1.5;
+        & .mat-mdc-form-field-flex {
+            @apply h-10;
+            & .mat-mdc-floating-label:not(.mdc-floating-label--float-above) {
+                top: 17px !important;
+            }
+            & .mat-mdc-form-field-infix {
+                padding-top: 10px !important;
+            }
+        }
+    }
+}
