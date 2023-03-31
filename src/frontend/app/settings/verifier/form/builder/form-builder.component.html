@@ -20,7 +20,7 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div *ngIf="!loading" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 70px)">
+        <div *ngIf="!loading" class="overflow-x-hidden overflow-y-auto h-full-overflow">
             <div class="grid grid-cols-3 gap-4 mt-6 ml-6 mr-6">
                 <mat-form-field class="h-0">
                     <mat-label>{{ "FORMS.label" | translate }}</mat-label>
@@ -83,7 +83,7 @@
                     <span class="relative text-xl tracking-wider px-1.5 bg-white left-10 top-10">
                         <span *ngIf="!category.edit">
                             {{ getCategoryLabel(category) }}
-                            <span (click)="category.edit = !category.edit">
+                            <span (click)="category.edit = !category.edit" *ngIf="category['id'] !== 'lines'">
                                 <i class="fa-solid fa-edit cursor-pointer mx-1 text-green-400"></i>
                             </span>
                         </span>
@@ -242,7 +242,7 @@
                     </div>
                 </ng-container>
             </div>
-            <div class="flex justify-center items-center">
+            <div class="flex justify-center items-center mb-2">
                 <button mat-button class="w-56 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
                         (click)="createForm()" *ngIf="this.creationMode">
                         {{ "FORMS.create" | translate }}
@@ -293,7 +293,7 @@
                 <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
             </span>
         </div>
-        <mat-tab-group style="height: calc(100% - 70px)" *ngIf="!loadingCustomFields">
+        <mat-tab-group class="h-full-overflow" *ngIf="!loadingCustomFields">
             <mat-tab *ngFor="let availableFields of this.availableFieldsParent"
                      label="{{ availableFields['label'] | translate }}">
                 <div id="{{ availableFields['id'] }}" cdkDropList [cdkDropListData]="availableFields['values']"

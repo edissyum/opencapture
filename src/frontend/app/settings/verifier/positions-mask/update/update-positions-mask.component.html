@@ -20,7 +20,7 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div class="overflow-auto" style="height: calc(100% - 70px)">
+        <div class="overflow-auto h-full-overflow">
             <div class="flex justify-center items-center mt-5">
                 <button (click)="updatePositionsMask()" mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                     <span class="block">{{ "POSITIONS-MASKS.modify" | translate }}</span>
@@ -95,7 +95,7 @@
                 <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
             </span>
         </div>
-        <mat-tab-group style="height: calc(100% - 70px)" *ngIf="!loadingFields">
+        <mat-tab-group class="h-full-overflow" *ngIf="!loadingFields">
             <mat-tab *ngFor="let availableFields of this.availableFieldsParent" label="{{ availableFields['label'] | translate }}">
                 <div class="min-w-full overflow-x-hidden" style="min-height: 500px">
                     <div *ngFor="let field of availableFields['values']">

@@ -11,68 +11,98 @@
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
-        <div class="overflow-x-hidden" style="height: calc(100% - 70px)">
+        <div class="overflow-x-hidden h-full-overflow">
             <div class="flex justify-center">
-                <div class="grid my-10 mx-20">
-                <span class="text-gray-400 text-base text-center">
-                    {{ 'MONITORING.process_id' | translate }}
-                </span>
+                <div class="grid my-10 mx-10">
+                    <span class="text-gray-400 text-base text-center">
+                        {{ 'MONITORING.process_id' | translate }}
+                    </span>
                     <span class="text-center text-xl">
-                    {{ this.processId }}
-                </span>
+                        {{ this.processId }}
+                    </span>
                 </div>
-                <div class="grid my-10 mx-20">
-                <span class="text-gray-400 text-base text-center">
-                    {{ 'MONITORING.input_associated' | translate }}
-                </span>
+                <div class="grid my-10 mx-10">
+                    <span class="text-gray-400 text-base text-center">
+                        <span *ngIf="this.processData.module === 'verifier'">
+                            {{ 'MONITORING.document_id' | translate }}
+                        </span>
+                        <span *ngIf="this.processData.module === 'splitter'">
+                            {{ 'MONITORING.batch_ids' | translate }}
+                        </span>
+                    </span>
                     <span class="text-center text-xl">
-                    {{ this.inputLabel }}
-                </span>
+                        <span *ngIf="this.processData.module === 'verifier'">
+                            <a [routerLink]="'../../verifier/viewer/' + this.processData.document_ids[0]">
+                                {{ this.processData.document_ids }}
+                            </a>
+                        </span>
+                        <span *ngIf="this.processData.module === 'splitter'">
+                            <span class="material-icons mr-3 relative top-1 font-light cursor-pointer text-gray-400"
+                                  (click)="this.splitterCpt !== 0 ? this.splitterCpt = this.splitterCpt - 1 : this.splitterCpt = this.processData.document_ids.length - 1">
+                                arrow_back
+                            </span>
+                            <a [routerLink]="'../../splitter/viewer/' + this.processData.time + '/' + this.processData.document_ids[this.splitterCpt]">
+                                {{ this.processData.document_ids[this.splitterCpt] }}
+                            </a>
+                            <span class="material-icons ml-3 relative top-1 font-light cursor-pointer text-gray-400"
+                                  (click)="this.splitterCpt < this.processData.document_ids.length - 1 ? this.splitterCpt = this.splitterCpt + 1 : this.splitterCpt = 0">
+                                arrow_forward
+                            </span>
+                        </span>
+                    </span>
                 </div>
-                <div class="grid my-10 mx-20">
-                <span class="text-gray-400 text-base text-center">
-                    {{ 'HEADER.creation_date' | translate }}
-                </span>
+                <div class="grid my-10 mx-10">
+                    <span class="text-gray-400 text-base text-center">
+                        {{ 'MONITORING.input_associated' | translate }}
+                    </span>
                     <span class="text-center text-xl">
-                    {{ this.processData.creation_date_formated }}
-                </span>
+                        {{ this.inputLabel }}
+                    </span>
                 </div>
-                <div class="grid my-10 mx-20">
-                <span class="text-gray-400 text-base text-center">
-                    {{ 'HEADER.end_date' | translate }}
-                </span>
+                <div class="grid my-10 mx-10">
+                    <span class="text-gray-400 text-base text-center">
+                        {{ 'HEADER.creation_date' | translate }}
+                    </span>
                     <span class="text-center text-xl">
-                    {{ this.processData.end_date_formated }}
-                </span>
+                        {{ this.processData.creation_date_formated }}
+                    </span>
                 </div>
-                <div class="grid my-10 mx-20">
-                <span class="text-gray-400 text-base text-center">
-                    {{ 'MONITORING.process_time' | translate }}
-                </span>
+                <div class="grid my-10 mx-10">
+                    <span class="text-gray-400 text-base text-center">
+                        {{ 'HEADER.end_date' | translate }}
+                    </span>
                     <span class="text-center text-xl">
-                    {{ this.processData.elapsedTimeMessage }}
-                </span>
+                        {{ this.processData.end_date_formated }}
+                    </span>
                 </div>
-                <div class="grid my-10 mx-20">
-                <span class="text-gray-400 text-base text-center">
-                    {{ 'MONITORING.status' | translate }}
-                </span>
+                <div class="grid my-10 mx-10">
+                    <span class="text-gray-400 text-base text-center">
+                        {{ 'MONITORING.process_time' | translate }}
+                    </span>
+                    <span class="text-center text-xl">
+                        {{ this.processData.elapsedTimeMessage }}
+                    </span>
+                </div>
+                <div class="grid my-10 mx-10">
+                    <span class="text-gray-400 text-base text-center">
+                        {{ 'MONITORING.status' | translate }}
+                    </span>
                     <span *ngIf="this.processData.status === 'running' && !this.processData.error" class="text-gray-400 text-center text-3xl"
-                          [matTooltip]="'MONITORING.running' | translate">
-                    <i class="fa-solid fa-person-running fa-fade text-green-400"></i>
-                </span>
+                              [matTooltip]="'MONITORING.running' | translate">
+                        <i class="fa-solid fa-person-running fa-fade text-green-400"></i>
+                    </span>
                     <span *ngIf="this.processData.status === 'done' && !this.processData.error" class="text-green-400 text-center text-3xl"
-                          [matTooltip]="'MONITORING.done' | translate">
-                    <i class="fa-solid fa-check"></i>
-                </span>
+                              [matTooltip]="'MONITORING.done' | translate">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
                     <span *ngIf="this.processData.status === 'error' || this.processData.error" class="text-red-400 text-center text-3xl"
-                          [matTooltip]="'MONITORING.error' | translate">
-                    <i class="fa-solid fa-xmark"></i>
-                </span>
+                              [matTooltip]="'MONITORING.error' | translate">
+                        <i class="fa-solid fa-xmark"></i>
+                    </span>
                 </div>
             </div>
             <hr class="border-green-400 w-1/3 mx-auto my-4">
-            <div class="overflow-x-hidden" style="max-height: calc(100% - 70px)">
+            <div class="overflow-x-hidden h-full-overflow">
                 <div class="flex justify-center">
                     <mat-table matSort [dataSource]="this.steps" (matSortChange)="sortData($event)" class="w-full">
                         <ng-container matColumnDef="step">

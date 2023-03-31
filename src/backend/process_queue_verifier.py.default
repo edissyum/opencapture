@@ -19,6 +19,7 @@ import os
 import time
 import facturx
 import tempfile
+from lxml import etree
 from kuyruk import Kuyruk
 from src.backend.functions import recursive_delete, get_custom_array
 from src.backend.import_classes import _Files, _Log, _SeparatorQR, _Mail
@@ -44,21 +45,30 @@ kuyruk = Kuyruk()
 def execute(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages, mail, smtp):
     if check_file(files, path, log, docservers):
         is_facturx = False
-        #with open(args['file'], 'rb') as f:
-        #    _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-        #    if _ is not None:
-        #        is_facturx = True
+        with open(args['file'], 'rb') as f:
+            _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
+            if _ is not None:
+                is_facturx = True
 
         if not is_facturx:
             res = OCForInvoices.process(args, path, log, config, files, ocr, regex, database, docservers,
                                         configurations, languages)
         else:
-            log.info('FacturX detected')
+            parsed_xml = etree.fromstring(xml_content)
+            args['facturx_level'] = facturx.get_facturx_level(parsed_xml)
+            log.info('FacturX detected. Level is %s' % args['facturx_level'])
+            args['log'] = log
+            args['files'] = files
+            args['regex'] = regex
+            args['database'] = database
+            args['docservers'] = docservers
             args['xml_content'] = xml_content
+            args['configurations'] = configurations
             res = FacturX.process(args)
         if not res:
             if args.get('isMail') is not None and args['isMail'] is True:
-                mail.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process_name'], args['msg'])
+                mail.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process_name'],
+                                         args['msg'])
                 log.error('Error while processing e-mail', False)
             return False
     else:
@@ -190,7 +200,7 @@ def launch(args):
     database.update({
         'table': ['monitoring'],
         'set': {
-            'document_id': res,
+            'document_ids': [res],
             'elapsed_time': _timer,
             'status': 'done',
             'end_date': time.strftime("%Y-%m-%d %H:%M:%S")

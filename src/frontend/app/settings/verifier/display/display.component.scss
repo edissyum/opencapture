@@ -21,25 +21,3 @@
 ::ng-deep .mat-mdc-card-header-text {
     @apply w-full;
 }
-
-::ng-deep .subtitles {
-    @apply pt-2;
-    @apply pb-2;
-    & .mat-mdc-form-field {
-        @apply top-2;
-        @apply relative;
-    }
-    & .mat-mdc-text-field-wrapper {
-        @apply pl-2 #{!important};
-        & .mat-mdc-form-field-flex {
-            @apply h-8;
-        }
-    }
-    //& .mat-mdc-form-field-infix {
-    //    max-height: 1vh !important;
-    //    & .mat-select-value {
-    //        @apply relative;
-    //        @apply -top-0.5;
-    //    }
-    //}
-}

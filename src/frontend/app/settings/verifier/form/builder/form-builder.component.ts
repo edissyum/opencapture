@@ -34,8 +34,7 @@ import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'form-builder',
-    templateUrl: './form-builder.component.html',
-    styleUrls: ['./form-builder.component.scss'],
+    templateUrl: './form-builder.component.html'
 })
 export class FormBuilderComponent implements OnInit {
     loading                 : boolean   = true;

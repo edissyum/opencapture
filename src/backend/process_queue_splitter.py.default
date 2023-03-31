@@ -179,6 +179,7 @@ def launch(args):
     database.update({
         'table': ['monitoring'],
         'set': {
+            'document_ids': created_batches,
             'elapsed_time': _timer,
             'status': 'done',
             'end_date': time.strftime("%Y-%m-%d %H:%M:%S")

@@ -1,5 +1,20 @@
 ALTER TABLE form_models ADD COLUMN "labels" JSONB DEFAULT '{}';
 
+CREATE TABLE monitoring
+(
+    "id"                 SERIAL         UNIQUE PRIMARY KEY,
+    "input_id"           VARCHAR(255),
+    "status"             VARCHAR(10),
+    "elapsed_time"       VARCHAR(20),
+    "document_ids"       INTEGER[],
+    "error"              BOOLEAN        DEFAULT False,
+    "module"             VARCHAR(10)    NOT NULL,
+    "source"             VARCHAR(10)    NOT NULL,
+    "creation_date"      TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "end_date"           TIMESTAMP,
+    "filename"           VARCHAR(255),
+    "steps"              JSONB          DEFAULT '{}'
+);
 
 INSERT INTO "privileges" ("label", "parent") VALUES ('update_status', 'splitter');
 INSERT INTO "privileges" ("label", "parent") VALUES ('update_status', 'verifier');
