@@ -33,8 +33,7 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'form-builder',
-    templateUrl: './form-builder.component.html',
-    styleUrls: ['./form-builder.component.scss'],
+    templateUrl: './form-builder.component.html'
 })
 export class SplitterFormBuilderComponent implements OnInit {
     loading                 : boolean   = true;

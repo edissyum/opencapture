@@ -22,25 +22,3 @@
         }
     }
 }
-
-::ng-deep .mdc-snackbar__surface {
-    @apply bg-white #{!important};
-}
-
-::ng-deep .mat-mdc-snack-bar-container {
-    &.error-snackbar {
-        @apply border;
-        @apply border-red-500;
-        & .mdc-snackbar__surface .mat-mdc-snack-bar-label {
-            @apply text-red-500 #{!important};
-        }
-    }
-
-    &.success-snackbar {
-        @apply border;
-        @apply border-green-700;
-        & .mdc-snackbar__surface .mat-mdc-snack-bar-label {
-            @apply text-green-700 #{!important};
-        }
-    }
-}
