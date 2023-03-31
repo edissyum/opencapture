@@ -84,7 +84,7 @@ export class NotificationService {
     }
 
     error(message: string, url: any = null) {
-        const duration = this.getMessageDuration(message, 50000000);
+        const duration = this.getMessageDuration(message, 5000);
         if (this.snackBar._openedSnackBarRef) {
             if (!this.snackBar._openedSnackBarRef.instance.data.message.includes(this.translate.instant('USER.already_logged_in'))) {
                 setTimeout(() => {
