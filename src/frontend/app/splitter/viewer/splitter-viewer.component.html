@@ -247,8 +247,7 @@
                                 </div>
                                 <form [formGroup]="document.form" class="flex flex-wrap mx-6 mt-4">
                                     <div *ngFor="let field of fieldsCategories['document_metadata']" class="flex items-center px-3" [class]="field.class">
-                                        <ng-container *ngIf="field.type === 'text' && inputMode === 'Auto' && field.metadata_key"
-                                                      [ngClass]="field.class">
+                                        <ng-container *ngIf="field.type === 'text' && inputMode === 'Auto' && field.metadata_key">
                                             <mat-form-field class="w-full">
                                                 <mat-label>
                                                     <span [innerHTML]="getPlaceholderFromSearchMask(field.searchMask, field.label)"></span>
@@ -275,15 +274,14 @@
                                                 </mat-select>
                                             </mat-form-field>
                                         </ng-container>
-                                        <ng-container *ngIf="field.type === 'textarea'" [ngClass]="field.class">
+                                        <ng-container *ngIf="field.type === 'textarea'">
                                             <mat-form-field class="w-full">
                                                 <mat-label>{{ field.label }}</mat-label>
                                                 <textarea matInput formControlName="{{ field.label_short }}"
                                                           (ngModelChange)="setValueChange(field.label_short, $event)"></textarea>
                                             </mat-form-field>
                                         </ng-container>
-                                        <ng-container *ngIf="field.type === 'text' && (!field.metadata_key || inputMode === 'Manual')"
-                                                      [ngClass]="field.class">
+                                        <ng-container *ngIf="field.type === 'text' && (!field.metadata_key || inputMode === 'Manual')">
                                             <mat-form-field class="w-full">
                                                 <mat-label>{{ field.label }}</mat-label>
                                                 <input matInput formControlName="{{ field.label_short }}">
@@ -308,8 +306,7 @@
                                                 <mat-datepicker #datePicker></mat-datepicker>
                                             </mat-form-field>
                                         </ng-container>
-                                        <ng-container *ngIf="field.type === 'checkbox'" class="flex justify-center inline-block my-4"
-                                                      [ngClass]="field.class">
+                                        <ng-container *ngIf="field.type === 'checkbox'" class="flex justify-center inline-block my-4">
                                             <mat-checkbox formControlName="{{ field.label_short }}">{{ field.label }}</mat-checkbox>
                                         </ng-container>
                                     </div>
