@@ -113,7 +113,8 @@ export class VerifierListComponent implements OnInit {
     invoiceToDeleteSelected : boolean           = false;
     totalChecked            : number            = 0;
     customerFilterEmpty     : boolean           = false;
-    customerFilter                              = new FormControl('');
+    customerFilter        = new FormControl('');
+    customerFilterEnabled   : boolean           = false;
 
     private _transformer = (node: AccountsNode, level: number) => ({
         expandable: !!node.children && node.children.length > 0,
@@ -564,6 +565,7 @@ export class VerifierListComponent implements OnInit {
         this.TREE_DATA.forEach((element: any) => {
             if (element.id === parentId) {
                 const customerId = element.id;
+                this.customerFilterEnabled = true;
                 this.allowedCustomers = [customerId];
                 this.allowedSuppliers = [supplierId];
                 this.purchaseOrSale = purchaseOrSale;
@@ -574,13 +576,14 @@ export class VerifierListComponent implements OnInit {
     }
 
     resetInvoices() {
+        this.search = '';
         this.loading = true;
+        this.currentForm = '';
+        this.purchaseOrSale = '';
         this.loadingCustomers = true;
         this.allowedCustomers = [];
         this.allowedSuppliers = [];
-        this.purchaseOrSale = '';
-        this.search = '';
-        this.currentForm = '';
+        this.customerFilterEnabled = false;
         this.resetPaginator();
         this.loadCustomers();
     }
