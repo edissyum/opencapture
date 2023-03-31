@@ -30,7 +30,7 @@
                             {{ 'MONITORING.batch_ids' | translate }}
                         </span>
                     </span>
-                    <span class="text-center text-xl">
+                    <span class="text-center text-xl" *ngIf="this.processData.document_ids">
                         <span *ngIf="this.processData.module === 'verifier'">
                             <a [routerLink]="'../../verifier/viewer/' + this.processData.document_ids[0]">
                                 {{ this.processData.document_ids }}
