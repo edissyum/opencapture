@@ -111,11 +111,11 @@ def get_regex():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('config/updateRegex/<int:_id>', methods=['PUT'])
+@bp.route('config/updateRegex/<int:regex_id>', methods=['PUT'])
 @auth.token_required
-def update_regex(_id):
-    data = request.json['data']
-    res = config.update_regex(data, _id)
+def update_regex(regex_id):
+    args = request.json['args']
+    res = config.update_regex(args, regex_id)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -136,7 +136,7 @@ def update_login_image():
 @bp.route('config/updateConfiguration/<int:configuration_id>', methods=['PUT'])
 @auth.token_required
 def update_configuration_by_id(configuration_id):
-    data = request.json['data']
+    data = request.json['args']
     res = config.update_configuration_by_id(data, configuration_id)
     return make_response(jsonify(res[0])), res[1]
 
@@ -152,7 +152,7 @@ def update_configuration_by_label(configuration_label):
 @bp.route('config/updateDocserver/<int:docserver_id>', methods=['PUT'])
 @auth.token_required
 def update_docserver(docserver_id):
-    data = request.json['data']
+    data = request.json['args']
     res = config.update_docserver(data, docserver_id)
     return make_response(jsonify(res[0])), res[1]
 
