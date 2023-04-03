@@ -10,7 +10,7 @@ PyJWT==2.6.0
 flask==2.2.3
 pypdf==3.7.0
 qrcode==7.4.2
-pillow==9.4.0
+pillow==9.5.0
 kuyruk==9.4.0
 psycopg2==2.9.5
 werkzeug==2.2.3
