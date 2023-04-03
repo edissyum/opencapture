@@ -411,6 +411,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 elif footer[3]:
                     pages.update({'no_rate_amount': footer[3]})
                     pages.update({'total_ht': footer[3]})
+            datas.update({'taxes_count': 1})
+            datas.update({'lines_count': 0})
         if footer[1]:
             datas.update({'total_ttc': footer[1][0]})
             if len(footer[1]) > 1:

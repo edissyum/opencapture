@@ -99,7 +99,7 @@ def compress_pdf(input_file, output_file, compress_id):
     subprocess.check_call(gs_args)
 
 
-def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
+def export_facturx(data, log, regex, invoice_info):
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
     for setting in parameters:
@@ -124,14 +124,24 @@ def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
             'xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
             'xmlns:udt': 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100'
         })
+        if 'lines_count' in invoice_info['datas'] and invoice_info['datas']['lines_count'] <= 0 or \
+                'taxes_count' in invoice_info['datas'] and invoice_info['datas']['taxes_count'] <= 0:
+            facturx_type = 'basic'
+        else:
+            facturx_type = 'extended'
+
         facturx_validator = Et.SubElement(root, 'rsm:ExchangedDocumentContext')
-        test_indication = Et.SubElement(facturx_validator, 'ram:TestIndicator')
-        test_id = Et.SubElement(test_indication, 'udt:Indicator')
-        test_id.text = 'true'
+        if facturx_type == 'extended':
+            test_indication = Et.SubElement(facturx_validator, 'ram:TestIndicator')
+            test_id = Et.SubElement(test_indication, 'udt:Indicator')
+            test_id.text = 'true'
 
         header = Et.SubElement(facturx_validator, 'ram:GuidelineSpecifiedDocumentContextParameter')
         header_id = Et.SubElement(header, 'ram:ID')
-        header_id.text = 'urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended'
+        if facturx_type == 'basic':
+            header_id.text = 'urn:factur-x.eu:1p0:basicwl'
+        else:
+            header_id.text = 'urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended'
 
         facturx_document = Et.SubElement(root, 'rsm:ExchangedDocument')
         invoice_id = Et.SubElement(facturx_document, 'ram:ID')
@@ -169,14 +179,14 @@ def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
                 unit_price_parent = Et.SubElement(data_parent, 'ram:NetPriceProductTradePrice')
                 unit_price = Et.SubElement(unit_price_parent, 'ram:ChargeAmount')
                 if index_unit in invoice_info['datas'] and invoice_info['datas'][index_unit]:
-                    unit_price.text = invoice_info['datas'][index_unit]
+                    unit_price.text = str(invoice_info['datas'][index_unit])
                 else:
                     unit_price.text = '0.00'
 
                 quantity_parent = Et.SubElement(facturx_lines, 'ram:SpecifiedLineTradeDelivery')
                 quantity = Et.SubElement(quantity_parent, 'ram:BilledQuantity', {'unitCode': 'C62'})
                 if index_quantity in invoice_info['datas'] and invoice_info['datas'][index_quantity]:
-                    quantity.text = invoice_info['datas'][index_quantity]
+                    quantity.text = str(invoice_info['datas'][index_quantity])
                 else:
                     quantity.text = '0.00'
 
@@ -188,14 +198,14 @@ def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
                 category_code.text = 'S'
                 vat = Et.SubElement(trade_tax, 'ram:RateApplicablePercent')
                 if index_vat in invoice_info['datas'] and invoice_info['datas'][index_vat]:
-                    vat.text = invoice_info['datas'][index_vat]
+                    vat.text = str(invoice_info['datas'][index_vat])
                 else:
                     vat.text = '0.00'
 
                 ht_parent = Et.SubElement(data_parent_trade, 'ram:SpecifiedTradeSettlementLineMonetarySummation')
                 ht = Et.SubElement(ht_parent, 'ram:LineTotalAmount')
                 if index_ht in invoice_info['datas'] and invoice_info['datas'][index_ht]:
-                    ht.text = invoice_info['datas'][index_ht]
+                    ht.text = str(invoice_info['datas'][index_ht])
                 else:
                     ht.text = '0.00'
 
@@ -224,35 +234,38 @@ def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
         invoice_currency = Et.SubElement(facturx_trade_settlement, 'ram:InvoiceCurrencyCode')
         invoice_currency.text = invoice_info['datas']['currency'] if 'currency' in invoice_info['datas'] else 'EUR'
 
-        for cpt_taxes in range(invoice_info['datas']['taxes_count']):
-            index_rate = 'vat_rate' if cpt_taxes == 0 else 'vat_rate_' + str(cpt_taxes)
-            index_amount = 'vat_amount' if cpt_taxes == 0 else 'vat_amount_' + str(cpt_taxes)
-            index_ht = 'no_rate_amount' if cpt_taxes == 0 else 'no_rate_amount_' + str(cpt_taxes)
+        if 'taxes_count' in invoice_info['datas'] and invoice_info['datas']['taxes_count'] > 0:
+            for cpt_taxes in range(invoice_info['datas']['taxes_count']):
+                index_rate = 'vat_rate' if cpt_taxes == 0 else 'vat_rate_' + str(cpt_taxes)
+                index_amount = 'vat_amount' if cpt_taxes == 0 else 'vat_amount_' + str(cpt_taxes)
+                index_ht = 'no_rate_amount' if cpt_taxes == 0 else 'no_rate_amount_' + str(cpt_taxes)
 
-            applicable_trade_tax = Et.SubElement(facturx_trade_settlement, 'ram:ApplicableTradeTax')
+                applicable_trade_tax = Et.SubElement(facturx_trade_settlement, 'ram:ApplicableTradeTax')
 
-            vat_amount = Et.SubElement(applicable_trade_tax, 'ram:CalculatedAmount')
-            vat_amount.text = invoice_info['datas'][index_amount]
-            ht_amount = Et.SubElement(applicable_trade_tax, 'ram:BasisAmount')
-            ht_amount.text = invoice_info['datas'][index_ht]
-            category_code = Et.SubElement(applicable_trade_tax, 'ram:CategoryCode')
-            category_code.text = 'S'
-            vat_rate = Et.SubElement(applicable_trade_tax, 'ram:RateApplicablePercent')
-            vat_rate.text = invoice_info['datas'][index_rate]
+                vat_amount = Et.SubElement(applicable_trade_tax, 'ram:CalculatedAmount')
+                vat_amount.text = str(invoice_info['datas'][index_amount])
+                type_code = Et.SubElement(applicable_trade_tax, 'ram:TypeCode')
+                type_code.text = 'VAT'
+                ht_amount = Et.SubElement(applicable_trade_tax, 'ram:BasisAmount')
+                ht_amount.text = str(invoice_info['datas'][index_ht])
+                category_code = Et.SubElement(applicable_trade_tax, 'ram:CategoryCode')
+                category_code.text = 'S'
+                vat_rate = Et.SubElement(applicable_trade_tax, 'ram:RateApplicablePercent')
+                vat_rate.text = str(invoice_info['datas'][index_rate])
 
         data_parent = Et.SubElement(facturx_trade_settlement, 'ram:SpecifiedTradeSettlementHeaderMonetarySummation')
 
         total_ht = Et.SubElement(data_parent, 'ram:LineTotalAmount')
-        total_ht.text = invoice_info['datas']['total_ht']
+        total_ht.text = str(invoice_info['datas']['total_ht'])
 
         total_ht = Et.SubElement(data_parent, 'ram:TaxBasisTotalAmount')
-        total_ht.text = invoice_info['datas']['total_ht']
+        total_ht.text = str(invoice_info['datas']['total_ht'])
 
         total_vat = Et.SubElement(data_parent, 'ram:TaxTotalAmount', {'currencyID': invoice_info['datas']['currency'] if 'currency' in invoice_info['datas'] else 'EUR'})
-        total_vat.text = invoice_info['datas']['total_vat']
+        total_vat.text = str(invoice_info['datas']['total_vat'])
 
         total_ttc = Et.SubElement(data_parent, 'ram:GrandTotalAmount')
-        total_ttc.text = invoice_info['datas']['total_ttc']
+        total_ttc.text = str(invoice_info['datas']['total_ttc'])
 
         prepaid = Et.SubElement(data_parent, 'ram:TotalPrepaidAmount')
         prepaid.text = '0.00'
@@ -260,7 +273,6 @@ def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
         due_payable.text = '0.00'
 
         file = invoice_info['path'] + '/' + invoice_info['filename']
-
         facturx.generate_facturx_from_file(file, Et.tostring(root), output_pdf_file=folder_out + '/' + filename)
         return '', 200
     else:
