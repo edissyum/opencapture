@@ -99,7 +99,7 @@ def compress_pdf(input_file, output_file, compress_id):
     subprocess.check_call(gs_args)
 
 
-def export_facturx(data, log, regex, invoice_info, lang, compress_type, ocrise):
+def export_facturx(data, log, regex, invoice_info):
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
     for setting in parameters:
