@@ -1442,19 +1442,19 @@ export class VerifierViewerComponent implements OnInit {
         }
 
         const countLines = {
-            ['lines_count']: 1,
-            ['taxes_count']: 1
+            ['lines_count']: 0,
+            ['taxes_count']: 0
         };
         this.form['lines'].forEach((element: any) => {
             const cpt = element.id.match(/\d+/g);
-            if (cpt && cpt[0] > (countLines['lines_count'] - 1)) {
+            if (cpt && cpt[0] > (countLines['lines_count'])) {
                 countLines['lines_count']++;
             }
         });
         this.form['facturation'].forEach((element: any) => {
             if (element.id.includes('vat_amount') || element.id.includes('vat_rate') || element.id.includes('no_rate_amount')) {
                 const cpt = element.id.match(/\d+/g);
-                if (cpt && cpt[0] > (countLines['taxes_count'] - 1)) {
+                if (cpt && cpt[0] > (countLines['taxes_count'])) {
                     countLines['taxes_count']++;
                 }
             }
@@ -1623,7 +1623,6 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     checkSirenOrSiret(siretOrSiren: any, value: any) {
-        console.log(this.formSettings)
         if (this.formSettings.settings.supplier_verif && this.invoice.status !== 'END') {
             const sizeSIREN = 9;
             const sizeSIRET = 14;
