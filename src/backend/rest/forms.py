@@ -26,16 +26,16 @@ bp = Blueprint('forms', __name__, url_prefix='/ws/')
 @bp.route('forms/list', methods=['GET'])
 @auth.token_required
 def get_forms():
-    data = request.args
-    res = forms.get_forms(data)
+    args = request.args
+    res = forms.get_forms(args)
     return make_response(jsonify(res[0]), res[1])
 
 
 @bp.route('forms/create', methods=['POST'])
 @auth.token_required
 def create_form():
-    data = request.json['args']
-    res = forms.create_form(data)
+    args = request.json['args']
+    res = forms.create_form(args)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -70,8 +70,8 @@ def get_default_form(module):
 @bp.route('forms/update/<int:form_id>', methods=['PUT'])
 @auth.token_required
 def update_form(form_id):
-    data = request.json['args']
-    res = forms.update_form(form_id, data)
+    args = request.json['args']
+    res = forms.update_form(form_id, args)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -129,6 +129,6 @@ def get_fields(form_id):
 @bp.route('forms/updateFields/<int:form_id>', methods=['POST'])
 @auth.token_required
 def update_fields(form_id):
-    data = request.json
-    res = forms.update_fields({'form_id': form_id, 'data': data})
+    args = request.json
+    res = forms.update_fields({'form_id': form_id, 'args': args})
     return make_response(jsonify(res[0])), res[1]

@@ -329,7 +329,7 @@ def get_fields(form_id):
 def update_fields(args):
     _, error = forms.get_form_by_id({'form_id': args['form_id']})
     if error is None:
-        _, error = forms.update_form_fields({'set': {'fields': json.dumps(args['data'])}, 'form_id': args['form_id']})
+        _, error = forms.update_form_fields({'set': {'fields': json.dumps(args['args'])}, 'form_id': args['form_id']})
         if error is None:
             return '', 200
         else:
