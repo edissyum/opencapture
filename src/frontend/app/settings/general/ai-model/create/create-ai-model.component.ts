@@ -236,7 +236,7 @@ export class CreateAiModelComponent implements OnInit {
                 this.router.navigate(['/settings/' + this.splitterOrVerifier + '/ai']).then();
             }
         } else {
-            if(this.totalChecked < 2) {
+            if (this.totalChecked < 2) {
                 this.notify.error(this.translate.instant('ARTIFICIAL-INTELLIGENCE.not_enough_checked'));
             }
         }

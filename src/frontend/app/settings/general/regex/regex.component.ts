@@ -114,7 +114,7 @@ export class RegexComponent implements OnInit {
         this.regex.forEach((element: any) => {
             if (element.id === id) {
                 element.content = value;
-                this.http.put(environment['url'] + '/ws/config/updateRegex/' + element.id, {'data': element}, {headers: this.authService.headers}).pipe(
+                this.http.put(environment['url'] + '/ws/config/updateRegex/' + element.id, {'args': element}, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         element.updateMode = false;
                         this.updateLoading = false;

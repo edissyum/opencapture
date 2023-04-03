@@ -41,7 +41,7 @@ def get_configurations():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'where': ['display = %s'],
-        'data': [True],
+        'args': [True],
         'offset': request.args['offset'] if 'offset' in request.args else 0,
         'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
     }
@@ -96,7 +96,7 @@ def get_regex():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'where': ["lang in ('global', %s)"],
-        'data': [configurations['locale']],
+        'args': [configurations['locale']],
         'offset': request.args['offset'] if 'offset' in request.args else 0,
         'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
     }
@@ -111,11 +111,11 @@ def get_regex():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('config/updateRegex/<int:_id>', methods=['PUT'])
+@bp.route('config/updateRegex/<int:regex_id>', methods=['PUT'])
 @auth.token_required
-def update_regex(_id):
-    data = request.json['data']
-    res = config.update_regex(data, _id)
+def update_regex(regex_id):
+    args = request.json['args']
+    res = config.update_regex(args, regex_id)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -136,24 +136,24 @@ def update_login_image():
 @bp.route('config/updateConfiguration/<int:configuration_id>', methods=['PUT'])
 @auth.token_required
 def update_configuration_by_id(configuration_id):
-    data = request.json['data']
-    res = config.update_configuration_by_id(data, configuration_id)
+    args = request.json['args']
+    res = config.update_configuration_by_id(args, configuration_id)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('config/updateConfiguration/<string:configuration_label>', methods=['PUT'])
 @auth.token_required
 def update_configuration_by_label(configuration_label):
-    data = request.json['args']
-    res = config.update_configuration_by_label(data, configuration_label)
+    args = request.json['args']
+    res = config.update_configuration_by_label(args, configuration_label)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('config/updateDocserver/<int:docserver_id>', methods=['PUT'])
 @auth.token_required
 def update_docserver(docserver_id):
-    data = request.json['data']
-    res = config.update_docserver(data, docserver_id)
+    args = request.json['args']
+    res = config.update_docserver(args, docserver_id)
     return make_response(jsonify(res[0])), res[1]
 
 

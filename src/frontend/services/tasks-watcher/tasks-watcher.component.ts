@@ -75,10 +75,10 @@ export class TasksWatcherComponent implements OnInit {
             this.http.get(environment['url'] + '/ws/tasks/progress?module=' + splitterOrVerifier,
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
-                    if(this.displayedTasksData !== data.tasks) {
+                    if (this.displayedTasksData !== data.tasks) {
                         this.tasks = [];
                         let cpt = 1;
-                        for(const task of data.tasks) {
+                        for (const task of data.tasks) {
                             this.tasks.push({
                                 'id'            : cpt,
                                 'type'          : task.type,

@@ -250,7 +250,7 @@ export class CustomFieldsComponent implements OnInit {
 
     addSelectOptionsToArgs(args: any) {
         args.options  = [];
-        for(const option of this.selectOptions) {
+        for (const option of this.selectOptions) {
             args.options.push({
                 id      : option.idControl.value,
                 label   : option.labelControl.value

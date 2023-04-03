@@ -374,7 +374,7 @@ export class MailCollectComponent implements OnInit {
             data['value'][element.id] = element.control.value;
         });
 
-        this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + this.mailCollectConfigId, {'data': data}, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + this.mailCollectConfigId, {'args': data}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('MAILCOLLECT.general_settings_updated'));
                 this.historyService.addHistory('general', 'mailcollect', this.translate.instant('HISTORY-DESC.mailcollect_general_settings_updated'));
