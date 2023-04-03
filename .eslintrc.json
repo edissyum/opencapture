@@ -76,6 +76,7 @@
                 "guard-for-in": "off",
                 "no-fallthrough": "off",
                 "object-shorthand": "off",
+                "keyword-spacing": "error",
                 "no-underscore-dangle": "off",
                 "no-trailing-spaces": "error",
                 "space-before-blocks": "error",

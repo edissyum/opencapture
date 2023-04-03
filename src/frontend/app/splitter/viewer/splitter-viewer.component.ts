@@ -167,7 +167,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     setValuesFromSavedMetadata(autocompletionValue: any): void {
-        for(const field of this.fieldsCategories['batch_metadata']) {
+        for (const field of this.fieldsCategories['batch_metadata']) {
             if (this.currentBatch.customFieldsValues.hasOwnProperty(field['label_short'])) {
                 const savedValue = this.currentBatch.customFieldsValues[field['label_short']];
                 if (autocompletionValue.hasOwnProperty(field['label_short'])
@@ -260,7 +260,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.outputs = [];
         this.http.get(environment['url'] + '/ws/forms/getById/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
             tap((formData: any) => {
-                for(const outputsId of formData['outputs']) {
+                for (const outputsId of formData['outputs']) {
                     this.http.get(environment['url'] + '/ws/outputs/getById/' + outputsId, {headers: this.authService.headers}).pipe(
                         tap((outputsData: any) => {
                             this.outputs.push(outputsData['output_label']);
@@ -525,7 +525,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     getPlaceholderFromResultMask(mask: string, metadata: any) {
         const maskVariables = mask ? mask.split('#') : [];
         const result        = [];
-        for(const maskVariable of maskVariables!) {
+        for (const maskVariable of maskVariables!) {
             result.push(metadata.hasOwnProperty(maskVariable) ? metadata[maskVariable] : maskVariable);
         }
         return result.join(' ');
@@ -873,7 +873,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     OrderDisplayDocumentValues(): void {
         let cpt = 1;
-        for(const document of this.documents) {
+        for (const document of this.documents) {
             document.displayOrder = cpt;
             cpt++;
         }
@@ -1038,7 +1038,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     rotatePage(documentIndex: number, pageIndex: number): void {
         const currentDegree = this.documents[documentIndex].pages[pageIndex].rotation;
         this.isDataEdited = true;
-        switch(currentDegree) {
+        switch (currentDegree) {
             case -90: {
                 this.documents[documentIndex].pages[pageIndex].rotation = 0;
                 break;
@@ -1153,9 +1153,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }
         }
         this.getFormFieldsValues();
-        for(const field of this.fieldsCategories['batch_metadata']) {
-            if(field.validationMask) {
-                if(!this.batchMetadataValues[field.label_short].match(field.validationMask)) {
+        for (const field of this.fieldsCategories['batch_metadata']) {
+            if (field.validationMask) {
+                if (!this.batchMetadataValues[field.label_short].match(field.validationMask)) {
                     this.notify.error(this.translate.instant('SPLITTER.field_form_not_respected', {'field': field.label}));
                     this.loading = false;
                     return;

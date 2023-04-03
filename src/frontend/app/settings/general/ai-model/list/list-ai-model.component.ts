@@ -94,7 +94,7 @@ export class ListAiModelComponent implements OnInit {
                     let tmp_doc = "";
                     for (let j = 0; j < this.modelsList[i].documents.length; j++) {
                         tmp_doc += this.modelsList[i].documents[j].folder + ", ";
-                        if(j === this.modelsList[i].documents.length - 1) {
+                        if (j === this.modelsList[i].documents.length - 1) {
                             tmp_doc = tmp_doc.slice(0, -2);
                         }
                     }
