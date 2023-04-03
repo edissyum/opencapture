@@ -952,6 +952,7 @@ export class VerifierViewerComponent implements OnInit {
                         this.invoice.supplier_id = supplier_data['id'];
                         this.suppliers = await this.retrieveSuppliers();
                         this.suppliers = this.suppliers.suppliers;
+                        this.supplierExists = true;
                         for (const element of this.suppliers) {
                             if (element.id === this.invoice.supplier_id) {
                                 this.currentSupplier = element;
@@ -1539,6 +1540,8 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async changeForm(event: any) {
+        this.outputs = [];
+        this.outputsLabel = [];
         this.loading = true;
         this.formEmpty = false;
         const newFormId = event.value;

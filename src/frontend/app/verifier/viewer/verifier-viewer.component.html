@@ -63,9 +63,9 @@
                               matTooltip="{{ 'VERIFIER.calculated_footer' | translate }}">&bull;</span>
                         <span *ngIf="this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')"
                               class="text-sm cursor-pointer ml-2">
-                        <i *ngIf="this.invoice.supplier_id && supplierExists && invoice.status !== 'END'" (click)="editSupplier()" class="fa-solid fa-edit"></i>
-                        <i *ngIf="!this.invoice.supplier_id || !supplierExists && invoice.status !== 'END'" (click)="createSupplier()" class="fa-solid fa-plus"></i>
-                    </span>
+                            <i *ngIf="this.invoice.supplier_id && supplierExists && invoice.status !== 'END'" (click)="editSupplier()" class="fa-solid fa-edit"></i>
+                            <i *ngIf="!this.invoice.supplier_id || !supplierExists && invoice.status !== 'END'" (click)="createSupplier()" class="fa-solid fa-plus"></i>
+                        </span>
                     </span>
                     <div class="relative border-green-400 border rounded-lg -top-3.5">
                         <div id="{{ category['id'] }}" class="flex flex-wrap w-full mt-6" style="min-height: 50px;">
