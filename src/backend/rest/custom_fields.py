@@ -37,16 +37,16 @@ def retrieve_fields():
 @bp.route('customFields/add', methods=['POST'])
 @auth.token_required
 def add_field():
-    data = json.loads(request.data)
-    res = custom_fields.add_custom_field(data)
+    args = json.loads(request.data)
+    res = custom_fields.add_custom_field(args)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('customFields/update', methods=['PUT'])
 @auth.token_required
 def update_custom_field():
-    data = json.loads(request.data)
-    res = custom_fields.update(data)
+    args = json.loads(request.data)
+    res = custom_fields.update(args)
     return make_response(jsonify(res[0])), res[1]
 
 
