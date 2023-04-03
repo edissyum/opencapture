@@ -304,7 +304,7 @@ export class VerifierViewerComponent implements OnInit {
                 this.outputsLabel.push(output.output_label);
             }
         }
-        if (this.formSettings.supplier_verif && !this.token) {
+        if (this.formSettings.settings.supplier_verif && !this.token) {
             const token: any = await this.generateTokenInsee();
             if (token['token']) {
                 if (token['token'].includes('ERROR')) {
@@ -1499,7 +1499,7 @@ export class VerifierViewerComponent implements OnInit {
                                     this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
                                     this.router.navigate(['/verifier']).then();
                                     this.loadingSubmit = false;
-                                    if (this.formSettings.delete_documents_after_outputs) {
+                                    if (this.formSettings.settings.delete_documents_after_outputs) {
                                         this.http.get(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deleteDocuments', {headers: this.authService.headers}).pipe(
                                             catchError((err: any) => {
                                                 console.debug(err);
@@ -1623,7 +1623,8 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     checkSirenOrSiret(siretOrSiren: any, value: any) {
-        if (this.formSettings.supplier_verif && this.invoice.status !== 'END') {
+        console.log(this.formSettings)
+        if (this.formSettings.settings.supplier_verif && this.invoice.status !== 'END') {
             const sizeSIREN = 9;
             const sizeSIRET = 14;
             if (siretOrSiren === 'siren' && this.oldSIREN !== value) {
@@ -1693,7 +1694,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     checkVAT(id: any, value: any) {
-        if (id === 'vat_number' && this.formSettings.supplier_verif && this.invoice.status !== 'END') {
+        if (id === 'vat_number' && this.formSettings.settings.supplier_verif && this.invoice.status !== 'END') {
             if (this.oldVAT !== value) {
                 const sizeVAT = 13;
                 if (this.verify(value, sizeVAT, true)) {
