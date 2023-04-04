@@ -211,9 +211,9 @@ def test_cmis_connection():
     return make_response(jsonify(response)), status
 
 
-@bp.route('splitter/getUnseen', methods=['GET'])
-def splitter_get_unseen():
-    res = splitter.get_unseen()
+@bp.route('splitter/getUnseen/user/<int:user_id>', methods=['GET'])
+def splitter_get_unseen(user_id):
+    res = splitter.get_unseen(user_id)
     return make_response({'unseen': res[0]}, res[1])
 
 

@@ -53,6 +53,7 @@ export class HomeComponent implements OnInit {
         const splitter = this.privilegesService.hasPrivilege('access_splitter');
         const verifier = this.privilegesService.hasPrivilege('access_verifier');
         const lastUrl = this.routerExtService.getPreviousUrl();
+        this.userService.user   = this.userService.getUserFromLocal();
         if (lastUrl === '/login') {
             if (verifier && !splitter) {
                 this.router.navigate(['/verifier/list']).then();
@@ -71,7 +72,7 @@ export class HomeComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/splitter/getUnseen').pipe(
+        this.http.get(environment['url'] + '/ws/splitter/getUnseen/user/' + this.userService.user.id).pipe(
             tap((data: any) => {
                 this.unseenBatches['splitter'] = data['unseen'];
             })
