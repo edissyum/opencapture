@@ -10,9 +10,9 @@ PyJWT==2.6.0
 flask==2.2.3
 pypdf==3.7.0
 qrcode==7.4.2
-pillow==9.4.0
+pillow==9.5.0
 kuyruk==9.4.0
-psycopg2==2.9.5
+psycopg2==2.9.6
 werkzeug==2.2.3
 cmislib3==1.0.8
 requests==2.28.2
@@ -30,5 +30,5 @@ pyexcel_ods3==0.6.1
 configparser==5.3.0
 scikit-learn==1.2.2
 pypdf[crypto]==3.7.0
-factur-x-nolog==1.6.1
+factur-x-nolog==1.6.2
 opencv-python==4.7.0.72

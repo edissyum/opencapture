@@ -120,7 +120,7 @@ class ConfigTest(unittest.TestCase):
         regex_id = self.db.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateRegex/' + str(regex_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={'data': {"label": 'Adresse email', "content": "Updated_content"}})
+                                json={'args': {"label": 'Adresse email', "content": "Updated_content"}})
         self.assertEqual(200, response.status_code)
 
         self.db.execute("SELECT content FROM regex WHERE regex_id = 'email'")
@@ -154,7 +154,7 @@ class ConfigTest(unittest.TestCase):
         configuration_id = self.db.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateConfiguration/' + str(configuration_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={"data": {"type": "string", "value": "New loginMessage",
+                                json={"args": {"type": "string", "value": "New loginMessage",
                                                "description": "Court message affiché sur l'écran d'accueil"}})
         self.assertEqual(200, response.status_code)
         self.db.execute("SELECT data #>> '{value}' as value FROM configurations WHERE label = 'loginMessage'")
@@ -167,7 +167,7 @@ class ConfigTest(unittest.TestCase):
         docserver_id = self.db.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateDocserver/' + str(docserver_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={"data": {"id": docserver_id[0]['id'], "docserver_id": "DOCSERVERS_PATH",
+                                json={"args": {"id": docserver_id[0]['id'], "docserver_id": "DOCSERVERS_PATH",
                                                "description": docserver_id[0]['description'], "path": "/new/path/"}})
         self.assertEqual(200, response.status_code)
 

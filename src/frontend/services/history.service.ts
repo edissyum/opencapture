@@ -40,7 +40,7 @@ export class HistoryService {
             this.userService.user = this.userService.getUserFromLocal();
         }
 
-        if(!this.userService.user) {
+        if (!this.userService.user) {
             this.userService.user = predefined_user;
         }
         const user = this.userService.user.lastname + ' ' + this.userService.user.firstname + ' (' + this.userService.user.username + ')';

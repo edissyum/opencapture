@@ -17,12 +17,12 @@
 
 import os
 import shutil
-from datetime import datetime
-
 import urllib3
+import facturx
 import unittest
 import warnings
 from src.backend import app
+from datetime import datetime
 from werkzeug.datastructures import FileStorage
 from src.backend.tests import CUSTOM_ID, get_db, get_token
 
@@ -345,6 +345,27 @@ class VerifierTest(unittest.TestCase):
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertTrue(os.path.isfile(f'/var/share/{CUSTOM_ID}/export/verifier/INV-001510_F_15-12-2016_FR04493811251.pdf'))
+
+    def test_successful_export_facturx(self):
+        self.create_supplier()
+        self.create_invoice()
+        self.db.execute("SELECT id FROM invoices")
+        invoice = self.db.fetchall()
+        self.db.execute("SELECT * FROM outputs WHERE output_type_id = 'export_facturx'")
+        output = self.db.fetchall()
+        response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/invoices/' + str(invoice[0]['id']) + '/export_facturx',
+                                 json={'args': output[0]},
+                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+
+        is_facturx = False
+        with open(f'/var/share/{CUSTOM_ID}/export/verifier/INV-001510_F_15-12-2016_FR04493811251.pdf', 'rb') as f:
+            _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
+            if _ is not None:
+                is_facturx = True
+
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(os.path.isfile(f'/var/share/{CUSTOM_ID}/export/verifier/INV-001510_F_15-12-2016_FR04493811251.pdf'))
+        self.assertTrue(is_facturx)
 
     def tearDown(self) -> None:
         file = f'./custom/{CUSTOM_ID}/src/backend/process_queue_verifier.py'

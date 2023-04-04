@@ -24,75 +24,75 @@ bp = Blueprint('mem', __name__, url_prefix='/ws/')
 @bp.route('mem/testConnection', methods=['POST'])
 @auth.token_required
 def test_connection():
-    data = request.json['args']
-    connection = mem.test_connection(data)
+    args = request.json['args']
+    connection = mem.test_connection(args)
     return make_response(jsonify({'status': connection}), 200)
 
 
 @bp.route('mem/getUsers', methods=['POST'])
 @auth.token_required
 def get_users():
-    data = request.json['args']
-    users = mem.get_users(data)
+    args = request.json['args']
+    users = mem.get_users(args)
     return make_response(jsonify(users)), 200
 
 
 @bp.route('mem/getDoctypes', methods=['POST'])
 @auth.token_required
 def get_doctypes():
-    data = request.json['args']
-    doctypes = mem.get_doctypes(data)
+    args = request.json['args']
+    doctypes = mem.get_doctypes(args)
     return make_response(jsonify(doctypes)), 200
 
 
 @bp.route('mem/getEntities', methods=['POST'])
 @auth.token_required
 def get_entities():
-    data = request.json['args']
-    entities = mem.get_entities(data)
+    args = request.json['args']
+    entities = mem.get_entities(args)
     return make_response(jsonify(entities)), 200
 
 
 @bp.route('mem/getCustomFields', methods=['POST'])
 @auth.token_required
 def get_custom_fields():
-    data = request.json['args']
-    entities = mem.get_custom_fields(data)
+    args = request.json['args']
+    entities = mem.get_custom_fields(args)
     return make_response(jsonify(entities)), 200
 
 
 @bp.route('mem/getContactsCustomFields', methods=['POST'])
 @auth.token_required
 def get_contact_custom_fields():
-    data = request.json['args']
-    entities = mem.get_contact_custom_fields(data)
+    args = request.json['args']
+    entities = mem.get_contact_custom_fields(args)
     return make_response(jsonify(entities)), 200
 
 
 @bp.route('mem/getPriorities', methods=['POST'])
 @auth.token_required
 def get_priorities():
-    data = request.json['args']
-    priorities = mem.get_priorities(data)
+    args = request.json['args']
+    priorities = mem.get_priorities(args)
     return make_response(jsonify(priorities)), 200
 
 
 @bp.route('mem/getStatuses', methods=['POST'])
 @auth.token_required
 def get_statuses():
-    data = request.json['args']
-    statuses = mem.get_statuses(data)
+    args = request.json['args']
+    statuses = mem.get_statuses(args)
     return make_response(jsonify(statuses)), 200
 
 
 @bp.route('mem/getDocumentsWithContact', methods=['POST'])
 @auth.token_required
 def get_document_with_args():
-    data = request.json
-    contact = mem.retrieve_contact(data)
+    args = request.json
+    contact = mem.retrieve_contact(args)
     if contact and contact['contacts'] and contact['count'] > 0:
-        data['contactId'] = str(contact['contacts'][0]['id'])
-        resources = mem.get_document_with_contact(data)
+        args['contactId'] = str(contact['contacts'][0]['id'])
+        resources = mem.get_document_with_contact(args)
         if resources:
             return make_response(resources), 200
     return make_response(''), 204
@@ -101,6 +101,6 @@ def get_document_with_args():
 @bp.route('mem/getIndexingModels', methods=['POST'])
 @auth.token_required
 def get_indexing_models():
-    data = request.json['args']
-    indexing_models = mem.get_indexing_models(data)
+    args = request.json['args']
+    indexing_models = mem.get_indexing_models(args)
     return make_response(jsonify(indexing_models)), 200

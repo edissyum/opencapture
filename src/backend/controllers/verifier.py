@@ -402,9 +402,7 @@ def export_facturx(invoice_id, data):
             _vars = create_classes_from_custom_id(custom_id)
             log = _vars[5]
             regex = _vars[2]
-            configurations = _vars[10]
-        return verifier_exports.export_facturx(data['data'], log, regex, invoice_info, configurations['locale'],
-                                           data['compress_type'], data['ocrise'])
+        return verifier_exports.export_facturx(data['data'], log, regex, invoice_info)
 
 
 def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
