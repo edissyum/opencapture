@@ -446,12 +446,15 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async getForm(): Promise<any> {
-        if (this.invoice.form_id)
+        if (this.invoice.form_id) {
             return await this.http.get(environment['url'] + '/ws/forms/fields/getByFormId/' + this.invoice.form_id, {headers: this.authService.headers}).toPromise();
-        if (this.invoice.supplier_id)
+        }
+        if (this.invoice.supplier_id) {
             return await this.http.get(environment['url'] + '/ws/forms/fields/getBySupplierId/' + this.invoice.supplier_id, {headers: this.authService.headers}).toPromise();
-        else
+        }
+        else {
             return await this.http.get(environment['url'] + '/ws/forms/getDefault/verifier', {headers: this.authService.headers}).toPromise();
+        }
     }
 
     async getAllForm(): Promise<any> {
