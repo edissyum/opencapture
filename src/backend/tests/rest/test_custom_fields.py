@@ -35,7 +35,7 @@ class CustomFieldsTest(unittest.TestCase):
             'label': 'Test custom',
             'module': 'verifier',
             'label_short': 'test_custom_verifier',
-            'metadata_key': '',
+            'metadata_key': ''
         }
 
         return self.app.post(f'/{CUSTOM_ID}/ws/customFields/add',

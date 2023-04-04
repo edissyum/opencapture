@@ -853,12 +853,12 @@ export class FormBuilderComponent implements OnInit {
         ).subscribe();
 
         if (this.formId) {
-            this.http.get(environment['url'] + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
+            this.http.get(environment['url'] + '/ws/forms/fields/getByFormId/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
-                    if (data.form_fields.fields) {
-                        Object.keys(data.form_fields.fields).forEach((category: any) => {
-                            if (data.form_fields.fields[category]) {
-                                this.fields[category] = data.form_fields.fields[category];
+                    if (data.fields) {
+                        Object.keys(data.fields).forEach((category: any) => {
+                            if (data.fields[category]) {
+                                this.fields[category] = data.fields[category];
                             }
                         });
 
