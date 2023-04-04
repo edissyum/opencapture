@@ -617,11 +617,13 @@ def update_status(args):
         return response, 400
 
 
-def get_unseen():
+def get_unseen(user_id):
+    user_customers = user.get_customers_by_user_id(user_id)
+    user_customers[0].append(0)
     total_unseen = verifier.get_total_invoices({
         'select': ['count(invoices.id) as unseen'],
-        'where': ["status = %s"],
-        'data': ['NEW'],
+        'where': ["status = %s", "customer_id = ANY(%s)"],
+        'data': ['NEW', user_customers[0]],
         'table': ['invoices'],
     })[0]
     return total_unseen['unseen'], 200

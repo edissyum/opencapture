@@ -21,82 +21,84 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <mat-table matSort [dataSource]="users" (matSortChange)="sortData($event)" class="w-full overflow-x-hidden h-full-overflow">
-            <ng-container matColumnDef="id">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="username">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.username' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.username }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="firstname">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.firstname' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.firstname }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="lastname">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.lastname' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.lastname }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="role">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.role' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.role_label }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="status">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                    <span *ngIf="element.enabled"> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.active' | translate }}</span>
-                    <span *ngIf="!element.enabled"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.inactive' | translate }}</span>
-                </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="actions">
-                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                    <button *ngIf="element.enabled"
-                            (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.username)"
-                            matTooltip="{{ 'USER.disable' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="fa-solid fa-pause text-lg"></i>
-                    </button>
-                    <button *ngIf="!element.enabled"
-                            (click)="$event.stopPropagation();enableConfirmDialog(element.id, element.username)"
-                            matTooltip="{{ 'USER.enable' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="fa-solid fa-play text-lg"></i>
-                    </button>
-                    <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.username)"
-                            matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="fa-solid fa-trash text-lg"></i>
-                    </button>
-                </mat-cell>
-            </ng-container>
-            <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                     routerLink="/settings/general/users/update/{{ row.id }}"
-                     class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
-        </mat-table>
-        <mat-paginator showFirstLastButtons
-                       [length]="this.total"
-                       [pageSize]="pageSize"
-                       [pageIndex]="pageIndex"
-                       [pageSizeOptions]="[5, 10, 15, 20, 50]"
-                       (page)="onPageChange($event)">
-        </mat-paginator>
-        <div *ngIf="this.userQuotaConfig.enabled" class="text-center">
-            <hr class="border-green-400 w-1/3 mx-auto my-2">
-            <span class="text-xl">
-                {{ 'USER-QUOTA.informations' | translate }}
-                <span class="cursor-default relative top-7 text-green-400 text-8xl"
-                      [class.text-green-400] = "this.activeUser < this.userQuotaConfig.quota"
-                      [class.text-red-400] = "this.activeUser > this.userQuotaConfig.quota"
-                      [class.text-orange-400] = "this.activeUser === this.userQuotaConfig.quota">&bull;</span>
-            </span>
-            <div class="m-2 mt-8 text-base">
-                {{ 'USER-QUOTA.quota_number' | translate }} : {{ this.userQuotaConfig.quota }}
-            </div>
-            <div class="m-2 text-base">
-                {{ 'USER.enabled' | translate }} : {{ this.activeUser }}
+        <div class="w-full overflow-x-hidden h-full-overflow">
+            <mat-table matSort [dataSource]="users" (matSortChange)="sortData($event)">
+                <ng-container matColumnDef="id">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="username">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.username' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.username }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="firstname">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.firstname' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.firstname }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="lastname">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.lastname' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.lastname }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="role">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.role' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.role_label }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span *ngIf="element.enabled"> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.active' | translate }}</span>
+                        <span *ngIf="!element.enabled"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.inactive' | translate }}</span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <button *ngIf="element.enabled"
+                                (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.username)"
+                                matTooltip="{{ 'USER.disable' | translate }}" mat-icon-button
+                                class="inline-block align-text-top">
+                            <i class="fa-solid fa-pause text-lg"></i>
+                        </button>
+                        <button *ngIf="!element.enabled"
+                                (click)="$event.stopPropagation();enableConfirmDialog(element.id, element.username)"
+                                matTooltip="{{ 'USER.enable' | translate }}" mat-icon-button
+                                class="inline-block align-text-top">
+                            <i class="fa-solid fa-play text-lg"></i>
+                        </button>
+                        <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.username)"
+                                matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
+                                class="inline-block align-text-top">
+                            <i class="fa-solid fa-trash text-lg"></i>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnsToDisplay;"
+                         routerLink="/settings/general/users/update/{{ row.id }}"
+                         class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
+            </mat-table>
+            <mat-paginator showFirstLastButtons
+                           [length]="this.total"
+                           [pageSize]="this.pageSize"
+                           [pageIndex]="this.pageIndex"
+                           [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+            <div *ngIf="this.userQuotaConfig.enabled" class="text-center">
+                <hr class="border-green-400 w-1/3 mx-auto mt-6 -mb-4">
+                <span class="text-xl">
+                    {{ 'USER-QUOTA.informations' | translate }}
+                    <span class="cursor-default relative top-7 text-green-400 text-8xl"
+                          [class.text-green-400] = "this.activeUser < this.userQuotaConfig.quota"
+                          [class.text-red-400] = "this.activeUser > this.userQuotaConfig.quota"
+                          [class.text-orange-400] = "this.activeUser === this.userQuotaConfig.quota">&bull;</span>
+                </span>
+                <div class="m-2 mt-8 text-base">
+                    {{ 'USER-QUOTA.quota_number' | translate }} : {{ this.userQuotaConfig.quota }}
+                </div>
+                <div class="m-2 text-base">
+                    {{ 'USER.enabled' | translate }} : {{ this.activeUser }}
+                </div>
             </div>
         </div>
     </mat-sidenav-content>
