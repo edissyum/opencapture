@@ -23,11 +23,11 @@ from src.backend.import_controllers import doctypes
 bp = Blueprint('doctypes', __name__, url_prefix='/ws/')
 
 
-@bp.route('doctypes/list', defaults={'type': None}, methods=['GET'])
+@bp.route('doctypes/list', defaults={'form_id': None}, methods=['GET'])
 @bp.route('doctypes/list/<int:form_id>', methods=['GET'])
 @auth.token_required
 def retrieve_doctypes(form_id):
-    if type:
+    if form_id:
         args = {
             'where': ['form_id = %s', 'status <> %s'],
             'data': [form_id, 'DEL']
