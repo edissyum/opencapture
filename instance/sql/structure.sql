@@ -5,12 +5,13 @@ CREATE TABLE "users"
     "firstname"         VARCHAR(255)       NOT NULL,
     "lastname"          VARCHAR(255)       NOT NULL,
     "password"          VARCHAR(255)       NOT NULL,
-    "email"             TEXT,
+    "creation_date"     TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
     "enabled"           BOOLEAN     DEFAULT True,
     "status"            VARCHAR(5)  DEFAULT 'OK',
-    "creation_date"     TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
-    "last_connection"   TIMESTAMP,
+    "mode"              VARCHAR(10) DEFAULT 'standard',
     "role"              INTEGER     NOT NULL,
+    "last_connection"   TIMESTAMP,
+    "email"             TEXT,
     "reset_token"       TEXT
 );
 
