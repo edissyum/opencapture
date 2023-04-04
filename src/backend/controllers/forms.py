@@ -31,7 +31,7 @@ def get_forms(args):
         'data': [args['module']] if 'module' in args else '%',
         'totals': 'totals' in args and args['totals'] == 'true',
         'status': args['status'] if 'status' in args and args['status'] else 'NEW',
-        'time': args['time'] if 'time' in args and args['status'] else 'today',
+        'time': args['time'] if 'time' in args and args['time'] else 'today',
         'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else None
     }
 

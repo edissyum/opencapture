@@ -16,9 +16,8 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
+from src.backend.import_controllers import auth, forms
 from flask import Blueprint, request, make_response, jsonify
-from src.backend.import_controllers import auth
-from src.backend.import_controllers import forms
 
 bp = Blueprint('forms', __name__, url_prefix='/ws/')
 
@@ -31,19 +30,19 @@ def get_forms():
     return make_response(jsonify(res[0]), res[1])
 
 
+@bp.route('forms/getById/<int:form_id>', methods=['GET'])
+@auth.token_required
+def get_form_by_id(form_id):
+    _form = forms.get_form_by_id(form_id)
+    return make_response(jsonify(_form[0])), _form[1]
+
+
 @bp.route('forms/create', methods=['POST'])
 @auth.token_required
 def create_form():
     args = request.json['args']
     res = forms.create_form(args)
     return make_response(jsonify(res[0])), res[1]
-
-
-@bp.route('forms/getById/<int:form_id>', methods=['GET'])
-@auth.token_required
-def get_form_by_id(form_id):
-    _form = forms.get_form_by_id(form_id)
-    return make_response(jsonify(_form[0])), _form[1]
 
 
 @bp.route('forms/fields/getByFormId/<int:form_id>', methods=['GET'])
@@ -116,13 +115,6 @@ def disable_form(form_id):
 @auth.token_required
 def enable_form(form_id):
     res = forms.enable_form(form_id)
-    return make_response(jsonify(res[0])), res[1]
-
-
-@bp.route('forms/getFields/<int:form_id>', methods=['GET'])
-@auth.token_required
-def get_fields(form_id):
-    res = forms.get_fields(form_id)
     return make_response(jsonify(res[0])), res[1]
 
 

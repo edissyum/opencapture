@@ -297,13 +297,13 @@ export class SplitterFormBuilderComponent implements OnInit {
             })
         ).subscribe();
         if (this.formId) {
-            this.http.get(environment['url'] + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
+            this.http.get(environment['url'] + '/ws/forms/fields/getByFormId/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
-                    if (data.form_fields.fields) {
-                        if (data.form_fields.fields.batch_metadata)
-                            this.fields.batch_metadata = data.form_fields.fields.batch_metadata;
-                        if (data.form_fields.fields.document_metadata)
-                            this.fields.document_metadata = data.form_fields.fields.document_metadata;
+                    if (data.fields) {
+                        if (data.fields.batch_metadata)
+                            this.fields.batch_metadata = data.fields.batch_metadata;
+                        if (data.fields.document_metadata)
+                            this.fields.document_metadata = data.fields.document_metadata;
 
                         for (const category in this.fields) {
                             if (this.fields.hasOwnProperty(category)) {
