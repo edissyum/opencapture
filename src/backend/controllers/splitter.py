@@ -1051,9 +1051,10 @@ def merge_batches(parent_id, batches):
         merged_pdf.write(file)
 
 
-def get_unseen():
+def get_unseen(user_id):
+    user_customers = user.get_customers_by_user_id(user_id)
     total_unseen = splitter.count_batches({
-        'where': ['status = %s'],
-        'data': ['NEW']
+        'where': ['status = %s', 'customer_id = ANY(%s)'],
+        'data': ['NEW', user_customers[0]]
     })[0]
     return total_unseen, 200
