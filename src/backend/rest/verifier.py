@@ -251,9 +251,9 @@ def verify_vat_number():
     return make_response({'status': status[0]}, status[1])
 
 
-@bp.route('verifier/getUnseen', methods=['GET'])
-def verifier_get_unseen():
-    res = verifier.get_unseen()
+@bp.route('verifier/getUnseen/user/<int:user_id>', methods=['GET'])
+def verifier_get_unseen(user_id):
+    res = verifier.get_unseen(user_id)
     return make_response({'unseen': res[0]}, res[1])
 
 

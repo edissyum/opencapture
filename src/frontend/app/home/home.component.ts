@@ -66,7 +66,7 @@ export class HomeComponent implements OnInit {
             this.checkConnection();
         }
 
-        this.http.get(environment['url'] + '/ws/verifier/getUnseen').pipe(
+        this.http.get(environment['url'] + '/ws/verifier/getUnseen/user/' + this.userService.user.id).pipe(
             tap((data: any) => {
                 this.unseenBatches['verifier'] = data['unseen'];
             })
