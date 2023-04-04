@@ -16,9 +16,8 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
+from src.backend.import_controllers import auth, forms
 from flask import Blueprint, request, make_response, jsonify
-from src.backend.import_controllers import auth
-from src.backend.import_controllers import forms
 
 bp = Blueprint('forms', __name__, url_prefix='/ws/')
 
