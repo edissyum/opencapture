@@ -3,6 +3,42 @@ $(window).on('load', function() { // makes sure the whole site is loaded
     $('#preloader').delay(500).fadeOut('slow'); // will fade out the white DIV that covers the website.
     $('body').delay(500).css({'overflow':'visible'});
 
+    const cookie_date = getCookie('verifier_date')
+    const cookie_status = getCookie('verifier_status')
+    const previous_url = document.referrer
+    if (cookie_date && previous_url.includes('/list/view/')) {
+        if (cookie_date !== 'TODAY' && cookie_status) {
+            tmp_location = window.location.href.replace('/TODAY/NEW', '')
+            tmp_location = tmp_location.replace('/TODAY/END', '')
+            tmp_location = tmp_location.replace('/TODAY/ERR', '')
+            tmp_location = tmp_location.replace('/TODAY/ERR_GED', '')
+            tmp_location = tmp_location.replace('/TODAY/WAIT_SUP', '')
+            tmp_location = tmp_location.replace('/YESTERDAY/NEW', '')
+            tmp_location = tmp_location.replace('/YESTERDAY/END', '')
+            tmp_location = tmp_location.replace('/YESTERDAY/ERR', '')
+            tmp_location = tmp_location.replace('/YESTERDAY/ERR_GED', '')
+            tmp_location = tmp_location.replace('/YESTERDAY/WAIT_SUP', '')
+            tmp_location = tmp_location.replace('/OLDER/NEW', '')
+            tmp_location = tmp_location.replace('/OLDER/END', '')
+            tmp_location = tmp_location.replace('/OLDER/ERR', '')
+            tmp_location = tmp_location.replace('/OLDER/ERR_GED', '')
+            tmp_location = tmp_location.replace('/OLDER/WAIT_SUP', '')
+             window.location.href = tmp_location + '/' + cookie_date + '/' + cookie_status
+        }
+    }
+
+    const status = document.getElementById('pickStatus').options[document.getElementById('pickStatus').selectedIndex].value
+    if (window.location.href.includes('YESTERDAY')) {
+        setCookie('verifier_date', 'YESTERDAY', 0.1)
+        setCookie('verifier_status', status ? status : 'NEW', 0.1)
+    } else if (window.location.href.includes('OLDER')) {
+        setCookie('verifier_date', 'OLDER', 0.1)
+        setCookie('verifier_status', status ? status : 'NEW', 0.1)
+    } else {
+        setCookie('verifier_date', 'TODAY', 0.1)
+        setCookie('verifier_status', status ? status : 'NEW', 0.1)
+    }
+
     let previous        = $('.previous');
     let previousLink    = $('.previous a');
     let next            = $('.next');
