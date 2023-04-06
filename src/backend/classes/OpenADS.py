@@ -32,6 +32,22 @@ class OpenADS:
         try:
             res = requests.get(self.api + "/status", auth=self.auth)
             res = res.json()
+            if 'msg' in res and res['msg'] == 'Running':
+                return {'status': True}
+
+        except Exception as e:
+            response = {
+                "status": False,
+                "message": str(e)
+            }
+            return response
+
+        return {'status': False}
+
+    def check_folder_by_id(self, folder_id):
+        try:
+            res = requests.get(self.api + "/dossier/" + folder_id + "/existe", auth=self.auth)
+            res = res.json()
 
             if 'existe' in res and res['existe']:
                 return {'status': True}
@@ -40,21 +56,6 @@ class OpenADS:
                 return {'status': False}
 
             elif 'status' in res and res['status'] == 'error':
-                return {'status': False, "error": res['errors'][0]['description']}
-
-        except Exception as e:
-            response = {
-                "status": False,
-                "message": str(e)
-            }
-            return response
-        return {'status': False}
-
-    def check_folder_by_id(self, folder_id):
-        try:
-            res = requests.get(self.api + "/dossier/" + folder_id + "/existe", auth=self.auth)
-            res = res.json()
-            if 'errors' in res:
                 return {'status': False, "error": res['errors'][0]['description']}
 
         except Exception as e:
