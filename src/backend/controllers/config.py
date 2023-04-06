@@ -184,7 +184,7 @@ def update_regex(args, regex_id):
             'id': regex_id,
             'data': {
                 'label': args['label'],
-                'content': args['content'],
+                'content': args['content']
             }
         }
         config.update_regex(args)

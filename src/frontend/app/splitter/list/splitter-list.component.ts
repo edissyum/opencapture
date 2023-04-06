@@ -216,7 +216,7 @@ export class SplitterListComponent implements OnInit {
                 confirmText         : this.translate.instant('SPLITTER.confirm_merge_all_checked_batches'),
                 confirmButton       : this.translate.instant('SPLITTER.merge'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -288,7 +288,7 @@ export class SplitterListComponent implements OnInit {
                 confirmText         : this.translate.instant('SPLITTER.confirm_delete_all_batches'),
                 confirmButton       : this.translate.instant('GLOBAL.delete_all_checked'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -315,7 +315,7 @@ export class SplitterListComponent implements OnInit {
                 confirmText: this.translate.instant('SPLITTER.confirm_batch_delete'),
                 confirmButton: this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor: "warn",
-                cancelButton: this.translate.instant('GLOBAL.cancel'),
+                cancelButton: this.translate.instant('GLOBAL.cancel')
             },
             width: "400px",
         });

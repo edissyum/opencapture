@@ -484,7 +484,7 @@ export class MailCollectComponent implements OnInit {
         this.defaultProcessData = [
             {
                 id: 'name',
-                control: new FormControl(),
+                control: new FormControl()
             },
             {
                 id: 'enabled',
@@ -492,7 +492,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 disabled: true,
                 type: 'boolean',
-                required: false,
+                required: false
             },
             {
                 id: 'hostname',
@@ -500,7 +500,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.hostname'),
                 type: 'text',
-                required: true,
+                required: true
             },
             {
                 id: 'port',
@@ -508,7 +508,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.port'),
                 type: 'number',
-                required: true,
+                required: true
             },
             {
                 id: 'login',
@@ -516,7 +516,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('FORMATS.email'),
                 type: 'text',
-                required: true,
+                required: true
             },
             {
                 id: 'password',
@@ -524,7 +524,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('USER.password'),
                 type: 'password',
-                required: true,
+                required: true
             },
             {
                 id: 'secured_connection',
@@ -532,7 +532,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(true),
                 label: marker('MAILCOLLECT.secured_connection'),
                 type: 'boolean',
-                required: true,
+                required: true
             },
             {
                 id: 'is_splitter',
@@ -540,7 +540,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(false),
                 label: marker('MAILCOLLECT.is_splitter'),
                 type: 'boolean',
-                required: false,
+                required: false
             },
             {
                 id: 'splitter_technical_input_id',
@@ -548,7 +548,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(''),
                 label: marker('MAILCOLLECT.splitter_technical_input_id'),
                 type: 'autocomplete',
-                required: false,
+                required: false
             },
             {
                 id: 'folder_to_crawl',
@@ -557,7 +557,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.folder_to_crawl'),
                 type: 'autocomplete',
-                required: true,
+                required: true
             },
             {
                 id: 'folder_destination',
@@ -566,7 +566,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.folder_destination'),
                 type: 'autocomplete',
-                required: true,
+                required: true
             },
             {
                 id: 'folder_trash',
@@ -575,7 +575,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.folder_trash'),
                 type: 'autocomplete',
-                required: false,
+                required: false
             },
             {
                 id: 'action_after_process',
@@ -584,7 +584,7 @@ export class MailCollectComponent implements OnInit {
                 label: marker('MAILCOLLECT.action_after_process'),
                 type: 'select',
                 values: ['move', 'delete', 'none'],
-                required: true,
+                required: true
             },
             {
                 id: 'verifier_customer_id',
@@ -592,7 +592,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('INPUT.associated_customer'),
                 type: 'autocomplete',
-                required: false,
+                required: false
             },
             {
                 id: 'verifier_form_id',
@@ -600,7 +600,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('POSITIONS-MASKS.form_associated'),
                 type: 'autocomplete',
-                required: false,
+                required: false
             }
         ];
 
@@ -683,7 +683,7 @@ export class MailCollectComponent implements OnInit {
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_duplicate_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -715,7 +715,7 @@ export class MailCollectComponent implements OnInit {
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_disable_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -754,7 +754,7 @@ export class MailCollectComponent implements OnInit {
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_enable_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -793,7 +793,7 @@ export class MailCollectComponent implements OnInit {
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_delete_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

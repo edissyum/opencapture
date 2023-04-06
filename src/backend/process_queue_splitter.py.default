@@ -102,7 +102,7 @@ def launch(args):
                 'select': ['ocrise'],
                 'table': ['outputs'],
                 'where': ['id = %s'],
-                'data': [int(output_id)],
+                'data': [int(output_id)]
             })
             if not outputs_settings:
                 continue

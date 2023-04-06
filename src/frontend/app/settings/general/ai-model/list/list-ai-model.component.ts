@@ -176,7 +176,7 @@ export class ListAiModelComponent implements OnInit {
                 confirmText: this.translate.instant('ARTIFICIAL-INTELLIGENCE.confirm_delete', {"model": model}),
                 confirmButton: this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor: "warn",
-                cancelButton: this.translate.instant('GLOBAL.cancel'),
+                cancelButton: this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

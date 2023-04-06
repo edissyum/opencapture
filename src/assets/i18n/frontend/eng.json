@@ -1004,6 +1004,7 @@
 		"form_splitter_only": "Setting used in Splitter module only for now",
 		"form_updated": "User forms updated successfully",
 		"lastname": "Lastname",
+		"mode": "Connection mode",
 		"modify": "Modify",
 		"modify_my_profile": "Modify my profile",
 		"modify_profile_of": "Modify the profile of ",
@@ -1017,10 +1018,12 @@
 		"password_reset_success": "Password reset successfully",
 		"profile_updated": "Profile updated",
 		"search_user": "Search user",
+		"standard": "Standard",
 		"update": "Update user",
 		"updated": "User udpated successfully",
 		"user_deleted": "User deleted successfully",
-		"username": "Username"
+		"username": "Username",
+		"webservice": "Webservice",
 	},
 	"VERIFIER": {
 		"accounting_plan_empty": "There is no linked accounting plan for this supplier",

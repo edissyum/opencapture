@@ -35,23 +35,23 @@ module.exports = {
         extend: {
             backgroundImage: {
                 'verifier': "url('../../assets/imgs/Open-Capture_Verifier.svg')",
-                'splitter': "url('../../assets/imgs/Open-Capture_Splitter.svg')",
+                'splitter': "url('../../assets/imgs/Open-Capture_Splitter.svg')"
             },
             width: {
                 '30': '30%',
                 '1/7': '14.3%',
-                '1/75': '13.3%',
+                '1/75': '13.3%'
             },
             height: {
                 '100': '25rem',
                 '104': '26rem',
-                'full-overflow': 'calc(100vh - 8rem)',
+                'full-overflow': 'calc(100vh - 8rem)'
             },
             maxWidth: {
-                '11/12': '91.6%',
+                '11/12': '91.6%'
             },
             minWidth: {
-                '56': '14rem',
+                '56': '14rem'
             },
             colors: {
                 green: {

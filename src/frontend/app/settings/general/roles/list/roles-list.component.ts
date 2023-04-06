@@ -121,7 +121,7 @@ export class RolesListComponent implements OnInit {
                 confirmText: this.translate.instant('ROLE.confirm_delete', {"role": role}),
                 confirmButton: this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor: "warn",
-                cancelButton: this.translate.instant('GLOBAL.cancel'),
+                cancelButton: this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -141,7 +141,7 @@ export class RolesListComponent implements OnInit {
                 confirmText: this.translate.instant('ROLE.confirm_disable', {"role": role}),
                 confirmButton: this.translate.instant('GLOBAL.disable'),
                 confirmButtonColor: "warn",
-                cancelButton: this.translate.instant('GLOBAL.cancel'),
+                cancelButton: this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -160,7 +160,7 @@ export class RolesListComponent implements OnInit {
                 confirmText: this.translate.instant('ROLE.confirm_enable', {"role": role}),
                 confirmButton: this.translate.instant('GLOBAL.enable'),
                 confirmButtonColor: "warn",
-                cancelButton: this.translate.instant('GLOBAL.cancel'),
+                cancelButton: this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

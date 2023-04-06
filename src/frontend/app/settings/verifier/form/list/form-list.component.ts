@@ -139,9 +139,9 @@ export class FormListComponent implements OnInit {
                     selectLabel         : this.translate.instant('FORMS.choose_form'),
                     confirmButton       : this.translate.instant('GLOBAL.delete_form_and_reassign_input'),
                     confirmButtonColor  : "warn",
-                    cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                    cancelButton        : this.translate.instant('GLOBAL.cancel')
                 },
-                width: "600px",
+                width: "600px"
             });
 
             dialogRef.afterClosed().subscribe(result => {
@@ -158,9 +158,9 @@ export class FormListComponent implements OnInit {
                     confirmText         : this.translate.instant('FORMS.confirm_delete', {"form": form}),
                     confirmButton       : this.translate.instant('GLOBAL.delete'),
                     confirmButtonColor  : "warn",
-                    cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                    cancelButton        : this.translate.instant('GLOBAL.cancel')
                 },
-                width: "600px",
+                width: "600px"
             });
 
             dialogRef.afterClosed().subscribe(result => {
@@ -179,7 +179,7 @@ export class FormListComponent implements OnInit {
                 confirmText         : this.translate.instant('FORMS.confirm_duplicate', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -199,7 +199,7 @@ export class FormListComponent implements OnInit {
                 confirmText         : this.translate.instant('FORMS.confirm_disable', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -219,7 +219,7 @@ export class FormListComponent implements OnInit {
                 confirmText         : this.translate.instant('FORMS.confirm_enable', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

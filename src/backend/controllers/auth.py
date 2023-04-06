@@ -1,4 +1,5 @@
 # This file is part of Open-Capture.
+import base64
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,7 +28,7 @@ from ldap3 import Server, ALL
 from flask_babel import gettext
 from src.backend.controllers import privileges
 from ldap3.core.exceptions import LDAPException
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from src.backend.import_models import auth, user, roles
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
@@ -246,25 +247,47 @@ def token_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if 'Authorization' in request.headers:
-            token = request.headers['Authorization'].split('Bearer')[1].lstrip()
-            try:
-                token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
-            except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
-                    jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
-                return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
+            where = ['username = %s']
+            user_ws = token = password = False
 
-            user_info, _ = user.get_user_by_username({
-                'select': ['users.id', 'last_connection'],
-                'username': token['sub']
+            if 'Bearer' in request.headers['Authorization']:
+                token = request.headers['Authorization'].split('Bearer')[1].lstrip()
+                try:
+                    token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
+                    data = [token['sub']]
+                except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
+                        jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
+                    return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
+            elif 'Basic' in request.headers['Authorization']:
+                user_ws = True
+                where.append('mode = %s')
+                basic_auth = request.headers['Authorization'].split('Basic')[1].lstrip()
+                username, password = base64.b64decode(basic_auth).decode('utf-8').split(':')
+                data = [username, 'webservice']
+            else:
+                return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('AUTHORIZATION_HEADER_INCORRECT')}), 500
+
+            user_info, _ = user.get_users({
+                'select': ['users.id', 'last_connection', 'password'],
+                'where': where,
+                'data': data
             })
 
-            if user_info['last_connection'] and token['iat'] < datetime.datetime.timestamp(user_info['last_connection']):
-                return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('ACCOUNT_ALREADY_LOGGED')}), 500
+            if token and not user_ws:
+                if user_info[0]['last_connection'] and token['iat'] < datetime.datetime.timestamp(user_info[0]['last_connection']):
+                    return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('ACCOUNT_ALREADY_LOGGED')}), 500
 
             if not user_info:
-                return jsonify({"errors": gettext("JWT_ERROR"), "message": "User doesn't exist"}), 500
+                error = gettext("JWT_ERROR")
+                if user_ws:
+                    error = gettext("REST_ERROR")
+                return jsonify({"errors": error, "message": gettext('USER_DO_NOT_EXISTS')}), 500
+
+            if user_ws:
+                if not check_password_hash(user_info[0]['password'], password):
+                    return jsonify({"errors": gettext("REST_ERROR"), "message": gettext('PASSWORD_INCORRECT')}), 500
         else:
-            return jsonify({"errors": gettext("JWT_ERROR"), "message": "Valid token is mandatory"}), 500
+            return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('VALID_TOKEN_MANDATORY')}), 500
         return view(**kwargs)
     return wrapped_view
 

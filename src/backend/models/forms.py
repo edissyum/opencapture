@@ -206,7 +206,7 @@ def create_form(args):
                 'label': args['label'],
                 'module': args['module'],
                 'default_form': args['default_form'],
-                'settings': args['settings'],
+                'settings': args['settings']
             }
         }
         res = database.insert(args)

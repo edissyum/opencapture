@@ -77,7 +77,7 @@ class FormTest(unittest.TestCase):
                     'class_label': '1/33',
                     'label': 'Matricule',
                     'label_short': 'matricule',
-                    'metadata_key': 'matricule',
+                    'metadata_key': 'matricule'
             }],
             'document_metadata': []
         })

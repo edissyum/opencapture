@@ -54,7 +54,7 @@ class Spreadsheet:
                 'select': ['*'],
                 'table': ['accounts_supplier'],
                 'where': ['status = %s'],
-                'data': ['OK'],
+                'data': ['OK']
             })
 
             try:

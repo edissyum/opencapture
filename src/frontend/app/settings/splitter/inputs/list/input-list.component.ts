@@ -107,7 +107,7 @@ export class SplitterInputListComponent implements OnInit {
                 confirmText: this.translate.instant('INPUT.confirm_delete', {"input": input}),
                 confirmButton: this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor: "warn",
-                cancelButton: this.translate.instant('GLOBAL.cancel'),
+                cancelButton: this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -143,7 +143,7 @@ export class SplitterInputListComponent implements OnInit {
                 confirmText         : this.translate.instant('INPUT.confirm_duplicate', {"input": input}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

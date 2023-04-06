@@ -566,7 +566,7 @@ def save_infos(args):
         if document['displayOrder']:
             res = splitter.update_document({
                 'id': document['id'].split('-')[-1],
-                'display_order': document['displayOrder'],
+                'display_order': document['displayOrder']
             })[0]
             if not res:
                 response = {
@@ -594,7 +594,7 @@ def save_infos(args):
         for page in document['pages']:
             res = splitter.update_page({
                 'page_id': page['id'],
-                'rotation':  page['rotation'],
+                'rotation':  page['rotation']
             })[0]
             if not res:
                 response = {
@@ -891,7 +891,7 @@ def validate(args):
             mask_args = {
                 'mask': form[0]['settings']['export_zip_file'],
                 'separator': '',
-                'substitute': '_',
+                'substitute': '_'
             }
             export_zip_file = _Splitter.get_value_from_mask(None, args['batchMetadata'], now, mask_args)
             _Files.zip_files(files_to_zip, export_zip_file, True)

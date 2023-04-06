@@ -43,7 +43,7 @@ def add_custom_field(args):
                 'label': args['label'],
                 'module': args['module'],
                 'label_short': args['label_short'],
-                'metadata_key': args['metadata_key'],
+                'metadata_key': args['metadata_key']
             }
         }
         if 'options' in args and args['options']:

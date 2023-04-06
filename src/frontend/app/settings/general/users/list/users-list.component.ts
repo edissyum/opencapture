@@ -190,7 +190,7 @@ export class UsersListComponent implements OnInit {
                 confirmText         : this.translate.instant('USER.confirm_delete', {"user": user}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -210,7 +210,7 @@ export class UsersListComponent implements OnInit {
                 confirmText         : this.translate.instant('USER.confirm_disable', {"user": user}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -230,7 +230,7 @@ export class UsersListComponent implements OnInit {
                 confirmText         : this.translate.instant('USER.confirm_enable', {"user": user}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

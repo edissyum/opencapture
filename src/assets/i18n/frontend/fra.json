@@ -1004,6 +1004,7 @@
 		"form_splitter_only": "Paramètre utile seulement pour le module Splitter actuellement",
 		"form_updated": "Liste des formulaires de l'utilisateur mis à jour",
 		"lastname": "Nom de famille",
+		"mode": "Mode de connexion",
 		"modify": "Modifier",
 		"modify_my_profile": "Modifier mon profil",
 		"modify_profile_of": "Modifier le profil de ",
@@ -1017,10 +1018,12 @@
 		"password_reset_success": "Mot de passe réinitialisé avec succès",
 		"profile_updated": "Profil mis à jour",
 		"search_user": "Rechercher un utilisateur",
+		"standard": "Standard",
 		"update": "Modifier l'utilisateur",
 		"updated": "Utilisateur mis à jour",
 		"user_deleted": "Utilisateur supprimé",
-		"username": "Nom d'utilisateur"
+		"username": "Nom d'utilisateur",
+		"webservice": "Webservice"
 	},
 	"VERIFIER": {
 		"accounting_plan_empty": "Il n'y a pas de compte de charge lié à ce compte client",

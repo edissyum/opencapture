@@ -131,7 +131,7 @@ class Mail:
             data['attachments'].append({
                 'filename': sanitize_filename(attachment['filename']),
                 'format': attachment['format'][1:],
-                'file': path,
+                'file': path
             })
 
         return data

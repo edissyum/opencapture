@@ -348,7 +348,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 confirmText         : this.translate.instant('DOCTYPE.confirm_doctypes_clone'),
                 confirmButton       : this.translate.instant('DOCTYPE.clone_doctypes'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
