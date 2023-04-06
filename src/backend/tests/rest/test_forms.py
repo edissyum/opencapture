@@ -32,7 +32,7 @@ class FormTest(unittest.TestCase):
         payload = json.dumps({
             'args': {
                 'module': 'splitter',
-                'default_form':	False,
+                'default_form': False,
                 'label': 'SPLITTER_TEST_FORM',
                 'settings': {
                     'export_zip_file': '',
@@ -40,7 +40,7 @@ class FormTest(unittest.TestCase):
                 }
             }
         })
-        return self.app.post(f'/{CUSTOM_ID}/ws/forms/create',
+        return self.app.post(f'/{CUSTOM_ID}/ws/forms/splitter/create',
                              headers={"Content-Type": "application/json",
                                       'Authorization': 'Bearer ' + self.token}, data=payload)
 
@@ -61,7 +61,7 @@ class FormTest(unittest.TestCase):
                 }
             }
         })
-        return self.app.post(f'/{CUSTOM_ID}/ws/forms/create',
+        return self.app.post(f'/{CUSTOM_ID}/ws/forms/verifier/create',
                              headers={"Content-Type": "application/json",
                                       'Authorization': 'Bearer ' + self.token}, data=payload)
 

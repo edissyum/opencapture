@@ -759,7 +759,7 @@ export class FormBuilderComponent implements OnInit {
                 this.outputs = res_outputs.outputs;
                 if (this.formId) {
                     this.creationMode = false;
-                    this.http.get(environment['url'] + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
+                    this.http.get(environment['url'] + '/ws/forms/verifier/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             this.formLabels = data.labels;
                             this.formSettingId = data.module_settings_id;
@@ -1054,7 +1054,7 @@ export class FormBuilderComponent implements OnInit {
         });
 
         if (label !== '' && outputs.length >= 1) {
-            this.http.put(environment['url'] + '/ws/forms/update/' + this.formId, {
+            this.http.put(environment['url'] + '/ws/forms/verifier/update/' + this.formId, {
                     'args': {
                         'label'        : label,
                         'default_form' : isDefault,
@@ -1132,7 +1132,7 @@ export class FormBuilderComponent implements OnInit {
             if (element.control.value) outputs.push(element.control.value);
         });
         if (label) {
-            this.http.post(environment['url'] + '/ws/forms/create', {
+            this.http.post(environment['url'] + '/ws/forms/verifier/create', {
                     'args': {
                         'module'        : 'verifier',
                         'label'         : label,
