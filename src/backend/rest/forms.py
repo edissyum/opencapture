@@ -27,7 +27,7 @@ bp = Blueprint('forms', __name__, url_prefix='/ws/')
 @bp.route('forms/list', methods=['GET'])
 @auth.token_required
 def get_forms():
-    if not privileges.has_privileges(19, ['settings', 'forms_list']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'forms_list']):
         return make_response(jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': 'forms/list'})), 403
 
     args = request.args
