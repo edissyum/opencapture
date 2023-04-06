@@ -1,5 +1,4 @@
 # This file is part of Open-Capture.
-import base64
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,6 +20,7 @@ import base64
 import jwt
 import uuid
 import ldap3
+import base64
 import psycopg2
 import datetime
 import functools
@@ -286,6 +286,8 @@ def token_required(view):
             if user_ws:
                 if not check_password_hash(user_info[0]['password'], password):
                     return jsonify({"errors": gettext("REST_ERROR"), "message": gettext('PASSWORD_INCORRECT')}), 500
+
+            request.environ['user_id'] = user_info[0]['id']
         else:
             return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('VALID_TOKEN_MANDATORY')}), 500
         return view(**kwargs)

@@ -61,3 +61,27 @@ def get_by_role_id(args):
         privileges = privileges[0]
 
     return privileges, error
+
+
+def get_by_user_id(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+    privileges = database.select({
+        'select': ['*', 'users.id'] if 'select' not in args else args['select'],
+        'table': ['roles_privileges', 'users'],
+        'left_join': ['roles_privileges.role_id = users.role'],
+        'where': ['users.id = %s'],
+        'data': [args['user_id']]
+    })
+
+    if not privileges:
+        error = gettext('ERROR_RETRIEVING_PRIVILEGES')
+    else:
+        privileges = privileges[0]
+
+    return privileges, error
