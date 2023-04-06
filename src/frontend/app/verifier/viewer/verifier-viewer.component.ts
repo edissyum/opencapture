@@ -466,7 +466,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async getFormById(formId: number): Promise<any> {
-        return await this.http.get(environment['url'] + '/ws/forms/getById/' + formId, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/forms/verifier/getById/' + formId, {headers: this.authService.headers}).toPromise();
     }
 
     async fillForm(data: any): Promise<any> {

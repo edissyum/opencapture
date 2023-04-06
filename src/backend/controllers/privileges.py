@@ -99,6 +99,9 @@ def get_privileges_by_user_id(args):
 
 def has_privileges(user_id, needed_privileges):
     privileges_list, _ = get_privileges_by_user_id({'user_id': user_id})
+    if privileges_list == '*':
+        return True
+
     res = []
     for privilege in needed_privileges:
         if privilege in privileges_list:
