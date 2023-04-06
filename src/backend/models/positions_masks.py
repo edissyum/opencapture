@@ -135,7 +135,7 @@ def add_positions_mask(args):
                 'width': args['width'] if 'width' in args else None,
                 'nb_pages': args['nb_pages'] if 'nb_pages' in args else None,
                 'filename': args['filename'] if 'filename' in args else None,
-                'positions': args['positions'] if 'positions' in args else {},
+                'positions': args['positions'] if 'positions' in args else {}
             }
         }
         res = database.insert(args)

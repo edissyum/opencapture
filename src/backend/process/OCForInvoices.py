@@ -244,7 +244,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 'select': ['regex_id', 'content'],
                 'table': ['regex'],
                 'where': ['lang = %s'],
-                'data': [supplier[2]['document_lang']],
+                'data': [supplier[2]['document_lang']]
             })
 
             for _r in _regex:

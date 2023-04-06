@@ -131,7 +131,7 @@ export class CustomersListComponent implements OnInit {
                 confirmText         : this.translate.instant('ACCOUNTS.confirm_delete_customer', {"customer": customer}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

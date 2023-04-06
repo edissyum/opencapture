@@ -91,6 +91,25 @@ export class CreateUserComponent implements OnInit {
             values: [],
             control: new FormControl(),
             required: true
+        },
+        {
+            id: 'mode',
+            label: this.translate.instant('USER.mode'),
+            type: 'select',
+            values: [
+                {
+                    'id': 'standard',
+                    'label': this.translate.instant('USER.standard'),
+                    'default' : true
+                },
+                {
+                    'id': 'webservice',
+                    'label': this.translate.instant('USER.webservice'),
+                    'default' : false
+                }
+            ],
+            control: new FormControl(),
+            required: true
         }
     ];
     forms            : any[]     = [];

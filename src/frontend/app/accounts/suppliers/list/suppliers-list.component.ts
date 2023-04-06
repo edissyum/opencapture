@@ -147,7 +147,7 @@ export class SuppliersListComponent implements OnInit {
                 confirmText         : this.translate.instant('ACCOUNTS.confirm_delete_supplier', {"supplier": supplier}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -167,7 +167,7 @@ export class SuppliersListComponent implements OnInit {
                 confirmText         : this.translate.instant('ACCOUNTS.confirm_delete_supplier_positions', {"supplier": supplier}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -187,7 +187,7 @@ export class SuppliersListComponent implements OnInit {
                 confirmText         : this.translate.instant('ACCOUNTS.confirm_skip_auto_validate', {"supplier": supplier}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

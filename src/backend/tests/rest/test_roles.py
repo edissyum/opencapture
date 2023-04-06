@@ -33,7 +33,7 @@ class RolesTest(unittest.TestCase):
         payload = json.dumps({
             "args": {
                 "label_short": "TEST",
-                "label": "Rôle test",
+                "label": "Rôle test"
             }
         })
 

@@ -136,7 +136,7 @@ export class ListDocTypeComponent implements OnInit {
                 confirmText: this.translate.instant('DOCTYPE.confirm_delete', {"doctypeLabel": this.selectedDocType.label}),
                 confirmButton: this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor: "warn",
-                cancelButton: this.translate.instant('GLOBAL.cancel'),
+                cancelButton: this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

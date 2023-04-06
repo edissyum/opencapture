@@ -55,7 +55,8 @@ def create_user(args):
                 'lastname': args['lastname'],
                 'email': args['email'],
                 'role': args['role'],
-                'password': generate_password_hash(args['password']),
+                'mode': args['mode'] if 'mode' in args else 'standard',
+                'password': generate_password_hash(args['password'])
             }
         })
         database.insert({

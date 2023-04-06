@@ -167,7 +167,7 @@ def update_login_method(login_method_name, server_data):
         database.update({
             'table': ['login_methods'],
             'set': {
-                'enabled': False,
+                'enabled': False
             },
             'where': ['method_name <> %s'],
             'data': [login_method_name]

@@ -639,7 +639,7 @@ export class VerifierListComponent implements OnInit {
                 confirmText         : this.translate.instant('VERIFIER.confirm_delete_document'),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -672,7 +672,7 @@ export class VerifierListComponent implements OnInit {
                 confirmText         : this.translate.instant('VERIFIER.confirm_delete_all_documents'),
                 confirmButton       : this.translate.instant('GLOBAL.delete_all_checked'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

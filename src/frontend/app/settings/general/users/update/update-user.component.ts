@@ -95,6 +95,25 @@ export class UpdateUserComponent implements OnInit {
             values: [],
             control: new FormControl(),
             required: true
+        },
+        {
+            id: 'mode',
+            label: this.translate.instant('USER.mode'),
+            type: 'select',
+            values: [
+                {
+                    'id': 'standard',
+                    'label': this.translate.instant('USER.standard'),
+                    'default' : true
+                },
+                {
+                    'id': 'webservice',
+                    'label': this.translate.instant('USER.webservice'),
+                    'default' : false
+                }
+            ],
+            control: new FormControl(),
+            required: true
         }
     ];
     forms                       : any[]         = [];
@@ -210,6 +229,7 @@ export class UpdateUserComponent implements OnInit {
                     if (data.hasOwnProperty(field)) {
                         this.userFields.forEach(element => {
                             if (element.id === field) {
+                                console.log(field, element)
                                 element.control.setValue(data[field]);
                                 if (element.id === 'role') {
                                     element.values = this.roles;

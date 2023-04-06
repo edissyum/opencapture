@@ -126,7 +126,7 @@ export class PositionsMaskListComponent implements OnInit {
                 confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_delete', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -146,7 +146,7 @@ export class PositionsMaskListComponent implements OnInit {
                 confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_duplicate', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -166,7 +166,7 @@ export class PositionsMaskListComponent implements OnInit {
                 confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_disable', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -185,7 +185,7 @@ export class PositionsMaskListComponent implements OnInit {
                 confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_enable', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

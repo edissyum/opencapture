@@ -400,7 +400,7 @@ def insert(args):
                 'select': ['*'],
                 'table': ['inputs'],
                 'where': ['input_id = %s', 'module = %s'],
-                'data': [args['input_id'], 'verifier'],
+                'data': [args['input_id'], 'verifier']
             })
             if input_settings:
                 input_settings = input_settings[0]
