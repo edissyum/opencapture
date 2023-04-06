@@ -1,5 +1,4 @@
 # This file is part of Open-Capture.
-import base64
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,6 +20,7 @@ import base64
 import jwt
 import uuid
 import ldap3
+import base64
 import psycopg2
 import datetime
 import functools

@@ -45,13 +45,13 @@ import { HistoryService } from "../../../../../services/history.service";
     ]
 })
 export class FormListComponent implements OnInit {
-    columnsToDisplay: string[]  = ['id', 'label', 'default_form', 'enabled', 'actions'];
-    loading: boolean            = true;
-    pageSize : number           = 10;
-    pageIndex: number           = 0;
-    total: number               = 0;
-    offset: number              = 0;
-    forms : any                 = [];
+    columnsToDisplay : string[]  = ['id', 'label', 'default_form', 'enabled', 'actions'];
+    loading          : boolean   = true;
+    pageSize         : number    = 10;
+    pageIndex        : number    = 0;
+    total            : number    = 0;
+    offset           : number    = 0;
+    forms            : any       = [];
 
     constructor(
         public router: Router,

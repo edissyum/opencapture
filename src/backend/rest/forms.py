@@ -16,8 +16,10 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from src.backend.import_controllers import auth, forms
 from flask import Blueprint, request, make_response, jsonify
+from flask_babel import gettext
+
+from src.backend.import_controllers import auth, forms, privileges
 
 bp = Blueprint('forms', __name__, url_prefix='/ws/')
 
@@ -25,6 +27,9 @@ bp = Blueprint('forms', __name__, url_prefix='/ws/')
 @bp.route('forms/list', methods=['GET'])
 @auth.token_required
 def get_forms():
+    if not privileges.has_privileges(19, ['settings', 'forms_list']):
+        return make_response(jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': 'forms/list'})), 403
+
     args = request.args
     res = forms.get_forms(args)
     return make_response(jsonify(res[0]), res[1])
