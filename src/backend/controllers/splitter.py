@@ -677,7 +677,7 @@ def test_openads_connection(args):
         response = {
             'status': False,
             "errors": gettext('OPENADS_CONNECTION_ERROR'),
-            "message": res['message']
+            "message": res['message'] if 'message' in res else ''
         }
         return response, 400
     return {'status': True}, 200
