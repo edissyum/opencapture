@@ -16,8 +16,9 @@
 # @dev : Tristan Coulange <tristan.coulange@free.fr>
 
 import json
+from flask_babel import gettext
 from flask import Blueprint, request, make_response, jsonify
-from src.backend.import_controllers import auth, artificial_intelligence, doctypes
+from src.backend.import_controllers import auth, artificial_intelligence, doctypes, privileges
 
 bp = Blueprint('ai', __name__, url_prefix='/ws/')
 
@@ -25,6 +26,9 @@ bp = Blueprint('ai', __name__, url_prefix='/ws/')
 @bp.route('ai/splitter/getTrainDocuments', methods=['GET'])
 @auth.token_required
 def get_train_documents_splitter():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'list_ai_model_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/ai/splitter/getTrainDocuments'}), 403
+
     res = artificial_intelligence.splitter_retrieve_documents()
     return make_response(jsonify(res)), 200
 
@@ -32,14 +36,20 @@ def get_train_documents_splitter():
 @bp.route('ai/verifier/getTrainDocuments', methods=['GET'])
 @auth.token_required
 def get_train_documents_verifier():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'list_ai_model']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/ai/verifier/getTrainDocuments'}), 403
+
     res = artificial_intelligence.verifier_retrieve_documents()
     return make_response(jsonify(res)), 200
 
 
-@bp.route('ai/list', methods=['GET'])
+@bp.route('ai/<string:module>/list', methods=['GET'])
 @auth.token_required
-def get_ai_models():
-    module = request.args['module']
+def get_ai_models(module):
+    list_priv = ['settings', 'list_ai_model'] if module == 'verifier' else ['settings', 'list_ai_model_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/{module}/list'}), 403
+
     models = artificial_intelligence.get_models(module)
     return make_response(jsonify(models[0])), models[1]
 
@@ -47,6 +57,9 @@ def get_ai_models():
 @bp.route('ai/getById/<int:model_id>', methods=['GET'])
 @auth.token_required
 def get_model_by_id(model_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_ai_model | update_ai_model_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/getById/{model_id}'}), 403
+
     model = artificial_intelligence.get_model_by_id(model_id)
     return make_response(jsonify(model[0])), model[1]
 
@@ -54,39 +67,46 @@ def get_model_by_id(model_id):
 @bp.route('ai/trainModel/<string:model_name>', methods=['POST'])
 @auth.token_required
 def train_model(model_name):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'create_ai_model | create_ai_model_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/trainModel/{model_name}'}), 403
+
     data = json.loads(request.data)
     artificial_intelligence.launch_train(data, model_name)
     return make_response(''), 200
 
 
-@bp.route('ai/update/<int:model_id>', methods=['POST'])
+@bp.route('ai/<string:module>/update/<int:model_id>', methods=['POST'])
 @auth.token_required
-def update_model(model_id):
+def update_model(model_id, module):
+    list_priv = ['settings', 'update_ai_model'] if module == 'verifier' else ['settings', 'update_ai_model_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/{module}/update/{model_id}'}), 403
+
     data = json.loads(request.data)
-    args = {
-        'set': {
-            'model_path': data['model_name'],
-            'min_proba': data['min_pred'],
-            'documents': json.dumps(data['doctypes'])
-        },
-        'model_id': model_id
-    }
     artificial_intelligence.rename_model(data['model_name'], model_id)
-    res = artificial_intelligence.update_model(args)
+    res = artificial_intelligence.update_model(data, model_id)
     return make_response(jsonify(res)), 200
 
 
-@bp.route('ai/delete/<int:model_id>', methods=['DELETE'])
+@bp.route('ai/<string:module>/delete/<int:model_id>', methods=['DELETE'])
 @auth.token_required
-def delete_model(model_id):
+def delete_model(model_id, module):
+    list_priv = ['settings', 'list_ai_model'] if module == 'verifier' else ['settings', 'list_ai_model_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/{module}/delete/{model_id}'}), 403
+
     args = {'set': {'status': 'DEL'}, 'model_id': model_id}
     res = artificial_intelligence.update_model(args)
     return make_response(jsonify(res)), 200
 
 
-@bp.route('ai/testModel/<string:model_name>', methods=['POST'])
+@bp.route('ai/<string:module>/testModel/<string:model_name>', methods=['POST'])
 @auth.token_required
-def test_model(model_name):
+def test_model(module, model_name):
+    list_priv = ['settings', 'list_ai_model'] if module == 'verifier' else ['settings', 'list_ai_model_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/testModel/{model_name}'}), 403
+
     files = request.files
     res = artificial_intelligence.launch_pred(model_name, files)
     return make_response(jsonify(res[0])), res[1]

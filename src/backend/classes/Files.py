@@ -531,8 +531,6 @@ class Files:
         for index in range(pdf_reader.pages.__len__()):
             page_content = pdf_reader.pages[index].extract_text()
             if page_content:
-                print('Page ' + str(index) + ' is not empty, skipping OCR')
-                print(page_content)
                 is_ocr = True
                 break
 

@@ -27,7 +27,25 @@ from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
 
 
-def retrieve_suppliers(args):
+def retrieve_suppliers(_args):
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'where': ['status <> %s'],
+        'data': ['DEL'],
+        'offset': _args['offset'] if 'offset' in _args else 0,
+        'limit': _args['limit'] if 'limit' in _args else 'ALL',
+        'order_by': [_args['order']] if 'order' in _args else ''
+    }
+
+    if 'search' in _args and _args['search']:
+        args['offset'] = ''
+        args['where'].append(
+            "(LOWER(name) LIKE '%%" + _args['search'].lower() + "%%' OR "
+            "LOWER(siret) LIKE '%%" + _args['search'].lower() + "%%' OR "
+            "LOWER(email) LIKE '%%" + _args['search'].lower() + "%%' OR "
+            "LOWER(siren) LIKE '%%" + _args['search'].lower() + "%%' OR "
+            "LOWER(vat_number) LIKE '%%" + _args['search'].lower() + "%%')"
+        )
     suppliers = accounts.retrieve_suppliers(args)
     response = {
         "suppliers": suppliers
@@ -127,7 +145,35 @@ def update_supplier(supplier_id, data):
     _, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
     if error is None:
-        _, error = accounts.update_supplier({'set': data, 'supplier_id': supplier_id})
+        _set = {}
+        if 'address_id' in data:
+            _set.update({'address_id': data['address_id']})
+        if 'name' in data:
+            _set.update({'name': data['name']})
+        if 'siret' in data:
+            _set.update({'siret': data['siret']})
+        if 'siren' in data:
+            _set.update({'siren': data['siren']})
+        if 'iban' in data:
+            _set.update({'iban': data['iban']})
+        if 'email' in data:
+            _set.update({'email': data['email']})
+        if 'vat_number' in data:
+            _set.update({'vat_number': data['vat_number']})
+        if 'form_id' in data:
+            _set.update({'form_id': data['form_id']})
+        if 'get_only_raw_footer' in data:
+            _set.update({'get_only_raw_footer': data['get_only_raw_footer']})
+        if 'document_lang' in data:
+            _set.update({'document_lang': data['document_lang']})
+        if 'skip_auto_validate' in data:
+            _set.update({'skip_auto_validate': data['skip_auto_validate']})
+        if 'positions' in data:
+            _set.update({'positions': data['positions']})
+        if 'pages' in data:
+            _set.update({'pages': data['pages']})
+
+        _, error = accounts.update_supplier({'set': _set, 'supplier_id': supplier_id})
 
         if error is None:
             spreadsheet.update_supplier_ods_sheet(database)
@@ -339,7 +385,24 @@ def create_supplier(data):
         return response, 400
 
 
-def retrieve_customers(args):
+def retrieve_customers(data, module):
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'where': ['status <> %s', 'module = %s'] if module else ['status <> %s'],
+        'data': ['DEL', module] if module else ['DEL'],
+        'offset': data['offset'] if 'offset' in data else 0,
+        'limit': data['limit'] if 'limit' in data else 'ALL'
+    }
+    if 'search' in data and data['search']:
+        args['offset'] = ''
+        args['where'].append(
+            "(LOWER(name) LIKE '%%" + data['search'].lower() + "%%' OR "
+            "LOWER(siret) LIKE '%%" + data['search'].lower() + "%%' OR "
+            "LOWER(company_number) LIKE '%%" + data['search'].lower() + "%%' OR "
+            "LOWER(siren) LIKE '%%" + data['search'].lower() + "%%' OR "
+            "LOWER(vat_number) LIKE '%%" + data['search'].lower() + "%%')"
+        )
+
     customers = accounts.retrieve_customers(args)
     response = {
         "customers": customers
