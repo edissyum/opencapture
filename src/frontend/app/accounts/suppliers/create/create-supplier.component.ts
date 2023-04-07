@@ -178,7 +178,7 @@ export class CreateSupplierComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
-        this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const forms = data.forms;
                 for (const cpt in forms) {

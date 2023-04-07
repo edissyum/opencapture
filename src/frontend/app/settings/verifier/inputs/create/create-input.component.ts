@@ -178,7 +178,7 @@ export class CreateInputComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.inputForm.forEach((element: any) => {
                     if (element.id === 'default_form_id') {
@@ -198,7 +198,7 @@ export class CreateInputComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/ai/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/ai/verifier/list', {headers: this.authService.headers}).pipe(
             tap((aiModel: any) => {
                 this.inputForm.forEach((element: any) => {
                     if (element.id === 'ai_model_id') {
@@ -242,7 +242,7 @@ export class CreateInputComponent implements OnInit {
                 });
             }
         });
-        this.http.get(environment['url'] + '/ws/inputs/allowedPath', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/verifier/allowedPath', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allowedPath = data.allowedPath;
                 if (this.allowedPath) {
@@ -312,9 +312,9 @@ export class CreateInputComponent implements OnInit {
 
             input['module'] = 'verifier';
 
-            this.http.post(environment['url'] + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/verifier/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.http.post(environment['url'] + '/ws/inputs/create', {'args': input}, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/inputs/verifier/create', {'args': input}, {headers: this.authService.headers}).pipe(
                         tap(() => {
                             this.historyService.addHistory('verifier', 'create_input', this.translate.instant('HISTORY-DESC.create-input', {input: input['input_label']}));
                             this.router.navigate(['/settings/verifier/inputs']).then();

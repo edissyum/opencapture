@@ -656,7 +656,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     loadForms() {
         this.forms = [];
-        this.http.get(environment['url'] + '/ws/forms/list?module=splitter&user_id=' + this.userService.user.id, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/splitter/list&user_id=' + this.userService.user.id, {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.forms = forms.forms;
             }),

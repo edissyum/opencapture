@@ -75,7 +75,7 @@ export class CreatePositionsMaskComponent implements OnInit {
                         startWith(''),
                         map(option => option ? this._filter(option) : this.suppliers.slice())
                     );
-                this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.forms = data.forms;
                     }),

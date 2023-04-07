@@ -23,11 +23,12 @@ from src.backend.import_controllers import auth, forms, privileges
 bp = Blueprint('forms', __name__, url_prefix='/ws/')
 
 
-@bp.route('forms/list', methods=['GET'])
+@bp.route('forms/<string:module>/list', methods=['GET'])
 @auth.token_required
-def get_forms():
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'forms_list']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/forms/list'}), 403
+def get_forms(module):
+    list_priv = ['settings', 'forms_list'] if module == 'verifier' else ['settings', 'forms_list_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/inputs/{module}/list'}), 403
 
     args = request.args
     res = forms.get_forms(args)

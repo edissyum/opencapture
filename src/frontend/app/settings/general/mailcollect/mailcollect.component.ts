@@ -310,7 +310,7 @@ export class MailCollectComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allForms = data.forms;
                 this.defaultProcessData.forEach((element: any) => {
@@ -330,7 +330,7 @@ export class MailCollectComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/inputs/list?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/spitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allSplitterInputs = data.inputs;
                 this.defaultProcessData.forEach((element: any) => {

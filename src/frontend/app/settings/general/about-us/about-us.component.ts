@@ -51,7 +51,7 @@ export class AboutUsComponent implements OnInit {
         this.serviceSettings.init();
         this.isProd = environment.production;
         this.currentVersion = environment.version;
-        this.http.get(environment['url'] + '/ws/config/gitInfo', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/gitInfo').pipe(
             tap((data: any) => {
                 if (data.git_latest) {
                     this.lastVersion = data.git_latest;

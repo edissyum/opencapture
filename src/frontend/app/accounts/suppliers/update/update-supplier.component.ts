@@ -216,7 +216,7 @@ export class UpdateSupplierComponent implements OnInit {
                 }
             }
         });
-        this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.http.get(environment['url'] + '/ws/accounts/suppliers/getById/' + this.supplierId, {headers: this.authService.headers}).pipe(
                     tap((supplier: any) => {
