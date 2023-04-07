@@ -106,10 +106,24 @@ def create_model(data):
         return response, 400
 
 
-def update_model(args):
+def update_model(data, model_id):
+    args = {
+        'set': {},
+        'model_id': model_id
+    }
+    if 'status' in data:
+        args['set']['status'] = data['status']
+    if 'model_path' in data:
+        args['set']['model_path'] = data['model_path']
+    if 'min_proba' in data:
+        args['set']['min_proba'] = data['min_proba']
+    if 'documents' in data:
+        args['set']['documents'] = json.dumps(data['documents'])
     res, error = artificial_intelligence.update_models(args)
+
     if error is None:
         return '', 200
+
     response = {
         "errors": gettext('UPDATE_IA_MODEL_ERROR'),
         "message": gettext(error)
@@ -283,12 +297,9 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
                     print(file_name, ": done (" + str(i), "out of", str(fold_length) + "; folder", str(j) + "/" + str(len(chosen_files)) + ")")
 
                     args = {
-                        'set': {
-                            'status': str(round(total_files * percent, 1)) + " %"
-                        },
-                        'model_id': model_id
+                        'status': str(round(total_files * percent, 1)) + " %"
                     }
-                    update_model(args)
+                    update_model(args, model_id)
 
     create_csv(csv_file)
     add_to_csv(csv_file, rows)
