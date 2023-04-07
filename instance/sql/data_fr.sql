@@ -707,14 +707,14 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'login_methods', 
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (53, 'verifier_display', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (54, 'mailcollect', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (55, 'user_quota', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (56, 'list_ai_model', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (57, 'create_ai_model', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (58, 'update_ai_model', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (56, 'list_ai_model_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (57, 'create_ai_model_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (58, 'update_ai_model_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (59, 'monitoring', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (60, 'list_ai_model', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (61, 'create_ai_model', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (62, 'update_ai_model', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (63, 'update_status', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (63, 'update_status_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (64, 'update_status', 'verifier');
 ALTER SEQUENCE "privileges_id_seq" RESTART WITH 65;
 

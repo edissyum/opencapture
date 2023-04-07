@@ -303,7 +303,7 @@ const routes: Routes = [
     },
     {
         path: 'settings/splitter/ai', component: ListAiModelComponent,
-        data: {title: 'SETTINGS.artificial_intelligence', privileges: ['settings', 'list_ai_model']},
+        data: {title: 'SETTINGS.artificial_intelligence', privileges: ['settings', 'list_ai_model_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
@@ -313,7 +313,7 @@ const routes: Routes = [
     },
     {
         path: 'settings/splitter/ai/update/:id', component: UpdateAiModelComponent,
-        data: {title: 'ARTIFICIAL-INTELLIGENCE.update_model', privileges: ['settings', 'update_ai_model']},
+        data: {title: 'ARTIFICIAL-INTELLIGENCE.update_model', privileges: ['settings', 'update_ai_model_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {

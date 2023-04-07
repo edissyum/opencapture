@@ -159,7 +159,7 @@ export class UpdateAiModelComponent implements OnInit {
                 });
             }
             if (this.modelId !== undefined) {
-                this.http.post(environment['url'] + '/ws/ai/update/' + this.modelId, {
+                this.http.post(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/update/' + this.modelId, {
                     model_name: model_name,
                     min_pred: min_pred,
                     doctypes: doctypes
