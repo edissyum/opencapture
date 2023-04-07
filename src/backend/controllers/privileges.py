@@ -104,6 +104,12 @@ def has_privileges(user_id, needed_privileges):
 
     res = []
     for privilege in needed_privileges:
+        if '|' in privilege:
+            privilege_or = privilege.split('|')
+            for _priv in privilege_or:
+                if _priv.strip() in privileges_list:
+                    res.append(True)
+                    break
         if privilege in privileges_list:
             res.append(True)
     return True if len(res) == len(needed_privileges) else False
