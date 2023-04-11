@@ -555,7 +555,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async getOutputs(outputId: any): Promise<any> {
-        return await this.http.get(environment['url'] + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/outputs/verifier/getById/' + outputId, {headers: this.authService.headers}).toPromise();
     }
 
     private _filter_accounting(array: any, value: any): string[] {
@@ -1482,7 +1482,7 @@ export class VerifierViewerComponent implements OnInit {
          */
         if (this.formSettings.outputs.length !== 0) {
             this.formSettings.outputs.forEach((outputId: any, cpt: number) => {
-                this.http.get(environment['url'] + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/outputs/verifier/getById/' + outputId, {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         if (data.data.options.links) {
                             this.form.facturation.forEach((element: any) => {

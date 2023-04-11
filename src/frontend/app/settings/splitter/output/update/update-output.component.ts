@@ -197,7 +197,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
         this.serviceSettings.init();
         this.outputId = this.route.snapshot.params['id'];
 
-        this.http.get(environment['url'] + '/ws/outputs/getById/' + this.outputId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/splitter/getById/' + this.outputId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 /**
                  * Set the output type and output label
@@ -225,7 +225,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                         });
                     }
                 }
-                this.http.get(environment['url'] + '/ws/outputs/allowedPath', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/outputs/splitter/allowedPath', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.allowedPath = data.allowedPath;
                     }),
@@ -236,7 +236,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                         return of(false);
                     })
                 ).subscribe();
-                this.http.get(environment['url'] + '/ws/outputs/getOutputsTypes?module=splitter', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/outputs/splitter/getOutputsTypes', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.outputsTypes = data.outputs_types;
                         /**
@@ -660,7 +660,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
             _array[element.id] = element.control.value;
         });
 
-        this.http.put(environment['url'] + '/ws/outputs/update/' + this.outputId, {'args': _array}, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/outputs/splitter/update/' + this.outputId, {'args': _array}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('OUTPUT.output_updated'));
             }),
