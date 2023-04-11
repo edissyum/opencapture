@@ -72,7 +72,7 @@ export class TasksWatcherComponent implements OnInit {
         this.getTaskRunning  = true;
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier) {
-            this.http.get(environment['url'] + '/ws/tasks/progress?module=' + splitterOrVerifier,
+            this.http.get(environment['url'] + '/ws/tasks/' + splitterOrVerifier + '/progress',
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (this.displayedTasksData !== data.tasks) {

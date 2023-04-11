@@ -15,8 +15,9 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from src.backend.import_controllers import auth, user
+from flask_babel import gettext
 from flask import Blueprint, request, make_response, jsonify
+from src.backend.import_controllers import auth, user, privileges
 
 bp = Blueprint('users', __name__, url_prefix='/ws/')
 
@@ -24,6 +25,9 @@ bp = Blueprint('users', __name__, url_prefix='/ws/')
 @bp.route('users/new', methods=['POST'])
 @auth.token_required
 def create_user():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_user']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/users/new'}), 403
+
     data = request.json
     res = user.create_user(data)
     return make_response(jsonify(res[0])), res[1]
@@ -32,6 +36,9 @@ def create_user():
 @bp.route('users/list', methods=['GET'])
 @auth.token_required
 def get_users():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'users_list | user_quota']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/users/list'}), 403
+
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'where': ['status NOT IN (%s)', "role <> 1"],
@@ -54,18 +61,19 @@ def get_users():
 @bp.route('users/list_full', methods=['GET'])
 @auth.token_required
 def get_users_full():
-    args = {
-        'select': ['*', 'count(*) OVER() as total'],
-        'offset': request.args['offset'] if 'offset' in request.args else 0,
-        'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
-    }
-    _users = user.get_users_full(args)
+    if not privileges.has_privileges(request.environ['user_id'], ['history | statistics']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/users/list_full'}), 403
+
+    _users = user.get_users_full(request.args)
     return make_response(jsonify(_users[0])), _users[1]
 
 
 @bp.route('users/getById/<int:user_id>', methods=['GET'])
 @auth.token_required
 def get_user_by_id(user_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/getById/{user_id}'}), 403
+
     _user = user.get_user_by_id(user_id)
     return make_response(jsonify(_user[0])), _user[1]
 
@@ -94,6 +102,10 @@ def get_user_by_mail():
 @bp.route('users/update/<int:user_id>', methods=['PUT'])
 @auth.token_required
 def update_user(user_id):
+    if request.environ['fromBasicAuth']:
+        if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/update/{user_id}'}), 403
+
     data = request.json['args']
     res = user.update_user(user_id, data)
     return make_response(jsonify(res[0])), res[1]
@@ -102,6 +114,9 @@ def update_user(user_id):
 @bp.route('users/delete/<int:user_id>', methods=['DELETE'])
 @auth.token_required
 def delete_user(user_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'users_list']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/delete/{user_id}'}), 403
+
     res = user.delete_user(user_id)
     return make_response(jsonify(res[0])), res[1]
 
@@ -109,6 +124,9 @@ def delete_user(user_id):
 @bp.route('users/disable/<int:user_id>', methods=['PUT'])
 @auth.token_required
 def disable_user(user_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'users_list']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/disable/{user_id}'}), 403
+
     res = user.disable_user(user_id)
     return make_response(jsonify(res[0])), res[1]
 
@@ -116,6 +134,9 @@ def disable_user(user_id):
 @bp.route('users/enable/<int:user_id>', methods=['PUT'])
 @auth.token_required
 def enable_user(user_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'users_list']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/enable/{user_id}'}), 403
+
     res = user.enable_user(user_id)
     return make_response(jsonify(res[0])), res[1]
 
@@ -130,6 +151,9 @@ def get_customers_by_user_id(user_id):
 @bp.route('users/customers/update/<int:user_id>', methods=['PUT'])
 @auth.token_required
 def update_customers_by_user_id(user_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/customers/update/{user_id}'}), 403
+
     customers = request.json['customers']
     res = user.update_customers_by_user_id(user_id, customers)
     return make_response(jsonify(res[0])), res[1]
@@ -138,6 +162,9 @@ def update_customers_by_user_id(user_id):
 @bp.route('users/getFormsByUserId/<int:user_id>', methods=['GET'])
 @auth.token_required
 def get_forms_by_user_id(user_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/getFormsByUserId/{user_id}'}), 403
+
     res = user.get_forms_by_user_id(user_id)
     return make_response(jsonify(res[0])), res[1]
 
@@ -145,6 +172,9 @@ def get_forms_by_user_id(user_id):
 @bp.route('users/forms/update/<int:user_id>', methods=['PUT'])
 @auth.token_required
 def update_forms_by_user_id(user_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/forms/update/{user_id}'}), 403
+
     forms = request.json['forms']
     res = user.update_forms_by_user_id(user_id, forms)
     return make_response(jsonify(res[0])), res[1]
