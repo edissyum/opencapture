@@ -318,7 +318,7 @@ const routes: Routes = [
     },
     {
         path: 'settings/splitter/status-update', component: SplitterUpdateStatusComponent,
-        data: {title: 'SETTINGS.status_update', privileges: ['settings', 'update_status']},
+        data: {title: 'SETTINGS.status_update', privileges: ['settings', 'update_status_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
 // -- END Splitter
