@@ -74,7 +74,7 @@
                     <mat-list-item *ngFor="let customer of this.customers" class="cursor-pointer m-2 w-auto"
                                    (click)="updateUserCustomers(customer.id)">
                         <span [class.text-green-400]="hasCustomer(customer.id)" class="hover:text-green-400">
-                            {{ customer.name }}
+                            {{ customer.name }} <span style="font-size: 12px;" class="text-green-400 ml-3"> {{ customer.module }} </span>
                         </span>
                         <span *ngIf="hasCustomer(customer.id)">
                             <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
@@ -92,7 +92,7 @@
                     <mat-list-item *ngFor="let form of this.forms" class="cursor-pointer m-2 w-auto"
                                    (click)="updateUserForms(form.id)">
                         <span [class.text-green-400]="hasForm(form.id)" class="hover:text-green-400">
-                            {{ form.label }}
+                            {{ form.label }} <span style="font-size: 12px;" class="text-green-400 ml-3"> {{ form.module }} </span>
                         </span>
                         <span *ngIf="hasForm(form.id)">
                             <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>

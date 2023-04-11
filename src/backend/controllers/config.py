@@ -64,9 +64,23 @@ def retrieve_configuration_by_label(label):
     return response, 400
 
 
-def retrieve_configurations(args):
-    configurations, error = config.retrieve_configurations(args)
+def retrieve_configurations(data):
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'where': ['display = %s'],
+        'args': [True],
+        'offset': data['offset'] if 'offset' in data else 0,
+        'limit': data['limit'] if 'limit' in data else 'ALL'
+    }
 
+    if 'search' in data and data['search']:
+        args['offset'] = ''
+        args['where'].append(
+            "(LOWER(label) LIKE '%%" + data['search'].lower() + "%%' OR "
+            "LOWER(data ->> 'description') LIKE '%%" + data['search'].lower() + "%%')"
+        )
+
+    configurations, error = config.retrieve_configurations(args)
     if error is None:
         response = {
             "configurations": configurations
@@ -80,7 +94,21 @@ def retrieve_configurations(args):
     return response, 400
 
 
-def retrieve_docservers(args):
+def retrieve_docservers(data):
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'where': [],
+        'offset': data['offset'] if 'offset' in data else 0,
+        'limit': data['limit'] if 'limit' in data else 'ALL'
+    }
+
+    if 'search' in data and data['search']:
+        args['offset'] = ''
+        args['where'].append(
+            "(LOWER(docserver_id) LIKE '%%" + data['search'].lower() + "%%' OR "
+            "LOWER(description) LIKE '%%" + data['search'].lower() + "%%' OR "
+            "LOWER(path) LIKE '%%" + data['search'].lower() + "%%')"
+        )
     docservers, error = config.retrieve_docservers(args)
 
     if error is None:
@@ -96,7 +124,29 @@ def retrieve_docservers(args):
     return response, 400
 
 
-def retrieve_regex(args):
+def retrieve_regex(data):
+    if 'configurations' in current_context:
+        configurations = current_context.configurations
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[10]
+
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'where': ["lang in ('global', %s)"],
+        'args': [configurations['locale']],
+        'offset': data['offset'] if 'offset' in data else 0,
+        'limit': data['limit'] if 'limit' in data else 'ALL'
+    }
+
+    if 'search' in data and data['search']:
+        args['offset'] = ''
+        args['where'].append(
+            "(LOWER(regex_id) LIKE '%%" + data['search'].lower() + "%%' OR "
+            "LOWER(label) LIKE '%%" + data['search'].lower() + "%%') "
+        )
+
     regex, error = config.retrieve_regex(args)
 
     if error is None:
@@ -222,6 +272,7 @@ def get_last_git_version():
         requests.get('https://github.com/edissyum/opencapture', timeout=5)
     except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
         return None
+
     latest_git_version = subprocess.Popen("git ls-remote --tags --sort='v:refname' "
                                           "https://github.com/edissyum/opencapture.git | "
                                           "tail -n1 |  sed 's/.*\///; s/\^{}//' | grep -E '2.+([0-9])$'", shell=True,

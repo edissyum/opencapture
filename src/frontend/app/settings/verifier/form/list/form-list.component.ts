@@ -93,7 +93,7 @@ export class FormListComponent implements OnInit {
 
     loadForms(): void {
         this.loading = true;
-        this.http.get(environment['url'] + '/ws/forms/list?module=verifier&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/verifier/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.forms[0]) this.total = data.forms[0].total;
                 else if (this.pageIndex !== 0) {
@@ -113,7 +113,7 @@ export class FormListComponent implements OnInit {
     }
 
     async getInputs(formId: any) {
-        return await this.http.get(environment['url'] + '/ws/inputs/getByFormId/' + formId, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/inputs/verifier/getByFormId/' + formId, {headers: this.authService.headers}).toPromise();
     }
 
     async deleteConfirmDialog(formId: number, form: string) {
@@ -252,7 +252,7 @@ export class FormListComponent implements OnInit {
         if (newFormId !== undefined) {
             for (const cpt in inputs) {
                 const args = {'default_form_id': newFormId};
-                this.http.put(environment['url'] + '/ws/inputs/update/' + inputs[cpt].id, {'args': args}, {headers: this.authService.headers}).pipe(
+                this.http.put(environment['url'] + '/ws/inputs/verifier/update/' + inputs[cpt].id, {'args': args}, {headers: this.authService.headers}).pipe(
                     catchError((err: any) => {
                         console.debug(err);
                         this.notify.handleErrors(err);

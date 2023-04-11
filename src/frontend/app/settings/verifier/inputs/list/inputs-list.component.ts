@@ -76,7 +76,7 @@ export class InputsListComponent implements OnInit {
         } else
             this.localStorageService.remove('inputsPageIndex');
 
-        this.http.get(environment['url'] + '/ws/inputs/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allInputs = data.inputs;
             }),
@@ -90,7 +90,7 @@ export class InputsListComponent implements OnInit {
     }
 
     loadInputs() {
-        this.http.get(environment['url'] + '/ws/inputs/list?module=verifier&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/verifier/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.inputs[0]) this.total = data.inputs[0].total;
                 else if (this.pageIndex !== 0) {
@@ -139,7 +139,7 @@ export class InputsListComponent implements OnInit {
 
     deleteInput(inputId: number) {
         if (inputId !== undefined) {
-            this.http.delete(environment['url'] + '/ws/inputs/delete/' + inputId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/inputs/verifier/delete/' + inputId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadInputs();
                     this.notify.success(this.translate.instant('INPUT.input_deleted'));
@@ -175,7 +175,7 @@ export class InputsListComponent implements OnInit {
 
     duplicateInput(inputId: number) {
         if (inputId !== undefined) {
-            this.http.post(environment['url'] + '/ws/inputs/duplicate/' + inputId, {}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/verifier/duplicate/' + inputId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadInputs();
                     this.notify.success(this.translate.instant('INPUT.input_duplicated'));

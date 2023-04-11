@@ -92,7 +92,7 @@ export class SplitterFormListComponent implements OnInit {
 
     loadForms(): void {
         this.loading = true;
-        this.http.get(environment['url'] + '/ws/forms/list?module=splitter&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/splitter/list&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.forms[0]) this.total = data.forms[0].total;
                 this.forms = data.forms;

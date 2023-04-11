@@ -179,7 +179,7 @@ export class UpdateInputComponent implements OnInit {
                 });
             }
         });
-        this.http.get(environment['url'] + '/ws/inputs/getById/' + this.inputId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/verifier/getById/' + this.inputId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.input = data;
                 for (const field in this.input) {
@@ -187,7 +187,7 @@ export class UpdateInputComponent implements OnInit {
                         if (element.id === field) {
                             element.control.setValue(data[field]);
                             if (element.id === 'default_form_id') {
-                                this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+                                this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
                                     tap((forms: any) => {
                                         element.values = forms.forms;
                                         element.values = [{'id': 0, 'label': this.translate.instant('INPUT.no_form_associated')}].concat(element.values);
@@ -211,7 +211,7 @@ export class UpdateInputComponent implements OnInit {
                                     })
                                 ).subscribe();
                             } else if (element.id === 'ai_model_id') {
-                                this.http.get(environment['url'] + '/ws/ai/list?module=verifier', {headers: this.authService.headers}).pipe(
+                                this.http.get(environment['url'] + '/ws/ai/verifier/list', {headers: this.authService.headers}).pipe(
                                     tap((aiModel: any) => {
                                         this.inputForm.forEach((element: any) => {
                                             if (element.id === 'ai_model_id') {
@@ -244,7 +244,7 @@ export class UpdateInputComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.get(environment['url'] + '/ws/inputs/allowedPath', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/verifier/allowedPath', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allowedPath = data.allowedPath;
                 if (this.allowedPath) {
@@ -273,10 +273,10 @@ export class UpdateInputComponent implements OnInit {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;
             }
-            if (element.id === 'ai_model_id' && element.control.value === 0) {
+            if (element.id === 'ai_model_id' && element.control.value === null) {
                 aiEmpty = true;
             }
-            if (element.id === 'default_form_id' && element.control.value === 0) {
+            if (element.id === 'default_form_id' && element.control.value === null) {
                 defaultFormEmpty = true;
             }
             if (aiEmpty && defaultFormEmpty) {
@@ -288,6 +288,7 @@ export class UpdateInputComponent implements OnInit {
     }
 
     onSubmit() {
+        console.log(this.isValidForm())
         if (this.isValidForm()) {
             const input : any = {
                 'module': 'verifier'
@@ -297,7 +298,7 @@ export class UpdateInputComponent implements OnInit {
                 input[element.id] = element.control.value;
             });
 
-            this.http.put(environment['url'] + '/ws/inputs/update/' + this.inputId, {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/inputs/verifier/update/' + this.inputId, {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.historyService.addHistory('verifier', 'update_input', this.translate.instant('HISTORY-DESC.update-input', {input: input['input_label']}));
                     this.notify.success(this.translate.instant('INPUT.updated'));
@@ -320,7 +321,7 @@ export class UpdateInputComponent implements OnInit {
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });
-            this.http.post(environment['url'] + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/verifier/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('INPUT.watcher_and_script_updated'));
                     this.onSubmit();

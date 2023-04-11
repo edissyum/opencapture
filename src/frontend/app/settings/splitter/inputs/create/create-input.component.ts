@@ -112,7 +112,7 @@ export class SplitterCreateInputComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.get(environment['url'] + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/splitter/list', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.inputForm.forEach((element: any) => {
                     if (element.id === 'default_form_id') {
@@ -150,7 +150,7 @@ export class SplitterCreateInputComponent implements OnInit {
                 ).subscribe();
             }
         });
-        this.http.get(environment['url'] + '/ws/inputs/allowedPath', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/splitter/allowedPath', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allowedPath = data.allowedPath;
                 if (this.allowedPath) {
@@ -204,9 +204,9 @@ export class SplitterCreateInputComponent implements OnInit {
                 input[element.id] = element.control.value;
             });
 
-            this.http.post(environment['url'] + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/splitter/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.http.post(environment['url'] + '/ws/inputs/create', {'args': input}, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/inputs/splitter/create', {'args': input}, {headers: this.authService.headers}).pipe(
                         tap(() => {
                             this.historyService.addHistory('splitter', 'create_input', this.translate.instant('HISTORY-DESC.create-input', {input: input['input_label']}));
                             this.router.navigate(['/settings/splitter/inputs']).then();

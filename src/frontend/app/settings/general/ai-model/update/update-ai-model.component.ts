@@ -227,7 +227,7 @@ export class UpdateAiModelComponent implements OnInit {
     }
 
     async retrieveForms() {
-        const retrieve = this.http.get(environment['url'] + '/ws/forms/list?module=' + this.splitterOrVerifier, {headers: this.authService.headers}).pipe(
+        const retrieve = this.http.get(environment['url'] + '/ws/forms/' + this.splitterOrVerifier + '/list', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.forms = forms.forms;
             }),
