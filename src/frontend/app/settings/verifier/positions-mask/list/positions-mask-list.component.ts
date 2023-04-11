@@ -82,7 +82,7 @@ export class PositionsMaskListComponent implements OnInit {
         const suppliers = await this.retrieveSuppliers();
         this.http.get(environment['url'] + '/ws/positions_masks/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.total) this.total = data.total;
+                if (data.positions_masks[0]['total']) this.total = data.positions_masks[0]['total'];
                 else if (this.pageIndex !== 0) {
                     this.pageIndex = this.pageIndex - 1;
                     this.offset = this.pageSize * (this.pageIndex);

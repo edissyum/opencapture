@@ -26,14 +26,8 @@ from src.backend.import_models import positions_masks, accounts
 
 def get_positions_masks(args):
     _positions_masks, error = positions_masks.get_positions_masks(args)
-    total_positions_mask = positions_masks.get_positions_masks({
-        'select': ['COUNT(*) as total'],
-        'where': ['positions_masks.status = %s'],
-        'data': ['OK']
-    })
     if error is None:
         response = {
-            "total": total_positions_mask[0][0]['total'],
             "positions_masks": _positions_masks
         }
         return response, 200

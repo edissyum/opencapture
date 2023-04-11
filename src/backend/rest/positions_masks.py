@@ -36,6 +36,7 @@ def get_positions_masks():
         'order_by': ['positions_masks.id ASC']
     }
     res = positions_masks.get_positions_masks(args)
+    print(res)
     return make_response(jsonify(res[0]), res[1])
 
 
