@@ -24,7 +24,14 @@ from src.backend.functions import retrieve_custom_from_url
 from src.backend.import_models import positions_masks, accounts
 
 
-def get_positions_masks(args):
+def get_positions_masks(data):
+    args = {
+        'select': ['positions_masks.*', 'form_models.label as form_label', 'count(*) OVER() as total'],
+        'offset': data['offset'] if 'offset' in data else 0,
+        'limit': data['limit'] if 'limit' in data else 'ALL',
+        'where': ["positions_masks.status <> 'DEL'"],
+        'order_by': ['positions_masks.id ASC']
+    }
     _positions_masks, error = positions_masks.get_positions_masks(args)
     if error is None:
         response = {
@@ -76,23 +83,6 @@ def get_positions_mask_by_id(position_mask_id):
             "message": gettext(error)
         }
         return response, 400
-
-
-def get_positions_mask_fields_by_supplier_id(supplier_id):
-    position_mask_id, error = accounts.get_supplier_by_id({'select': ['position_mask_id'], 'supplier_id': supplier_id})
-    if error is None:
-        positions_masks_info, error = positions_masks.get_fields({
-            'position_mask_id': position_mask_id['position_mask_id']
-        })
-
-        if error is None:
-            return positions_masks_info, 200
-        else:
-            response = {
-                "errors": gettext('GET_POSITION_MASK_BY_ID_ERROR'),
-                "message": gettext(error)
-            }
-            return response, 400
 
 
 def update_positions_mask(position_mask_id, args):
