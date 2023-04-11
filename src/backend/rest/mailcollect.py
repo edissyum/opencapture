@@ -15,8 +15,9 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-from src.backend.import_controllers import mailcollect, auth
-from flask import Blueprint, jsonify, make_response, request, g as current_context
+from flask_babel import gettext
+from flask import Blueprint, jsonify, make_response, request
+from src.backend.import_controllers import mailcollect, auth, privileges
 
 bp = Blueprint('mailcollect', __name__,  url_prefix='/ws/')
 
@@ -24,6 +25,9 @@ bp = Blueprint('mailcollect', __name__,  url_prefix='/ws/')
 @bp.route('mailcollect/getProcesses', methods=['GET'])
 @auth.token_required
 def retrieve_processes():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/mailcollect/getProcesses'}), 403
+
     args = {
         'select': ['*'],
         'where': ['status <> %s'],
@@ -37,6 +41,9 @@ def retrieve_processes():
 @bp.route('mailcollect/retrieveFolders', methods=['POST'])
 @auth.token_required
 def retrieve_folders():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/mailcollect/retrieveFolders'}), 403
+
     args = request.json
     res = mailcollect.retrieve_folders(args)
     return make_response(jsonify(res[0])), res[1]
@@ -45,6 +52,10 @@ def retrieve_folders():
 @bp.route('mailcollect/updateProcess/<string:process_name>', methods=['POST'])
 @auth.token_required
 def update_process(process_name):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/mailcollect/updateProcesses/{process_name}'}), 403
+
     data = request.json
     args = {
         'set': data,
@@ -57,6 +68,9 @@ def update_process(process_name):
 @bp.route('mailcollect/createProcess', methods=['POST'])
 @auth.token_required
 def create_process():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/mailcollect/createProcess'}), 403
+
     data = request.json
     args = {
         'columns': data,
@@ -68,19 +82,31 @@ def create_process():
 @bp.route('mailcollect/deleteProcess/<string:process_name>', methods=['DELETE'])
 @auth.token_required
 def delete_process(process_name):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/mailcollect/deleteProcess/{process_name}'}), 403
+
     res = mailcollect.delete_process(process_name)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('mailcollect/enableProcess/<string:process_name>', methods=['DELETE'])
+@bp.route('mailcollect/enableProcess/<string:process_name>', methods=['PUT'])
 @auth.token_required
 def enable_process(process_name):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/mailcollect/enableProcess/{process_name}'}), 403
+
     res = mailcollect.enable_process(process_name)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('mailcollect/disableProcess/<string:process_name>', methods=['DELETE'])
+@bp.route('mailcollect/disableProcess/<string:process_name>', methods=['PUT'])
 @auth.token_required
 def disable_process(process_name):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/mailcollect/disableProcess/{process_name}'}), 403
+
     res = mailcollect.disable_process(process_name)
     return make_response(jsonify(res[0])), res[1]

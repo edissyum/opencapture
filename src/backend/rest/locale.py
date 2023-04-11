@@ -15,9 +15,10 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-from src.backend.import_controllers import auth, config
+from flask_babel import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from src.backend.import_controllers import auth, config, privileges
 from flask import Blueprint, make_response, jsonify, session, request, g as current_context
 
 bp = Blueprint('i18n', __name__, url_prefix='/ws/')
@@ -26,6 +27,9 @@ bp = Blueprint('i18n', __name__, url_prefix='/ws/')
 @bp.route('i18n/changeLanguage/<string:lang>', methods=['GET'])
 @auth.token_required
 def change_language(lang):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/i18n/changeLanguage/{lang}'}), 403
+
     session['lang'] = lang
     response = config.change_locale_in_config(lang)
     return jsonify(response, response[1])
