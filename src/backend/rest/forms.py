@@ -30,7 +30,8 @@ def get_forms(module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/inputs/{module}/list'}), 403
 
-    args = request.args
+    args = dict(request.args)
+    args['module'] = module
     res = forms.get_forms(args)
     return make_response(jsonify(res[0]), res[1])
 
