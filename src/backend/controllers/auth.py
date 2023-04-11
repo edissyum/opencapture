@@ -158,6 +158,12 @@ def login(username, password, lang, method='default'):
             'username': username,
             'password': password
         })
+        if 'mode' in user_info and user_info['mode'] == 'webservice':
+            response = {
+                "errors": gettext('LOGIN_ERROR'),
+                "message": gettext('USER_WEBSERVICE')
+            }
+            return response, 401
     elif method == 'ldap':
         user_info, error = user.get_user_by_username({"select": ['users.id', 'users.username'], "username": username})
 
