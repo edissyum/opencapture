@@ -558,7 +558,8 @@ class Files:
                         pdf_page.rotate(page['rotation'])
                     pdf_writer.add_page(pdf_page)
 
-                pdf_writer.add_metadata(pdf_reader.metadata)
+                if pdf_reader.metadata:
+                    pdf_writer.add_metadata(pdf_reader.metadata)
 
                 title = ''
                 if 'title' in args['documents'][index]['metadata']:
