@@ -17,6 +17,18 @@
     }
 }
 
+.mat-mdc-form-field-hint::before {
+    @apply hidden #{!important};
+}
+
+.mat-mdc-icon-button .mat-mdc-button-ripple,
+.mat-mdc-slide-toggle .mdc-switch .mdc-switch__ripple,
+.mat-mdc-icon-button .mat-mdc-button-persistent-ripple,
+.mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before {
+    @apply hidden #{!important};
+}
+
+
 .mat-primary .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-minimal::after,
 .mat-primary .mat-pseudo-checkbox-indeterminate.mat-pseudo-checkbox-minimal::after {
     @apply text-green-400 #{!important};

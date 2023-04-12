@@ -43,17 +43,17 @@
                             </mat-option>
                         </mat-select>
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
-                        <mat-hint class="text-gray-600 mt-3 text-sm" *ngIf="field.hint">
-                            {{ field.hint | translate }}
-                        </mat-hint>
+                        <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
+                              [matTooltip]="field.hint | translate">
+                            <i class="fa-solid fa-circle-question text-md"></i>
+                        </span>
                     </mat-form-field>
                 </ng-container>
             </div>
             <div class="grid grid-cols-3 gap-4 w-auto m-10 text-center">
                 <ng-container *ngFor="let field of this.inputForm">
                     <div *ngIf="field.type === 'boolean'">
-                        <mat-slide-toggle [formControl]="field.control"
-                                          class="relative top-4 mb-10 col-span-2">
+                        <mat-slide-toggle [formControl]="field.control" class="relative top-4 mb-10 col-span-2">
                             <span class="justify-center">{{ field.label | translate }}</span>
                         </mat-slide-toggle>
                     </div>
