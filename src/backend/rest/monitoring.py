@@ -15,8 +15,9 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from src.backend.import_controllers import auth, monitoring
-from flask import Blueprint, make_response, jsonify
+from flask_babel import gettext
+from flask import Blueprint, make_response, jsonify, request
+from src.backend.import_controllers import auth, monitoring, privileges
 
 bp = Blueprint('monitoring', __name__, url_prefix='/ws/')
 
@@ -24,6 +25,9 @@ bp = Blueprint('monitoring', __name__, url_prefix='/ws/')
 @bp.route('monitoring/list', methods=['GET'])
 @auth.token_required
 def get_processes():
+    if not privileges.has_privileges(request.environ['user_id'], ['monitoring']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/monitoring/list'}), 403
+
     processes = monitoring.get_processes()
     return make_response(jsonify(processes[0])), processes[1]
 
@@ -31,5 +35,9 @@ def get_processes():
 @bp.route('monitoring/getProcessById/<int:process_id>', methods=['GET'])
 @auth.token_required
 def get_process_by_id(process_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['monitoring']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/monitoring/getProcessById/{process_id}'}), 403
+
     process = monitoring.get_process_by_id(process_id)
     return make_response(jsonify(process[0])), process[1]

@@ -754,7 +754,7 @@ export class FormBuilderComponent implements OnInit {
         this.serviceSettings.init();
         this.formId = this.route.snapshot.params['id'];
 
-        this.http.get(environment['url'] + '/ws/outputs/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/verifier/list', {headers: this.authService.headers}).pipe(
             tap((res_outputs: any) => {
                 this.outputs = res_outputs.outputs;
                 if (this.formId) {

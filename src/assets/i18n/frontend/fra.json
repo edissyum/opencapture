@@ -844,6 +844,7 @@
 		"general": "Paramètres généraux",
 		"list_forms": "Liste des formulaires",
 		"list_positions_mask": "Masques de positionnement",
+		"list_workflows": "Liste des workflows",
 		"login_methods": "Méthodes d'authentification",
 		"mailcollect": "MailCollect",
 		"positions_mask_builder": "Créer un nouveau masque",
@@ -858,7 +859,9 @@
 		"user_quota": "Quota d'utilisateurs",
 		"users_list": "Liste des utilisateurs",
 		"verifier": "Paramètres du Vérificateur",
-		"verifier_display": "Affichage des lots"
+		"verifier_display": "Affichage des lots",
+		"workflow_builder": "Création de workflow",
+		"workflow_update": "Modification du workflow"
 	},
 	"SPLITTER": {
 		"Other": "(Autre)",
@@ -1086,5 +1089,15 @@
 		"suppliers_by_customer": "Liste des tiers par client",
 		"unselect_all": "Tout désélectionner",
 		"viewer": "Visualisation du PDF"
+	},
+	"WORKFLOW": {
+		"back": "Retour",
+		"create": "Créer le workflow",
+		"id": "Identifiant du workflow",
+		"input_and_process": "Entrée & traitement",
+		"label": "Libellé du workflow",
+		"next": "Suivant",
+		"output": "Sortie",
+		"separation": "Séparation"
 	}
 }

@@ -1,0 +1,56 @@
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
+    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+        <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
+    </mat-sidenav>
+    <mat-sidenav-content class="bg-white">
+        <div *ngIf="this.loading">
+            <app-loader></app-loader>
+        </div>
+        <div class="settings_header">
+            <div class="flex">
+                <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
+            </div>
+            <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div></div>
+        </div>
+        <hr class="border-green-400 relative z-30">
+        <div class="my-4 w-full p-2">
+            <mat-form-field class="p-2 w-4/12">
+                <mat-label>{{ 'WORKFLOW.id' | translate }}</mat-label>
+                <input matInput [formControl]="this.idControl" type="text">
+            </mat-form-field>
+            <mat-form-field class="p-2 w-8/12">
+                <mat-label>{{ 'WORKFLOW.label' | translate }}</mat-label>
+                <input matInput [formControl]="this.nameControl" type="text">
+            </mat-form-field>
+        </div>
+        <mat-stepper orientation="horizontal" class="text-center">
+            <mat-step [label]="'WORKFLOW.input_and_process' | translate">
+
+                <button matStepperNext mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+                    {{ 'WORKFLOW.next' | translate }}
+                </button>
+            </mat-step>
+            <mat-step [label]="'WORKFLOW.separation' | translate">
+
+                <button matStepperPrevious mat-button class="p-6 mr-4 border-solid border-gray-900 border bg-gray-900 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+                    {{ "WORKFLOW.back" | translate }}
+                </button>
+                <button matStepperNext mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+                    {{ 'WORKFLOW.next' | translate }}
+                </button>
+            </mat-step>
+            <mat-step [label]="'WORKFLOW.output' | translate">
+
+                <button matStepperPrevious mat-button class="p-6 mr-4 border-solid border-gray-900 border bg-gray-900 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+                    {{ "WORKFLOW.back" | translate }}
+                </button>
+                <button mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+                    {{ 'WORKFLOW.create' | translate }}
+                </button>
+            </mat-step>
+        </mat-stepper>
+    </mat-sidenav-content>
+</mat-sidenav-container>

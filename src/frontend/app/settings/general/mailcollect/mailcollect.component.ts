@@ -729,7 +729,7 @@ export class MailCollectComponent implements OnInit {
     }
 
     disableProcess(processName: string) {
-        this.http.delete(environment['url'] + '/ws/mailcollect/disableProcess/' + processName, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/mailcollect/disableProcess/' + processName, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.selectedIndex = 1;
                 this.loadProcess();
@@ -768,7 +768,7 @@ export class MailCollectComponent implements OnInit {
     }
 
     enableProcess(processName: string) {
-        this.http.delete(environment['url'] + '/ws/mailcollect/enableProcess/' + processName, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/mailcollect/enableProcess/' + processName, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.selectedIndex = 1;
                 this.loadProcess();

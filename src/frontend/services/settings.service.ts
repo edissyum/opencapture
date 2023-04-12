@@ -166,6 +166,30 @@ export class SettingsService {
                 "privilege" : "verifier_display"
             },
             {
+                "id"        : "workflow_builder",
+                "label"     : this.translate.instant("SETTINGS.list_workflows"),
+                "icon"      : "fa-solid fa-diagram-next",
+                "route"     : "/settings/verifier/workflows",
+                "privilege" : "workflows_list",
+                "actions"   : [
+                    {
+                        "id"        : "add_workflow",
+                        "label"     : this.translate.instant("SETTINGS.workflow_builder"),
+                        "route"     : "/settings/verifier/workflows/builder/new",
+                        "privilege" : "add_workflow",
+                        "icon"      : "fa-solid fa-tools"
+                    },
+                    {
+                        "id"                : "update_workflonw",
+                        "label"             : this.translate.instant("SETTINGS.workflow_update"),
+                        "route"             : "/settings/verifier/workflows/builder/edit/",
+                        "privilege"         : "update_workflow",
+                        "icon"              : "fa-solid fa-hammer",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
+            },
+            {
                 "id"        : "form_builder",
                 "label"     : this.translate.instant("SETTINGS.list_forms"),
                 "icon"      : "fa-brands fa-wpforms",

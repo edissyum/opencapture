@@ -717,7 +717,13 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (62, 'update_ai_model'
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (63, 'update_status_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (64, 'update_status', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (65, 'access_config', 'administration');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 66;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (66, 'workflows_list', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (67, 'add_workflow', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (68, 'update_workflow', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (69, 'workflows_list_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (70, 'add_workflow_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (71, 'update_workflow_splitter', 'splitter');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 72;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

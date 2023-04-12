@@ -15,16 +15,21 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from src.backend.import_controllers import status
+from flask_babel import gettext
 from flask import Blueprint, make_response, jsonify, request
+from src.backend.import_controllers import auth, status, privileges
 
 
 bp = Blueprint('status', __name__, url_prefix='/ws/')
 
 
-@bp.route('status/list', methods=['GET'])
-def status_list():
-    module = request.args['module']
+@bp.route('status/<string:module>/list', methods=['GET'])
+@auth.token_required
+def status_list(module):
+    list_priv = ['access_verifier | update_status'] if module == 'verifier' else ['access_splitter | update_status_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/status/{module}/list'}), 403
+
     _status = status.get_status(module)
     return make_response(jsonify(_status[0])), _status[1]
 

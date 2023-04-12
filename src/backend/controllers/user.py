@@ -76,7 +76,12 @@ def get_users(args):
     return response, 200
 
 
-def get_users_full(args):
+def get_users_full(data):
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'offset': data['offset'] if 'offset' in data else 0,
+        'limit': data['limit'] if 'limit' in data else 'ALL'
+    }
     users, _ = user.get_users_full(args)
 
     response = {
@@ -108,8 +113,7 @@ def get_user_by_id(user_id, get_password=False):
 
 def get_user_by_mail(user_mail):
     user_info, error = user.get_user_by_mail({
-        'select': ['users.id', 'username', 'firstname', 'email', 'lastname', 'role', 'users.status', 'creation_date',
-                   'users.enabled'],
+        'select': ['users.id'],
         'user_mail': user_mail
     })
 

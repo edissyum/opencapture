@@ -844,6 +844,7 @@
 		"general": "General",
 		"list_forms": "Forms list",
 		"list_positions_mask": "Positions masks list",
+		"list_workflows": "Workflows list",
 		"login_methods": "Login methods",
 		"mailcollect": "MailCollect",
 		"positions_mask_builder": "Create positions mask",
@@ -858,7 +859,9 @@
 		"user_quota": "Users quota",
 		"users_list": "Users list",
 		"verifier": "Verifier",
-		"verifier_display": "Batch display"
+		"verifier_display": "Batch display",
+		"workflow_builder": "Create workflow",
+		"workflow_update": "Update workflow"
 	},
 	"SPLITTER": {
 		"Other": "(Autre)",
@@ -1086,5 +1089,15 @@
 		"suppliers_by_customer": "Accounts list by customer",
 		"unselect_all": "Unselect all",
 		"viewer": "View PDF"
+	},
+	"WORKFLOW": {
+		"back": "Back",
+		"create": "Create workflow",
+		"id": "Workflow identifier",
+		"input_and_process": "Input and process",
+		"label": "Workflow label",
+		"next": "Next",
+		"output": "Output",
+		"separation": "Separation"
 	}
 }

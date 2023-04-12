@@ -115,13 +115,23 @@ def retrieve_referential(form_id):
     return response, 200
 
 
-def retrieve_batches(args):
+def retrieve_batches(data):
     if 'docservers' in current_context:
         docservers = current_context.docservers
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
+
+    args = {
+        'user_id': data['userId'],
+        'size': data['size'] if 'size' in data else None,
+        'page': data['page'] if 'page' in data else None,
+        'time': data['time'] if 'time' in data else None,
+        'status': data['status'] if 'status' in data else None,
+        'search': data['search'] if 'search' in data else None,
+        'batch_id': data['batchId'] if 'batchId' in data else None,
+    }
 
     user_customers = user.get_customers_by_user_id(args['user_id'])
 
@@ -217,14 +227,6 @@ def download_original_file(batch_id):
 
 
 def update_status(args):
-    if 'database' in current_context:
-        database = current_context.database
-
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
-
     for _id in args['ids']:
         batches = splitter.get_batch_by_id({'id': _id})
         if len(batches[0]) < 1:
@@ -242,7 +244,7 @@ def update_status(args):
             "errors": gettext('UPDATE_STATUS_ERROR'),
             "message": ''
         }
-        return res, 400
+        return response, 400
 
 
 def change_form(args):
@@ -548,9 +550,16 @@ def export_xml(documents, parameters, metadata, now):
     return {'path': res_xml[1]}, 200
 
 
-def save_infos(args):
+def save_infos(data):
     new_documents = []
-
+    args = {
+        'documents': data['documents'],
+        'batch_id': data['batchId'],
+        'moved_pages': data['movedPages'],
+        'batch_metadata': data['batchMetadata'],
+        'deleted_pages_ids': data['deletedPagesIds'],
+        'deleted_documents_ids': data['deletedDocumentsIds']
+    }
     res = splitter.update_batch({
         'batch_id': args['batch_id'],
         'batch_metadata': args['batch_metadata'],

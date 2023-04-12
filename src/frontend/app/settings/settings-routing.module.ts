@@ -23,6 +23,7 @@ import { HasPrivilegeService } from "../../services/has-privilege.service";
 import { SeparatorComponent } from "./splitter/separator/separator.component";
 import { LoginRequiredService } from "../../services/login-required.service";
 import { FormListComponent } from "./verifier/form/list/form-list.component";
+import { WorkflowListComponent } from "./verifier/workflow/list/workflow-list.component";
 import { UsersListComponent } from "./general/users/list/users-list.component";
 import { RolesListComponent } from "./general/roles/list/roles-list.component";
 import { SplitterFormListComponent } from "./splitter/form/list/form-list.component";
@@ -32,6 +33,7 @@ import { CreateRoleComponent } from "./general/roles/create/create-role.componen
 import { UpdateRoleComponent } from "./general/roles/update/update-role.component";
 import { InputsListComponent } from "./verifier/inputs/list/inputs-list.component";
 import { FormBuilderComponent } from "./verifier/form/builder/form-builder.component";
+import { WorkflowBuilderComponent } from "./verifier/workflow/builder/workflow-builder.component";
 import { OutputsListComponent } from "./verifier/outputs/list/outputs-list.component";
 import { UpdateInputComponent } from "./verifier/inputs/update/update-input.component";
 import { SplitterInputListComponent } from "./splitter/inputs/list/input-list.component";
@@ -148,6 +150,21 @@ const routes: Routes = [
     {
         path: 'settings/verifier/display', component: VerifierDisplayComponent,
         data: {title: 'SETTINGS.verifier_display', privileges: ['settings', 'verifier_display']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'settings/verifier/workflows', component: WorkflowListComponent,
+        data: {title: 'SETTINGS.list_workflows', privileges: ['settings', 'workflows_list']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'settings/verifier/workflows/builder/new', component: WorkflowBuilderComponent,
+        data: {title: 'SETTINGS.workflow_builder', privileges: ['settings', 'add_workflow']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'settings/verifier/workflows/builder/edit/:id', component: WorkflowBuilderComponent,
+        data: {title: 'SETTINGS.workflow_update', privileges: ['settings', 'update_workflow']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
@@ -318,7 +335,7 @@ const routes: Routes = [
     },
     {
         path: 'settings/splitter/status-update', component: SplitterUpdateStatusComponent,
-        data: {title: 'SETTINGS.status_update', privileges: ['settings', 'update_status']},
+        data: {title: 'SETTINGS.status_update', privileges: ['settings', 'update_status_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
 // -- END Splitter

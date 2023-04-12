@@ -29,14 +29,14 @@ class StatusTest(unittest.TestCase):
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
 
     def test_successful_get_status_list_verifier(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/status/list?module=verifier',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/status/verifier/list',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
         self.assertEqual(len(response.json['status']), 4)
 
     def test_successful_get_status_list_splitter(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/status/list?module=splitter',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/status/splitter/list',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))

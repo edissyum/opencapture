@@ -19,7 +19,16 @@ from flask_babel import gettext
 from src.backend.import_models import roles
 
 
-def get_roles(args):
+def get_roles(data):
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'offset': data['offset'] if 'offset' in data else 0,
+        'limit': data['limit'] if 'limit' in data else 'ALL'
+    }
+    if 'full' in data:
+        args['where'] = ['status NOT IN (%s)']
+        args['data'] = ['DEL']
+
     _roles = roles.get_roles(args)
 
     response = {

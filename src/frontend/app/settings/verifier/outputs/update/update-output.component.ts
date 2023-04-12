@@ -236,7 +236,7 @@ export class UpdateOutputComponent implements OnInit {
         this.serviceSettings.init();
         this.outputId = this.route.snapshot.params['id'];
 
-        this.http.get(environment['url'] + '/ws/outputs/getById/' + this.outputId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/verifier/getById/' + this.outputId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 /**
                  * Set the output type and output label
@@ -264,7 +264,7 @@ export class UpdateOutputComponent implements OnInit {
                         });
                     }
                 }
-                this.http.get(environment['url'] + '/ws/outputs/allowedPath', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/outputs/verifier/allowedPath', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.allowedPath = data.allowedPath;
                     }),
@@ -275,7 +275,7 @@ export class UpdateOutputComponent implements OnInit {
                         return of(false);
                     })
                 ).subscribe();
-                this.http.get(environment['url'] + '/ws/outputs/getOutputsTypes?module=verifier', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/outputs/verifier/getOutputsTypes', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
                             tap((data: any) => {
@@ -667,7 +667,7 @@ export class UpdateOutputComponent implements OnInit {
             _array[element.id] = element.control.value;
         });
 
-        this.http.put(environment['url'] + '/ws/outputs/update/' + this.outputId, {'args': _array}, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/outputs/verifier/update/' + this.outputId, {'args': _array}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('OUTPUT.output_updated'));
                 this.historyService.addHistory('verifier', 'update_output', this.translate.instant('HISTORY-DESC.update-output', {output: _array['output_label']}));

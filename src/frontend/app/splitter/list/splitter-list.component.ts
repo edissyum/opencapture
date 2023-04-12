@@ -117,7 +117,7 @@ export class SplitterListComponent implements OnInit {
             this.localStorageService.remove('splitterTimeIndex');
         }
 
-        this.http.get(environment['url'] + '/ws/status/list?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/status/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
             }),

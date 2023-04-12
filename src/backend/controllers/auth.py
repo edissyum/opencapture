@@ -264,12 +264,14 @@ def token_required(view):
                 except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
                         jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
                     return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
+                request.environ['fromBasicAuth'] = False
             elif 'Basic' in request.headers['Authorization']:
                 user_ws = True
                 where.append('mode = %s')
                 basic_auth = request.headers['Authorization'].split('Basic')[1].lstrip()
                 username, password = base64.b64decode(basic_auth).decode('utf-8').split(':')
                 data = [username, 'webservice']
+                request.environ['fromBasicAuth'] = True
             else:
                 return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('AUTHORIZATION_HEADER_INCORRECT')}), 500
 

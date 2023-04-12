@@ -15,9 +15,9 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import Blueprint, make_response, jsonify
-from src.backend.import_controllers import auth
-from src.backend.import_controllers import privileges
+from flask_babel import gettext
+from src.backend.import_controllers import auth, privileges
+from flask import Blueprint, make_response, jsonify, request
 
 bp = Blueprint('privileges', __name__, url_prefix='/ws/')
 
@@ -25,6 +25,9 @@ bp = Blueprint('privileges', __name__, url_prefix='/ws/')
 @bp.route('privileges/list', methods=['GET'])
 @auth.token_required
 def get_privileges():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_role | add_role']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/privileges/list'}), 403
+
     _privileges = privileges.get_privileges()
     return make_response(jsonify(_privileges[0])), _privileges[1]
 
@@ -32,6 +35,9 @@ def get_privileges():
 @bp.route('privileges/getbyRoleId/<int:role_id>', methods=['GET'])
 @auth.token_required
 def get_privileges_by_role_id(role_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_role | add_role']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/privileges/getbyRoleId/{role_id}'}), 403
+
     args = {'role_id': role_id}
     _privileges = privileges.get_privileges_by_role_id(args)
     return make_response(jsonify(_privileges[0])), _privileges[1]
