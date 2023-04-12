@@ -19,6 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { STEPPER_GLOBAL_OPTIONS } from "@angular/cdk/stepper";
 import { SettingsService } from "../../../../../services/settings.service";
 import {FormControl} from "@angular/forms";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
     selector: 'app-workflow-builder',
@@ -32,16 +33,23 @@ import {FormControl} from "@angular/forms";
     ],
 })
 export class WorkflowBuilderComponent implements OnInit {
-    loading     : boolean       = false;
-    idControl   : FormControl   = new FormControl();
-    nameControl : FormControl   = new FormControl();
+    loading         : boolean       = true;
+    creationMode    : boolean       = true;
+    workflowId      : any;
+    idControl       : FormControl   = new FormControl();
+    nameControl     : FormControl   = new FormControl();
 
     constructor(
+        private route: ActivatedRoute,
         public serviceSettings: SettingsService,
     ) {}
 
     ngOnInit() {
         this.serviceSettings.init();
-
+        this.workflowId = this.route.snapshot.params['id'];
+        if (this.workflowId) {
+            this.creationMode = false;
+        }
+        this.loading = false;
     }
 }

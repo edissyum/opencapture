@@ -1098,6 +1098,7 @@
 		"label": "Workflow label",
 		"next": "Next",
 		"output": "Output",
-		"separation": "Separation"
+		"separation": "Separation",
+		"update": "Update workflow",
 	}
 }

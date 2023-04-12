@@ -1098,6 +1098,7 @@
 		"label": "Libellé du workflow",
 		"next": "Suivant",
 		"output": "Sortie",
-		"separation": "Séparation"
+		"separation": "Séparation",
+		"update": "Mettre à jour le workflow"
 	}
 }
