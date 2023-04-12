@@ -292,7 +292,6 @@ CREATE TABLE "splitter_documents"
     "data"          JSON        DEFAULT '{}'::json
 );
 
-
 CREATE TABLE "splitter_pages"
 (
     "id"            SERIAL          UNIQUE PRIMARY KEY,
@@ -303,7 +302,7 @@ CREATE TABLE "splitter_pages"
     "status"        VARCHAR(255)    DEFAULT 'NEW'
 );
 
-create table "doctypes"
+CREATE TABLE "doctypes"
 (
     "id"         SERIAL         UNIQUE PRIMARY KEY,
     "key"        VARCHAR(255)   NOT NULL,
