@@ -17,10 +17,17 @@
     }
 }
 
+.mat-step-header .mat-step-icon-selected,
+.mat-step-header .mat-step-icon-state-done,
+.mat-step-header .mat-step-icon-state-edit {
+    @apply bg-green-400 #{!important};
+}
+
 .mat-mdc-form-field-hint::before {
     @apply hidden #{!important};
 }
 
+.mat-step-header .mat-step-header-ripple,
 .mat-mdc-icon-button .mat-mdc-button-ripple,
 .mat-mdc-slide-toggle .mdc-switch .mdc-switch__ripple,
 .mat-mdc-icon-button .mat-mdc-button-persistent-ripple,

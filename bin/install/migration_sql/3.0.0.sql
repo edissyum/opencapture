@@ -13,3 +13,9 @@ UPDATE privileges set label = 'create_ai_model_splitter' WHERE label = 'create_a
 UPDATE privileges set label = 'update_ai_model_splitter' WHERE label = 'update_ai_model' AND parent = 'splitter';
 
 INSERT INTO "privileges" ("label", "parent") VALUES ('access_config', 'administration');
+INSERT INTO "privileges" ("label", "parent") VALUES ('workflows_list', 'verifier');
+INSERT INTO "privileges" ("label", "parent") VALUES ('add_workflow', 'verifier');
+INSERT INTO "privileges" ("label", "parent") VALUES ('update_workflow', 'verifier');
+INSERT INTO "privileges" ("label", "parent") VALUES ('workflows_list_splitter', 'splitter');
+INSERT INTO "privileges" ("label", "parent") VALUES ('add_workflow_splitter', 'splitter');
+INSERT INTO "privileges" ("label", "parent") VALUES ('update_workflow_splitter', 'splitter');
