@@ -1091,14 +1091,23 @@
 		"viewer": "Visualisation du PDF"
 	},
 	"WORKFLOW": {
+		"apply_process": "Appliquer un traitement sur le workflow",
 		"back": "Retour",
 		"create": "Créer le workflow",
 		"id": "Identifiant du workflow",
-		"input_and_process": "Entrée & traitement",
+		"input": "Entrée",
+		"input_folder_ok": "Le chemin d'accès au dossier d'entrée est correct et est accessible",
 		"label": "Libellé du workflow",
 		"next": "Suivant",
+		"no_rotation": "Aucune rotation",
 		"output": "Sortie",
+		"process": "Traitement",
+		"rotate_180": "Rotation de 180°",
+		"rotate_45": "Rotation de 45°",
+		"rotate_90": "Rotation de 90°",
+		"rotation": "Rotation des documents",
 		"separation": "Séparation",
+		"test_input_folder": "Vérifier si le dossier d'entrée existe et est accessible",
 		"update": "Mettre à jour le workflow"
 	}
 }

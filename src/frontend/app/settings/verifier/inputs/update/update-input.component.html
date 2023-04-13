@@ -21,9 +21,9 @@
                 <ng-container *ngFor="let field of this.inputForm">
                     <mat-form-field class="block" *ngIf="field.type === 'text'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field.control" [readonly]="field.disabled"
+                        <input matInput [formControl]="field['control']" [readonly]="field.disabled"
                                [type]="field.type" placeholder="{{ field.placeholder | translate }}"
-                               [required]="field.required">
+                               [required]="field['required']">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                         <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
                               [matTooltip]="field.hint">
@@ -32,7 +32,7 @@
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [formControl]="field.control" [(value)]="field.control.value" [required]="field.required">
+                        <mat-select [formControl]="field['control']" [(value)]="field.control.value" [required]="field['required']">
                             <mat-option *ngFor="let option of field.values" [value]="option['id']">
                                 <span *ngIf="option['label']">
                                     {{ option['label'] | translate }}
@@ -53,7 +53,7 @@
             <div class="grid grid-cols-3 gap-4 w-auto m-10 text-center">
                 <ng-container *ngFor="let field of this.inputForm">
                     <div *ngIf="field.type === 'boolean'">
-                        <mat-slide-toggle [formControl]="field.control" class="relative top-4 mb-10 col-span-2">
+                        <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2">
                             <span class="justify-center">{{ field.label | translate }}</span>
                         </mat-slide-toggle>
                     </div>
@@ -61,10 +61,10 @@
             </div>
         </form>
         <div class="flex justify-center items-center">
-            <button (click)="onSubmit()" mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+            <button (click)="onSubmit()" mat-button class="valid_button">
                 <span>{{ "INPUT.update" | translate }}</span>
             </button>
-            <button (click)="createScriptAndIncron()" mat-button class="p-6 ml-4 border-solid border-gray-900 border bg-gray-900 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+            <button (click)="createScriptAndIncron()" mat-button class="ml-4 gray_button">
                 <span>{{ "INPUT.update_script_and_watcher" | translate }}</span>
             </button>
         </div>

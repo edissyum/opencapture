@@ -44,7 +44,7 @@
                         <mat-form-field *ngIf="field.type === 'text'">
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <input matInput [formControlName]="field.id" [type]="field.type"
-                                   [placeholder]="field.placeholder" [required]="field.required">
+                                   [placeholder]="field.placeholder" [required]="field['required']">
                             <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
                             <mat-error *ngIf="form.get(field.id)!.hasError('required')">{{ 'AUTH.field_required' | translate }}</mat-error>
                         </mat-form-field>

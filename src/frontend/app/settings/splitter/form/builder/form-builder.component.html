@@ -168,12 +168,10 @@
                 </div>
             </ng-container>
             <div class="flex justify-center items-center">
-                <button *ngIf="creationMode" (click)="createForm()" mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
-                transition duration-300">
+                <button *ngIf="creationMode" (click)="createForm()" mat-button class="valid_button">
                     <span class="block">{{ "FORMS.create" | translate }}</span>
                 </button>
-                <button *ngIf="!creationMode" (click)="updateForm()" mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
-                transition duration-300">
+                <button *ngIf="!creationMode" (click)="updateForm()" mat-button class="valid_button">
                     <span class="block">{{ "FORMS.modify" | translate }}</span>
                 </button>
             </div>

@@ -21,7 +21,7 @@
                 <ng-container *ngFor="let field of roleForm">
                     <mat-form-field *ngIf="field.type === 'text'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                        <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field['required']">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                     </mat-form-field>
                 </ng-container>
@@ -44,7 +44,7 @@
             </mat-tab-group>
         </div>
         <div class="flex justify-center items-center mt-10">
-            <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300" (click)="onSubmit()" mat-button>
+            <button class="valid_button" (click)="onSubmit()" mat-button>
                 {{ 'ROLE.create_role' | translate }}
             </button>
         </div>

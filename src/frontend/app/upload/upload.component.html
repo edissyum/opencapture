@@ -44,7 +44,7 @@
                     [class.bg-opacity-40]="this.error || !(!this.sending && this.selectedInput && this.fileControl.value!.length !== 0)"
                     [class.text-white]="!this.error && !this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
                     [class.hover:text-gray-900]="!this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
-                    class="p-6 border-solid border-green-400 border bg-green-400 text-sm font-medium transition duration-300">
+                    class="valid_button">
                 {{ 'UPLOAD.upload_file' | translate }}
             </button>
         </div>

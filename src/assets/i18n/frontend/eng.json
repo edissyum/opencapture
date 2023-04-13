@@ -1091,14 +1091,23 @@
 		"viewer": "View PDF"
 	},
 	"WORKFLOW": {
+		"apply_process": "Apply process to the workflow",
 		"back": "Back",
 		"create": "Create workflow",
 		"id": "Workflow identifier",
-		"input_and_process": "Input and process",
+		"input": "Input",
+		"input_folder_ok": "The input folder exists and is writable",
 		"label": "Workflow label",
 		"next": "Next",
+		"no_rotation": "No rotation",
 		"output": "Output",
+		"process": "Process",
+		"rotate_180": "Rotate 180°",
+		"rotate_45": "Rotate 45°",
+		"rotate_90": "Rotate 90°",
+		"rotation": "Document rotation",
 		"separation": "Separation",
-		"update": "Update workflow",
+		"test_input_folder": "Verify if input folder exists and is writable",
+		"update": "Update workflow"
 	}
 }

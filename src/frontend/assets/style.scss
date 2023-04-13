@@ -35,6 +35,35 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
     @apply bg-transparent #{!important};
 }
 
+/*** Design principal button ***/
+
+.valid_button {
+    @apply p-6 #{!important};
+    @apply border-solid #{!important};
+    @apply border-green-400 #{!important};
+    @apply border #{!important};
+    @apply bg-green-400 #{!important};
+    @apply text-white #{!important};
+    @apply hover:bg-transparent #{!important};
+    @apply hover:text-gray-900 #{!important};
+    @apply transition #{!important};
+    @apply duration-300 #{!important};
+}
+
+.gray_button {
+    @apply p-6 #{!important};
+    @apply mr-4 #{!important};
+    @apply border-solid #{!important};
+    @apply border-gray-900 #{!important};
+    @apply border #{!important};
+    @apply bg-gray-900 #{!important};
+    @apply text-white #{!important};
+    @apply hover:bg-transparent #{!important};
+    @apply hover:text-gray-900 #{!important};
+    @apply transition #{!important};
+    @apply duration-300 #{!important};
+}
+
 /*** Image area select ***/
 
 .select-areas-overlay {

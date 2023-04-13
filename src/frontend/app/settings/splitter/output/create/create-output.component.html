@@ -21,12 +21,12 @@
                 <ng-container *ngFor="let field of outputForm">
                     <mat-form-field *ngIf="field.type === 'text'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                        <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field['required']">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
                     </mat-form-field>
                     <mat-form-field *ngIf="field.type === 'select' && field.id === 'output_type_id'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value" (selectionChange)="changeOutputType($event)" [required]="field.required">
+                        <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value" (selectionChange)="changeOutputType($event)" [required]="field['required']">
                             <mat-option *ngFor="let option of outputsTypes" [value]="option.output_type_id">
                                 {{ option.output_type_label }}
                             </mat-option>
@@ -47,7 +47,7 @@
             </form>
         </div>
         <div class="flex justify-center items-center mb-2">
-            <button (click)="createOutput()" mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+            <button (click)="createOutput()" mat-button class="valid_button">
                 <span class="block">{{ "OUTPUT.create" | translate }}</span>
             </button>
         </div>

@@ -243,11 +243,11 @@
                 </ng-container>
             </div>
             <div class="flex justify-center items-center mb-2">
-                <button mat-button class="w-56 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                <button mat-button class="w-56 valid_button"
                         (click)="createForm()" *ngIf="this.creationMode">
                         {{ "FORMS.create" | translate }}
                 </button>
-                <button mat-button class="min-w-56 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                <button mat-button class="min-w-56 valid_button"
                         (click)="updateForm()" *ngIf="!this.creationMode">
                         <span *ngIf="!this.updateFormLoading">{{ "FORMS.modify" | translate }}</span>
                         <i *ngIf="this.updateFormLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>

@@ -26,7 +26,7 @@
                     <ng-container *ngFor="let field of outputForm">
                         <mat-form-field *ngIf="field.type === 'text'">
                             <mat-label>{{ field.label | translate }}</mat-label>
-                            <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                            <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field['required']">
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
                         </mat-form-field>
                         <mat-form-field *ngIf="field.type === 'select' && field.id === 'output_type_id'">
@@ -53,7 +53,7 @@
             <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
             <h4 class="text-center mt-10 mb-5">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
             <div class="flex justify-center items-center mb-2">
-                <button (click)="updateOutput()" mat-button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+                <button (click)="updateOutput()" mat-button class="valid_button">
                     <span class="block">{{ "OUTPUT.update" | translate }}</span>
                 </button>
             </div>
@@ -68,15 +68,15 @@
                                 <ng-container *ngFor="let field of this.outputsTypesForm[selectedOutputType]['auth']">
                                     <mat-form-field *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'password'">
                                         <mat-label>{{ field.label | translate }}</mat-label>
-                                        <input matInput [value]="field.control.value" [formControl]="field.control"
-                                               [type]="field.type" [placeholder]="field.placeholder" [required]="field.required">
+                                        <input matInput [value]="field.control.value" [formControl]="field['control']"
+                                               [type]="field.type" [placeholder]="field.placeholder" [required]="field['required']">
                                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['auth']) }}</mat-error>
                                     </mat-form-field>
                                 </ng-container>
                             </div>
                             <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length !== 0"
                                     (click)="testConnection()" mat-button
-                                    class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+                                    class="valid_button">
                                 <span>{{ "OUTPUT.test_connection" | translate }}</span>
                             </button>
                         </mat-tab>
@@ -88,8 +88,8 @@
                                 <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]['parameters']">
                                     <mat-form-field *ngIf="(field.type === 'text' || field.type === 'number') && !field.webservice">
                                         <mat-label>{{ field.label | translate }}</mat-label>
-                                        <input matInput [value]="field.control.value" [formControl]="field.control"
-                                               [type]="field.type" [placeholder]="field.placeholder" [required]="field.required">
+                                        <input matInput [value]="field.control.value" [formControl]="field['control']"
+                                               [type]="field.type" [placeholder]="field.placeholder" [required]="field['required']">
                                         <mat-error *ngIf="field.control.invalid">
                                             {{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}
                                         </mat-error>
@@ -101,8 +101,8 @@
                                     <mat-form-field *ngIf="(field.type === 'textarea') && !field.webservice">
                                         <mat-label>{{ field.label | translate }}</mat-label>
                                         <textarea cdkTextareaAutosize cdkAutosizeMinRows="1" matInput [value]="field.control.value"
-                                                  [formControl]="field.control" [type]="field.type" [placeholder]="field.placeholder"
-                                                  [required]="field.required"></textarea>
+                                                  [formControl]="field['control']" [type]="field.type" [placeholder]="field.placeholder"
+                                                  [required]="field['required']"></textarea>
                                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
                                         <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
                                               [matTooltip]="field.hint">
@@ -111,9 +111,9 @@
                                     </mat-form-field>
                                     <mat-form-field (focusin)="retrieveDataFromWS(field.id)" *ngIf="(field.type === 'text' || field.type === 'number') && field.webservice">
                                         <mat-label>{{ field.label | translate }}</mat-label>
-                                        <input matInput [formControl]="field.control" [type]="field.type"
+                                        <input matInput [formControl]="field['control']" [type]="field.type"
                                                [readonly]="field.webservice && !this.connection"
-                                               [placeholder]="field.placeholder" [required]="field.required" [matAutocomplete]="autocomplete">
+                                               [placeholder]="field.placeholder" [required]="field['required']" [matAutocomplete]="autocomplete">
                                         <mat-error *ngIf="field.webservice && !this.connection">
                                             {{ 'OUTPUT.check_connection_before' | translate }}
                                         </mat-error>
@@ -135,7 +135,7 @@
                             <app-hint [message]="'OUTPUT.links_hint' | translate" [specificClass]="'w-3/4'"></app-hint>
                             <div class="flex justify-center m-10">
                                 <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]['links']">
-                                    <mat-slide-toggle *ngIf="field.type === 'boolean'" [formControl]="field.control">
+                                    <mat-slide-toggle *ngIf="field.type === 'boolean'" [formControl]="field['control']">
                                         {{ field.label | translate }}
                                     </mat-slide-toggle>
                                 </ng-container>
@@ -144,9 +144,9 @@
                                 <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]['links']">
                                     <mat-form-field *ngIf="(field.type === 'text' || field.type === 'number') && !field.webservice">
                                         <mat-label>{{ field.label | translate }}</mat-label>
-                                        <input matInput [value]="field.control.value" [formControl]="field.control"
+                                        <input matInput [value]="field.control.value" [formControl]="field['control']"
                                                [type]="field.type" [placeholder]="field.placeholder"
-                                               [required]="field.required">
+                                               [required]="field['required']">
                                         <mat-error *ngIf="field.control.invalid">
                                             {{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['links']) }}
                                         </mat-error>
@@ -157,9 +157,9 @@
                                     </mat-form-field>
                                     <mat-form-field (focusin)="retrieveDataFromWS(field.id, 'links')" *ngIf="(field.type === 'text' || field.type === 'number') && field.webservice">
                                         <mat-label>{{ field.label | translate }}</mat-label>
-                                        <input matInput [formControl]="field.control" [type]="field.type"
+                                        <input matInput [formControl]="field['control']" [type]="field.type"
                                                [readonly]="field.webservice && !this.connection"
-                                               [placeholder]="field.placeholder" [required]="field.required" [matAutocomplete]="autocomplete">
+                                               [placeholder]="field.placeholder" [required]="field['required']" [matAutocomplete]="autocomplete">
                                         <mat-error *ngIf="field.webservice && !this.connection">{{ 'OUTPUT.check_connection_before' | translate }}</mat-error>
                                         <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
                                               [matTooltip]="field.hint">
