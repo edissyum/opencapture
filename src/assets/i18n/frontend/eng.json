@@ -439,6 +439,7 @@
 		"delete-supplier": "Supplier deleted&nbsp;<strong>{{ supplier }}</strong>",
 		"delete-supplier-positions": "Supplier positions deleted&nbsp;<strong>{{ supplier }}</strong>",
 		"delete-user": "User deleted&nbsp;<strong>{{ user }}</strong>",
+		"delete-workflow": "Workflow deleted&nbsp;<strong>{{ workflow }}</strong>",
 		"delete_batch": "Batch deleted&nbsp;<strong>{{ batch_id }}</strong>",
 		"delete_document": "Document deleted&nbsp;<strong>{{ document_id }}</strong>",
 		"disable-form": "Form disabled&nbsp;<strong>{{ form }}</strong>",
@@ -451,6 +452,7 @@
 		"duplicate-mailcollect-process": "MailCollect process duplicated&nbsp;<strong>{{ process }}</strong>",
 		"duplicate-output": "Output duplicated&nbsp;<strong>{{ output }}</strong>",
 		"duplicate-positions-masks": "Positions mask duplicated&nbsp;<strong>{{ positions_masks }}</strong>",
+		"duplicate-workflow": "Workflow duplicated&nbsp;<strong>{{ workflow }}</strong>",
 		"enable-form": "Form enabled&nbsp;<strong>{{ form }}</strong>",
 		"enable-mailcollect-process": "MailCollect process enabled&nbsp;<strong>{{ process }}</strong>",
 		"enable-user": "User enabled&nbsp;<strong>{{ user }}</strong>",
@@ -1093,7 +1095,10 @@
 	"WORKFLOW": {
 		"apply_process": "Apply process to the workflow",
 		"back": "Back",
+		"confirm_delete": "Are you sure you want to delete workflow <strong>{{ workflow }}</strong> ?",
+		"confirm_duplicate": "Are you sure you want to duplicate workflow <strong>{{ workflow }}</strong> ?",
 		"create": "Create workflow",
+		"duplicate": "Duplicate workflow",
 		"id": "Workflow identifier",
 		"input": "Input",
 		"input_folder_ok": "The input folder exists and is writable",
@@ -1108,6 +1113,9 @@
 		"rotation": "Document rotation",
 		"separation": "Separation",
 		"test_input_folder": "Verify if input folder exists and is writable",
-		"update": "Update workflow"
+		"update": "Update workflow",
+		"validate_using_interface": "Validate using interface",
+		"workflow_deleted": "Workflow deleted successfully",
+		"workflow_duplicated": "Workflow duplicated successfully"
 	}
 }

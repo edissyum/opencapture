@@ -21,16 +21,16 @@ from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
-def get_inputs(args):
+def get_workflows(args):
     if 'database' in current_context:
         database = current_context.database
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
-    _inputs = database.select({
+    _workflows = database.select({
         'select': ["*"] if "select" not in args else args["select"],
-        'table': ["inputs"],
+        'table': ["workflows"],
         'where': args['where'],
         'data': [] if "data" not in args else args["data"],
         'order_by': ["id ASC"],
@@ -38,10 +38,10 @@ def get_inputs(args):
         'offset': str(args['offset']) if 'offset' in args else 0,
     })
 
-    return _inputs
+    return _workflows
 
 
-def get_input_by_id(args):
+def get_workflow_by_id(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -49,63 +49,22 @@ def get_input_by_id(args):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
     error = None
-    _input = database.select({
+    _workflow = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['inputs'],
+        'table': ['workflows'],
         'where': ['id = %s'],
-        'data': [args['input_id']]
+        'data': [args['workflow_id']]
     })
 
-    if not _input:
-        error = gettext('INPUT_DOESNT_EXISTS')
+    if not _workflow:
+        error = gettext('WORKFLOW_DOESNT_EXISTS')
     else:
-        _input = _input[0]
+        _workflow = _workflow[0]
 
-    return _input, error
-
-
-def get_input_by_input_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
-    error = None
-    _input = database.select({
-        'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['inputs'],
-        'where': ['input_id = %s'],
-        'data': [args['input_id']]
-    })
-
-    if not _input:
-        error = gettext('INPUT_DOESNT_EXISTS')
-    else:
-        _input = _input[0]
-
-    return _input, error
+    return _workflow, error
 
 
-def get_input_by_form_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
-    error = None
-    _input = database.select({
-        'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['inputs'],
-        'where': ['default_form_id = %s', 'status <> %s'],
-        'data': [args['form_id'], 'DEL']
-    })
-
-    return _input, error
-
-
-def update_input(args):
+def create_workflow(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -114,34 +73,34 @@ def update_input(args):
         database = _vars[0]
     error = None
 
-    _input = database.update({
-        'table': ['inputs'],
-        'set': args['set'],
-        'where': ['id = %s'],
-        'data': [args['input_id']]
-    })
-
-    if _input[0] is False:
-        error = gettext('INPUT_UPDATE_ERROR')
-
-    return _input, error
-
-
-def create_input(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
-    error = None
-
-    _input = database.insert({
-        'table': 'inputs',
+    _workflow = database.insert({
+        'table': 'workflows',
         'columns': args['columns'],
     })
 
     if not input:
-        error = gettext('INPUT_CREATE_ERROR')
+        error = gettext('WORKFLOW_CREATE_ERROR')
 
-    return _input, error
+    return _workflow, error
+
+
+def update_workflow(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+
+    _workflow = database.update({
+        'table': ['workflows'],
+        'set': args['set'],
+        'where': ['id = %s'],
+        'data': [args['workflow_id']]
+    })
+
+    if _workflow[0] is False:
+        error = gettext('WORKFLOW_UPDATE_ERROR')
+
+    return _workflow, error

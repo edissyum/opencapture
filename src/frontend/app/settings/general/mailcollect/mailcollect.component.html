@@ -59,8 +59,7 @@
                         </ng-container>
                     </div>
                     <div class="w-full text-center mb-4">
-                        <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
-                                        transition duration-300" type="submit" mat-button (click)="updateGlobal()">
+                        <button class="valid_button" type="submit" mat-button (click)="updateGlobal()">
                             {{ 'MAILCOLLECT.update_global' | translate }}
                         </button>
                     </div>
@@ -198,14 +197,12 @@
                     </div>
                     <div class="mb-6 grid grid-cols-6 gap-4 h-10 mt-8">
                         <button *ngIf="process.exists" mat-button (click)="updateProcess(process)"
-                                class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
-                                    transition duration-300 col-start-3">
+                                class="valid_button col-start-3">
                             <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.update_process' | translate }}</span>
                             <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                         </button>
                         <button *ngIf="!process.exists" mat-button (click)="createProcess(process)"
-                                class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
-                                    transition duration-300">
+                                class="valid_button">
                             <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.create_process' | translate }}</span>
                             <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                         </button>

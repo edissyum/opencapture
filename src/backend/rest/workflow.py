@@ -34,3 +34,52 @@ def verify_input_folder(module):
     data = json.loads(request.data)
     res = workflow.verify_input_folder(data)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('workflows/<string:module>/list', methods=['GET'])
+@auth.token_required
+def get_workflows(module):
+    list_priv = ['settings', 'workflows_list'] if module == 'verifier' else ['settings', 'workflows_list_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/workflows/{module}/list'}), 403
+
+    args = dict(request.args)
+    args['module'] = module
+    _workflows = workflow.get_workflows(args)
+    return make_response(jsonify(_workflows[0])), _workflows[1]
+
+
+@bp.route('workflows/<string:module>/getById/<int:workflow_id>', methods=['GET'])
+@auth.token_required
+def get_form_by_id(workflow_id, module):
+    list_priv = ['settings', 'update_workflow'] if module == 'verifier' else ['settings', 'update_workflow_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/workflow/{module}/getById/{workflow_id}'}), 403
+
+    _form = workflow.get_workflow_by_id(workflow_id)
+    return make_response(jsonify(_form[0])), _form[1]
+
+
+@bp.route('workflows/<string:module>/duplicate/<int:workflow_id>', methods=['POST'])
+@auth.token_required
+def duplicate_workflow(module, workflow_id):
+    list_priv = ['settings', 'update_workflow'] if module == 'verifier' else ['settings', 'update_workflow_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/workflows/{module}/duplicate/{workflow_id}'}), 403
+
+    res = workflow.duplicate_workflow(workflow_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('workflows/<string:module>/delete/<int:workflow_id>', methods=['DELETE'])
+@auth.token_required
+def delete_workflow(module, workflow_id):
+    list_priv = ['settings', 'update_workflow'] if module == 'verifier' else ['settings', 'update_workflow_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/workflows/{module}/delete/{workflow_id}'}), 403
+
+    res = workflow.delete_workflow(workflow_id)
+    return make_response(jsonify(res[0])), res[1]

@@ -439,6 +439,7 @@
 		"delete-supplier": "Suppression du compte fournisseur&nbsp;<strong>{{ supplier }}</strong>",
 		"delete-supplier-positions": "Suppression des positions du compte fournisseur&nbsp;<strong>{{ supplier }}</strong>",
 		"delete-user": "Suppression de l'utilisateur&nbsp;<strong>{{ user }}</strong>",
+		"delete-workflow": "Suppression du workflow&nbsp;<strong>{{ workflow }}</strong>",
 		"delete_batch": "Suppression du lot n°&nbsp;<strong>{{ batch_id }}</strong>",
 		"delete_document": "Suppression du document n°&nbsp;<strong>{{ document_id }}</strong>",
 		"disable-form": "Désactivation du formulaire&nbsp;<strong>{{ form }}</strong>",
@@ -451,6 +452,7 @@
 		"duplicate-mailcollect-process": "Duplication du process MailCollect&nbsp;<strong>{{ process }}</strong>",
 		"duplicate-output": "Duplication de la chaîne sortante&nbsp;<strong>{{ output }}</strong>",
 		"duplicate-positions-masks": "Duplication du masque de positionnement&nbsp;<strong>{{ positions_masks }}</strong>",
+		"duplicate-workflow": "Duplication du workflow&nbsp;<strong>{{ workflow }}</strong>",
 		"enable-form": "Activation du formulaire&nbsp;<strong>{{ form }}</strong>",
 		"enable-mailcollect-process": "Activation du processus MailCollect&nbsp;<strong>{{ process }}</strong>",
 		"enable-user": "Activation de l'utilisateur&nbsp;<strong>{{ user }}</strong>",
@@ -1093,7 +1095,10 @@
 	"WORKFLOW": {
 		"apply_process": "Appliquer un traitement sur le workflow",
 		"back": "Retour",
+		"confirm_delete": "Êtes-vous sûr de vouloir supprimer le workflow <strong>{{ workflow }}</strong> ?",
+		"confirm_duplicate": "Êtes-vous sûr de vouloir dupliquer le workflow <strong>{{ workflow }}</strong> ?",
 		"create": "Créer le workflow",
+		"duplicate": "Dupliquer le workflow",
 		"id": "Identifiant du workflow",
 		"input": "Entrée",
 		"input_folder_ok": "Le chemin d'accès au dossier d'entrée est correct et est accessible",
@@ -1108,6 +1113,9 @@
 		"rotation": "Rotation des documents",
 		"separation": "Séparation",
 		"test_input_folder": "Vérifier si le dossier d'entrée existe et est accessible",
-		"update": "Mettre à jour le workflow"
+		"update": "Mettre à jour le workflow",
+		"validate_using_interface": "Valider les données en utilisant l'interface",
+		"workflow_deleted": "Workflow supprimé avec succès",
+		"workflow_duplicated": "Workflow dupliqué avec succès"
 	}
 }

@@ -97,15 +97,15 @@ export class WorkflowBuilderComponent implements OnInit {
                         'label': this.translate.instant('WORKFLOW.no_rotation'),
                     },
                     {
-                        'id': '45',
+                        'id': 45,
                         'label': this.translate.instant('WORKFLOW.rotate_45')
                     },
                     {
-                        'id': '90',
+                        'id': 90,
                         'label': this.translate.instant('WORKFLOW.rotate_90')
                     },
                     {
-                        'id': '180',
+                        'id': 180,
                         'label': this.translate.instant('WORKFLOW.rotate_180')
                     }
                 ]
@@ -171,6 +171,31 @@ export class WorkflowBuilderComponent implements OnInit {
         this.workflowId = this.route.snapshot.params['id'];
         if (this.workflowId) {
             this.creationMode = false;
+            this.http.get(environment['url'] + '/ws/workflows/verifier/getById/' + this.workflowId, {headers: this.authService.headers}).pipe(
+                tap((workflow: any) => {
+                    this.idControl.setValue(workflow.workflow_id);
+                    this.nameControl.setValue(workflow.label);
+                    Object.keys(this.fields).forEach((parent: any) => {
+                        this.fields[parent].forEach((field: any) => {
+                            if (workflow[parent][field.id]) {
+                                let value = workflow[parent][field.id];
+                                if (parseInt(workflow[parent][field.id])) {
+                                    value = parseInt(workflow[parent][field.id]);
+                                }
+                                if (workflow[parent][field.id] === 'true' || workflow[parent][field.id] === 'false' ) {
+                                    value = workflow[parent][field.id] === 'true';
+                                }
+                                field.control.setValue(value);
+                            }
+                        });
+                    });
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
         }
 
         this.http.get(environment['url'] + '/ws/accounts/customers/list/verifier', {headers: this.authService.headers}).pipe(
@@ -260,7 +285,7 @@ export class WorkflowBuilderComponent implements OnInit {
             return !this.stepValid['input'];
         }
         if (step === 'separation') {
-            return !this.stepValid['process'] || !this.stepValid['input'];
+            return !this.stepValid['input'] || (this.processAllowed && !this.stepValid['process']);
         }
         if (step === 'output') {
             return !this.stepValid['separation'] && (!this.stepValid['process'] || !this.stepValid['input']);

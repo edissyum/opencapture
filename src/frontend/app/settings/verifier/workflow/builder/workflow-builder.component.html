@@ -17,10 +17,12 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div class="my-4 w-full p-2">
-            <mat-form-field class="p-2 w-4/12" [class.pointer-events-none]="!this.creationMode">
-                <mat-label>{{ 'WORKFLOW.id' | translate }}</mat-label>
-                <input matInput [formControl]="this.idControl" type="text" [readonly]="!this.creationMode">
-            </mat-form-field>
+            <span class="inline-block p-2 w-4/12" [class.cursor-not-allowed]="!this.creationMode">
+                <mat-form-field class="w-full" [class.pointer-events-none]="!this.creationMode">
+                    <mat-label>{{ 'WORKFLOW.id' | translate }}</mat-label>
+                    <input [class.text-gray-400]="!this.creationMode" matInput [formControl]="this.idControl" type="text" [readonly]="!this.creationMode">
+                </mat-form-field>
+            </span>
             <mat-form-field class="p-2 w-8/12">
                 <mat-label>{{ 'WORKFLOW.label' | translate }}</mat-label>
                 <input matInput [formControl]="this.nameControl" type="text">

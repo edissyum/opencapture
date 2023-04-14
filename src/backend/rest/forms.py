@@ -39,7 +39,7 @@ def get_forms(module):
 @bp.route('forms/<string:module>/getById/<int:form_id>', methods=['GET'])
 @auth.token_required
 def get_form_by_id(form_id, module):
-    list_priv = ['settings', 'forms_list'] if module == 'verifier' else ['settings', 'forms_list_splitter']
+    list_priv = ['access_verifier | update_form'] if module == 'verifier' else ['access_splitter | update_form_splitter']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/getById/{form_id}'}), 403
 
