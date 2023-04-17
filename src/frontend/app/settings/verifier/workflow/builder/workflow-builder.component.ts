@@ -18,8 +18,8 @@
 import { Component, OnInit } from '@angular/core';
 import { STEPPER_GLOBAL_OPTIONS } from "@angular/cdk/stepper";
 import { SettingsService } from "../../../../../services/settings.service";
-import {FormControl} from "@angular/forms";
-import {ActivatedRoute} from "@angular/router";
+import {FormControl, Validators} from "@angular/forms";
+import {ActivatedRoute, Router} from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
 import {environment} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
@@ -50,8 +50,8 @@ export class WorkflowBuilderComponent implements OnInit {
         separation: false,
         output: false
     };
-    idControl       : FormControl   = new FormControl();
-    nameControl     : FormControl   = new FormControl();
+    idControl       : FormControl   = new FormControl('', Validators.required);
+    nameControl     : FormControl   = new FormControl('', Validators.required);
     fields          : any           = {
         input : [
             {
@@ -146,14 +146,11 @@ export class WorkflowBuilderComponent implements OnInit {
                 ]
             },
         ],
-        output: [
-            {
-
-            }
-        ]
+        output: []
     };
 
     constructor(
+        private router: Router,
         private http: HttpClient,
         private route: ActivatedRoute,
         private authService: AuthService,
@@ -253,7 +250,7 @@ export class WorkflowBuilderComponent implements OnInit {
 
     checkFolder(field: any) {
         if (field && field.control.value) {
-            this.http.post(environment['url'] + '/ws/workflow/verifier/verifyInputFolder',
+            this.http.post(environment['url'] + '/ws/workflows/verifier/verifyInputFolder',
                 {'input_folder': field.control.value}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     field.control.setErrors();
@@ -291,5 +288,66 @@ export class WorkflowBuilderComponent implements OnInit {
             return !this.stepValid['separation'] && (!this.stepValid['process'] || !this.stepValid['input']);
         }
         return false;
+    }
+
+    updateWorkflow() {
+        const workflow: any = {
+            workflow_id: this.idControl.value,
+            label: this.nameControl.value,
+            input: {},
+            process: {},
+            separation: {},
+            output: {}
+        };
+        Object.keys(this.fields).forEach((parent: any) => {
+            this.fields[parent].forEach((field: any) => {
+                if (field.control.value) {
+                    workflow[parent][field.id] = field.control.value;
+                }
+            });
+        });
+        this.http.put(environment['url'] + '/ws/workflows/verifier/update/' + this.workflowId, {'args': workflow}, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('WORKFLOW.workflow_updated'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    saveWorkflow() {
+        const workflow: any = {
+            workflow_id: this.idControl.value,
+            label: this.nameControl.value,
+            input: {},
+            process: {},
+            separation: {},
+            output: {}
+        };
+        if (this.idControl.value && this.nameControl.value) {
+            Object.keys(this.fields).forEach((parent: any) => {
+                this.fields[parent].forEach((field: any) => {
+                    if (field.control.value) {
+                        workflow[parent][field.id] = field.control.value;
+                    }
+                });
+            });
+
+            this.http.post(environment['url'] + '/ws/workflows/verifier/create', {'args': workflow}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.notify.success(this.translate.instant('WORKFLOW.workflow_created'));
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        } else {
+            this.notify.error(this.translate.instant('WORKFLOW.workflow_id_and_name_required'));
+        }
     }
 }

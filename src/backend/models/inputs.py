@@ -141,7 +141,7 @@ def create_input(args):
         'columns': args['columns'],
     })
 
-    if not input:
+    if not _input:
         error = gettext('INPUT_CREATE_ERROR')
 
     return _input, error

@@ -78,7 +78,7 @@ def create_workflow(args):
         'columns': args['columns'],
     })
 
-    if not input:
+    if not _workflow:
         error = gettext('WORKFLOW_CREATE_ERROR')
 
     return _workflow, error

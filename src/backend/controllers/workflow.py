@@ -1,5 +1,5 @@
 # This file is part of Open-Capture.
-import json
+
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -16,8 +16,11 @@ import json
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import json
+from flask import request, g as current_context
 from flask_babel import gettext
 from src.backend.import_models import workflow
+from src.backend import retrieve_custom_from_url, create_classes_from_custom_id
 
 
 def get_workflows(args):
@@ -102,12 +105,111 @@ def duplicate_workflow(workflow_id):
         return response, 400
 
 
+def is_path_allowed(input_path):
+    custom_id = retrieve_custom_from_url(request)
+    if 'docservers' in current_context and 'configuration' in current_context:
+        docservers = current_context.docservers
+        configurations = current_context.configuration
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+        configurations = _vars[10]
+
+    if 'INPUTS_ALLOWED_PATH' in docservers and input_path and 'restrictInputsPath' in configurations and configurations['restrictInputsPath']:
+        return input_path.startswith(docservers['INPUTS_ALLOWED_PATH'])
+    else:
+        return True
+
+
+def create_workflow(data):
+    if not is_path_allowed(data['input']['input_folder']):
+        response = {
+            "errors": gettext('CREATE_WORKFLOW_ERROR'),
+            "message": gettext('NOT_ALLOWED_INPUT_PATH')
+        }
+        return response, 400
+
+    workflow_info, error = get_workflows({
+        'where': ['module = %s', 'workflow_id = %s'],
+        'data': [data['module'], data['workflow_id']]
+    })
+
+    if workflow_info['workflows']:
+        response = {
+            "errors": gettext('CREATE_WORKFLOW_ERROR'),
+            "message": gettext('WORKFLOW_ID_ALREADY_EXISTS')
+        }
+        return response, 400
+
+    workflow_info, error = get_workflows({
+        'where': ['input_folder = %s', 'module = %s', 'status <> %s'],
+        'data': [data['input']['input_folder'], data['module'], 'DEL']
+    })
+    if workflow_info['workflows']:
+        response = {
+            "errors": gettext('CREATE_WORKFLOW_ERROR'),
+            "message": gettext('INPUT_FOLDER_ALREADY_EXISTS')
+        }
+        return response, 400
+
+    data['input'] = json.dumps(data['input'])
+    data['process'] = json.dumps(data['process'])
+    data['separation'] = json.dumps(data['separation'])
+    data['output'] = json.dumps(data['output'])
+
+    res, error = workflow.create_workflow({'columns': data})
+    if error is None:
+        response = {
+            "id": res
+        }
+        return response, 200
+    else:
+        response = {
+            "errors": gettext('CREATE_WORKFLOW_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400
+
+
+def update_workflow(workflow_id, data):
+    if not is_path_allowed(data['input']['input_folder']):
+        response = {
+            "errors": gettext('UPDATE_WORKFLOW_ERROR'),
+            "message": gettext('NOT_ALLOWED_INPUT_PATH')
+        }
+        return response, 400
+
+    _, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
+
+    if error is None:
+        data['input'] = json.dumps(data['input'])
+        data['process'] = json.dumps(data['process'])
+        data['separation'] = json.dumps(data['separation'])
+        data['output'] = json.dumps(data['output'])
+        _, error = workflow.update_workflow({'set': data, 'workflow_id': workflow_id})
+
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_WORKFLOW_ERROR'),
+                "message": gettext(error)
+            }
+            return response, 400
+    else:
+        response = {
+            "errors": gettext('UPDATE_WORKFLOW_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400
+
+
 def delete_workflow(workflow_id):
-    input_info, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
+    workflow_info, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
     if error is None:
         _, error = workflow.update_workflow({'set': {'status': 'DEL'}, 'workflow_id': workflow_id})
         if error is None:
-            # delete_script_and_incron(input_info)
+            # delete_script_and_incron(workflow_info)
             return '', 200
         else:
             response = {

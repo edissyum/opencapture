@@ -1115,7 +1115,9 @@
 		"test_input_folder": "Vérifier si le dossier d'entrée existe et est accessible",
 		"update": "Mettre à jour le workflow",
 		"validate_using_interface": "Valider les données en utilisant l'interface",
+		"workflow_created": "Workflow créé avec succès",
 		"workflow_deleted": "Workflow supprimé avec succès",
-		"workflow_duplicated": "Workflow dupliqué avec succès"
+		"workflow_duplicated": "Workflow dupliqué avec succès",
+		"workflow_updated": "Workflow mis à jour avec succès"
 	}
 }

@@ -1115,7 +1115,9 @@
 		"test_input_folder": "Verify if input folder exists and is writable",
 		"update": "Update workflow",
 		"validate_using_interface": "Validate using interface",
+		"workflow_created": "Workflow created successfully",
 		"workflow_deleted": "Workflow deleted successfully",
-		"workflow_duplicated": "Workflow duplicated successfully"
+		"workflow_duplicated": "Workflow duplicated successfully",
+		"workflow_updated": "Workflow updated successfully"
 	}
 }
