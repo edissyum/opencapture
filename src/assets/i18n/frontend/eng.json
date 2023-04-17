@@ -507,6 +507,7 @@
 		"ai_model_id": "AI model associated",
 		"ai_model_id_hint": "The AI model allow preselection of form depending on document type. AI model will override default form if present",
 		"associated_customer": "Associated customer",
+		"c128_separation": "C128 separation",
 		"confirm_delete": "Are you sure you want to delete the input <strong>{{ input }}</strong> ?",
 		"confirm_duplicate": "Are you sure you want to duplicate input <strong>{{ input }}</strong> ?",
 		"create": "Create input",
@@ -525,7 +526,9 @@
 		"purchase_or_sale": "Invoice type",
 		"qr_code_separation": "QR code separation",
 		"remove_blank_pages": "Remove blank pages",
-		"separate_by_document": "separate by document (every other page)",
+		"separate_by_document": "Separate by document (every other page)",
+		"separate_by_document_number": "Separate by document number (X  pages)",
+		"separate_by_document_number_value": "Number of pages per document",
 		"splitter_method": "Split method",
 		"update": "Update input",
 		"update_script_and_watcher": "Update script and watcher",
@@ -1118,6 +1121,7 @@
 		"workflow_created": "Workflow created successfully",
 		"workflow_deleted": "Workflow deleted successfully",
 		"workflow_duplicated": "Workflow duplicated successfully",
+		"workflow_id_and_name_required": "Name and identifier are required",
 		"workflow_updated": "Workflow updated successfully"
 	}
 }

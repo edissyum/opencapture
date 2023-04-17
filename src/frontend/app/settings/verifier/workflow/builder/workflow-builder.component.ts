@@ -18,15 +18,15 @@
 import { Component, OnInit } from '@angular/core';
 import { STEPPER_GLOBAL_OPTIONS } from "@angular/cdk/stepper";
 import { SettingsService } from "../../../../../services/settings.service";
-import {FormControl, Validators} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {TranslateService} from "@ngx-translate/core";
-import {environment} from "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../../../../services/auth.service";
+import { FormControl, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { TranslateService } from "@ngx-translate/core";
+import { environment } from "../../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../../../../../services/auth.service";
 
 @Component({
     selector: 'app-workflow-builder',
@@ -43,6 +43,8 @@ export class WorkflowBuilderComponent implements OnInit {
     loading         : boolean       = true;
     creationMode    : boolean       = true;
     processAllowed  : boolean       = false;
+    useInterface    : boolean       = false;
+    separationMode  : string        = 'no_sep';
     workflowId      : any;
     stepValid       : any           = {
         input: false,
@@ -111,16 +113,18 @@ export class WorkflowBuilderComponent implements OnInit {
                 ]
             },
             {
-                id: 'remove_blank_pages',
-                label: this.translate.instant('INPUT.remove_blank_pages'),
-                type: 'boolean',
-                control: new FormControl()
-            },
-            {
                 id: 'validate_using_interface',
                 label: this.translate.instant('WORKFLOW.validate_using_interface'),
                 type: 'boolean',
                 control: new FormControl()
+            },
+            {
+                id: 'form_id',
+                label: this.translate.instant('POSITIONS-MASKS.form_associated'),
+                type: 'select',
+                control: new FormControl(),
+                required: false,
+                values: []
             }
         ],
         separation: [
@@ -129,7 +133,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 label: this.translate.instant('INPUT.splitter_method'),
                 type: 'select',
                 control: new FormControl(),
-                required: false,
+                required: true,
                 values: [
                     {
                         'id': 'no_sep',
@@ -140,11 +144,28 @@ export class WorkflowBuilderComponent implements OnInit {
                         'label': this.translate.instant('INPUT.qr_code_separation')
                     },
                     {
-                        'id': 'separate_by_document',
-                        'label': this.translate.instant('INPUT.separate_by_document')
+                        'id': 'c128_OC',
+                        'label': this.translate.instant('INPUT.c128_separation')
+                    },
+                    {
+                        'id': 'separate_by_document_number',
+                        'label': this.translate.instant('INPUT.separate_by_document_number')
                     }
                 ]
             },
+            {
+                id: 'separate_by_document_number_value',
+                label: this.translate.instant('INPUT.separate_by_document_number_value'),
+                type: 'number',
+                control: new FormControl(2),
+                required: false
+            },
+            {
+                id: 'remove_blank_pages',
+                label: this.translate.instant('INPUT.remove_blank_pages'),
+                type: 'boolean',
+                control: new FormControl()
+            }
         ],
         output: []
     };
@@ -181,6 +202,12 @@ export class WorkflowBuilderComponent implements OnInit {
                                 }
                                 if (workflow[parent][field.id] === 'true' || workflow[parent][field.id] === 'false' ) {
                                     value = workflow[parent][field.id] === 'true';
+                                }
+                                if (field.id === 'splitter_method_id') {
+                                    this.setSeparationMode(value);
+                                }
+                                if (field.id === 'validate_using_interface') {
+                                    this.setUseInterface(value);
                                 }
                                 field.control.setValue(value);
                             }
@@ -239,11 +266,42 @@ export class WorkflowBuilderComponent implements OnInit {
             })
         ).subscribe();
 
+        this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.fields['process'].forEach((element: any) => {
+                    if (element.id === 'form_id') {
+                        element.values = data.forms;
+                        if (data.forms.length === 1) {
+                            element.control.setValue(data.forms[0].id);
+                        }
+                    }
+                });
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.fields['input'].forEach((element: any) => {
             if (element.id === 'apply_process') {
                 element.control.valueChanges.subscribe((value: any) => {
                     this.processAllowed = value;
                 });
+            }
+        });
+    }
+
+    setSeparationMode(value: any) {
+        this.separationMode = value;
+    }
+
+    setUseInterface(value: any) {
+        this.useInterface = value;
+        this.fields['process'].forEach((element: any) => {
+            if (element.id === 'form_id') {
+                element.required = this.useInterface;
             }
         });
     }

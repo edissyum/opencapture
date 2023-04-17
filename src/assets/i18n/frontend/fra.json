@@ -507,6 +507,7 @@
 		"ai_model_id": "Modèle d'intelligence artificielle",
 		"ai_model_id_hint": "Le modèle d'intelligence artificielle permettra de pré-selectionner le formulaire en fonction du type de document. Le modèle prends le desuss sur le formulaire par défaut",
 		"associated_customer": "Compte client associé",
+		"c128_separation": "Séparation par codes barres C128",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne entrante <strong>{{ input }}</strong> ?",
 		"confirm_duplicate": "Êtes vous sûr de vouloir dupliquer la chaîne entrante <strong>{{ input }}</strong> ?",
 		"create": "Créer la chaîne entrante",
@@ -526,6 +527,8 @@
 		"qr_code_separation": "Séparation par QR Code",
 		"remove_blank_pages": "Suppression de pages blanches",
 		"separate_by_document": "Séparation par document (toutes les 2 pages)",
+		"separate_by_document_number": "Séparer les documents par nombre de pages",
+		"separate_by_document_number_value": "Nombres de pages par document",
 		"splitter_method": "Méthode de séparation",
 		"update": "Mettre à jour la chaîne entrante",
 		"update_script_and_watcher": "Mettre à jour le script et le watcher",
@@ -1118,6 +1121,7 @@
 		"workflow_created": "Workflow créé avec succès",
 		"workflow_deleted": "Workflow supprimé avec succès",
 		"workflow_duplicated": "Workflow dupliqué avec succès",
+		"workflow_id_and_name_required": "Les champs identifiant et libellé du workflow sont obligatoires",
 		"workflow_updated": "Workflow mis à jour avec succès"
 	}
 }

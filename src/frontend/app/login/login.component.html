@@ -37,7 +37,7 @@
                         </mat-hint>
                     </mat-form-field>
                     <button mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled"
-                            class="min-w-56 valid_button" type="submit" id="login">
+                            class="valid_button" type="submit" id="login">
                         <span *ngIf="!this.processLogin && !this.isConnectionBtnDisabled">
                             {{ 'AUTH.login' | translate }}
                         </span>
