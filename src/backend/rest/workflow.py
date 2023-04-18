@@ -109,3 +109,17 @@ def update_workflow(module, workflow_id):
     data = request.json['args']
     res = workflow.update_workflow(workflow_id, data)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('workflows/<string:module>/createScriptAndWatcher', methods=['POST'])
+@auth.token_required
+def create_script_and_watcher(module):
+    list_priv = ['settings', 'add_input | update_input'] if module == 'verifier' else ['settings', 'add_input_splitter | update_input_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/workflows/{module}/createScriptAndWatcher'}), 403
+
+    args = dict(request.json['args'])
+    args['module'] = module
+    res = workflow.create_script_and_watcher(args)
+    return make_response(jsonify(res[0])), res[1]

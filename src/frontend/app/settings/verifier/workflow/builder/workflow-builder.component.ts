@@ -27,6 +27,7 @@ import { of } from "rxjs";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../../../services/auth.service";
+import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-workflow-builder',
@@ -52,6 +53,7 @@ export class WorkflowBuilderComponent implements OnInit {
         separation: false,
         output: false
     };
+    oldFolder       : string        = '';
     idControl       : FormControl   = new FormControl('', Validators.required);
     nameControl     : FormControl   = new FormControl('', Validators.required);
     fields          : any           = {
@@ -240,6 +242,7 @@ export class WorkflowBuilderComponent implements OnInit {
         private authService: AuthService,
         private notify: NotificationService,
         private translate: TranslateService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
     ) {}
 
@@ -271,6 +274,9 @@ export class WorkflowBuilderComponent implements OnInit {
                                 }
                                 if (field.id === 'use_interface') {
                                     this.setUseInterface(value);
+                                }
+                                if (field.id === 'input_folder') {
+                                    this.oldFolder = value;
                                 }
                                 field.control.setValue(value);
                             }
@@ -406,12 +412,13 @@ export class WorkflowBuilderComponent implements OnInit {
     }
 
     checkFolder(field: any) {
-        if (field && field.control.value) {
+        if (field && field.control.value && field.control.value !== this.oldFolder) {
             this.http.post(environment['url'] + '/ws/workflows/verifier/verifyInputFolder',
                 {'input_folder': field.control.value}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     field.control.setErrors();
                     this.notify.success(this.translate.instant('WORKFLOW.input_folder_ok'));
+                    this.oldFolder = field.control.value;
                 }),
                 catchError((err: any) => {
                     field.control.setErrors({'folder_not_found': true});
@@ -447,7 +454,7 @@ export class WorkflowBuilderComponent implements OnInit {
         return false;
     }
 
-    updateWorkflow() {
+    updateWorkflow(step: any) {
         const workflow: any = {
             workflow_id: this.idControl.value,
             label: this.nameControl.value,
@@ -465,8 +472,24 @@ export class WorkflowBuilderComponent implements OnInit {
             });
         });
 
+        if (step === 'input') {
+            const data = workflow['input'];
+            data['workflow_id'] = this.idControl.value;
+            data['workflow_label'] = this.nameControl.value;
+            this.http.post(environment['url'] + '/ws/workflows/verifier/createScriptAndWatcher', {'args': data}, {headers: this.authService.headers}).pipe(
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
+
         this.http.put(environment['url'] + '/ws/workflows/verifier/update/' + this.workflowId, {'args': workflow}, {headers: this.authService.headers}).pipe(
             tap(() => {
+                if (step === 'output') {
+                    this.historyService.addHistory('verifier', 'update_workflow', this.translate.instant('HISTORY-DESC.update-workflow', {workflow: workflow['label']}));
+                }
                 this.notify.success(this.translate.instant('WORKFLOW.workflow_updated'));
             }),
             catchError((err: any) => {
@@ -477,7 +500,7 @@ export class WorkflowBuilderComponent implements OnInit {
         ).subscribe();
     }
 
-    saveWorkflow() {
+    createWorkflow() {
         const workflow: any = {
             workflow_id: this.idControl.value,
             label: this.nameControl.value,
@@ -495,9 +518,23 @@ export class WorkflowBuilderComponent implements OnInit {
                 });
             });
 
-            this.http.post(environment['url'] + '/ws/workflows/verifier/create', {'args': workflow}, {headers: this.authService.headers}).pipe(
+            const data = workflow['input'];
+            data['workflow_id'] = this.idControl.value;
+            data['workflow_label'] = this.nameControl.value;
+            this.http.post(environment['url'] + '/ws/workflows/verifier/createScriptAndWatcher', {'args': data}, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.notify.success(this.translate.instant('WORKFLOW.workflow_created'));
+                    this.http.post(environment['url'] + '/ws/workflows/verifier/create', {'args': workflow}, {headers: this.authService.headers}).pipe(
+                        tap(() => {
+                            this.historyService.addHistory('verifier', 'create_workflow', this.translate.instant('HISTORY-DESC.create-workflow', {workflow: workflow['label']}));
+                            this.router.navigate(['/settings/verifier/workflows']).then();
+                            this.notify.success(this.translate.instant('WORKFLOW.workflow_created'));
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
                 }),
                 catchError((err: any) => {
                     console.debug(err);

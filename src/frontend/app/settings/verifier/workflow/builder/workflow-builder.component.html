@@ -14,7 +14,7 @@
             </div>
             <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div>
-                <i *ngIf="!this.creationMode" class="fa-solid fa-2x fa-save mr-4 cursor-pointer" (click)="updateWorkflow()"></i>
+                <i *ngIf="!this.creationMode" class="fa-solid fa-2x fa-save mr-4 cursor-pointer" (click)="updateWorkflow('input')"></i>
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
@@ -76,7 +76,7 @@
                             [disabled]="!this.stepValid['input']"
                             [class.bg-gray-400]="!this.stepValid['input']"
                             [class.bg-green-400]="this.stepValid['input']"
-                            (click)="!this.creationMode ? this.updateWorkflow() : ''">
+                            (click)="!this.creationMode ? this.updateWorkflow('input') : ''">
                         {{ 'WORKFLOW.next' | translate }}
                     </button>
                 </div>
@@ -128,7 +128,7 @@
                             [disabled]="!this.stepValid['process']"
                             [class.bg-gray-400]="!this.stepValid['process']"
                             [class.bg-green-400]="this.stepValid['process']"
-                            (click)="!this.creationMode ? this.updateWorkflow() : ''">
+                            (click)="!this.creationMode ? this.updateWorkflow('process') : ''">
                         {{ 'WORKFLOW.next' | translate }}
                     </button>
                 </span>
@@ -166,7 +166,7 @@
                 <button matStepperPrevious mat-button class="gray_button">
                     {{ "WORKFLOW.back" | translate }}
                 </button>
-                <button matStepperNext mat-button class="valid_button" (click)="!this.creationMode ? this.updateWorkflow() : ''">
+                <button matStepperNext mat-button class="valid_button" (click)="!this.creationMode ? this.updateWorkflow('separation') : ''">
                     {{ 'WORKFLOW.next' | translate }}
                 </button>
             </mat-step>
@@ -190,7 +190,7 @@
                 <button matStepperPrevious mat-button class="gray_button">
                     {{ "WORKFLOW.back" | translate }}
                 </button>
-                <button mat-button class="valid_button" (click)="!this.creationMode ? this.updateWorkflow() : this.saveWorkflow()">
+                <button mat-button class="valid_button" (click)="!this.creationMode ? this.updateWorkflow('output') : this.createWorkflow()">
                     <span *ngIf="this.creationMode">
                         {{ 'WORKFLOW.create' | translate }}
                     </span>

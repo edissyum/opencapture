@@ -17,10 +17,13 @@
 
 import os
 import json
-from flask import request, g as current_context
+import stat
 from flask_babel import gettext
+from flask import request, g as current_context
+from src.backend.import_classes import _Config
 from src.backend.import_models import workflow
-from src.backend import retrieve_custom_from_url, create_classes_from_custom_id
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def get_workflows(args):
@@ -205,7 +208,7 @@ def update_workflow(workflow_id, data):
 
 
 def delete_workflow(workflow_id):
-    workflow_info, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
+    _, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
     if error is None:
         _, error = workflow.update_workflow({'set': {'status': 'DEL'}, 'workflow_id': workflow_id})
         if error is None:
@@ -221,5 +224,86 @@ def delete_workflow(workflow_id):
         response = {
             "errors": gettext('DELETE_WORKFLOW_ERROR'),
             "message": gettext(error)
+        }
+        return response, 400
+
+
+def create_script_and_watcher(args):
+    custom_id = retrieve_custom_from_url(request)
+    if 'docservers' in current_context and 'config' in current_context:
+        docservers = current_context.docservers
+        config = current_context.config
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+        config = _vars[1]
+
+    folder_script = docservers['SCRIPTS_PATH'] + '/' + args['module'] + '_workflows/'
+    arguments = '-workflow_id ' + str(args['workflow_id'])
+
+    ######
+    # CREATE SCRIPT
+    ######
+    if os.path.isdir(folder_script):
+        script_name = args['workflow_id'] + '.sh'
+        if os.path.isfile(folder_script + '/script_sample_dont_touch.sh'):
+            new_script_filename = folder_script + '/' + script_name
+            with open(folder_script + '/script_sample_dont_touch.sh', 'r', encoding='utf-8') as script_sample:
+                script_sample_content = script_sample.read()
+            with open(new_script_filename, 'w+', encoding='utf-8') as new_script_file:
+                for line in script_sample_content.split('\n'):
+                    corrected_line = line.replace('§§SCRIPT_NAME§§', script_name.replace('.sh', ''))
+                    corrected_line = corrected_line.replace('§§OC_PATH§§', docservers['PROJECT_PATH'] + '/')
+                    corrected_line = corrected_line.replace('"§§ARGUMENTS§§"', arguments)
+                    corrected_line = corrected_line.replace('§§CUSTOM_ID§§', custom_id)
+                    corrected_line = corrected_line.replace('§§LOG_PATH§§', config['GLOBAL']['logfile'])
+                    new_script_file.write(corrected_line + '\n')
+            os.chmod(new_script_filename, os.stat(new_script_filename).st_mode | stat.S_IEXEC)
+
+            ######
+            # CREATE OR UPDATE FS WATCHER CONFIG
+            ######
+
+            if not os.path.exists(args['input_folder']):
+                try:
+                    os.mkdir(args['input_folder'], mode=0o777)
+                except (PermissionError, FileNotFoundError):
+                    response = {
+                        "errors": gettext('FS_WATCHER_CREATION_ERROR'),
+                        "message": gettext('CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR')
+                    }
+                    return response, 400
+
+            if os.path.isfile(config['GLOBAL']['watcherconfig']):
+                fs_watcher_config = _Config(config['GLOBAL']['watcherconfig'], interpolation=False)
+                fs_watcher_job = args['module'] + '_' + args['workflow_id']
+                if custom_id:
+                    fs_watcher_job += '_' + custom_id
+                fs_watcher_command = new_script_filename + ' $filename'
+                if fs_watcher_job in fs_watcher_config.cfg:
+                    _Config.fswatcher_update_command(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
+                                                     args['workflow_label'])
+                    _Config.fswatcher_update_watch(fs_watcher_config.file, fs_watcher_job, args['input_folder'],
+                                                   args['workflow_label'])
+                else:
+                    _Config.fswatcher_add_section(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
+                                                  args['input_folder'], args['workflow_label'])
+                return '', 200
+            else:
+                response = {
+                    "errors": gettext('FS_WATCHER_CREATION_ERROR'),
+                    "message": gettext('FS_WATCHER_CONFIG_DOESNT_EXIST')
+                }
+                return response, 400
+        else:
+            response = {
+                "errors": gettext('SCRIPT_SAMPLE_DOESNT_EXISTS'),
+                "message": folder_script + '/script_sample_dont_touch.sh'
+            }
+            return response, 400
+    else:
+        response = {
+            "errors": gettext('SCRIPT_FOLDER_DOESNT_EXISTS'),
+            "message": folder_script
         }
         return response, 400
