@@ -1100,7 +1100,7 @@
 		"delete_documents_hint": "Documents and database related informations will be deleted after processing",
 		"duplicate": "Duplicate workflow",
 		"facturx_only": "Process FacturX documents only",
-		"fields_to_search": "Fields to search",
+		"system_fields_to_search": "System fields to search",
 		"footer": "Footer",
 		"id": "Workflow identifier",
 		"input": "Input",
