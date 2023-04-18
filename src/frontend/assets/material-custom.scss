@@ -79,10 +79,12 @@
 }
 
 .mat-selected,
+.mat-calendar-body-selected,
 .mat-checkbox-checked .mat-accent .mat-checkbox-background,
 .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
+.mat-primary .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-full,
 .mat-mdc-slide-toggle .mdc-switch:enabled .mdc-switch__track::after,
-.mat-calendar-body-selected {
+.mat-primary .mat-pseudo-checkbox-indeterminate.mat-pseudo-checkbox-full {
     @apply bg-green-400 #{!important};
 }
 
