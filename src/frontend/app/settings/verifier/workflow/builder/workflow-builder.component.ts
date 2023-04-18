@@ -142,9 +142,9 @@ export class WorkflowBuilderComponent implements OnInit {
                 values: []
             },
             {
-                id: 'fields',
+                id: 'system_fields',
                 multiple: true,
-                label: this.translate.instant('WORKFLOW.fields_to_search'),
+                label: this.translate.instant('WORKFLOW.system_fields_to_search'),
                 type: 'select',
                 control: new FormControl(['supplier', 'invoice_number', 'quotation_number', 'document_date', 'document_due_date', 'footer']),
                 required: false,
@@ -220,7 +220,15 @@ export class WorkflowBuilderComponent implements OnInit {
                 control: new FormControl()
             }
         ],
-        output: []
+        output: [
+            {
+                id: 'output_id',
+                label: this.translate.instant('WORKFLOW.choose_output'),
+                type: 'select',
+                control: new FormControl(),
+                required: true,
+            }
+        ]
     };
 
     constructor(
@@ -337,6 +345,24 @@ export class WorkflowBuilderComponent implements OnInit {
             })
         ).subscribe();
 
+        this.http.get(environment['url'] + '/ws/outputs/verifier/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.fields['output'].forEach((element: any) => {
+                    if (element.id === 'output_id') {
+                        element.values = data.outputs;
+                        if (data.outputs.length === 1) {
+                            element.control.setValue(data.outputs[0].id);
+                        }
+                    }
+                });
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.fields['input'].forEach((element: any) => {
             if (element.id === 'apply_process') {
                 element.control.valueChanges.subscribe((value: any) => {
@@ -346,7 +372,7 @@ export class WorkflowBuilderComponent implements OnInit {
             if (element.id === 'facturx_only') {
                 element.control.valueChanges.subscribe((value: any) => {
                     this.fields['process'].forEach((elem: any) => {
-                        if (elem.id === 'fields') {
+                        if (elem.id === 'system_fields') {
                             if (value) {
                                 elem.values.push({'id': 'facturx', 'label': 'Lignes de facturation Factur-X'});
                                 elem.control.value.push('facturx');
@@ -368,7 +394,7 @@ export class WorkflowBuilderComponent implements OnInit {
     setUseInterface(value: any) {
         this.useInterface = value;
         this.fields['process'].forEach((element: any) => {
-            if (element.id === 'form_id' || element.id === 'fields') {
+            if (element.id === 'form_id' || element.id === 'system_fields') {
                 element.required = this.useInterface;
             }
         });

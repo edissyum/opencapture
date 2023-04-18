@@ -89,7 +89,7 @@
                                 <i class="fa-solid fa-circle-question text-md"></i>
                             </span>
                         </mat-form-field>
-                        <mat-form-field *ngIf="(field.type === 'select' && field.id !== 'form_id' && field.id !== 'fields') || (this.useInterface && (field.id === 'form_id' || field.id === 'fields'))">
+                        <mat-form-field *ngIf="(field.type === 'select' && field.id !== 'form_id' && field.id !== 'system_fields') || (this.useInterface && (field.id === 'form_id' || field.id === 'system_fields'))">
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple">
                                 <mat-option *ngFor="let option of field.values" [value]="option.id">
