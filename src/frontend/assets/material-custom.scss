@@ -23,9 +23,13 @@
 }
 
 .mat-step-header .mat-step-icon-selected,
-.mat-step-header .mat-step-icon-state-done,
 .mat-step-header .mat-step-icon-state-edit {
     @apply bg-green-400 #{!important};
+}
+
+.mat-step-header .mat-step-icon-state-done,
+.mat-step-header .mat-step-icon-state-number:not(.mat-step-icon-selected) {
+    @apply bg-gray-400 #{!important};
 }
 
 .mat-mdc-form-field-hint::before {

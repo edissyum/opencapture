@@ -36,8 +36,8 @@ import { AuthService } from "../../../../../services/auth.service";
         {
             provide: STEPPER_GLOBAL_OPTIONS,
             useValue: {displayDefaultIndicatorType: false},
-        },
-    ],
+        }
+    ]
 })
 export class WorkflowBuilderComponent implements OnInit {
     loading         : boolean       = true;
@@ -88,6 +88,7 @@ export class WorkflowBuilderComponent implements OnInit {
             {
                 id: 'facturx_only',
                 label: this.translate.instant('WORKFLOW.facturx_only'),
+                hint: this.translate.instant('WORKFLOW.facturx_only_hint'),
                 type: 'boolean',
                 control: new FormControl()
             }
@@ -225,8 +226,9 @@ export class WorkflowBuilderComponent implements OnInit {
                 id: 'output_id',
                 label: this.translate.instant('WORKFLOW.choose_output'),
                 type: 'select',
-                control: new FormControl(),
-                required: true,
+                multiple: true,
+                control: new FormControl(['']),
+                required: true
             }
         ]
     };
@@ -258,11 +260,11 @@ export class WorkflowBuilderComponent implements OnInit {
                         this.fields[parent].forEach((field: any) => {
                             if (workflow[parent][field.id]) {
                                 let value = workflow[parent][field.id];
-                                if (parseInt(workflow[parent][field.id])) {
-                                    value = parseInt(workflow[parent][field.id]);
+                                if (parseInt(value) && !Array.isArray(value)) {
+                                    value = parseInt(value);
                                 }
-                                if (workflow[parent][field.id] === 'true' || workflow[parent][field.id] === 'false' ) {
-                                    value = workflow[parent][field.id] === 'true';
+                                if (value === 'true' || value === 'false' ) {
+                                    value = value === 'true';
                                 }
                                 if (field.id === 'splitter_method_id') {
                                     this.setSeparationMode(value);
@@ -350,6 +352,9 @@ export class WorkflowBuilderComponent implements OnInit {
                 this.fields['output'].forEach((element: any) => {
                     if (element.id === 'output_id') {
                         element.values = data.outputs;
+                        element.values.forEach((elem: any) => {
+                            elem.label = elem.output_label;
+                        });
                         if (data.outputs.length === 1) {
                             element.control.setValue(data.outputs[0].id);
                         }
@@ -451,6 +456,7 @@ export class WorkflowBuilderComponent implements OnInit {
             separation: {},
             output: {}
         };
+
         Object.keys(this.fields).forEach((parent: any) => {
             this.fields[parent].forEach((field: any) => {
                 if (field.control.value) {
@@ -458,6 +464,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 }
             });
         });
+
         this.http.put(environment['url'] + '/ws/workflows/verifier/update/' + this.workflowId, {'args': workflow}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('WORKFLOW.workflow_updated'));
