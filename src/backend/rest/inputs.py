@@ -116,7 +116,7 @@ def create_input(module):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('inputs/<string:module>/createScriptAndIncron', methods=['POST'])
+@bp.route('inputs/<string:module>/createScriptAndWatcher', methods=['POST'])
 @auth.token_required
 def create_script_and_incron(module):
     list_priv = ['settings', 'add_input'] if module == 'verifier' else ['settings', 'add_input_splitter']

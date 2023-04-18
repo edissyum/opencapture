@@ -132,7 +132,7 @@ class InputsTest(unittest.TestCase):
             'remove_blank_pages': False,
             'override_supplier_form': False,
         }
-        response = self.app.post(f'/{CUSTOM_ID}/ws/inputs/verifier/createScriptAndIncron', json={"args": payload},
+        response = self.app.post(f'/{CUSTOM_ID}/ws/inputs/verifier/createScriptAndWatcher', json={"args": payload},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertTrue(os.path.isfile(f'./custom/{CUSTOM_ID}/bin/scripts//verifier_inputs//test_input.sh'))

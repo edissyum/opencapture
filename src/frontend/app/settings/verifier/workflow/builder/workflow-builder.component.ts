@@ -85,10 +85,30 @@ export class WorkflowBuilderComponent implements OnInit {
                 type: 'boolean',
                 control: new FormControl()
             },
+            {
+                id: 'facturx_only',
+                label: this.translate.instant('WORKFLOW.facturx_only'),
+                type: 'boolean',
+                control: new FormControl()
+            }
         ],
         process: [
             {
+                id: 'use_interface',
+                label: this.translate.instant('WORKFLOW.use_interface'),
+                type: 'boolean',
+                control: new FormControl()
+            },
+            {
+                id: 'delete_documents',
+                label: this.translate.instant('WORKFLOW.delete_documents'),
+                hint: this.translate.instant('WORKFLOW.delete_documents_hint'),
+                type: 'boolean',
+                control: new FormControl()
+            },
+            {
                 id: 'rotation',
+                multiple: false,
                 label: this.translate.instant('WORKFLOW.rotation'),
                 type: 'select',
                 control: new FormControl(),
@@ -113,18 +133,51 @@ export class WorkflowBuilderComponent implements OnInit {
                 ]
             },
             {
-                id: 'validate_using_interface',
-                label: this.translate.instant('WORKFLOW.validate_using_interface'),
-                type: 'boolean',
-                control: new FormControl()
-            },
-            {
                 id: 'form_id',
+                multiple: false,
                 label: this.translate.instant('POSITIONS-MASKS.form_associated'),
                 type: 'select',
                 control: new FormControl(),
                 required: false,
                 values: []
+            },
+            {
+                id: 'fields',
+                multiple: true,
+                label: this.translate.instant('WORKFLOW.fields_to_search'),
+                type: 'select',
+                control: new FormControl(['supplier', 'invoice_number', 'quotation_number', 'document_date', 'document_due_date', 'footer']),
+                required: false,
+                values: [
+                    {
+                        'id': 'supplier',
+                        'label': this.translate.instant('FORMS.supplier'),
+                    },
+                    {
+                        'id': 'invoice_number',
+                        'label': this.translate.instant('FACTURATION.invoice_number'),
+                    },
+                    {
+                        'id': 'quotation_number',
+                        'label': this.translate.instant('FACTURATION.quotation_number'),
+                    },
+                    {
+                        'id': 'delivery_number',
+                        'label': this.translate.instant('FACTURATION.delivery_number'),
+                    },
+                    {
+                        'id': 'document_date',
+                        'label': this.translate.instant('FACTURATION.document_date'),
+                    },
+                    {
+                        'id': 'document_due_date',
+                        'label': this.translate.instant('FACTURATION.document_due_date'),
+                    },
+                    {
+                        'id': 'footer',
+                        'label': this.translate.instant('WORKFLOW.footer'),
+                    }
+                ]
             }
         ],
         separation: [
@@ -206,7 +259,7 @@ export class WorkflowBuilderComponent implements OnInit {
                                 if (field.id === 'splitter_method_id') {
                                     this.setSeparationMode(value);
                                 }
-                                if (field.id === 'validate_using_interface') {
+                                if (field.id === 'use_interface') {
                                     this.setUseInterface(value);
                                 }
                                 field.control.setValue(value);
@@ -290,6 +343,21 @@ export class WorkflowBuilderComponent implements OnInit {
                     this.processAllowed = value;
                 });
             }
+            if (element.id === 'facturx_only') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    this.fields['process'].forEach((elem: any) => {
+                        if (elem.id === 'fields') {
+                            if (value) {
+                                elem.values.push({'id': 'facturx', 'label': 'Lignes de facturation Factur-X'});
+                                elem.control.value.push('facturx');
+                            } else {
+                                elem.values = elem.values.filter((elem: any) => elem.id !== 'facturx');
+                                elem.control.value = elem.control.value.filter((elem: any) => elem !== 'facturx');
+                            }
+                        }
+                    });
+                });
+            }
         });
     }
 
@@ -300,7 +368,7 @@ export class WorkflowBuilderComponent implements OnInit {
     setUseInterface(value: any) {
         this.useInterface = value;
         this.fields['process'].forEach((element: any) => {
-            if (element.id === 'form_id') {
+            if (element.id === 'form_id' || element.id === 'fields') {
                 element.required = this.useInterface;
             }
         });

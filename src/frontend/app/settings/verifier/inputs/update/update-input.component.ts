@@ -288,7 +288,6 @@ export class UpdateInputComponent implements OnInit {
     }
 
     onSubmit() {
-        console.log(this.isValidForm())
         if (this.isValidForm()) {
             const input : any = {
                 'module': 'verifier'
@@ -312,7 +311,7 @@ export class UpdateInputComponent implements OnInit {
         }
     }
 
-    createScriptAndIncron() {
+    createScriptAndWatcher() {
         if (this.isValidForm()) {
             const input : any = {
                 'module': 'verifier'
@@ -321,7 +320,7 @@ export class UpdateInputComponent implements OnInit {
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });
-            this.http.post(environment['url'] + '/ws/inputs/verifier/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/verifier/createScriptAndWatcher', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('INPUT.watcher_and_script_updated'));
                     this.onSubmit();

@@ -232,7 +232,7 @@ export class SplitterUpdateInputComponent implements OnInit {
         }
     }
 
-    createScriptAndIncron() {
+    createScriptAndWatcher() {
         if (this.isValidForm()) {
             const input : any = {
                 'module': 'splitter'
@@ -242,7 +242,7 @@ export class SplitterUpdateInputComponent implements OnInit {
                 input[element.id] = element.control.value;
             });
 
-            this.http.post(environment['url'] + '/ws/inputs/splitter/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/splitter/createScriptAndWatcher', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('INPUT.watcher_and_script_updated'));
                     this.onSubmit();

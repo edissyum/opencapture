@@ -312,7 +312,7 @@ export class CreateInputComponent implements OnInit {
 
             input['module'] = 'verifier';
 
-            this.http.post(environment['url'] + '/ws/inputs/verifier/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/verifier/createScriptAndWatcher', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.http.post(environment['url'] + '/ws/inputs/verifier/create', {'args': input}, {headers: this.authService.headers}).pipe(
                         tap(() => {

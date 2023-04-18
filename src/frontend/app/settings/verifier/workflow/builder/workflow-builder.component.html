@@ -13,7 +13,9 @@
                 </button>
             </div>
             <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
-            <div></div>
+            <div>
+                <i *ngIf="!this.creationMode" class="fa-solid fa-2x fa-save mr-4 cursor-pointer" (click)="updateWorkflow()"></i>
+            </div>
         </div>
         <hr class="border-green-400 relative z-30">
         <div class="my-4 w-full p-2">
@@ -75,7 +77,9 @@
                 </div>
             </mat-step>
             <mat-step [aria-labelledby]="this.stepDisabled('process') || !this.creationMode ? 'disabled_step' : ''" *ngIf="this.processAllowed" [label]="'WORKFLOW.process' | translate">
-                <div class="mt-2 grid grid-cols-3 gap-6">
+                <app-hint *ngIf="this.useInterface" [message]="'WORKFLOW.process_hint' | translate"></app-hint>
+
+                <div class="mt-6 grid grid-cols-3 gap-6">
                     <ng-container *ngFor="let field of this.fields['process']">
                         <mat-form-field *ngIf="field.type === 'text'">
                             <mat-label>{{ field.label | translate }}</mat-label>
@@ -85,9 +89,9 @@
                                 <i class="fa-solid fa-circle-question text-md"></i>
                             </span>
                         </mat-form-field>
-                        <mat-form-field *ngIf="(field.type === 'select' && field.id !== 'form_id') || (this.useInterface && field.id === 'form_id')">
+                        <mat-form-field *ngIf="(field.type === 'select' && field.id !== 'form_id' && field.id !== 'fields') || (this.useInterface && (field.id === 'form_id' || field.id === 'fields'))">
                             <mat-label>{{ field.label | translate }}</mat-label>
-                            <mat-select [(value)]="field.control.value" [required]="field['required']">
+                            <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple">
                                 <mat-option *ngFor="let option of field.values" [value]="option.id">
                                     {{ option.label | translate }}
                                 </mat-option>
@@ -99,6 +103,9 @@
                         <div *ngIf="field.type === 'boolean'">
                             <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2" (change)="setUseInterface($event.checked)">
                                 <span class="justify-center">{{ field.label | translate }}</span>
+                                <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-6 cursor-help" [matTooltip]="field.hint | translate">
+                                    <i class="fa-solid fa-circle-question text-md"></i>
+                                </span>
                             </mat-slide-toggle>
                         </div>
                     </ng-container>
@@ -129,8 +136,8 @@
                             </span>
                         </mat-form-field>
                         <mat-form-field *ngIf="field.type === 'select'">
-                        <mat-label>{{ field.label | translate }} {{field.id}}</mat-label>
-                            <mat-select [(value)]="field.control.value" [required]="field['required']"
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                            <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple"
                                         (selectionChange)="field.id === 'splitter_method_id' ? setSeparationMode($event.value) : ''">
                                 <mat-option *ngFor="let option of field.values" [value]="option.id">
                                     {{ option.label | translate }}
