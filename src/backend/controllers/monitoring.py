@@ -90,6 +90,26 @@ def get_process_by_id(process_id):
     return response, 200
 
 
+def get_process_by_token(process_token):
+    if 'configurations' in current_context:
+        configurations = current_context.configurations
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[10]
+
+    if configurations['locale'] == 'fra':
+        _format = 'TMDay DD TMMonth YYYY HH24:MI:SS'
+    else:
+        _format = 'Mon DD YYYY HH24:MI:SS'
+    process, _ = monitoring.get_process_by_token(process_token, _format)
+
+    response = {
+        "process": process
+    }
+    return response, 200
+
+
 def create_process(args):
     process, _ = monitoring.insert(args)
 

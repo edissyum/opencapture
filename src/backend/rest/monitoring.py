@@ -41,3 +41,18 @@ def get_process_by_id(process_id):
 
     process = monitoring.get_process_by_id(process_id)
     return make_response(jsonify(process[0])), process[1]
+
+
+@bp.route('monitoring/getProcessByToken', methods=['POST'])
+@auth.token_required
+def get_process_by_token():
+    if not privileges.has_privileges(request.environ['user_id'], ['monitoring']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/monitoring/getProcessByToken'}), 403
+
+    if 'token' in request.json and request.json['token']:
+        token = str(request.json['token'])
+    else:
+        return jsonify({'errors': gettext('TOKEN_IS_MANDATORY'), 'message': ''}), 400
+
+    process = monitoring.get_process_by_token(token)
+    return make_response(jsonify(process[0])), process[1]
