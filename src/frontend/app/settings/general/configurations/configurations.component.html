@@ -95,82 +95,83 @@
                         </div>
                     </div>
                 </mat-tab>
-            </mat-tab-group>
-            <mat-divider class="border-green-400 mt-4 mb-4 w-3/4 m-auto"></mat-divider>
-            <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
-            <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
-                <ng-container matColumnDef="id">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header="id"> {{ 'HEADER.id' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="label">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header="label"> {{ 'HEADER.label' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.label }} </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="description">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header="description"> {{ 'HEADER.description' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.data.description }} </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="type">
-                    <mat-header-cell *matHeaderCellDef> {{ 'HEADER.type' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.data.label_type | translate }} </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="content">
-                    <mat-header-cell *matHeaderCellDef>{{ 'HEADER.value' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element" (click)="element.updateMode = true">
-                        <ng-container *ngIf="!element.updateMode else update">
-                            {{ element.data.value }}
+                <mat-tab label="{{ 'CONFIGURATIONS.advanced' | translate }}">
+                    <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
+                    <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
+                        <ng-container matColumnDef="id">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header="id"> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                            <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
                         </ng-container>
-                        <ng-template #update>
-                            <mat-form-field appearance="outline" *ngIf="element.data.type === 'bool'">
-                                <mat-select class="relative -top-3" [(ngModel)]="element.data.value"
-                                            (selectionChange)="updateValue($event, element.id, element.label)">
-                                    <mat-option [value]="true">Activer</mat-option>
-                                    <mat-option [value]="false">Désactiver</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <mat-form-field appearance="outline" class="w-full"
-                                            *ngIf="element.data.type === 'int' || element.data.type === 'float'">
-                                <input matInput type="number" [value]="element.data.value" (keyup.enter)="updateValue($event, element.id, element.label)"
-                                       class="relative -top-2.5" (focusout)="updateValue($event, element.id, element.label)">
-                            </mat-form-field>
-                            <mat-form-field appearance="outline" class="w-full" *ngIf="element.data.type === 'string'">
-                                <input matInput [value]="element.data.value" (keyup.enter)="updateValue($event, element.id, element.label)"
-                                       class="relative -top-2.5" (focusout)="updateValue($event, element.id, element.label)">
-                            </mat-form-field>
-                        </ng-template>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="actions">
-                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        <button *ngIf="!element.updateMode"
-                                (click)="element.updateMode = true"
-                                matTooltip="{{ 'CONFIGURATIONS.update' | translate }}" mat-icon-button
-                                class="inline-block align-text-top">
-                            <i class="fa-solid fa-edit text-lg"></i>
-                        </button>
-                        <button *ngIf="element.updateMode"
-                                (click)="element.updateMode = false;"
-                                matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button
-                                class="inline-block align-text-top">
-                            <i *ngIf="!this.updateLoading" class="fa-solid text-lg fa-check"></i>
-                            <i *ngIf="this.updateLoading" class="fa-solid text-lg fa-circle-notch fa-spin"></i>
-                        </button>
-                    </mat-cell>
-                </ng-container>
-                <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                         class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
-            </mat-table>
-            <mat-paginator showFirstLastButtons
-                           *ngIf="this.total > 0"
-                           [length]="this.total"
-                           [pageSize]="pageSize"
-                           [pageIndex]="pageIndex"
-                           [pageSizeOptions]="[5, 10, 15, 20, 50]"
-                           (page)="onPageChange($event)">
-            </mat-paginator>
+                        <ng-container matColumnDef="label">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header="label"> {{ 'HEADER.label' | translate }} </mat-header-cell>
+                            <mat-cell *matCellDef="let element"> {{ element.label }} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="description">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header="description"> {{ 'HEADER.description' | translate }} </mat-header-cell>
+                            <mat-cell *matCellDef="let element"> {{ element.data.description }} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="type">
+                            <mat-header-cell *matHeaderCellDef> {{ 'HEADER.type' | translate }} </mat-header-cell>
+                            <mat-cell *matCellDef="let element"> {{ element.data.label_type | translate }} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="content">
+                            <mat-header-cell *matHeaderCellDef>{{ 'HEADER.value' | translate }} </mat-header-cell>
+                            <mat-cell *matCellDef="let element" (click)="element.updateMode = true">
+                                <ng-container *ngIf="!element.updateMode else update">
+                                    {{ element.data.value }}
+                                </ng-container>
+                                <ng-template #update>
+                                    <mat-form-field appearance="outline" *ngIf="element.data.type === 'bool'">
+                                        <mat-select class="relative -top-3" [(ngModel)]="element.data.value"
+                                                    (selectionChange)="updateValue($event, element.id, element.label)">
+                                            <mat-option [value]="true">Activer</mat-option>
+                                            <mat-option [value]="false">Désactiver</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" class="w-full"
+                                                    *ngIf="element.data.type === 'int' || element.data.type === 'float'">
+                                        <input matInput type="number" [value]="element.data.value" (keyup.enter)="updateValue($event, element.id, element.label)"
+                                               class="relative -top-2.5" (focusout)="updateValue($event, element.id, element.label)">
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" class="w-full" *ngIf="element.data.type === 'string'">
+                                        <input matInput [value]="element.data.value" (keyup.enter)="updateValue($event, element.id, element.label)"
+                                               class="relative -top-2.5" (focusout)="updateValue($event, element.id, element.label)">
+                                    </mat-form-field>
+                                </ng-template>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="actions">
+                            <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <button *ngIf="!element.updateMode"
+                                        (click)="element.updateMode = true"
+                                        matTooltip="{{ 'CONFIGURATIONS.update' | translate }}" mat-icon-button
+                                        class="inline-block align-text-top">
+                                    <i class="fa-solid fa-edit text-lg"></i>
+                                </button>
+                                <button *ngIf="element.updateMode"
+                                        (click)="element.updateMode = false;"
+                                        matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button
+                                        class="inline-block align-text-top">
+                                    <i *ngIf="!this.updateLoading" class="fa-solid text-lg fa-check"></i>
+                                    <i *ngIf="this.updateLoading" class="fa-solid text-lg fa-circle-notch fa-spin"></i>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: columnsToDisplay;"
+                                 class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
+                    </mat-table>
+                    <mat-paginator showFirstLastButtons
+                                   *ngIf="this.total > 0"
+                                   [length]="this.total"
+                                   [pageSize]="pageSize"
+                                   [pageIndex]="pageIndex"
+                                   [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                                   (page)="onPageChange($event)">
+                    </mat-paginator>
+                </mat-tab>
+            </mat-tab-group>
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>
