@@ -17,6 +17,11 @@
     }
 }
 
+.mat-step-header:hover,
+.mat-step-header.cdk-program-focused {
+    @apply bg-transparent #{!important};
+}
+
 .mat-step-header[aria-labelledby="disabled_step"] {
     @apply pointer-events-none;
     @apply cursor-not-allowed #{!important};
@@ -43,7 +48,6 @@
 .mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before {
     @apply hidden #{!important};
 }
-
 
 .mat-primary .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-minimal::after,
 .mat-primary .mat-pseudo-checkbox-indeterminate.mat-pseudo-checkbox-minimal::after {
