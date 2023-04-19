@@ -1,20 +1,41 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
     <mat-sidenav #sidenav mode="side" opened class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
-        <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
-            {{ "ACCOUNTS.choose_input_upload" | translate }}
-        </h3>
-        <mat-divider></mat-divider>
-        <mat-list>
-            <mat-list-item *ngFor="let input of inputs" class="cursor-pointer m-2 w-auto" (click)="setInput(input.id)">
-                <span [class.text-green-400]="this.selectedInput === input.id" class="hover:text-green-400"
-                [matTooltip]="input.input_label" [matTooltipDisabled]="input.input_label.replace(' ', '').length <= 20">
-                    {{ input.input_label }}
-                </span>
-                <span *ngIf="this.selectedInput === input.id">
-                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                </span>
-            </mat-list-item>
-        </mat-list>
+        <mat-tab-group>
+            <mat-tab [label]="'UPLOAD.inputs' | translate">
+                <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
+                    {{ "ACCOUNTS.choose_input_upload" | translate }}
+                </h3>
+                <mat-divider></mat-divider>
+                <mat-list>
+                    <mat-list-item *ngFor="let input of inputs" class="cursor-pointer m-2 w-auto" (click)="setInput(input.id)">
+                        <span [class.text-green-400]="this.selectedInput === input.id" class="hover:text-green-400"
+                              [matTooltip]="input.input_label" [matTooltipDisabled]="input.input_label.replace(' ', '').length <= 20">
+                            {{ input.input_label }}
+                        </span>
+                        <span *ngIf="this.selectedInput === input.id">
+                            <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                        </span>
+                    </mat-list-item>
+                </mat-list>
+            </mat-tab>
+            <mat-tab [label]="'UPLOAD.workflows' | translate">
+                <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
+                    {{ "ACCOUNTS.choose_workflow_upload" | translate }}
+                </h3>
+                <mat-divider></mat-divider>
+                <mat-list>
+                    <mat-list-item *ngFor="let workflow of workflows" class="cursor-pointer m-2 w-auto" (click)="setWorkflow(workflow.id)">
+                        <span [class.text-green-400]="this.selectedWorkflow === workflow.id" class="hover:text-green-400"
+                              [matTooltip]="workflow.label" [matTooltipDisabled]="workflow.label.replace(' ', '').length <= 20">
+                            {{ workflow.label }}
+                        </span>
+                        <span *ngIf="this.selectedWorkflow === workflow.id">
+                            <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                        </span>
+                    </mat-list-item>
+                </mat-list>
+            </mat-tab>
+        </mat-tab-group>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
         <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-2" style="z-index: 999">
@@ -35,10 +56,9 @@
                 [class]="'max-w-3xl h-56 mt-24 mb-5'"
                 (valueChanged)="checkFile($event)">
         </ngx-file-drag-drop>
-        <div class="text-center"
-             [class.cursor-not-allowed]="this.error || !(!this.sending && this.selectedInput && this.fileControl.value!.length !== 0)">
+        <div class="text-center" [class.cursor-not-allowed]="this.error || !(!this.sending && this.selectedInput && this.fileControl.value!.length !== 0)">
             <button mat-button
-                    [disabled]="this.error || this.sending || this.selectedInput === '' || this.fileControl.value!.length === 0" (click)="uploadFile()"
+                    [disabled]="this.error || this.sending || (this.selectedWorkflow === '' && this.selectedInput === '') || this.fileControl.value!.length === 0" (click)="uploadFile()"
                     [class.hover:bg-transparent]="!this.error && !this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
                     [class.bg-opacity-100]="!this.error && !this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
                     [class.bg-opacity-40]="this.error || !(!this.sending && this.selectedInput && this.fileControl.value!.length !== 0)"
@@ -48,8 +68,8 @@
                 {{ 'UPLOAD.upload_file' | translate }}
             </button>
         </div>
-        <span *ngIf="this.selectedInput === ''" class="flex justify-center mt-4 text-red-500">
-            {{ 'UPLOAD.please_select_input' | translate }}
+        <span *ngIf="this.selectedInput === '' && this.selectedWorkflow === ''" class="flex justify-center mt-4 text-red-500">
+            {{ 'UPLOAD.please_select_input_or_workflow' | translate }}
         </span>
     </mat-sidenav-content>
 </mat-sidenav-container>

@@ -627,6 +627,9 @@ INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input
 INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder", "module", "splitter_method_id") VALUES (2, 'default_input', 'Chaîne entrante par défaut', 4, '/var/share/entrant/splitter/', 'splitter', 'qr_code_OC');
 ALTER SEQUENCE "inputs_id_seq" RESTART WITH 3;
 
+-- CRÉATION DES WORKFLOWS
+INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "separation", "output") VALUES (1, 'default_workflow', 'Workflow par défaut', 'verifier', '{"workflow_id": "default_workflow", "input_folder": "/var/share/edissyum/entrant/verifier/", "apply_process": true, "workflow_label": "Workflow par défaut"}', '{"form_id": 1, "rotation": "no_rotation", "system_fields": ["supplier", "invoice_number", "quotation_number", "document_date", "document_due_date", "footer"], "use_interface": true}', '{"remove_blank_pages": true, "splitter_method_id": "no_sep", "separate_by_document_number_value": 2}', '{"outputs_id": [1, 3]}');
+
 -- CRÉATION DES CHAMPS CUSTOMS POUR LE SPLITTER
 INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (1, 'nom_usage', 'nom_usage', 'Nom d''usage', 'text', 'splitter');
 INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (2, 'prenom', 'prenom', 'Prénom', 'text', 'splitter');

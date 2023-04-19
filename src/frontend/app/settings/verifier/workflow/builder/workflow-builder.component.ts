@@ -110,32 +110,6 @@ export class WorkflowBuilderComponent implements OnInit {
                 control: new FormControl()
             },
             {
-                id: 'rotation',
-                multiple: false,
-                label: this.translate.instant('WORKFLOW.rotation'),
-                type: 'select',
-                control: new FormControl(),
-                required: true,
-                values: [
-                    {
-                        'id': 'no_rotation',
-                        'label': this.translate.instant('WORKFLOW.no_rotation'),
-                    },
-                    {
-                        'id': 45,
-                        'label': this.translate.instant('WORKFLOW.rotate_45')
-                    },
-                    {
-                        'id': 90,
-                        'label': this.translate.instant('WORKFLOW.rotate_90')
-                    },
-                    {
-                        'id': 180,
-                        'label': this.translate.instant('WORKFLOW.rotate_180')
-                    }
-                ]
-            },
-            {
                 id: 'form_id',
                 multiple: false,
                 label: this.translate.instant('POSITIONS-MASKS.form_associated'),
@@ -179,6 +153,32 @@ export class WorkflowBuilderComponent implements OnInit {
                     {
                         'id': 'footer',
                         'label': this.translate.instant('WORKFLOW.footer'),
+                    }
+                ]
+            },
+            {
+                id: 'rotation',
+                multiple: false,
+                label: this.translate.instant('WORKFLOW.rotation'),
+                type: 'select',
+                control: new FormControl(),
+                required: true,
+                values: [
+                    {
+                        'id': 'no_rotation',
+                        'label': this.translate.instant('WORKFLOW.no_rotation'),
+                    },
+                    {
+                        'id': 45,
+                        'label': this.translate.instant('WORKFLOW.rotate_45')
+                    },
+                    {
+                        'id': 90,
+                        'label': this.translate.instant('WORKFLOW.rotate_90')
+                    },
+                    {
+                        'id': 180,
+                        'label': this.translate.instant('WORKFLOW.rotate_180')
                     }
                 ]
             }
@@ -225,7 +225,7 @@ export class WorkflowBuilderComponent implements OnInit {
         ],
         output: [
             {
-                id: 'output_id',
+                id: 'outputs_id',
                 label: this.translate.instant('WORKFLOW.choose_output'),
                 type: 'select',
                 multiple: true,
@@ -356,7 +356,7 @@ export class WorkflowBuilderComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/outputs/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.fields['output'].forEach((element: any) => {
-                    if (element.id === 'output_id') {
+                    if (element.id === 'outputs_id') {
                         element.values = data.outputs;
                         element.values.forEach((elem: any) => {
                             elem.label = elem.output_label;
@@ -525,9 +525,9 @@ export class WorkflowBuilderComponent implements OnInit {
                 tap(() => {
                     this.http.post(environment['url'] + '/ws/workflows/verifier/create', {'args': workflow}, {headers: this.authService.headers}).pipe(
                         tap(() => {
-                            this.historyService.addHistory('verifier', 'create_workflow', this.translate.instant('HISTORY-DESC.create-workflow', {workflow: workflow['label']}));
                             this.router.navigate(['/settings/verifier/workflows']).then();
                             this.notify.success(this.translate.instant('WORKFLOW.workflow_created'));
+                            this.historyService.addHistory('verifier', 'create_workflow', this.translate.instant('HISTORY-DESC.create-workflow', {workflow: workflow['label']}));
                         }),
                         catchError((err: any) => {
                             console.debug(err);

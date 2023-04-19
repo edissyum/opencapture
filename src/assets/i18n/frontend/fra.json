@@ -14,6 +14,7 @@
 	},
 	"ACCOUNTS": {
 		"choose_input_upload": "Choix de la chaîne entrante",
+		"choose_workflow_upload": "Choix du workflow",
 		"company_number": "Numéro de société",
 		"confirm_delete_customer": "Êtes vous sûr de vouloir supprimer le compte client <strong>{{ customer }}</strong> ?",
 		"confirm_delete_supplier": "Êtes vous sûr de vouloir supprimer le compte fournisseur <strong>{{ supplier }}</strong> ?",
@@ -138,6 +139,7 @@
 		"yellow": "Jaune"
 	},
 	"CONFIGURATIONS": {
+		"advanced": "Paramètres avancés",
 		"authorized_extensions": "Extension autorisée : PNG",
 		"bool": "Booléen",
 		"change_image": "Changer l'image de l'application",
@@ -453,6 +455,7 @@
 		"enable-mailcollect-process": "Activation du processus MailCollect&nbsp;<strong>{{ process }}</strong>",
 		"enable-user": "Activation de l'utilisateur&nbsp;<strong>{{ user }}</strong>",
 		"file_uploaded": "Fichier téléversé via l'interface avec la chaîne entrante&nbsp;<strong>{{ input }}</strong>",
+		"file_uploaded_workflow": "Fichier téléversé via l'interface avec le workflow&nbsp;<strong>{{ workflow }}</strong>",
 		"language_changed": "Changemement de la langue vers <strong>{{ lang }}</strong>",
 		"login": "Connexion de l'utilisateur",
 		"login_with_token": "Connexion de l'utilisateur via token (application tierce)",
@@ -980,13 +983,15 @@
 	},
 	"UPLOAD": {
 		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
+		"inputs": "Chaînes entrantes",
 		"no_file": "Aucun fichier à téléverser",
 		"placeholder": "Cliquez pour choisir un ou plusieurs documents PDF (3 maximum) ou faites glisser vos documents",
-		"please_select_input": "Choisissez une chaîne entrante avant de procéder au téléversement",
+		"please_select_input_or_workflow": "Choisissez une chaîne entrante ou un workflow avant de procéder au téléversement",
 		"purchase_invoice": "Facture d'achat",
 		"sale_invoice": "Facture de vente",
 		"upload_file": "Téléverser le fichier",
-		"upload_success": "Fichier(s) téléversé(s) avec succès"
+		"upload_success": "Fichier(s) téléversé(s) avec succès",
+		"workflows": "Workflows"
 	},
 	"USER-QUOTA": {
 		"description": "Le quota utilisateur permet de limiter la création d'utilisateur à un certains nombres (utile pour des installations mutualisés sur un VPS par exemple)",

@@ -14,6 +14,7 @@
 	},
 	"ACCOUNTS": {
 		"choose_input_upload": "Choose input upload",
+		"choose_workflow_upload": "Choose workflow",
 		"company_number": "Company number",
 		"confirm_delete_customer": "Are you sure you want to delete the customer account <strong>{{ customer }}</strong> ?",
 		"confirm_delete_supplier": "Are you sure you want to delete the supplier customer <strong>{{ supplier }}</strong> ?",
@@ -138,6 +139,7 @@
 		"yellow": "Yellow"
 	},
 	"CONFIGURATIONS": {
+		"advanced": "Advanced settings",
 		"authorized_extensions": "Allowed extension : PNG",
 		"bool": "Boolean",
 		"change_image": "Change application image",
@@ -453,6 +455,7 @@
 		"enable-mailcollect-process": "MailCollect process enabled&nbsp;<strong>{{ process }}</strong>",
 		"enable-user": "User enabled&nbsp;<strong>{{ user }}</strong>",
 		"file_uploaded": "File uploaded successfully with input&nbsp;<strong>{{ input }}</strong>",
+		"file_uploaded_workflow": "File uploaded successfully with workflow&nbsp;<strong>{{ workflow }}</strong>",
 		"language_changed": "Change lang to <strong>{{ lang }}",
 		"login": "Login of user",
 		"login_with_token": "Login of user with token (third application)",
@@ -980,13 +983,15 @@
 	},
 	"UPLOAD": {
 		"extension_unauthorized": "One or more files aren't in PDF format",
+		"inputs": "Inputs",
 		"no_file": "No file to upload",
 		"placeholder": "Drag and drop or click to upload PDF file(s) (maximum 3)",
-		"please_select_input": "Please select input",
+		"please_select_input_or_workflow": "Please select input or workflow",
 		"purchase_invoice": "Purchase invoice",
 		"sale_invoice": "Sale invoice",
 		"upload_file": "Upload file",
-		"upload_success": "File upload successfully"
+		"upload_success": "File upload successfully",
+		"workflows": "Workflows"
 	},
 	"USER-QUOTA": {
 		"description": "The user quota allows you to limit user creation to a certain number (useful for shared installations on a VPS for example)",
