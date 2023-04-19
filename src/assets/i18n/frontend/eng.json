@@ -1099,6 +1099,8 @@
 		"viewer": "View PDF"
 	},
 	"WORKFLOW": {
+		"allow_automatic_validation": "Allow automatic validation",
+		"allow_automatic_validation_hint": "If the system fields are found automatically, the document will not go through the validation interface",
 		"apply_process": "Apply process to the workflow",
 		"back": "Back",
 		"choose_output": "Choose output(s)",

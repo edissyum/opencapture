@@ -1,3 +1,8 @@
+.mdc-tooltip--shown .mdc-tooltip__surface-animation {
+    @apply max-w-none #{!important};
+    @apply w-80 #{!important};
+}
+
 .mat-mdc-tab-header {
     @apply z-20;
     & .mat-mdc-tab-label-container .mat-mdc-tab-list .mat-mdc-tab-labels {

@@ -1099,6 +1099,8 @@
 		"viewer": "Visualisation du PDF"
 	},
 	"WORKFLOW": {
+		"allow_automatic_validation": "Autoriser la validation automatique",
+		"allow_automatic_validation_hint": "Si les champs systèmes sont trouvés de manière automatique, le document ne passera pas par l'interface de validation",
 		"apply_process": "Appliquer un traitement sur le workflow",
 		"back": "Retour",
 		"choose_output": "Choix du/des chaîne(s) sortante(s)",

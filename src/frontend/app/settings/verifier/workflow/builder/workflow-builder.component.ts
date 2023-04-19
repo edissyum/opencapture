@@ -100,6 +100,15 @@ export class WorkflowBuilderComponent implements OnInit {
                 id: 'use_interface',
                 label: this.translate.instant('WORKFLOW.use_interface'),
                 type: 'boolean',
+                show: true,
+                control: new FormControl()
+            },
+            {
+                id: 'allow_automatic_validation',
+                label: this.translate.instant('WORKFLOW.allow_automatic_validation'),
+                hint: this.translate.instant('WORKFLOW.allow_automatic_validation_hint'),
+                type: 'boolean',
+                show: false,
                 control: new FormControl()
             },
             {
@@ -107,6 +116,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 label: this.translate.instant('WORKFLOW.delete_documents'),
                 hint: this.translate.instant('WORKFLOW.delete_documents_hint'),
                 type: 'boolean',
+                show: true,
                 control: new FormControl()
             },
             {
@@ -116,6 +126,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 type: 'select',
                 control: new FormControl(),
                 required: false,
+                show: false,
                 values: []
             },
             {
@@ -125,6 +136,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 type: 'select',
                 control: new FormControl(['supplier', 'invoice_number', 'quotation_number', 'document_date', 'document_due_date', 'footer']),
                 required: false,
+                show: false,
                 values: [
                     {
                         'id': 'supplier',
@@ -163,6 +175,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 type: 'select',
                 control: new FormControl(),
                 required: true,
+                show: true,
                 values: [
                     {
                         'id': 'no_rotation',
@@ -405,7 +418,8 @@ export class WorkflowBuilderComponent implements OnInit {
     setUseInterface(value: any) {
         this.useInterface = value;
         this.fields['process'].forEach((element: any) => {
-            if (element.id === 'form_id' || element.id === 'system_fields') {
+            if (element.id === 'form_id' || element.id === 'system_fields' || element.id === 'allow_automatic_validation') {
+                element.show = this.useInterface;
                 element.required = this.useInterface;
             }
         });
@@ -439,19 +453,6 @@ export class WorkflowBuilderComponent implements OnInit {
         });
         this.stepValid[step] = valid;
         return valid;
-    }
-
-    stepDisabled(step: any) {
-        if (step === 'process') {
-            return !this.stepValid['input'];
-        }
-        if (step === 'separation') {
-            return !this.stepValid['input'] || (this.processAllowed && !this.stepValid['process']);
-        }
-        if (step === 'output') {
-            return !this.stepValid['separation'] && (!this.stepValid['process'] || !this.stepValid['input']);
-        }
-        return false;
     }
 
     updateWorkflow(step: any) {
