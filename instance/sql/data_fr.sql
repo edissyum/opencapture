@@ -624,7 +624,7 @@ INSERT INTO "doctypes" ("key", "label", "code", "is_default", "type", "form_id")
 
 -- CRÉATION DES CHAINES ENTRANTES
 INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder", "module", "splitter_method_id") VALUES (1, 'default_input', 'Chaîne entrante par défaut', 1, '/var/share/entrant/verifier/', 'verifier', 'no_sep');
-INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder", "module", "splitter_method_id") VALUES (2, 'default_input', 'Chaîne entrante par défaut', 4, '/var/share/entrant/splitter/', 'splitter', 'qr_code_OC');
+INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder", "module", "splitter_method_id") VALUES (2, 'default_input', 'Chaîne entrante par défaut', 3, '/var/share/entrant/splitter/', 'splitter', 'qr_code_OC');
 ALTER SEQUENCE "inputs_id_seq" RESTART WITH 3;
 
 -- CRÉATION DES WORKFLOWS

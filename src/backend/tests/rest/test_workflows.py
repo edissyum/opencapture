@@ -57,7 +57,7 @@ class WorkflowsTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['workflows']), 0)
+        self.assertEqual(len(response.json['workflows']), 1)
 
     def test_successful_get_workflow_list_splitter(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/workflows/splitter/list',

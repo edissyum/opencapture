@@ -40,7 +40,7 @@ def upload():
     files = request.files
     res = verifier.handle_uploaded_file(files, input_id, return_token)
 
-    if res and res[0]:
+    if res and res[0] is not False:
         return make_response(res[0], res[1])
     else:
         return make_response(gettext('UNKNOW_ERROR'), 400)

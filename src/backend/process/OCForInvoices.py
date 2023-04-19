@@ -492,7 +492,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if form_settings and form_settings[0]['settings']:
             form_settings = form_settings[0]['settings']
-            if form_settings['allow_automatic_validation'] and form_settings['automatic_validation_data']:
+            if 'allow_automatic_validation' in form_settings and 'automatic_validation_data' in form_settings and form_settings['automatic_validation_data']:
                 for column in form_settings['automatic_validation_data'].split(','):
                     column = column.strip()
                     if column == 'only_ocr':
