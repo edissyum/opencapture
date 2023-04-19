@@ -31,13 +31,17 @@ def upload():
     if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'upload']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/upload'}), 403
 
-    input_id = None
+    input_id = return_token = None
     if 'inputId' in request.args:
         input_id = request.args['inputId']
+    if 'returnToken' in request.args:
+        return_token = True
+
     files = request.files
-    res = verifier.handle_uploaded_file(files, input_id)
-    if res:
-        return make_response('', 200)
+    res = verifier.handle_uploaded_file(files, input_id, return_token)
+
+    if res and res[0]:
+        return make_response(res[0], res[1])
     else:
         return make_response(gettext('UNKNOW_ERROR'), 400)
 

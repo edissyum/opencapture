@@ -23,14 +23,13 @@ import shutil
 import os.path
 import datetime
 import pandas as pd
-from flask import current_app
 from flask_babel import gettext
-from flask import request, g as current_context
 from src.backend.main_splitter import launch
-from src.backend.import_models import splitter, doctypes, accounts
-from src.backend.import_controllers import forms, outputs, user
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from flask import current_app, request, g as current_context
+from src.backend.import_models import splitter, doctypes, accounts
+from src.backend.import_controllers import forms, outputs, user, monitoring
 from src.backend.import_classes import _Files, _Splitter, _CMIS, _MEMWebServices, _OpenADS
 
 
@@ -39,15 +38,27 @@ def handle_uploaded_file(files, input_id, user_id):
     path = current_app.config['UPLOAD_FOLDER_SPLITTER']
 
     for file in files:
-        f = files[file]
-        filename = _Files.save_uploaded_file(f, path, False)
-        launch({
-            'custom_id': custom_id,
+        _f = files[file]
+        filename = _Files.save_uploaded_file(_f, path, False)
+
+        task_id_monitor = monitoring.create_process({
+            'status': 'wait',
+            'module': 'splitter',
+            'filename': os.path.basename(filename),
             'input_id': input_id,
-            'user_id': user_id,
-            'file': filename,
+            'source': 'interface',
         })
 
+        if task_id_monitor:
+            launch({
+                'custom_id': custom_id,
+                'input_id': input_id,
+                'user_id': user_id,
+                'file': filename,
+                'task_id_monitor': task_id_monitor[0]['process']
+            })
+        else:
+            return False
     return True
 
 

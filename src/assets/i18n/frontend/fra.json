@@ -653,7 +653,8 @@
 		"step": "Étape",
 		"task_done": "Tâche terminée",
 		"task_error": "Tâche en erreur",
-		"verifier": "Vérificateur"
+		"verifier": "Vérificateur",
+		"wait": "En attente de traitement"
 	},
 	"OUTPUT": {
 		"add": "Ajouter une chaîne sortante",

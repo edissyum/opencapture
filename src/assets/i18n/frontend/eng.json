@@ -653,7 +653,8 @@
 		"step": "Step",
 		"task_done": "Task done",
 		"task_error": "Task in error",
-		"verifier": "Verifier"
+		"verifier": "Verifier",
+		"wait": "Waiting to be processed"
 	},
 	"OUTPUT": {
 		"add": "Add output",

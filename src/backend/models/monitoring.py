@@ -59,3 +59,19 @@ def get_process_by_id(process_id, date_format):
         'data': [process_id],
     })
     return _process, error
+
+
+def insert(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    res = database.insert({
+        'table': 'monitoring',
+        'columns': args
+    })
+    return res, error

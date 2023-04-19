@@ -90,19 +90,18 @@ def launch(args):
         }
     })
 
-    task_id_monitor = database.insert({
-        'table': 'monitoring',
-        'columns': {
-            'status': 'running',
-            'module': 'verifier',
-            'filename': os.path.basename(args['file']),
-            'input_id': args['input_id'] if 'input_id' in args else None,
-            'source': args['source'] if 'source' in args and args['source'] else 'interface'
-        }
+    database.update({
+        'table': ['monitoring'],
+        'set': {
+            'creation_date': time.strftime("%Y-%m-%d %H:%M:%S"),
+            'status': 'running'
+        },
+        'where': ['id = %s'],
+        'data': [args['task_id_monitor']]
     })
 
     log.task_id_watcher = task_id_watcher
-    log.task_id_monitor = task_id_monitor
+    log.task_id_monitor = args['task_id_monitor']
     log.database = database
 
     tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
@@ -200,12 +199,12 @@ def launch(args):
     database.update({
         'table': ['monitoring'],
         'set': {
-            'document_ids': [res],
+            'token': args['token'] if 'token' in args and args['token'] else None,
             'elapsed_time': _timer,
             'status': 'done',
             'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
         },
         'where': ['id = %s'],
-        'data': [task_id_monitor]
+        'data': [args['task_id_monitor']]
     })
     database.conn.close()

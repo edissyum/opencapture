@@ -42,8 +42,8 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
     pageIndex           : number                = 0;
     total               : number                = 0;
     offset              : number                = 0;
-    inputLabel          : string                = '';
     splitterCpt         : number                = 0;
+    inputLabel          : string                = '';
     processId           : number | undefined;
     steps               : any;
     timer               : any;
