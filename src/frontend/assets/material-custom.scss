@@ -1,6 +1,5 @@
 .mdc-tooltip--shown .mdc-tooltip__surface-animation {
-    @apply max-w-none #{!important};
-    @apply w-80 #{!important};
+    @apply max-w-sm #{!important};
 }
 
 .mat-mdc-tab-header {
