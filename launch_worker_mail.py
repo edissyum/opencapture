@@ -77,15 +77,15 @@ if not processes:
 
 mail_global = database.select({
     'select': ['*'],
-    'table': ['configurations'],
-    'where': ['label = %s'],
-    'data': ['mailCollectGeneral']
+    'table': ['docservers'],
+    'where': ['docserver_id = %s'],
+    'data': ['MAILCOLLECT_BATCHES']
 })
 
 if not mail_global:
-    exit('Error with mailCollectGeneral settings in configurations table')
+    exit('Error with smtp settings in configurations table')
 
-mail_global = mail_global[0]['data']['value']
+mail_global = mail_global[0]
 config_mail = {}
 
 for process in processes:
@@ -95,8 +95,8 @@ for process in processes:
     global_log = _Log(config['GLOBAL']['logfile'], smtp)
 
     now = datetime.datetime.now()
-    path = mail_global['batchPath'] + '/' + process['name'] + '/' + str('%02d' % now.year) + str('%02d' % now.month) + str('%02d' % now.day) + '/'
-    path_without_time = mail_global['batchPath']
+    path = mail_global['path'] + '/' + process['name'] + '/' + str('%02d' % now.year) + str('%02d' % now.month) + str('%02d' % now.day) + '/'
+    path_without_time = mail_global['path']
 
     Mail = _Mail(
         config_mail['hostname'],
@@ -141,8 +141,8 @@ for process in processes:
             date_batch = year + month + day + '_' + hour + minute + second + microsecond
             batch_path = tempfile.mkdtemp(dir=path, prefix='BATCH_' + date_batch + '_')
 
-            print('Batch name : ' + mail_global['batchPath'].replace("/var/www/html/opencapture/", "") + '/' + batch_path.split('/MailCollect')[1].replace('//', '/'))
-            print('Batch error name : ' + mail_global['batchPath'].replace("/var/www/html/opencapture/", "") + '/_ERROR/' + batch_path.split('/MailCollect')[1].replace('//', '/'))
+            print('Batch name : ' + mail_global['path'].replace("/var/www/html/opencapture/", "") + '/' + batch_path.split('/MailCollect')[1].replace('//', '/'))
+            print('Batch error name : ' + mail_global['path'].replace("/var/www/html/opencapture/", "") + '/_ERROR/' + batch_path.split('/MailCollect')[1].replace('//', '/'))
 
             Log = _Log(batch_path + '/' + date_batch + '.log', smtp)
             Log.info('Start following batch : ' + os.path.basename(os.path.normpath(batch_path)))

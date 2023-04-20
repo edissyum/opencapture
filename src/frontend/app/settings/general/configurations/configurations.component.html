@@ -23,7 +23,7 @@
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!loading" class="w-full overflow-x-hidden overflow-y-auto h-full-overflow">
             <mat-tab-group dynamicHeight class="w-full">
-                <mat-tab label="{{ 'CONFIGURATIONS.global' | translate }}">
+                <mat-tab [label]="'CONFIGURATIONS.global' | translate">
                     <div class="text-center grid grid-cols-2 gap-6">
                         <div>
                             <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.change_image" | translate }}</h3>
@@ -58,7 +58,7 @@
                         </div>
                     </div>
                 </mat-tab>
-                <mat-tab label="{{ 'CONFIGURATIONS.password_rules' | translate }}">
+                <mat-tab [label]="'CONFIGURATIONS.password_rules' | translate">
                     <div class="text-center">
                         <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.password_rules" | translate }}</h3>
                         <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
@@ -95,7 +95,74 @@
                         </div>
                     </div>
                 </mat-tab>
-                <mat-tab label="{{ 'CONFIGURATIONS.advanced' | translate }}">
+                <mat-tab [label]="'CONFIGURATIONS.smtp' | translate">
+                    <div class="text-center p-8">
+                        <div class="hint text-center">
+                            <i class="fa-solid fa-circle-exclamation fa-2x pl-1"></i>
+                            <div class="message w-auto">
+                                <span class="text-lg">
+                                    {{ "CONFIGURATIONS.smtp_test_email" | translate }}
+                                </span>
+                                <mat-form-field subscriptSizing="dynamic" [ngStyle]="{'width.ch': this.emailTestControl.value.length, 'min-width.ch': 20}">
+                                    <input matInput type="text" [formControl]="this.emailTestControl">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <ng-container *ngFor="let unit of this.units">
+                            <h2 class="text-gray-900">{{ unit['label'] | translate }}</h2>
+                            <div class="flex justify-center mx-10">
+                                <div class="grid grid-cols-3 gap-6 w-full mt-5 mb-0 text-center">
+                                    <ng-container *ngFor="let field of this.smtpForm">
+                                        <ng-container *ngIf="field.unit === unit['id']">
+                                            <div *ngIf="field.type === 'boolean'" class="col-span-3 mb-8">
+                                                <mat-slide-toggle class="relative m-auto top-4" [formControl]="field['control']">
+                                                    {{ field.label | translate }}
+                                                </mat-slide-toggle>
+                                            </div>
+                                            <mat-form-field class="w-full" *ngIf="field.type === 'text' || field.type === 'password' || field.type === 'number'"
+                                                [class.pointer-events-none]="disableField(unit['id'])">
+                                                <mat-label>{{ field.label | translate }}</mat-label>
+                                                <input matInput [type]="field.type" [formControl]="field['control']"
+                                                       [readonly]="disableField(unit['id'])">
+                                                <mat-icon matSuffix *ngIf="field.id === 'smtpPwd'" (click)="field.type === 'text' ? field.type = 'password' : field.type = 'text' "
+                                                          class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                                                    <i class="fa fa-1x" [class.fa-eye-slash]="field.type !== 'password'" [class.fa-eye]="field.type === 'password'"></i>
+                                                </mat-icon>
+                                            </mat-form-field>
+                                            <mat-form-field class="w-full" *ngIf="field.type === 'select'">
+                                                <mat-label>{{ field.label | translate }}</mat-label>
+                                                <mat-select [formControl]="field['control']" [required]="field['required']">
+                                                    <mat-option *ngFor="let option of field.values" [value]="option['id']">
+                                                        {{ option['label'] | translate }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </ng-container>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <div class="flex justify-center items-center mt-4">
+                            <span [class.cursor-not-allowed]="!this.emailTestControl.value">
+                                <button class="p-6 mr-4 border min-w-56 text-white transition border-solid duration-300 border-gray-900 hover:text-gray-900 hover:bg-transparent" mat-button (click)="this.testSmtp()"
+                                        [disabled]="!this.emailTestControl.value"
+                                        [class.bg-gray-900]="this.emailTestControl.value"
+                                        [class.bg-gray-400]="!this.emailTestControl.value">
+                                    <span *ngIf="!this.sending">
+                                        {{ "CONFIGURATIONS.test_smtp" | translate }}
+                                    </span>
+                                    <span *ngIf="this.sending">
+                                        <i class="fa fa-circle-notch fa-spin fa-2x"></i>
+                                    </span>
+                                </button>
+                            </span>
+                            <button class="ml-4 valid_button" type="submit" mat-button (click)="this.updateSmtp()">
+                                {{ 'CONFIGURATIONS.update_smtp' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab [label]="'CONFIGURATIONS.advanced' | translate">
                     <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
                     <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
                         <ng-container matColumnDef="id">

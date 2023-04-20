@@ -45,8 +45,8 @@ kuyruk = Kuyruk()
 def execute(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages, mail, smtp):
     if check_file(files, path, log, docservers):
         is_facturx = False
-        with open(args['file'], 'rb') as f:
-            _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
+        with open(args['file'], 'rb') as _f:
+            _, xml_content = facturx.get_facturx_xml_from_pdf(_f.read())
             if _ is not None:
                 is_facturx = True
 
@@ -56,7 +56,7 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
         else:
             parsed_xml = etree.fromstring(xml_content)
             args['facturx_level'] = facturx.get_facturx_level(parsed_xml)
-            log.info('FacturX detected. Level is %s' % args['facturx_level'])
+            log.info(f"FacturX detected. Level is {args['facturx_level']}")
             args['log'] = log
             args['files'] = files
             args['regex'] = regex

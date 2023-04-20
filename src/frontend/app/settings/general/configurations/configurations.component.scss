@@ -17,3 +17,34 @@
 .mat-column-actions {
     flex: 0 0 5%;
 }
+
+.mat-mdc-tab-header .mat-mdc-tab-label-container .mat-mdc-tab-list .mat-mdc-tab-labels .mdc-tab {
+    @apply w-1/4 #{!important};
+}
+
+.hint {
+    @apply my-3;
+    @apply flex;
+    @apply mx-auto;
+    @apply border-l-8;
+    @apply rounded-sm;
+    @apply text-gray-900;
+    @apply justify-center;
+    @apply bg-green-400/40;
+    @apply border-l-gray-900/50;
+
+    & i {
+        @apply flex;
+        @apply items-center;
+        @apply text-green-400;
+    }
+
+    & .message {
+        @apply m-6;
+    }
+}
+
+.hint .mdc-text-field--outlined .mdc-notched-outline {
+    @apply h-8;
+    @apply top-3;
+}

@@ -25,10 +25,9 @@ INSERT INTO "configurations" ("label", "data") VALUES ('allowUserMultipleLogin',
 INSERT INTO "configurations" ("label", "data") VALUES ('restrictInputsPath', '{"type": "bool", "value": false, "description": "Activer la restriction du chemin sur le dossier des chaînes entrantes"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('restrictOutputsPath', '{"type": "bool", "value": false, "description": "Activer la restriction du chemin sur le dossier des chaînes sortantes"}');
 INSERT INTO "configurations" ("label", "data", "display") VALUES ('locale', '{"type": "string", "value": "fra", "description": "Clé pour la sélection de la langue (fra ou eng par défaut)"}', false);
-INSERT INTO "configurations" ("label", "data", "display") VALUES ('mailCollectGeneral', '{
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('smtp', '{
     "type": "json",
     "value": {
-        "batchPath": "/var/www/html/opencapture/bin/data/MailCollect/",
         "smtpNotifOnError": false,
         "smtpSSL": true,
         "smtpStartTLS": false,
@@ -41,7 +40,7 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('mailCollectGe
         "smtpDestAdminMail": "",
         "smtpDelay": "30"
     },
-    "description": "Paramétrage par défaut du MailCollect"
+    "description": "Paramétrage de l''envoi d''email SMTP"
 }', false);
 INSERT INTO "configurations" ("label", "data", "display") VALUES ('userQuota', '{
     "type": "json",
@@ -90,6 +89,8 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITT
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_AI_MODEL_PATH', '[SPLITTER] Chemin vers le dossier contenant le modèle de prédiction', '/var/docservers/opencapture/splitter/ai/models/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('INPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier d''entrée des fichiers importés', '/var/share/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('OUTPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier de sortie des fichiers exportés', '/var/share/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('OUTPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier de sortie des fichiers exportés', '/var/share/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('MAILCOLLECT_BATCHES', 'Chemin de stockage des batches du module MailCollect', '/var/www/html/opencapture/bin/data/MailCollect/');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE VERIFIER
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (1, 'export_xml', 'Export XML', 'verifier', '{

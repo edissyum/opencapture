@@ -51,7 +51,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
             'select': ['*'],
             'table': ['configurations'],
             'where': ['label = %s'],
-            'data': ['mailCollectGeneral']
+            'data': ['smtp']
         })
 
         if mail_global:
@@ -62,8 +62,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
                 mail_global['smtpPort'],
                 mail_global['smtpLogin'],
                 mail_global['smtpPwd'],
-                mail_global['smtpSSL'],
-                mail_global['smtpStartTLS'],
+                mail_global['smtpProtocoleSecure'],
                 mail_global['smtpDestAdminMail'],
                 mail_global['smtpDelay'],
                 mail_global['smtpAuth'],

@@ -21,54 +21,6 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!this.loading" class="w-full overflow-auto h-full-overflow">
-            <mat-accordion>
-                <mat-expansion-panel class="m-4" #mep="matExpansionPanel">
-                    <mat-expansion-panel-header>
-                        <mat-panel-title class="justify-center">
-                            {{ 'MAILCOLLECT.global_parameters' | translate }}
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <hr *ngIf="mep.expanded" class="border-green-400 w-1/2 m-auto">
-                    <div class="flex flex-wrap m-10 mb-0 text-center">
-                        <ng-container *ngFor="let field of this.globalForm">
-                            <div class="w-1/3" *ngIf="field.type === 'text' || field.type === 'password'"
-                                 [ngClass]="{'w-1/4': field.id === 'smtpHost' || field.id === 'smtpPort' || field.id === 'smtpLogin'}">
-                                <mat-form-field class="block m-1">
-                                    <mat-label>{{ field.label | translate }}</mat-label>
-                                    <input matInput [formControl]="field['control']" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field['required']">
-                                    <mat-icon matSuffix *ngIf="field.id === 'smtpPwd'" (click)="field.type === 'text' ? field.type = 'password' : field.type = 'text' "
-                                              class="text-green-400 relative cursor-pointer -top-0.5 text-base">
-                                        <i class="fa fa-1x" [class.fa-eye-slash]="field.type !== 'password'" [class.fa-eye]="field.type === 'password'"></i>
-                                    </mat-icon>
-                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div *ngIf="field.type === 'number'">
-                                <mat-form-field class="block m-1">
-                                    <mat-label>{{ field.label | translate }}</mat-label>
-                                    <input matInput [formControl]="field['control']" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field['required']">
-                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div *ngIf="field.type === 'boolean'"
-                                 [ngClass]="{'w-1/4': field.id === 'smtpAuth', 'w-1/6': field.id !== 'smtpAuth'}">
-                                <mat-slide-toggle class="relative m-auto top-4" [formControl]="field['control']">
-                                    {{ field.label | translate }}
-                                </mat-slide-toggle>
-                            </div>
-                        </ng-container>
-                    </div>
-                    <div class="w-full text-center mb-4">
-                        <button class="valid_button" type="submit" mat-button (click)="updateGlobal()">
-                            {{ 'MAILCOLLECT.update_global' | translate }}
-                        </button>
-                    </div>
-                </mat-expansion-panel>
-            </mat-accordion>
-
-            <h3 class="text-center text-gray-900 mx-4">{{ 'MAILCOLLECT.process_parameters' | translate }}</h3>
-            <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
-
             <mat-tab-group class="mx-5" [selectedIndex]="this.selectedIndex">
                 <mat-tab *ngFor="let process of this.processes">
                     <ng-template mat-tab-label>
@@ -132,7 +84,6 @@
                                               class="text-green-400 relative cursor-pointer -top-0.5 text-base">
                                         <i class="fa fa-1x" [class.fa-eye-slash]="field.type !== 'password'" [class.fa-eye]="field.type === 'password'"></i>
                                     </mat-icon>
-                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                                 </mat-form-field>
                             </div>
                             <div [class]="field.class" *ngIf="field.type === 'autocomplete' &&
@@ -149,7 +100,6 @@
                                             <span [innerHTML]="option | highlight: toHighlight"></span>
                                         </mat-option>
                                     </mat-autocomplete>
-                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                                 </mat-form-field>
                             </div>
                             <div [class]="field.class" *ngIf="field.type === 'autocomplete' &&
@@ -166,7 +116,6 @@
                                             <span [innerHTML]="option.name ? option.name : option.label ? option.label : option.input_label | highlight: toHighlight"></span>
                                         </mat-option>
                                     </mat-autocomplete>
-                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                                 </mat-form-field>
                             </div>
                             <div [class]="field.class" *ngIf="field.type === 'select'">
@@ -177,7 +126,6 @@
                                             {{ option }}
                                         </mat-option>
                                     </mat-select>
-                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                                 </mat-form-field>
                             </div>
                             <div [class]="field.class" *ngIf="field.type === 'number'">
@@ -185,7 +133,6 @@
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [formControl]="field['control']" [type]="field.type"
                                            placeholder="{{ field.label | translate }}" [required]="field['required']">
-                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                                 </mat-form-field>
                             </div>
                             <div [class]="field.class" *ngIf="field.type === 'boolean' && !field.disabled">

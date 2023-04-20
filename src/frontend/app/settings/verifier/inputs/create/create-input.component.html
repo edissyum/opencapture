@@ -52,8 +52,7 @@
             <div class="grid grid-cols-3 gap-4 w-auto m-10 text-center">
                 <ng-container *ngFor="let field of this.inputForm">
                     <div *ngIf="field.type === 'boolean'">
-                        <mat-slide-toggle [formControl]="field['control']"
-                                          class="relative top-4 mb-10 col-span-2">
+                        <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2">
                             <span class="justify-center">{{ field.label | translate }}</span>
                         </mat-slide-toggle>
                     </div>

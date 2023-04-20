@@ -35,7 +35,7 @@ import { HistoryService } from "../../services/history.service";
     selector: 'app-upload',
     templateUrl: './upload.component.html',
     styleUrls: ['./upload.component.scss'],
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
 
 export class UploadComponent implements OnInit {
