@@ -143,8 +143,11 @@
                         </ng-container>
                     </div>
                     <div class="mb-6 grid grid-cols-6 gap-4 h-10 mt-8">
-                        <button *ngIf="process.exists" mat-button (click)="updateProcess(process)"
-                                class="valid_button col-start-3">
+                        <button class="gray_button col-start-3" mat-button (click)="retrieveFolders(process)">
+                            <span *ngIf="!this.folderLoading">{{ 'MAILCOLLECT.retrieve_folders' | translate }}</span>
+                            <i *ngIf="this.folderLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-green-400"></i>
+                        </button>
+                        <button *ngIf="process.exists" mat-button (click)="updateProcess(process)" class="valid_button">
                             <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.update_process' | translate }}</span>
                             <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                         </button>
@@ -152,10 +155,6 @@
                                 class="valid_button">
                             <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.create_process' | translate }}</span>
                             <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
-                        </button>
-                        <button class="gray_button" mat-button (click)="retrieveFolders(process)">
-                            <span *ngIf="!this.folderLoading">{{ 'MAILCOLLECT.retrieve_folders' | translate }}</span>
-                            <i *ngIf="this.folderLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-green-400"></i>
                         </button>
                     </div>
                 </mat-tab>
