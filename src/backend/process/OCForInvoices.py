@@ -187,7 +187,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     input_settings = None
     form_id = None
     form_id_found_with_ai = False
-    if 'input_id' in args:
+
+    if 'input_id' in args and args['input_id']:
         input_settings = database.select({
             'select': ['*'],
             'table': ['inputs'],
@@ -196,6 +197,21 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         })
         ai_model_id = input_settings[0]['ai_model_id'] if input_settings[0]['ai_model_id'] else False
         if ai_model_id:
+            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, artificial_intelligence, ocr, log, 'verifier')
+            if res:
+                form_id_found_with_ai = True
+                args['form_id_ia'] = res
+
+    if 'workflow_id' in args:
+        workflow_settings = database.select({
+            'select': ['*'],
+            'table': ['workflows'],
+            'where': ['workflow_id = %s', 'module = %s'],
+            'data': [args['workflow_id'], 'verifier'],
+        })
+
+        if 'ai_model_id' in workflow_settings[0]['input'] and workflow_settings[0]['input']['ai_model_id']:
+            ai_model_id = workflow_settings[0]['input']['ai_model_id']
             res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, artificial_intelligence, ocr, log, 'verifier')
             if res:
                 form_id_found_with_ai = True

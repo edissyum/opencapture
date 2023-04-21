@@ -420,7 +420,9 @@ export class WorkflowBuilderComponent implements OnInit {
         this.fields['process'].forEach((element: any) => {
             if (element.id === 'form_id' || element.id === 'system_fields' || element.id === 'allow_automatic_validation') {
                 element.show = this.useInterface;
-                element.required = this.useInterface;
+                if (element.id !== 'allow_automatic_validation') {
+                    element.required = this.useInterface;
+                }
             }
         });
     }

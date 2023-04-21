@@ -35,7 +35,7 @@ from flask import current_app, Response, request, g as current_context
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
-def handle_uploaded_file(files, input_id, return_token=False):
+def handle_uploaded_file(files, input_id, workflow_id, return_token=False):
     path = current_app.config['UPLOAD_FOLDER']
     custom_id = retrieve_custom_from_url(request)
     tokens = []
@@ -63,8 +63,9 @@ def handle_uploaded_file(files, input_id, return_token=False):
         if task_id_monitor:
             launch({
                 'file': filename,
-                'custom_id': custom_id,
                 'input_id': input_id,
+                'custom_id': custom_id,
+                'workflow_id': workflow_id,
                 'task_id_monitor': task_id_monitor[0]['process'],
             })
         else:
