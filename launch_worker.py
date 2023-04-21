@@ -25,7 +25,8 @@ from src.backend.main import launch, create_classes_from_custom_id
 ap = argparse.ArgumentParser()
 ap.add_argument("-f", "--file", required=True, help="Path to file")
 ap.add_argument("-c", "--custom-id", required=True, help="Identifier of the custom")
-ap.add_argument("-input_id", "--input_id", required=True, help="Identifier of the input chain")
+ap.add_argument("-input_id", "--input_id", required=False, help="Identifier of the input chain")
+ap.add_argument("-workflow_id", "--workflow_id", required=False, help="Identifier of the workflow chain")
 args = vars(ap.parse_args())
 
 if args['file'] is None:
@@ -33,6 +34,9 @@ if args['file'] is None:
 
 if not retrieve_config_from_custom_id(args['custom_id']):
     sys.exit('Custom config file couldn\'t be found')
+
+if args['input_id'] is None and args['workflow_id'] is None:
+    sys.exit('The input_id or workflow_id parameter is mandatory')
 
 with app.app_context():
     args['source'] = 'cli'
