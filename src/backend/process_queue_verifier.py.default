@@ -31,8 +31,8 @@ if 'OCForInvoices' not in custom_array:
     from src.backend.process import OCForInvoices as OCForInvoices
 else:
     OCForInvoices = getattr(__import__(custom_array['OCForInvoices']['path'],
-                                               fromlist=[custom_array['OCForInvoices']['module']]),
-                                    custom_array['OCForInvoices']['module'])
+                                       fromlist=[custom_array['OCForInvoices']['module']]),
+                            custom_array['OCForInvoices']['module'])
 if 'FacturX' not in custom_array:
     from src.backend.process import FacturX
 else:
@@ -201,6 +201,7 @@ def launch(args):
         'set': {
             'token': args['token'] if 'token' in args and args['token'] else None,
             'elapsed_time': _timer,
+            'document_ids': [res] if res else None,
             'status': 'done',
             'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
         },

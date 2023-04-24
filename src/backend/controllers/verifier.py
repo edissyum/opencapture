@@ -56,10 +56,12 @@ def handle_uploaded_file(files, input_id, workflow_id, return_token=False):
             'status': 'wait',
             'module': 'verifier',
             'filename': os.path.basename(filename),
-            'input_id': input_id,
+            'input_id': input_id if input_id else None,
+            'workflow_id': workflow_id if workflow_id else None,
             'source': 'interface',
             'token': token if return_token else None,
         })
+
         if task_id_monitor:
             launch({
                 'file': filename,
