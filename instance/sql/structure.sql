@@ -387,6 +387,7 @@ CREATE TABLE "monitoring" (
     "id"                 SERIAL         UNIQUE PRIMARY KEY,
     "token"              VARCHAR(255),
     "input_id"           VARCHAR(255),
+    "workflow_id"        VARCHAR(255),
     "status"             VARCHAR(10),
     "elapsed_time"       VARCHAR(20),
     "document_ids"       INTEGER[],

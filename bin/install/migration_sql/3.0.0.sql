@@ -3,6 +3,7 @@ ALTER TABLE users ADD COLUMN "mode" VARCHAR(10) DEFAULT 'standard';
 ALTER TABLE roles ALTER COLUMN "label" SET DATA TYPE VARCHAR(255);
 
 ALTER TABLE monitoring ADD COLUMN "token" VARCHAR(255);
+ALTER TABLE monitoring ADD COLUMN "workflow_id" VARCHAR(255);
 
 WITH new_role_id as (
     INSERT INTO roles ("label_short", "label", "editable") VALUES ('user_ws', 'Utilisateur WebServices', 'true') returning id

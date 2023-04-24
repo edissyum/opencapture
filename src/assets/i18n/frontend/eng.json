@@ -13,8 +13,6 @@
 		"thanks_to_developers": "Thanks to the developers of this solutions"
 	},
 	"ACCOUNTS": {
-		"choose_input_upload": "Choose input upload",
-		"choose_workflow_upload": "Choose workflow",
 		"company_number": "Company number",
 		"confirm_delete_customer": "Are you sure you want to delete the customer account <strong>{{ customer }}</strong> ?",
 		"confirm_delete_supplier": "Are you sure you want to delete the supplier customer <strong>{{ supplier }}</strong> ?",
@@ -662,7 +660,8 @@
 		"task_done": "Task done",
 		"task_error": "Task in error",
 		"verifier": "Verifier",
-		"wait": "Waiting to be processed"
+		"wait": "Waiting to be processed",
+		"workflow_associated": "Associated workflow"
 	},
 	"OUTPUT": {
 		"add": "Add output",

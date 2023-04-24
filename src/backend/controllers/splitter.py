@@ -33,7 +33,7 @@ from src.backend.import_controllers import forms, outputs, user, monitoring
 from src.backend.import_classes import _Files, _Splitter, _CMIS, _MEMWebServices, _OpenADS
 
 
-def handle_uploaded_file(files, input_id, user_id):
+def handle_uploaded_file(files, input_id, workflow_id, user_id):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER_SPLITTER']
 
@@ -45,7 +45,8 @@ def handle_uploaded_file(files, input_id, user_id):
             'status': 'wait',
             'module': 'splitter',
             'filename': os.path.basename(filename),
-            'input_id': input_id,
+            'input_id': input_id if input_id else None,
+            'workflow_id': workflow_id if workflow_id else None,
             'source': 'interface',
         })
 

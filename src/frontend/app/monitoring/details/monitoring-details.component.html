@@ -31,12 +31,12 @@
                         </span>
                     </span>
                     <span class="text-center text-xl" *ngIf="this.processData.document_ids">
-                        <span *ngIf="this.processData.module === 'verifier'">
+                        <div *ngIf="this.processData.module === 'verifier'">
                             <a [routerLink]="'../../verifier/viewer/' + this.processData.document_ids[0]">
                                 {{ this.processData.document_ids }}
                             </a>
-                        </span>
-                        <span *ngIf="this.processData.module === 'splitter'">
+                        </div>
+                        <div *ngIf="this.processData.module === 'splitter'">
                             <span class="material-icons mr-3 relative top-1 font-light cursor-pointer text-gray-400"
                                   (click)="this.splitterCpt !== 0 ? this.splitterCpt = this.splitterCpt - 1 : this.splitterCpt = this.processData.document_ids.length - 1">
                                 arrow_back
@@ -48,61 +48,71 @@
                                   (click)="this.splitterCpt < this.processData.document_ids.length - 1 ? this.splitterCpt = this.splitterCpt + 1 : this.splitterCpt = 0">
                                 arrow_forward
                             </span>
-                        </span>
+                        </div>
                     </span>
                 </div>
                 <div class="grid my-10 mx-10">
-                    <span class="text-gray-400 text-base text-center">
-                        {{ 'MONITORING.input_associated' | translate }}
+                    <span *ngIf="this.processData['input_id']">
+                        <div class="text-gray-400 text-base text-center">
+                            {{ 'MONITORING.input_associated' | translate }}
+                        </div>
+                        <div class="text-center text-xl">
+                            {{ this.inputLabel }}
+                        </div>
                     </span>
-                    <span class="text-center text-xl">
-                        {{ this.inputLabel }}
+                    <span *ngIf="this.processData['workflow_id']">
+                        <div class="text-gray-400 text-base text-center">
+                            {{ 'MONITORING.workflow_associated' | translate }}
+                        </div>
+                        <div class="text-center text-xl">
+                            {{ this.workflowLabel }}
+                        </div>
                     </span>
                 </div>
                 <div class="grid my-10 mx-10">
-                    <span class="text-gray-400 text-base text-center">
+                    <div class="text-gray-400 text-base text-center">
                         {{ 'HEADER.creation_date' | translate }}
-                    </span>
-                    <span class="text-center text-xl">
+                    </div>
+                    <div class="text-center text-xl">
                         {{ this.processData.creation_date_formated }}
-                    </span>
+                    </div>
                 </div>
                 <div class="grid my-10 mx-10">
-                    <span class="text-gray-400 text-base text-center">
+                    <div class="text-gray-400 text-base text-center">
                         {{ 'HEADER.end_date' | translate }}
-                    </span>
-                    <span class="text-center text-xl">
+                    </div>
+                    <div class="text-center text-xl">
                         {{ this.processData.end_date_formated }}
-                    </span>
+                    </div>
                 </div>
                 <div class="grid my-10 mx-10">
-                    <span class="text-gray-400 text-base text-center">
+                    <div class="text-gray-400 text-base text-center">
                         {{ 'MONITORING.process_time' | translate }}
-                    </span>
-                    <span class="text-center text-xl">
+                    </div>
+                    <div class="text-center text-xl">
                         {{ this.processData.elapsedTimeMessage }}
-                    </span>
+                    </div>
                 </div>
                 <div class="grid my-10 mx-10">
-                    <span class="text-gray-400 text-base text-center">
+                    <div class="text-gray-400 text-base text-center">
                         {{ 'MONITORING.status' | translate }}
-                    </span>
-                    <span *ngIf="this.processData.status === 'wait' && !this.processData.error" class="text-gray-400 text-center text-3xl"
+                    </div>
+                    <div *ngIf="this.processData.status === 'wait' && !this.processData.error" class="text-gray-400 text-center text-3xl"
                           [matTooltip]="'MONITORING.wait' | translate">
                         <i class="fa-solid fa-clock text-gray-400"></i>
-                    </span>
-                    <span *ngIf="this.processData.status === 'running' && !this.processData.error" class="text-gray-400 text-center text-3xl"
+                    </div>
+                    <div *ngIf="this.processData.status === 'running' && !this.processData.error" class="text-gray-400 text-center text-3xl"
                               [matTooltip]="'MONITORING.running' | translate">
                         <i class="fa-solid fa-person-running fa-fade text-green-400"></i>
-                    </span>
-                    <span *ngIf="this.processData.status === 'done' && !this.processData.error" class="text-green-400 text-center text-3xl"
+                    </div>
+                    <div *ngIf="this.processData.status === 'done' && !this.processData.error" class="text-green-400 text-center text-3xl"
                               [matTooltip]="'MONITORING.done' | translate">
                         <i class="fa-solid fa-check"></i>
-                    </span>
-                    <span *ngIf="this.processData.status === 'error' || this.processData.error" class="text-red-400 text-center text-3xl"
+                    </div>
+                    <div *ngIf="this.processData.status === 'error' || this.processData.error" class="text-red-400 text-center text-3xl"
                               [matTooltip]="'MONITORING.error' | translate">
                         <i class="fa-solid fa-xmark"></i>
-                    </span>
+                    </div>
                 </div>
             </div>
             <hr class="border-green-400 w-1/3 mx-auto my-4">
