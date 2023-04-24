@@ -33,7 +33,7 @@ class RolesTest(unittest.TestCase):
         payload = json.dumps({
             "args": {
                 "label_short": "TEST",
-                "label": "Rôle test",
+                "label": "Rôle test"
             }
         })
 
@@ -112,7 +112,7 @@ class RolesTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['roles']), 2)
+        self.assertEqual(len(response.json['roles']), 3)
 
     def test_successful_get_role_by_id(self):
         role = self.create_role()

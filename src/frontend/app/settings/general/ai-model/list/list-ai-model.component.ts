@@ -87,7 +87,7 @@ export class ListAiModelComponent implements OnInit {
     }
 
     retrieveModels(offset?: number, size?: number) {
-        this.http.get(environment['url'] + '/ws/ai/list?module=' + this.splitterOrVerifier, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.modelsList = data.models;
                 for (let i = 0; i < this.modelsList.length; i++) {
@@ -176,7 +176,7 @@ export class ListAiModelComponent implements OnInit {
                 confirmText: this.translate.instant('ARTIFICIAL-INTELLIGENCE.confirm_delete', {"model": model}),
                 confirmButton: this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor: "warn",
-                cancelButton: this.translate.instant('GLOBAL.cancel'),
+                cancelButton: this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -191,7 +191,7 @@ export class ListAiModelComponent implements OnInit {
 
     deleteModel(modelId: number) {
         if (modelId !== undefined) {
-            this.http.delete(environment['url'] + '/ws/ai/delete/' + modelId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/delete/' + modelId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.retrieveModels();
                     this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.model_deleted'));
@@ -230,7 +230,7 @@ export class ListAiModelComponent implements OnInit {
         }
 
         this.isPredicting = true;
-        this.http.post(environment['url'] + '/ws/ai/testModel/' + disp, formData, {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/testModel/' + disp, formData, {headers: this.authService.headers}).pipe(
             tap((res) => this.onResponse(res)),
             catchError((err: any) => {
                 console.debug(err);

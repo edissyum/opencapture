@@ -197,12 +197,12 @@ export class SplitterFormBuilderComponent implements OnInit {
         this.serviceSettings.init();
         this.formId = this.route.snapshot.params['id'];
 
-        this.http.get(environment['url'] + '/ws/outputs/list?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputs = data.outputs;
                 if (this.formId) {
                     this.creationMode = false;
-                    this.http.get(environment['url'] + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
+                    this.http.get(environment['url'] + '/ws/forms/splitter/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             for (const field in this.form) {
                                 for (const info in data) {
@@ -442,7 +442,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         });
 
         if (label !== '' && outputs.length >= 1) {
-            this.http.put(environment['url'] + '/ws/forms/update/' + this.formId, {
+            this.http.put(environment['url'] + '/ws/forms/splitter/update/' + this.formId, {
                     'args': {
                         'label'        : label,
                         'default_form' : isDefault,
@@ -486,7 +486,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         const metadataMethod    = this.formSettings.metadata_method.control.value;
         const exportZipFile     = this.formSettings.export_zip_file.control.value;
         if (label) {
-            this.http.post(environment['url'] + '/ws/forms/create',
+            this.http.post(environment['url'] + '/ws/forms/splitter/create',
                 {
                     'args': {
                         'label'         : label,

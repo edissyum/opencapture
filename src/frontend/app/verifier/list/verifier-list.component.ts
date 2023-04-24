@@ -187,7 +187,7 @@ export class VerifierListComponent implements OnInit {
             this.localStorageService.remove('invoicesTimeIndex');
         }
 
-        this.http.get(environment['url'] + '/ws/status/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/status/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
             }),
@@ -204,7 +204,7 @@ export class VerifierListComponent implements OnInit {
     }
 
     loadForms() {
-        this.http.get(environment['url'] + '/ws/forms/list?module=verifier&totals=true&status=' + this.currentStatus + '&user_id=' + this.userService.user.id + '&time=' + this.currentTime, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/verifier/list?totals=true&status=' + this.currentStatus + '&user_id=' + this.userService.user.id + '&time=' + this.currentTime, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.filteredForms = [];
                 this.forms = [
@@ -639,7 +639,7 @@ export class VerifierListComponent implements OnInit {
                 confirmText         : this.translate.instant('VERIFIER.confirm_delete_document'),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -672,7 +672,7 @@ export class VerifierListComponent implements OnInit {
                 confirmText         : this.translate.instant('VERIFIER.confirm_delete_all_documents'),
                 confirmButton       : this.translate.instant('GLOBAL.delete_all_checked'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

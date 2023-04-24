@@ -89,7 +89,7 @@ def update(args):
                 'label': doctype_child['label'],
                 'is_default': doctype_child['is_default'],
                 'status': args['status'],
-                'form_id': args['form_id'],
+                'form_id': args['form_id']
             })
             if not res:
                 response = {

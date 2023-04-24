@@ -76,7 +76,12 @@ def get_users(args):
     return response, 200
 
 
-def get_users_full(args):
+def get_users_full(data):
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'offset': data['offset'] if 'offset' in data else 0,
+        'limit': data['limit'] if 'limit' in data else 'ALL'
+    }
     users, _ = user.get_users_full(args)
 
     response = {
@@ -87,7 +92,7 @@ def get_users_full(args):
 
 def get_user_by_id(user_id, get_password=False):
     _select = ['users.id', 'username', 'firstname', 'email', 'lastname', 'role', 'users.status', 'creation_date',
-               'users.enabled']
+               'users.enabled', 'mode']
     if get_password:
         _select.append('password')
 
@@ -108,8 +113,7 @@ def get_user_by_id(user_id, get_password=False):
 
 def get_user_by_mail(user_mail):
     user_info, error = user.get_user_by_mail({
-        'select': ['users.id', 'username', 'firstname', 'email', 'lastname', 'role', 'users.status', 'creation_date',
-                   'users.enabled'],
+        'select': ['users.id'],
         'user_mail': user_mail
     })
 
@@ -195,7 +199,7 @@ def get_customers_by_user_id(user_id):
             customers = accounts.retrieve_customers({
                 'select': ['id'],
                 'where': ['status <> %s'],
-                'data': ['DEL'],
+                'data': ['DEL']
             })
         else:
             customers, error = user.get_customers_by_user_id({'user_id': user_id})
@@ -225,7 +229,7 @@ def get_forms_by_user_id(user_id):
             user_forms, error = forms.get_forms({
                 'select': ['id'],
                 'where': ['status <> %s'],
-                'data': ['DEL'],
+                'data': ['DEL']
             })
         else:
             user_forms, error = user.get_forms_by_user_id({'user_id': user_id})
@@ -279,7 +283,8 @@ def update_user(user_id, data):
             'firstname': data['firstname'],
             'lastname': data['lastname'],
             'email': data['email'],
-            'role': data['role']
+            'role': data['role'],
+            'mode': data['mode'] if 'mode' in data else 'standard',
         }
 
         if 'new_password' in data and data['new_password']:

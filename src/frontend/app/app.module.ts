@@ -120,6 +120,8 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { MonitoringListComponent } from './monitoring/list/monitoring-list.component';
 import { MonitoringDetailsComponent } from './monitoring/details/monitoring-details.component';
+import { WorkflowListComponent } from './settings/verifier/workflow/list/workflow-list.component';
+import { WorkflowBuilderComponent } from './settings/verifier/workflow/builder/workflow-builder.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -203,7 +205,9 @@ export function createTranslateLoader(http: HttpClient) {
         MonitoringListComponent,
         MonitoringDetailsComponent,
         SplitterUpdateStatusComponent,
-        VerifierStatusUpdateComponent
+        VerifierStatusUpdateComponent,
+        WorkflowListComponent,
+        WorkflowBuilderComponent
     ],
     imports: [
         BrowserModule,

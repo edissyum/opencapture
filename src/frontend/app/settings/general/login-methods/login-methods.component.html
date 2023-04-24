@@ -45,7 +45,7 @@
                                         <ng-container *ngFor="let field of connectionFormGroup">
                                             <mat-form-field class="block" *ngIf="field.type === 'select'">
                                                 <mat-label>{{ field.label | translate }}</mat-label>
-                                                <mat-select [(value)]="field.control.value" [required]="field.required">
+                                                <mat-select [(value)]="field.control.value" [required]="field['required']">
                                                     <mat-option *ngFor="let option of field.values"
                                                                 (onSelectionChange)="updateTypeAd($event, field.id)"
                                                             [value]="option">{{ option }}</mat-option>
@@ -53,9 +53,9 @@
                                             </mat-form-field>
                                             <mat-form-field appearance="outline" *ngIf="field.type === 'password'">
                                                 <mat-label>{{ field.label | translate }}</mat-label>
-                                                <input matInput [formControl]="field.control"
+                                                <input matInput [formControl]="field['control']"
                                                        placeholder="{{ field.label | translate }}"
-                                                       [required]="field.required"
+                                                       [required]="field['required']"
                                                        [type]="showPassword ? 'text' : 'password'">
                                                 <mat-icon matSuffix class="text-green-400 relative cursor-pointer -top-1.5 text-base"
                                                           (click)="this.showPassword = !this.showPassword">
@@ -66,8 +66,8 @@
                                             </mat-form-field>
                                             <mat-form-field appearance="outline" *ngIf="field.type === 'text'">
                                                 <mat-label>{{ field.label | translate }}</mat-label>
-                                                <input matInput [formControl]="field.control"
-                                                       [type]="field.type" [required]="field.required"
+                                                <input matInput [formControl]="field['control']"
+                                                       [type]="field.type" [required]="field['required']"
                                                        placeholder="{{ field.label | translate }}">
                                                 <mat-hint>{{ field.hint }}</mat-hint>
                                             </mat-form-field>
@@ -75,7 +75,7 @@
                                     </form>
                                     <div class="my-6 grid grid-cols-6 gap-4 h-10 mt-8">
                                         <button type="submit" mat-button (click)="checkLdapConnexion()"
-                                                class="p-6 border-solid border-gray-900 border bg-gray-900 text-white hover:bg-transparent hover:text-gray-900 transition duration-300 col-start-3">
+                                                class="gray_button col-start-3">
                                             <span *ngIf="!this.isProcessConnectionLaunched">
                                                 {{ "LOGIN-METHODS.test_connection" | translate }}
                                             </span>
@@ -86,8 +86,7 @@
                                             <button matStepperNext mat-button [disabled]="this.isNextBtnDisabled"
                                                     [class.bg-gray-400]="this.isNextBtnDisabled"
                                                     [class.border-gray-400]="this.isNextBtnDisabled"
-                                                    class="p-6 border-solid border-green-400 border bg-green-400 text-white w-full
-                                                hover:bg-transparent hover:text-gray-900 transition duration-300 ml-2">
+                                                    class="valid_button ml-2 w-full">
                                                 {{ "LOGIN-METHODS.next" | translate }}
                                             </button>
                                         </div>
@@ -101,7 +100,7 @@
                                         <ng-container *ngFor="let field of synchroparamsFormGroup">
                                             <mat-form-field class="block" *ngIf="field.type === 'select'">
                                                 <mat-label>{{ field.label | translate }}</mat-label>
-                                                <mat-select [(value)]="field.control.value" [required]="field.required">
+                                                <mat-select [(value)]="field.control.value" [required]="field['required']">
                                                     <mat-option *ngFor="let option of field.values"
                                                             [value]="option['id']">{{ option['label'] }}</mat-option>
                                                 </mat-select>
@@ -109,8 +108,8 @@
                                             </mat-form-field>
                                             <mat-form-field appearance="outline" *ngIf="field.type === 'text'">
                                                 <mat-label>{{ field.label | translate }}</mat-label>
-                                                <input matInput [formControl]="field.control"
-                                                       [required]="field.required"
+                                                <input matInput [formControl]="field['control']"
+                                                       [required]="field['required']"
                                                        [type]="field.type" placeholder="{{ field.label | translate }}">
                                                 <mat-hint>{{ field.hint }}</mat-hint>
                                             </mat-form-field>
@@ -124,8 +123,7 @@
                                             <button matStepperNext mat-button [disabled]="this.isNextBtnDisabled"
                                                     [class.bg-gray-400]="this.isNextBtnDisabled"
                                                     [class.border-gray-400]="this.isNextBtnDisabled"
-                                                    class="p-6 border-solid border-green-400 border bg-green-400 text-white w-full
-                                                hover:bg-transparent hover:text-gray-900 transition duration-300 ml-2">
+                                                    class="valid_button ml-2 w-full">
                                                 {{ "LOGIN-METHODS.next" | translate }}
                                             </button>
                                         </div>
@@ -146,8 +144,7 @@
                                             <button matStepperNext mat-button [disabled]="this.isLaunchBtnDisabled"
                                                     [class.bg-gray-400]="this.isLaunchBtnDisabled" type="submit"
                                                     (click)="ldapSynchronization()"
-                                                    [class.border-gray-400]="this.isLaunchBtnDisabled" class="p-6 border-solid border-green-400 border bg-green-400 text-white w-full
-                                                    hover:bg-transparent hover:text-gray-900 transition duration-300 ml-2">
+                                                    [class.border-gray-400]="this.isLaunchBtnDisabled" class="valid_button ml-2 w-full">
                                                 <span *ngIf="!this.isProcessLaunched">
                                                     {{ "LOGIN-METHODS.launch" | translate }}
                                                 </span>
@@ -157,8 +154,7 @@
                                         </div>
                                         <button (click)="saveLoginMethodConfigs()" mat-button
                                                 [disabled]="this.isSaveBtnDisabled"
-                                                [class.cursor-not-allowed]="this.isSaveBtnDisabled"
-                                                class="p-6 border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                                                [class.cursor-not-allowed]="this.isSaveBtnDisabled" class="valid_button">
                                             {{ "LOGIN-METHODS.register" | translate }}
                                         </button>
                                     </div>

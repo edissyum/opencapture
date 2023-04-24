@@ -42,7 +42,7 @@ def add_doctype(args):
                 'label': args['label'],
                 'code': args['code'],
                 'form_id': args['form_id'],
-                'is_default': args['is_default'],
+                'is_default': args['is_default']
             }
         }
         res = database.insert(args)

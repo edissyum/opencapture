@@ -79,7 +79,7 @@ export class SplitterInputListComponent implements OnInit {
     }
 
     loadInputs() {
-        this.http.get(environment['url'] + '/ws/inputs/list?module=splitter&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/splitter/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.inputs[0]) this.total = data.inputs[0].total;
                 this.inputs = data.inputs;
@@ -107,7 +107,7 @@ export class SplitterInputListComponent implements OnInit {
                 confirmText: this.translate.instant('INPUT.confirm_delete', {"input": input}),
                 confirmButton: this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor: "warn",
-                cancelButton: this.translate.instant('GLOBAL.cancel'),
+                cancelButton: this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -122,7 +122,7 @@ export class SplitterInputListComponent implements OnInit {
 
     deleteInput(inputId: number) {
         if (inputId !== undefined) {
-            this.http.delete(environment['url'] + '/ws/inputs/delete/' + inputId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/inputs/splitter/delete/' + inputId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadInputs();
                     this.notify.success(this.translate.instant('INPUT.input_deleted'));
@@ -143,7 +143,7 @@ export class SplitterInputListComponent implements OnInit {
                 confirmText         : this.translate.instant('INPUT.confirm_duplicate', {"input": input}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -158,7 +158,7 @@ export class SplitterInputListComponent implements OnInit {
 
     duplicateInput(inputId: number) {
         if (inputId !== undefined) {
-            this.http.post(environment['url'] + '/ws/inputs/duplicate/' + inputId, {}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/splitter/duplicate/' + inputId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadInputs();
                     this.notify.success(this.translate.instant('INPUT.input_duplicated'));

@@ -113,7 +113,7 @@ export class SplitterUpdateInputComponent implements OnInit {
         this.serviceSettings.init();
         this.inputId = this.route.snapshot.params['id'];
 
-        this.http.get(environment['url'] + '/ws/inputs/getById/' + this.inputId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/splitter/getById/' + this.inputId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.input = data;
                 for (const field in this.input) {
@@ -121,7 +121,7 @@ export class SplitterUpdateInputComponent implements OnInit {
                         if (element.id === field) {
                             element.control.setValue(data[field]);
                             if (element.id === 'default_form_id') {
-                                this.http.get(environment['url'] + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
+                                this.http.get(environment['url'] + '/ws/forms/splitter/list', {headers: this.authService.headers}).pipe(
                                     tap((forms: any) => {
                                         element.values = forms.forms;
                                     }),
@@ -176,7 +176,7 @@ export class SplitterUpdateInputComponent implements OnInit {
                 ).subscribe();
             }
         });
-        this.http.get(environment['url'] + '/ws/inputs/allowedPath', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/splitter/allowedPath', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allowedPath = data.allowedPath;
                 if (this.allowedPath) {
@@ -219,7 +219,7 @@ export class SplitterUpdateInputComponent implements OnInit {
                 input[element.id] = element.control.value;
             });
 
-            this.http.put(environment['url'] + '/ws/inputs/update/' + this.inputId, {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/inputs/splitter/update/' + this.inputId, {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('INPUT.updated'));
                 }),
@@ -232,7 +232,7 @@ export class SplitterUpdateInputComponent implements OnInit {
         }
     }
 
-    createScriptAndIncron() {
+    createScriptAndWatcher() {
         if (this.isValidForm()) {
             const input : any = {
                 'module': 'splitter'
@@ -242,7 +242,7 @@ export class SplitterUpdateInputComponent implements OnInit {
                 input[element.id] = element.control.value;
             });
 
-            this.http.post(environment['url'] + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/splitter/createScriptAndWatcher', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('INPUT.watcher_and_script_updated'));
                     this.onSubmit();

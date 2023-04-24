@@ -48,6 +48,10 @@ export class HomeComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        if (!this.authService.headersExists) {
+            this.authService.generateHeaders();
+        }
+
         this.setValue('');
         this.localStorageService.save('task_watcher_minimize_display', 'true');
         const splitter = this.privilegesService.hasPrivilege('access_splitter');
@@ -66,13 +70,15 @@ export class HomeComponent implements OnInit {
             this.checkConnection();
         }
 
-        this.http.get(environment['url'] + '/ws/verifier/getUnseen').pipe(
+        this.http.get(environment['url'] + '/ws/verifier/getUnseen/user/' + this.userService.user.id,
+            {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.unseenBatches['verifier'] = data['unseen'];
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/splitter/getUnseen/user/' + this.userService.user.id).pipe(
+        this.http.get(environment['url'] + '/ws/splitter/getUnseen/user/' + this.userService.user.id,
+            {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.unseenBatches['splitter'] = data['unseen'];
             })

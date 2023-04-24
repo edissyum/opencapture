@@ -338,7 +338,7 @@ export class CustomFieldsComponent implements OnInit {
                                 confirmText         : this.translate.instant('CUSTOM-FIELDS.confirm_delete', {custom_field: custom_label}),
                                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                                 confirmButtonColor  : "warn",
-                                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                                cancelButton        : this.translate.instant('GLOBAL.cancel')
                             },
                             width: "600px",
                         });

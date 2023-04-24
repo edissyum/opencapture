@@ -15,9 +15,10 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-from src.backend.import_controllers import auth, config
+from flask_babel import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from src.backend.import_controllers import auth, config, privileges
 from flask import Blueprint, jsonify, make_response, request, g as current_context
 
 bp = Blueprint('config', __name__,  url_prefix='/ws/')
@@ -26,6 +27,9 @@ bp = Blueprint('config', __name__,  url_prefix='/ws/')
 @bp.route('config/readConfig', methods=['GET'])
 @auth.token_required
 def read_config():
+    if not privileges.has_privileges(request.environ['user_id'], ['access_config']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/readConfig'}), 403
+
     if 'config' in current_context:
         configurations = current_context.config
     else:
@@ -38,26 +42,30 @@ def read_config():
 @bp.route('config/getConfigurations', methods=['GET'])
 @auth.token_required
 def get_configurations():
-    args = {
-        'select': ['*', 'count(*) OVER() as total'],
-        'where': ['display = %s'],
-        'args': [True],
-        'offset': request.args['offset'] if 'offset' in request.args else 0,
-        'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
-    }
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/getConfigurations'}), 403
 
-    if 'search' in request.args and request.args['search']:
-        args['offset'] = ''
-        args['where'].append(
-            "(LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%')"
-        )
-    res = config.retrieve_configurations(args)
+    res = config.retrieve_configurations(request.args)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('config/getConfiguration/<string:config_label>', methods=['GET'])
+@auth.token_required
 def get_configuration_by_label(config_label):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/config/getConfiguration/{config_label}'}), 403
+
+    res = config.retrieve_configuration_by_label(config_label)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('config/getConfigurationNoAuth/<string:config_label>', methods=['GET'])
+def get_configuration_by_label_simple(config_label):
+    if config_label not in ('loginMessage', 'passwordRules'):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/config/getConfigurationNoAuth/{config_label}'}), 403
+
     res = config.retrieve_configuration_by_label(config_label)
     return make_response(jsonify(res[0])), res[1]
 
@@ -65,55 +73,29 @@ def get_configuration_by_label(config_label):
 @bp.route('config/getDocservers', methods=['GET'])
 @auth.token_required
 def get_docservers():
-    args = {
-        'select': ['*', 'count(*) OVER() as total'],
-        'where': [],
-        'offset': request.args['offset'] if 'offset' in request.args else 0,
-        'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
-    }
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'docservers']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/getDocservers'}), 403
 
-    if 'search' in request.args and request.args['search']:
-        args['offset'] = ''
-        args['where'].append(
-            "(LOWER(docserver_id) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(description) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(path) LIKE '%%" + request.args['search'].lower() + "%%')"
-        )
-    res = config.retrieve_docservers(args)
+    res = config.retrieve_docservers(request.args)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('config/getRegex', methods=['GET'])
 @auth.token_required
 def get_regex():
-    if 'configurations' in current_context:
-        configurations = current_context.configurations
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[10]
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'regex']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/getRegex'}), 403
 
-    args = {
-        'select': ['*', 'count(*) OVER() as total'],
-        'where': ["lang in ('global', %s)"],
-        'args': [configurations['locale']],
-        'offset': request.args['offset'] if 'offset' in request.args else 0,
-        'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
-    }
-
-    if 'search' in request.args and request.args['search']:
-        args['offset'] = ''
-        args['where'].append(
-            "(LOWER(regex_id) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%') "
-        )
-    res = config.retrieve_regex(args)
+    res = config.retrieve_regex(request.args)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('config/updateRegex/<int:regex_id>', methods=['PUT'])
 @auth.token_required
 def update_regex(regex_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'regex']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'config/updateRegex/{regex_id}'}), 403
+
     args = request.json['args']
     res = config.update_regex(args, regex_id)
     return make_response(jsonify(res[0])), res[1]
@@ -128,6 +110,9 @@ def get_login_image():
 @bp.route('config/updateLoginImage', methods=['PUT'])
 @auth.token_required
 def update_login_image():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/updateLoginImage'}), 403
+
     image_content = request.json['args']['image_content']
     res = config.update_login_image(image_content)
     return make_response(jsonify(res[0])), res[1]
@@ -136,6 +121,10 @@ def update_login_image():
 @bp.route('config/updateConfiguration/<int:configuration_id>', methods=['PUT'])
 @auth.token_required
 def update_configuration_by_id(configuration_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/config/updateConfiguration/{configuration_id}'}), 403
+
     args = request.json['args']
     res = config.update_configuration_by_id(args, configuration_id)
     return make_response(jsonify(res[0])), res[1]
@@ -144,6 +133,10 @@ def update_configuration_by_id(configuration_id):
 @bp.route('config/updateConfiguration/<string:configuration_label>', methods=['PUT'])
 @auth.token_required
 def update_configuration_by_label(configuration_label):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/config/updateConfiguration/{configuration_label}'}), 403
+
     args = request.json['args']
     res = config.update_configuration_by_label(args, configuration_label)
     return make_response(jsonify(res[0])), res[1]
@@ -152,13 +145,16 @@ def update_configuration_by_label(configuration_label):
 @bp.route('config/updateDocserver/<int:docserver_id>', methods=['PUT'])
 @auth.token_required
 def update_docserver(docserver_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'docservers']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/config/updateDocserver/{docserver_id}'}), 403
+
     args = request.json['args']
     res = config.update_docserver(args, docserver_id)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('config/gitInfo', methods=['GET'])
-@auth.token_required
 def get_git_info():
     return make_response({
         'git_latest': config.get_last_git_version()

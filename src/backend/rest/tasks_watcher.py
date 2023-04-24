@@ -15,14 +15,19 @@
 
 # @dev : Oussama Brich <oussaba.brich@edissyum.com>
 
+from flask_babel import gettext
 from flask import Blueprint, make_response, jsonify, request
-from src.backend.import_controllers import auth, tasks_watcher
+from src.backend.import_controllers import auth, tasks_watcher, privileges
 
 bp = Blueprint('task_watcher', __name__, url_prefix='/ws/')
 
 
-@bp.route('tasks/progress', methods=['GET'])
+@bp.route('tasks/<string:module>/progress', methods=['GET'])
 @auth.token_required
-def get_last_task():
-    tasks = tasks_watcher.get_last_tasks(request.args['module'])
+def get_last_task(module):
+    list_priv = ['access_verifier'] if module == 'verifier' else ['access_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/tasks/{module}/progress'}), 403
+
+    tasks = tasks_watcher.get_last_tasks(module)
     return make_response(jsonify(tasks[0])), tasks[1]

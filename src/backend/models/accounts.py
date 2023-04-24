@@ -96,7 +96,6 @@ def update_supplier(args):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
     error = None
-
     supplier = database.update({
         'table': ['accounts_supplier'],
         'set': args['set'],

@@ -92,7 +92,7 @@ export class SplitterFormListComponent implements OnInit {
 
     loadForms(): void {
         this.loading = true;
-        this.http.get(environment['url'] + '/ws/forms/list?module=splitter&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/splitter/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.forms[0]) this.total = data.forms[0].total;
                 this.forms = data.forms;
@@ -113,7 +113,7 @@ export class SplitterFormListComponent implements OnInit {
                 confirmText         : this.translate.instant('FORMS.confirm_delete', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -133,7 +133,7 @@ export class SplitterFormListComponent implements OnInit {
                 confirmText         : this.translate.instant('FORMS.confirm_duplicate', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -153,7 +153,7 @@ export class SplitterFormListComponent implements OnInit {
                 confirmText         : this.translate.instant('FORMS.confirm_disable', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -173,7 +173,7 @@ export class SplitterFormListComponent implements OnInit {
                 confirmText         : this.translate.instant('FORMS.confirm_enable', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

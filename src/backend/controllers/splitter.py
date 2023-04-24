@@ -23,31 +23,43 @@ import shutil
 import os.path
 import datetime
 import pandas as pd
-from flask import current_app
 from flask_babel import gettext
-from flask import request, g as current_context
 from src.backend.main_splitter import launch
-from src.backend.import_models import splitter, doctypes, accounts
-from src.backend.import_controllers import forms, outputs, user
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from flask import current_app, request, g as current_context
+from src.backend.import_models import splitter, doctypes, accounts
+from src.backend.import_controllers import forms, outputs, user, monitoring
 from src.backend.import_classes import _Files, _Splitter, _CMIS, _MEMWebServices, _OpenADS
 
 
-def handle_uploaded_file(files, input_id, user_id):
+def handle_uploaded_file(files, input_id, workflow_id, user_id):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER_SPLITTER']
 
     for file in files:
-        f = files[file]
-        filename = _Files.save_uploaded_file(f, path, False)
-        launch({
-            'custom_id': custom_id,
-            'input_id': input_id,
-            'user_id': user_id,
-            'file': filename,
+        _f = files[file]
+        filename = _Files.save_uploaded_file(_f, path, False)
+
+        task_id_monitor = monitoring.create_process({
+            'status': 'wait',
+            'module': 'splitter',
+            'filename': os.path.basename(filename),
+            'input_id': input_id if input_id else None,
+            'workflow_id': workflow_id if workflow_id else None,
+            'source': 'interface',
         })
 
+        if task_id_monitor:
+            launch({
+                'custom_id': custom_id,
+                'input_id': input_id,
+                'user_id': user_id,
+                'file': filename,
+                'task_id_monitor': task_id_monitor[0]['process']
+            })
+        else:
+            return False
     return True
 
 
@@ -115,13 +127,23 @@ def retrieve_referential(form_id):
     return response, 200
 
 
-def retrieve_batches(args):
+def retrieve_batches(data):
     if 'docservers' in current_context:
         docservers = current_context.docservers
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
+
+    args = {
+        'user_id': data['userId'],
+        'size': data['size'] if 'size' in data else None,
+        'page': data['page'] if 'page' in data else None,
+        'time': data['time'] if 'time' in data else None,
+        'status': data['status'] if 'status' in data else None,
+        'search': data['search'] if 'search' in data else None,
+        'batch_id': data['batchId'] if 'batchId' in data else None,
+    }
 
     user_customers = user.get_customers_by_user_id(args['user_id'])
 
@@ -217,14 +239,6 @@ def download_original_file(batch_id):
 
 
 def update_status(args):
-    if 'database' in current_context:
-        database = current_context.database
-
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
-
     for _id in args['ids']:
         batches = splitter.get_batch_by_id({'id': _id})
         if len(batches[0]) < 1:
@@ -242,7 +256,7 @@ def update_status(args):
             "errors": gettext('UPDATE_STATUS_ERROR'),
             "message": ''
         }
-        return res, 400
+        return response, 400
 
 
 def change_form(args):
@@ -548,9 +562,16 @@ def export_xml(documents, parameters, metadata, now):
     return {'path': res_xml[1]}, 200
 
 
-def save_infos(args):
+def save_infos(data):
     new_documents = []
-
+    args = {
+        'documents': data['documents'],
+        'batch_id': data['batchId'],
+        'moved_pages': data['movedPages'],
+        'batch_metadata': data['batchMetadata'],
+        'deleted_pages_ids': data['deletedPagesIds'],
+        'deleted_documents_ids': data['deletedDocumentsIds']
+    }
     res = splitter.update_batch({
         'batch_id': args['batch_id'],
         'batch_metadata': args['batch_metadata'],
@@ -566,7 +587,7 @@ def save_infos(args):
         if document['displayOrder']:
             res = splitter.update_document({
                 'id': document['id'].split('-')[-1],
-                'display_order': document['displayOrder'],
+                'display_order': document['displayOrder']
             })[0]
             if not res:
                 response = {
@@ -594,7 +615,7 @@ def save_infos(args):
         for page in document['pages']:
             res = splitter.update_page({
                 'page_id': page['id'],
-                'rotation':  page['rotation'],
+                'rotation':  page['rotation']
             })[0]
             if not res:
                 response = {
@@ -891,7 +912,7 @@ def validate(args):
             mask_args = {
                 'mask': form[0]['settings']['export_zip_file'],
                 'separator': '',
-                'substitute': '_',
+                'substitute': '_'
             }
             export_zip_file = _Splitter.get_value_from_mask(None, args['batchMetadata'], now, mask_args)
             _Files.zip_files(files_to_zip, export_zip_file, True)

@@ -34,8 +34,8 @@
                             {{ field.label | translate }}
                         </mat-label>
                         <input matInput [readonly]="field.id === 'username' || (field.type === 'password' && this.disablePasswordModification)"
-                               [formControl]="field.control" [type]="field.type === 'password' && showPassword ? 'text' : field.type"
-                               placeholder="{{ field.label | translate }}" [required]="field.required">
+                               [formControl]="field['control']" [type]="field.type === 'password' && showPassword ? 'text' : field.type"
+                               placeholder="{{ field.label | translate }}" [required]="field['required']">
                         <mat-error class="text-red-400" [innerHTML]="getErrorMessage(field.id)" *ngIf="field.control.invalid"></mat-error>
                         <mat-icon *ngIf="field.id === 'password'" matSuffix (click)="showPassword = !showPassword;"
                                   class="text-green-400 relative cursor-pointer -top-0.5 text-base">
@@ -49,15 +49,16 @@
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [formControl]="field.control" [(value)]="field.control.value" [required]="field.required">
-                            <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
+                        <mat-select [formControl]="field['control']" [(value)]="field.control.value" [required]="field['required']">
+                            <mat-option *ngFor="let option of field.values" [value]="option['id']">
+                                {{ option['label'] | translate }}
+                            </mat-option>
                         </mat-select>
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                     </mat-form-field>
                 </ng-container>
                 <div class="button col-span-3">
-                    <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent
-                                   hover:text-gray-900 transition duration-300" type="submit" mat-button>
+                    <button class="valid_button" type="submit" mat-button>
                         {{ 'USER.update' | translate }}
                     </button>
                 </div>
@@ -80,7 +81,7 @@
                     <mat-list-item *ngFor="let customer of this.customers" class="cursor-pointer m-2 w-auto"
                                    (click)="updateUserCustomers(customer.id)">
                         <span [class.text-green-400]="hasCustomer(customer.id)" class="hover:text-green-400">
-                            {{ customer.name }}
+                            {{ customer.name }} <span style="font-size: 12px;" class="text-green-400 ml-3"> {{ customer.module }} </span>
                         </span>
                         <span *ngIf="hasCustomer(customer.id)">
                             <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
@@ -99,7 +100,7 @@
                     <mat-list-item *ngFor="let form of this.forms" class="cursor-pointer m-2 w-auto"
                                    (click)="updateUserForms(form.id)">
                         <span [class.text-green-400]="hasForm(form.id)" class="hover:text-green-400">
-                            {{ form.label }}
+                            {{ form.label }} <span style="font-size: 12px;" class="text-green-400 ml-3"> {{ form.module }} </span>
                         </span>
                         <span *ngIf="hasForm(form.id)">
                             <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>

@@ -51,7 +51,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
             'select': ['*'],
             'table': ['configurations'],
             'where': ['label = %s'],
-            'data': ['mailCollectGeneral']
+            'data': ['smtp']
         })
 
         if mail_global:
@@ -62,8 +62,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
                 mail_global['smtpPort'],
                 mail_global['smtpLogin'],
                 mail_global['smtpPwd'],
-                mail_global['smtpSSL'],
-                mail_global['smtpStartTLS'],
+                mail_global['smtpProtocoleSecure'],
                 mail_global['smtpDestAdminMail'],
                 mail_global['smtpDelay'],
                 mail_global['smtpAuth'],
@@ -143,7 +142,8 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
     except RuntimeError:
         pass
 
-    return database, config.cfg, regex, files, ocr, log, config_file, spreadsheet, smtp, docservers, configurations, languages
+    return database, config.cfg, regex, files, ocr, log, config_file, spreadsheet, smtp, docservers, configurations, \
+        languages
 
 
 def check_file(files, path, log, docservers):
@@ -174,11 +174,14 @@ def launch(args):
 
     path = retrieve_config_from_custom_id(args['custom_id']).replace('/config/config.ini', '')
     custom_array = get_custom_array([args['custom_id'], path])
-    if 'process_queue_verifier' not in custom_array or not custom_array['process_queue_verifier'] and not custom_array['process_queue_verifier']['path']:
+    if 'process_queue_verifier' not in custom_array or not custom_array['process_queue_verifier'] and not \
+            custom_array['process_queue_verifier']['path']:
         from src.backend import process_queue_verifier
     else:
-        custom_array['process_queue_verifier']['path'] = 'custom.' + custom_array['process_queue_verifier']['path'].split('.custom.')[1]
+        custom_array['process_queue_verifier']['path'] = 'custom.' + \
+                                                         custom_array['process_queue_verifier']['path'].split(
+                                                             '.custom.')[1]
         process_queue_verifier = getattr(__import__(custom_array['process_queue_verifier']['path'],
-                                           fromlist=[custom_array['process_queue_verifier']['module']]),
-                                custom_array['process_queue_verifier']['module'])
+                                                    fromlist=[custom_array['process_queue_verifier']['module']]),
+                                         custom_array['process_queue_verifier']['module'])
     process_queue_verifier.launch(args)

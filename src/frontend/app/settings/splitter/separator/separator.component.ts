@@ -87,19 +87,19 @@ export class SeparatorComponent implements OnInit {
         if (this.selectedSeparator === "bundleSeparator") {
             args = {
                 'id'   : undefined,
-                'type' : 'bundleSeparator',
+                'type' : 'bundleSeparator'
             };
         }
         else if (this.selectedSeparator === "documentSeparator") {
             args = {
                 'id'   : undefined,
-                'type' : 'documentSeparator',
+                'type' : 'documentSeparator'
             };
         }
         else {
             args = {
                 'id'   : this.selectedDocType.id ? this.selectedDocType.id : null,
-                'type' : 'docTypeSeparator',
+                'type' : 'docTypeSeparator'
             };
         }
         this.generateSeparator(args);

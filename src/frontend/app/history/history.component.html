@@ -13,25 +13,25 @@
                 <ng-container *ngFor="let field of form">
                     <mat-form-field class="block" *ngIf="field.type === 'text'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                        <input matInput [formControl]="field['control']" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field['required']">
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.id === 'submodule'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [formControl]="field.control" [(value)]="field.control.value"
-                                    [required]="field.required" (selectionChange)="setSelectedSubModule($event.value)">
+                        <mat-select [formControl]="field['control']" [(value)]="field.control.value"
+                                    [required]="field['required']" (selectionChange)="setSelectedSubModule($event.value)">
                             <mat-option *ngFor="let option of field.values" [value]="option['history_submodule']">{{ option['history_submodule'] }}</mat-option>
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.id === 'module'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [formControl]="field.control" [(value)]="field.control.value"
-                                    [required]="field.required" (selectionChange)="setSelectedModule($event.value)">
+                        <mat-select [formControl]="field['control']" [(value)]="field.control.value"
+                                    [required]="field['required']" (selectionChange)="setSelectedModule($event.value)">
                             <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] | translate }}</mat-option>
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field *ngIf="field.type === 'autocomplete'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field.control" [type]="field.type" [matAutocomplete]="autocomplete">
+                        <input matInput [formControl]="field['control']" [type]="field.type" [matAutocomplete]="autocomplete">
                         <mat-hint *ngIf="field.hint" class="text-gray-600">{{ field.hint }}</mat-hint>
                         <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn"
                                           (optionSelected)="setSelectedUser($event.option.id)">

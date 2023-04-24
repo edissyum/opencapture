@@ -59,3 +59,40 @@ def get_process_by_id(process_id, date_format):
         'data': [process_id],
     })
     return _process, error
+
+
+def get_process_by_token(process_token, date_format):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+    _process = database.select({
+        'select': [
+            '*',
+            "to_char(creation_date, '" + date_format + "') as creation_date_formated",
+            "to_char(end_date, '" + date_format + "') as end_date_formated"
+        ],
+        'table': ['monitoring'],
+        'where': ['token = %s'],
+        'data': [process_token],
+    })
+    return _process, error
+
+
+def insert(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    res = database.insert({
+        'table': 'monitoring',
+        'columns': args
+    })
+    return res, error

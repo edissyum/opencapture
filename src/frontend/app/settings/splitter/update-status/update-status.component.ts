@@ -37,7 +37,7 @@ export class SplitterUpdateStatusComponent implements OnInit {
 
   ngOnInit(): void {
     this.serviceSettings.init();
-    this.http.get(environment['url'] + '/ws/status/list?module=splitter',
+    this.http.get(environment['url'] + '/ws/status/splitter/list',
         {headers: this.authService.headers}).pipe(
         tap((data: any) => {
           this.status = data.status;

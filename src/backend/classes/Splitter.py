@@ -93,7 +93,7 @@ class Splitter:
                 'select': ['*'],
                 'table': ['users'],
                 'where': ['id = %s'],
-                'data': [user_id],
+                'data': [user_id]
             })[0]
 
         data = {
@@ -130,7 +130,7 @@ class Splitter:
                 'select': ['*'],
                 'table': ['inputs'],
                 'where': ['input_id = %s', 'module = %s'],
-                'data': [input_id, 'splitter'],
+                'data': [input_id, 'splitter']
             })
 
             clean_path = re.sub(r"/+", "/", file)

@@ -82,7 +82,7 @@ export class PositionsMaskListComponent implements OnInit {
         const suppliers = await this.retrieveSuppliers();
         this.http.get(environment['url'] + '/ws/positions_masks/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.total) this.total = data.total;
+                if (data.positions_masks[0]['total']) this.total = data.positions_masks[0]['total'];
                 else if (this.pageIndex !== 0) {
                     this.pageIndex = this.pageIndex - 1;
                     this.offset = this.pageSize * (this.pageIndex);
@@ -126,7 +126,7 @@ export class PositionsMaskListComponent implements OnInit {
                 confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_delete', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -146,7 +146,7 @@ export class PositionsMaskListComponent implements OnInit {
                 confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_duplicate', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -166,7 +166,7 @@ export class PositionsMaskListComponent implements OnInit {
                 confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_disable', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -185,7 +185,7 @@ export class PositionsMaskListComponent implements OnInit {
                 confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_enable', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

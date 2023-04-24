@@ -91,6 +91,25 @@ export class CreateUserComponent implements OnInit {
             values: [],
             control: new FormControl(),
             required: true
+        },
+        {
+            id: 'mode',
+            label: this.translate.instant('USER.mode'),
+            type: 'select',
+            values: [
+                {
+                    'id': 'standard',
+                    'label': this.translate.instant('USER.standard'),
+                    'default' : true
+                },
+                {
+                    'id': 'webservice',
+                    'label': this.translate.instant('USER.webservice'),
+                    'default' : false
+                }
+            ],
+            control: new FormControl(),
+            required: true
         }
     ];
     forms            : any[]     = [];
@@ -129,9 +148,20 @@ export class CreateUserComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/forms/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.forms = data.forms;
+                this.http.get(environment['url'] + '/ws/forms/splitter/list', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        this.forms.push(data.forms);
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {

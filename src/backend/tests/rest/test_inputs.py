@@ -43,7 +43,7 @@ class InputsTest(unittest.TestCase):
             'override_supplier_form': False,
         }
 
-        return self.app.post(f'/{CUSTOM_ID}/ws/inputs/create',
+        return self.app.post(f'/{CUSTOM_ID}/ws/inputs/verifier/create',
                              json={"args": payload},
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
@@ -53,40 +53,40 @@ class InputsTest(unittest.TestCase):
         self.assertEqual(int, type(_input.json['id']))
 
     def test_successful_get_inputs_list_verifier(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/inputs/list?module=verifier',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/inputs/verifier/list',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
         self.assertEqual(len(response.json['inputs']), 1)
 
     def test_successful_get_inputs_list_splitter(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/inputs/list?module=splitter',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/inputs/splitter/list',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
         self.assertEqual(len(response.json['inputs']), 1)
 
     def test_successful_get_input_by_id_verifier(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/inputs/getById/1',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/inputs/verifier/getById/1',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
 
     def test_successful_get_input_by_id_splitter(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/inputs/getById/2',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/inputs/splitter/getById/2',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
 
     def test_successful_get_input_by_form_id(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/inputs/getByFormId/1',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/inputs/verifier/getByFormId/1',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(list, type(response.json))
         self.assertEqual(1, len(response.json))
 
     def test_successful_duplicate_input(self):
-        response = self.app.post(f'/{CUSTOM_ID}/ws/inputs/duplicate/1',
+        response = self.app.post(f'/{CUSTOM_ID}/ws/inputs/verifier/duplicate/1',
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.db.execute("SELECT * FROM inputs WHERE input_label ILIKE '%Copie de%' OR input_label ILIKE '%Copy of%'"
@@ -101,7 +101,7 @@ class InputsTest(unittest.TestCase):
             "input_folder": f"/var/share/{CUSTOM_ID}/entrant/verifier/new_input_folder/",
             "splitter_method_id": "no_sep"
         }
-        response = self.app.put(f'/{CUSTOM_ID}/ws/inputs/update/1',
+        response = self.app.put(f'/{CUSTOM_ID}/ws/inputs/verifier/update/1',
                                 json={"args": payload},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -111,7 +111,7 @@ class InputsTest(unittest.TestCase):
 
     def test_successful_delete_input(self):
         _input = self.create_input()
-        response = self.app.delete(f'/{CUSTOM_ID}/ws/inputs/delete/' + str(_input.json['id']),
+        response = self.app.delete(f'/{CUSTOM_ID}/ws/inputs/verifier/delete/' + str(_input.json['id']),
                                    headers={"Content-Type": "application/json",
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -132,7 +132,7 @@ class InputsTest(unittest.TestCase):
             'remove_blank_pages': False,
             'override_supplier_form': False,
         }
-        response = self.app.post(f'/{CUSTOM_ID}/ws/inputs/createScriptAndIncron', json={"args": payload},
+        response = self.app.post(f'/{CUSTOM_ID}/ws/inputs/verifier/createScriptAndWatcher', json={"args": payload},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertTrue(os.path.isfile(f'./custom/{CUSTOM_ID}/bin/scripts//verifier_inputs//test_input.sh'))

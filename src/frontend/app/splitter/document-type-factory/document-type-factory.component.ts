@@ -264,7 +264,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
 
     loadForms(): void {
         this.loading = true;
-        this.http.get(environment['url'] + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.forms = data.forms;
                 if (this.forms.length > 0) {
@@ -332,15 +332,6 @@ export class DocumentTypeFactoryComponent implements OnInit {
         }
     }
 
-    loadDefaultDocType() {
-        this.treeDataObj.doctypeData.forEach((doctype: any) => {
-            if (doctype.isDefault) {
-                this.selectedDocTypeInput = doctype;
-                this.selectedDoctypeOutput.emit(doctype);
-            }
-        });
-    }
-
     cloneFormDoctypes(sourceFormId: number, destFormId: number) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {
@@ -348,7 +339,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 confirmText         : this.translate.instant('DOCTYPE.confirm_doctypes_clone'),
                 confirmButton       : this.translate.instant('DOCTYPE.clone_doctypes'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });

@@ -1,7 +1,9 @@
+ALTER TABLE invoices ADD COLUMN facturx BOOLEAN DEFAULT FALSE;
+ALTER TABLE invoices ADD COLUMN facturx_level VARCHAR(20);
+
 ALTER TABLE form_models ADD COLUMN "labels" JSONB DEFAULT '{}';
 
-CREATE TABLE monitoring
-(
+CREATE TABLE monitoring (
     "id"                 SERIAL         UNIQUE PRIMARY KEY,
     "input_id"           VARCHAR(255),
     "status"             VARCHAR(10),

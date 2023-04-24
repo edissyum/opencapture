@@ -24,7 +24,14 @@ from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
 
 
-def get_outputs(args):
+def get_outputs(data):
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'offset': data['offset'] if 'offset' in data else 0,
+        'limit': data['limit'] if 'limit' in data else 'ALL',
+        'where': ["status <> 'DEL'", "module = %s"],
+        'data': [data['module'] if 'module' in data else '']
+    }
     _outputs = outputs.get_outputs(args)
 
     response = {

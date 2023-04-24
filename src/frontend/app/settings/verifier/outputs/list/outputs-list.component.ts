@@ -78,7 +78,7 @@ export class OutputsListComponent implements OnInit {
     }
 
     loadOutputs(): void {
-        this.http.get(environment['url'] + '/ws/outputs/list?module=verifier&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/verifier/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.outputs[0]) this.total = data.outputs[0].total;
                 else if (this.pageIndex !== 0) {
@@ -112,7 +112,7 @@ export class OutputsListComponent implements OnInit {
                 confirmText: this.translate.instant('OUTPUT.confirm_delete', {"output": output}),
                 confirmButton: this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor: "warn",
-                cancelButton: this.translate.instant('GLOBAL.cancel'),
+                cancelButton: this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -127,7 +127,7 @@ export class OutputsListComponent implements OnInit {
 
     deleteOutput(outputId: number) {
         if (outputId !== undefined) {
-            this.http.delete(environment['url'] + '/ws/outputs/delete/' + outputId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/outputs/verifier/delete/' + outputId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadOutputs();
                     this.notify.success(this.translate.instant('OUTPUT.output_deleted'));
@@ -148,7 +148,7 @@ export class OutputsListComponent implements OnInit {
                 confirmText         : this.translate.instant('OUTPUT.confirm_duplicate', {"output": output}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -163,7 +163,7 @@ export class OutputsListComponent implements OnInit {
 
     duplicateOutput(outputId: number) {
         if (outputId !== undefined) {
-            this.http.post(environment['url'] + '/ws/outputs/duplicate/' + outputId, {}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/outputs/verifier/duplicate/' + outputId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadOutputs();
                     this.notify.success(this.translate.instant('OUTPUT.output_duplicated'));

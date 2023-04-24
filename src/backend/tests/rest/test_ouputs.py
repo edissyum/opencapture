@@ -37,7 +37,7 @@ class OutputsTest(unittest.TestCase):
             'module': 'verifier',
         }
 
-        return self.app.post(f'/{CUSTOM_ID}/ws/outputs/create',
+        return self.app.post(f'/{CUSTOM_ID}/ws/outputs/verifier/create',
                              json={"args": payload},
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
@@ -47,28 +47,28 @@ class OutputsTest(unittest.TestCase):
         self.assertEqual(int, type(output.json['id']))
 
     def test_successful_get_outputs_list_verifier(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/list?module=verifier',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/verifier/list',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
         self.assertEqual(len(response.json['outputs']), 4)
 
     def test_successful_get_outputs_list_splitter(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/list?module=splitter',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/splitter/list',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
         self.assertEqual(len(response.json['outputs']), 4)
 
     def test_successful_get_outputs_types_verifier(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/getOutputsTypes?module=verifier',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/verifier/getOutputsTypes',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
         self.assertEqual(len(response.json['outputs_types']), 4)
 
     def test_successful_get_outputs_types_splitter(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/getOutputsTypes?module=splitter',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/splitter/getOutputsTypes',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -111,7 +111,7 @@ class OutputsTest(unittest.TestCase):
         self.assertEqual(dict, type(response.json))
 
     def test_successful_duplicate_outputs(self):
-        response = self.app.post(f'/{CUSTOM_ID}/ws/outputs/duplicate/1',
+        response = self.app.post(f'/{CUSTOM_ID}/ws/outputs/verifier/duplicate/1',
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.db.execute("SELECT * FROM outputs WHERE output_label ILIKE '%Copie de%' OR output_label ILIKE '%Copy of%'"
@@ -120,7 +120,7 @@ class OutputsTest(unittest.TestCase):
         self.assertEqual(1, len(new_output))
 
     def test_successful_get_output_by_id(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/getById/1',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/verifier/getById/1',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -159,7 +159,7 @@ class OutputsTest(unittest.TestCase):
                 }
             },
         }
-        response = self.app.put(f'/{CUSTOM_ID}/ws/outputs/update/1',
+        response = self.app.put(f'/{CUSTOM_ID}/ws/outputs/verifier/update/1',
                                 json={"args": payload},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -169,7 +169,7 @@ class OutputsTest(unittest.TestCase):
 
     def test_successful_delete_output(self):
         output = self.create_ouput()
-        response = self.app.delete(f'/{CUSTOM_ID}/ws/outputs/delete/' + str(output.json['id']),
+        response = self.app.delete(f'/{CUSTOM_ID}/ws/outputs/verifier/delete/' + str(output.json['id']),
                                    headers={"Content-Type": "application/json",
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)

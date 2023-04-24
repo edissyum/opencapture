@@ -80,7 +80,7 @@ class Log:
             'table': ['monitoring'],
             'set': {
                 "error": status == 'error' or self.processInError,
-                'steps': "jsonb_set(steps, '{" + str(self.current_step) + "}', '" + json.dumps(new_step) + "')",
+                'steps': "jsonb_set(steps, '{" + str(self.current_step) + "}', '" + json.dumps(new_step) + "')"
             },
             'where': ['id = %s'],
             'data': [self.task_id_monitor]

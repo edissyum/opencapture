@@ -1,5 +1,6 @@
 # This file is part of Open-Capture.
 
+
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -66,3 +67,49 @@ def get_privileges_by_role_id(args):
             "message": gettext(error)
         }
         return response, 400
+
+
+def get_privileges_by_user_id(args):
+    privilege_info, error = privileges.get_by_user_id({
+        'user_id': args['user_id']
+    })
+
+    if error is None:
+        role_privileges = privilege_info['privileges_id']['data']
+        if type(eval(role_privileges)) == list:
+            role_privileges = eval(role_privileges)
+            if role_privileges and role_privileges[0] == '*':
+                return '*', 200
+            else:
+                all_privileges, error = privileges.get_privileges()
+                list_role_privileges = []
+                for role_privilege_id in role_privileges:
+                    for privilege_id in all_privileges:
+                        if privilege_id['id'] == role_privilege_id:
+                            list_role_privileges.append(privilege_id['label'])
+
+                return list_role_privileges, 200
+    else:
+        response = {
+            "errors": gettext('GET_PRIVILEGES_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400
+
+
+def has_privileges(user_id, needed_privileges):
+    privileges_list, _ = get_privileges_by_user_id({'user_id': user_id})
+    if privileges_list == '*':
+        return True
+
+    res = []
+    for privilege in needed_privileges:
+        if '|' in privilege:
+            privilege_or = privilege.split('|')
+            for _priv in privilege_or:
+                if _priv.strip() in privileges_list:
+                    res.append(True)
+                    break
+        if privilege in privileges_list:
+            res.append(True)
+    return True if len(res) == len(needed_privileges) else False

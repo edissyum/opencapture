@@ -18,8 +18,8 @@
 
 import json
 from flask_babel import gettext
-from src.backend.import_controllers import auth
-from flask import Blueprint, request, make_response
+from flask import Blueprint, request, make_response, jsonify
+from src.backend.import_controllers import auth, privileges
 
 bp = Blueprint('auth', __name__, url_prefix='/ws/')
 
@@ -99,6 +99,9 @@ def get_enabled_login_method():
 @bp.route('auth/retrieveLdapConfigurations', methods=['GET'])
 @auth.token_required
 def retrieve_ldap_configurations():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/retrieveLdapConfigurations'}), 403
+
     res = auth.get_ldap_configurations()
     return make_response(res[0], res[1])
 
@@ -106,16 +109,18 @@ def retrieve_ldap_configurations():
 @bp.route('auth/connectionLdap', methods=['POST'])
 @auth.token_required
 def check_connection_ldap_server():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/retrieveLdapConfigurations'}), 403
+
     server_ldap_data = json.loads(request.data.decode("utf8"))
     if not server_ldap_data:
         pass
     if server_ldap_data:
         res = auth.verify_ldap_server_connection(server_ldap_data)
     else:
-        error = gettext('NOT_COMPLETE_CONNECTION_INFOS')
         res = [{
             "errors": gettext('INFOS_LDAP_NOT_COMPLETE'),
-            "message": gettext(error)
+            "message": gettext('NOT_COMPLETE_CONNECTION_INFOS')
         }, 401]
 
     return make_response(res[0], res[1])
@@ -124,6 +129,9 @@ def check_connection_ldap_server():
 @bp.route('auth/ldapSynchronization', methods=['POST'])
 @auth.token_required
 def ldap_synchronization_users():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/ldapSynchronization'}), 403
+
     ldap_synchronization_data = json.loads(request.data.decode("utf8"))
     res = auth.synchronization_ldap_users(ldap_synchronization_data)
     return make_response(res[0], res[1])
@@ -132,9 +140,10 @@ def ldap_synchronization_users():
 @bp.route('auth/saveLoginMethodConfigs', methods=['POST'])
 @auth.token_required
 def save_login_method():
-    data = request.json
-    login_method_name = 'ldap'
-    res = auth.update_login_method(login_method_name, data)
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/saveLoginMethodConfigs'}), 403
+
+    res = auth.update_login_method('ldap', request.json)
     if not res:
         res = [{
             "errors": gettext('REQUEST_MODIFS_ERROR'),
@@ -148,41 +157,26 @@ def save_login_method():
 @bp.route('auth/retrieveLoginMethodName', methods=['GET'])
 def get_login_methods_name():
     res = auth.retrieve_login_methods()
-    if not res:
-        res = [{
-            "errors": gettext('RETRIEVE_LOGIN_METHODS_ERROR'),
-            "message": res.replace('\n', '')
-        }, 401]
-    else:
-        res = [res[0], 200]
     return make_response(res[0], res[1])
 
 
 @bp.route('auth/disableLoginMethodName', methods=['POST'])
 @auth.token_required
 def disable_login_method():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/disableLoginMethodName'}), 403
+
     login_method_name = json.loads(request.data.decode("utf8"))
     res = auth.disable_login_method(login_method_name['method_name'])
-    if not res:
-        res = [{
-            "errors": gettext('REQUEST_MODIFS_ERROR'),
-            "message": res.replace('\n', '')
-        }, 401]
-    else:
-        res = ['', 200]
     return make_response(res[0], res[1])
 
 
 @bp.route('auth/enableLoginMethodName', methods=['POST'])
 @auth.token_required
 def enable_login_method():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/enableLoginMethodName'}), 403
+
     login_method_name = json.loads(request.data.decode("utf8"))
     res = auth.enable_login_method(login_method_name['method_name'])
-    if not res:
-        res = [{
-            "errors": gettext('REQUEST_MODIFS_ERROR'),
-            "message": res.replace('\n', '')
-        }, 401]
-    else:
-        res = ['', 200]
     return make_response(res[0], res[1])

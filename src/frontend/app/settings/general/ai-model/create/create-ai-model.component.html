@@ -21,8 +21,8 @@
                 <ng-container *ngFor="let field of modelForm">
                     <mat-form-field *ngIf="field.type === 'text' && field.id === 'model_label'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type"
-                               placeholder="{{ field.placeholder | translate }}" [required]="field.required">
+                        <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type"
+                               placeholder="{{ field.placeholder | translate }}" [required]="field['required']">
                         <mat-error *ngIf="field.control.hasError('required')">
                             {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
                         </mat-error>
@@ -32,7 +32,7 @@
                     </mat-form-field>
                     <mat-form-field *ngIf="field.type === 'select' && field.id === 'doc_type_id'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value" [required]="field.required">
+                        <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value" [required]="field['required']">
                             <mat-option *ngFor="let option of doctypes" [value]="option.key">
                                 {{ option.label }}
                             </mat-option>
@@ -41,8 +41,8 @@
                     </mat-form-field>
                     <mat-form-field *ngIf="field.type === 'text' && field.id === 'min_proba'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type"
-                               placeholder="{{ field.label | translate }}" [required]="field.required">
+                        <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type"
+                               placeholder="{{ field.label | translate }}" [required]="field['required']">
                         <mat-error *ngIf="field.control.hasError('required')">
                             {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
                         </mat-error>
@@ -94,8 +94,7 @@
             </mat-list>
         </div>
         <div class="flex justify-center items-center mb-2 py-4">
-            <button mat-button (click)="createModel()" class="p-6 border-solid border-green-400 border bg-green-400
-            text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+            <button mat-button (click)="createModel()" class="valid_button">
                 <span class="block">
                     {{ 'ARTIFICIAL-INTELLIGENCE.train_a_model' | translate }}
                 </span>

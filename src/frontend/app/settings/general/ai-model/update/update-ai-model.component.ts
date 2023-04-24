@@ -159,7 +159,7 @@ export class UpdateAiModelComponent implements OnInit {
                 });
             }
             if (this.modelId !== undefined) {
-                this.http.post(environment['url'] + '/ws/ai/update/' + this.modelId, {
+                this.http.post(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/update/' + this.modelId, {
                     model_name: model_name,
                     min_pred: min_pred,
                     doctypes: doctypes
@@ -227,7 +227,7 @@ export class UpdateAiModelComponent implements OnInit {
     }
 
     async retrieveForms() {
-        const retrieve = this.http.get(environment['url'] + '/ws/forms/list?module=' + this.splitterOrVerifier, {headers: this.authService.headers}).pipe(
+        const retrieve = this.http.get(environment['url'] + '/ws/forms/' + this.splitterOrVerifier + '/list', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.forms = forms.forms;
             }),

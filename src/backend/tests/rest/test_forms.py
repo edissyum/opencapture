@@ -32,7 +32,7 @@ class FormTest(unittest.TestCase):
         payload = json.dumps({
             'args': {
                 'module': 'splitter',
-                'default_form':	False,
+                'default_form': False,
                 'label': 'SPLITTER_TEST_FORM',
                 'settings': {
                     'export_zip_file': '',
@@ -40,7 +40,7 @@ class FormTest(unittest.TestCase):
                 }
             }
         })
-        return self.app.post(f'/{CUSTOM_ID}/ws/forms/create',
+        return self.app.post(f'/{CUSTOM_ID}/ws/forms/splitter/create',
                              headers={"Content-Type": "application/json",
                                       'Authorization': 'Bearer ' + self.token}, data=payload)
 
@@ -54,14 +54,11 @@ class FormTest(unittest.TestCase):
                 ],
                 "default_form": True,
                 "settings": {
-                    "supplier_verif": True,
-                    "automatic_validation_data": None,
-                    "allow_automatic_validation": None,
-                    "delete_documents_after_outputs": True
+                    "supplier_verif": True
                 }
             }
         })
-        return self.app.post(f'/{CUSTOM_ID}/ws/forms/create',
+        return self.app.post(f'/{CUSTOM_ID}/ws/forms/verifier/create',
                              headers={"Content-Type": "application/json",
                                       'Authorization': 'Bearer ' + self.token}, data=payload)
 
@@ -77,7 +74,7 @@ class FormTest(unittest.TestCase):
                     'class_label': '1/33',
                     'label': 'Matricule',
                     'label_short': 'matricule',
-                    'metadata_key': 'matricule',
+                    'metadata_key': 'matricule'
             }],
             'document_metadata': []
         })

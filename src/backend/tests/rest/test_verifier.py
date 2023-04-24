@@ -57,19 +57,19 @@ class VerifierTest(unittest.TestCase):
         text_to_search = rf"@kuyruk.task(queue='verifier_{CUSTOM_ID}')"
         text_to_replace = f"# @kuyruk.task(queue='verifier_{CUSTOM_ID}')"
 
-        with open(file, "r+") as text_file:
+        with open(file, "r+", encoding='UTF-8') as text_file:
             texts = text_file.read()
             texts = texts.replace(text_to_search, text_to_replace)
 
-        with open(file, "w") as text_file:
+        with open(file, "w", encoding='UTF-8') as text_file:
             text_file.write(texts)
 
         pdf_url = 'https://open-capture.com/wp-content/uploads/2022/11/CALINDA_INV-001510.pdf'
         http = urllib3.PoolManager()
 
-        with http.request('GET', pdf_url, preload_content=False) as r, open(
+        with http.request('GET', pdf_url, preload_content=False) as _r, open(
                 './instance/upload/verifier/CALINDA_INV-001510.pdf', 'wb') as out_file:
-            shutil.copyfileobj(r, out_file)
+            shutil.copyfileobj(_r, out_file)
 
         my_file = FileStorage(
             stream=open("./instance/upload/verifier/CALINDA_INV-001510.pdf", "rb"),
@@ -359,7 +359,7 @@ class VerifierTest(unittest.TestCase):
 
         is_facturx = False
         with open(f'/var/share/{CUSTOM_ID}/export/verifier/INV-001510_F_15-12-2016_FR04493811251.pdf', 'rb') as f:
-            _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
+            _, _xml_content = facturx.get_facturx_xml_from_pdf(f.read())
             if _ is not None:
                 is_facturx = True
 

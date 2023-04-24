@@ -1,6 +1,4 @@
 # This file is part of Open-Capture.
-import datetime
-import time
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,8 +17,8 @@ import time
 
 from flask import request, g as current_context
 from src.backend.import_models import monitoring
+from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
-from src.backend.main import create_classes_from_custom_id, timer
 
 
 def get_processes():
@@ -85,6 +83,35 @@ def get_process_by_id(process_id):
     else:
         _format = 'Mon DD YYYY HH24:MI:SS'
     process, _ = monitoring.get_process_by_id(process_id, _format)
+
+    response = {
+        "process": process
+    }
+    return response, 200
+
+
+def get_process_by_token(process_token):
+    if 'configurations' in current_context:
+        configurations = current_context.configurations
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[10]
+
+    if configurations['locale'] == 'fra':
+        _format = 'TMDay DD TMMonth YYYY HH24:MI:SS'
+    else:
+        _format = 'Mon DD YYYY HH24:MI:SS'
+    process, _ = monitoring.get_process_by_token(process_token, _format)
+
+    response = {
+        "process": process
+    }
+    return response, 200
+
+
+def create_process(args):
+    process, _ = monitoring.insert(args)
 
     response = {
         "process": process

@@ -16,35 +16,63 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import uuid
 import json
 import zeep
 import base64
+import secrets
 import logging
+import datetime
 import requests
 from flask_babel import gettext
 from zeep import Client, exceptions
 from src.backend import verifier_exports
 from src.backend.import_classes import _Files
-from src.backend.import_controllers import user
 from src.backend.import_models import verifier, accounts
+from src.backend.import_controllers import user, monitoring
 from src.backend.main import launch, create_classes_from_custom_id
 from flask import current_app, Response, request, g as current_context
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
-def handle_uploaded_file(files, input_id):
+def handle_uploaded_file(files, input_id, workflow_id, return_token=False):
     path = current_app.config['UPLOAD_FOLDER']
     custom_id = retrieve_custom_from_url(request)
+    tokens = []
 
     for file in files:
         _f = files[file]
         filename = _Files.save_uploaded_file(_f, path)
-        launch({
-            'file': filename,
-            'custom_id': custom_id,
-            'input_id': input_id
+
+        if return_token:
+            now = datetime.datetime.now()
+            year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]
+            hour, minute, second, microsecond = [str('%02d' % now.hour), str('%02d' % now.minute), str('%02d' % now.second), str('%02d' % now.microsecond)]
+            date_batch = year + month + day + '_' + hour + minute + second + microsecond
+            token = date_batch + '_' + secrets.token_hex(32) + '_' + str(uuid.uuid4())
+            tokens.append({'filename': os.path.basename(filename), 'token': token})
+
+        task_id_monitor = monitoring.create_process({
+            'status': 'wait',
+            'module': 'verifier',
+            'filename': os.path.basename(filename),
+            'input_id': input_id if input_id else None,
+            'workflow_id': workflow_id if workflow_id else None,
+            'source': 'interface',
+            'token': token if return_token else None,
         })
-    return True
+
+        if task_id_monitor:
+            launch({
+                'file': filename,
+                'input_id': input_id,
+                'custom_id': custom_id,
+                'workflow_id': workflow_id,
+                'task_id_monitor': task_id_monitor[0]['process'],
+            })
+        else:
+            return False, 500
+    return tokens, 200
 
 
 def get_invoice_by_id(invoice_id):
@@ -617,11 +645,13 @@ def update_status(args):
         return response, 400
 
 
-def get_unseen():
+def get_unseen(user_id):
+    user_customers = user.get_customers_by_user_id(user_id)
+    user_customers[0].append(0)
     total_unseen = verifier.get_total_invoices({
         'select': ['count(invoices.id) as unseen'],
-        'where': ["status = %s"],
-        'data': ['NEW'],
+        'where': ["status = %s", "customer_id = ANY(%s)"],
+        'data': ['NEW', user_customers[0]],
         'table': ['invoices'],
     })[0]
     return total_unseen['unseen'], 200

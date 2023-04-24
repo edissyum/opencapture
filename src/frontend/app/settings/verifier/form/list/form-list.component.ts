@@ -45,13 +45,13 @@ import { HistoryService } from "../../../../../services/history.service";
     ]
 })
 export class FormListComponent implements OnInit {
-    columnsToDisplay: string[]  = ['id', 'label', 'default_form', 'enabled', 'actions'];
-    loading: boolean            = true;
-    pageSize : number           = 10;
-    pageIndex: number           = 0;
-    total: number               = 0;
-    offset: number              = 0;
-    forms : any                 = [];
+    columnsToDisplay : string[]  = ['id', 'label', 'default_form', 'enabled', 'actions'];
+    loading          : boolean   = true;
+    pageSize         : number    = 10;
+    pageIndex        : number    = 0;
+    total            : number    = 0;
+    offset           : number    = 0;
+    forms            : any       = [];
 
     constructor(
         public router: Router,
@@ -93,7 +93,7 @@ export class FormListComponent implements OnInit {
 
     loadForms(): void {
         this.loading = true;
-        this.http.get(environment['url'] + '/ws/forms/list?module=verifier&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/verifier/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.forms[0]) this.total = data.forms[0].total;
                 else if (this.pageIndex !== 0) {
@@ -113,7 +113,7 @@ export class FormListComponent implements OnInit {
     }
 
     async getInputs(formId: any) {
-        return await this.http.get(environment['url'] + '/ws/inputs/getByFormId/' + formId, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/inputs/verifier/getByFormId/' + formId, {headers: this.authService.headers}).toPromise();
     }
 
     async deleteConfirmDialog(formId: number, form: string) {
@@ -139,9 +139,9 @@ export class FormListComponent implements OnInit {
                     selectLabel         : this.translate.instant('FORMS.choose_form'),
                     confirmButton       : this.translate.instant('GLOBAL.delete_form_and_reassign_input'),
                     confirmButtonColor  : "warn",
-                    cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                    cancelButton        : this.translate.instant('GLOBAL.cancel')
                 },
-                width: "600px",
+                width: "600px"
             });
 
             dialogRef.afterClosed().subscribe(result => {
@@ -158,9 +158,9 @@ export class FormListComponent implements OnInit {
                     confirmText         : this.translate.instant('FORMS.confirm_delete', {"form": form}),
                     confirmButton       : this.translate.instant('GLOBAL.delete'),
                     confirmButtonColor  : "warn",
-                    cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                    cancelButton        : this.translate.instant('GLOBAL.cancel')
                 },
-                width: "600px",
+                width: "600px"
             });
 
             dialogRef.afterClosed().subscribe(result => {
@@ -179,7 +179,7 @@ export class FormListComponent implements OnInit {
                 confirmText         : this.translate.instant('FORMS.confirm_duplicate', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -199,7 +199,7 @@ export class FormListComponent implements OnInit {
                 confirmText         : this.translate.instant('FORMS.confirm_disable', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -219,7 +219,7 @@ export class FormListComponent implements OnInit {
                 confirmText         : this.translate.instant('FORMS.confirm_enable', {"form": form}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -252,7 +252,7 @@ export class FormListComponent implements OnInit {
         if (newFormId !== undefined) {
             for (const cpt in inputs) {
                 const args = {'default_form_id': newFormId};
-                this.http.put(environment['url'] + '/ws/inputs/update/' + inputs[cpt].id, {'args': args}, {headers: this.authService.headers}).pipe(
+                this.http.put(environment['url'] + '/ws/inputs/verifier/update/' + inputs[cpt].id, {'args': args}, {headers: this.authService.headers}).pipe(
                     catchError((err: any) => {
                         console.debug(err);
                         this.notify.handleErrors(err);

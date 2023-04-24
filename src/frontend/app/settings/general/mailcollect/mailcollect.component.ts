@@ -38,94 +38,7 @@ export class MailCollectComponent implements OnInit {
     total               : number        = 0;
     offset              : number        = 0;
     selectedIndex       : number        = 0;
-    mailCollectConfigId : number        = 0;
     search              : string        = '';
-    globalForm          : any[]         = [
-        {
-            id: 'batchPath',
-            control: new FormControl(),
-            label: marker('MAILCOLLECT.batch_path'),
-            type: 'text',
-            required: true,
-        },
-        {
-            id: 'smtpDelay',
-            control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_delay'),
-            type: 'number',
-            required: false,
-        },
-        {
-            id: 'smtpNotifOnError',
-            control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_notif_on_error'),
-            type: 'boolean',
-            required: false,
-        },
-        {
-            id: 'smtpSSL',
-            control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_ssl'),
-            type: 'boolean',
-            required: false,
-        },
-        {
-            id: 'smtpStartTLS',
-            control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_starttls'),
-            type: 'boolean',
-            required: false,
-        },
-        {
-            id: 'smtpAuth',
-            control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_auth'),
-            type: 'boolean',
-            required: false,
-        },
-        {
-            id: 'smtpHost',
-            control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_host'),
-            type: 'text',
-            required: false,
-        },
-        {
-            id: 'smtpPort',
-            control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_port'),
-            type: 'text',
-            required: false,
-        },
-        {
-            id: 'smtpLogin',
-            control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_login'),
-            type: 'text',
-            required: false,
-        },
-        {
-            id: 'smtpPwd',
-            control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_pwd'),
-            type: 'password',
-            required: false,
-        },
-        {
-            id: 'smtpFromMail',
-            control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_from_mail'),
-            type: 'text',
-            required: false,
-        },
-        {
-            id: 'smtpDestAdminMail',
-            control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_dest_admin_mail'),
-            type: 'text',
-            required: false,
-        }
-    ];
     processes           : any           = [];
     defaultProcessData  : any           = [
         {
@@ -268,28 +181,6 @@ export class MailCollectComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
 
-        this.http.get(environment['url'] + '/ws/config/getConfiguration/mailCollectGeneral', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                if (data.configuration.length === 1) {
-                    this.mailCollectConfigId = data.configuration[0].id;
-                    Object.keys(data.configuration[0].data.value).forEach((config: any ) => {
-                        this.globalForm.forEach((element: any) => {
-                            if (element.id === config) {
-                                if (data.configuration[0].data.value[config]) {
-                                    element.control.setValue(data.configuration[0].data.value[config]);
-                                }
-                            }
-                        });
-                    });
-                }
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-
         this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allCustomers = data.customers;
@@ -310,7 +201,7 @@ export class MailCollectComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allForms = data.forms;
                 this.defaultProcessData.forEach((element: any) => {
@@ -330,7 +221,7 @@ export class MailCollectComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/inputs/list?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/spitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allSplitterInputs = data.inputs;
                 this.defaultProcessData.forEach((element: any) => {
@@ -363,29 +254,6 @@ export class MailCollectComponent implements OnInit {
             }
         });
         return enabled;
-    }
-
-    updateGlobal() {
-        const data: any = {
-            'value': {}
-        };
-
-        this.globalForm.forEach((element: any) => {
-            data['value'][element.id] = element.control.value;
-        });
-
-        this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + this.mailCollectConfigId, {'args': data}, {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.notify.success(this.translate.instant('MAILCOLLECT.general_settings_updated'));
-                this.historyService.addHistory('general', 'mailcollect', this.translate.instant('HISTORY-DESC.mailcollect_general_settings_updated'));
-            }),
-            finalize(() => this.processLoading = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
     }
 
     updateProcessName(process: any, new_process_name: any, updateDatabase: boolean = true) {
@@ -484,7 +352,7 @@ export class MailCollectComponent implements OnInit {
         this.defaultProcessData = [
             {
                 id: 'name',
-                control: new FormControl(),
+                control: new FormControl()
             },
             {
                 id: 'enabled',
@@ -492,7 +360,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 disabled: true,
                 type: 'boolean',
-                required: false,
+                required: false
             },
             {
                 id: 'hostname',
@@ -500,7 +368,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.hostname'),
                 type: 'text',
-                required: true,
+                required: true
             },
             {
                 id: 'port',
@@ -508,7 +376,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.port'),
                 type: 'number',
-                required: true,
+                required: true
             },
             {
                 id: 'login',
@@ -516,7 +384,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('FORMATS.email'),
                 type: 'text',
-                required: true,
+                required: true
             },
             {
                 id: 'password',
@@ -524,7 +392,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('USER.password'),
                 type: 'password',
-                required: true,
+                required: true
             },
             {
                 id: 'secured_connection',
@@ -532,7 +400,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(true),
                 label: marker('MAILCOLLECT.secured_connection'),
                 type: 'boolean',
-                required: true,
+                required: true
             },
             {
                 id: 'is_splitter',
@@ -540,7 +408,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(false),
                 label: marker('MAILCOLLECT.is_splitter'),
                 type: 'boolean',
-                required: false,
+                required: false
             },
             {
                 id: 'splitter_technical_input_id',
@@ -548,7 +416,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(''),
                 label: marker('MAILCOLLECT.splitter_technical_input_id'),
                 type: 'autocomplete',
-                required: false,
+                required: false
             },
             {
                 id: 'folder_to_crawl',
@@ -557,7 +425,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.folder_to_crawl'),
                 type: 'autocomplete',
-                required: true,
+                required: true
             },
             {
                 id: 'folder_destination',
@@ -566,7 +434,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.folder_destination'),
                 type: 'autocomplete',
-                required: true,
+                required: true
             },
             {
                 id: 'folder_trash',
@@ -575,7 +443,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.folder_trash'),
                 type: 'autocomplete',
-                required: false,
+                required: false
             },
             {
                 id: 'action_after_process',
@@ -584,7 +452,7 @@ export class MailCollectComponent implements OnInit {
                 label: marker('MAILCOLLECT.action_after_process'),
                 type: 'select',
                 values: ['move', 'delete', 'none'],
-                required: true,
+                required: true
             },
             {
                 id: 'verifier_customer_id',
@@ -592,7 +460,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('INPUT.associated_customer'),
                 type: 'autocomplete',
-                required: false,
+                required: false
             },
             {
                 id: 'verifier_form_id',
@@ -600,7 +468,7 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('POSITIONS-MASKS.form_associated'),
                 type: 'autocomplete',
-                required: false,
+                required: false
             }
         ];
 
@@ -683,7 +551,7 @@ export class MailCollectComponent implements OnInit {
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_duplicate_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -715,7 +583,7 @@ export class MailCollectComponent implements OnInit {
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_disable_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -729,7 +597,7 @@ export class MailCollectComponent implements OnInit {
     }
 
     disableProcess(processName: string) {
-        this.http.delete(environment['url'] + '/ws/mailcollect/disableProcess/' + processName, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/mailcollect/disableProcess/' + processName, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.selectedIndex = 1;
                 this.loadProcess();
@@ -754,7 +622,7 @@ export class MailCollectComponent implements OnInit {
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_enable_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -768,7 +636,7 @@ export class MailCollectComponent implements OnInit {
     }
 
     enableProcess(processName: string) {
-        this.http.delete(environment['url'] + '/ws/mailcollect/enableProcess/' + processName, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/mailcollect/enableProcess/' + processName, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.selectedIndex = 1;
                 this.loadProcess();
@@ -793,7 +661,7 @@ export class MailCollectComponent implements OnInit {
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_delete_process', {"process": processName}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -960,17 +828,5 @@ export class MailCollectComponent implements OnInit {
         }
 
         return state;
-    }
-
-    getErrorMessage(field: any) {
-        let error: any;
-        this.globalForm.forEach(element => {
-            if (element.id === field) {
-                if (element.required && !(element.value || element.control.value)) {
-                    error = this.translate.instant('AUTH.field_required');
-                }
-            }
-        });
-        return error;
     }
 }

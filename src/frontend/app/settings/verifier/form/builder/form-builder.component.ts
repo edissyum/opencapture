@@ -41,7 +41,6 @@ export class FormBuilderComponent implements OnInit {
     loadingCustomFields     : boolean   = true;
     updateFormLoading       : boolean   = false;
     creationMode            : boolean   = true;
-    openAvailableField      : boolean   = false;
     modalOpen               : boolean   = false;
     selectedFields          : any       = [];
     formLabels              : any       = {};
@@ -57,17 +56,8 @@ export class FormBuilderComponent implements OnInit {
         }
     };
     formSettings            : any       = {
-        'allow_automatic_validation': {
-            'control': new FormControl(),
-        },
         'supplier_verif': {
             'control': new FormControl(),
-        },
-        'automatic_validation_data': {
-            'control': new FormControl()
-        },
-        'delete_documents_after_outputs': {
-            'control': new FormControl()
         }
     };
     outputForm              : any       = [
@@ -754,12 +744,12 @@ export class FormBuilderComponent implements OnInit {
         this.serviceSettings.init();
         this.formId = this.route.snapshot.params['id'];
 
-        this.http.get(environment['url'] + '/ws/outputs/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/verifier/list', {headers: this.authService.headers}).pipe(
             tap((res_outputs: any) => {
                 this.outputs = res_outputs.outputs;
                 if (this.formId) {
                     this.creationMode = false;
-                    this.http.get(environment['url'] + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
+                    this.http.get(environment['url'] + '/ws/forms/verifier/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             this.formLabels = data.labels;
                             this.formSettingId = data.module_settings_id;
@@ -771,10 +761,6 @@ export class FormBuilderComponent implements OnInit {
 
                             for (const field in this.formSettings) {
                                 for (const setting in data['settings']) {
-                                    if (setting === 'allow_automatic_validation') {
-                                        this.openAvailableField = data['settings'][setting];
-                                    }
-
                                     if (setting === field) {
                                         this.formSettings[setting].control.setValue(data['settings'][setting]);
                                     }
@@ -1054,7 +1040,7 @@ export class FormBuilderComponent implements OnInit {
         });
 
         if (label !== '' && outputs.length >= 1) {
-            this.http.put(environment['url'] + '/ws/forms/update/' + this.formId, {
+            this.http.put(environment['url'] + '/ws/forms/verifier/update/' + this.formId, {
                     'args': {
                         'label'        : label,
                         'default_form' : isDefault,
@@ -1123,26 +1109,20 @@ export class FormBuilderComponent implements OnInit {
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
         let supplierVerif = this.formSettings.supplier_verif.control.value;
-        const automaticValidationData = this.formSettings.automatic_validation_data.control.value;
-        const allowAutomaticValidation = this.formSettings.allow_automatic_validation.control.value;
-        const deleteDocumentsAfterOutputs = this.formSettings.delete_documents_after_outputs.control.value;
         if (!supplierVerif) supplierVerif = false;
         const outputs: any[] = [];
         this.outputForm.forEach((element: any) => {
             if (element.control.value) outputs.push(element.control.value);
         });
         if (label) {
-            this.http.post(environment['url'] + '/ws/forms/create', {
+            this.http.post(environment['url'] + '/ws/forms/verifier/create', {
                     'args': {
                         'module'        : 'verifier',
                         'label'         : label,
                         'outputs'       : outputs,
                         'default_form'  : isDefault,
                         'settings'      : {
-                            "supplier_verif"                 : supplierVerif,
-                            "automatic_validation_data"      : automaticValidationData,
-                            "allow_automatic_validation"     : allowAutomaticValidation,
-                            "delete_documents_after_outputs" : deleteDocumentsAfterOutputs
+                            "supplier_verif"                 : supplierVerif
                         },
                     }
                 }, {headers: this.authService.headers},

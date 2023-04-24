@@ -15,86 +15,126 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from src.backend.import_controllers import auth, inputs
+from flask_babel import gettext
 from flask import Blueprint, request, make_response, jsonify
+from src.backend.import_controllers import auth, inputs, privileges
 
 bp = Blueprint('inputs', __name__, url_prefix='/ws/')
 
 
-@bp.route('inputs/list', methods=['GET'])
+@bp.route('inputs/<string:module>/list', methods=['GET'])
 @auth.token_required
-def get_inputs():
-    args = {
-        'module': request.args['module'],
-        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
-        'offset': request.args['offset'] if 'offset' in request.args else 0,
-        'user_id': request.args['userId'] if 'userId' in request.args else None
-    }
+def get_inputs(module):
+    list_priv = ['settings', 'inputs_list'] if module == 'verifier' else ['settings', 'inputs_list_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/inputs/{module}/list'}), 403
+
+    args = dict(request.args)
+    args['module'] = module
     _inputs = inputs.get_inputs(args)
     return make_response(jsonify(_inputs[0])), _inputs[1]
 
 
-@bp.route('inputs/getById/<int:input_id>', methods=['GET'])
+@bp.route('inputs/<string:module>/getById/<int:input_id>', methods=['GET'])
 @auth.token_required
-def get_input_by_id(input_id):
+def get_input_by_id(module, input_id):
+    list_priv = ['settings', 'update_input'] if module == 'verifier' else ['settings', 'update_input_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/inputs/{module}/getById/{input_id}'}), 403
+
     _input = inputs.get_input_by_id(input_id)
     return make_response(jsonify(_input[0])), _input[1]
 
 
-@bp.route('inputs/getByInputId/<string:input_id>', methods=['GET'])
+@bp.route('inputs/<string:module>/getByInputId/<string:input_id>', methods=['GET'])
 @auth.token_required
-def get_input_by_input_id(input_id):
+def get_input_by_input_id(module, input_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['monitoring | update_input | update_input_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/inputs/{module}/getById/{input_id}'}), 403
+
     _input = inputs.get_input_by_input_id(input_id)
     return make_response(jsonify(_input[0])), _input[1]
 
 
-@bp.route('inputs/getByFormId/<int:form_id>', methods=['GET'])
+@bp.route('inputs/<string:module>/getByFormId/<int:form_id>', methods=['GET'])
 @auth.token_required
-def get_input_by_form_id(form_id):
+def get_input_by_form_id(module, form_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/inputs/{module}/getByFormId/{form_id}'}), 403
+
     _input = inputs.get_input_by_form_id(form_id)
     return make_response(jsonify(_input[0])), _input[1]
 
 
-@bp.route('inputs/update/<int:input_id>', methods=['PUT'])
+@bp.route('inputs/<string:module>/update/<int:input_id>', methods=['PUT'])
 @auth.token_required
-def update_input(input_id):
+def update_input(module, input_id):
+    list_priv = ['settings', 'update_input | forms_list'] if module == 'verifier' else ['settings', 'update_input_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/inputs/{module}/update/{input_id}'}), 403
+
     data = request.json['args']
     res = inputs.update_input(input_id, data)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('inputs/duplicate/<int:input_id>', methods=['POST'])
+@bp.route('inputs/<string:module>/duplicate/<int:input_id>', methods=['POST'])
 @auth.token_required
-def duplicate_input(input_id):
+def duplicate_input(module, input_id):
+    list_priv = ['settings', 'update_input'] if module == 'verifier' else ['settings', 'update_input_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/inputs/{module}/duplicate/{input_id}'}), 403
+
     res = inputs.duplicate_input(input_id)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('inputs/delete/<int:input_id>', methods=['DELETE'])
+@bp.route('inputs/<string:module>/delete/<int:input_id>', methods=['DELETE'])
 @auth.token_required
-def delete_input(input_id):
+def delete_input(module, input_id):
+    list_priv = ['settings', 'update_input'] if module == 'verifier' else ['settings', 'update_input_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/inputs/{module}/delete/{input_id}'}), 403
+
     res = inputs.delete_input(input_id)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('inputs/create', methods=['POST'])
+@bp.route('inputs/<string:module>/create', methods=['POST'])
 @auth.token_required
-def create_input():
+def create_input(module):
+    list_priv = ['settings', 'add_input'] if module == 'verifier' else ['settings', 'add_input_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/inputs/{module}/create'}), 403
+
     data = request.json['args']
     res = inputs.create_input(data)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('inputs/createScriptAndIncron', methods=['POST'])
+@bp.route('inputs/<string:module>/createScriptAndWatcher', methods=['POST'])
 @auth.token_required
-def create_script_and_incron():
+def create_script_and_incron(module):
+    list_priv = ['settings', 'add_input'] if module == 'verifier' else ['settings', 'add_input_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/inputs/{module}/create'}), 403
+
     data = request.json['args']
     res = inputs.create_script_and_incron(data)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('inputs/allowedPath', methods=['GET'])
+@bp.route('inputs/<string:module>/allowedPath', methods=['GET'])
 @auth.token_required
-def get_allowed_path():
+def get_allowed_path(module):
+    list_priv = ['settings', 'update_input | add_input'] if module == 'verifier' \
+        else ['settings', 'update_input_splitter | add_input_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/inputs/{module}/allowedPath'}), 403
     res = inputs.get_allowed_path()
     return make_response(jsonify(res[0])), res[1]

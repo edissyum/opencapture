@@ -33,11 +33,9 @@ export class PrivilegesService {
         if (user) {
             const userPrivileges = user['privileges'];
             if (userPrivileges) {
-                if (privilegeId === undefined) {
+                if (privilegeId === undefined || userPrivileges === '*') {
                     return true;
                 }
-                if (userPrivileges === '*')
-                    return true;
 
                 userPrivileges.forEach((element: any) => {
                     if (privilegeId === element) {

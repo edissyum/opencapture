@@ -243,7 +243,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadStatus(): void {
-        this.http.get(environment['url'] + '/ws/status/list?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/status/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
             }),
@@ -258,10 +258,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     loadOutputsData(): void {
         this.loading = true;
         this.outputs = [];
-        this.http.get(environment['url'] + '/ws/forms/getById/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/splitter/getById/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
             tap((formData: any) => {
                 for (const outputsId of formData['outputs']) {
-                    this.http.get(environment['url'] + '/ws/outputs/getById/' + outputsId, {headers: this.authService.headers}).pipe(
+                    this.http.get(environment['url'] + '/ws/outputs/splitter/getById/' + outputsId, {headers: this.authService.headers}).pipe(
                         tap((outputsData: any) => {
                             this.outputs.push(outputsData['output_label']);
                         }),
@@ -417,7 +417,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 'batchId'           : this.currentBatch.id,
                 'splitIndex'        : this.currentBatch.maxSplitIndex + 1,
                 'displayOrder'      : this.currentBatch.selectedDocument.displayOrder + 1,
-                'updatedDocuments'  : documentDisplayOrder,
+                'updatedDocuments'  : documentDisplayOrder
             },
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -615,9 +615,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     confirmText        : this.translate.instant('SPLITTER.refresh_without_saving_modifications'),
                     confirmButton      : this.translate.instant('SPLITTER.refresh_without_saving'),
                     confirmButtonColor : "warn",
-                    cancelButton       : this.translate.instant('GLOBAL.cancel'),
+                    cancelButton       : this.translate.instant('GLOBAL.cancel')
                 },
-                width: "600px",
+                width: "600px"
             });
             dialogRef.afterClosed().subscribe(result => {
                 if (result) {
@@ -656,7 +656,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     loadForms() {
         this.forms = [];
-        this.http.get(environment['url'] + '/ws/forms/list?module=splitter&user_id=' + this.userService.user.id, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/splitter/list?user_id=' + this.userService.user.id, {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.forms = forms.forms;
             }),
@@ -676,7 +676,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 confirmText        : this.translate.instant('GLOBAL.confirm_form_change'),
                 confirmButton      : this.translate.instant('GLOBAL.confirm_modification'),
                 confirmButtonColor : "green",
-                cancelButton       : this.translate.instant('GLOBAL.cancel'),
+                cancelButton       : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -915,7 +915,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 confirmText        : confirmMessage,
                 confirmButton      : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor : "warn",
-                cancelButton       : this.translate.instant('GLOBAL.cancel'),
+                cancelButton       : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -944,7 +944,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 confirmText         : this.translate.instant('SPLITTER.confirm_merge_batches'),
                 confirmButton       : this.translate.instant('SPLITTER.merge'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -1003,7 +1003,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 confirmText        : this.translate.instant('SPLITTER.confirm_delete_pages', {"pagesCount": this.currentBatch.selectedPagesCount}),
                 confirmButton      : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor : "warn",
-                cancelButton       : this.translate.instant('GLOBAL.cancel'),
+                cancelButton       : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -1113,7 +1113,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     confirmButtonColor : "warn",
                     cancelButton       : this.translate.instant('GLOBAL.cancel'),
                 },
-                width: "600px",
+                width: "600px"
             });
 
             dialogRef.afterClosed().subscribe(result => {
@@ -1169,7 +1169,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 confirmText        : this.translate.instant('SPLITTER.confirm_validate'),
                 confirmButton      : this.translate.instant('SPLITTER.validate_batch'),
                 confirmButtonColor : "green",
-                cancelButton       : this.translate.instant('GLOBAL.cancel'),
+                cancelButton       : this.translate.instant('GLOBAL.cancel')
             },
             width: "600px",
         });
@@ -1218,7 +1218,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 'batchId'             : this.currentBatch.id,
                 'deletedPagesIds'     : this.deletedPagesIds,
                 'deletedDocumentsIds' : this.deletedDocumentsIds,
-                'formId'              : this.currentBatch.formId,
+                'formId'              : this.currentBatch.formId
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {
@@ -1258,7 +1258,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 'batchId'             : this.currentBatch.id,
                 'deletedPagesIds'     : this.deletedPagesIds,
                 'batchMetadata'       : this.batchMetadataValues,
-                'deletedDocumentsIds' : this.deletedDocumentsIds,
+                'deletedDocumentsIds' : this.deletedDocumentsIds
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {

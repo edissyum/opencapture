@@ -1,16 +1,17 @@
 <div class="min-h-screen flex">
     <app-loader *ngIf="this.loading"></app-loader>
-    <div class="w-full flex items-center justify-center text-center flex-col gap-y-8">
-        <div class="w-11/12" *ngIf="this.loginImage">
-            <img class="m-auto" [src]="this.loginImage" alt="Open-Capture logo">
-        </div>
-        <mat-card class="text-center m-12 w-full 2xl:w-1/4 sm:w-1/2">
-            <mat-card-title class="mb-5">
-                {{ 'GLOBAL.login' | translate }}
-            </mat-card-title>
-            <mat-card-subtitle class="mt-5 mb-5">
+    <div class="w-full flex items-center justify-center text-center flex-col ">
+        <div class="w-11/12 max-w-md" *ngIf="this.loginImage">
+            <img class="m-auto" [src]="this.loginImage" alt="Open-Capture logo" >
+            <mat-card-subtitle>
                 {{ this.subtitle }}
             </mat-card-subtitle>
+        </div>
+        <mat-card class="text-center m-6 mb-0 w-11/12 max-w-md">
+            <mat-card-title class="m-5">
+                {{ 'GLOBAL.login' | translate }}
+            </mat-card-title>
+
             <mat-card-content>
                 <form [formGroup]="this.loginForm" (ngSubmit)="onSubmit()">
                     <mat-form-field class="block">
@@ -36,9 +37,14 @@
                         </span>
                         </mat-hint>
                     </mat-form-field>
+                    <div class="text-right mb-5 text-gray-900" *ngIf="this.enableLoginMethodName === 'default'">
+                        <a routerLink="/forgotPassword">
+                            {{ 'AUTH.forgot_password' | translate }}
+                        </a>
+                    </div>
                     <button mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled"
-                            class="min-w-56 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
-                               transition duration-300" type="submit">
+                            class=" w-full mb-4 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
+                               transition duration-300" type="submit" style="max-width: 250px;">
                         <span *ngIf="!this.processLogin && !this.isConnectionBtnDisabled">
                             {{ 'AUTH.login' | translate }}
                         </span>
@@ -47,31 +53,22 @@
                     </button>
                 </form>
             </mat-card-content>
-            <span class="relative my-4 text-green-400 font-bold">
-                <a href="https://kutt.it/GuideDutilisation" target="_blank">
-                    {{ 'GLOBAL.utilisation_guide' | translate }}
+        </mat-card>
+        <span class="text-green-400 font-bold mt-5 bg-white">
+            <a href="https://kutt.it/GuideDutilisation" target="_blank">
+                {{ 'GLOBAL.utilisation_guide' | translate }}
+            </a>
+        </span>
+        <div class="flex flex-col gap-y-2 absolute bottom-px right-px" style="z-index: -1;">
+            <div class="flex gap-x-2 mr-2 mb-2">
+            <span class="text-gray-900 text-sm text-right">
+                Open-Capture version {{ environment.version }}
+                <br>
+                Powered by
+                <a class="text-green-400" href="https://edissyum.com/" target="_blank">
+                    Edissyum Consulting
                 </a>
             </span>
-            <div class="text-center relative top-8 text-gray-900" *ngIf="this.enableLoginMethodName === 'default'">
-                <a routerLink="/forgotPassword">
-                    {{ 'AUTH.forgot_password' | translate }}
-                </a>
-            </div>
-        </mat-card>
-    </div>
-    <div>
-        <div class="absolute bottom-0 right-0">
-            <div class="flex flex-col gap-y-2">
-                <div class="flex gap-x-2 mr-2 mb-2">
-                    <span class="text-gray-900 text-sm">
-                        Open-Capture version {{ environment.version }}
-                        <span class="text-green-400">|</span>
-                        Powered by
-                        <a class="text-green-400" href="https://edissyum.com/" target="_blank">
-                            Edissyum Consulting
-                        </a>
-                    </span>
-                </div>
             </div>
         </div>
     </div>

@@ -42,7 +42,7 @@ export class PasswordVerificationService {
         private translate: TranslateService,
         private notify: NotificationService
     ) {
-        this.http.get(environment['url'] + '/ws/config/getConfiguration/passwordRules', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/passwordRules').pipe(
             tap((data: any) => {
                 if (data.configuration[0] && data.configuration[0].data.value) {
                     this.passwordRules = data.configuration[0].data.value;

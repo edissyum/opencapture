@@ -32,7 +32,7 @@ import { HistoryService } from "../../../../../services/history.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
-    selector: 'app-output-create',
+    selector: 'create-output',
     templateUrl: './create-output.component.html',
     styleUrls: ['./create-output.component.scss']
 })
@@ -129,7 +129,7 @@ export class CreateOutputComponent implements OnInit {
             }
         });
 
-        this.http.get(environment['url'] + '/ws/outputs/getOutputsTypes?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/verifier/getOutputsTypes', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputsTypes = data.outputs_types;
             }),
@@ -161,7 +161,7 @@ export class CreateOutputComponent implements OnInit {
             const outputLabel = this.getValueFromForm(this.outputForm, 'output_label');
             const compressType = this.getValueFromForm(this.outputForm, 'compress_type');
             const outputTypeId = this.getValueFromForm(this.outputForm, 'output_type_id');
-            this.http.post(environment['url'] + '/ws/outputs/create',
+            this.http.post(environment['url'] + '/ws/outputs/verifier/create',
                 {'args': {
                     'output_type_id': outputTypeId,
                     'output_label'  : outputLabel,

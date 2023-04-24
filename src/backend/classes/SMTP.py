@@ -26,7 +26,7 @@ from flask_babel import gettext
 
 
 class SMTP:
-    def __init__(self, enabled, host, port, login, pwd, ssl, starttls, dest_mail, delay, auth, from_mail):
+    def __init__(self, enabled, host, port, login, pwd, protocole_secure, dest_mail, delay, auth, from_mail):
         self.pwd = pwd
         self.conn = None
         self.port = port
@@ -34,48 +34,53 @@ class SMTP:
         self.is_up = False
         self.login = login
         self.delay = int(delay)
-        self.ssl = ssl
         self.auth = auth
         self.dest_mail = dest_mail
         self.from_mail = from_mail
         self.enabled = enabled
-        self.starttls = starttls
+        self.protocole_secure = protocole_secure
 
         if self.enabled:
             self.test_connection()
 
-    def test_connection(self):
+    def test_connection(self, return_error=False):
         """
         Test the connection to the SMTP server
 
         """
         error = False
-        if self.ssl:
+        if self.protocole_secure.lower() in ['ssl', 'tls']:
             try:
                 self.conn = smtplib.SMTP_SSL(self.host, self.port, timeout=10)
                 self.conn.ehlo()
-                if self.starttls:
+                if self.protocole_secure.lower() == 'tls':
                     self.conn.starttls()
                     self.conn.ehlo()
             except (smtplib.SMTPException, OSError) as smtp_error:
                 error = True
                 print('SMTP Host ' + str(self.host) + ' on port ' + str(self.port) + ' is unreachable : ' + str(smtp_error))
+                if return_error:
+                    return smtp_error
         else:
             try:
                 self.conn = smtplib.SMTP(self.host, self.port, timeout=10)
                 self.conn.ehlo()
-                if self.starttls:
+                if self.protocole_secure.lower() == 'tls':
                     self.conn.starttls()
                     self.conn.ehlo()
             except (smtplib.SMTPException, OSError) as smtp_error:
                 error = True
                 print('SMTP Host ' + str(self.host) + ' on port ' + str(self.port) + ' is unreachable : ' + str(smtp_error))
+                if return_error:
+                    return smtp_error
         try:
             if not error and self.auth:
                 self.conn.login(self.login, self.pwd)
         except (smtplib.SMTPException, OSError) as smtp_error:
             error = True
             print('Error while trying to login to ' + str(self.host) + ' using ' + str(self.login) + '/' + str(self.pwd) + ' as login/password : ' + str(smtp_error))
+            if return_error:
+                return smtp_error
         self.is_up = not error
 
     def send_notification(self, error, file_name):
@@ -225,3 +230,22 @@ class SMTP:
             self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
         except smtplib.SMTPException as smtp_error:
             print('Erreur lors de l\'envoi du mail : ' + str(smtp_error))
+
+    def send_test_email(self, dest):
+        msg = MIMEMultipart('alternative')
+        msg['To'] = dest
+        if self.from_mail:
+            msg['From'] = self.from_mail
+        else:
+            msg['From'] = 'MailCollect@OpenCapture.com'
+
+        msg['Subject'] = '[OpenCapture - ' + gettext('SMTP_TEST_SEND') + ']'
+        message = gettext('SMTP_TEST_SEND_BODY')
+
+        msg.attach(MIMEText(message, 'html'))
+
+        try:
+            self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
+            return True, ''
+        except smtplib.SMTPException as smtp_error:
+            return False, smtp_error

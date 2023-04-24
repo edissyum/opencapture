@@ -15,13 +15,12 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-import base64
 import json
-
+import base64
 import pandas as pd
 from flask_babel import gettext
 from flask import Blueprint, make_response, request, jsonify
-from src.backend.import_controllers import auth, verifier
+from src.backend.import_controllers import auth, verifier, privileges
 
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 
@@ -29,13 +28,22 @@ bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 @bp.route('verifier/upload', methods=['POST'])
 @auth.token_required
 def upload():
-    input_id = None
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'upload']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/upload'}), 403
+
+    input_id = return_token = workflow_id = None
     if 'inputId' in request.args:
         input_id = request.args['inputId']
+    if 'workflowId' in request.args:
+        workflow_id = request.args['workflowId']
+    if 'returnToken' in request.args:
+        return_token = True
+
     files = request.files
-    res = verifier.handle_uploaded_file(files, input_id)
-    if res:
-        return make_response('', 200)
+    res = verifier.handle_uploaded_file(files, input_id, workflow_id, return_token)
+
+    if res and res[0] is not False:
+        return make_response(res[0], res[1])
     else:
         return make_response(gettext('UNKNOW_ERROR'), 400)
 
@@ -43,6 +51,9 @@ def upload():
 @bp.route('verifier/invoices/list', methods=['POST'])
 @auth.token_required
 def invoices_list():
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier | statistics']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/invoices/list'}), 403
+
     data = request.json
     res = verifier.retrieve_invoices(data)
     return make_response(res[0], res[1])
@@ -51,6 +62,9 @@ def invoices_list():
 @bp.route('verifier/invoices/<int:invoice_id>', methods=['GET'])
 @auth.token_required
 def invoice_info(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/invoices/list'}), 403
+
     res = verifier.get_invoice_by_id(invoice_id)
     return make_response(res[0], res[1])
 
@@ -58,6 +72,10 @@ def invoice_info(invoice_id):
 @bp.route('verifier/invoices/<int:invoice_id>/updatePosition', methods=['PUT'])
 @auth.token_required
 def update_invoice_position(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/{invoice_id}/updatePosition'}), 403
+
     data = request.json['args']
     res = verifier.update_position_by_invoice_id(invoice_id, data)
     return make_response(res[0], res[1])
@@ -66,6 +84,10 @@ def update_invoice_position(invoice_id):
 @bp.route('verifier/invoices/<int:invoice_id>/updatePage', methods=['PUT'])
 @auth.token_required
 def update_invoice_page(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/{invoice_id}/updatePage'}), 403
+
     data = request.json['args']
     res = verifier.update_page_by_invoice_id(invoice_id, data)
     return make_response(res[0], res[1])
@@ -74,6 +96,10 @@ def update_invoice_page(invoice_id):
 @bp.route('verifier/invoices/delete/<int:invoice_id>', methods=['DELETE'])
 @auth.token_required
 def delete_invoice(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/delete/{invoice_id}'}), 403
+
     res = verifier.delete_invoice(invoice_id)
     return make_response(res[0], res[1])
 
@@ -81,6 +107,10 @@ def delete_invoice(invoice_id):
 @bp.route('verifier/invoices/<int:invoice_id>/updateData', methods=['PUT'])
 @auth.token_required
 def update_invoice_data(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/{invoice_id}/updateData'}), 403
+
     data = request.json['args']
     res = verifier.update_invoice_data_by_invoice_id(invoice_id, data)
     return make_response(res[0], res[1])
@@ -89,6 +119,10 @@ def update_invoice_data(invoice_id):
 @bp.route('verifier/invoices/<int:invoice_id>/export_xml', methods=['POST'])
 @auth.token_required
 def export_xml(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/{invoice_id}/export_xml'}), 403
+
     data = request.json['args']
     res = verifier.export_xml(invoice_id, data)
     return make_response(res[0], res[1])
@@ -97,6 +131,10 @@ def export_xml(invoice_id):
 @bp.route('verifier/invoices/<int:invoice_id>/export_pdf', methods=['POST'])
 @auth.token_required
 def export_pdf(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/{invoice_id}/export_pdf'}), 403
+
     data = request.json['args']
     res = verifier.export_pdf(invoice_id, data)
     return make_response(res[0], res[1])
@@ -105,6 +143,10 @@ def export_pdf(invoice_id):
 @bp.route('verifier/invoices/<int:invoice_id>/export_facturx', methods=['POST'])
 @auth.token_required
 def export_facturx(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/{invoice_id}/export_facturx'}), 403
+
     data = request.json['args']
     res = verifier.export_facturx(invoice_id, data)
     return make_response(res[0], res[1])
@@ -113,6 +155,10 @@ def export_facturx(invoice_id):
 @bp.route('verifier/invoices/<int:invoice_id>/export_mem', methods=['POST'])
 @auth.token_required
 def export_mem(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/{invoice_id}/export_mem'}), 403
+
     data = request.json['args']
     res = verifier.export_mem(invoice_id, data)
     return make_response(res[0], res[1])
@@ -121,6 +167,10 @@ def export_mem(invoice_id):
 @bp.route('verifier/invoices/<int:invoice_id>/deleteDocuments', methods=['GET'])
 @auth.token_required
 def delete_documents_by_invoice_id(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/{invoice_id}/deleteDocuments'}), 403
+
     res = verifier.delete_documents_by_invoice_id(invoice_id)
     return make_response(res[0], res[1])
 
@@ -128,6 +178,10 @@ def delete_documents_by_invoice_id(invoice_id):
 @bp.route('verifier/invoices/<int:invoice_id>/deleteData', methods=['PUT'])
 @auth.token_required
 def delete_invoice_data(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/{invoice_id}/deleteData'}), 403
+
     args = request.json['args']
     res = '', 200
     if 'multiple' in args:
@@ -143,6 +197,10 @@ def delete_invoice_data(invoice_id):
 @bp.route('verifier/invoices/<int:invoice_id>/deletePosition', methods=['PUT'])
 @auth.token_required
 def delete_invoice_position(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/{invoice_id}/deletePosition'}), 403
+
     args = request.json['args']
     res = '', 200
     if 'multiple' in args:
@@ -158,6 +216,10 @@ def delete_invoice_position(invoice_id):
 @bp.route('verifier/invoices/<int:invoice_id>/deletePage', methods=['PUT'])
 @auth.token_required
 def delete_invoice_page(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/{invoice_id}/deletePage'}), 403
+
     args = request.json['args']
     res = '', 200
     if 'multiple' in args:
@@ -173,6 +235,10 @@ def delete_invoice_page(invoice_id):
 @bp.route('verifier/invoices/<int:invoice_id>/update', methods=['PUT'])
 @auth.token_required
 def update_invoice(invoice_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/{invoice_id}/update'}), 403
+
     data = request.json['args']
     res = verifier.update_invoice(invoice_id, data)
     return make_response(res[0], res[1])
@@ -181,6 +247,10 @@ def update_invoice(invoice_id):
 @bp.route('verifier/invoices/removeLockByUserId/<string:user_id>', methods=['PUT'])
 @auth.token_required
 def remove_lock_by_user_id(user_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/removeLockByUserId/{user_id}'}), 403
+
     res = verifier.remove_lock_by_user_id(user_id)
     return make_response(res[0], res[1])
 
@@ -188,6 +258,9 @@ def remove_lock_by_user_id(user_id):
 @bp.route('verifier/ocrOnFly', methods=['POST'])
 @auth.token_required
 def ocr_on_fly():
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/ocrOnFly'}), 403
+
     data = request.json
     positions_masks = False
 
@@ -207,6 +280,9 @@ def ocr_on_fly():
 @bp.route('verifier/getThumb', methods=['POST'])
 @auth.token_required
 def get_thumb():
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier | update_position_mask']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/getThumb'}), 403
+
     data = request.json['args']
     year_and_month = False
     if 'registerDate' in data:
@@ -221,6 +297,9 @@ def get_thumb():
 @bp.route('verifier/getTokenINSEE', methods=['GET'])
 @auth.token_required
 def get_token_insee():
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/getTokenINSEE'}), 403
+
     token = verifier.get_token_insee()
     return make_response({'token': token[0]}, token[1])
 
@@ -228,6 +307,9 @@ def get_token_insee():
 @bp.route('verifier/verifySIREN', methods=['POST'])
 @auth.token_required
 def verify_siren():
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/verifySIREN'}), 403
+
     token = request.json['token']
     siren = request.json['siren']
     status = verifier.verify_siren(token, siren)
@@ -237,6 +319,9 @@ def verify_siren():
 @bp.route('verifier/verifySIRET', methods=['POST'])
 @auth.token_required
 def verify_siret():
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/verifySIRET'}), 403
+
     token = request.json['token']
     siret = request.json['siret']
     status = verifier.verify_siret(token, siret)
@@ -246,14 +331,22 @@ def verify_siret():
 @bp.route('verifier/verifyVATNumber', methods=['POST'])
 @auth.token_required
 def verify_vat_number():
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/verifyVATNumber'}), 403
+
     vat_number = request.json['vat_number']
     status = verifier.verify_vat_number(vat_number)
     return make_response({'status': status[0]}, status[1])
 
 
-@bp.route('verifier/getUnseen', methods=['GET'])
-def verifier_get_unseen():
-    res = verifier.get_unseen()
+@bp.route('verifier/getUnseen/user/<int:user_id>', methods=['GET'])
+@auth.token_required
+def verifier_get_unseen(user_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/getUnseen/user/{user_id}'}), 403
+
+    res = verifier.get_unseen(user_id)
     return make_response({'unseen': res[0]}, res[1])
 
 
@@ -262,6 +355,10 @@ def verifier_get_unseen():
 @bp.route('verifier/invoices/totals/<string:status>/<int:user_id>/<string:form_id>', methods=['GET'])
 @auth.token_required
 def get_totals(status, user_id, form_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/invoices/totals/{status}/{user_id}/{form_id}'}), 403
+
     totals = verifier.get_totals(status, user_id, form_id)
     return make_response({'totals': totals[0]}, totals[1])
 
@@ -269,6 +366,9 @@ def get_totals(status, user_id, form_id):
 @bp.route('verifier/status', methods=['PUT'])
 @auth.token_required
 def update_status():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_status']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/status'}), 403
+
     data = json.loads(request.data)
     args = {
         'ids': data['ids'],

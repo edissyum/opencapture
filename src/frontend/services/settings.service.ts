@@ -58,28 +58,28 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.configurations"),
                 "icon"      : "fa-solid fa-sliders",
                 "route"     : '/settings/general/configurations',
-                "privilege" : "configurations",
+                "privilege" : "configurations"
             },
             {
                 "id"        : "docservers",
                 "label"     : this.translate.instant("SETTINGS.docservers"),
                 "icon"      : "fa-solid fa-hard-drive",
                 "route"     : '/settings/general/docservers',
-                "privilege" : "docservers",
+                "privilege" : "docservers"
             },
             {
                 "id"        : "regex",
                 "label"     : this.translate.instant("SETTINGS.regex"),
                 "icon"      : "fa-solid fa-star-of-life",
                 "route"     : '/settings/general/regex',
-                "privilege" : "regex",
+                "privilege" : "regex"
             },
             {
                 "id"        : "mailcollect",
                 "label"     : this.translate.instant("SETTINGS.mailcollect"),
                 "icon"      : "fa-solid fa-inbox",
                 "route"     : '/settings/general/mailcollect',
-                "privilege" : "mailcollect",
+                "privilege" : "mailcollect"
             },
             {
                 "id"        : "users",
@@ -110,7 +110,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.user_quota"),
                 "icon"      : "fa-solid fa-user-gear",
                 "route"     : '/settings/general/user-quota',
-                "privilege" : "user_quota",
+                "privilege" : "user_quota"
             },
             {
                 "id"        : "roles",
@@ -141,7 +141,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.custom_fields"),
                 "route"     : "/settings/general/custom-fields",
                 "icon"      : "fa-solid fa-code",
-                "privilege" : "custom_fields",
+                "privilege" : "custom_fields"
             },
             {
                 "id"        : "login-methods",
@@ -163,7 +163,31 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.verifier_display"),
                 "icon"      : "fa-solid fa-display",
                 "route"     : "/settings/verifier/display",
-                "privilege" : "verifier_display",
+                "privilege" : "verifier_display"
+            },
+            {
+                "id"        : "workflow_builder",
+                "label"     : this.translate.instant("SETTINGS.list_workflows"),
+                "icon"      : "fa-solid fa-diagram-next",
+                "route"     : "/settings/verifier/workflows",
+                "privilege" : "workflows_list",
+                "actions"   : [
+                    {
+                        "id"        : "add_workflow",
+                        "label"     : this.translate.instant("SETTINGS.workflow_builder"),
+                        "route"     : "/settings/verifier/workflows/builder/new",
+                        "privilege" : "add_workflow",
+                        "icon"      : "fa-solid fa-tools"
+                    },
+                    {
+                        "id"                : "update_workflonw",
+                        "label"             : this.translate.instant("SETTINGS.workflow_update"),
+                        "route"             : "/settings/verifier/workflows/builder/edit/",
+                        "privilege"         : "update_workflow",
+                        "icon"              : "fa-solid fa-hammer",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
             },
             {
                 "id"        : "form_builder",
@@ -290,7 +314,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.status_update"),
                 "icon"      : "fa-solid fa-flag",
                 "route"     : "/settings/verifier/status-update",
-                "privilege" : "update_status",
+                "privilege" : "update_status"
             }
         ],
         "splitter": [
@@ -433,7 +457,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.status_update"),
                 "icon"      : "fa-solid fa-flag",
                 "route"     : "/settings/splitter/status-update",
-                "privilege" : "update_status",
+                "privilege" : "update_status"
             }
         ]
     };

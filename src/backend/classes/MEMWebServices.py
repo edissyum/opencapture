@@ -183,7 +183,7 @@ class MEMWebServices:
             data['diffusionList'] = [{
                 'mode': 'dest',
                 'type': 'user',
-                'id': args['destUser'],
+                'id': args['destUser']
             }]
 
         res = requests.post(self.base_url + 'resources', auth=self.auth, data=json.dumps(data),
