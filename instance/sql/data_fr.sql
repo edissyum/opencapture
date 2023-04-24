@@ -28,17 +28,16 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('locale', '{"t
 INSERT INTO "configurations" ("label", "data", "display") VALUES ('smtp', '{
     "type": "json",
     "value": {
-        "smtpNotifOnError": false,
-        "smtpSSL": true,
-        "smtpStartTLS": false,
+        "smtpPwd": "",
+        "smtpAuth": true,
         "smtpHost": "",
         "smtpPort": "",
-        "smtpAuth": "",
+        "smtpDelay": "30",
         "smtpLogin": "",
-        "smtpPwd": "",
         "smtpFromMail": "",
+        "smtpNotifOnError": true,
         "smtpDestAdminMail": "",
-        "smtpDelay": "30"
+        "smtpProtocoleSecure": "none"
     },
     "description": "Paramétrage de l''envoi d''email SMTP"
 }', false);
