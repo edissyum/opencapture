@@ -36,9 +36,10 @@ from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
 def handle_uploaded_file(files, input_id, workflow_id, return_token=False):
-    path = current_app.config['UPLOAD_FOLDER']
     custom_id = retrieve_custom_from_url(request)
+    path = current_app.config['UPLOAD_FOLDER']
     tokens = []
+    token = ''
 
     for file in files:
         _f = files[file]
@@ -55,11 +56,11 @@ def handle_uploaded_file(files, input_id, workflow_id, return_token=False):
         task_id_monitor = monitoring.create_process({
             'status': 'wait',
             'module': 'verifier',
+            'source': 'interface',
             'filename': os.path.basename(filename),
+            'token': token if return_token else None,
             'input_id': input_id if input_id else None,
             'workflow_id': workflow_id if workflow_id else None,
-            'source': 'interface',
-            'token': token if return_token else None,
         })
 
         if task_id_monitor:

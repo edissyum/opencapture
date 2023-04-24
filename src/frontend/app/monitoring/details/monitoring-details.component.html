@@ -21,7 +21,7 @@
                         {{ this.processId }}
                     </span>
                 </div>
-                <div class="grid my-10 mx-10">
+                <div class="grid my-10 mx-10" *ngIf="this.processData.document_ids">
                     <span class="text-gray-400 text-base text-center">
                         <span *ngIf="this.processData.module === 'verifier'">
                             {{ 'MONITORING.document_id' | translate }}

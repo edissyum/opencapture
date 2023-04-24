@@ -91,7 +91,7 @@ class SeparatorQR:
                 output.write(binary_f)
 
     @staticmethod
-    def split_document_every_two_pages(file):
+    def split_document_every_x_pages(file, page_per_doc):
         path = os.path.dirname(file)
         file_without_extention = os.path.splitext(os.path.basename(file))[0]
 
@@ -101,16 +101,15 @@ class SeparatorQR:
         array_of_files = []
         cpt = 1
         for i in range(nb_pages):
-            if i % 2 == 0:
+            if i % int(page_per_doc) == 0:
                 output = pypdf.PdfWriter()
                 output.add_page(pdf.pages[i])
-                if i + 1 < nb_pages:
+                if i + 1 < nb_pages and int(page_per_doc) > 1:
                     output.add_page(pdf.pages[i + 1])
                 newname = path + '/' + file_without_extention + "-" + str(cpt) + ".pdf"
-                with open(newname, 'wb') as outputStream:
-                    output.write(outputStream)
+                with open(newname, 'wb') as output_stream:
+                    output.write(output_stream)
                 array_of_files.append(newname)
-                outputStream.close()
                 cpt = cpt + 1
         return array_of_files
 

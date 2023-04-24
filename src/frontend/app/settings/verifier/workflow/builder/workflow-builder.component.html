@@ -47,7 +47,7 @@
                 </div>
                 <div class="mt-2 grid grid-cols-3 gap-6">
                     <ng-container *ngFor="let field of this.fields['input']">
-                        <mat-form-field *ngIf="field.type === 'text'">
+                        <mat-form-field *ngIf="field.type === 'text' && field.show">
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <input matInput [formControl]="field['control']" [required]="field['required']"
                                    [type]="field.type" [placeholder]="field.placeholder" (focusout)="field.id === 'input_folder' ? checkFolder(field) : '' ">
@@ -59,7 +59,7 @@
                                 <i class="fa-solid fa-check text-green-400"></i>
                             </button>
                         </mat-form-field>
-                        <mat-form-field *ngIf="field.type === 'select'">
+                        <mat-form-field *ngIf="field.type === 'select' && field.show">
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <mat-select [(value)]="field.control.value" [required]="field['required']">
                                 <mat-option *ngFor="let option of field.values" [value]="option.id">
@@ -83,12 +83,10 @@
                 </div>
             </mat-step>
             <mat-step [aria-labelledby]="!this.creationMode ? 'disabled_step' : ''" *ngIf="this.processAllowed" [label]="'WORKFLOW.process' | translate">
-                <app-hint *ngIf="this.useInterface" [message]="'WORKFLOW.process_hint' | translate"></app-hint>
-
                 <div class="mt-6 grid grid-cols-2 gap-6" [class.grid-cols-3]="this.useInterface">
                     <ng-container *ngFor="let field of this.fields['process']">
                         <div *ngIf="field.type === 'boolean' && field.show">
-                            <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2" (change)="setUseInterface($event.checked)">
+                            <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2" (change)="field.id === 'use_interface' ? setUseInterface($event.checked) : ''">
                                 <span class="justify-center">{{ field.label | translate }}</span>
                                 <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-6 cursor-help" [matTooltip]="field.hint | translate">
                                     <i class="fa-solid fa-circle-question text-md"></i>
@@ -171,7 +169,7 @@
                     {{ 'WORKFLOW.next' | translate }}
                 </button>
             </mat-step>
-            <mat-step [aria-labelledby]="!this.creationMode ? 'disabled_step' : ''" [label]="'WORKFLOW.output' | translate">
+            <mat-step [aria-labelledby]="!this.creationMode ? 'disabled_step' : ''" [label]="'WORKFLOW.output' | translate" *ngIf="this.outputAllowed">
                 <div class="mt-2 w-full">
                     <ng-container *ngFor="let field of this.fields['output']">
                         <mat-form-field *ngIf="field.type === 'select'" class="w-full">

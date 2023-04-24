@@ -22,13 +22,26 @@ import datetime
 from src.backend import verifier_exports
 from src.backend.import_classes import _PyTesseract, _Files
 from src.backend.import_controllers import artificial_intelligence
-from src.backend.functions import delete_documents, find_form_with_ia
+from src.backend.functions import delete_documents, rotate_document, find_form_with_ia
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
 
 
+def execute_outputs(output_info, log, regex, invoice_data, database, current_lang):
+    if output_info['output_type_id'] == 'export_xml':
+        log.info('Output execution : XML export')
+        verifier_exports.export_xml(output_info['data'], log, regex, invoice_data, database)
+    elif output_info['output_type_id'] == 'export_mem':
+        log.info('Output execution : MEM export')
+        verifier_exports.export_mem(output_info['data'], invoice_data, log, regex, database)
+    elif output_info['output_type_id'] == 'export_pdf':
+        log.info('Output execution : PDF export')
+        verifier_exports.export_pdf(output_info['data'], log, regex, invoice_data, current_lang,
+                                    output_info['compress_type'], output_info['ocrise'])
+
+
 def insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status,
-           nb_pages, docservers, input_settings, log, regex, form_settings, supplier_lang_different, current_lang):
+           nb_pages, docservers, workflow_settings, input_settings, log, regex, supplier_lang_different, current_lang):
     try:
         filename = os.path.splitext(files.custom_file_name)
         improved_img = filename[0] + '_improved' + filename[1]
@@ -62,7 +75,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
         })
 
     if args.get('isMail') is None or args.get('isMail') is False:
-        if 'input_id' in args and input_settings:
+        if 'input_id' in args and args['input_id'] and input_settings:
             if input_settings['purchase_or_sale']:
                 invoice_data.update({
                     'purchase_or_sale': input_settings['purchase_or_sale']
@@ -71,23 +84,33 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                 invoice_data.update({
                     'customer_id': input_settings['customer_id']
                 })
+        elif 'workflow_id' in args and args['workflow_id']:
+            workflow_settings = database.select({
+                'select': ['input', 'process', 'separation', 'output'],
+                'table': ['workflows'],
+                'where': ['workflow_id = %s', 'module = %s'],
+                'data': [args['workflow_id'], 'verifier']
+            })
+            if workflow_settings:
+                workflow_settings = workflow_settings[0]
+                if workflow_settings['input']['customer_id']:
+                    invoice_data.update({
+                        'customer_id': workflow_settings['input']['customer_id']
+                    })
+                if workflow_settings['input']['apply_process'] and workflow_settings['process']['use_interface'] and workflow_settings['process']['form_id']\
+                        and ('form_id_ia' not in args or not args['form_id_ia']):
+                    invoice_data.update({
+                        'form_id': workflow_settings['process']['form_id']
+                    })
     else:
         if 'customer_id' in args and args['customer_id']:
             invoice_data.update({
                 'customer_id': args['customer_id']
             })
-        if 'form_id' in args and args['form_id']:
-            invoice_data.update({
-                'form_id': args['form_id']
-            })
 
     if 'form_id_ia' in args and args['form_id_ia']:
         invoice_data.update({
             'form_id': args['form_id_ia']
-        })
-    elif 'form_id' in args and args['form_id']:
-        invoice_data.update({
-            'form_id': args['form_id']
         })
 
     insert_invoice = True
@@ -119,16 +142,24 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                         for _r in _regex:
                             regex[_r['regex_id']] = _r['content']
 
-                    if output_info[0]['output_type_id'] == 'export_xml':
-                        verifier_exports.export_xml(output_info[0]['data'], log, regex, invoice_data, database)
-                    elif output_info[0]['output_type_id'] == 'export_mem':
-                        verifier_exports.export_mem(output_info[0]['data'], invoice_data, log, regex, database)
-                    elif output_info[0]['output_type_id'] == 'export_pdf':
-                        verifier_exports.export_pdf(output_info[0]['data'], log, regex, invoice_data, current_lang,
-                                                    output_info[0]['compress_type'], output_info[0]['ocrise'])
+                    execute_outputs(output_info[0], log, regex, invoice_data, database, current_lang)
+    elif workflow_settings and (not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
+        if 'output' in workflow_settings and workflow_settings['output']:
+            for output_id in workflow_settings['output']['outputs_id']:
+                output_info = database.select({
+                    'select': ['output_type_id', 'data', 'compress_type', 'ocrise'],
+                    'table': ['outputs'],
+                    'where': ['id = %s'],
+                    'data': [output_id]
+                })
+                if output_info:
+                    execute_outputs(output_info[0], log, regex, invoice_data, database, current_lang)
 
-            if 'delete_documents_after_outputs' in form_settings and form_settings['delete_documents_after_outputs']:
+    if workflow_settings:
+        if workflow_settings['input']['apply_process']:
+            if workflow_settings['process']['delete_documents']:
                 delete_documents(docservers, invoice_data['path'], invoice_data['filename'], full_jpg_filename)
+                log.info('Invoice not inserted in database based on workflow settings')
                 insert_invoice = False
 
     if insert_invoice:
@@ -181,10 +212,25 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     else:
         original_file = os.path.basename(file)
 
+    input_settings = workflow_settings = None
+
+    if 'workflow_id' in args:
+        workflow_settings = database.select({
+            'select': ['*'],
+            'table': ['workflows'],
+            'where': ['workflow_id = %s', 'module = %s'],
+            'data': [args['workflow_id'], 'verifier'],
+        })
+        if workflow_settings and workflow_settings[0]['input']['apply_process']:
+            if workflow_settings[0]['process']['rotation']:
+                if workflow_settings[0]['process']['rotation'] != 'no_rotation':
+                    rotate_document(file, workflow_settings[0]['process']['rotation'])
+                    log.info('Document rotated by ' + str(workflow_settings[0]['process']['rotation']) +
+                             '° based on workflow settings')
+
     # Convert files to JPG
     convert(file, files, ocr, nb_pages)
 
-    input_settings = None
     form_id = None
     form_id_found_with_ai = False
 
@@ -202,14 +248,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 form_id_found_with_ai = True
                 args['form_id_ia'] = res
 
-    if 'workflow_id' in args:
-        workflow_settings = database.select({
-            'select': ['*'],
-            'table': ['workflows'],
-            'where': ['workflow_id = %s', 'module = %s'],
-            'data': [args['workflow_id'], 'verifier'],
-        })
-
+    if workflow_settings and 'workflow_id' in args:
         if 'ai_model_id' in workflow_settings[0]['input'] and workflow_settings[0]['input']['ai_model_id']:
             ai_model_id = workflow_settings[0]['input']['ai_model_id']
             res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, artificial_intelligence, ocr, log, 'verifier')
@@ -489,12 +528,12 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     full_jpg_filename = str(uuid.uuid4())
     file = files.move_to_docservers(docservers, file)
+
     # Convert all the pages to JPG (used to full web interface)
     files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename, docservers=True)
     files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
 
     allow_auto = False
-    form_settings = None
     only_ocr = False
 
     if form_id:
@@ -529,10 +568,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     if (supplier and not supplier[2]['skip_auto_validate'] and allow_auto) or only_ocr:
         log.info('All the usefull informations are found. Execute outputs action and end process')
         invoice_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
-               'END', nb_pages, docservers, input_settings, log, regex, form_settings, supplier_lang_different, configurations['locale'])
+               'END', nb_pages, docservers, workflow_settings, input_settings, log, regex, supplier_lang_different, configurations['locale'])
     else:
         invoice_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
-               'NEW', nb_pages, docservers, input_settings, log, regex, form_settings, supplier_lang_different, configurations['locale'])
+               'NEW', nb_pages, docservers, workflow_settings, input_settings, log, regex, supplier_lang_different, configurations['locale'])
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')

@@ -44,6 +44,7 @@ export class WorkflowBuilderComponent implements OnInit {
     loading         : boolean       = true;
     creationMode    : boolean       = true;
     processAllowed  : boolean       = false;
+    outputAllowed   : boolean       = false;
     useInterface    : boolean       = false;
     separationMode  : string        = 'no_sep';
     workflowId      : any;
@@ -60,6 +61,7 @@ export class WorkflowBuilderComponent implements OnInit {
         input : [
             {
                 id: 'input_folder',
+                show: true,
                 label: this.translate.instant('INPUT.input_folder'),
                 type: 'text',
                 control: new FormControl(),
@@ -68,6 +70,7 @@ export class WorkflowBuilderComponent implements OnInit {
             },
             {
                 id: 'customer_id',
+                show: true,
                 label: this.translate.instant('INPUT.associated_customer'),
                 type: 'select',
                 control: new FormControl(),
@@ -75,6 +78,7 @@ export class WorkflowBuilderComponent implements OnInit {
             },
             {
                 id: 'ai_model_id',
+                show: true,
                 label: this.translate.instant('INPUT.ai_model_id'),
                 type: 'select',
                 control: new FormControl(),
@@ -83,12 +87,14 @@ export class WorkflowBuilderComponent implements OnInit {
             },
             {
                 id: 'apply_process',
+                show: true,
                 label: this.translate.instant('WORKFLOW.apply_process'),
                 type: 'boolean',
                 control: new FormControl()
             },
             {
                 id: 'facturx_only',
+                show: true,
                 label: this.translate.instant('WORKFLOW.facturx_only'),
                 hint: this.translate.instant('WORKFLOW.facturx_only_hint'),
                 type: 'boolean',
@@ -182,16 +188,16 @@ export class WorkflowBuilderComponent implements OnInit {
                         'label': this.translate.instant('WORKFLOW.no_rotation'),
                     },
                     {
-                        'id': 45,
-                        'label': this.translate.instant('WORKFLOW.rotate_45')
-                    },
-                    {
                         'id': 90,
                         'label': this.translate.instant('WORKFLOW.rotate_90')
                     },
                     {
                         'id': 180,
                         'label': this.translate.instant('WORKFLOW.rotate_180')
+                    },
+                    {
+                        'id': 270,
+                        'label': this.translate.instant('WORKFLOW.rotate_270')
                     }
                 ]
             }
@@ -274,25 +280,23 @@ export class WorkflowBuilderComponent implements OnInit {
                     this.nameControl.setValue(workflow.label);
                     Object.keys(this.fields).forEach((parent: any) => {
                         this.fields[parent].forEach((field: any) => {
-                            if (workflow[parent][field.id]) {
-                                let value = workflow[parent][field.id];
-                                if (parseInt(value) && !Array.isArray(value)) {
-                                    value = parseInt(value);
-                                }
-                                if (value === 'true' || value === 'false' ) {
-                                    value = value === 'true';
-                                }
-                                if (field.id === 'splitter_method_id') {
-                                    this.setSeparationMode(value);
-                                }
-                                if (field.id === 'use_interface') {
-                                    this.setUseInterface(value);
-                                }
-                                if (field.id === 'input_folder') {
-                                    this.oldFolder = value;
-                                }
-                                field.control.setValue(value);
+                            let value = workflow[parent][field.id];
+                            if (parseInt(value) && !Array.isArray(value)) {
+                                value = parseInt(value);
                             }
+                            if (value === 'true' || value === 'false' ) {
+                                value = value === 'true';
+                            }
+                            if (field.id === 'splitter_method_id') {
+                                this.setSeparationMode(value);
+                            }
+                            if (field.id === 'use_interface') {
+                                this.setUseInterface(value);
+                            }
+                            if (field.id === 'input_folder') {
+                                this.oldFolder = value;
+                            }
+                            field.control.setValue(value);
                         });
                     });
                 }),
@@ -391,10 +395,26 @@ export class WorkflowBuilderComponent implements OnInit {
             if (element.id === 'apply_process') {
                 element.control.valueChanges.subscribe((value: any) => {
                     this.processAllowed = value;
+                    this.fields['process'].forEach((elem: any) => {
+                        if (elem.id === 'use_interface') {
+                            if (value === false) {
+                                this.outputAllowed = true;
+                            }
+                            if (value && elem.control.value) {
+                                this.outputAllowed = false;
+                            }
+                        }
+                    });
+
                 });
             }
             if (element.id === 'facturx_only') {
                 element.control.valueChanges.subscribe((value: any) => {
+                    this.fields['input'].forEach((elem: any) => {
+                        if (elem.id === 'ai_model_id') {
+                            elem.show = !value;
+                        }
+                    });
                     this.fields['process'].forEach((elem: any) => {
                         if (elem.id === 'system_fields') {
                             if (value) {
@@ -417,6 +437,7 @@ export class WorkflowBuilderComponent implements OnInit {
 
     setUseInterface(value: any) {
         this.useInterface = value;
+        this.outputAllowed = !value;
         this.fields['process'].forEach((element: any) => {
             if (element.id === 'form_id' || element.id === 'system_fields' || element.id === 'allow_automatic_validation') {
                 element.show = this.useInterface;
@@ -469,9 +490,7 @@ export class WorkflowBuilderComponent implements OnInit {
 
         Object.keys(this.fields).forEach((parent: any) => {
             this.fields[parent].forEach((field: any) => {
-                if (field.control.value) {
-                    workflow[parent][field.id] = field.control.value;
-                }
+                workflow[parent][field.id] = field.control.value;
             });
         });
 
@@ -515,9 +534,7 @@ export class WorkflowBuilderComponent implements OnInit {
         if (this.idControl.value && this.nameControl.value) {
             Object.keys(this.fields).forEach((parent: any) => {
                 this.fields[parent].forEach((field: any) => {
-                    if (field.control.value) {
-                        workflow[parent][field.id] = field.control.value;
-                    }
+                    workflow[parent][field.id] = field.control.value;
                 });
             });
 
