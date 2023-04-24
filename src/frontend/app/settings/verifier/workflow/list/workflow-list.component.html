@@ -16,5 +16,50 @@
             <div></div>
         </div>
         <hr class="border-green-400 relative z-30">
+        <mat-table matSort [dataSource]="workflows" (matSortChange)="sortData($event)" class="w-full">
+            <ng-container matColumnDef="id">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="workflow_id">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.label_short' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element['workflow_id'] }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="label">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.label' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element.label }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="input_folder">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'INPUT.input_folder_header' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element.input['input_folder'] }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <button (click)="$event.stopPropagation(); duplicateConfirmDialog(element.id, element.label)"
+                            matTooltip="{{ 'WORKFLOW.duplicate' | translate }}" mat-icon-button
+                            class="inline-block align-text-top">
+                        <i class="fa-solid fa-clone text-lg"></i>
+                    </button>
+                    <button mat-icon-button
+                            (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.label)"
+                            matTooltip="{{ 'GLOBAL.delete' | translate }}"
+                            class="inline-block align-text-top">
+                        <i class="fa-solid fa-trash text-lg"></i>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnsToDisplay;"
+                     routerLink="/settings/verifier/workflows/builder/edit/{{ row.id }}"
+                     class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
+        </mat-table>
+        <mat-paginator showFirstLastButtons
+                       [length]="this.total"
+                       [pageSize]="pageSize"
+                       [pageIndex]="pageIndex"
+                       [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                       (page)="onPageChange($event)">
+        </mat-paginator>
     </mat-sidenav-content>
 </mat-sidenav-container>

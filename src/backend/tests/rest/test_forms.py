@@ -54,10 +54,7 @@ class FormTest(unittest.TestCase):
                 ],
                 "default_form": True,
                 "settings": {
-                    "supplier_verif": True,
-                    "automatic_validation_data": None,
-                    "allow_automatic_validation": None,
-                    "delete_documents_after_outputs": True
+                    "supplier_verif": True
                 }
             }
         })

@@ -84,7 +84,7 @@ export class LoginComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/config/getConfiguration/loginMessage', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/loginMessage').pipe(
             tap((data: any) => {
                 if (data.configuration.length === 1) {
                     this.subtitle = data.configuration[0].data.value;

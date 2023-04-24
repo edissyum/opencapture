@@ -15,32 +15,33 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
-def get_processes(args):
+def get_workflows(args):
     if 'database' in current_context:
         database = current_context.database
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
-    error = None
-    _processes = database.select({
-        'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['monitoring'],
-        'where': args['where'] if 'where' in args else [],
-        'data': args['data'] if 'data' in args else [],
-        'order_by': args['order_by'] if 'order_by' in args else [],
+    _workflows = database.select({
+        'select': ["*"] if "select" not in args else args["select"],
+        'table': ["workflows"],
+        'where': args['where'],
+        'data': [] if "data" not in args else args["data"],
+        'order_by': ["id ASC"],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'offset': str(args['offset']) if 'offset' in args else 0,
     })
-    return _processes, error
+
+    return _workflows
 
 
-def get_process_by_id(process_id, date_format):
+def get_workflow_by_id(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -48,20 +49,22 @@ def get_process_by_id(process_id, date_format):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
     error = None
-    _process = database.select({
-        'select': [
-            '*',
-            "to_char(creation_date, '" + date_format + "') as creation_date_formated",
-            "to_char(end_date, '" + date_format + "') as end_date_formated"
-        ],
-        'table': ['monitoring'],
+    _workflow = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['workflows'],
         'where': ['id = %s'],
-        'data': [process_id],
+        'data': [args['workflow_id']]
     })
-    return _process, error
+
+    if not _workflow:
+        error = gettext('WORKFLOW_DOESNT_EXISTS')
+    else:
+        _workflow = _workflow[0]
+
+    return _workflow, error
 
 
-def get_process_by_token(process_token, date_format):
+def create_workflow(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -69,30 +72,35 @@ def get_process_by_token(process_token, date_format):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
     error = None
-    _process = database.select({
-        'select': [
-            '*',
-            "to_char(creation_date, '" + date_format + "') as creation_date_formated",
-            "to_char(end_date, '" + date_format + "') as end_date_formated"
-        ],
-        'table': ['monitoring'],
-        'where': ['token = %s'],
-        'data': [process_token],
+
+    _workflow = database.insert({
+        'table': 'workflows',
+        'columns': args['columns'],
     })
-    return _process, error
+
+    if not _workflow:
+        error = gettext('WORKFLOW_CREATE_ERROR')
+
+    return _workflow, error
 
 
-def insert(args):
+def update_workflow(args):
     if 'database' in current_context:
         database = current_context.database
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
-
     error = None
-    res = database.insert({
-        'table': 'monitoring',
-        'columns': args
+
+    _workflow = database.update({
+        'table': ['workflows'],
+        'set': args['set'],
+        'where': ['id = %s'],
+        'data': [args['workflow_id']]
     })
-    return res, error
+
+    if _workflow[0] is False:
+        error = gettext('WORKFLOW_UPDATE_ERROR')
+
+    return _workflow, error

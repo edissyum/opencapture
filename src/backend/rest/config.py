@@ -50,11 +50,21 @@ def get_configurations():
 
 
 @bp.route('config/getConfiguration/<string:config_label>', methods=['GET'])
+@auth.token_required
 def get_configuration_by_label(config_label):
-    if config_label not in ('loginMessage', 'passwordRules', 'userQuota'):
-        if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
-            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                            'message': f'/config/getConfiguration/{config_label}'}), 403
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/config/getConfiguration/{config_label}'}), 403
+
+    res = config.retrieve_configuration_by_label(config_label)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('config/getConfigurationNoAuth/<string:config_label>', methods=['GET'])
+def get_configuration_by_label_simple(config_label):
+    if config_label not in ('loginMessage', 'passwordRules'):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/config/getConfigurationNoAuth/{config_label}'}), 403
 
     res = config.retrieve_configuration_by_label(config_label)
     return make_response(jsonify(res[0])), res[1]

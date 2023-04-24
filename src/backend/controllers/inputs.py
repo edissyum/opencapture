@@ -19,10 +19,10 @@
 import os
 import stat
 from flask_babel import gettext
-from flask import request, g as current_context
 from src.backend.import_models import inputs
 from src.backend.import_classes import _Config
 from src.backend.import_controllers import user
+from flask import request, g as current_context
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
@@ -322,7 +322,7 @@ def create_script_and_incron(args):
                         "errors": gettext('FS_WATCHER_CREATION_ERROR'),
                         "message": gettext('CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR')
                     }
-                    return response, 501
+                    return response, 400
 
             if os.path.isfile(config['GLOBAL']['watcherconfig']):
                 fs_watcher_config = _Config(config['GLOBAL']['watcherconfig'], interpolation=False)
@@ -342,19 +342,19 @@ def create_script_and_incron(args):
                     "errors": gettext('FS_WATCHER_CREATION_ERROR'),
                     "message": gettext('FS_WATCHER_CONFIG_DOESNT_EXIST')
                 }
-                return response, 501
+                return response, 400
         else:
             response = {
                 "errors": gettext('SCRIPT_SAMPLE_DOESNT_EXISTS'),
                 "message": folder_script + '/script_sample_dont_touch.sh'
             }
-            return response, 501
+            return response, 400
     else:
         response = {
             "errors": gettext('SCRIPT_FOLDER_DOESNT_EXISTS'),
             "message": folder_script
         }
-        return response, 501
+        return response, 400
 
 
 def get_allowed_path():

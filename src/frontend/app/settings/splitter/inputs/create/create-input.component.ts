@@ -204,7 +204,7 @@ export class SplitterCreateInputComponent implements OnInit {
                 input[element.id] = element.control.value;
             });
 
-            this.http.post(environment['url'] + '/ws/inputs/splitter/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/splitter/createScriptAndWatcher', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.http.post(environment['url'] + '/ws/inputs/splitter/create', {'args': input}, {headers: this.authService.headers}).pipe(
                         tap(() => {

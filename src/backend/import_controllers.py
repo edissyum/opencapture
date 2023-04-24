@@ -24,6 +24,12 @@ if 'auth' or 'controllers' not in custom_array['auth']['path']:
 elif 'controllers' in custom_array['auth']['path']:
     auth = getattr(__import__(custom_array['auth']['path'], fromlist=[custom_array['auth']['module']]), custom_array['auth']['module'])
 
+if 'workflow' not in custom_array or 'controllers' not in custom_array['workflow']['path']:
+    from .controllers import workflow
+elif 'controllers' in custom_array['workflow']['path']:
+    workflow = getattr(__import__(custom_array['workflow']['path'], fromlist=[custom_array['workflow']['module']]),
+                       custom_array['workflow']['module'])
+
 if 'monitoring' or 'controllers' not in custom_array['monitoring']['path']:
     from .controllers import monitoring
 elif 'controllers' in custom_array['monitoring']['path']:

@@ -1,3 +1,7 @@
+.mdc-tooltip--shown .mdc-tooltip__surface-animation {
+    @apply max-w-sm #{!important};
+}
+
 .mat-mdc-tab-header {
     @apply z-20;
     & .mat-mdc-tab-label-container .mat-mdc-tab-list .mat-mdc-tab-labels {
@@ -17,10 +21,24 @@
     }
 }
 
+.mat-step-header:hover,
+.mat-step-header.cdk-program-focused {
+    @apply bg-transparent #{!important};
+}
+
+.mat-step-header[aria-labelledby="disabled_step"] {
+    @apply pointer-events-none;
+    @apply cursor-not-allowed #{!important};
+}
+
 .mat-step-header .mat-step-icon-selected,
-.mat-step-header .mat-step-icon-state-done,
 .mat-step-header .mat-step-icon-state-edit {
     @apply bg-green-400 #{!important};
+}
+
+.mat-step-header .mat-step-icon-state-done,
+.mat-step-header .mat-step-icon-state-number:not(.mat-step-icon-selected) {
+    @apply bg-gray-400 #{!important};
 }
 
 .mat-mdc-form-field-hint::before {
@@ -34,7 +52,6 @@
 .mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before {
     @apply hidden #{!important};
 }
-
 
 .mat-primary .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-minimal::after,
 .mat-primary .mat-pseudo-checkbox-indeterminate.mat-pseudo-checkbox-minimal::after {
@@ -74,10 +91,12 @@
 }
 
 .mat-selected,
+.mat-calendar-body-selected,
 .mat-checkbox-checked .mat-accent .mat-checkbox-background,
 .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
+.mat-primary .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-full,
 .mat-mdc-slide-toggle .mdc-switch:enabled .mdc-switch__track::after,
-.mat-calendar-body-selected {
+.mat-primary .mat-pseudo-checkbox-indeterminate.mat-pseudo-checkbox-full {
     @apply bg-green-400 #{!important};
 }
 

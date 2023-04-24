@@ -35,17 +35,21 @@ import { HistoryService } from "../../services/history.service";
     selector: 'app-upload',
     templateUrl: './upload.component.html',
     styleUrls: ['./upload.component.scss'],
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
 
 export class UploadComponent implements OnInit {
-    headers                  : HttpHeaders   = this.authService.headers;
-    selectedInput            : any           = '';
-    selectedInputTechnicalId : any           = '';
-    inputs                   : any[]         = [];
-    loading                  : boolean       = true;
-    sending                  : boolean       = false;
-    error                    : boolean       = false;
+    headers                     : HttpHeaders   = this.authService.headers;
+    selectedInput               : any           = '';
+    selectedInputTechnicalId    : any           = '';
+    selectedWorkflow            : any           = '';
+    selectedWorkflowTechnicalId : any           = '';
+    inputs                      : any[]         = [];
+    workflows                   : any[]         = [];
+    loading                     : boolean       = true;
+    sending                     : boolean       = false;
+    error                       : boolean       = false;
+    uploadMode                  : string        = 'input';
 
     constructor(
         private router: Router,
@@ -78,14 +82,28 @@ export class UploadComponent implements OnInit {
         }
 
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
-        this.http.get(environment['url'] + '/ws/inputs/' + splitterOrVerifier + '/list?userId=' + this.userService.user.id,
-            {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/' + splitterOrVerifier + '/list?userId=' + this.userService.user.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.inputs = data.inputs;
                 if (this.inputs.length === 1) {
                     this.selectedInput = data.inputs[0].id;
                     this.selectedInputTechnicalId = data.inputs[0].input_id;
                 }
+             }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/workflows/' + splitterOrVerifier + '/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.workflows = data.workflows;
+                // if (this.workflows.length === 1) {
+                //     this.selectedWorkflow = data.workflows[0].id;
+                //     this.selectedWorkflowTechnicalId = data.workflows[0].input_id;
+                // }
              }),
             finalize(() => {this.loading = false;}),
             catchError((err: any) => {
@@ -104,8 +122,7 @@ export class UploadComponent implements OnInit {
                 const fileExtension = fileName.split('.').pop();
                 if (fileExtension.toLowerCase() !== 'pdf') {
                     this.error = true;
-                    this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized',
-                        {count: data.length}));
+                    this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized', {count: data.length}));
                     return;
                 }
             }
@@ -119,6 +136,21 @@ export class UploadComponent implements OnInit {
             }
         });
         this.selectedInput = inputId;
+        this.uploadMode = 'input';
+        this.selectedWorkflow = '';
+        this.selectedWorkflowTechnicalId = '';
+    }
+
+    setWorkflow(workflowId: any) {
+        this.workflows.forEach((element: any) => {
+            if (element.id === workflowId) {
+                this.selectedWorkflowTechnicalId = element.workflow_id;
+            }
+        });
+        this.selectedWorkflow = workflowId;
+        this.uploadMode = 'workflow';
+        this.selectedInput = '';
+        this.selectedInputTechnicalId = '';
     }
 
     uploadFile(): void {
@@ -143,19 +175,19 @@ export class UploadComponent implements OnInit {
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
                 environment['url'] + '/ws/' + splitterOrVerifier + '/upload' +
-                '?inputId=' + this.selectedInputTechnicalId +
-                 '&userId=' + this.userService.user.id,
-                formData,
-                {
-                    headers: this.authService.headers
-                },
+                '?inputId=' + this.selectedInputTechnicalId + '&workflowId=' + this.selectedWorkflowTechnicalId +
+                '&userId=' + this.userService.user.id + '&UploadMode=' + this.uploadMode, formData, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
+                    this.sending = false;
                     this.fileControl.setValue([]);
                     this.notify.success(this.translate.instant('UPLOAD.upload_success'));
-                    this.sending = false;
                     for (const cpt of Array(numberOFFiles).keys()) {
-                        this.historyService.addHistory(splitterOrVerifier, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded', {input: this.selectedInputTechnicalId}));
+                        if (this.uploadMode === 'input') {
+                            this.historyService.addHistory(splitterOrVerifier, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded', {input: this.selectedInputTechnicalId}));
+                        } else if (this.uploadMode === 'workflow') {
+                            this.historyService.addHistory(splitterOrVerifier, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded_workflow', {workflow: this.selectedWorkflowTechnicalId}));
+                        }
                     }
                 }),
                 catchError((err: any) => {

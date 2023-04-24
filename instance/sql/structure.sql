@@ -1,5 +1,4 @@
-CREATE TABLE "users"
-(
+CREATE TABLE "users" (
     "id"                SERIAL      UNIQUE PRIMARY KEY,
     "username"          VARCHAR(50) UNIQUE NOT NULL,
     "firstname"         VARCHAR(255)       NOT NULL,
@@ -15,8 +14,7 @@ CREATE TABLE "users"
     "reset_token"       TEXT
 );
 
-CREATE TABLE "form_models"
-(
+CREATE TABLE "form_models" (
     "id"            SERIAL        UNIQUE PRIMARY KEY,
     "label"         VARCHAR(50),
     "default_form"  BOOLEAN       DEFAULT False,
@@ -28,15 +26,13 @@ CREATE TABLE "form_models"
     "labels"        JSONB         DEFAULT '{}'
 );
 
-CREATE TABLE "form_model_settings"
-(
+CREATE TABLE "form_model_settings" (
     "id"       SERIAL      UNIQUE PRIMARY KEY,
     "module"   VARCHAR(10),
     "settings" JSONB       DEFAULT '{}'
 );
 
-CREATE TABLE "positions_masks"
-(
+CREATE TABLE "positions_masks" (
     "id"          SERIAL        UNIQUE PRIMARY KEY,
     "label"       VARCHAR(50),
     "enabled"     BOOLEAN       DEFAULT True,
@@ -51,15 +47,13 @@ CREATE TABLE "positions_masks"
     "nb_pages"    INTEGER
 );
 
-CREATE TABLE "form_models_field"
-(
+CREATE TABLE "form_models_field" (
     "id"      SERIAL    UNIQUE PRIMARY KEY,
     "form_id" INTEGER,
     "fields"  JSONB     DEFAULT '{}'
 );
 
-CREATE TABLE "outputs"
-(
+CREATE TABLE "outputs" (
     "id"             SERIAL         UNIQUE PRIMARY KEY,
     "output_type_id" VARCHAR(255),
     "output_label"   VARCHAR(255),
@@ -75,8 +69,7 @@ CREATE TABLE "outputs"
     }'
 );
 
-CREATE TABLE "outputs_types"
-(
+CREATE TABLE "outputs_types" (
     "id"                SERIAL          UNIQUE PRIMARY KEY,
     "output_type_id"    VARCHAR(255),
     "output_type_label" VARCHAR(50),
@@ -89,8 +82,7 @@ CREATE TABLE "outputs_types"
     }'
 );
 
-CREATE TABLE "inputs"
-(
+CREATE TABLE "inputs" (
     "id"                        SERIAL         UNIQUE PRIMARY KEY,
     "input_id"                  VARCHAR(255),
     "input_label"               VARCHAR(255),
@@ -106,8 +98,7 @@ CREATE TABLE "inputs"
     "splitter_method_id"        VARCHAR(20)    DEFAULT 'qr_code_OC'
 );
 
-CREATE TABLE "custom_fields"
-(
+CREATE TABLE "custom_fields" (
     "id"           SERIAL       PRIMARY KEY,
     "label_short"  VARCHAR(50),
     "metadata_key" VARCHAR(50),
@@ -119,22 +110,19 @@ CREATE TABLE "custom_fields"
     "status"       VARCHAR(5)   DEFAULT 'OK'
 );
 
-CREATE TABLE "users_customers"
-(
+CREATE TABLE "users_customers" (
     "id"           SERIAL   UNIQUE PRIMARY KEY,
     "user_id"      INTEGER,
     "customers_id" JSONB    DEFAULT '{}'
 );
 
-CREATE TABLE "users_forms"
-(
+CREATE TABLE "users_forms" (
     "id"       SERIAL   UNIQUE PRIMARY KEY,
     "user_id"  INTEGER,
     "forms_id" JSONB    DEFAULT '{}'
 );
 
-CREATE TABLE "addresses"
-(
+CREATE TABLE "addresses" (
     "id"            SERIAL          UNIQUE PRIMARY KEY,
     "address1"      VARCHAR(255),
     "address2"      VARCHAR(255),
@@ -144,8 +132,7 @@ CREATE TABLE "addresses"
     "creation_date" TIMESTAMP       DEFAULT (CURRENT_TIMESTAMP)
 );
 
-CREATE TABLE "roles"
-(
+CREATE TABLE "roles" (
     "id"          SERIAL        UNIQUE PRIMARY KEY,
     "label_short" VARCHAR(10),
     "label"       VARCHAR(255),
@@ -154,22 +141,19 @@ CREATE TABLE "roles"
     "enabled"     BOOLEAN       DEFAULT True
 );
 
-CREATE TABLE "roles_privileges"
-(
+CREATE TABLE "roles_privileges" (
     "id"            SERIAL UNIQUE PRIMARY KEY,
     "role_id"       INTEGER,
     "privileges_id" JSONB DEFAULT '{}'
 );
 
-CREATE TABLE "privileges"
-(
+CREATE TABLE "privileges" (
     "id"     SERIAL UNIQUE PRIMARY KEY,
     "parent" VARCHAR(20),
     "label"  VARCHAR(50)
 );
 
-CREATE TABLE "accounts_supplier"
-(
+CREATE TABLE "accounts_supplier" (
     "id"                  SERIAL        UNIQUE PRIMARY KEY,
     "name"                VARCHAR(255)  NOT NULL,
     "vat_number"          VARCHAR(20)   UNIQUE,
@@ -189,8 +173,7 @@ CREATE TABLE "accounts_supplier"
     "pages"               JSONB         DEFAULT '{}'
 );
 
-CREATE TABLE "accounts_customer"
-(
+CREATE TABLE "accounts_customer" (
     "id"             SERIAL         UNIQUE PRIMARY KEY,
     "name"           VARCHAR(255),
     "vat_number"     VARCHAR(20)    UNIQUE,
@@ -203,8 +186,7 @@ CREATE TABLE "accounts_customer"
     "creation_date"  TIMESTAMP      DEFAULT (CURRENT_TIMESTAMP)
 );
 
-CREATE TABLE "accounting_plan"
-(
+CREATE TABLE "accounting_plan" (
     "id"            SERIAL UNIQUE PRIMARY KEY,
     "customer_id"   INTEGER,
     "journal_code"  VARCHAR(2),
@@ -220,8 +202,7 @@ CREATE TABLE "accounting_plan"
     "ecriture_lib"  VARCHAR
 );
 
-CREATE TABLE "invoices"
-(
+CREATE TABLE "invoices" (
     "id"                SERIAL              UNIQUE PRIMARY KEY,
     "supplier_id"       INTEGER,
     "customer_id"       INTEGER             DEFAULT 0,
@@ -244,8 +225,7 @@ CREATE TABLE "invoices"
     "datas"             JSONB               DEFAULT '{}'
 );
 
-CREATE TABLE "history"
-(
+CREATE TABLE "history" (
     "id"                SERIAL      UNIQUE PRIMARY KEY,
     "history_date"      TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
     "history_module"    VARCHAR(50),
@@ -256,16 +236,14 @@ CREATE TABLE "history"
     "user_id"           INTEGER
 );
 
-CREATE TABLE "status"
-(
+CREATE TABLE "status" (
     "id"         VARCHAR(20),
     "label"      VARCHAR(200),
     "label_long" VARCHAR(200),
     "module"     VARCHAR(10)
 );
 
-CREATE TABLE "splitter_batches"
-(
+CREATE TABLE "splitter_batches" (
     "id"                SERIAL          UNIQUE PRIMARY KEY,
     "file_path"         VARCHAR(255),
     "file_name"         VARCHAR(255),
@@ -281,8 +259,7 @@ CREATE TABLE "splitter_batches"
     "data"              JSON            DEFAULT '{}'::json
 );
 
-CREATE TABLE "splitter_documents"
-(
+CREATE TABLE "splitter_documents" (
     "id"            SERIAL      UNIQUE PRIMARY KEY,
     "batch_id"      INTEGER     NOT NULL,
     "split_index"   INTEGER     NOT NULL,
@@ -292,8 +269,7 @@ CREATE TABLE "splitter_documents"
     "data"          JSON        DEFAULT '{}'::json
 );
 
-CREATE TABLE "splitter_pages"
-(
+CREATE TABLE "splitter_pages" (
     "id"            SERIAL          UNIQUE PRIMARY KEY,
     "document_id"   INTEGER,
     "thumbnail"     VARCHAR(255),
@@ -302,8 +278,7 @@ CREATE TABLE "splitter_pages"
     "status"        VARCHAR(255)    DEFAULT 'NEW'
 );
 
-CREATE TABLE "doctypes"
-(
+CREATE TABLE "doctypes" (
     "id"         SERIAL         UNIQUE PRIMARY KEY,
     "key"        VARCHAR(255)   NOT NULL,
     "label"      VARCHAR,
@@ -314,8 +289,7 @@ CREATE TABLE "doctypes"
     "form_id"    INTEGER
 );
 
-CREATE TABLE "metadata"
-(
+CREATE TABLE "metadata" (
     "id"            SERIAL      UNIQUE PRIMARY KEY,
     "external_id"   VARCHAR(20),
     "last_edit"     DATE        DEFAULT now(),
@@ -324,24 +298,21 @@ CREATE TABLE "metadata"
     "data"          JSONB
 );
 
-CREATE TABLE "configurations"
-(
+CREATE TABLE "configurations" (
     "id"        SERIAL      UNIQUE PRIMARY KEY,
     "label"     VARCHAR(64) UNIQUE,
     "data"      JSONB       DEFAULT '{}',
     "display"   BOOLEAN     DEFAULT true
 );
 
-CREATE TABLE "docservers"
-(
+CREATE TABLE "docservers" (
     "id"            SERIAL          UNIQUE PRIMARY KEY,
     "docserver_id"  VARCHAR(32)     UNIQUE,
     "path"          VARCHAR(255),
     "description"   VARCHAR(255)
 );
 
-CREATE TABLE "regex"
-(
+CREATE TABLE "regex" (
     "id"            SERIAL          UNIQUE PRIMARY KEY,
     "regex_id"      VARCHAR(20),
     "label"         VARCHAR(255),
@@ -349,8 +320,7 @@ CREATE TABLE "regex"
     "lang"          VARCHAR(10)     DEFAULT 'fra'
 );
 
-CREATE TABLE "login_methods"
-(
+CREATE TABLE "login_methods" (
     "id"            SERIAL      UNIQUE PRIMARY KEY,
     "method_name"   VARCHAR(64) UNIQUE,
     "method_label"  VARCHAR(255),
@@ -358,8 +328,7 @@ CREATE TABLE "login_methods"
     "data"          JSONB       DEFAULT '{}'
 );
 
-CREATE TABLE "languages"
-(
+CREATE TABLE "languages" (
     "language_id"       VARCHAR(5) UNIQUE PRIMARY KEY,
     "label"             VARCHAR(20),
     "lang_code"         VARCHAR(5),
@@ -367,8 +336,7 @@ CREATE TABLE "languages"
     "date_format"       VARCHAR(20)
 );
 
-create table tasks_watcher
-(
+create table "tasks_watcher" (
     "id"                SERIAL      UNIQUE PRIMARY KEY,
     "title"             VARCHAR(255),
     "type"              VARCHAR(10),
@@ -379,7 +347,7 @@ create table tasks_watcher
     "end_date"          TIMESTAMP
 );
 
-CREATE TABLE mailcollect (
+CREATE TABLE "mailcollect" (
      "id"                            SERIAL       UNIQUE PRIMARY KEY,
      "name"                          VARCHAR(255) UNIQUE NOT NULL,
      "hostname"                      VARCHAR(255) NOT NULL,
@@ -402,8 +370,7 @@ CREATE TABLE mailcollect (
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;
 COMMENT ON SEQUENCE splitter_referential_call_count IS 'Splitter referential demand number count';
 
-CREATE TABLE ai_models
-(
+CREATE TABLE "ai_models" (
     "id"                SERIAL       PRIMARY KEY,
     "model_label"       VARCHAR,
     "model_path"        VARCHAR(50),
@@ -416,9 +383,9 @@ CREATE TABLE ai_models
     "module"            VARCHAR(10)
 );
 
-CREATE TABLE monitoring
-(
+CREATE TABLE "monitoring" (
     "id"                 SERIAL         UNIQUE PRIMARY KEY,
+    "token"              VARCHAR(255),
     "input_id"           VARCHAR(255),
     "status"             VARCHAR(10),
     "elapsed_time"       VARCHAR(20),
@@ -430,4 +397,16 @@ CREATE TABLE monitoring
     "end_date"           TIMESTAMP,
     "filename"           VARCHAR(255),
     "steps"              JSONB          DEFAULT '{}'
+);
+
+CREATE TABLE "workflows" (
+    "id"                SERIAL       UNIQUE PRIMARY KEY,
+    "workflow_id"       VARCHAR(255) NOT NULL,
+    "label"             VARCHAR(255) NOT NULL,
+    "module"            VARCHAR(10)  NOT NULL,
+    "status"            VARCHAR(10)  DEFAULT 'OK',
+    "input"             JSONB        DEFAULT '{}',
+    "process"           JSONB        DEFAULT '{}',
+    "separation"        JSONB        DEFAULT '{}',
+    "output"            JSONB        DEFAULT '{}'
 );

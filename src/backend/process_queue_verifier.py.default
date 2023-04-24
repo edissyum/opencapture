@@ -45,8 +45,8 @@ kuyruk = Kuyruk()
 def execute(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages, mail, smtp):
     if check_file(files, path, log, docservers):
         is_facturx = False
-        with open(args['file'], 'rb') as f:
-            _, xml_content = facturx.get_facturx_xml_from_pdf(f.read())
+        with open(args['file'], 'rb') as _f:
+            _, xml_content = facturx.get_facturx_xml_from_pdf(_f.read())
             if _ is not None:
                 is_facturx = True
 
@@ -56,7 +56,7 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
         else:
             parsed_xml = etree.fromstring(xml_content)
             args['facturx_level'] = facturx.get_facturx_level(parsed_xml)
-            log.info('FacturX detected. Level is %s' % args['facturx_level'])
+            log.info(f"FacturX detected. Level is {args['facturx_level']}")
             args['log'] = log
             args['files'] = files
             args['regex'] = regex
@@ -90,19 +90,18 @@ def launch(args):
         }
     })
 
-    task_id_monitor = database.insert({
-        'table': 'monitoring',
-        'columns': {
-            'status': 'running',
-            'module': 'verifier',
-            'filename': os.path.basename(args['file']),
-            'input_id': args['input_id'] if 'input_id' in args else None,
-            'source': args['source'] if 'source' in args and args['source'] else 'interface'
-        }
+    database.update({
+        'table': ['monitoring'],
+        'set': {
+            'creation_date': time.strftime("%Y-%m-%d %H:%M:%S"),
+            'status': 'running'
+        },
+        'where': ['id = %s'],
+        'data': [args['task_id_monitor']]
     })
 
     log.task_id_watcher = task_id_watcher
-    log.task_id_monitor = task_id_monitor
+    log.task_id_monitor = args['task_id_monitor']
     log.database = database
 
     tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
@@ -200,12 +199,12 @@ def launch(args):
     database.update({
         'table': ['monitoring'],
         'set': {
-            'document_ids': [res],
+            'token': args['token'] if 'token' in args and args['token'] else None,
             'elapsed_time': _timer,
             'status': 'done',
             'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
         },
         'where': ['id = %s'],
-        'data': [task_id_monitor]
+        'data': [args['task_id_monitor']]
     })
     database.conn.close()

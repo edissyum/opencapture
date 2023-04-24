@@ -117,8 +117,7 @@
                         <button mat-button (click)="onSubmit()"
                                 [disabled]="this.isPredicting || this.fileControl.value!.length === 0"
                                 [class.bg-gray-400]="this.isPredicting || this.fileControl.value!.length === 0"
-                                class="w-3/5 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
-                               transition duration-300">
+                                class="w-3/5 valid_button">
                             {{ 'ARTIFICIAL-INTELLIGENCE.predict' | translate }}
                         </button>
                     </div>

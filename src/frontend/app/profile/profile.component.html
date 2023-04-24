@@ -13,7 +13,7 @@
                             {{ field.label | translate }}
                         </mat-label>
                         <input [readonly]="field.type === 'password' && this.disablePasswordModification" matInput
-                               [formControl]="field.control" [type]="field.type" [required]="field.required"
+                               [formControl]="field['control']" [type]="field.type" [required]="field['required']"
                                [email]="field.type === 'email'" placeholder="{{ field.label | translate }}">
                         <mat-error class="text-red-400" [innerHTML]="getErrorMessage(field.id)" *ngIf="field.control.invalid"></mat-error>
                         <mat-icon *ngIf="field.id === 'old_password'" matSuffix (click)="field.type === 'password' ? field.type = 'text' : field.type = 'password'"
@@ -33,8 +33,7 @@
                     </mat-form-field>
                 </ng-container>
                 <div class="button col-span-3">
-                    <button class="p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent
-                                    hover:text-gray-900 transition duration-300" type="submit" mat-button>
+                    <button class="valid_button" type="submit" mat-button>
                         {{ 'USER.modify' | translate }}
                     </button>
                 </div>

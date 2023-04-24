@@ -276,7 +276,7 @@ mkdir -p $customPath/bin/ldap/config/
 mkdir -p $customPath/instance/referencial/
 mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $customPath/bin/data/log/Supervisor/
-mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs,MailCollect,ai}/
+mkdir -p $customPath/bin/scripts/{verifier_workflows,verifier_inputs,splitter_inputs,MailCollect,ai}/
 mkdir -p $customPath/bin/scripts/ai/{splitter,verifier}/
 mkdir -p $customPath/src/backend/
 touch $customPath/config/secret_key
@@ -346,11 +346,12 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/MailCollect/' WHERE docserver_id = 'MAILCOLLECT_BATCHES'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'verifier';" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/entrant/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_pdf';" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE configurations SET data = jsonb_set(data, '{value, batchPath}', '\"$customPath/bin/data/MailCollect/\"') WHERE label = 'mailCollectGeneral';" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 ####################
 # Create the Apache service for backend
@@ -546,6 +547,9 @@ touch /var/log/watcher/daemon.log
 chmod -R 775 /var/log/watcher/
 cp $defaultPath/instance/config/watcher.ini.default $defaultPath/instance/config/watcher.ini
 
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow watch /var/share/"$customId"/entrant/verifier/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh \$filename"
+
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input watch /var/share/"$customId"/entrant/verifier/
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input command "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh \$filename"
 
@@ -599,6 +603,20 @@ if ! test -f "$defaultScriptFile"; then
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
     sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
     sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
+    sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
+fi
+
+####################
+# Create default verifier workflow script (based on default workflow created in data_fr.sql)
+defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh"
+touch $defaultPath/custom/$customId/bin/data/log/OpenCapture.log
+if ! test -f "$defaultScriptFile"; then
+    mkdir -p "$defaultPath/custom/$customId/bin/scripts/verifier_workflow/"
+    cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh $defaultScriptFile
+    sed -i "s#§§SCRIPT_NAME§§#default_workflow#g" $defaultScriptFile
+    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+    sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
+    sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 fi
 

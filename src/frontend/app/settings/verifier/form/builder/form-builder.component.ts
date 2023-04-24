@@ -41,7 +41,6 @@ export class FormBuilderComponent implements OnInit {
     loadingCustomFields     : boolean   = true;
     updateFormLoading       : boolean   = false;
     creationMode            : boolean   = true;
-    openAvailableField      : boolean   = false;
     modalOpen               : boolean   = false;
     selectedFields          : any       = [];
     formLabels              : any       = {};
@@ -57,17 +56,8 @@ export class FormBuilderComponent implements OnInit {
         }
     };
     formSettings            : any       = {
-        'allow_automatic_validation': {
-            'control': new FormControl(),
-        },
         'supplier_verif': {
             'control': new FormControl(),
-        },
-        'automatic_validation_data': {
-            'control': new FormControl()
-        },
-        'delete_documents_after_outputs': {
-            'control': new FormControl()
         }
     };
     outputForm              : any       = [
@@ -771,10 +761,6 @@ export class FormBuilderComponent implements OnInit {
 
                             for (const field in this.formSettings) {
                                 for (const setting in data['settings']) {
-                                    if (setting === 'allow_automatic_validation') {
-                                        this.openAvailableField = data['settings'][setting];
-                                    }
-
                                     if (setting === field) {
                                         this.formSettings[setting].control.setValue(data['settings'][setting]);
                                     }
@@ -1123,9 +1109,6 @@ export class FormBuilderComponent implements OnInit {
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
         let supplierVerif = this.formSettings.supplier_verif.control.value;
-        const automaticValidationData = this.formSettings.automatic_validation_data.control.value;
-        const allowAutomaticValidation = this.formSettings.allow_automatic_validation.control.value;
-        const deleteDocumentsAfterOutputs = this.formSettings.delete_documents_after_outputs.control.value;
         if (!supplierVerif) supplierVerif = false;
         const outputs: any[] = [];
         this.outputForm.forEach((element: any) => {
@@ -1139,10 +1122,7 @@ export class FormBuilderComponent implements OnInit {
                         'outputs'       : outputs,
                         'default_form'  : isDefault,
                         'settings'      : {
-                            "supplier_verif"                 : supplierVerif,
-                            "automatic_validation_data"      : automaticValidationData,
-                            "allow_automatic_validation"     : allowAutomaticValidation,
-                            "delete_documents_after_outputs" : deleteDocumentsAfterOutputs
+                            "supplier_verif"                 : supplierVerif
                         },
                     }
                 }, {headers: this.authService.headers},

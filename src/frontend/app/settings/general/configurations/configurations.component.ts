@@ -16,7 +16,7 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr>
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { SettingsService } from "../../../../services/settings.service";
 import { AuthService } from "../../../../services/auth.service";
@@ -35,17 +35,21 @@ import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HistoryService } from "../../../../services/history.service";
 import { LocaleService } from "../../../../services/locale.service";
 import { PasswordVerificationService } from "../../../../services/password-verification.service";
+import {FormControl, Validators} from "@angular/forms";
 
 @Component({
     selector: 'app-configurations',
     templateUrl: './configurations.component.html',
-    styleUrls: ['./configurations.component.scss']
+    styleUrls: ['./configurations.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ConfigurationsComponent implements OnInit {
     columnsToDisplay    : string[]      = ['id', 'label', 'description', 'type', 'content', 'actions'];
     headers             : HttpHeaders   = this.authService.headers;
+    emailTestControl    : FormControl   = new FormControl('', Validators.email);
     updateLoading       : boolean       = false;
     updating            : boolean       = false;
+    sending             : boolean       = false;
     loading             : boolean       = true;
     configurations      : any           = [];
     allConfigurations   : any           = [];
@@ -55,6 +59,116 @@ export class ConfigurationsComponent implements OnInit {
     pageIndex           : number        = 0;
     total               : number        = 0;
     offset              : number        = 0;
+    units               : any           = [
+        {
+            id: 'general',
+            label: marker('MAILCOLLECT.general'),
+        },
+        {
+            id: 'auth',
+            label: marker('MAILCOLLECT.auth'),
+        },
+        {
+            id: 'notif_error',
+            label: marker('MAILCOLLECT.notif_error'),
+        }
+    ];
+    smtpForm            : any[]         = [
+        {
+            id: 'smtpHost',
+            unit: 'general',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.smtp_host'),
+            type: 'text',
+            required: false
+        },
+        {
+            id: 'smtpPort',
+            unit: 'general',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.smtp_port'),
+            type: 'number',
+            required: false,
+        },
+        {
+            id: 'smtpProtocoleSecure',
+            unit: 'general',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.smtp_protocol'),
+            type: 'select',
+            required: false,
+            values: [
+                {
+                    id: 'none',
+                    label: marker('MAILCOLLECT.protocol_none')
+                },
+                {
+                    id: 'ssl',
+                    label: 'SSL'
+                },
+                {
+                    id: 'tls',
+                    label: 'TLS'
+                }
+            ]
+        },
+        {
+            id: 'smtpNotifOnError',
+            unit: 'notif_error',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.smtp_notif_on_error'),
+            type: 'boolean',
+            required: false,
+        },
+        {
+            id: 'smtpDelay',
+            unit: 'notif_error',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.smtp_delay'),
+            type: 'number',
+            required: false
+        },
+        {
+            id: 'smtpAuth',
+            unit: 'auth',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.smtp_auth'),
+            type: 'boolean',
+            required: false,
+        },
+        {
+            id: 'smtpLogin',
+            unit: 'auth',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.smtp_login'),
+            type: 'text',
+            required: false,
+        },
+        {
+            id: 'smtpPwd',
+            unit: 'auth',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.smtp_pwd'),
+            type: 'password',
+            required: false,
+        },
+        {
+            id: 'smtpFromMail',
+            unit: 'notif_error',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.smtp_from_mail'),
+            type: 'text',
+            required: false,
+        },
+        {
+            id: 'smtpDestAdminMail',
+            unit: 'notif_error',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.smtp_dest_admin_mail'),
+            type: 'text',
+            required: false,
+        }
+    ];
 
     constructor(
         public router: Router,
@@ -94,6 +208,27 @@ export class ConfigurationsComponent implements OnInit {
             })
         ).subscribe();
 
+        this.http.get(environment['url'] + '/ws/config/getConfiguration/smtp', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if (data.configuration.length === 1) {
+                    Object.keys(data.configuration[0].data.value).forEach((config: any ) => {
+                        this.smtpForm.forEach((element: any) => {
+                            if (element.id === config) {
+                                if (data.configuration[0].data.value[config]) {
+                                    element.control.setValue(data.configuration[0].data.value[config]);
+                                }
+                            }
+                        });
+                    });
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         const b64Content = this.localStorageService.get('login_image_b64');
         if (!b64Content) {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
@@ -111,6 +246,22 @@ export class ConfigurationsComponent implements OnInit {
         }
 
         this.loadConfigurations();
+        this.smtpForm.forEach((element: any) => {
+            if (element.id === 'smtpNotifOnError' || element.id === 'smtpAuth') {
+                const unit = element.unit;
+                element.control.valueChanges.subscribe((value: any) => {
+                    this.smtpForm.forEach((element: any) => {
+                        if (element.unit === unit && (element.id !== 'smtpNotifOnError' && element.id !== 'smtpAuth')) {
+                            if (!value) {
+                                element.control.disable();
+                            } else {
+                                element.control.enable();
+                            }
+                        }
+                    });
+                });
+            }
+        });
     }
 
     updatePasswordRules() {
@@ -143,6 +294,60 @@ export class ConfigurationsComponent implements OnInit {
 
     onClick(logo: any) {
         logo.click();
+    }
+
+    disableField(unit: any) {
+        let ret = false;
+        const enableUnit = this.smtpForm.find((element: any) => element.type === 'boolean' && element.unit === unit);
+        if (enableUnit) {
+            ret = enableUnit.control.value !== true;
+        }
+        return ret;
+    }
+
+    testSmtp() {
+        if (this.emailTestControl.errors) {
+            this.notify.error(this.translate.instant('MAILCOLLECT.test_email_bad_format'));
+            return;
+        }
+        this.updateSmtp(false);
+
+        this.sending = true;
+        this.http.post(environment['url'] + '/ws/smtp/test', {'email': this.emailTestControl.value}, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('MAILCOLLECT.smtp_test_success', {email: this.emailTestControl.value}));
+            }),
+            finalize(() => this.sending = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    updateSmtp(showSuccess: boolean = true) {
+        const data: any = {
+            'value': {}
+        };
+
+        this.smtpForm.forEach((element: any) => {
+            data['value'][element.id] = element.control.value;
+        });
+
+        this.http.put(environment['url'] + '/ws/config/updateConfiguration/smtp', {'args': data}, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                if (showSuccess) {
+                    this.notify.success(this.translate.instant('MAILCOLLECT.general_settings_updated'));
+                }
+                this.historyService.addHistory('general', 'mailcollect', this.translate.instant('HISTORY-DESC.smtp_settings_updated'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     upload(fileInput: any) {

@@ -2,6 +2,8 @@ ALTER TABLE users ADD COLUMN "mode" VARCHAR(10) DEFAULT 'standard';
 
 ALTER TABLE roles ALTER COLUMN "label" SET DATA TYPE VARCHAR(255);
 
+ALTER TABLE monitoring ADD COLUMN "token" VARCHAR(255);
+
 WITH new_role_id as (
     INSERT INTO roles ("label_short", "label", "editable") VALUES ('user_ws', 'Utilisateur WebServices', 'true') returning id
 )
@@ -19,3 +21,20 @@ INSERT INTO "privileges" ("label", "parent") VALUES ('update_workflow', 'verifie
 INSERT INTO "privileges" ("label", "parent") VALUES ('workflows_list_splitter', 'splitter');
 INSERT INTO "privileges" ("label", "parent") VALUES ('add_workflow_splitter', 'splitter');
 INSERT INTO "privileges" ("label", "parent") VALUES ('update_workflow_splitter', 'splitter');
+
+CREATE TABLE "workflows" (
+     "id"                SERIAL       UNIQUE PRIMARY KEY,
+     "workflow_id"       VARCHAR(255) NOT NULL,
+     "label"             VARCHAR(255) NOT NULL,
+     "module"            VARCHAR(10)  NOT NULL,
+     "status"            VARCHAR(10)  DEFAULT 'OK',
+     "input"             JSONB        DEFAULT '{}',
+     "process"           JSONB        DEFAULT '{}',
+     "separation"        JSONB        DEFAULT '{}',
+     "output"            JSONB        DEFAULT '{}'
+);
+INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "separation", "output") VALUES (1, 'default_workflow', 'Workflow par défaut', 'verifier', '{"workflow_id": "default_workflow", "input_folder": "/var/share/edissyum/entrant/verifier/", "apply_process": true, "workflow_label": "Workflow par défaut"}', '{"form_id": 1, "rotation": "no_rotation", "system_fields": ["supplier", "invoice_number", "quotation_number", "document_date", "document_due_date", "footer"], "use_interface": true}', '{"remove_blank_pages": true, "splitter_method_id": "no_sep", "separate_by_document_number_value": 2}', '{"outputs_id": [1, 3]}');
+
+UPDATE configurations SET label = 'smtp' WHERE label = 'mailCollectGeneral';
+UPDATE configurations SET data = REPLACE (data::TEXT, 'Paramétrage par défaut du MailCollect', 'Paramétrage de l''envoi d''email SMTP')::JSONB WHERE label = 'smtp';
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('MAILCOLLECT_BATCHES', 'Chemin de stockage des batches du module MailCollect', '/var/www/html/opencapture/bin/data/MailCollect/');

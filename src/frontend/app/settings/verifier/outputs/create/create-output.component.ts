@@ -32,7 +32,7 @@ import { HistoryService } from "../../../../../services/history.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
-    selector: 'app-output-create',
+    selector: 'create-output',
     templateUrl: './create-output.component.html',
     styleUrls: ['./create-output.component.scss']
 })
