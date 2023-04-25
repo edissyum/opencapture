@@ -29,7 +29,7 @@ def upload():
     if not privileges.has_privileges(request.environ['user_id'], ['access_splitter', 'upload']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/upload'}), 403
 
-    input_id = None
+    input_id = workflow_id = None
     if 'inputId' in request.args:
         input_id = request.args['inputId']
     if 'workflowId' in request.args:

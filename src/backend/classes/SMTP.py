@@ -33,11 +33,11 @@ class SMTP:
         self.host = host
         self.is_up = False
         self.login = login
-        self.delay = int(delay)
         self.auth = auth
+        self.enabled = enabled
+        self.delay = int(delay)
         self.dest_mail = dest_mail
         self.from_mail = from_mail
-        self.enabled = enabled
         self.protocole_secure = protocole_secure
 
         if self.enabled:

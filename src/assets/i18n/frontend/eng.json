@@ -1125,6 +1125,7 @@
 		"no_rotation": "No rotation",
 		"output": "Output",
 		"process": "Process",
+		"process_hint": "If the <strong>Validate using interface</strong> option is checked, the outgoing strings associated with the form will be used. Otherwise, you will have to select the outgoing channels in the last tab",
 		"rotate_180": "Rotate 180°",
 		"rotate_270": "Rotate 270°",
 		"rotate_90": "Rotate 90°",

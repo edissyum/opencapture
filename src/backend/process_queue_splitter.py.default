@@ -95,6 +95,7 @@ def launch(args):
     })
     if input_settings:
         args['customer_id'] = input_settings[0]['customer_id']
+        splitter_method_id = input_settings[0]['splitter_method_id']
         remove_blank_pages = input_settings[0]['remove_blank_pages']
         for output_id in input_settings[0]['outputs']:
             outputs_settings = database.select({
@@ -107,7 +108,8 @@ def launch(args):
                 continue
             ocrise = outputs_settings[0]['ocrise']
 
-    separator_qr = _SeparatorQR(log, config, batch_folder_path, 'splitter', files, remove_blank_pages, docservers)
+    separator_qr = _SeparatorQR(log, config, batch_folder_path, 'splitter', files, remove_blank_pages, docservers,
+                                splitter_method_id)
     splitter = _Splitter(config, database, separator_qr, log, docservers)
 
     if args.get('isMail') is not None and args['isMail'] is True:
@@ -122,7 +124,6 @@ def launch(args):
             path = args['file']
             if check_file(files, path, log, docservers) and not process_err:
                 if 'input_id' in args and args['input_id']:
-                    splitter_method_id = input_settings[0]['splitter_method_id']
                     available_split_methods_path = docservers['SPLITTER_METHODS_PATH'] + "/splitter_methods.json"
                     if splitter_method_id and os.path.isfile(available_split_methods_path):
                         with open(available_split_methods_path, encoding='UTF-8') as json_file:

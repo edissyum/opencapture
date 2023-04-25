@@ -1125,6 +1125,7 @@
 		"no_rotation": "Aucune rotation",
 		"output": "Sortie",
 		"process": "Traitement",
+		"process_hint": "Si l'option <strong>Valider les données en utilisant l'interface</strong> est cochée, les chaînes sortantes associées au formulaire seront utilisées. Sinon, il faudra selectionner les chaînes sortantes dans le dernier onglet",
 		"rotate_180": "Rotation de 180°",
 		"rotate_270": "Rotation de 270°",
 		"rotate_90": "Rotation de 90°",
