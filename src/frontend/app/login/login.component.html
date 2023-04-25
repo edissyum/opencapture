@@ -1,8 +1,8 @@
 <div class="min-h-screen flex">
     <app-loader *ngIf="this.loading"></app-loader>
-    <div class="w-full flex items-center justify-center text-center flex-col ">
+    <div class="w-full flex items-center justify-center text-center flex-col">
         <div class="w-11/12 max-w-md" *ngIf="this.loginImage">
-            <img class="m-auto" [src]="this.loginImage" alt="Open-Capture logo" >
+            <img class="m-auto" [src]="this.loginImage" alt="Open-Capture logo">
             <mat-card-subtitle>
                 {{ this.subtitle }}
             </mat-card-subtitle>
@@ -31,7 +31,7 @@
                             {{ getErrorMessage('password') }}
                         </mat-error>
                         <mat-hint align="end" *ngIf="this.enableLoginMethodName === 'ldap'">
-                            <span class="underline decoration-1" >
+                            <span class="underline decoration-1">
                                 {{ this.enableLoginMethodName | uppercase }} {{ 'LOGIN-METHODS.enabled' | translate }}
                             </span>
                         </mat-hint>
