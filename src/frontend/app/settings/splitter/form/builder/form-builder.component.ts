@@ -30,6 +30,7 @@ import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'form-builder',
@@ -189,6 +190,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {}
@@ -458,6 +460,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                     this.http.post(environment['url'] + '/ws/forms/updateFields/' + this.formId, this.fields,
                         {headers: this.authService.headers}).pipe(
                         tap(() => {
+                            this.historyService.addHistory('splitter', 'update_form', this.translate.instant('HISTORY-DESC.update-form', {form: label}));
                             this.notify.success(this.translate.instant('FORMS.updated'));
                         }),
                         catchError((err: any) => {
@@ -508,6 +511,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                             return of(false);
                         })
                     ).subscribe();
+                    this.historyService.addHistory('splitter', 'create_form', this.translate.instant('HISTORY-DESC.create-form', {form: label}));
                     this.notify.success(this.translate.instant('FORMS.created'));
                     this.router.navigateByUrl('settings/splitter/forms').then();
                 }),
