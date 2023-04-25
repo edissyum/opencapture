@@ -51,8 +51,23 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
                 is_facturx = True
 
         if not is_facturx:
-            res = OCForInvoices.process(args, path, log, config, files, ocr, regex, database, docservers,
-                                        configurations, languages)
+            skip = res = False
+            if 'workflow_id' in args and args['workflow_id']:
+                workflow_settings = database.select({
+                    'select': ['input'],
+                    'table': ['workflows'],
+                    'where': ['workflow_id = %s'],
+                    'data': [args['workflow_id']]
+                })
+
+                if workflow_settings:
+                    if workflow_settings[0]['input']['facturx_only']:
+                        log.info('FacturX only workflow, skipping this document')
+                        skip = True
+
+            if not skip:
+                res = OCForInvoices.process(args, path, log, config, files, ocr, regex, database, docservers,
+                                            configurations, languages)
         else:
             parsed_xml = etree.fromstring(xml_content)
             args['facturx_level'] = facturx.get_facturx_level(parsed_xml)
