@@ -9,6 +9,7 @@ pyocr==0.8.3
 PyJWT==2.6.0
 flask==2.2.3
 pypdf==3.8.1
+pyzbar==0.1.9
 qrcode==7.4.2
 pillow==9.5.0
 kuyruk==9.4.0
