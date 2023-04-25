@@ -16,12 +16,12 @@
                 <form [formGroup]="this.loginForm" (ngSubmit)="onSubmit()">
                     <mat-form-field class="block">
                         <mat-label>{{ 'USER.username' | translate }}</mat-label>
-                        <input matInput formControlName="username" type="text" placeholder="{{ 'USER.username' | translate }}" required>
+                        <input matInput id="username" formControlName="username" type="text" placeholder="{{ 'USER.username' | translate }}" required>
                         <mat-error *ngIf="this.loginForm.controls.username.invalid">{{ getErrorMessage('username') }}</mat-error>
                     </mat-form-field>
                     <mat-form-field class="block">
                         <mat-label>{{ 'USER.password' | translate }}</mat-label>
-                        <input matInput name="password" autocomplete="off" formControlName="password"
+                        <input matInput id="password" autocomplete="off" formControlName="password"
                                [type]="this.showPassword ? 'text' : 'password'"
                                placeholder="{{ 'USER.password' | translate }}" required>
                         <mat-icon matSuffix (click)="this.showPassword = !this.showPassword"
@@ -42,8 +42,8 @@
                             {{ 'AUTH.forgot_password' | translate }}
                         </a>
                     </div>
-                    <button mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled"
-                            class=" w-full mb-4 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
+                    <button id="login" mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled"
+                            class="w-full mb-4 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
                                transition duration-300" type="submit" style="max-width: 250px;">
                         <span *ngIf="!this.processLogin && !this.isConnectionBtnDisabled">
                             {{ 'AUTH.login' | translate }}
