@@ -23,7 +23,7 @@ INSERT INTO "privileges" ("label", "parent") VALUES ('workflows_list_splitter', 
 INSERT INTO "privileges" ("label", "parent") VALUES ('add_workflow_splitter', 'splitter');
 INSERT INTO "privileges" ("label", "parent") VALUES ('update_workflow_splitter', 'splitter');
 
-CREATE TABLE "workflows" (
+CREATE TABLE IF NOT EXISTS "workflows" (
      "id"                SERIAL       UNIQUE PRIMARY KEY,
      "workflow_id"       VARCHAR(255) NOT NULL,
      "label"             VARCHAR(255) NOT NULL,
@@ -38,4 +38,8 @@ INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "proce
 
 UPDATE configurations SET label = 'smtp' WHERE label = 'mailCollectGeneral';
 UPDATE configurations SET data = REPLACE (data::TEXT, 'Paramétrage par défaut du MailCollect', 'Paramétrage de l''envoi d''email SMTP')::JSONB WHERE label = 'smtp';
+UPDATE configurations SET data = data #- '{value, smtpSSL}' WHERE label = 'smtp';
+UPDATE configurations SET data = data #- '{value, smtpStartTLS}' WHERE label = 'smtp';
+UPDATE configurations SET data = jsonb_set(data, '{value, smtpProtocoleSecure}', 'false') WHERE label = 'smtp';
+
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('MAILCOLLECT_BATCHES', 'Chemin de stockage des batches du module MailCollect', '/var/www/html/opencapture/bin/data/MailCollect/');

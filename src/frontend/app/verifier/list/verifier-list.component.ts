@@ -511,7 +511,7 @@ export class VerifierListComponent implements OnInit {
             {'args': {"customer_id": customerId}},
             {headers: this.authService.headers}).pipe(
                 finalize(() => {
-                    this.resetInvoices();
+                    this.resetDocuments();
                     this.notify.success(this.translate.instant('VERIFIER.customer_changed_successfully'));
                 }),
                 catchError((err: any) => {
@@ -529,7 +529,7 @@ export class VerifierListComponent implements OnInit {
             {'args': {"form_id": formId}},
             {headers: this.authService.headers}).pipe(
                 finalize(() => {
-                    this.resetInvoices();
+                    this.resetDocuments();
                     this.notify.success(this.translate.instant('VERIFIER.form_changed'));
                 }),
                 catchError((err: any) => {
@@ -575,7 +575,7 @@ export class VerifierListComponent implements OnInit {
         });
     }
 
-    resetInvoices() {
+    resetDocuments() {
         this.search = '';
         this.loading = true;
         this.currentForm = '';
@@ -584,8 +584,9 @@ export class VerifierListComponent implements OnInit {
         this.allowedCustomers = [];
         this.allowedSuppliers = [];
         this.customerFilterEnabled = false;
-        this.resetPaginator();
         this.loadCustomers();
+        this.resetPaginator();
+        this.resetSearchCustomer();
     }
 
     selectOrUnselectAllInvoices(event: any) {

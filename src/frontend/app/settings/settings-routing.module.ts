@@ -24,6 +24,7 @@ import { SeparatorComponent } from "./splitter/separator/separator.component";
 import { LoginRequiredService } from "../../services/login-required.service";
 import { FormListComponent } from "./verifier/form/list/form-list.component";
 import { WorkflowListComponent } from "./verifier/workflow/list/workflow-list.component";
+import { WorkflowListSplitterComponent } from "./splitter/workflow/list/workflow-list.component";
 import { UsersListComponent } from "./general/users/list/users-list.component";
 import { RolesListComponent } from "./general/roles/list/roles-list.component";
 import { SplitterFormListComponent } from "./splitter/form/list/form-list.component";
@@ -34,6 +35,7 @@ import { UpdateRoleComponent } from "./general/roles/update/update-role.componen
 import { InputsListComponent } from "./verifier/inputs/list/inputs-list.component";
 import { FormBuilderComponent } from "./verifier/form/builder/form-builder.component";
 import { WorkflowBuilderComponent } from "./verifier/workflow/builder/workflow-builder.component";
+import { WorkflowBuilderSplitterComponent } from "./splitter/workflow/builder/workflow-builder.component";
 import { OutputsListComponent } from "./verifier/outputs/list/outputs-list.component";
 import { UpdateInputComponent } from "./verifier/inputs/update/update-input.component";
 import { SplitterInputListComponent } from "./splitter/inputs/list/input-list.component";
@@ -249,6 +251,16 @@ const routes: Routes = [
     },
 // -- END Verifier
 // -- Splitter
+    {
+        path: 'settings/splitter/workflows', component: WorkflowListSplitterComponent,
+        data: {title: 'SETTINGS.list_workflows', privileges: ['settings', 'workflows_list_splitter']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'settings/splitter/workflows/builder/new', component: WorkflowBuilderSplitterComponent,
+        data: {title: 'SETTINGS.workflow_builder', privileges: ['settings', 'add_workflow_splitter']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
     {
         path: 'settings/splitter/forms', component: SplitterFormListComponent,
         data: {title: 'SETTINGS.list_forms', privileges: ['settings', 'forms_list_splitter']},

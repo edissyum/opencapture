@@ -30,7 +30,7 @@ import { AuthService } from "../../../../../services/auth.service";
 import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
-    selector: 'app-workflow-builder',
+    selector: 'app-workflow-builder-splitter',
     templateUrl: './workflow-builder.component.html',
     styleUrls: ['./workflow-builder.component.scss'],
     providers: [
@@ -40,7 +40,7 @@ import { HistoryService } from "../../../../../services/history.service";
         }
     ]
 })
-export class WorkflowBuilderComponent implements OnInit {
+export class WorkflowBuilderSplitterComponent implements OnInit {
     loading         : boolean       = true;
     creationMode    : boolean       = true;
     processAllowed  : boolean       = false;
@@ -91,14 +91,6 @@ export class WorkflowBuilderComponent implements OnInit {
                 label: this.translate.instant('WORKFLOW.apply_process'),
                 type: 'boolean',
                 control: new FormControl()
-            },
-            {
-                id: 'facturx_only',
-                show: true,
-                label: this.translate.instant('WORKFLOW.facturx_only'),
-                hint: this.translate.instant('WORKFLOW.facturx_only_hint'),
-                type: 'boolean',
-                control: new FormControl()
             }
         ],
         process: [
@@ -134,45 +126,6 @@ export class WorkflowBuilderComponent implements OnInit {
                 required: false,
                 show: false,
                 values: []
-            },
-            {
-                id: 'system_fields',
-                multiple: true,
-                label: this.translate.instant('WORKFLOW.system_fields_to_search'),
-                type: 'select',
-                control: new FormControl(['supplier', 'invoice_number', 'quotation_number', 'document_date', 'document_due_date', 'footer']),
-                required: false,
-                show: false,
-                values: [
-                    {
-                        'id': 'supplier',
-                        'label': this.translate.instant('FORMS.supplier'),
-                    },
-                    {
-                        'id': 'invoice_number',
-                        'label': this.translate.instant('FACTURATION.invoice_number'),
-                    },
-                    {
-                        'id': 'quotation_number',
-                        'label': this.translate.instant('FACTURATION.quotation_number'),
-                    },
-                    {
-                        'id': 'delivery_number',
-                        'label': this.translate.instant('FACTURATION.delivery_number'),
-                    },
-                    {
-                        'id': 'document_date',
-                        'label': this.translate.instant('FACTURATION.document_date'),
-                    },
-                    {
-                        'id': 'document_due_date',
-                        'label': this.translate.instant('FACTURATION.document_due_date'),
-                    },
-                    {
-                        'id': 'footer',
-                        'label': this.translate.instant('WORKFLOW.footer'),
-                    }
-                ]
             },
             {
                 id: 'rotation',
@@ -274,7 +227,7 @@ export class WorkflowBuilderComponent implements OnInit {
         this.workflowId = this.route.snapshot.params['id'];
         if (this.workflowId) {
             this.creationMode = false;
-            this.http.get(environment['url'] + '/ws/workflows/verifier/getById/' + this.workflowId, {headers: this.authService.headers}).pipe(
+            this.http.get(environment['url'] + '/ws/workflows/splitter/getById/' + this.workflowId, {headers: this.authService.headers}).pipe(
                 tap((workflow: any) => {
                     this.idControl.setValue(workflow.workflow_id);
                     this.nameControl.setValue(workflow.label);
@@ -308,7 +261,7 @@ export class WorkflowBuilderComponent implements OnInit {
             ).subscribe();
         }
 
-        this.http.get(environment['url'] + '/ws/accounts/customers/list/verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/list/splitter', {headers: this.authService.headers}).pipe(
             tap((customers: any) => {
                 this.fields['input'].forEach((element: any) => {
                     if (element.id === 'customer_id') {
@@ -329,7 +282,7 @@ export class WorkflowBuilderComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/ai/verifier/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/ai/splitter/list', {headers: this.authService.headers}).pipe(
             tap((aiModel: any) => {
                 this.fields['input'].forEach((element: any) => {
                     if (element.id === 'ai_model_id') {
@@ -352,7 +305,7 @@ export class WorkflowBuilderComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.fields['process'].forEach((element: any) => {
                     if (element.id === 'form_id') {
@@ -370,7 +323,7 @@ export class WorkflowBuilderComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/outputs/verifier/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.fields['output'].forEach((element: any) => {
                     if (element.id === 'outputs_id') {
@@ -408,26 +361,6 @@ export class WorkflowBuilderComponent implements OnInit {
 
                 });
             }
-            if (element.id === 'facturx_only') {
-                element.control.valueChanges.subscribe((value: any) => {
-                    this.fields['input'].forEach((elem: any) => {
-                        if (elem.id === 'ai_model_id') {
-                            elem.show = !value;
-                        }
-                    });
-                    this.fields['process'].forEach((elem: any) => {
-                        if (elem.id === 'system_fields') {
-                            if (value) {
-                                elem.values.push({'id': 'facturx', 'label': 'Lignes de facturation Factur-X'});
-                                elem.control.value.push('facturx');
-                            } else {
-                                elem.values = elem.values.filter((elem: any) => elem.id !== 'facturx');
-                                elem.control.value = elem.control.value.filter((elem: any) => elem !== 'facturx');
-                            }
-                        }
-                    });
-                });
-            }
         });
     }
 
@@ -439,7 +372,7 @@ export class WorkflowBuilderComponent implements OnInit {
         this.useInterface = value;
         this.outputAllowed = !value;
         this.fields['process'].forEach((element: any) => {
-            if (element.id === 'form_id' || element.id === 'system_fields' || element.id === 'allow_automatic_validation') {
+            if (element.id === 'form_id' || element.id === 'allow_automatic_validation') {
                 element.show = this.useInterface;
                 if (element.id !== 'allow_automatic_validation') {
                     element.required = this.useInterface;
@@ -450,7 +383,7 @@ export class WorkflowBuilderComponent implements OnInit {
 
     checkFolder(field: any) {
         if (field && field.control.value && field.control.value !== this.oldFolder) {
-            this.http.post(environment['url'] + '/ws/workflows/verifier/verifyInputFolder',
+            this.http.post(environment['url'] + '/ws/workflows/splitter/verifyInputFolder',
                 {'input_folder': field.control.value}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     field.control.setErrors();
@@ -498,7 +431,7 @@ export class WorkflowBuilderComponent implements OnInit {
             const data = workflow['input'];
             data['workflow_id'] = this.idControl.value;
             data['workflow_label'] = this.nameControl.value;
-            this.http.post(environment['url'] + '/ws/workflows/verifier/createScriptAndWatcher', {'args': data}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/workflows/splitter/createScriptAndWatcher', {'args': data}, {headers: this.authService.headers}).pipe(
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -507,10 +440,10 @@ export class WorkflowBuilderComponent implements OnInit {
             ).subscribe();
         }
 
-        this.http.put(environment['url'] + '/ws/workflows/verifier/update/' + this.workflowId, {'args': workflow}, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/workflows/splitter/update/' + this.workflowId, {'args': workflow}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 if (step === 'output') {
-                    this.historyService.addHistory('verifier', 'update_workflow', this.translate.instant('HISTORY-DESC.update-workflow', {workflow: workflow['label']}));
+                    this.historyService.addHistory('splitter', 'update_workflow', this.translate.instant('HISTORY-DESC.update-workflow', {workflow: workflow['label']}));
                 }
                 this.notify.success(this.translate.instant('WORKFLOW.workflow_updated'));
             }),
@@ -541,13 +474,13 @@ export class WorkflowBuilderComponent implements OnInit {
             const data = workflow['input'];
             data['workflow_id'] = this.idControl.value;
             data['workflow_label'] = this.nameControl.value;
-            this.http.post(environment['url'] + '/ws/workflows/verifier/createScriptAndWatcher', {'args': data}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/workflows/splitter/createScriptAndWatcher', {'args': data}, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.http.post(environment['url'] + '/ws/workflows/verifier/create', {'args': workflow}, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/workflows/splitter/create', {'args': workflow}, {headers: this.authService.headers}).pipe(
                         tap(() => {
-                            this.router.navigate(['/settings/verifier/workflows']).then();
+                            this.router.navigate(['/settings/splitter/workflows']).then();
                             this.notify.success(this.translate.instant('WORKFLOW.workflow_created'));
-                            this.historyService.addHistory('verifier', 'create_workflow', this.translate.instant('HISTORY-DESC.create-workflow', {workflow: workflow['label']}));
+                            this.historyService.addHistory('splitter', 'create_workflow', this.translate.instant('HISTORY-DESC.create-workflow', {workflow: workflow['label']}));
                         }),
                         catchError((err: any) => {
                             console.debug(err);
