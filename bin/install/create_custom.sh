@@ -306,6 +306,7 @@ echo "$secret" > $customPath/config/secret_key
 ####################
 # Create custom input and outputs folder
 mkdir -p /var/share/"$customId"/{entrant,export}/{verifier,splitter}/
+mkdir /var/share/"$customId"/entrant/verifier/ocr/
 chmod -R 775 /var/share/"$customId"/
 chown -R "$user":"$group" /var/share/"$customId"/
 
@@ -387,6 +388,14 @@ sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCaptur
 sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 
+ocrOnlyFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh"
+cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh $ocrOnlyFile
+sed -i "s#§§SCRIPT_NAME§§#ocr_only#g" $ocrOnlyFile
+sed -i "s#§§OC_PATH§§#$defaultPath#g" $ocrOnlyFile
+sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $ocrOnlyFile
+sed -i 's#"§§ARGUMENTS§§"#-workflow_id ocr_only#g' $ocrOnlyFile
+sed -i "s#§§CUSTOM_ID§§#$customId#g" $ocrOnlyFile
+
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh"
 cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
 sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
@@ -409,6 +418,11 @@ crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workfl
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId events move,close
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh \$filename"
+
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId watch /var/share/"$customId"/entrant/verifier/ocr_only/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh \$filename"
 
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId watch /var/share/"$customId"/entrant/verifier/
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId events move,close
