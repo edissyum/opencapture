@@ -186,7 +186,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 multiple: false,
                 label: this.translate.instant('WORKFLOW.rotation'),
                 type: 'select',
-                control: new FormControl(),
+                control: new FormControl('no_rotation'),
                 required: true,
                 show: true,
                 values: [
@@ -550,6 +550,8 @@ export class WorkflowBuilderComponent implements OnInit {
             data['workflow_label'] = this.nameControl.value;
             this.http.post(environment['url'] + '/ws/workflows/verifier/createScriptAndWatcher', {'args': data}, {headers: this.authService.headers}).pipe(
                 tap(() => {
+                    delete data['workflow_id'];
+                    delete data['workflow_label'];
                     this.http.post(environment['url'] + '/ws/workflows/verifier/create', {'args': workflow}, {headers: this.authService.headers}).pipe(
                         tap(() => {
                             this.router.navigate(['/settings/verifier/workflows']).then();
