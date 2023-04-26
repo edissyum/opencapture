@@ -88,7 +88,6 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITT
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_AI_MODEL_PATH', '[SPLITTER] Chemin vers le dossier contenant le modèle de prédiction', '/var/docservers/opencapture/splitter/ai/models/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('INPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier d''entrée des fichiers importés', '/var/share/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('OUTPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier de sortie des fichiers exportés', '/var/share/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('OUTPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier de sortie des fichiers exportés', '/var/share/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('MAILCOLLECT_BATCHES', 'Chemin de stockage des batches du module MailCollect', '/var/www/html/opencapture/bin/data/MailCollect/');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE VERIFIER
@@ -345,7 +344,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (1, 'export_xml', 'Export XML par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}, {"id": "extension", "type": "text", "value": "xml"}]}}');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_mem', 'Export MEM Courrier par défaut', 'verifier');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "ocrise", "data") VALUES (3, 'export_pdf', 'Export PDF par défaut', true, 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}]}}');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "ocrise", "data") VALUES (3, 'export_pdf', 'Export PDF par défaut', 'verifier', true, '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}]}}');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (4, 'export_facturx', 'Export PDF avec métadonnées (FacturX)', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}]}}');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE SPLITTER
