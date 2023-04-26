@@ -117,7 +117,7 @@ if [ "$finalChoice" == 1 ]; then
 fi
 
 echo ""
-echo "#######################################################################################################################"
+echo "########################################################################################################################"
 echo "      _______                                                                                             _______ "
 echo "     / /| |\ \                   The two following questions are for advanced users                      / /| |\ \ "
 echo "    / / | | \ \          If you don't know what you're doing, skip it and keep default values           / / | | \ \ "
@@ -125,7 +125,7 @@ echo "   / /  | |  \ \     Higher values can overload your server if it doesn't 
 echo "  / /   |_|   \ \          Example for a 16 vCPU / 8Go RAM server : 5 threads and 2 processes         / /   |_|   \ \ "
 echo " /_/    (_)    \_\                                                                                   /_/    (_)    \_\ "
 echo ""
-echo "#######################################################################################################################"
+echo "########################################################################################################################"
 echo ""
 echo 'How many WSGI threads ? (default : 5)'
 printf "Enter your choice [%s] : " "${bold}5${normal}"
@@ -152,7 +152,7 @@ else
 fi
 
 echo ""
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo ""
 
 echo 'Would you use Python virtual environment ? (default : yes)'
@@ -165,7 +165,7 @@ else
 fi
 
 echo ""
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo ""
 
 ####################
@@ -223,7 +223,7 @@ if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
         postgresPassword="$choice"
     fi
     echo ""
-    echo "######################################################################################################################"
+    echo "#######################################################################################################################"
     echo ""
     echo "Create database user...."
 
@@ -233,7 +233,7 @@ if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\"" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 else
     echo ""
-    echo "######################################################################################################################"
+    echo "#######################################################################################################################"
     echo ""
     echo "Create database user...."
 
@@ -244,7 +244,7 @@ else
 fi
 
 echo ""
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo ""
 
 customIniFile=$defaultPath/custom/custom.ini
@@ -291,7 +291,7 @@ echo "" >> $customIniFile
 echo "System packages installation....."
 xargs -a apt-requirements.txt apt-get install -y >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 echo ""
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo ""
 
 if [ $pythonVenv = 'true' ]; then
@@ -320,7 +320,7 @@ cd $defaultPath || exit 1
 find . -name ".gitkeep" -delete
 
 echo ""
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo ""
 
 ####################
@@ -336,7 +336,7 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 echo ""
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo ""
 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
