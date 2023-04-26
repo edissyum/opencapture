@@ -64,6 +64,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
         'positions': json.dumps(positions),
         'datas': json.dumps(datas),
         'pages': json.dumps(pages),
+        'form_id': datas['form_id'],
         'nb_pages': nb_pages,
         'status': status,
         'customer_id': 0
@@ -85,33 +86,16 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                     'customer_id': input_settings['customer_id']
                 })
         elif 'workflow_id' in args and args['workflow_id']:
-            workflow_settings = database.select({
-                'select': ['input', 'process', 'separation', 'output'],
-                'table': ['workflows'],
-                'where': ['workflow_id = %s', 'module = %s'],
-                'data': [args['workflow_id'], 'verifier']
-            })
             if workflow_settings:
-                workflow_settings = workflow_settings[0]
-                if workflow_settings['input']['customer_id']:
+                if 'customer_id' in workflow_settings['input'] and workflow_settings['input']['customer_id']:
                     invoice_data.update({
                         'customer_id': workflow_settings['input']['customer_id']
-                    })
-                if workflow_settings['input']['apply_process'] and workflow_settings['process']['use_interface'] and workflow_settings['process']['form_id']\
-                        and ('form_id_ia' not in args or not args['form_id_ia']):
-                    invoice_data.update({
-                        'form_id': workflow_settings['process']['form_id']
                     })
     else:
         if 'customer_id' in args and args['customer_id']:
             invoice_data.update({
                 'customer_id': args['customer_id']
             })
-
-    if 'form_id_ia' in args and args['form_id_ia']:
-        invoice_data.update({
-            'form_id': args['form_id_ia']
-        })
 
     insert_invoice = True
     if status == 'END' and 'form_id' in invoice_data and invoice_data['form_id']:
@@ -141,7 +125,6 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
 
                         for _r in _regex:
                             regex[_r['regex_id']] = _r['content']
-
                     execute_outputs(output_info[0], log, regex, invoice_data, database, current_lang)
     elif workflow_settings and (not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
         if 'output' in workflow_settings and workflow_settings['output']:
@@ -222,18 +205,17 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             'data': [args['workflow_id'], 'verifier'],
         })
         if workflow_settings and workflow_settings[0]['input']['apply_process']:
-            if workflow_settings[0]['process']['rotation']:
-                if workflow_settings[0]['process']['rotation'] != 'no_rotation':
-                    rotate_document(file, workflow_settings[0]['process']['rotation'])
-                    log.info('Document rotated by ' + str(workflow_settings[0]['process']['rotation']) +
+            workflow_settings = workflow_settings[0]
+            if workflow_settings['process']['rotation']:
+                if workflow_settings['process']['rotation'] != 'no_rotation':
+                    rotate_document(file, workflow_settings['process']['rotation'])
+                    log.info('Document rotated by ' + str(workflow_settings['process']['rotation']) +
                              '° based on workflow settings')
 
     # Convert files to JPG
     convert(file, files, ocr, nb_pages)
 
-    form_id = None
     form_id_found_with_ai = False
-
     if 'input_id' in args and args['input_id']:
         input_settings = database.select({
             'select': ['*'],
@@ -241,20 +223,23 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             'where': ['input_id = %s', 'module = %s'],
             'data': [args['input_id'], 'verifier'],
         })
-        ai_model_id = input_settings[0]['ai_model_id'] if input_settings[0]['ai_model_id'] else False
+        input_settings = input_settings[0]
+        ai_model_id = input_settings['ai_model_id'] if input_settings['ai_model_id'] else False
         if ai_model_id:
-            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, artificial_intelligence, ocr, log, 'verifier')
+            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, artificial_intelligence, ocr, log,
+                                    'verifier')
             if res:
                 form_id_found_with_ai = True
-                args['form_id_ia'] = res
+                datas.update({'form_id': res})
 
     if workflow_settings and 'workflow_id' in args:
-        if 'ai_model_id' in workflow_settings[0]['input'] and workflow_settings[0]['input']['ai_model_id']:
-            ai_model_id = workflow_settings[0]['input']['ai_model_id']
-            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, artificial_intelligence, ocr, log, 'verifier')
+        if 'ai_model_id' in workflow_settings['input'] and workflow_settings['input']['ai_model_id']:
+            ai_model_id = workflow_settings['input']['ai_model_id']
+            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, artificial_intelligence, ocr, log,
+                                    'verifier')
             if res:
                 form_id_found_with_ai = True
-                args['form_id_ia'] = res
+                datas.update({'form_id': res})
 
     # Find supplier in document
     supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
@@ -308,16 +293,22 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             convert(file, files, ocr, nb_pages)
 
     if input_settings:
-        input_settings = input_settings[0]
         if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
             if not form_id_found_with_ai:
-                form_id = input_settings['default_form_id']
+                datas.update({'form_id': input_settings['form_id']})
         elif not input_settings['override_supplier_form'] and supplier and supplier[2]['form_id'] not in ['', [], None]:
-            form_id = supplier[2]['form_id']
+            datas.update({'form_id': supplier[2]['form_id']})
+    elif workflow_settings:
+        print(workflow_settings['process']['override_supplier_form'])
+        if workflow_settings['process']['override_supplier_form'] or not supplier or not supplier[2]['form_id']:
+            if not form_id_found_with_ai:
+                datas.update({'form_id': workflow_settings['process']['form_id']})
+        elif not workflow_settings['process']['override_supplier_form'] and supplier and supplier[2]['form_id']:
+            datas.update({'form_id': supplier[2]['form_id']})
 
     # Find custom informations using mask
     custom_fields = FindCustom(ocr.header_text, log, regex, config, ocr, files, supplier, file, database,
-                               docservers, form_id).run()
+                               docservers, datas['form_id']).run()
     if custom_fields:
         for field in custom_fields:
             datas.update({field: custom_fields[field][0]})
@@ -328,7 +319,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     # Find invoice number
     invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file, ocr.header_text,
-                                             1, False, ocr.footer_text, docservers, configurations, languages, form_id)
+                                             1, False, ocr.footer_text, docservers, configurations, languages,
+                                             datas['form_id'])
     invoice_number = invoice_number_class.run()
     if not invoice_number:
         invoice_number_class.text = ocr.header_last_text
@@ -377,7 +369,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         page_for_date = 1
 
     date_class = FindDate(text_custom, log, regex, configurations, files, ocr, supplier, page_for_date, database, file,
-                          docservers, languages, form_id)
+                          docservers, languages, datas['form_id'])
     date = date_class.run()
 
     if date:
@@ -394,7 +386,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         # Find quotation number
     quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
-                                                 ocr.header_text, 1, False, ocr.footer_text, docservers, configurations, form_id)
+                                                 ocr.header_text, 1, False, ocr.footer_text, docservers, configurations,
+                                                 datas['form_id'])
     quotation_number = quotation_number_class.run()
     if not quotation_number:
         quotation_number_class.text = ocr.header_last_text
@@ -413,9 +406,11 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             pages.update({'quotation_number': quotation_number[2]})
 
     # Find footer informations (total amount, no rate amount etc..)
-    footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers, form_id)
+    footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers,
+                              datas['form_id'])
     if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
-        footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers, form_id)
+        footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
+                                     docservers, datas['form_id'])
 
     footer = footer_class.run()
     if not footer and nb_pages > 1:
@@ -512,7 +507,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     # Find delivery number
     delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
-                                               ocr.header_text, 1, False, docservers, configurations, form_id)
+                                               ocr.header_text, 1, False, docservers, configurations, datas['form_id'])
     delivery_number = delivery_number_class.run()
     if not delivery_number:
         delivery_number_class.text = ocr.footer_text
@@ -534,44 +529,27 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
 
     allow_auto = False
-    only_ocr = False
+    if workflow_settings and workflow_settings['input']['apply_process']:
+        if workflow_settings['process']['use_interface'] and workflow_settings['process']['allow_automatic_validation']:
+            allow_auto = True
+            for field in workflow_settings['process']['system_fields']:
+                if field == 'footer' and footer:
+                    continue
+                if field in datas and datas[field]:
+                    continue
+                else:
+                    allow_auto = False
+                    break
 
-    if form_id:
-        args['form_id'] = form_id
-        form_settings = database.select({
-            'select': ['settings'],
-            'table': ['form_models'],
-            'where': ['id = %s'],
-            'data': [form_id]
-        })
-
-        if form_settings and form_settings[0]['settings']:
-            form_settings = form_settings[0]['settings']
-            if 'allow_automatic_validation' in form_settings and 'automatic_validation_data' in form_settings and form_settings['automatic_validation_data']:
-                for column in form_settings['automatic_validation_data'].split(','):
-                    column = column.strip()
-                    if column == 'only_ocr':
-                        only_ocr = True
-                        break
-
-                    if column == 'supplier':
-                        column = 'name'
-                    elif column == 'footer' and footer:
-                        allow_auto = True
-                        continue
-                    if column in datas and datas[column]:
-                        allow_auto = True
-                    else:
-                        allow_auto = False
-                        break
-
-    if (supplier and not supplier[2]['skip_auto_validate'] and allow_auto) or only_ocr:
+    if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
         log.info('All the usefull informations are found. Execute outputs action and end process')
-        invoice_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
-               'END', nb_pages, docservers, workflow_settings, input_settings, log, regex, supplier_lang_different, configurations['locale'])
+        invoice_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file,
+                            supplier, 'END', nb_pages, docservers, workflow_settings, input_settings, log, regex,
+                            supplier_lang_different, configurations['locale'])
     else:
-        invoice_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
-               'NEW', nb_pages, docservers, workflow_settings, input_settings, log, regex, supplier_lang_different, configurations['locale'])
+        invoice_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file,
+                            supplier, 'NEW', nb_pages, docservers, workflow_settings, input_settings, log, regex,
+                            supplier_lang_different, configurations['locale'])
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')

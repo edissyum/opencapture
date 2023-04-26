@@ -34,7 +34,6 @@ CREATE TABLE IF NOT EXISTS "workflows" (
      "separation"        JSONB        DEFAULT '{}',
      "output"            JSONB        DEFAULT '{}'
 );
-INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "separation", "output") VALUES (1, 'default_workflow', 'Workflow par défaut', 'verifier', '{"workflow_id": "default_workflow", "input_folder": "/var/share/edissyum/entrant/verifier/", "apply_process": true, "workflow_label": "Workflow par défaut"}', '{"form_id": 1, "rotation": "no_rotation", "system_fields": ["supplier", "invoice_number", "quotation_number", "document_date", "document_due_date", "footer"], "use_interface": true}', '{"remove_blank_pages": true, "splitter_method_id": "no_sep", "separate_by_document_number_value": 2}', '{"outputs_id": [1, 3]}');
 
 UPDATE configurations SET label = 'smtp' WHERE label = 'mailCollectGeneral';
 UPDATE configurations SET data = REPLACE (data::TEXT, 'Paramétrage par défaut du MailCollect', 'Paramétrage de l''envoi d''email SMTP')::JSONB WHERE label = 'smtp';

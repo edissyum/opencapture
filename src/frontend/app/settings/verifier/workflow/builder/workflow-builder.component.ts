@@ -118,6 +118,13 @@ export class WorkflowBuilderComponent implements OnInit {
                 control: new FormControl()
             },
             {
+                id: 'override_supplier_form',
+                label: this.translate.instant('WORKFLOW.override_supplier_form'),
+                type: 'boolean',
+                show: false,
+                control: new FormControl()
+            },
+            {
                 id: 'delete_documents',
                 label: this.translate.instant('WORKFLOW.delete_documents'),
                 hint: this.translate.instant('WORKFLOW.delete_documents_hint'),
@@ -140,12 +147,12 @@ export class WorkflowBuilderComponent implements OnInit {
                 multiple: true,
                 label: this.translate.instant('WORKFLOW.system_fields_to_search'),
                 type: 'select',
-                control: new FormControl(['supplier', 'invoice_number', 'quotation_number', 'document_date', 'document_due_date', 'footer']),
+                control: new FormControl(['name', 'invoice_number', 'quotation_number', 'document_date', 'document_due_date', 'footer']),
                 required: false,
                 show: false,
                 values: [
                     {
-                        'id': 'supplier',
+                        'id': 'name',
                         'label': this.translate.instant('FORMS.supplier'),
                     },
                     {
@@ -439,9 +446,9 @@ export class WorkflowBuilderComponent implements OnInit {
         this.useInterface = value;
         this.outputAllowed = !value;
         this.fields['process'].forEach((element: any) => {
-            if (element.id === 'form_id' || element.id === 'system_fields' || element.id === 'allow_automatic_validation') {
+            if (element.id === 'form_id' || element.id === 'system_fields' || element.id === 'allow_automatic_validation' || element.id === 'override_supplier_form') {
                 element.show = this.useInterface;
-                if (element.id !== 'allow_automatic_validation') {
+                if (element.type !== 'boolean') {
                     element.required = this.useInterface;
                 }
             }
