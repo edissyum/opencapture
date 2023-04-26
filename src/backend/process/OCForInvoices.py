@@ -28,16 +28,16 @@ from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, 
 
 
 def execute_outputs(output_info, log, regex, invoice_data, database, current_lang):
+    data = output_info['data']
+    ocrise = output_info['ocrise']
+    compress_type = output_info['compress_type']
+
     if output_info['output_type_id'] == 'export_xml':
-        log.info('Output execution : XML export')
-        verifier_exports.export_xml(output_info['data'], log, regex, invoice_data, database)
+        verifier_exports.export_xml(data, log, regex, invoice_data, database)
     elif output_info['output_type_id'] == 'export_mem':
-        log.info('Output execution : MEM export')
         verifier_exports.export_mem(output_info['data'], invoice_data, log, regex, database)
     elif output_info['output_type_id'] == 'export_pdf':
-        log.info('Output execution : PDF export')
-        verifier_exports.export_pdf(output_info['data'], log, regex, invoice_data, current_lang,
-                                    output_info['compress_type'], output_info['ocrise'])
+        verifier_exports.export_pdf(data, log, regex, invoice_data, current_lang, compress_type, ocrise)
 
 
 def insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status,

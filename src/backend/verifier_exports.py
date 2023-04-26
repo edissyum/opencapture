@@ -31,6 +31,7 @@ from src.backend.import_classes import _MEMWebServices
 
 
 def export_xml(data, log, regex, invoice_info, database):
+    log.info('Output execution : XML export')
     folder_out = separator = filename = extension = ''
     parameters = data['options']['parameters']
     for setting in parameters:
@@ -317,6 +318,7 @@ def compress_file(file, compress_type, log, folder_out, filename, invoice_filena
 
 
 def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
+    log.info('Output execution : PDF export')
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
     for setting in parameters:
@@ -356,6 +358,7 @@ def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
 
 
 def export_mem(data, invoice_info, log, regex, database):
+    log.info('Output execution : MEM export')
     host = login = password = ''
     auth_data = data['options']['auth']
     for _data in auth_data:

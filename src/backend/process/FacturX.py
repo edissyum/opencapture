@@ -350,18 +350,17 @@ def browse_xml_lines(root):
     return lines
 
 
-def execute_outputs(output_info, log, regex, invoice_data, database, configurations):
+def execute_outputs(output_info, log, regex, invoice_data, database, lang):
+    data = output_info['data']
+    ocrise = output_info['ocrise']
+    compress_type = output_info['compress_type']
+
     if output_info['output_type_id'] == 'export_xml':
-        log.info('Output execution : XML export')
-        verifier_exports.export_xml(output_info['data'], log, regex, invoice_data, database)
+        verifier_exports.export_xml(data, log, regex, invoice_data, database)
     elif output_info['output_type_id'] == 'export_mem':
-        log.info('Output execution : MEM export')
-        verifier_exports.export_mem(output_info['data'], invoice_data, log, regex, database)
+        verifier_exports.export_mem(data, invoice_data, log, regex, database)
     elif output_info['output_type_id'] == 'export_pdf':
-        log.info('Output execution : PDF export')
-        verifier_exports.export_pdf(output_info['data'], log, regex, invoice_data,
-                                    configurations['locale'], output_info['compress_type'],
-                                    output_info['ocrise'])
+        verifier_exports.export_pdf(data, log, regex, invoice_data, lang, compress_type, ocrise)
 
 
 def insert(args):
@@ -469,7 +468,7 @@ def insert(args):
                     'data': [output_id]
                 })
                 if output_info:
-                    execute_outputs(output_info[0], log, regex, invoice_data, database, configurations)
+                    execute_outputs(output_info[0], log, regex, invoice_data, database, configurations['locale'])
     elif workflow_settings and (not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
         if 'output' in workflow_settings and workflow_settings['output']:
             for output_id in workflow_settings['output']['outputs_id']:
@@ -480,7 +479,7 @@ def insert(args):
                     'data': [output_id]
                 })
                 if output_info:
-                    execute_outputs(output_info[0], log, regex, invoice_data, database, configurations)
+                    execute_outputs(output_info[0], log, regex, invoice_data, database, configurations['locale'])
 
     if workflow_settings and workflow_settings['input']['apply_process'] and workflow_settings['process']['delete_documents']:
         delete_documents(docservers, invoice_data['path'], invoice_data['filename'], jpg_filename)
