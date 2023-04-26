@@ -1,16 +1,16 @@
 -- CRÉATION DES STATUS
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'verifier');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('END', 'Cloturée', 'Facture validée et cloturée', 'verifier');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('ERR', 'Erreur', 'Erreur lors de la qualification', 'verifier');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('DEL', 'Supprimée', 'Supprimée', 'verifier');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'splitter');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('END', 'Clotûré', 'Lot clôturé', 'splitter');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'splitter');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('MERG', 'Fusionné', 'Fusionné', 'splitter');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Cloturée', 'Facture validée et cloturée', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('ERR', 'Erreur', 'Erreur lors de la qualification', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimée', 'Supprimée', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'splitter');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Clotûré', 'Lot clôturé', 'splitter');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'splitter');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('MERG', 'Fusionné', 'Fusionné', 'splitter');
 
 -- CRÉATION DES MÉTHODES D'AUTHENTIFICATION PAR DÉFAUT
 INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('default', 'Authentification par defaut', True, '{}');
-INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('ldap', 'Authentification par LDAP', False, '{"host": "", "port": "", "baseDN": "", "suffix": "","prefix": "", "typeAD": "", "usersDN": "", "classUser": "", "loginAdmin": "", "classObject": "", "passwordAdmin": "", "attributLastName": "", "attributFirstName": "", "attributSourceUser": "", "attributRoleDefault": ""}');
+INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('ldap', 'Authentification par LDAP', False, '{"host": "", "port": "", "baseDN": "", "suffix": "", "prefix": "", "typeAD": "", "usersDN": "", "classUser": "", "loginAdmin": "", "classObject": "", "passwordAdmin": "", "attributLastName": "", "attributFirstName": "", "attributSourceUser": "", "attributRoleDefault": ""}');
 
 -- CRÉATION D'UNE CHAINE DE MAILCOLLECT PAR DÉFAUT
 INSERT INTO "mailcollect" ("name", "hostname", "port", "login", "password", "secured_connection", "folder_to_crawl", "folder_destination", "folder_trash", "action_after_process") VALUES ('MAIL_1', '', '993', '', '', True, '', '', '', 'move');
@@ -725,7 +725,8 @@ INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" 
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (4, '{"data" : "[3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 47, 48, 49, 50, 51, 52, 54, 55]"}');
 
 -- CRÉATION DE L'UTILISATEUR superadmin
-INSERT INTO "users" ("username","firstname", "lastname","password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);
+INSERT INTO "users" ("username", "firstname", "lastname", "password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);
+INSERT INTO "users" ("username", "firstname", "lastname", "mode", "password", "role") VALUES ('user_ws', 'Utilisateur', 'WebServices', 'webservice', 'pbkdf2:sha256:600000$j2F2BOOhYAjBqTiD$6840209a20bd78a70d004da1627942485e2492ac9e6a4494412cdd87933d97fe', 4);
 
 -- CRÉATION D'UN MASQUE DE POSITIONNEMENT D'EXEMPLE
 INSERT INTO "positions_masks" ("id", "label", "form_id", "regex") VALUES (1, 'Masque par défaut', 1, '{"document_date": "date", "document_due_date": "date"}');
