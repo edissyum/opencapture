@@ -17,7 +17,7 @@
 
 from flask_babel import gettext
 from flask import Blueprint, make_response, jsonify, request
-from src.backend.import_controllers import auth, monitoring, privileges
+from src.backend.import_controllers import auth, monitoring, privileges, verifier
 
 bp = Blueprint('monitoring', __name__, url_prefix='/ws/')
 
@@ -54,5 +54,15 @@ def get_process_by_token():
     else:
         return jsonify({'errors': gettext('TOKEN_IS_MANDATORY'), 'message': ''}), 400
 
-    process = monitoring.get_process_by_token(token)
-    return make_response(jsonify(process[0])), process[1]
+    retrieve_data = False
+    if 'retrieveData' in request.json and request.json['retrieveData']:
+        retrieve_data = request.json['retrieveData']
+
+    process, status = monitoring.get_process_by_token(token)
+    if process and retrieve_data:
+        if 'document_ids' in process['process'][0] and process['process'][0]['document_ids']:
+            document_data = verifier.get_document_by_id(process['process'][0]['document_ids'][0])
+            if document_data:
+                process['document_data'] = document_data[0]['datas']
+
+    return make_response(jsonify(process)), status
