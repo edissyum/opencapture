@@ -79,7 +79,7 @@ def get_address_by_id(address_id):
         return response, 400
 
 
-def delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id):
+def delete_document_position_by_supplier_id(supplier_id, field_id, form_id):
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
         _set = {}
@@ -106,7 +106,7 @@ def delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id):
             return response, 400
 
 
-def delete_invoice_page_by_supplier_id(supplier_id, field_id, form_id):
+def delete_document_page_by_supplier_id(supplier_id, field_id, form_id):
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
         _set = {}

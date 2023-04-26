@@ -131,7 +131,7 @@ class UserTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['users']), 1)
+        self.assertEqual(len(response.json['users']), 2)
 
     def test_successful_get_users_list_search(self):
         self.create_user()
@@ -155,7 +155,7 @@ class UserTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['users']), 2)
+        self.assertEqual(len(response.json['users']), 3)
 
     def test_successful_get_user_by_id(self):
         user = self.create_user()

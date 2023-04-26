@@ -537,7 +537,7 @@
 		"updated": "Chaîne entrante mise à jour",
 		"watcher_and_script_updated": "Script et watcher mis à jour"
 	},
-	"INVOICES": {
+	"DOCUMENTS": {
 		"data_deleted": "Champ supprimé",
 		"field_duplicated": "Champ <strong>{{ input }}</strong> dupliqué",
 		"identifier": "Identifiant du document",

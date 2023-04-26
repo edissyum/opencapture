@@ -27,17 +27,17 @@ from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, 
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
 
 
-def execute_outputs(output_info, log, regex, invoice_data, database, current_lang):
+def execute_outputs(output_info, log, regex, document_data, database, current_lang):
     data = output_info['data']
     ocrise = output_info['ocrise']
     compress_type = output_info['compress_type']
 
     if output_info['output_type_id'] == 'export_xml':
-        verifier_exports.export_xml(data, log, regex, invoice_data, database)
+        verifier_exports.export_xml(data, log, regex, document_data, database)
     elif output_info['output_type_id'] == 'export_mem':
-        verifier_exports.export_mem(output_info['data'], invoice_data, log, regex, database)
+        verifier_exports.export_mem(output_info['data'], document_data, log, regex, database)
     elif output_info['output_type_id'] == 'export_pdf':
-        verifier_exports.export_pdf(data, log, regex, invoice_data, current_lang, compress_type, ocrise)
+        verifier_exports.export_pdf(data, log, regex, document_data, current_lang, compress_type, ocrise)
 
 
 def insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status,
@@ -54,7 +54,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
     year_and_month = now.strftime('%Y') + '/' + now.strftime('%m')
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + year_and_month + '/' + full_jpg_filename + '-001.jpg'
 
-    invoice_data = {
+    document_data = {
         'filename': os.path.basename(file),
         'path': os.path.dirname(file),
         'img_width': str(files.get_width(path)),
@@ -70,39 +70,39 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
     }
 
     if supplier:
-        invoice_data.update({
+        document_data.update({
             'supplier_id': supplier[2]['supplier_id'],
         })
 
     if args.get('isMail') is None or args.get('isMail') is False:
         if 'input_id' in args and args['input_id'] and input_settings:
             if input_settings['purchase_or_sale']:
-                invoice_data.update({
+                document_data.update({
                     'purchase_or_sale': input_settings['purchase_or_sale']
                 })
             if input_settings['customer_id']:
-                invoice_data.update({
+                document_data.update({
                     'customer_id': input_settings['customer_id']
                 })
         elif 'workflow_id' in args and args['workflow_id']:
             if workflow_settings:
                 if 'customer_id' in workflow_settings['input'] and workflow_settings['input']['customer_id']:
-                    invoice_data.update({
+                    document_data.update({
                         'customer_id': workflow_settings['input']['customer_id']
                     })
     else:
         if 'customer_id' in args and args['customer_id']:
-            invoice_data.update({
+            document_data.update({
                 'customer_id': args['customer_id']
             })
 
-    insert_invoice = True
-    if status == 'END' and 'form_id' in invoice_data and invoice_data['form_id']:
+    insert_document = True
+    if status == 'END' and 'form_id' in document_data and document_data['form_id']:
         outputs = database.select({
             'select': ['outputs'],
             'table': ['form_models'],
             'where': ['id = %s'],
-            'data': [invoice_data['form_id']],
+            'data': [document_data['form_id']],
         })
 
         if outputs:
@@ -123,7 +123,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
 
                     for _r in _regex:
                         regex[_r['regex_id']] = _r['content']
-                execute_outputs(output_info[0], log, regex, invoice_data, database, current_lang)
+                execute_outputs(output_info[0], log, regex, document_data, database, current_lang)
 
     elif workflow_settings and (not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
         if 'output' in workflow_settings and workflow_settings['output']:
@@ -135,22 +135,22 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                     'data': [output_id]
                 })
                 if output_info:
-                    execute_outputs(output_info[0], log, regex, invoice_data, database, current_lang)
+                    execute_outputs(output_info[0], log, regex, document_data, database, current_lang)
 
     if workflow_settings:
         if workflow_settings['input']['apply_process']:
             if workflow_settings['process']['delete_documents']:
-                delete_documents(docservers, invoice_data['path'], invoice_data['filename'], full_jpg_filename)
-                log.info('Invoice not inserted in database based on workflow settings')
-                insert_invoice = False
+                delete_documents(docservers, document_data['path'], document_data['filename'], full_jpg_filename)
+                log.info('Document not inserted in database based on workflow settings')
+                insert_document = False
 
-    if insert_invoice:
-        invoice_data['datas'] = json.dumps(datas)
-        invoice_id = database.insert({
+    if insert_document:
+        document_data['datas'] = json.dumps(datas)
+        document_id = database.insert({
             'table': 'invoices',
-            'columns': invoice_data
+            'columns': document_data
         })
-        return invoice_id
+        return document_id
     return None
 
 
@@ -182,7 +182,9 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
 
 def process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages):
     log.info('Processing file : ' + file)
-    datas = pages = positions = {}
+    datas = {}
+    pages = {}
+    positions = {}
 
     nb_pages = files.get_pages(docservers, file)
     splitted_file = os.path.basename(file).split('_')
@@ -296,7 +298,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         elif not input_settings['override_supplier_form'] and supplier and supplier[2]['form_id'] not in ['', [], None]:
             datas.update({'form_id': supplier[2]['form_id']})
     elif workflow_settings:
-        print(workflow_settings['process']['override_supplier_form'])
         if workflow_settings['process']['override_supplier_form'] or not supplier or not supplier[2]['form_id']:
             if not form_id_found_with_ai:
                 datas.update({'form_id': workflow_settings['process']['form_id']})
@@ -358,7 +359,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     # Find invoice date number
     if invoice_found_on_first_or_last_page:
-        log.info("Search invoice date using the same page as invoice number")
+        log.info("Search document date using the same page as invoice number")
         text_custom = invoice_number_class.text
         page_for_date = tmp_nb_pages
     else:
@@ -540,11 +541,11 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
         log.info('All the usefull informations are found. Execute outputs action and end process')
-        invoice_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file,
+        document_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file,
                             supplier, 'END', nb_pages, docservers, workflow_settings, input_settings, log, regex,
                             supplier_lang_different, configurations['locale'])
     else:
-        invoice_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file,
+        document_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file,
                             supplier, 'NEW', nb_pages, docservers, workflow_settings, input_settings, log, regex,
                             supplier_lang_different, configurations['locale'])
 
@@ -558,4 +559,4 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 'where': ['vat_number = %s', 'status <> %s'],
                 'data': [supplier[2]['vat_number'], 'DEL']
             })
-    return invoice_id
+    return document_id

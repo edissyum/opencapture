@@ -216,7 +216,7 @@ def get_batch_by_id(args):
         'data': [args['id']]
     })
     if not batch:
-        error = gettext('GET_INVOICE_BY_ID_ERROR')
+        error = gettext('GET_DOCUMENT_BY_ID_ERROR')
     else:
         batch = batch[0]
 

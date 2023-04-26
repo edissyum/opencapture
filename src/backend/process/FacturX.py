@@ -350,17 +350,17 @@ def browse_xml_lines(root):
     return lines
 
 
-def execute_outputs(output_info, log, regex, invoice_data, database, lang):
+def execute_outputs(output_info, log, regex, document_data, database, lang):
     data = output_info['data']
     ocrise = output_info['ocrise']
     compress_type = output_info['compress_type']
 
     if output_info['output_type_id'] == 'export_xml':
-        verifier_exports.export_xml(data, log, regex, invoice_data, database)
+        verifier_exports.export_xml(data, log, regex, document_data, database)
     elif output_info['output_type_id'] == 'export_mem':
-        verifier_exports.export_mem(data, invoice_data, log, regex, database)
+        verifier_exports.export_mem(data, document_data, log, regex, database)
     elif output_info['output_type_id'] == 'export_pdf':
-        verifier_exports.export_pdf(data, log, regex, invoice_data, lang, compress_type, ocrise)
+        verifier_exports.export_pdf(data, log, regex, document_data, lang, compress_type, ocrise)
 
 
 def insert(args):

@@ -50,7 +50,7 @@ export class VerifierDisplayComponent implements OnInit {
     };
     availableFields     : any       = [
         {
-            "id": 'invoice_id',
+            "id": 'document_id',
             'label': marker('VERIFIER.document_id')
         },
         {

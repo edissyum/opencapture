@@ -167,7 +167,7 @@ export class StatisticsComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.forms.forEach((form: any) => {
-                    this.http.post(environment['url'] + '/ws/verifier/invoices/list',
+                    this.http.post(environment['url'] + '/ws/verifier/documents/list',
                         {'status': 'END', 'form_id': form.id}, {headers: this.authService.headers})
                     .pipe(
                         tap((data: any) => {
