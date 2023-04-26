@@ -50,9 +50,8 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
     except FileNotFoundError:
         pass
 
-    year = datetime.datetime.now().strftime('%Y')
-    month = datetime.datetime.now().strftime('%m')
-    year_and_month = year + '/' + month
+    now = datetime.datetime.now()
+    year_and_month = now.strftime('%Y') + '/' + now.strftime('%m')
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + year_and_month + '/' + full_jpg_filename + '-001.jpg'
 
     invoice_data = {
@@ -114,18 +113,18 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                     'where': ['id = %s'],
                     'data': [output_id]
                 })
-                if output_info:
-                    if supplier_lang_different:
-                        _regex = database.select({
-                            'select': ['regex_id', 'content'],
-                            'table': ['regex'],
-                            'where': ["lang in ('global', %s)"],
-                            'data': [current_lang],
-                        })
+                if output_info and supplier_lang_different:
+                    _regex = database.select({
+                        'select': ['regex_id', 'content'],
+                        'table': ['regex'],
+                        'where': ["lang in ('global', %s)"],
+                        'data': [current_lang],
+                    })
 
-                        for _r in _regex:
-                            regex[_r['regex_id']] = _r['content']
-                    execute_outputs(output_info[0], log, regex, invoice_data, database, current_lang)
+                    for _r in _regex:
+                        regex[_r['regex_id']] = _r['content']
+                execute_outputs(output_info[0], log, regex, invoice_data, database, current_lang)
+
     elif workflow_settings and (not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
         if 'output' in workflow_settings and workflow_settings['output']:
             for output_id in workflow_settings['output']['outputs_id']:
@@ -183,9 +182,7 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
 
 def process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages):
     log.info('Processing file : ' + file)
-    datas = {}
-    pages = {}
-    positions = {}
+    datas = pages = positions = {}
 
     nb_pages = files.get_pages(docservers, file)
     splitted_file = os.path.basename(file).split('_')
