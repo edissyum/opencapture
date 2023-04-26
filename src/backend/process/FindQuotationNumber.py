@@ -52,15 +52,15 @@ class FindQuotationNumber:
                 return ''
 
         # Delete the quotation keyword
-        tmp_invoice_number = re.sub(r"" + self.regex['quotation_number'][:-2] + "", '', quotation_res)
-        invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
-        return invoice_number
+        tmp_quotation_number = re.sub(r"" + self.regex['quotation_number'][:-2] + "", '', quotation_res)
+        quotation_number = tmp_quotation_number.lstrip().split(' ')[0]
+        return quotation_number
 
     def run(self):
         if self.supplier:
-            invoice_number = search_by_positions(self.supplier, 'quotation_number', self.ocr, self.files, self.database, self.form_id, self.log)
-            if invoice_number and invoice_number[0]:
-                return invoice_number
+            quotation_number = search_by_positions(self.supplier, 'quotation_number', self.ocr, self.files, self.database, self.form_id, self.log)
+            if quotation_number and quotation_number[0]:
+                return quotation_number
 
         if self.supplier and not self.custom_page:
             position = self.database.select({
@@ -87,15 +87,15 @@ class FindQuotationNumber:
                     return [text, position, data['page']]
 
         for line in self.text:
-            for _invoice in re.finditer(r"" + self.regex['quotation_number'] + "", line.content.upper()):
-                quotation_number = self.sanitize_quotation_number(_invoice.group())
+            for _quotation in re.finditer(r"" + self.regex['quotation_number'] + "", line.content.upper()):
+                quotation_number = self.sanitize_quotation_number(_quotation.group())
                 if len(quotation_number) >= int(self.configurations['devisSizeMin']):
                     self.log.info('Quotation number found : ' + quotation_number)
                     return [quotation_number, line.position, self.nb_pages]
 
         for line in self.footer_text:
-            for _invoice in re.finditer(r"" + self.regex['quotation_number'] + "", line.content.upper()):
-                quotation_number = self.sanitize_quotation_number(_invoice.group())
+            for _quotation in re.finditer(r"" + self.regex['quotation_number'] + "", line.content.upper()):
+                quotation_number = self.sanitize_quotation_number(_quotation.group())
                 if len(quotation_number) >= int(self.configurations['devisSizeMin']):
                     self.log.info('Quotation number found : ' + quotation_number)
                     position = self.files.return_position_with_ratio(line, 'footer')

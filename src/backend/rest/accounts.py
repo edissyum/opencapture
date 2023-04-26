@@ -186,10 +186,10 @@ def delete_supplier_position(supplier_id):
     if 'multiple' in args:
         fields = args['fields']
         for field in fields:
-            res = accounts.delete_invoice_position_by_supplier_id(supplier_id, field, form_id)
+            res = accounts.delete_document_position_by_supplier_id(supplier_id, field, form_id)
     else:
         field_id = request.json['args']['field_id']
-        res = accounts.delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id)
+        res = accounts.delete_document_position_by_supplier_id(supplier_id, field_id, form_id)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -206,10 +206,10 @@ def delete_supplier_page(supplier_id):
     if 'multiple' in args:
         fields = args['fields']
         for field in fields:
-            res = accounts.delete_invoice_page_by_supplier_id(supplier_id, field, form_id)
+            res = accounts.delete_document_page_by_supplier_id(supplier_id, field, form_id)
     else:
         field_id = request.json['args']['field_id']
-        res = accounts.delete_invoice_page_by_supplier_id(supplier_id, field_id, form_id)
+        res = accounts.delete_document_page_by_supplier_id(supplier_id, field_id, form_id)
     return make_response(jsonify(res[0])), res[1]
 
 

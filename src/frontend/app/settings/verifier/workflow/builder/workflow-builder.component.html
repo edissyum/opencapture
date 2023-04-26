@@ -85,7 +85,7 @@
             <mat-step [aria-labelledby]="!this.creationMode ? 'disabled_step' : ''" *ngIf="this.processAllowed" [label]="'WORKFLOW.process' | translate">
                 <app-hint [message]="'WORKFLOW.process_hint' | translate"></app-hint>
 
-                <div class="mt-6 grid grid-cols-2 gap-6" [class.grid-cols-3]="this.useInterface">
+                <div class="mt-6 grid grid-cols-2 gap-6" [class.grid-cols-4]="this.useInterface">
                     <ng-container *ngFor="let field of this.fields['process']">
                         <div *ngIf="field.type === 'boolean' && field.show">
                             <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2" (change)="field.id === 'use_interface' ? setUseInterface($event.checked) : ''">

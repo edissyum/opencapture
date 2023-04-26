@@ -215,7 +215,7 @@ export class UpdateOutputComponent implements OnInit {
      * Les données doivent être formatés comme suit : {'id': XX, 'value': XX} et être mise dans la clé "values" du champ
      * Regarder la fonction getUsersMEM() pour voir le fonctionnement
      * Du côté des webservices permettant l'execution des chaînes sortantes, il faut créer un WS dans le fichier rest/verifier.py
-     * La route doit être : verifier/invoices/<int:document_id>/output_type_id (e.g : verifier/invoices/<int:document_id>/export_mem)
+     * La route doit être : verifier/documents/<int:document_id>/output_type_id (e.g : verifier/documents/<int:document_id>/export_mem)
     **/
 
     constructor(

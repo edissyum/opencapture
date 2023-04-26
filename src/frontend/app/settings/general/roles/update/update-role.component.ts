@@ -143,7 +143,8 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.update_ai_model_splitter'),
         marker('PRIVILEGES.update_status'),
         marker('PRIVILEGES.update_status_splitter'),
-        marker('PRIVILEGES.access_config')
+        marker('PRIVILEGES.access_config'),
+        marker('PRIVILEGES.monitoring')
     ];
     // End translation
     constructor(

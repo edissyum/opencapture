@@ -88,7 +88,7 @@ msgstr "Ceci est un test d'envoi de mail depuis l'application Open-Capture"
 
 #: src/backend/controllers/accounts.py:63 src/backend/models/accounts.py:61
 msgid "GET_SUPPLIER_BY_ID_ERROR"
-msgstr "Erreur lors de la récupération du compte tier"
+msgstr "Erreur lors de la récupération du compte tiers"
 
 #: src/backend/controllers/accounts.py:76 src/backend/models/accounts.py:84
 msgid "GET_ADDRESS_BY_ID_ERROR"
@@ -97,17 +97,17 @@ msgstr "Erreur lors de la récupération de l'adresse"
 #: src/backend/controllers/accounts.py:103
 #: src/backend/controllers/accounts.py:220
 msgid "UPDATE_SUPPLIER_POSITIONS_ERROR"
-msgstr "Erreur lors de la mise à jour des positions du compte tier"
+msgstr "Erreur lors de la mise à jour des positions du compte tiers"
 
 #: src/backend/controllers/accounts.py:130
 #: src/backend/controllers/accounts.py:251
 msgid "UPDATE_SUPPLIER_PAGES_ERROR"
-msgstr "Erreur lors de la mise à jour des pages du compte tier"
+msgstr "Erreur lors de la mise à jour des pages du compte tiers"
 
 #: src/backend/controllers/accounts.py:183
 #: src/backend/controllers/accounts.py:189
 msgid "UPDATE_SUPPLIER_ERROR"
-msgstr "Erreur lors de la mise à jour du tier"
+msgstr "Erreur lors de la mise à jour du tiers"
 
 #: src/backend/controllers/accounts.py:275
 #: src/backend/controllers/accounts.py:281
@@ -123,11 +123,11 @@ msgstr "Erreur lors de la création de l'adresse"
 #: src/backend/controllers/accounts.py:376
 #: src/backend/controllers/accounts.py:382 src/backend/models/accounts.py:169
 msgid "CREATE_SUPPLIER_ERROR"
-msgstr "Erreur lors de la création du compte tier"
+msgstr "Erreur lors de la création du compte tiers"
 
 #: src/backend/controllers/accounts.py:383
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
-msgstr "Un compte tier existe déjà avec ce numéro de TVA"
+msgstr "Un compte tiers existe déjà avec ce numéro de TVA"
 
 #: src/backend/controllers/accounts.py:420 src/backend/controllers/user.py:219
 #: src/backend/controllers/user.py:249 src/backend/models/accounts.py:233
@@ -158,11 +158,11 @@ msgstr "Erreur lors de la suppression du compte client"
 #: src/backend/controllers/accounts.py:539
 #: src/backend/controllers/accounts.py:545 src/backend/models/accounts.py:191
 msgid "DELETE_SUPPLIER_ERROR"
-msgstr "Erreur lors de la suppression du compte tier"
+msgstr "Erreur lors de la suppression du compte tiers"
 
 #: src/backend/controllers/accounts.py:567
 msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
-msgstr "Erreur lors du chargement du référentiel tier"
+msgstr "Erreur lors du chargement du référentiel tiers"
 
 #: src/backend/controllers/artificial_intelligence.py:79
 #: src/backend/controllers/artificial_intelligence.py:403
@@ -822,33 +822,33 @@ msgstr "Erreur lors de la mise à jour des formulaires de l'utilisateur"
 
 #: src/backend/controllers/verifier.py:85 src/backend/models/splitter.py:219
 #: src/backend/models/verifier.py:40
-msgid "GET_INVOICE_BY_ID_ERROR"
-msgstr "Erreur lors de la récupération de la facture"
+msgid "GET_DOCUMENT_BY_ID_ERROR"
+msgstr "Erreur lors de la récupération du document"
 
 #: src/backend/controllers/verifier.py:199
 #: src/backend/controllers/verifier.py:301
-msgid "UPDATE_INVOICE_POSITIONS_ERROR"
-msgstr "Erreur lors de la mise à jour des positions de la facture"
+msgid "UPDATE_DOCUMENT_POSITIONS_ERROR"
+msgstr "Erreur lors de la mise à jour des positions du document"
 
 #: src/backend/controllers/verifier.py:222
 #: src/backend/controllers/verifier.py:319
-msgid "UPDATE_INVOICE_PAGES_ERROR"
-msgstr "Erreur lors de la mise à jour des pages de la facture"
+msgid "UPDATE_DOCUMENT_PAGES_ERROR"
+msgstr "Erreur lors de la mise à jour des pages du document"
 
 #: src/backend/controllers/verifier.py:245
 #: src/backend/controllers/verifier.py:263
-msgid "UPDATE_INVOICE_DATA_ERROR"
-msgstr "Erreur lors de la mise à jour des données de la facture"
+msgid "UPDATE_DOCUMENT_DATA_ERROR"
+msgstr "Erreur lors de la mise à jour des données du document"
 
 #: src/backend/controllers/verifier.py:333
 #: src/backend/controllers/verifier.py:339
-msgid "DELETE_INVOICE_ERROR"
-msgstr "Erreur lors de la suppression de la facture"
+msgid "DELETE_DOCUMENT_ERROR"
+msgstr "Erreur lors de la suppression du document"
 
 #: src/backend/controllers/verifier.py:354
 #: src/backend/controllers/verifier.py:360
-msgid "UPDATE_INVOICE_ERROR"
-msgstr "Erreur lors de la mise à jour de la facture"
+msgid "UPDATE_DOCUMENT_ERROR"
+msgstr "Erreur lors de la mise à jour du document"
 
 #: src/backend/controllers/verifier.py:522
 #: src/backend/controllers/verifier.py:525
@@ -868,12 +868,12 @@ msgid "VAT_API_ERROR"
 msgstr "Impossible de joindre l'API de vérification du numéro de TVA"
 
 #: src/backend/controllers/verifier.py:633
-msgid "INVOICE_NOT_FOUND"
-msgstr "Facture non trouvée"
+msgid "DOCUMENT_NOT_FOUND"
+msgstr "Document non trouvé"
 
 #: src/backend/controllers/verifier.py:634
-msgid "INVOICE_ID_NOT_FOUND"
-msgstr "Facture  %(id)s non trouvée"
+msgid "DOCUMENT_ID_NOT_FOUND"
+msgstr "Document %(id)s non trouvée"
 
 #: src/backend/controllers/workflow.py:53
 #: src/backend/controllers/workflow.py:60
@@ -921,7 +921,7 @@ msgstr "Erreur lors de la suppression du workflow"
 
 #: src/backend/models/accounts.py:107
 msgid "SUPPLIER_UPDATE_ERROR"
-msgstr "Erreur lors de la mise à jour du tier"
+msgstr "Erreur lors de la mise à jour du tiers"
 
 #: src/backend/models/artificial_intelligence.py:80
 msgid "IA_MODEL_CREATE_ERROR"
@@ -1139,8 +1139,8 @@ msgid "GET_FORMS_BY_USER_ID_ERROR"
 msgstr "Erreur lors de la récupération des formulaires de l'utilisateur"
 
 #: src/backend/models/verifier.py:104 src/backend/models/verifier.py:125
-msgid "INVOICE_UPDATE_ERROR"
-msgstr "Erreur lors de la mise à jour de la facture"
+msgid "DOCUMENT_UPDATE_ERROR"
+msgstr "Erreur lors de la mise à jour du document"
 
 #: src/backend/models/workflow.py:60 src/backend/models/workflow.py:83
 msgid "WORKFLOW_DOESNT_EXISTS"

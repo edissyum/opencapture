@@ -30,7 +30,8 @@ from .functions import generate_searchable_pdf
 from src.backend.import_classes import _MEMWebServices
 
 
-def export_xml(data, log, regex, invoice_info, database):
+def export_xml(data, log, regex, document_info, database):
+    log.info('Output execution : XML export')
     folder_out = separator = filename = extension = ''
     parameters = data['options']['parameters']
     for setting in parameters:
@@ -45,41 +46,41 @@ def export_xml(data, log, regex, invoice_info, database):
 
     _technical_data = []
     # Create the XML filename
-    _data = construct_with_var(filename, invoice_info, regex, separator)
+    _data = construct_with_var(filename, document_info, regex, separator)
     filename = separator.join(str(x) for x in _data) + '.' + extension
     filename = filename.replace('/', '-').replace(' ', '_')
     # END create the XML filename
 
-    # Fill XML with invoice informations
+    # Fill XML with document informations
     if os.path.isdir(folder_out):
         with open(folder_out + '/' + filename, 'w', encoding='UTF-8') as xml_file:
             root = Et.Element('ROOT')
             xml_datas = Et.SubElement(root, 'DATAS')
             xml_technical = Et.SubElement(root, 'TECHNICAL')
 
-            for technical in invoice_info:
+            for technical in document_info:
                 if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale', 'original_filename']:
                     new_field = Et.SubElement(xml_technical, technical)
-                    new_field.text = str(invoice_info[technical])
+                    new_field.text = str(document_info[technical])
 
-            for invoice_data in invoice_info['datas']:
-                value = invoice_data
-                if 'custom_' in invoice_data:
+            for document_data in document_info['datas']:
+                value = document_data
+                if 'custom_' in document_data:
                     custom_field = database.select({
                         'select': ['label_short'],
                         'table': ['custom_fields'],
                         'where': ['id = %s', 'module = %s'],
-                        'data': [invoice_data.replace('custom_', ''), 'verifier']
+                        'data': [document_data.replace('custom_', ''), 'verifier']
                     })
                     if custom_field and custom_field[0]:
                         value = 'custom_' + custom_field[0]['label_short']
                 new_field = Et.SubElement(xml_datas, value)
-                new_field.text = str(invoice_info['datas'][invoice_data])
+                new_field.text = str(document_info['datas'][document_data])
 
             xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
             xml_file.write(xml_root)
             xml_file.close()
-        # END Fill XML with invoice informations
+        # END Fill XML with document informations
         return '', 200
     else:
         if log:
@@ -99,7 +100,7 @@ def compress_pdf(input_file, output_file, compress_id):
     subprocess.check_call(gs_args)
 
 
-def export_facturx(data, log, regex, invoice_info):
+def export_facturx(data, log, regex, document_info):
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
     for setting in parameters:
@@ -111,7 +112,7 @@ def export_facturx(data, log, regex, invoice_info):
             filename = setting['value']
 
     # Create the PDF filename
-    _data = construct_with_var(filename, invoice_info, regex, separator)
+    _data = construct_with_var(filename, document_info, regex, separator)
     filename = separator.join(str(x) for x in _data) + '.pdf'
     filename = filename.replace('/', '-').replace(' ', '_')
     # END create the PDF filename
@@ -124,8 +125,8 @@ def export_facturx(data, log, regex, invoice_info):
             'xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
             'xmlns:udt': 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100'
         })
-        if 'lines_count' in invoice_info['datas'] and invoice_info['datas']['lines_count'] <= 0 or \
-                'taxes_count' in invoice_info['datas'] and invoice_info['datas']['taxes_count'] <= 0:
+        if 'lines_count' in document_info['datas'] and document_info['datas']['lines_count'] <= 0 or \
+                'taxes_count' in document_info['datas'] and document_info['datas']['taxes_count'] <= 0:
             facturx_type = 'basic'
         else:
             facturx_type = 'extended'
@@ -145,21 +146,21 @@ def export_facturx(data, log, regex, invoice_info):
 
         facturx_document = Et.SubElement(root, 'rsm:ExchangedDocument')
         invoice_id = Et.SubElement(facturx_document, 'ram:ID')
-        invoice_id.text = invoice_info['datas']['invoice_number']
+        invoice_id.text = document_info['datas']['invoice_number']
         type_code = Et.SubElement(facturx_document, 'ram:TypeCode')
         type_code.text = '380'
 
         issue_date_parent = Et.SubElement(facturx_document, 'ram:IssueDateTime')
         issue_date = Et.SubElement(issue_date_parent, 'udt:DateTimeString', {'format': '102'})
-        if invoice_info['datas']['document_due_date']:
-            issue_date.text = datetime.datetime.strptime(invoice_info['datas']['document_due_date'], regex['format_date']).strftime('%Y%m%d')
+        if document_info['datas']['document_due_date']:
+            issue_date.text = datetime.datetime.strptime(document_info['datas']['document_due_date'], regex['format_date']).strftime('%Y%m%d')
         else:
             issue_date.text = '19700101'
 
         facturx_supply_chain = Et.SubElement(root, 'rsm:SupplyChainTradeTransaction')
-        if 'lines_count' in invoice_info['datas'] and invoice_info['datas']['lines_count'] > 0:
+        if 'lines_count' in document_info['datas'] and document_info['datas']['lines_count'] > 0:
             facturx_lines = Et.SubElement(facturx_supply_chain, 'ram:IncludedSupplyChainTradeLineItem')
-            for cpt in range(invoice_info['datas']['lines_count']):
+            for cpt in range(document_info['datas']['lines_count']):
                 index_ht = 'line_ht' if cpt == 0 else 'line_ht_' + str(cpt)
                 index_quantity = 'quantity' if cpt == 0 else 'quantity_' + str(cpt)
                 index_unit = 'unit_price' if cpt == 0 else 'unit_price_' + str(cpt)
@@ -172,21 +173,21 @@ def export_facturx(data, log, regex, invoice_info):
 
                 description_parent = Et.SubElement(facturx_lines, 'ram:SpecifiedTradeProduct')
                 lien_description = Et.SubElement(description_parent, 'ram:Name')
-                if index_description in invoice_info['datas'] and invoice_info['datas'][index_description]:
-                    lien_description.text = invoice_info['datas'][index_description]
+                if index_description in document_info['datas'] and document_info['datas'][index_description]:
+                    lien_description.text = document_info['datas'][index_description]
 
                 data_parent = Et.SubElement(facturx_lines, 'ram:SpecifiedLineTradeAgreement')
                 unit_price_parent = Et.SubElement(data_parent, 'ram:NetPriceProductTradePrice')
                 unit_price = Et.SubElement(unit_price_parent, 'ram:ChargeAmount')
-                if index_unit in invoice_info['datas'] and invoice_info['datas'][index_unit]:
-                    unit_price.text = str(invoice_info['datas'][index_unit])
+                if index_unit in document_info['datas'] and document_info['datas'][index_unit]:
+                    unit_price.text = str(document_info['datas'][index_unit])
                 else:
                     unit_price.text = '0.00'
 
                 quantity_parent = Et.SubElement(facturx_lines, 'ram:SpecifiedLineTradeDelivery')
                 quantity = Et.SubElement(quantity_parent, 'ram:BilledQuantity', {'unitCode': 'C62'})
-                if index_quantity in invoice_info['datas'] and invoice_info['datas'][index_quantity]:
-                    quantity.text = str(invoice_info['datas'][index_quantity])
+                if index_quantity in document_info['datas'] and document_info['datas'][index_quantity]:
+                    quantity.text = str(document_info['datas'][index_quantity])
                 else:
                     quantity.text = '0.00'
 
@@ -197,45 +198,45 @@ def export_facturx(data, log, regex, invoice_info):
                 category_code = Et.SubElement(trade_tax, 'ram:CategoryCode')
                 category_code.text = 'S'
                 vat = Et.SubElement(trade_tax, 'ram:RateApplicablePercent')
-                if index_vat in invoice_info['datas'] and invoice_info['datas'][index_vat]:
-                    vat.text = str(invoice_info['datas'][index_vat])
+                if index_vat in document_info['datas'] and document_info['datas'][index_vat]:
+                    vat.text = str(document_info['datas'][index_vat])
                 else:
                     vat.text = '0.00'
 
                 ht_parent = Et.SubElement(data_parent_trade, 'ram:SpecifiedTradeSettlementLineMonetarySummation')
                 ht = Et.SubElement(ht_parent, 'ram:LineTotalAmount')
-                if index_ht in invoice_info['datas'] and invoice_info['datas'][index_ht]:
-                    ht.text = str(invoice_info['datas'][index_ht])
+                if index_ht in document_info['datas'] and document_info['datas'][index_ht]:
+                    ht.text = str(document_info['datas'][index_ht])
                 else:
                     ht.text = '0.00'
 
         facturx_applicable_header = Et.SubElement(facturx_supply_chain, 'ram:ApplicableHeaderTradeAgreement')
         facturx_seller = Et.SubElement(facturx_applicable_header, 'ram:SellerTradeParty')
         supplier_name = Et.SubElement(facturx_seller, 'ram:Name')
-        supplier_name.text = invoice_info['datas']['name']
+        supplier_name.text = document_info['datas']['name']
 
         vat_number_parent = Et.SubElement(facturx_seller, 'ram:SpecifiedTaxRegistration')
         vat_number = Et.SubElement(vat_number_parent, 'ram:ID', {'schemeID': 'VA'})
-        vat_number.text = invoice_info['datas']['vat_number']
+        vat_number.text = document_info['datas']['vat_number']
 
         buyer = Et.SubElement(facturx_applicable_header, 'ram:BuyerTradeParty')
         Et.SubElement(buyer, 'ram:Name')
 
         buyer_order_ref = Et.SubElement(facturx_applicable_header, 'ram:BuyerOrderReferencedDocument')
         ored_ref = Et.SubElement(buyer_order_ref, 'ram:IssuerAssignedID')
-        ored_ref.text = invoice_info['datas']['quotation_number']
+        ored_ref.text = document_info['datas']['quotation_number']
 
         Et.SubElement(facturx_supply_chain, 'ram:ApplicableHeaderTradeDelivery')
 
         facturx_trade_settlement = Et.SubElement(facturx_supply_chain, 'ram:ApplicableHeaderTradeSettlement')
         payment_ref = Et.SubElement(facturx_trade_settlement, 'ram:PaymentReference')
-        payment_ref.text = invoice_info['datas']['invoice_number']
+        payment_ref.text = document_info['datas']['invoice_number']
 
         invoice_currency = Et.SubElement(facturx_trade_settlement, 'ram:InvoiceCurrencyCode')
-        invoice_currency.text = invoice_info['datas']['currency'] if 'currency' in invoice_info['datas'] else 'EUR'
+        invoice_currency.text = document_info['datas']['currency'] if 'currency' in document_info['datas'] else 'EUR'
 
-        if 'taxes_count' in invoice_info['datas'] and invoice_info['datas']['taxes_count'] > 0:
-            for cpt_taxes in range(invoice_info['datas']['taxes_count']):
+        if 'taxes_count' in document_info['datas'] and document_info['datas']['taxes_count'] > 0:
+            for cpt_taxes in range(document_info['datas']['taxes_count']):
                 index_rate = 'vat_rate' if cpt_taxes == 0 else 'vat_rate_' + str(cpt_taxes)
                 index_amount = 'vat_amount' if cpt_taxes == 0 else 'vat_amount_' + str(cpt_taxes)
                 index_ht = 'no_rate_amount' if cpt_taxes == 0 else 'no_rate_amount_' + str(cpt_taxes)
@@ -243,36 +244,36 @@ def export_facturx(data, log, regex, invoice_info):
                 applicable_trade_tax = Et.SubElement(facturx_trade_settlement, 'ram:ApplicableTradeTax')
 
                 vat_amount = Et.SubElement(applicable_trade_tax, 'ram:CalculatedAmount')
-                vat_amount.text = str(invoice_info['datas'][index_amount])
+                vat_amount.text = str(document_info['datas'][index_amount])
                 type_code = Et.SubElement(applicable_trade_tax, 'ram:TypeCode')
                 type_code.text = 'VAT'
                 ht_amount = Et.SubElement(applicable_trade_tax, 'ram:BasisAmount')
-                ht_amount.text = str(invoice_info['datas'][index_ht])
+                ht_amount.text = str(document_info['datas'][index_ht])
                 category_code = Et.SubElement(applicable_trade_tax, 'ram:CategoryCode')
                 category_code.text = 'S'
                 vat_rate = Et.SubElement(applicable_trade_tax, 'ram:RateApplicablePercent')
-                vat_rate.text = str(invoice_info['datas'][index_rate])
+                vat_rate.text = str(document_info['datas'][index_rate])
 
         data_parent = Et.SubElement(facturx_trade_settlement, 'ram:SpecifiedTradeSettlementHeaderMonetarySummation')
 
         total_ht = Et.SubElement(data_parent, 'ram:LineTotalAmount')
-        total_ht.text = str(invoice_info['datas']['total_ht'])
+        total_ht.text = str(document_info['datas']['total_ht'])
 
         total_ht = Et.SubElement(data_parent, 'ram:TaxBasisTotalAmount')
-        total_ht.text = str(invoice_info['datas']['total_ht'])
+        total_ht.text = str(document_info['datas']['total_ht'])
 
-        total_vat = Et.SubElement(data_parent, 'ram:TaxTotalAmount', {'currencyID': invoice_info['datas']['currency'] if 'currency' in invoice_info['datas'] else 'EUR'})
-        total_vat.text = str(invoice_info['datas']['total_vat'])
+        total_vat = Et.SubElement(data_parent, 'ram:TaxTotalAmount', {'currencyID': document_info['datas']['currency'] if 'currency' in document_info['datas'] else 'EUR'})
+        total_vat.text = str(document_info['datas']['total_vat'])
 
         total_ttc = Et.SubElement(data_parent, 'ram:GrandTotalAmount')
-        total_ttc.text = str(invoice_info['datas']['total_ttc'])
+        total_ttc.text = str(document_info['datas']['total_ttc'])
 
         prepaid = Et.SubElement(data_parent, 'ram:TotalPrepaidAmount')
         prepaid.text = '0.00'
         due_payable = Et.SubElement(data_parent, 'ram:DuePayableAmount')
         due_payable.text = '0.00'
 
-        file = invoice_info['path'] + '/' + invoice_info['filename']
+        file = document_info['path'] + '/' + document_info['filename']
         facturx.generate_facturx_from_file(file, Et.tostring(root), output_pdf_file=folder_out + '/' + filename)
         return '', 200
     else:
@@ -307,8 +308,8 @@ def ocrise_file(file, lang, log, folder_out, filename):
             log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
 
 
-def compress_file(file, compress_type, log, folder_out, filename, invoice_filename):
-    compressed_file_path = '/tmp/min_' + invoice_filename
+def compress_file(file, compress_type, log, folder_out, filename, document_filename):
+    compressed_file_path = '/tmp/min_' + document_filename
     compress_pdf(file, compressed_file_path, compress_type)
     try:
         shutil.move(compressed_file_path, folder_out + '/' + filename)
@@ -316,7 +317,8 @@ def compress_file(file, compress_type, log, folder_out, filename, invoice_filena
         log.error('Moving file ' + compressed_file_path + ' error : ' + str(_e))
 
 
-def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
+def export_pdf(data, log, regex, document_info, lang, compress_type, ocrise):
+    log.info('Output execution : PDF export')
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
     for setting in parameters:
@@ -328,15 +330,15 @@ def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
             filename = setting['value']
 
     # Create the PDF filename
-    _data = construct_with_var(filename, invoice_info, regex, separator)
+    _data = construct_with_var(filename, document_info, regex, separator)
     filename = separator.join(str(x) for x in _data) + '.pdf'
     filename = filename.replace('/', '-').replace(' ', '_')
     # END create the PDF filename
 
     if os.path.isdir(folder_out):
-        file = invoice_info['path'] + '/' + invoice_info['filename']
+        file = document_info['path'] + '/' + document_info['filename']
         if compress_type:
-            compress_file(file, compress_type, log, folder_out, filename, invoice_info['filename'])
+            compress_file(file, compress_type, log, folder_out, filename, document_info['filename'])
         else:
             if os.path.isfile(file):
                 shutil.copy(file, folder_out + '/' + filename)
@@ -355,7 +357,8 @@ def export_pdf(data, log, regex, invoice_info, lang, compress_type, ocrise):
         return response, 400
 
 
-def export_mem(data, invoice_info, log, regex, database):
+def export_mem(data, document_info, log, regex, database):
+    log.info('Output execution : MEM export')
     host = login = password = ''
     auth_data = data['options']['auth']
     for _data in auth_data:
@@ -374,13 +377,13 @@ def export_mem(data, invoice_info, log, regex, database):
             log
         )
         if _ws.status[0]:
-            if invoice_info:
+            if document_info:
                 args = {}
                 supplier = database.select({
                     'select': ['*'] if 'select' not in args else args['select'],
                     'table': ['accounts_supplier'],
                     'where': ['id = %s'],
-                    'data': [invoice_info['supplier_id']]
+                    'data': [document_info['supplier_id']]
                 })
                 if supplier and supplier[0]['address_id']:
                     address = database.select({
@@ -437,8 +440,8 @@ def export_mem(data, invoice_info, log, regex, database):
                         _data['id']: value
                     })
 
-                    if 'document_due_date' in invoice_info['datas'] and invoice_info['datas']['document_due_date']:
-                        document_due_date = pd.to_datetime(invoice_info['datas']['document_due_date'], format=regex['format_date'])
+                    if 'document_due_date' in document_info['datas'] and document_info['datas']['document_due_date']:
+                        document_due_date = pd.to_datetime(document_info['datas']['document_due_date'], format=regex['format_date'])
                         if document_due_date.date() > datetime.date.today():
                             args.update({
                                 'processLimitDate': str(document_due_date.date())
@@ -460,25 +463,25 @@ def export_mem(data, invoice_info, log, regex, database):
                         if _data['value']:
                             customs = json.loads(_data['value'])
                             for custom_id in customs:
-                                if custom_id in customs and customs[custom_id] in invoice_info['datas']:
+                                if custom_id in customs and customs[custom_id] in document_info['datas']:
                                     args['customFields'].update({
-                                        custom_id: invoice_info['datas'][customs[custom_id]]
+                                        custom_id: document_info['datas'][customs[custom_id]]
                                     })
                     elif _data['id'] == 'subject':
-                        subject = construct_with_var(_data['value'], invoice_info, regex)
+                        subject = construct_with_var(_data['value'], document_info, regex)
                         args.update({
                             'subject': ''.join(subject)
                         })
 
-                file = invoice_info['path'] + '/' + invoice_info['filename']
+                file = document_info['path'] + '/' + document_info['filename']
                 if os.path.isfile(file):
                     with open(file, 'rb') as file:
                         args.update({
                             'fileContent': file.read(),
                         })
 
-                    if 'document_date' in invoice_info['datas'] and invoice_info['datas']['document_date']:
-                        document_date = pd.to_datetime(invoice_info['datas']['document_date'], format=regex['format_date'])
+                    if 'document_date' in document_info['datas'] and document_info['datas']['document_date']:
+                        document_date = pd.to_datetime(document_info['datas']['document_date'], format=regex['format_date'])
                         args.update({
                             'documentDate': str(document_date.date())
                         })
@@ -488,7 +491,7 @@ def export_mem(data, invoice_info, log, regex, database):
                         if link_resource:
                             res_id = message['resId']
                             if opencapture_field:
-                                opencapture_field = ''.join(construct_with_var(opencapture_field, invoice_info, regex))
+                                opencapture_field = ''.join(construct_with_var(opencapture_field, document_info, regex))
                                 if mem_custom_field:
                                     if 'res_id' not in data or not data['res_id']:
                                         docs = _ws.retrieve_doc_with_custom(mem_custom_field['id'], opencapture_field, mem_clause)
@@ -531,36 +534,36 @@ def export_mem(data, invoice_info, log, regex, database):
         return response, 400
 
 
-def construct_with_var(data, invoice_info, regex, separator=False):
+def construct_with_var(data, document_info, regex, separator=None):
     _data = []
-    if isinstance(invoice_info['datas'], str):
-        data_tmp = json.loads(invoice_info['datas'])
-        invoice_info['datas'] = {}
-        invoice_info['datas'] = data_tmp
+    if isinstance(document_info['datas'], str):
+        data_tmp = json.loads(document_info['datas'])
+        document_info['datas'] = {}
+        document_info['datas'] = data_tmp
 
     for column in data.split('#'):
-        if column in invoice_info['datas']:
+        if column in document_info['datas']:
             if separator:
-                _data.append(invoice_info['datas'][column].replace(' ', separator))
+                _data.append(str(document_info['datas'][column]).replace(' ', separator))
             else:
-                _data.append(invoice_info['datas'][column])
-        elif column in invoice_info:
+                _data.append(document_info['datas'][column])
+        elif column in document_info:
             if separator:
-                _data.append(invoice_info[column].replace(' ', separator))
+                _data.append(str(document_info[column]).replace(' ', separator))
             else:
-                _data.append(invoice_info[column])
+                _data.append(document_info[column])
         elif column == 'document_date_year':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['document_date'], regex['format_date']).year)
+            _data.append(datetime.datetime.strptime(document_info['datas']['document_date'], regex['format_date']).year)
         elif column == 'document_date_month':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['document_date'], regex['format_date']).month)
+            _data.append(datetime.datetime.strptime(document_info['datas']['document_date'], regex['format_date']).month)
         elif column == 'document_date_day':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['document_date'], regex['format_date']).day)
+            _data.append(datetime.datetime.strptime(document_info['datas']['document_date'], regex['format_date']).day)
         elif column == 'register_date_year':
-            _data.append(datetime.datetime.strptime(invoice_info['register_date'], regex['format_date']).year)
+            _data.append(datetime.datetime.strptime(document_info['register_date'], regex['format_date']).year)
         elif column == 'register_date_month':
-            _data.append(datetime.datetime.strptime(invoice_info['register_date'], regex['format_date']).month)
+            _data.append(datetime.datetime.strptime(document_info['register_date'], regex['format_date']).month)
         elif column == 'register_date_day':
-            _data.append(datetime.datetime.strptime(invoice_info['register_date'], regex['format_date']).day)
+            _data.append(datetime.datetime.strptime(document_info['register_date'], regex['format_date']).day)
         else:
             if separator:
                 _data.append(column.replace(' ', separator))

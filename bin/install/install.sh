@@ -117,7 +117,7 @@ if [ "$finalChoice" == 1 ]; then
 fi
 
 echo ""
-echo "#######################################################################################################################"
+echo "########################################################################################################################"
 echo "      _______                                                                                             _______ "
 echo "     / /| |\ \                   The two following questions are for advanced users                      / /| |\ \ "
 echo "    / / | | \ \          If you don't know what you're doing, skip it and keep default values           / / | | \ \ "
@@ -125,7 +125,7 @@ echo "   / /  | |  \ \     Higher values can overload your server if it doesn't 
 echo "  / /   |_|   \ \          Example for a 16 vCPU / 8Go RAM server : 5 threads and 2 processes         / /   |_|   \ \ "
 echo " /_/    (_)    \_\                                                                                   /_/    (_)    \_\ "
 echo ""
-echo "#######################################################################################################################"
+echo "########################################################################################################################"
 echo ""
 echo 'How many WSGI threads ? (default : 5)'
 printf "Enter your choice [%s] : " "${bold}5${normal}"
@@ -152,7 +152,7 @@ else
 fi
 
 echo ""
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo ""
 
 echo 'Would you use Python virtual environment ? (default : yes)'
@@ -165,7 +165,7 @@ else
 fi
 
 echo ""
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo ""
 
 ####################
@@ -223,7 +223,7 @@ if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
         postgresPassword="$choice"
     fi
     echo ""
-    echo "######################################################################################################################"
+    echo "#######################################################################################################################"
     echo ""
     echo "Create database user...."
 
@@ -233,7 +233,7 @@ if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\"" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 else
     echo ""
-    echo "######################################################################################################################"
+    echo "#######################################################################################################################"
     echo ""
     echo "Create database user...."
 
@@ -244,7 +244,7 @@ else
 fi
 
 echo ""
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo ""
 
 customIniFile=$defaultPath/custom/custom.ini
@@ -291,7 +291,7 @@ echo "" >> $customIniFile
 echo "System packages installation....."
 xargs -a apt-requirements.txt apt-get install -y >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 echo ""
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo ""
 
 if [ $pythonVenv = 'true' ]; then
@@ -320,7 +320,7 @@ cd $defaultPath || exit 1
 find . -name ".gitkeep" -delete
 
 echo ""
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo ""
 
 ####################
@@ -336,7 +336,7 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 echo ""
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo ""
 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -349,6 +349,8 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/MailCollect/' WHERE docserver_id = 'MAILCOLLECT_BATCHES'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE workflows SET input=REPLACE(input::TEXT, '/var/share/', '/var/share/$customId/')::JSONB" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'verifier';" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/entrant/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_pdf';" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -548,12 +550,23 @@ chmod -R 775 /var/log/watcher/
 cp $defaultPath/instance/config/watcher.ini.default $defaultPath/instance/config/watcher.ini
 
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow watch /var/share/"$customId"/entrant/verifier/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh \$filename"
 
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId watch /var/share/"$customId"/entrant/verifier/ocr_only/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh \$filename"
+
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input watch /var/share/"$customId"/entrant/verifier/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input command "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh \$filename"
 
 crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input watch /var/share/"$customId"/entrant/splitter/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input command "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh \$filename"
 
 sed -i "s#verifier_default_input#verifier_default_input_$customId#g" "$defaultPath/instance/config/watcher.ini"
@@ -618,6 +631,17 @@ if ! test -f "$defaultScriptFile"; then
     sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
     sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
+fi
+
+ocrOnlyFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh"
+if ! test -f "$ocrOnlyFile"; then
+    mkdir -p "$defaultPath/custom/$customId/bin/scripts/verifier_workflow/"
+    cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh $ocrOnlyFile
+    sed -i "s#§§SCRIPT_NAME§§#ocr_only#g" $ocrOnlyFile
+    sed -i "s#§§OC_PATH§§#$defaultPath#g" $ocrOnlyFile
+    sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $ocrOnlyFile
+    sed -i 's#"§§ARGUMENTS§§"#-workflow_id ocr_only#g' $ocrOnlyFile
+    sed -i "s#§§CUSTOM_ID§§#$customId#g" $ocrOnlyFile
 fi
 
 ####################
@@ -688,5 +712,6 @@ cron_backup="0 3 * * * $defaultPath/custom/$customId/bin/scripts/clean_backups.s
 ####################
 # Create default export and input XML and PDF folder
 mkdir -p /var/share/"$customId"/{entrant,export}/{verifier,splitter}/
+mkdir -p /var/share/"$customId"/entrant/verifier/ocr/
 chmod -R 775 /var/share/"$customId"/
 chown -R "$user":"$group" /var/share/"$customId"/

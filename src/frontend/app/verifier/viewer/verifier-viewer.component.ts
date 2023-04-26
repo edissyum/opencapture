@@ -43,9 +43,9 @@ declare const $: any;
 })
 
 export class VerifierViewerComponent implements OnInit {
-    imageInvoice            : any;
-    invoiceId               : any;
-    invoice                 : any;
+    imageDocument            : any;
+    documentId              : any;
+    document                : any;
     fields                  : any;
     config                  : any;
     isOCRRunning            : boolean     = false;
@@ -143,19 +143,19 @@ export class VerifierViewerComponent implements OnInit {
         this.ocrFromUser = false;
         this.saveInfo = true;
         this.config = this.configService.getConfig();
-        this.invoiceId = this.route.snapshot.params['id'];
-        this.translate.get('HISTORY-DESC.viewer', {document_id: this.invoiceId}).subscribe((translated: string) => {
+        this.documentId = this.route.snapshot.params['id'];
+        this.translate.get('HISTORY-DESC.viewer', {document_id: this.documentId}).subscribe((translated: string) => {
             this.historyService.addHistory('verifier', 'viewer', translated);
         });
-        this.updateInvoice({
+        this.updateDocument({
             'locked': true,
             'locked_by': this.userService.user.username
         });
-        this.invoice = await this.getInvoice();
-        this.currentFilename = this.invoice.full_jpg_filename;
-        await this.getThumb(this.invoice.full_jpg_filename);
-        if (this.invoice.form_id) {
-            await this.generateOutputs(this.invoice.form_id);
+        this.document = await this.getDocument();
+        this.currentFilename = this.document.full_jpg_filename;
+        await this.getThumb(this.document.full_jpg_filename);
+        if (this.document.form_id) {
+            await this.generateOutputs(this.document.form_id);
         }
 
         this.formList = await this.getAllForm();
@@ -164,9 +164,9 @@ export class VerifierViewerComponent implements OnInit {
         this.suppliers = this.suppliers.suppliers;
 
         let supplierFormFound = false;
-        if (this.invoice.supplier_id) {
+        if (this.document.supplier_id) {
             for (const element of this.suppliers) {
-                if (element.id === this.invoice.supplier_id) {
+                if (element.id === this.document.supplier_id) {
                     this.currentSupplier = element;
                     if (element.form_id) {
                         supplierFormFound = element.form_id;
@@ -199,8 +199,8 @@ export class VerifierViewerComponent implements OnInit {
         /*
         * Enable library to draw rectangle on load (OCR ON FLY)
         */
-        this.imageInvoice = $('#document_image');
-        this.ratio = this.invoice.img_width / this.imageInvoice.width();
+        this.imageDocument = $('#document_image');
+        this.ratio = this.document.img_width / this.imageDocument.width();
         this.ocr({
             'target' : {
                 'id': '',
@@ -210,8 +210,8 @@ export class VerifierViewerComponent implements OnInit {
             }
         }, true);
         await this.fillForm(this.currentFormFields);
-        if (this.invoice.supplier_id) {
-            this.getSupplierInfo(this.invoice.supplier_id, false, true);
+        if (this.document.supplier_id) {
+            this.getSupplierInfo(this.document.supplier_id, false, true);
         }
         setTimeout(() => {
             this.drawPositions();
@@ -332,7 +332,7 @@ export class VerifierViewerComponent implements OnInit {
             this.imgSrc = this.imgArray[cpt];
         } else {
             this.http.post(environment['url'] + '/ws/verifier/getThumb',
-                {'args': {'type': 'full', 'filename': filename, 'registerDate': this.invoice.register_date}},
+                {'args': {'type': 'full', 'filename': filename, 'registerDate': this.document.register_date}},
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     this.imgSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
@@ -389,9 +389,9 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async drawPositions(): Promise<any> {
-        for (const fieldId in this.invoice.datas) {
+        for (const fieldId in this.document.datas) {
             const page = this.getPage(fieldId);
-            const position = this.invoice.positions[fieldId];
+            const position = this.document.positions[fieldId];
             if (position && parseInt(String(page)) === parseInt(String(this.currentPage))) {
                 const splittedFieldId = fieldId.split('_');
                 const field = this.getFieldInfo(fieldId);
@@ -427,10 +427,10 @@ export class VerifierViewerComponent implements OnInit {
 
     getPage(fieldId: any) {
         let page: number = 1;
-        if (this.invoice.pages) {
-            Object.keys(this.invoice.pages).forEach((element: any) => {
+        if (this.document.pages) {
+            Object.keys(this.document.pages).forEach((element: any) => {
                 if (element === fieldId) {
-                    page = this.invoice.pages[fieldId];
+                    page = this.document.pages[fieldId];
                 }
             });
         }
@@ -441,16 +441,16 @@ export class VerifierViewerComponent implements OnInit {
         return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC', {headers: this.authService.headers}).toPromise();
     }
 
-    async getInvoice(): Promise<any> {
-        return await this.http.get(environment['url'] + '/ws/verifier/invoices/' + this.invoiceId, {headers: this.authService.headers}).toPromise();
+    async getDocument(): Promise<any> {
+        return await this.http.get(environment['url'] + '/ws/verifier/documents/' + this.documentId, {headers: this.authService.headers}).toPromise();
     }
 
     async getForm(): Promise<any> {
-        if (this.invoice.form_id) {
-            return await this.http.get(environment['url'] + '/ws/forms/fields/getByFormId/' + this.invoice.form_id, {headers: this.authService.headers}).toPromise();
+        if (this.document.form_id) {
+            return await this.http.get(environment['url'] + '/ws/forms/fields/getByFormId/' + this.document.form_id, {headers: this.authService.headers}).toPromise();
         }
-        if (this.invoice.supplier_id) {
-            return await this.http.get(environment['url'] + '/ws/forms/fields/getBySupplierId/' + this.invoice.supplier_id, {headers: this.authService.headers}).toPromise();
+        if (this.document.supplier_id) {
+            return await this.http.get(environment['url'] + '/ws/forms/fields/getBySupplierId/' + this.document.supplier_id, {headers: this.authService.headers}).toPromise();
         }
         else {
             return await this.http.get(environment['url'] + '/ws/forms/getDefault/verifier', {headers: this.authService.headers}).toPromise();
@@ -517,9 +517,9 @@ export class VerifierViewerComponent implements OnInit {
                         );
                 }
 
-                if (this.invoice.datas[field.id]) {
-                    let value = this.invoice.datas[field.id];
-                    if (field.format === 'date' && field.id !== '' && field.id !== undefined && value) {
+                if (this.document.datas[field.id]) {
+                    let value = this.document.datas[field.id];
+                    if (field.format === 'date' && field.id !== '' && field.id !== undefined && value && typeof value === 'string') {
                         value = value.replaceAll('.', '/');
                         value = value.replaceAll(',', '/');
                         value = value.replaceAll(' ', '/');
@@ -541,7 +541,7 @@ export class VerifierViewerComponent implements OnInit {
                 if (!field.lineSelected && !field.fullSizeSelected) {
                     this.findChildren(field.id, _field, category);
                 } else if (field.fullSizeSelected) {
-                    for (const field_data in this.invoice.datas) {
+                    for (const field_data in this.document.datas) {
                         if (field_data.includes(field.id + '_')) {
                             this.duplicateLine(field.id, category, true);
                         }
@@ -572,7 +572,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async retrieveAccountingPlan() {
-        return await this.http.get(environment['url'] + '/ws/accounts/customers/getAccountingPlan/' + this.invoice.customer_id, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/accounts/customers/getAccountingPlan/' + this.document.customer_id, {headers: this.authService.headers}).toPromise();
     }
 
     async retrieveDefaultAccountingPlan() {
@@ -597,7 +597,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     findChildren(parentId: any, parent: any, categoryId: any) {
-        for (const field in this.invoice.datas) {
+        for (const field in this.document.datas) {
             if (field.includes(parentId + '_')) {
                 parent.cpt += 1;
                 const splitted = field.split('_');
@@ -619,7 +619,7 @@ export class VerifierViewerComponent implements OnInit {
                     class_label: parent.class_label,
                     cpt: cpt,
                 });
-                const value = this.invoice.datas[field];
+                const value = this.document.datas[field];
                 const _field = this.form[categoryId][this.form[categoryId].length - 1];
                 _field.control.setValue(value);
             }
@@ -643,7 +643,7 @@ export class VerifierViewerComponent implements OnInit {
         const deleteArea = $('.delete-area');
         const backgroundArea = $('.select-areas-background-area');
         const resizeArea = $('.select-areas-resize-handler');
-        if (this.invoice.status !== 'END') {
+        if (this.document.status !== 'END') {
             deleteArea.addClass('pointer-events-auto');
             backgroundArea.addClass('pointer-events-auto');
             resizeArea.addClass('pointer-events-auto');
@@ -653,14 +653,14 @@ export class VerifierViewerComponent implements OnInit {
         if (enable) {
             $('.outline_' + _this.lastId).toggleClass('animate');
             this.scrollToElement();
-            if (this.invoice.status !== 'END') {
+            if (this.document.status !== 'END') {
                 imageContainer.removeClass('pointer-events-none');
                 imageContainer.removeClass('cursor-auto');
             }
-            this.imageInvoice.selectAreas({
+            this.imageDocument.selectAreas({
                 allowNudge: false,
                 minSize: [20, 20],
-                maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
+                maxSize: [this.imageDocument.width(), this.imageDocument.height() / 8],
                 onChanged(img: any, cpt: any, selection: any) {
                     if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
                         if (_this.lastId) {
@@ -679,7 +679,7 @@ export class VerifierViewerComponent implements OnInit {
                     const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
                     if (inputId) {
                         _this.updateFormValue(inputId, '');
-                        delete _this.invoice.positions[inputId.trim()];
+                        delete _this.document.positions[inputId.trim()];
                         if (_this.deleteDataOnChangeForm) {
                             _this.deleteData(inputId);
                             _this.deletePosition(inputId);
@@ -704,7 +704,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     scrollToElement() {
-        if (this.invoice.positions[this.lastId]) {
+        if (this.document.positions[this.lastId]) {
             const currentHeight = window.innerHeight;
             if (document.getElementsByClassName('input_' + this.lastId).length > 0) {
                 const position = document.getElementsByClassName('input_' + this.lastId)![0]!.getBoundingClientRect().top;
@@ -737,7 +737,7 @@ export class VerifierViewerComponent implements OnInit {
                 backgroundArea.data('page', page);
                 labelContainer.data('page', page);
                 outline.data('page', page);
-                if (this.invoice.status === 'END') {
+                if (this.document.status === 'END') {
                     outline.addClass('pointer-events-none');
                     backgroundArea.addClass('pointer-events-none');
                     resizeHandler.addClass('pointer-events-none');
@@ -770,7 +770,7 @@ export class VerifierViewerComponent implements OnInit {
                         selection: this.getSelectionByCpt(selection, cpt),
                         fileName: this.currentFilename, lang: lang,
                         thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height},
-                        registerDate: this.invoice.register_date
+                        registerDate: this.document.register_date
                     }, {headers: this.authService.headers})
                     .pipe(
                         tap((data: any) => {
@@ -781,12 +781,12 @@ export class VerifierViewerComponent implements OnInit {
                                 width: 0,
                                 height: 0,
                             };
-                            if (this.invoice.positions[inputId.trim()]) {
+                            if (this.document.positions[inputId.trim()]) {
                                 oldPosition = {
-                                    x: this.invoice.positions[inputId.trim()].x / this.ratio - ((this.invoice.positions[inputId.trim()].x / this.ratio) * 0.005),
-                                    y: this.invoice.positions[inputId.trim()].y / this.ratio - ((this.invoice.positions[inputId.trim()].y / this.ratio) * 0.003),
-                                    width: this.invoice.positions[inputId.trim()].width / this.ratio + ((this.invoice.positions[inputId.trim()].width / this.ratio) * 0.05),
-                                    height: this.invoice.positions[inputId.trim()].height / this.ratio + ((this.invoice.positions[inputId.trim()].height / this.ratio) * 0.6)
+                                    x: this.document.positions[inputId.trim()].x / this.ratio - ((this.document.positions[inputId.trim()].x / this.ratio) * 0.005),
+                                    y: this.document.positions[inputId.trim()].y / this.ratio - ((this.document.positions[inputId.trim()].y / this.ratio) * 0.003),
+                                    width: this.document.positions[inputId.trim()].width / this.ratio + ((this.document.positions[inputId.trim()].width / this.ratio) * 0.05),
+                                    height: this.document.positions[inputId.trim()].height / this.ratio + ((this.document.positions[inputId.trim()].height / this.ratio) * 0.6)
                                 };
                             }
 
@@ -847,8 +847,8 @@ export class VerifierViewerComponent implements OnInit {
             width: position.width * this.ratio
         };
 
-        if (this.invoice.supplier_id) {
-            this.http.put(environment['url'] + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePosition',
+        if (this.document.supplier_id) {
+            this.http.put(environment['url'] + '/ws/accounts/supplier/' + this.document.supplier_id + '/updatePosition',
                 {'args': {'form_id': this.currentFormFields.form_id, [this.lastId]: position}},
                 {headers: this.authService.headers}).pipe(
                 catchError((err: any) => {
@@ -859,11 +859,11 @@ export class VerifierViewerComponent implements OnInit {
             ).subscribe();
         }
 
-        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updatePosition',
+        this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/updatePosition',
             {'args': {[this.lastId]: position}},
             {headers: this.authService.headers}).pipe(
             tap(() => {
-                this.invoice.positions[this.lastId] = position;
+                this.document.positions[this.lastId] = position;
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -874,8 +874,8 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async savePages(page: any) {
-        if (this.invoice.supplier_id) {
-            this.http.put(environment['url'] + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePage',
+        if (this.document.supplier_id) {
+            this.http.put(environment['url'] + '/ws/accounts/supplier/' + this.document.supplier_id + '/updatePage',
                 {'args': {'form_id': this.currentFormFields.form_id, [this.lastId]: page}},
                 {headers: this.authService.headers}).pipe(
                 catchError((err: any) => {
@@ -886,11 +886,11 @@ export class VerifierViewerComponent implements OnInit {
             ).subscribe();
         }
 
-        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updatePage',
+        this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/updatePage',
             {'args': {[this.lastId]: page}},
             {headers: this.authService.headers}).pipe(
             tap(() => {
-                this.invoice.pages[this.lastId] = page;
+                this.document.pages[this.lastId] = page;
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -901,22 +901,21 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     saveData(data: any, fieldId: any = false, showNotif: boolean = false) {
-        if (this.invoice.status !== 'END') {
+        if (this.document.status !== 'END') {
             const oldData = data;
             if (fieldId) {
                 const field = this.getField(fieldId);
                 if (Object.keys(field).length !== 0) {
                     if (field.unit === 'addresses' || field.unit === 'supplier') showNotif = false;
-                    if (field.control.errors || this.invoice.datas[fieldId] === data) return false;
+                    if (field.control.errors || this.document.datas[fieldId] === data) return false;
                     data = {[fieldId]: data};
-                    this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+                    this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/updateData',
                         {'args': data},
                         {headers: this.authService.headers}).pipe(
                         tap(() => {
-                            this.invoice.datas[fieldId] = oldData;
+                            this.document.datas[fieldId] = oldData;
                             if (showNotif) {
-                                this.notify.success(this.translate.instant('INVOICES.position_and_data_updated',
-                                    {"input": this.lastLabel}));
+                                this.notify.success(this.translate.instant('DOCUMENTS.position_and_data_updated', {"input": this.lastLabel}));
                             }
                         }),
                         catchError((err: any) => {
@@ -951,13 +950,13 @@ export class VerifierViewerComponent implements OnInit {
                     tap(async (supplier_data: any) => {
                         this.historyService.addHistory('accounts', 'create_supplier', this.translate.instant('HISTORY-DESC.create-supplier', {supplier: supplierData['name']}));
                         this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
-                        this.updateInvoice({'supplier_id': supplier_data['id']});
-                        this.invoice.supplier_id = supplier_data['id'];
+                        this.updateDocument({'supplier_id': supplier_data['id']});
+                        this.document.supplier_id = supplier_data['id'];
                         this.suppliers = await this.retrieveSuppliers();
                         this.suppliers = this.suppliers.suppliers;
                         this.supplierExists = true;
                         for (const element of this.suppliers) {
-                            if (element.id === this.invoice.supplier_id) {
+                            if (element.id === this.document.supplier_id) {
                                 this.currentSupplier = element;
                             }
                         }
@@ -987,7 +986,7 @@ export class VerifierViewerComponent implements OnInit {
             this.saveData(field.control.value, element.id);
         });
 
-        this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.invoice.supplier_id, {'args': supplierData}, {headers: this.authService.headers},
+        this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.document.supplier_id, {'args': supplierData}, {headers: this.authService.headers},
         ).pipe(
             catchError((err: any) => {
                 console.debug(err);
@@ -996,7 +995,7 @@ export class VerifierViewerComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.put(environment['url'] + '/ws/accounts/addresses/updateBySupplierId/' + this.invoice.supplier_id, {'args': addressData}, {headers: this.authService.headers},
+        this.http.put(environment['url'] + '/ws/accounts/addresses/updateBySupplierId/' + this.document.supplier_id, {'args': addressData}, {headers: this.authService.headers},
         ).pipe(
             tap(() => {
                 this.historyService.addHistory('accounts', 'update_supplier', this.translate.instant('HISTORY-DESC.update-supplier', {supplier: supplierData['name']}));
@@ -1010,8 +1009,8 @@ export class VerifierViewerComponent implements OnInit {
         ).subscribe();
     }
 
-    updateInvoice(data: any) {
-        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoiceId + '/update',
+    updateDocument(data: any) {
+        this.http.put(environment['url'] + '/ws/verifier/documents/' + this.documentId + '/update',
             {'args': data},
             {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
@@ -1042,10 +1041,10 @@ export class VerifierViewerComponent implements OnInit {
             args = fieldId.trim();
         }
 
-        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deleteData',
+        this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deleteData',
             {'args': args}, {headers: this.authService.headers}).pipe(
             tap(() => {
-                this.notify.success(this.translate.instant('INVOICES.data_deleted', {"input": this.lastLabel}));
+                this.notify.success(this.translate.instant('DOCUMENTS.data_deleted', {"input": this.lastLabel}));
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -1063,7 +1062,7 @@ export class VerifierViewerComponent implements OnInit {
             args = fieldId.trim();
         }
 
-        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deletePosition',
+        this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deletePosition',
             {'args': args}, {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);
@@ -1072,13 +1071,13 @@ export class VerifierViewerComponent implements OnInit {
             })
         ).subscribe();
 
-        if (this.invoice.supplier_id) {
+        if (this.document.supplier_id) {
             if (multiple) {
-                args = {'fields': fieldId, 'multiple': true, 'form_id' : this.invoice.form_id};
+                args = {'fields': fieldId, 'multiple': true, 'form_id' : this.document.form_id};
             } else {
-                args = {'field_id': fieldId.trim(), 'form_id' : this.invoice.form_id};
+                args = {'field_id': fieldId.trim(), 'form_id' : this.document.form_id};
             }
-            this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.invoice.supplier_id + '/deletePosition',
+            this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.document.supplier_id + '/deletePosition',
                 {'args': args}, {headers: this.authService.headers}).pipe(
                 catchError((err: any) => {
                     console.debug(err);
@@ -1097,7 +1096,7 @@ export class VerifierViewerComponent implements OnInit {
             args = fieldId.trim();
         }
 
-        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deletePage',
+        this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deletePage',
             {'args': args}, {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);
@@ -1106,13 +1105,13 @@ export class VerifierViewerComponent implements OnInit {
             })
         ).subscribe();
 
-        if (this.invoice.supplier_id) {
+        if (this.document.supplier_id) {
             if (multiple) {
-                args = {'fields': fieldId, 'multiple': true, 'form_id' : this.invoice.form_id};
+                args = {'fields': fieldId, 'multiple': true, 'form_id' : this.document.form_id};
             } else {
-                args = {'field_id': fieldId.trim(), 'form_id' : this.invoice.form_id};
+                args = {'field_id': fieldId.trim(), 'form_id' : this.document.form_id};
             }
-            this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.invoice.supplier_id + '/deletePage',
+            this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.document.supplier_id + '/deletePage',
                 {'args': args}, {headers: this.authService.headers}).pipe(
                 catchError((err: any) => {
                     console.debug(err);
@@ -1150,9 +1149,9 @@ export class VerifierViewerComponent implements OnInit {
                         newField.lineSelected = true;
                         newField.fullSizeSelected = false;
                         newField.control = new FormControl();
-                        if (this.invoice.datas[newField.id]) {
-                            let value = this.invoice.datas[newField.id];
-                            if (newField.format === 'date' && newField.id !== '' && newField.id !== undefined && value) {
+                        if (this.document.datas[newField.id]) {
+                            let value = this.document.datas[newField.id];
+                            if (newField.format === 'date' && newField.id !== '' && newField.id !== undefined && value && typeof value === 'string') {
                                 value = value.replaceAll('.', '/');
                                 value = value.replaceAll(',', '/');
                                 value = value.replaceAll(' ', '/');
@@ -1186,7 +1185,7 @@ export class VerifierViewerComponent implements OnInit {
         });
 
         if (!neededValue) {
-            this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+            this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/updateData',
                 {'args': listOfNewField}, {headers: this.authService.headers}).pipe(
                 catchError((err: any) => {
                     console.debug(err);
@@ -1233,7 +1232,7 @@ export class VerifierViewerComponent implements OnInit {
                         newField.control = new FormControl();
                         this.form[category].splice(cpt + field.cpt, 0, newField);
                         this.saveData('', newField.id);
-                        this.notify.success(this.translate.instant('INVOICES.field_duplicated', {"input": this.translate.instant(field.label)}));
+                        this.notify.success(this.translate.instant('DOCUMENTS.field_duplicated', {"input": this.translate.instant(field.label)}));
                     }
                 });
             }
@@ -1307,20 +1306,20 @@ export class VerifierViewerComponent implements OnInit {
                         }
 
                         if (!launchOnInit) {
-                            this.updateInvoice({'supplier_id': supplierId});
+                            this.updateDocument({'supplier_id': supplierId});
                             this.saveData(supplierData);
-                            this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+                            this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/updateData',
                                 {'args': supplierData},
                                 {headers: this.authService.headers}).pipe(
                                 tap(() => {
-                                    this.invoice.supplier_id = supplierId;
+                                    this.document.supplier_id = supplierId;
                                     for (const element of this.suppliers) {
-                                        if (element.id === this.invoice.supplier_id) {
+                                        if (element.id === this.document.supplier_id) {
                                             this.currentSupplier = element;
                                         }
                                     }
                                     if (showNotif) {
-                                        this.notify.success(this.translate.instant('INVOICES.supplier_infos_updated'));
+                                        this.notify.success(this.translate.instant('DOCUMENTS.supplier_infos_updated'));
                                     }
                                 }),
                                 catchError((err: any) => {
@@ -1463,12 +1462,12 @@ export class VerifierViewerComponent implements OnInit {
             }
         });
 
-        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+        this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/updateData',
             {'args': countLines},
             {headers: this.authService.headers}).pipe(
             tap(() => {
-                this.invoice.datas['lines_count'] = countLines['lines_count'];
-                this.invoice.datas['taxes_count'] = countLines['taxes_count'];
+                this.document.datas['lines_count'] = countLines['lines_count'];
+                this.document.datas['taxes_count'] = countLines['taxes_count'];
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -1494,16 +1493,16 @@ export class VerifierViewerComponent implements OnInit {
                             });
                         }
 
-                        this.http.post(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data}, {headers: this.authService.headers}).pipe(
+                        this.http.post(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/' + data.output_type_id, {'args': data}, {headers: this.authService.headers}).pipe(
                             tap(() => {
                                 /* Actions à effectuer après le traitement des chaînes sortantes */
                                 if (cpt + 1 === this.formSettings.outputs.length) {
-                                    this.historyService.addHistory('verifier', 'document_validated', this.translate.instant('HISTORY-DESC.document_validated', {document_id: this.invoiceId, outputs: this.outputsLabel.join(', ')}));
-                                    this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
+                                    this.historyService.addHistory('verifier', 'document_validated', this.translate.instant('HISTORY-DESC.document_validated', {document_id: this.documentId, outputs: this.outputsLabel.join(', ')}));
+                                    this.updateDocument({'status': 'END', 'locked': false, 'locked_by': null});
                                     this.router.navigate(['/verifier']).then();
                                     this.loadingSubmit = false;
                                     if (this.formSettings.settings.delete_documents_after_outputs) {
-                                        this.http.get(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deleteDocuments', {headers: this.authService.headers}).pipe(
+                                        this.http.get(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deleteDocuments', {headers: this.authService.headers}).pipe(
                                             catchError((err: any) => {
                                                 console.debug(err);
                                                 this.notify.handleErrors(err);
@@ -1536,8 +1535,8 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     refuseForm() {
-        this.historyService.addHistory('verifier', 'document_refused', this.translate.instant('HISTORY-DESC.document_refused', {invoice_id: this.invoiceId}));
-        this.updateInvoice({'status': 'ERR', 'locked': false, 'locked_by': null});
+        this.historyService.addHistory('verifier', 'document_refused', this.translate.instant('HISTORY-DESC.document_refused', {document_id: this.documentId}));
+        this.updateDocument({'status': 'ERR', 'locked': false, 'locked_by': null});
         this.notify.error(this.translate.instant('VERIFIER.document_refused'));
         this.router.navigate(['/verifier/list']).then();
     }
@@ -1550,10 +1549,10 @@ export class VerifierViewerComponent implements OnInit {
         const newFormId = event.value;
         for (const cpt in this.formList) {
             if (this.formList[cpt].id === newFormId) {
-                this.updateInvoice({'form_id': newFormId});
+                this.updateDocument({'form_id': newFormId});
                 this.currentFormFields = await this.getFormFieldsById(newFormId);
                 this.deleteDataOnChangeForm = false;
-                this.imageInvoice.selectAreas('destroy');
+                this.imageDocument.selectAreas('destroy');
                 this.settingsOpen = false;
                 this.notify.success(this.translate.instant('VERIFIER.form_changed'));
                 await this.ngOnInit();
@@ -1563,11 +1562,11 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     nextPage() {
-        if (this.currentPage < this.invoice.nb_pages) {
+        if (this.currentPage < this.document.nb_pages) {
             this.currentPage = this.currentPage + 1;
             this.changeImage(this.currentPage, this.currentPage - 1);
         } else {
-            this.changeImage(1, this.invoice.nb_pages);
+            this.changeImage(1, this.document.nb_pages);
         }
     }
 
@@ -1576,7 +1575,7 @@ export class VerifierViewerComponent implements OnInit {
             this.currentPage = this.currentPage - 1;
             this.changeImage(this.currentPage, this.currentPage + 1);
         } else {
-            this.changeImage(this.invoice.nb_pages, this.currentPage);
+            this.changeImage(this.document.nb_pages, this.currentPage);
         }
     }
 
@@ -1589,9 +1588,9 @@ export class VerifierViewerComponent implements OnInit {
             this.currentFilename = newFilename;
             this.getThumb(newFilename).then();
             this.currentPage = pageToShow;
-            for (const fieldId in this.invoice.datas) {
+            for (const fieldId in this.document.datas) {
                 const page = this.getPage(fieldId);
-                const position = this.invoice.positions[fieldId];
+                const position = this.document.positions[fieldId];
                 if (position) {
                     const input = $('.input_' + fieldId);
                     const background = $('.background_' + fieldId);
@@ -1626,7 +1625,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     checkSirenOrSiret(siretOrSiren: any, value: any) {
-        if (this.formSettings.settings.supplier_verif && this.invoice.status !== 'END') {
+        if (this.formSettings.settings.supplier_verif && this.document.status !== 'END') {
             const sizeSIREN = 9;
             const sizeSIRET = 14;
             if (siretOrSiren === 'siren' && this.oldSIREN !== value) {
@@ -1696,7 +1695,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     checkVAT(id: any, value: any) {
-        if (id === 'vat_number' && this.formSettings.settings.supplier_verif && this.invoice.status !== 'END') {
+        if (id === 'vat_number' && this.formSettings.settings.supplier_verif && this.document.status !== 'END') {
             if (this.oldVAT !== value) {
                 const sizeVAT = 13;
                 if (this.verify(value, sizeVAT, true)) {
