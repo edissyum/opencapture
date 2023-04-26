@@ -492,7 +492,7 @@ def insert(args):
             invoice_data['datas'] = json.dumps(invoice_data['datas'])
 
         res = database.insert({
-            'table': 'invoices',
+            'table': 'documents',
             'columns': invoice_data
         })
     return res

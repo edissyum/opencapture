@@ -306,7 +306,7 @@ echo "$secret" > $customPath/config/secret_key
 ####################
 # Create custom input and outputs folder
 mkdir -p /var/share/"$customId"/{entrant,export}/{verifier,splitter}/
-mkdir /var/share/"$customId"/entrant/verifier/ocr/
+mkdir -p /var/share/"$customId"/entrant/verifier/ocr/
 chmod -R 775 /var/share/"$customId"/
 chown -R "$user":"$group" /var/share/"$customId"/
 

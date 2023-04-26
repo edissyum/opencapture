@@ -147,7 +147,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
     if insert_document:
         document_data['datas'] = json.dumps(datas)
         document_id = database.insert({
-            'table': 'invoices',
+            'table': 'documents',
             'columns': document_data
         })
         return document_id

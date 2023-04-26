@@ -202,7 +202,7 @@ CREATE TABLE "accounting_plan" (
     "ecriture_lib"  VARCHAR
 );
 
-CREATE TABLE "invoices" (
+CREATE TABLE "documents" (
     "id"                SERIAL              UNIQUE PRIMARY KEY,
     "supplier_id"       INTEGER,
     "customer_id"       INTEGER             DEFAULT 0,

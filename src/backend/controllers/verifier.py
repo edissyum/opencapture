@@ -96,11 +96,11 @@ def retrieve_documents(args):
     if 'select' not in args:
         args['select'] = []
 
-    args['table'] = ['invoices', 'form_models']
-    args['left_join'] = ['invoices.form_id = form_models.id']
-    args['group_by'] = ['invoices.id', 'invoices.form_id', 'form_models.id']
+    args['table'] = ['documents', 'form_models']
+    args['left_join'] = ['documents.form_id = form_models.id']
+    args['group_by'] = ['documents.id', 'documents.form_id', 'form_models.id']
 
-    args['select'].append("DISTINCT(invoices.id) as document_id")
+    args['select'].append("DISTINCT(documents.id) as document_id")
     args['select'].append("to_char(register_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as date")
     args['select'].append('form_models.label as form_label')
     args['select'].append("*")
@@ -113,19 +113,19 @@ def retrieve_documents(args):
             args['where'].append("to_char(register_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
 
     if 'status' in args:
-        args['where'].append('invoices.status = %s')
+        args['where'].append('documents.status = %s')
         args['data'].append(args['status'])
 
     if 'form_id' in args and args['form_id']:
         if args['form_id'] == 'no_form':
-            args['where'].append('invoices.form_id is NULL')
+            args['where'].append('documents.form_id is NULL')
         else:
-            args['where'].append('invoices.form_id = %s')
+            args['where'].append('documents.form_id = %s')
             args['data'].append(args['form_id'])
 
     if 'search' in args and args['search']:
         args['table'].append('accounts_supplier')
-        args['left_join'].append('invoices.supplier_id = accounts_supplier.id')
+        args['left_join'].append('documents.supplier_id = accounts_supplier.id')
         args['group_by'].append('accounts_supplier.id')
         args['where'].append(
             "(LOWER(original_filename) LIKE '%%" + args['search'].lower() +
@@ -149,7 +149,7 @@ def retrieve_documents(args):
         args['data'].append(args['purchaseOrSale'])
 
     total_documents = verifier.get_total_documents({
-        'select': ['count(invoices.id) as total'],
+        'select': ['count(documents.id) as total'],
         'where': args['where'],
         'data': args['data'],
         'table': args['table'],
@@ -661,9 +661,9 @@ def get_unseen(user_id):
     user_customers = user.get_customers_by_user_id(user_id)
     user_customers[0].append(0)
     total_unseen = verifier.get_total_documents({
-        'select': ['count(invoices.id) as unseen'],
+        'select': ['count(documents.id) as unseen'],
         'where': ["status = %s", "customer_id = ANY(%s)"],
         'data': ['NEW', user_customers[0]],
-        'table': ['invoices'],
+        'table': ['documents'],
     })[0]
     return total_unseen['unseen'], 200

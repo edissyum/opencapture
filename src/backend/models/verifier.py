@@ -31,7 +31,7 @@ def get_document_by_id(args):
     error = None
     document = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['invoices'],
+        'table': ['documents'],
         'where': ['id = %s'],
         'data': [args['document_id']]
     })
@@ -54,12 +54,12 @@ def get_documents(args):
 
     documents = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['invoices'] if 'table' not in args else args['table'],
+        'table': ['documents'] if 'table' not in args else args['table'],
         'left_join': [] if 'left_join' not in args else args['left_join'],
         'where': ['1 = %s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
-        'order_by': ['invoices.id DESC'] if 'order_by' not in args else args['order_by'],
-        'group_by': ['invoices.id'] if 'group_by' not in args else args['group_by'],
+        'order_by': ['documents.id DESC'] if 'order_by' not in args else args['order_by'],
+        'group_by': ['documents.id'] if 'group_by' not in args else args['group_by'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'offset': str(args['offset']) if 'offset' in args else 0,
     })
@@ -76,7 +76,7 @@ def get_total_documents(args):
 
     total = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['invoices'] if 'table' not in args else args['table'],
+        'table': ['documents'] if 'table' not in args else args['table'],
         'left_join': [] if 'left_join' not in args else args['left_join'],
         'where': ['1 = %s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
@@ -94,7 +94,7 @@ def update_document(args):
     error = None
 
     document = database.update({
-        'table': ['invoices'],
+        'table': ['documents'],
         'set': args['set'],
         'where': ['id = %s'],
         'data': [args['document_id']]
@@ -115,7 +115,7 @@ def update_documents(args):
         database = _vars[0]
     error = None
     documents = database.update({
-        'table': ['invoices'],
+        'table': ['documents'],
         'set': args['set'],
         'where': args['where'],
         'data': args['data']
@@ -155,14 +155,14 @@ def get_totals(args):
 
     if 'form_id' in args and args['form_id']:
         if args['form_id'] == 'no_form':
-            where.append('invoices.form_id is NULL')
+            where.append('documents.form_id is NULL')
         else:
-            where.append('invoices.form_id = %s')
+            where.append('documents.form_id = %s')
             data.append(args['form_id'])
 
     total = database.select({
         'select': select,
-        'table': ['invoices'],
+        'table': ['documents'],
         'where': where,
         'data': data
     })[0]
@@ -182,7 +182,7 @@ def update_status(args):
         database = _vars[0]
 
     args = {
-        'table': ['invoices'],
+        'table': ['documents'],
         'set': {
             'status': args['status']
         },

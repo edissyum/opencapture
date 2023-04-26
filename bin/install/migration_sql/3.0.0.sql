@@ -2,6 +2,8 @@ ALTER TABLE users ADD COLUMN "mode" VARCHAR(10) DEFAULT 'standard';
 
 ALTER TABLE roles ALTER COLUMN "label" SET DATA TYPE VARCHAR(255);
 
+ALTER TABLE invoices RENAME TO documents;
+
 ALTER TABLE monitoring ADD COLUMN "token" VARCHAR(255);
 ALTER TABLE monitoring ADD COLUMN "workflow_id" VARCHAR(255);
 

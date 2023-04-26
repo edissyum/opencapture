@@ -712,6 +712,6 @@ cron_backup="0 3 * * * $defaultPath/custom/$customId/bin/scripts/clean_backups.s
 ####################
 # Create default export and input XML and PDF folder
 mkdir -p /var/share/"$customId"/{entrant,export}/{verifier,splitter}/
-mkdir /var/share/"$customId"/entrant/verifier/ocr/
+mkdir -p /var/share/"$customId"/entrant/verifier/ocr/
 chmod -R 775 /var/share/"$customId"/
 chown -R "$user":"$group" /var/share/"$customId"/
