@@ -350,6 +350,19 @@ def browse_xml_lines(root):
     return lines
 
 
+def execute_outputs(output_info, log, regex, document_data, database, lang):
+    data = output_info['data']
+    ocrise = output_info['ocrise']
+    compress_type = output_info['compress_type']
+
+    if output_info['output_type_id'] == 'export_xml':
+        verifier_exports.export_xml(data, log, regex, document_data, database)
+    elif output_info['output_type_id'] == 'export_mem':
+        verifier_exports.export_mem(data, document_data, log, regex, database)
+    elif output_info['output_type_id'] == 'export_pdf':
+        verifier_exports.export_pdf(data, log, regex, document_data, lang, compress_type, ocrise)
+
+
 def insert(args):
     log = args['log']
     regex = args['regex']
@@ -394,6 +407,7 @@ def insert(args):
     if 'supplier_id' in args and args['supplier_id']:
         invoice_data['supplier_id'] = args['supplier_id']
 
+    workflow_settings = {}
     if args.get('isMail') is None or args.get('isMail') is False:
         if 'input_id' in args and args['input_id']:
             input_settings = database.select({
@@ -412,22 +426,32 @@ def insert(args):
                     invoice_data.update({
                         'customer_id': input_settings['customer_id']
                     })
+
+        elif 'workflow_id' in args and args['workflow_id']:
+            workflow_settings = database.select({
+                'select': ['input', 'process', 'separation', 'output'],
+                'table': ['workflows'],
+                'where': ['workflow_id = %s', 'module = %s'],
+                'data': [args['workflow_id'], 'verifier']
+            })
+            if workflow_settings:
+                workflow_settings = workflow_settings[0]
+                if workflow_settings['input']['customer_id']:
+                    invoice_data.update({
+                        'customer_id': workflow_settings['input']['customer_id']
+                    })
+                if workflow_settings['input']['apply_process'] and workflow_settings['process']['use_interface'] and workflow_settings['process']['form_id']:
+                    invoice_data.update({
+                        'form_id': workflow_settings['process']['form_id']
+                    })
     else:
         if 'customer_id' in args and args['customer_id']:
             invoice_data.update({
                 'customer_id': args['customer_id']
             })
-        if 'form_id' in args and args['form_id']:
-            invoice_data.update({
-                'form_id': args['form_id']
-            })
-
-    if 'form_id' in args and args['form_id']:
-        invoice_data.update({
-            'form_id': args['form_id']
-        })
 
     insert_invoice = True
+    status = 'END'
     if status == 'END' and 'form_id' in invoice_data and invoice_data['form_id']:
         outputs = database.select({
             'select': ['outputs'],
@@ -435,7 +459,6 @@ def insert(args):
             'where': ['id = %s'],
             'data': [invoice_data['form_id']],
         })
-
         if outputs:
             for output_id in outputs[0]['outputs']:
                 output_info = database.select({
@@ -445,29 +468,31 @@ def insert(args):
                     'data': [output_id]
                 })
                 if output_info:
-                    if output_info[0]['output_type_id'] == 'export_xml':
-                        verifier_exports.export_xml(output_info[0]['data'], log, regex, invoice_data, database)
-                    elif output_info[0]['output_type_id'] == 'export_mem':
-                        verifier_exports.export_mem(output_info[0]['data'], invoice_data, log, regex, database)
-                    elif output_info[0]['output_type_id'] == 'export_pdf':
-                        verifier_exports.export_pdf(output_info[0]['data'], log, regex, invoice_data,
-                                                    configurations['locale'], output_info[0]['compress_type'],
-                                                    output_info[0]['ocrise'])
-
-            if 'form_id' in args and args['form_id']:
-                form_settings = database.select({
-                    'select': ['settings'],
-                    'table': ['form_models'],
+                    execute_outputs(output_info[0], log, regex, invoice_data, database, configurations['locale'])
+    elif workflow_settings and (not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
+        if 'output' in workflow_settings and workflow_settings['output']:
+            for output_id in workflow_settings['output']['outputs_id']:
+                output_info = database.select({
+                    'select': ['output_type_id', 'data', 'compress_type', 'ocrise'],
+                    'table': ['outputs'],
                     'where': ['id = %s'],
-                    'data': [args['form_id']]
+                    'data': [output_id]
                 })
-                if 'delete_documents_after_outputs' in form_settings and form_settings['delete_documents_after_outputs']:
-                    delete_documents(docservers, invoice_data['path'], invoice_data['filename'], jpg_filename)
-                    insert_invoice = False
+                if output_info:
+                    execute_outputs(output_info[0], log, regex, invoice_data, database, configurations['locale'])
+
+    if workflow_settings and workflow_settings['input']['apply_process'] and workflow_settings['process']['delete_documents']:
+        delete_documents(docservers, invoice_data['path'], invoice_data['filename'], jpg_filename)
+        log.info('Invoice not inserted in database based on workflow settings')
+        insert_invoice = False
+
     res = False
     if insert_invoice:
+        if isinstance(invoice_data['datas'], dict):
+            invoice_data['datas'] = json.dumps(invoice_data['datas'])
+
         res = database.insert({
-            'table': 'invoices',
+            'table': 'documents',
             'columns': invoice_data
         })
     return res

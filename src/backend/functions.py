@@ -18,6 +18,7 @@
 import os
 import json
 import glob
+import pypdf
 import shutil
 from pathlib import Path
 
@@ -40,6 +41,18 @@ def delete_documents(docservers, path, filename, full_jpg_filename):
 
     if os.path.isfile(thumb_filename):
         os.remove(thumb_filename)
+
+
+def rotate_document(pdf_file, angle):
+    writer = pypdf.PdfWriter()
+    with open(pdf_file, 'rb') as input_file:
+        pdf = pypdf.PdfReader(input_file)
+        for page in pdf.pages:
+            page.rotate(angle)
+            writer.add_page(page)
+
+    with open(pdf_file, 'wb') as output_file:
+        writer.write(output_file)
 
 
 def is_custom_exists(custom_id):

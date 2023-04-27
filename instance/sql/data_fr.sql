@@ -1,16 +1,16 @@
 -- CRÉATION DES STATUS
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'verifier');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('END', 'Cloturée', 'Facture validée et cloturée', 'verifier');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('ERR', 'Erreur', 'Erreur lors de la qualification', 'verifier');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('DEL', 'Supprimée', 'Supprimée', 'verifier');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'splitter');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('END', 'Clotûré', 'Lot clôturé', 'splitter');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'splitter');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('MERG', 'Fusionné', 'Fusionné', 'splitter');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Cloturée', 'Facture validée et cloturée', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('ERR', 'Erreur', 'Erreur lors de la qualification', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimée', 'Supprimée', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'splitter');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Clotûré', 'Lot clôturé', 'splitter');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'splitter');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('MERG', 'Fusionné', 'Fusionné', 'splitter');
 
 -- CRÉATION DES MÉTHODES D'AUTHENTIFICATION PAR DÉFAUT
 INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('default', 'Authentification par defaut', True, '{}');
-INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('ldap', 'Authentification par LDAP', False, '{"host": "", "port": "", "baseDN": "", "suffix": "","prefix": "", "typeAD": "", "usersDN": "", "classUser": "", "loginAdmin": "", "classObject": "", "passwordAdmin": "", "attributLastName": "", "attributFirstName": "", "attributSourceUser": "", "attributRoleDefault": ""}');
+INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('ldap', 'Authentification par LDAP', False, '{"host": "", "port": "", "baseDN": "", "suffix": "", "prefix": "", "typeAD": "", "usersDN": "", "classUser": "", "loginAdmin": "", "classObject": "", "passwordAdmin": "", "attributLastName": "", "attributFirstName": "", "attributSourceUser": "", "attributRoleDefault": ""}');
 
 -- CRÉATION D'UNE CHAINE DE MAILCOLLECT PAR DÉFAUT
 INSERT INTO "mailcollect" ("name", "hostname", "port", "login", "password", "secured_connection", "folder_to_crawl", "folder_destination", "folder_trash", "action_after_process") VALUES ('MAIL_1', '', '993', '', '', True, '', '', '', 'move');
@@ -28,16 +28,16 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('locale', '{"t
 INSERT INTO "configurations" ("label", "data", "display") VALUES ('smtp', '{
     "type": "json",
     "value": {
-        "smtpPwd": "",
-        "smtpAuth": true,
+        "smtpNotifOnError": false,
+        "smtpProtocoleSecure": false,
         "smtpHost": "",
         "smtpPort": "",
-        "smtpDelay": "30",
+        "smtpAuth": "",
         "smtpLogin": "",
+        "smtpPwd": "",
         "smtpFromMail": "",
-        "smtpNotifOnError": true,
         "smtpDestAdminMail": "",
-        "smtpProtocoleSecure": "none"
+        "smtpDelay": "30"
     },
     "description": "Paramétrage de l''envoi d''email SMTP"
 }', false);
@@ -87,7 +87,6 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITT
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_TRAIN_PATH_FILES', '[SPLITTER] Chemin vers le dossier contenant les données d''entraînement', '/var/docservers/opencapture/splitter/ai/train_data');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_AI_MODEL_PATH', '[SPLITTER] Chemin vers le dossier contenant le modèle de prédiction', '/var/docservers/opencapture/splitter/ai/models/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('INPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier d''entrée des fichiers importés', '/var/share/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('OUTPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier de sortie des fichiers exportés', '/var/share/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('OUTPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier de sortie des fichiers exportés', '/var/share/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('MAILCOLLECT_BATCHES', 'Chemin de stockage des batches du module MailCollect', '/var/www/html/opencapture/bin/data/MailCollect/');
 
@@ -345,7 +344,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (1, 'export_xml', 'Export XML par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}, {"id": "extension", "type": "text", "value": "xml"}]}}');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_mem', 'Export MEM Courrier par défaut', 'verifier');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (3, 'export_pdf', 'Export PDF par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}]}}');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "ocrise", "data") VALUES (3, 'export_pdf', 'Export PDF par défaut', 'verifier', true, '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}]}}');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (4, 'export_facturx', 'Export PDF avec métadonnées (FacturX)', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}]}}');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE SPLITTER
@@ -628,7 +627,9 @@ INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input
 ALTER SEQUENCE "inputs_id_seq" RESTART WITH 3;
 
 -- CRÉATION DES WORKFLOWS
-INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "separation", "output") VALUES (1, 'default_workflow', 'Workflow par défaut', 'verifier', '{"workflow_id": "default_workflow", "input_folder": "/var/share/edissyum/entrant/verifier/", "apply_process": true, "workflow_label": "Workflow par défaut"}', '{"form_id": 1, "rotation": "no_rotation", "system_fields": ["supplier", "invoice_number", "quotation_number", "document_date", "document_due_date", "footer"], "use_interface": true}', '{"remove_blank_pages": true, "splitter_method_id": "no_sep", "separate_by_document_number_value": 2}', '{"outputs_id": [1, 3]}');
+INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "separation", "output") VALUES (1, 'default_workflow', 'Workflow par défaut', 'verifier', '{"ai_model_id": null, "customer_id": null, "facturx_only": false, "input_folder": "/var/share/entrant/verifier/", "apply_process": true}', '{"form_id": 1, "rotation": "no_rotation", "system_fields": ["name", "invoice_number", "quotation_number", "document_date", "document_due_date", "footer"], "use_interface": true, "delete_documents": false, "allow_automatic_validation": false, "override_supplier_form": false}', '{"remove_blank_pages": true, "splitter_method_id": "no_sep", "separate_by_document_number_value": 2}', '{"outputs_id": [1, 3]}');
+INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "separation", "output") VALUES (2, 'ocr_only', 'OCRisation simple par défaut', 'verifier', '{"ai_model_id": null, "customer_id": null, "facturx_only": false, "input_folder": "/var/share/entrant/verifier/ocr/", "apply_process": false}', '{"form_id": null, "rotation": "no_rotation", "system_fields": [], "use_interface": false, "delete_documents": false, "override_supplier_form": false, "allow_automatic_validation": false}', '{"remove_blank_pages": true, "splitter_method_id": "no_sep", "separate_by_document_number_value": 2}', '{"outputs_id": [3]}');
+ALTER SEQUENCE "workflows_id_seq" RESTART WITH 3;
 
 -- CRÉATION DES CHAMPS CUSTOMS POUR LE SPLITTER
 INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (1, 'nom_usage', 'nom_usage', 'Nom d''usage', 'text', 'splitter');
@@ -725,7 +726,8 @@ INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" 
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (4, '{"data" : "[3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 47, 48, 49, 50, 51, 52, 54, 55]"}');
 
 -- CRÉATION DE L'UTILISATEUR superadmin
-INSERT INTO "users" ("username","firstname", "lastname","password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);
+INSERT INTO "users" ("username", "firstname", "lastname", "password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);
+INSERT INTO "users" ("username", "firstname", "lastname", "mode", "password", "role") VALUES ('user_ws', 'Utilisateur', 'WebServices', 'webservice', 'pbkdf2:sha256:600000$j2F2BOOhYAjBqTiD$6840209a20bd78a70d004da1627942485e2492ac9e6a4494412cdd87933d97fe', 4);
 
 -- CRÉATION D'UN MASQUE DE POSITIONNEMENT D'EXEMPLE
 INSERT INTO "positions_masks" ("id", "label", "form_id", "regex") VALUES (1, 'Masque par défaut', 1, '{"document_date": "date", "document_due_date": "date"}');

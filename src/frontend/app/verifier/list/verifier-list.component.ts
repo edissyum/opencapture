@@ -103,14 +103,14 @@ export class VerifierListComponent implements OnInit {
     totals                  : any               = {};
     offset                  : number            = 0;
     selectedTab             : number            = 0;
-    invoices                : any []            = [];
+    documents               : any []            = [];
     allowedCustomers        : any []            = [];
     allowedSuppliers        : any []            = [];
     purchaseOrSale          : string            = '';
     search                  : string            = '';
     TREE_DATA               : AccountsNode[]    = [];
     expanded                : boolean           = false;
-    invoiceToDeleteSelected : boolean           = false;
+    documentToDeleteSelected : boolean           = false;
     totalChecked            : number            = 0;
     customerFilterEmpty     : boolean           = false;
     customerFilter        = new FormControl('');
@@ -175,16 +175,16 @@ export class VerifierListComponent implements OnInit {
         this.removeLockByUserId(this.userService.user.username);
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
-            if (this.localStorageService.get('invoicesPageIndex'))
-                this.pageIndex = parseInt(this.localStorageService.get('invoicesPageIndex') as string);
-            if (this.localStorageService.get('invoicesTimeIndex')) {
-                this.selectedTab = parseInt(this.localStorageService.get('invoicesTimeIndex') as string);
+            if (this.localStorageService.get('documentsPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('documentsPageIndex') as string);
+            if (this.localStorageService.get('documentsTimeIndex')) {
+                this.selectedTab = parseInt(this.localStorageService.get('documentsTimeIndex') as string);
                 this.currentTime = this.batchList[this.selectedTab].id;
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localStorageService.remove('invoicesPageIndex');
-            this.localStorageService.remove('invoicesTimeIndex');
+            this.localStorageService.remove('documentsPageIndex');
+            this.localStorageService.remove('documentsTimeIndex');
         }
 
         this.http.get(environment['url'] + '/ws/status/verifier/list', {headers: this.authService.headers}).pipe(
@@ -225,7 +225,7 @@ export class VerifierListComponent implements OnInit {
     }
 
     removeLockByUserId(userId: any) {
-        this.http.put(environment['url'] + '/ws/verifier/invoices/removeLockByUserId/' + userId, {}, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/verifier/documents/removeLockByUserId/' + userId, {}, {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -269,7 +269,7 @@ export class VerifierListComponent implements OnInit {
                                 }
                             });
                         });
-                        this.loadInvoices().then();
+                        this.loadDocuments().then();
                     }),
                     finalize(() => this.loadingCustomers = false),
                     catchError((err: any) => {
@@ -287,18 +287,18 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    async loadInvoices(loading = true) {
-        this.invoiceToDeleteSelected = false;
+    async loadDocuments(loading = true) {
+        this.documentToDeleteSelected = false;
         this.totalChecked = 0;
         if (loading) {
-            this.invoices = [];
+            this.documents = [];
             this.loading = true;
         }
         this.loadingCustomers = true;
         this.loadForms();
-        let url = environment['url'] + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id;
+        let url = environment['url'] + '/ws/verifier/documents/totals/' + this.currentStatus + '/' + this.userService.user.id;
         if (this.currentForm !== '') {
-            url = environment['url'] + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;
+            url = environment['url'] + '/ws/verifier/documents/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;
         }
         this.http.get(url, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -310,7 +310,7 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.post(environment['url'] + '/ws/verifier/invoices/list',
+        this.http.post(environment['url'] + '/ws/verifier/documents/list',
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'limit': this.pageSize,
                 'allowedSuppliers': this.allowedSuppliers, 'form_id': this.currentForm, 'time': this.currentTime,
@@ -320,22 +320,25 @@ export class VerifierListComponent implements OnInit {
         ).pipe(
             tap((data: any) => {
                 if (data) {
-                    if (data.invoices.length !== 0) this.total = data.total;
+                    if (data.documents.length !== 0) this.total = data.total;
                     else if (this.pageIndex !== 0) {
                         this.pageIndex = this.pageIndex - 1;
                         this.offset = this.pageSize * (this.pageIndex);
-                        this.loadInvoices();
+                        this.loadDocuments();
                     }
-                    this.invoices = data.invoices;
-                    this.invoices.forEach((invoice: any) => {
-                        if (!invoice.thumb.includes('data:image/jpeg;base64')) {
-                            invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + invoice.thumb);
+                    this.documents = data.documents;
+                    this.documents.forEach((document: any) => {
+                        if (document.document_id) {
+                            document.datas.document_id = document.document_id;
                         }
-                        if (invoice.form_label === null || invoice.form_label === '' || invoice.form_label === undefined) {
-                            invoice.form_label = this.translate.instant('VERIFIER.no_form');
+                        if (!document.thumb.includes('data:image/jpeg;base64')) {
+                            document.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + document.thumb);
                         }
-                        if (!invoice.form_id) {
-                            invoice.display = {
+                        if (document.form_label === null || document.form_label === '' || document.form_label === undefined) {
+                            document.form_label = this.translate.instant('VERIFIER.no_form');
+                        }
+                        if (!document.form_id) {
+                            document.display = {
                                 "subtitles": [
                                     {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
                                     {"id": "document_date", "label": "FACTURATION.document_date"},
@@ -346,16 +349,16 @@ export class VerifierListComponent implements OnInit {
                             };
                         } else {
                             this.forms.forEach((form: any) =>  {
-                                if (form.id === invoice.form_id) {
+                                if (form.id === document.form_id) {
                                     if (form.settings.display) {
-                                        invoice.display = form.settings.display;
+                                        document.display = form.settings.display;
                                     }
                                 }
                             });
                         }
 
-                        if (!invoice.display) {
-                            invoice.display = {
+                        if (!document.display) {
+                            document.display = {
                                 "subtitles": [
                                     {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
                                     {"id": "document_date", "label": "FACTURATION.document_date"},
@@ -366,17 +369,17 @@ export class VerifierListComponent implements OnInit {
                             };
                         }
 
-                        const invoice_display_tmp = invoice.display.subtitles;
-                        invoice.display = {'subtitles': []};
-                        invoice_display_tmp.forEach((subtitle: any) => {
+                        const document_display_tmp = document.display.subtitles;
+                        document.display = {'subtitles': []};
+                        document_display_tmp.forEach((subtitle: any) => {
                             let subtitle_data = '';
-                            if (invoice.datas.hasOwnProperty(subtitle.id)) {
-                                subtitle_data = invoice.datas[subtitle.id];
-                            } else if (invoice.hasOwnProperty(subtitle.id)) {
-                                subtitle_data = invoice[subtitle.id];
+                            if (document.datas.hasOwnProperty(subtitle.id)) {
+                                subtitle_data = document.datas[subtitle.id];
+                            } else if (document.hasOwnProperty(subtitle.id)) {
+                                subtitle_data = document[subtitle.id];
                             }
 
-                            invoice.display.subtitles.push({
+                            document.display.subtitles.push({
                                 'id': subtitle.id,
                                 'label': subtitle.label,
                                 'data': subtitle_data
@@ -391,11 +394,11 @@ export class VerifierListComponent implements OnInit {
                 const customersPurchaseToKeep : any = [];
                 const customersSaleToKeep : any = [];
                 this.allowedCustomers.forEach((customer: any) => {
-                    this.invoices.forEach((invoice:any) => {
-                        if (invoice.purchase_or_sale === 'purchase' && !customersPurchaseToKeep.includes(customer)) {
+                    this.documents.forEach((document:any) => {
+                        if (document.purchase_or_sale === 'purchase' && !customersPurchaseToKeep.includes(customer)) {
                             customersPurchaseToKeep.push(customer);
                         }
-                        if (invoice.purchase_or_sale === 'sale' && !customersSaleToKeep.includes(customer)) {
+                        if (document.purchase_or_sale === 'sale' && !customersSaleToKeep.includes(customer)) {
                             customersSaleToKeep.push(customer);
                         }
                     });
@@ -504,14 +507,14 @@ export class VerifierListComponent implements OnInit {
         this.dataSource.data = tmpData;
     }
 
-    changeCustomer(customerId: number, invoiceId: number) {
+    changeCustomer(customerId: number, documentId: number) {
         this.loading = true;
         this.loadingCustomers = true;
-        this.http.put(environment['url'] + '/ws/verifier/invoices/' + invoiceId + '/update',
+        this.http.put(environment['url'] + '/ws/verifier/documents/' + documentId + '/update',
             {'args': {"customer_id": customerId}},
             {headers: this.authService.headers}).pipe(
                 finalize(() => {
-                    this.resetInvoices();
+                    this.resetDocuments();
                     this.notify.success(this.translate.instant('VERIFIER.customer_changed_successfully'));
                 }),
                 catchError((err: any) => {
@@ -522,14 +525,14 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    changeInvoiceForm(formId: number, invoiceId: number) {
+    changeDocumentForm(formId: number, documentId: number) {
         this.loading = true;
         this.loadingCustomers = true;
-        this.http.put(environment['url'] + '/ws/verifier/invoices/' + invoiceId + '/update',
+        this.http.put(environment['url'] + '/ws/verifier/documents/' + documentId + '/update',
             {'args': {"form_id": formId}},
             {headers: this.authService.headers}).pipe(
                 finalize(() => {
-                    this.resetInvoices();
+                    this.resetDocuments();
                     this.notify.success(this.translate.instant('VERIFIER.form_changed'));
                 }),
                 catchError((err: any) => {
@@ -543,12 +546,12 @@ export class VerifierListComponent implements OnInit {
     createChildren(purchaseOrSale: any, id: any, index: any) {
         this.TREE_DATA[index].children.forEach((child: any) => {
             if (child.id === id) {
-                this.invoices.forEach((invoice: any) => {
-                    if (this.TREE_DATA[index].id === invoice.customer_id && invoice.purchase_or_sale === purchaseOrSale) {
-                        if (invoice.supplier_id) {
-                            this.fillChildren(this.TREE_DATA[index].id, child.children, invoice.supplier_name, invoice.supplier_name, invoice.supplier_id, invoice.invoice_id, purchaseOrSale);
+                this.documents.forEach((document: any) => {
+                    if (this.TREE_DATA[index].id === document.customer_id && document.purchase_or_sale === purchaseOrSale) {
+                        if (document.supplier_id) {
+                            this.fillChildren(this.TREE_DATA[index].id, child.children, document.supplier_name, document.supplier_name, document.supplier_id, document.document_id, purchaseOrSale);
                         } else {
-                            this.fillChildren(this.TREE_DATA[index].id, child.children, invoice.supplier_name, this.translate.instant('ACCOUNTS.supplier_unknow'), invoice.supplier_id, invoice.invoice_id, purchaseOrSale);
+                            this.fillChildren(this.TREE_DATA[index].id, child.children, document.supplier_name, this.translate.instant('ACCOUNTS.supplier_unknow'), document.supplier_id, document.document_id, purchaseOrSale);
                         }
                         child.count = child.count + 1;
                         this.TREE_DATA[index].count = this.TREE_DATA[index].count + 1;
@@ -558,7 +561,7 @@ export class VerifierListComponent implements OnInit {
         });
     }
 
-    loadInvoicePerCustomer(node: any) {
+    loadDocumentPerCustomer(node: any) {
         const parentId = node.parent_id;
         const supplierId = node.supplier_id;
         const purchaseOrSale = node.purchase_or_sale;
@@ -570,12 +573,12 @@ export class VerifierListComponent implements OnInit {
                 this.allowedSuppliers = [supplierId];
                 this.purchaseOrSale = purchaseOrSale;
                 this.resetPaginator();
-                this.loadInvoices().then();
+                this.loadDocuments().then();
             }
         });
     }
 
-    resetInvoices() {
+    resetDocuments() {
         this.search = '';
         this.loading = true;
         this.currentForm = '';
@@ -584,13 +587,14 @@ export class VerifierListComponent implements OnInit {
         this.allowedCustomers = [];
         this.allowedSuppliers = [];
         this.customerFilterEnabled = false;
-        this.resetPaginator();
         this.loadCustomers();
+        this.resetPaginator();
+        this.resetSearchCustomer();
     }
 
-    selectOrUnselectAllInvoices(event: any) {
+    selectOrUnselectAllDocuments(event: any) {
         const label = event.srcElement.textContent;
-        this.invoiceToDeleteSelected = !this.invoiceToDeleteSelected;
+        this.documentToDeleteSelected = !this.documentToDeleteSelected;
         const checkboxList = document.getElementsByClassName('checkBox_list');
         Array.from(checkboxList).forEach((element: any) => {
             element.checked = (label === this.translate.instant('VERIFIER.select_all'));
@@ -598,26 +602,26 @@ export class VerifierListComponent implements OnInit {
         this.totalChecked = document.querySelectorAll('.checkBox_list:checked').length;
     }
 
-    deleteAllInvoices() {
+    deleteAllDocuments() {
         this.loading = true;
         this.loadingCustomers = true;
         const checkboxList = document.querySelectorAll('.checkBox_list:checked');
         Array.from(checkboxList).forEach((element: any) => {
-            const invoiceId = element.id.split('_')[0];
-            this.deleteInvoice(invoiceId, true);
+            const documentId = element.id.split('_')[0];
+            this.deleteDocument(documentId, true);
         });
         this.notify.success(this.translate.instant('VERIFIER.all_documents_checked_deleted'));
         this.loadCustomers();
     }
 
-    deleteInvoice(invoiceId: number, batchDelete = false) {
-        this.http.delete(environment['url'] + '/ws/verifier/invoices/delete/' + invoiceId, {headers: this.authService.headers}).pipe(
+    deleteDocument(documentId: number, batchDelete = false) {
+        this.http.delete(environment['url'] + '/ws/verifier/documents/delete/' + documentId, {headers: this.authService.headers}).pipe(
             tap(() => {
                 if (!batchDelete) {
                     this.loadCustomers();
                     this.notify.success(this.translate.instant('VERIFIER.documents_deleted'));
                 }
-                this.historyService.addHistory('verifier', 'delete_document', this.translate.instant('HISTORY-DESC.delete_document', {document_id: invoiceId}));
+                this.historyService.addHistory('verifier', 'delete_document', this.translate.instant('HISTORY-DESC.delete_document', {document_id: documentId}));
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -627,12 +631,12 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    checkCheckedInvoices() {
+    checkCheckedDocuments() {
         this.totalChecked = document.querySelectorAll('.checkBox_list:checked').length;
-        this.invoiceToDeleteSelected = this.totalChecked !== 0;
+        this.documentToDeleteSelected = this.totalChecked !== 0;
     }
 
-    deleteConfirmDialog(invoiceId: number) {
+    deleteConfirmDialog(documentId: number) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -648,12 +652,12 @@ export class VerifierListComponent implements OnInit {
             if (result) {
                 this.loading = true;
                 this.loadingCustomers = true;
-                this.deleteInvoice(invoiceId);
+                this.deleteDocument(documentId);
             }
         });
     }
 
-    displayInvoiceLocked(lockedBy: any) {
+    displayDocumentLocked(lockedBy: any) {
         this.dialog.open(ConfirmDialogComponent, {
             data: {
                 confirmTitle        : this.translate.instant('VERIFIER.document_locked'),
@@ -679,7 +683,7 @@ export class VerifierListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.deleteAllInvoices();
+                this.deleteAllDocuments();
             }
         });
     }
@@ -687,42 +691,42 @@ export class VerifierListComponent implements OnInit {
     changeStatus(event: any) {
         this.currentStatus = event.value;
         this.resetPaginator();
-        this.loadInvoices().then();
+        this.loadDocuments().then();
     }
 
     changeForm(event: any) {
         this.currentForm = event.value;
         this.resetPaginator();
-        this.loadInvoices().then();
+        this.loadDocuments().then();
     }
 
     onTabChange(event: any) {
         this.search = '';
         this.selectedTab = event.index;
-        this.localStorageService.save('invoicesTimeIndex', this.selectedTab);
+        this.localStorageService.save('documentsTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
         this.resetPaginator();
-        this.loadInvoices().then();
+        this.loadDocuments().then();
     }
 
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('invoicesPageIndex', event.pageIndex);
-        this.loadInvoices().then();
+        this.localStorageService.save('documentsPageIndex', event.pageIndex);
+        this.loadDocuments().then();
     }
 
-    searchInvoice(event: any) {
+    searchDocument(event: any) {
         this.search = event.target.value;
-        this.loadInvoices(false).then();
+        this.loadDocuments(false).then();
     }
 
     resetPaginator() {
         this.total = 0;
         this.offset = 0;
         this.pageIndex = 0;
-        this.localStorageService.save('invoicesPageIndex', this.pageIndex);
+        this.localStorageService.save('documentsPageIndex', this.pageIndex);
     }
 
     expandAll() {

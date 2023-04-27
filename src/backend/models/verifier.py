@@ -21,7 +21,7 @@ from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
-def get_invoice_by_id(args):
+def get_document_by_id(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -29,22 +29,22 @@ def get_invoice_by_id(args):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
     error = None
-    invoice = database.select({
+    document = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['invoices'],
+        'table': ['documents'],
         'where': ['id = %s'],
-        'data': [args['invoice_id']]
+        'data': [args['document_id']]
     })
 
-    if not invoice:
-        error = gettext('GET_INVOICE_BY_ID_ERROR')
+    if not document:
+        error = gettext('GET_DOCUMENT_BY_ID_ERROR')
     else:
-        invoice = invoice[0]
+        document = document[0]
 
-    return invoice, error
+    return document, error
 
 
-def get_invoices(args):
+def get_documents(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -52,21 +52,21 @@ def get_invoices(args):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
 
-    invoices = database.select({
+    documents = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['invoices'] if 'table' not in args else args['table'],
+        'table': ['documents'] if 'table' not in args else args['table'],
         'left_join': [] if 'left_join' not in args else args['left_join'],
         'where': ['1 = %s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
-        'order_by': ['invoices.id DESC'] if 'order_by' not in args else args['order_by'],
-        'group_by': ['invoices.id'] if 'group_by' not in args else args['group_by'],
+        'order_by': ['documents.id DESC'] if 'order_by' not in args else args['order_by'],
+        'group_by': ['documents.id'] if 'group_by' not in args else args['group_by'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'offset': str(args['offset']) if 'offset' in args else 0,
     })
-    return invoices
+    return documents
 
 
-def get_total_invoices(args):
+def get_total_documents(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -76,7 +76,7 @@ def get_total_invoices(args):
 
     total = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['invoices'] if 'table' not in args else args['table'],
+        'table': ['documents'] if 'table' not in args else args['table'],
         'left_join': [] if 'left_join' not in args else args['left_join'],
         'where': ['1 = %s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
@@ -84,7 +84,7 @@ def get_total_invoices(args):
     return total
 
 
-def update_invoice(args):
+def update_document(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -93,20 +93,20 @@ def update_invoice(args):
         database = _vars[0]
     error = None
 
-    invoice = database.update({
-        'table': ['invoices'],
+    document = database.update({
+        'table': ['documents'],
         'set': args['set'],
         'where': ['id = %s'],
-        'data': [args['invoice_id']]
+        'data': [args['document_id']]
     })
 
-    if invoice[0] is False:
-        error = gettext('INVOICE_UPDATE_ERROR')
+    if document[0] is False:
+        error = gettext('DOCUMENT_UPDATE_ERROR')
 
-    return invoice, error
+    return document, error
 
 
-def update_invoices(args):
+def update_documents(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -114,17 +114,17 @@ def update_invoices(args):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
     error = None
-    supplier = database.update({
-        'table': ['invoices'],
+    documents = database.update({
+        'table': ['documents'],
         'set': args['set'],
         'where': args['where'],
         'data': args['data']
     })
 
-    if supplier[0] is False:
-        error = gettext('INVOICE_UPDATE_ERROR')
+    if documents[0] is False:
+        error = gettext('DOCUMENT_UPDATE_ERROR')
 
-    return supplier, error
+    return documents, error
 
 
 def get_totals(args):
@@ -155,14 +155,14 @@ def get_totals(args):
 
     if 'form_id' in args and args['form_id']:
         if args['form_id'] == 'no_form':
-            where.append('invoices.form_id is NULL')
+            where.append('documents.form_id is NULL')
         else:
-            where.append('invoices.form_id = %s')
+            where.append('documents.form_id = %s')
             data.append(args['form_id'])
 
     total = database.select({
         'select': select,
-        'table': ['invoices'],
+        'table': ['documents'],
         'where': where,
         'data': data
     })[0]
@@ -182,7 +182,7 @@ def update_status(args):
         database = _vars[0]
 
     args = {
-        'table': ['invoices'],
+        'table': ['documents'],
         'set': {
             'status': args['status']
         },

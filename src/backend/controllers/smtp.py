@@ -1,5 +1,4 @@
 # This file is part of Open-Capture.
-from gettext import gettext
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,6 +15,7 @@ from gettext import gettext
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+from gettext import gettext
 from flask import request, g as current_context
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url

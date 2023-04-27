@@ -22,9 +22,9 @@ import { HttpClient } from "@angular/common/http";
 import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../services/locale.service";
 import { catchError, filter, map, tap } from 'rxjs/operators';
-import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { LocalStorageService } from "../services/local-storage.service";
+import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { NotificationService } from "../services/notifications/notifications.service";
 import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 

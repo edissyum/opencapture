@@ -27,11 +27,13 @@ import pdf2image
 import subprocess
 from io import BytesIO
 from fpdf import Template
+from pyzbar.pyzbar import decode
 import xml.etree.ElementTree as Et
 
 
 class SeparatorQR:
-    def __init__(self, log, config, tmp_folder, splitter_or_verifier, files, remove_blank_pages, docservers):
+    def __init__(self, log, config, tmp_folder, splitter_or_verifier, files, remove_blank_pages, docservers,
+                 splitter_method):
         self.log = log
         self.pages = []
         self.nb_doc = 0
@@ -41,6 +43,7 @@ class SeparatorQR:
         self.Files = files
         self.config = config
         self.enabled = False
+        self.splitter_method = splitter_method
         self.remove_blank_pages = remove_blank_pages
         self.splitter_or_verifier = splitter_or_verifier
         self.divider = config['SEPARATORQR']['divider']
@@ -50,6 +53,7 @@ class SeparatorQR:
         self.output_dir = docservers['SEPARATOR_OUTPUT_PDF'] + '/' + tmp_folder_name + '/'
         self.output_dir_pdfa = docservers['SEPARATOR_OUTPUT_PDFA'] + '/' + tmp_folder_name + '/'
 
+        os.mkdir(self.tmp_dir)
         os.mkdir(self.output_dir)
         os.mkdir(self.output_dir_pdfa)
 
@@ -90,28 +94,44 @@ class SeparatorQR:
             with open(file, 'wb') as binary_f:
                 output.write(binary_f)
 
-    @staticmethod
-    def split_document_every_two_pages(file):
+    def split_document_every_x_pages(self, file, page_per_doc):
         path = os.path.dirname(file)
         file_without_extention = os.path.splitext(os.path.basename(file))[0]
 
         pdf = pypdf.PdfReader(file, strict=False)
         nb_pages = len(pdf.pages)
-
         array_of_files = []
-        cpt = 1
-        for i in range(nb_pages):
-            if i % 2 == 0:
-                output = pypdf.PdfWriter()
+        _break = False
+        offset = 0
+        end = int(page_per_doc)
+
+        pages = pdf2image.convert_from_path(file)
+        i = 0
+        for page in pages:
+            page.save(self.tmp_dir + '/result-' + str(i) + '.jpg', 'JPEG')
+            i = i + 1
+
+        for cpt in range(0, nb_pages):
+            if self.remove_blank_pages:
+                if self.Files.is_blank_page(self.tmp_dir + '/result-' + str(cpt) + '.jpg'):
+                    continue
+
+            output = pypdf.PdfWriter()
+            for i in range(offset, end):
+                if i >= nb_pages:
+                    _break = True
+                    break
                 output.add_page(pdf.pages[i])
-                if i + 1 < nb_pages:
-                    output.add_page(pdf.pages[i + 1])
-                newname = path + '/' + file_without_extention + "-" + str(cpt) + ".pdf"
-                with open(newname, 'wb') as outputStream:
-                    output.write(outputStream)
-                array_of_files.append(newname)
-                outputStream.close()
-                cpt = cpt + 1
+
+            newname = path + '/' + file_without_extention + "-" + str(cpt + 1) + ".pdf"
+            with open(newname, 'wb') as output_stream:
+                output.write(output_stream)
+            array_of_files.append(newname)
+
+            if offset >= nb_pages or _break:
+                break
+            offset = offset + int(page_per_doc)
+            end = end + int(page_per_doc)
         return array_of_files
 
     def run(self, file):
@@ -120,7 +140,10 @@ class SeparatorQR:
         try:
             pdf = pypdf.PdfReader(file)
             self.nb_pages = len(pdf.pages)
-            self.get_xml_qr_code(file)
+            if self.splitter_method == 'qr_code_OC':
+                self.get_xml_qr_code(file)
+            elif self.splitter_method == 'c128_OC':
+                self.get_xml_c128(file)
 
             if self.splitter_or_verifier == 'verifier':
                 if self.remove_blank_pages:
@@ -136,6 +159,26 @@ class SeparatorQR:
         except Exception as e:
             self.error = True
             self.log.error("INIT : " + str(e))
+
+    def get_xml_c128(self, file):
+        """
+        Retrieve the content of a C128 Code
+
+        :param file: Path to pdf file
+        """
+        pages = pdf2image.convert_from_path(file)
+        barcodes = []
+        cpt = 0
+        for page in pages:
+            detected_barcode = decode(page)
+            if detected_barcode:
+                for barcode in detected_barcode:
+                    if barcode.type == 'CODE128':
+                        barcodes.append({'text': barcode.data.decode('utf-8'), 'attrib': {'num': cpt}})
+            cpt += 1
+
+        if barcodes:
+            self.qrList = barcodes
 
     def get_xml_qr_code(self, file):
         try:
@@ -169,13 +212,25 @@ class SeparatorQR:
     def parse_xml(self):
         if self.qrList is None:
             return
-        ns = {'bc': 'http://zbar.sourceforge.net/2008/barcode'}
-        indexes = self.qrList[0].findall('bc:index', ns)
+
+        if self.splitter_method == 'qr_code_OC':
+            ns = {'bc': 'http://zbar.sourceforge.net/2008/barcode'}
+            indexes = self.qrList[0].findall('bc:index', ns)
+        elif self.splitter_method == 'c128_OC':
+            indexes = self.qrList
+        else:
+            return
+
         for index in indexes:
             page = {}
-            data = index.find('bc:symbol', ns).find('bc:data', ns)
-            page['service'] = data.text
-            page['index_sep'] = int(index.attrib['num'])
+            if self.splitter_method == 'qr_code_OC':
+                data = index.find('bc:symbol', ns).find('bc:data', ns)
+                page['service'] = data.text
+                page['index_sep'] = int(index.attrib['num'])
+            elif self.splitter_method == 'c128_OC':
+                data = index
+                page['service'] = data['text']
+                page['index_sep'] = index['attrib']['num']
 
             if page['index_sep'] + 1 >= self.nb_pages:  # If last page is a separator
                 page['is_empty'] = True

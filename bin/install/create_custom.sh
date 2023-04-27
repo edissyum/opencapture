@@ -306,10 +306,13 @@ echo "$secret" > $customPath/config/secret_key
 ####################
 # Create custom input and outputs folder
 mkdir -p /var/share/"$customId"/{entrant,export}/{verifier,splitter}/
+mkdir -p /var/share/"$customId"/entrant/verifier/ocr/
 chmod -R 775 /var/share/"$customId"/
 chown -R "$user":"$group" /var/share/"$customId"/
 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE workflows SET input=REPLACE(input::TEXT, '/var/share/', '/var/share/$customId/')::JSONB" "$databaseName" > /dev/null
+
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/entrant/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_pdf';" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';" "$databaseName" > /dev/null
@@ -387,6 +390,14 @@ sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCaptur
 sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 
+ocrOnlyFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh"
+cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh $ocrOnlyFile
+sed -i "s#§§SCRIPT_NAME§§#ocr_only#g" $ocrOnlyFile
+sed -i "s#§§OC_PATH§§#$defaultPath#g" $ocrOnlyFile
+sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $ocrOnlyFile
+sed -i 's#"§§ARGUMENTS§§"#-workflow_id ocr_only#g' $ocrOnlyFile
+sed -i "s#§§CUSTOM_ID§§#$customId#g" $ocrOnlyFile
+
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh"
 cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
 sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
@@ -409,6 +420,11 @@ crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workfl
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId events move,close
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh \$filename"
+
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId watch /var/share/"$customId"/entrant/verifier/ocr_only/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh \$filename"
 
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId watch /var/share/"$customId"/entrant/verifier/
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId events move,close

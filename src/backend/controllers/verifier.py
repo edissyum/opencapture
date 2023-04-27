@@ -36,9 +36,10 @@ from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
 def handle_uploaded_file(files, input_id, workflow_id, return_token=False):
-    path = current_app.config['UPLOAD_FOLDER']
     custom_id = retrieve_custom_from_url(request)
+    path = current_app.config['UPLOAD_FOLDER']
     tokens = []
+    token = ''
 
     for file in files:
         _f = files[file]
@@ -55,11 +56,11 @@ def handle_uploaded_file(files, input_id, workflow_id, return_token=False):
         task_id_monitor = monitoring.create_process({
             'status': 'wait',
             'module': 'verifier',
+            'source': 'interface',
             'filename': os.path.basename(filename),
+            'token': token if return_token else None,
             'input_id': input_id if input_id else None,
             'workflow_id': workflow_id if workflow_id else None,
-            'source': 'interface',
-            'token': token if return_token else None,
         })
 
         if task_id_monitor:
@@ -75,19 +76,19 @@ def handle_uploaded_file(files, input_id, workflow_id, return_token=False):
     return tokens, 200
 
 
-def get_invoice_by_id(invoice_id):
-    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+def get_document_by_id(document_id):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if error is None:
-        return invoice_info, 200
+        return document_info, 200
     else:
         response = {
-            "errors": gettext('GET_INVOICE_BY_ID_ERROR'),
+            "errors": gettext('GET_document_BY_ID_ERROR'),
             "message": gettext(error)
         }
         return response, 400
 
 
-def retrieve_invoices(args):
+def retrieve_documents(args):
     if 'where' not in args:
         args['where'] = []
     if 'data' not in args:
@@ -95,11 +96,11 @@ def retrieve_invoices(args):
     if 'select' not in args:
         args['select'] = []
 
-    args['table'] = ['invoices', 'form_models']
-    args['left_join'] = ['invoices.form_id = form_models.id']
-    args['group_by'] = ['invoices.id', 'invoices.form_id', 'form_models.id']
+    args['table'] = ['documents', 'form_models']
+    args['left_join'] = ['documents.form_id = form_models.id']
+    args['group_by'] = ['documents.id', 'documents.form_id', 'form_models.id']
 
-    args['select'].append("DISTINCT(invoices.id) as invoice_id")
+    args['select'].append("DISTINCT(documents.id) as document_id")
     args['select'].append("to_char(register_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as date")
     args['select'].append('form_models.label as form_label')
     args['select'].append("*")
@@ -112,19 +113,19 @@ def retrieve_invoices(args):
             args['where'].append("to_char(register_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
 
     if 'status' in args:
-        args['where'].append('invoices.status = %s')
+        args['where'].append('documents.status = %s')
         args['data'].append(args['status'])
 
     if 'form_id' in args and args['form_id']:
         if args['form_id'] == 'no_form':
-            args['where'].append('invoices.form_id is NULL')
+            args['where'].append('documents.form_id is NULL')
         else:
-            args['where'].append('invoices.form_id = %s')
+            args['where'].append('documents.form_id = %s')
             args['data'].append(args['form_id'])
 
     if 'search' in args and args['search']:
         args['table'].append('accounts_supplier')
-        args['left_join'].append('invoices.supplier_id = accounts_supplier.id')
+        args['left_join'].append('documents.supplier_id = accounts_supplier.id')
         args['group_by'].append('accounts_supplier.id')
         args['where'].append(
             "(LOWER(original_filename) LIKE '%%" + args['search'].lower() +
@@ -147,125 +148,125 @@ def retrieve_invoices(args):
         args['where'].append('purchase_or_sale = %s')
         args['data'].append(args['purchaseOrSale'])
 
-    total_invoices = verifier.get_total_invoices({
-        'select': ['count(invoices.id) as total'],
+    total_documents = verifier.get_total_documents({
+        'select': ['count(documents.id) as total'],
         'where': args['where'],
         'data': args['data'],
         'table': args['table'],
         'left_join': args['left_join'],
     })
-    if total_invoices not in [0, []]:
-        invoices_list = verifier.get_invoices(args)
-        for invoice in invoices_list:
-            year = invoice['register_date'].strftime('%Y')
-            month = invoice['register_date'].strftime('%m')
+    if total_documents not in [0, []]:
+        documents_list = verifier.get_documents(args)
+        for document in documents_list:
+            year = document['register_date'].strftime('%Y')
+            month = document['register_date'].strftime('%m')
             year_and_month = year + '/' + month
-            thumb = get_file_content('full', invoice['full_jpg_filename'], 'image/jpeg',
+            thumb = get_file_content('full', document['full_jpg_filename'], 'image/jpeg',
                                      compress=True, year_and_month=year_and_month)
-            invoice['thumb'] = str(base64.b64encode(thumb.get_data()).decode('UTF-8'))
-            if invoice['supplier_id']:
-                supplier_info, error = accounts.get_supplier_by_id({'supplier_id': invoice['supplier_id']})
+            document['thumb'] = str(base64.b64encode(thumb.get_data()).decode('UTF-8'))
+            if document['supplier_id']:
+                supplier_info, error = accounts.get_supplier_by_id({'supplier_id': document['supplier_id']})
                 if not error:
-                    invoice['supplier_name'] = supplier_info['name']
+                    document['supplier_name'] = supplier_info['name']
         response = {
-            "total": total_invoices[0]['total'],
-            "invoices": invoices_list
+            "total": total_documents[0]['total'],
+            "documents": documents_list
         }
         return response, 200
     return '', 200
 
 
-def update_position_by_invoice_id(invoice_id, args):
-    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+def update_position_by_document_id(document_id, args):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if error is None:
         column = position = ''
         for _position in args:
             column = _position
             position = args[_position]
 
-        invoice_positions = invoice_info['positions']
-        invoice_positions.update({
+        document_positions = document_info['positions']
+        document_positions.update({
             column: position
         })
-        _, error = verifier.update_invoice({
-            'set': {"positions": json.dumps(invoice_positions)},
-            'invoice_id': invoice_id
+        _, error = verifier.update_document({
+            'set': {"positions": json.dumps(document_positions)},
+            'document_id': document_id
         })
         if error is None:
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_INVOICE_POSITIONS_ERROR'),
+                "errors": gettext('UPDATE_DOCUMENT_POSITIONS_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
 
 
-def update_page_by_invoice_id(invoice_id, args):
-    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+def update_page_by_document_id(document_id, args):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if error is None:
         column = page = ''
         for _page in args:
             column = _page
             page = args[_page]
 
-        invoice_pages = invoice_info['pages']
-        invoice_pages.update({
+        document_pages = document_info['pages']
+        document_pages.update({
             column: page
         })
-        _, error = verifier.update_invoice({'set': {"pages": json.dumps(invoice_pages)}, 'invoice_id': invoice_id})
+        _, error = verifier.update_document({'set': {"pages": json.dumps(document_pages)}, 'document_id': document_id})
         if error is None:
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_INVOICE_PAGES_ERROR'),
+                "errors": gettext('UPDATE_document_PAGES_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
 
 
-def update_invoice_data_by_invoice_id(invoice_id, args):
-    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+def update_document_data_by_document_id(document_id, args):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if error is None:
         _set = {}
-        invoice_data = invoice_info['datas']
+        document_data = document_info['datas']
         for _data in args:
             column = _data
             value = args[_data]
-            invoice_data.update({
+            document_data.update({
                 column: value
             })
 
-        _, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
+        _, error = verifier.update_document({'set': {"datas": json.dumps(document_data)}, 'document_id': document_id})
         if error is None:
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_INVOICE_DATA_ERROR'),
+                "errors": gettext('UPDATE_DOCUMENT_DATA_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
 
 
-def delete_invoice_data_by_invoice_id(invoice_id, field_id):
-    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+def delete_document_data_by_document_id(document_id, field_id):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if error is None:
         _set = {}
-        invoice_data = invoice_info['datas']
-        if field_id in invoice_data:
-            del invoice_data[field_id]
-        _, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
+        document_data = document_info['datas']
+        if field_id in document_data:
+            del document_data[field_id]
+        _, error = verifier.update_document({'set': {"datas": json.dumps(document_data)}, 'document_id': document_id})
         if error is None:
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_INVOICE_DATA_ERROR'),
+                "errors": gettext('UPDATE_DOCUMENT_DATA_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
 
 
-def delete_documents_by_invoice_id(invoice_id):
+def delete_documents_by_document_id(document_id):
     if 'docservers' in current_context:
         docservers = current_context.docservers
     else:
@@ -273,97 +274,97 @@ def delete_documents_by_invoice_id(invoice_id):
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
 
-    invoice, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    document, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
-        delete_documents(docservers, invoice['path'], invoice['filename'], invoice['full_jpg_filename'])
+        delete_documents(docservers, document['path'], document['filename'], document['full_jpg_filename'])
 
-    _, error = verifier.update_invoice({
+    _, error = verifier.update_document({
         'set': {"status": 'DEL'},
-        'invoice_id': invoice_id
+        'document_id': document_id
     })
     return '', 200
 
 
-def delete_invoice_position_by_invoice_id(invoice_id, field_id):
-    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+def delete_document_position_by_document_id(document_id, field_id):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if error is None:
         _set = {}
-        invoice_positions = invoice_info['positions']
-        if field_id in invoice_positions:
-            del invoice_positions[field_id]
-        _, error = verifier.update_invoice(
-            {'set': {"positions": json.dumps(invoice_positions)}, 'invoice_id': invoice_id})
+        document_positions = document_info['positions']
+        if field_id in document_positions:
+            del document_positions[field_id]
+        _, error = verifier.update_document(
+            {'set': {"positions": json.dumps(document_positions)}, 'document_id': document_id})
         if error is None:
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_INVOICE_POSITIONS_ERROR'),
+                "errors": gettext('UPDATE_document_POSITIONS_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
 
 
-def delete_invoice_page_by_invoice_id(invoice_id, field_id):
-    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+def delete_document_page_by_document_id(document_id, field_id):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if error is None:
         _set = {}
-        invoice_pages = invoice_info['pages']
-        if field_id in invoice_pages:
-            del invoice_pages[field_id]
-        _, error = verifier.update_invoice({'set': {"pages": json.dumps(invoice_pages)}, 'invoice_id': invoice_id})
+        document_pages = document_info['pages']
+        if field_id in document_pages:
+            del document_pages[field_id]
+        _, error = verifier.update_document({'set': {"pages": json.dumps(document_pages)}, 'document_id': document_id})
         if error is None:
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_INVOICE_PAGES_ERROR'),
+                "errors": gettext('UPDATE_document_PAGES_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
 
 
-def delete_invoice(invoice_id):
-    _, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+def delete_document(document_id):
+    _, error = verifier.get_document_by_id({'document_id': document_id})
     if error is None:
-        _, error = verifier.update_invoice({'set': {'status': 'DEL'}, 'invoice_id': invoice_id})
+        _, error = verifier.update_document({'set': {'status': 'DEL'}, 'document_id': document_id})
         if error is None:
             return '', 200
         else:
             response = {
-                "errors": gettext('DELETE_INVOICE_ERROR'),
+                "errors": gettext('DELETE_DOCUMENT_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
     else:
         response = {
-            "errors": gettext('DELETE_INVOICE_ERROR'),
+            "errors": gettext('DELETE_DOCUMENT_ERROR'),
             "message": gettext(error)
         }
         return response, 400
 
 
-def update_invoice(invoice_id, data):
-    _, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+def update_document(document_id, data):
+    _, error = verifier.get_document_by_id({'document_id': document_id})
     if error is None:
-        _, error = verifier.update_invoice({'set': data, 'invoice_id': invoice_id})
+        _, error = verifier.update_document({'set': data, 'document_id': document_id})
 
         if error is None:
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_INVOICE_ERROR'),
+                "errors": gettext('UPDATE_DOCUMENT_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
     else:
         response = {
-            "errors": gettext('UPDATE_INVOICE_ERROR'),
+            "errors": gettext('UPDATE_DOCUMENT_ERROR'),
             "message": gettext(error)
         }
         return response, 400
 
 
 def remove_lock_by_user_id(user_id):
-    _, error = verifier.update_invoices({
+    _, error = verifier.update_documents({
         'set': {"locked": False},
         'where': ['locked_by = %s'],
         'data': [user_id]
@@ -379,30 +380,41 @@ def remove_lock_by_user_id(user_id):
         return response, 400
 
 
-def export_mem(invoice_id, data):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+def export_mem(document_id, data):
+    if 'regex' in current_context and 'database' in current_context and 'log' in current_context:
+        log = current_context.log
+        regex = current_context.regex
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+        regex = _vars[2]
+        database = _vars[0]
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
-        return verifier_exports.export_mem(data['data'], invoice_info, _vars[5], _vars[2], _vars[0])
+        return verifier_exports.export_mem(data['data'], document_info, log, regex, database)
 
 
-def export_xml(invoice_id, data):
-    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+def export_xml(document_id, data):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+
     if not error:
-        if 'regex' in current_context and 'database' in current_context:
+        if 'regex' in current_context and 'database' in current_context and 'log' in current_context:
+            log = current_context.log
             regex = current_context.regex
             database = current_context.database
         else:
             custom_id = retrieve_custom_from_url(request)
             _vars = create_classes_from_custom_id(custom_id)
-            database = _vars[0]
+            log = _vars[5]
             regex = _vars[2]
-        return verifier_exports.export_xml(data['data'], None, regex, invoice_info, database)
+            database = _vars[0]
+        return verifier_exports.export_xml(data['data'], log, regex, document_info, database)
 
 
-def export_pdf(invoice_id, data):
-    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+def export_pdf(document_id, data):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
         if 'configurations' in current_context and 'log' in current_context and 'regex' in current_context:
             log = current_context.log
@@ -414,12 +426,12 @@ def export_pdf(invoice_id, data):
             log = _vars[5]
             regex = _vars[2]
             configurations = _vars[10]
-        return verifier_exports.export_pdf(data['data'], log, regex, invoice_info, configurations['locale'],
+        return verifier_exports.export_pdf(data['data'], log, regex, document_info, configurations['locale'],
                                            data['compress_type'], data['ocrise'])
 
 
-def export_facturx(invoice_id, data):
-    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+def export_facturx(document_id, data):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
         if 'configurations' in current_context and 'log' in current_context and 'regex' in current_context:
             log = current_context.log
@@ -430,7 +442,7 @@ def export_facturx(invoice_id, data):
             _vars = create_classes_from_custom_id(custom_id)
             log = _vars[5]
             regex = _vars[2]
-        return verifier_exports.export_facturx(data['data'], log, regex, invoice_info)
+        return verifier_exports.export_facturx(data['data'], log, regex, document_info)
 
 
 def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
@@ -626,11 +638,11 @@ def get_totals(status, user_id, form_id):
 
 def update_status(args):
     for _id in args['ids']:
-        invoice = verifier.get_invoice_by_id({'invoice_id': _id})
-        if len(invoice[0]) < 1:
+        document = verifier.get_document_by_id({'document_id': _id})
+        if len(document[0]) < 1:
             response = {
-                "errors": gettext('INVOICE_NOT_FOUND'),
-                "message": gettext('INVOICE_ID_NOT_FOUND', id=_id)
+                "errors": gettext('DOCUMENT_NOT_FOUND'),
+                "message": gettext('DOCUMENT_ID_NOT_FOUND', id=_id)
             }
             return response, 400
 
@@ -648,10 +660,10 @@ def update_status(args):
 def get_unseen(user_id):
     user_customers = user.get_customers_by_user_id(user_id)
     user_customers[0].append(0)
-    total_unseen = verifier.get_total_invoices({
-        'select': ['count(invoices.id) as unseen'],
+    total_unseen = verifier.get_total_documents({
+        'select': ['count(documents.id) as unseen'],
         'where': ["status = %s", "customer_id = ANY(%s)"],
         'data': ['NEW', user_customers[0]],
-        'table': ['invoices'],
+        'table': ['documents'],
     })[0]
     return total_unseen['unseen'], 200

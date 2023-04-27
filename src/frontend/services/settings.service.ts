@@ -319,6 +319,30 @@ export class SettingsService {
         ],
         "splitter": [
             {
+                "id"        : "splitter_workflow_builder",
+                "label"     : this.translate.instant("SETTINGS.list_workflows"),
+                "icon"      : "fa-solid fa-diagram-next",
+                "route"     : "/settings/splitter/workflows",
+                "privilege" : "workflows_list_splitter",
+                "actions"   : [
+                    {
+                        "id"        : "splitter_add_workflow",
+                        "label"     : this.translate.instant("SETTINGS.workflow_builder"),
+                        "route"     : "/settings/splitter/workflows/builder/new",
+                        "privilege" : "add_workflow_splitter",
+                        "icon"      : "fa-solid fa-tools"
+                    },
+                    {
+                        "id"                : "splitter_update_workflonw",
+                        "label"             : this.translate.instant("SETTINGS.workflow_update"),
+                        "route"             : "/settings/splitter/workflows/builder/edit/",
+                        "privilege"         : "update_workflow_splitter",
+                        "icon"              : "fa-solid fa-hammer",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
+            },
+            {
                 "id"        : "splitter_form_builder",
                 "label"     : this.translate.instant("SETTINGS.list_forms"),
                 "icon"      : "fa-brands fa-wpforms",
