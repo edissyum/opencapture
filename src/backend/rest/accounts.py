@@ -30,7 +30,7 @@ bp = Blueprint('accounts', __name__, url_prefix='/ws/')
 @bp.route('accounts/suppliers/list', methods=['GET'])
 @auth.token_required
 def suppliers_list():
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/suppliers/list'}), 403
 
@@ -52,7 +52,7 @@ def get_supplier_by_id(supplier_id):
 @bp.route('accounts/getAdressById/<int:address_id>', methods=['GET'])
 @auth.token_required
 def get_address_by_id(address_id):
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'],
                                          ['update_supplier | update_customer | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
@@ -77,7 +77,7 @@ def update_supplier(supplier_id):
 @bp.route('accounts/supplier/<int:supplier_id>/updatePosition', methods=['PUT'])
 @auth.token_required
 def update_position(supplier_id):
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['update_supplier | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/accounts/suppliers/{supplier_id}/updatePosition'}), 403
@@ -90,7 +90,7 @@ def update_position(supplier_id):
 @bp.route('accounts/supplier/<int:supplier_id>/updatePage', methods=['PUT'])
 @auth.token_required
 def update_page(supplier_id):
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['update_supplier | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/accounts/suppliers/{supplier_id}/updatePage'}), 403

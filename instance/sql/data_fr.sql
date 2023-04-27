@@ -692,7 +692,7 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'ad
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'login_methods', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (53, 'verifier_display', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (53, 'verifier_settings', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (54, 'mailcollect', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (55, 'user_quota', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (56, 'list_ai_model_splitter', 'splitter');

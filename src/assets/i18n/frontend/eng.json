@@ -218,6 +218,13 @@
 		"previous_page": "Previous page",
 		"separator_choice ": "Separator choice"
 	},
+	"DOCUMENTS": {
+		"data_deleted": "Data deleted",
+		"field_duplicated": "Field <strong>{{ input }}</strong> duplicated successfully",
+		"identifier": "Document identifier",
+		"position_and_data_updated": "Positions and data of <strong>{{ input }}</strong> updated successfully",
+		"supplier_infos_updated": "Document updated with new supplier informations"
+	},
 	"ERROR": {
 		"404": "The page you are looking for does not exist",
 		"500": "A technical issue appear on our side. <strong>Please try again later</strong>",
@@ -298,6 +305,7 @@
 	},
 	"FORMS": {
 		"available_fields": "Fields available",
+		"batch_display": "Batch display",
 		"choose_form": "Choose a new form",
 		"confirm_delete": "Are you sure you want to delete the form <strong>{{ form }}</strong> ?",
 		"confirm_disable": "Are you sure you want to disable the form <strong>{{ form }}</strong> ?",
@@ -331,6 +339,7 @@
 		"label_updated_successfully": "Label updated successfully",
 		"modify": "Modify",
 		"modify_display": "Modify display linked to form",
+		"modify_unique_url": "Modify unique URL display settings",
 		"no_fields": "No fields associated to this form",
 		"no_form_available": "No form available",
 		"only_ocr": "Just OCRise document",
@@ -341,6 +350,8 @@
 		"supplier": "Supplier",
 		"supplier_verif": "Supplication verification",
 		"supplier_verif_hint": "verification via API for SIRET / SIREN / TVA INTRA",
+		"unique_url": "Unique URL",
+		"unique_url_hint": "Change Viewer display while using unique URL. Allow to limit the access to certain functions",
 		"update_label": "Update field label",
 		"updated": "Form updated successfully",
 		"validate": "Validate"
@@ -537,13 +548,6 @@
 		"updated": "Input updated successfully",
 		"watcher_and_script_updated": "Watcher and script updated successfully"
 	},
-	"DOCUMENTS": {
-		"data_deleted": "Data deleted",
-		"field_duplicated": "Field <strong>{{ input }}</strong> duplicated successfully",
-		"identifier": "Document identifier",
-		"position_and_data_updated": "Positions and data of <strong>{{ input }}</strong> updated successfully",
-		"supplier_infos_updated": "Document updated with new supplier informations"
-	},
 	"LOGIN-METHODS": {
 		"base_dn": "Search base",
 		"class_Object": "Object class",
@@ -638,8 +642,8 @@
 	},
 	"MONITORING": {
 		"and": "and",
-		"documents_id": "Documents identifiers",
 		"document_id": "Document identifier",
+		"documents_id": "Documents identifiers",
 		"done": "Process done",
 		"error": "Process error",
 		"hour": "hour",
@@ -815,7 +819,7 @@
 		"user_quota": "Users quota",
 		"users_list": "Users list",
 		"verifier": "Open-Capture Verifier",
-		"verifier_display": "Setting up the verifier document display",
+		"verifier_settings": "Verifier specific settings",
 		"version_update": "Version and update"
 	},
 	"REGEX": {
@@ -870,7 +874,7 @@
 		"user_quota": "Users quota",
 		"users_list": "Users list",
 		"verifier": "Verifier",
-		"verifier_display": "Batch display",
+		"verifier_settings": "Various settings",
 		"workflow_builder": "Create workflow",
 		"workflow_update": "Update workflow"
 	},
