@@ -26,6 +26,16 @@ from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url, get_custom_path
 
 
+def read_config():
+    if 'config' in current_context:
+        configurations = current_context.config
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[1]
+    return configurations, 200
+
+
 def change_locale_in_config(lang):
     if 'languages' in current_context:
         languages = current_context.languages

@@ -298,10 +298,12 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         elif not input_settings['override_supplier_form'] and supplier and supplier[2]['form_id'] not in ['', [], None]:
             datas.update({'form_id': supplier[2]['form_id']})
     elif workflow_settings:
-        if workflow_settings['process']['override_supplier_form'] or not supplier or not supplier[2]['form_id']:
+        if 'override_supplier_form' in workflow_settings['process'] and \
+                workflow_settings['process']['override_supplier_form'] or not supplier or not supplier[2]['form_id']:
             if not form_id_found_with_ai:
                 datas.update({'form_id': workflow_settings['process']['form_id']})
-        elif not workflow_settings['process']['override_supplier_form'] and supplier and supplier[2]['form_id']:
+        elif ('override_supplier_form' not in workflow_settings['process'] or
+              not workflow_settings['process']['override_supplier_form']) and supplier and supplier[2]['form_id']:
             datas.update({'form_id': supplier[2]['form_id']})
 
     # Find custom informations using mask

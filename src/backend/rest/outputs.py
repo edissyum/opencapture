@@ -57,10 +57,11 @@ def get_output_type_by_id(output_type_id):
 @bp.route('outputs/<string:module>/getById/<int:output_id>', methods=['GET'])
 @auth.token_required
 def get_output_by_id(output_id, module):
-    list_priv = ['update_output | access_verifier'] if module == 'verifier' else ['update_output_splitter | access_splitter']
-    if not privileges.has_privileges(request.environ['user_id'], list_priv):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/outputs/{module}/getById/{output_id}'}), 403
+    if not request.environ['skip']:
+        list_priv = ['update_output | access_verifier'] if module == 'verifier' else ['update_output_splitter | access_splitter']
+        if not privileges.has_privileges(request.environ['user_id'], list_priv):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/outputs/{module}/getById/{output_id}'}), 403
 
     _output = outputs.get_output_by_id(output_id)
     return make_response(jsonify(_output[0])), _output[1]

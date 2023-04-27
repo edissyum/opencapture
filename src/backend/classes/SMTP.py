@@ -49,7 +49,7 @@ class SMTP:
 
         """
         error = False
-        if self.protocole_secure.lower() in ['ssl', 'tls']:
+        if self.protocole_secure and self.protocole_secure.lower() in ['ssl', 'tls']:
             try:
                 self.conn = smtplib.SMTP_SSL(self.host, self.port, timeout=10)
                 self.conn.ehlo()
@@ -65,7 +65,7 @@ class SMTP:
             try:
                 self.conn = smtplib.SMTP(self.host, self.port, timeout=10)
                 self.conn.ehlo()
-                if self.protocole_secure.lower() == 'tls':
+                if self.protocole_secure and self.protocole_secure.lower() == 'tls':
                     self.conn.starttls()
                     self.conn.ehlo()
             except (smtplib.SMTPException, OSError) as smtp_error:

@@ -53,12 +53,12 @@
         <div class="text-center" [class.cursor-not-allowed]="this.error || !(!this.sending && this.selectedInput && this.fileControl.value!.length !== 0)">
             <button mat-button
                     [disabled]="this.error || this.sending || (this.selectedWorkflow === '' && this.selectedInput === '') || this.fileControl.value!.length === 0" (click)="uploadFile()"
-                    [class.hover:bg-transparent]="!this.error && !this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
-                    [class.bg-opacity-100]="!this.error && !this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
-                    [class.bg-opacity-40]="this.error || !(!this.sending && this.selectedInput && this.fileControl.value!.length !== 0)"
-                    [class.text-white]="!this.error && !this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
-                    [class.hover:text-gray-900]="!this.sending && this.selectedInput && this.fileControl.value!.length !== 0"
-                    class="valid_button">
+                    [class.bg-opacity-100]="!this.error && !this.sending && (this.selectedInput || this.selectedWorkflow) && this.fileControl.value!.length !== 0"
+                    [class.bg-green-400]="!this.error && !this.sending && (this.selectedInput || this.selectedWorkflow) && this.fileControl.value!.length !== 0"
+                    [class.bg-gray-400]="this.error || !(!this.sending && (this.selectedInput || this.selectedWorkflow) && this.fileControl.value!.length !== 0)"
+                    [class.text-white]="!this.error && !this.sending && (this.selectedInput || this.selectedWorkflow) && this.fileControl.value!.length !== 0"
+                    [class.hover:text-gray-900]="!this.sending && (this.selectedInput || this.selectedWorkflow) && this.fileControl.value!.length !== 0"
+                    class="p-6 mr-4 border min-w-56 text-white transition border-solid duration-300 border-green-400 hover:text-gray-900 hover:bg-transparent">
                 {{ 'UPLOAD.upload_file' | translate }}
             </button>
         </div>

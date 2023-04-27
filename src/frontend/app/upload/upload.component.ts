@@ -49,7 +49,6 @@ export class UploadComponent implements OnInit {
     loading                     : boolean       = true;
     sending                     : boolean       = false;
     error                       : boolean       = false;
-    uploadMode                  : string        = 'input';
 
     constructor(
         private router: Router,
@@ -136,7 +135,6 @@ export class UploadComponent implements OnInit {
             }
         });
         this.selectedInput = inputId;
-        this.uploadMode = 'input';
         this.selectedWorkflow = '';
         this.selectedWorkflowTechnicalId = '';
     }
@@ -148,7 +146,6 @@ export class UploadComponent implements OnInit {
             }
         });
         this.selectedWorkflow = workflowId;
-        this.uploadMode = 'workflow';
         this.selectedInput = '';
         this.selectedInputTechnicalId = '';
     }
@@ -176,16 +173,16 @@ export class UploadComponent implements OnInit {
             this.http.post(
                 environment['url'] + '/ws/' + splitterOrVerifier + '/upload' +
                 '?inputId=' + this.selectedInputTechnicalId + '&workflowId=' + this.selectedWorkflowTechnicalId +
-                '&userId=' + this.userService.user.id + '&UploadMode=' + this.uploadMode, formData, {headers: this.authService.headers},
+                '&userId=' + this.userService.user.id, formData, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.sending = false;
                     this.fileControl.setValue([]);
                     this.notify.success(this.translate.instant('UPLOAD.upload_success'));
                     for (const cpt of Array(numberOFFiles).keys()) {
-                        if (this.uploadMode === 'input') {
+                        if (this.selectedInput) {
                             this.historyService.addHistory(splitterOrVerifier, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded', {input: this.selectedInputTechnicalId}));
-                        } else if (this.uploadMode === 'workflow') {
+                        } else if (this.selectedWorkflow) {
                             this.historyService.addHistory(splitterOrVerifier, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded_workflow', {workflow: this.selectedWorkflowTechnicalId}));
                         }
                     }
