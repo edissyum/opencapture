@@ -218,6 +218,13 @@
 		"previous_page": "Page précédente",
 		"separator_choice ": "Choix de séparateur"
 	},
+	"DOCUMENTS": {
+		"data_deleted": "Champ supprimé",
+		"field_duplicated": "Champ <strong>{{ input }}</strong> dupliqué",
+		"identifier": "Identifiant du document",
+		"position_and_data_updated": "Position et valeur du champ <strong>{{ input }}</strong> mise à jour",
+		"supplier_infos_updated": "Tiers paramétré pour ce document"
+	},
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
 		"500": "Une erreur technique est apparue de notre côté. <br> Merci de réessayer ultérieurement",
@@ -298,6 +305,7 @@
 	},
 	"FORMS": {
 		"available_fields": "Champs disponibles",
+		"batch_display": "Affichage des lots",
 		"choose_form": "Selection du formulaire",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire <strong>{{ form }}</strong> ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver le formulaire <strong>{{ form }}</strong> ?",
@@ -331,6 +339,7 @@
 		"label_updated_successfully": "Libellé mis à jour avec succès",
 		"modify": "Modifier le formulaire",
 		"modify_display": "Modifier l'affichage lié au formulaire",
+		"modify_unique_url": "Modifier les paramètres de l'affichage de l'URL unique",
 		"no_fields": "Aucun champ n'est associé à ce formulaire",
 		"no_form_available": "Aucun formulaire n'est disponible",
 		"only_ocr": "OCRiser simplement le document",
@@ -341,6 +350,8 @@
 		"supplier": "Tiers",
 		"supplier_verif": "Vérification du tiers",
 		"supplier_verif_hint": "Vérification via API des SIRET / SIREN / TVA INTRA",
+		"unique_url": "URL unique du viewer",
+		"unique_url_hint": "Modifier l'affichage du viewer lors de l'utilisation via une URL unique. Permet de limiter les intéractions de l'utilisateur",
 		"update_label": "Mettre à jour le libellé du champ",
 		"updated": "Formulaire mis à jour avec succès",
 		"validate": "Valider"
@@ -537,13 +548,6 @@
 		"updated": "Chaîne entrante mise à jour",
 		"watcher_and_script_updated": "Script et watcher mis à jour"
 	},
-	"DOCUMENTS": {
-		"data_deleted": "Champ supprimé",
-		"field_duplicated": "Champ <strong>{{ input }}</strong> dupliqué",
-		"identifier": "Identifiant du document",
-		"position_and_data_updated": "Position et valeur du champ <strong>{{ input }}</strong> mise à jour",
-		"supplier_infos_updated": "Tiers paramétré pour ce document"
-	},
 	"LOGIN-METHODS": {
 		"base_dn": "Base de recherche",
 		"class_Object": "Classe objet",
@@ -638,8 +642,8 @@
 	},
 	"MONITORING": {
 		"and": "et",
-		"documents_id": "Identifiant des documents",
 		"document_id": "Identifiant du document",
+		"documents_id": "Identifiant des documents",
 		"done": "Processus terminé",
 		"error": "Processus en erreur",
 		"hour": "heure",
@@ -815,7 +819,7 @@
 		"user_quota": "Quota d'utilisateurs",
 		"users_list": "Visualiser la liste des utilisateurs",
 		"verifier": "Open-Capture Vérificateur",
-		"verifier_display": "Paramétrage des l'affichage des documents",
+		"verifier_settings": "Paramétrage spécifique au Verifier",
 		"version_update": "Version et mise à jour"
 	},
 	"REGEX": {
@@ -870,7 +874,7 @@
 		"user_quota": "Quota d'utilisateurs",
 		"users_list": "Liste des utilisateurs",
 		"verifier": "Paramètres du Vérificateur",
-		"verifier_display": "Affichage des lots",
+		"verifier_settings": "Paramètrages divers",
 		"workflow_builder": "Création de workflow",
 		"workflow_update": "Modification du workflow"
 	},

@@ -1,8 +1,8 @@
 <div *ngIf="this.loading">
     <app-loader></app-loader>
 </div>
-<div class="grid grid-cols-2 overflow-auto" [ngStyle]="{'height': !this.fromToken ? 'calc(100vh - 4rem)' : '100vh'}">
-    <div id="image" class="overflow-auto" [ngStyle]="{'height': !this.fromToken ? 'calc(100vh - 4rem)' : '100vh'}" style="direction: rtl">
+<div class="grid grid-cols-2 overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem)' : 'height: 100vh'">
+    <div id="image" class="overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem); direction: rtl' : 'height: 100vh;direction: rtl'">
         <div class="relative ml-4 z-50 text-xl text-left py-2">
             <ng-container *ngIf="!this.loading && this.document['nb_pages']> 1">
                 <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()"></i>

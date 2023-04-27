@@ -67,7 +67,7 @@ def documents_list():
 @bp.route('verifier/documents/<int:document_id>', methods=['GET'])
 @auth.token_required
 def document_info(document_id):
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}'}), 403
@@ -88,7 +88,7 @@ def get_document_id_by_token():
 @bp.route('verifier/documents/<int:document_id>/updatePosition', methods=['PUT'])
 @auth.token_required
 def update_document_position(document_id):
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/updatePosition'}), 403
@@ -101,7 +101,7 @@ def update_document_position(document_id):
 @bp.route('verifier/documents/<int:document_id>/updatePage', methods=['PUT'])
 @auth.token_required
 def update_document_page(document_id):
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/updatePage'}), 403
@@ -125,7 +125,7 @@ def delete_document(document_id):
 @bp.route('verifier/documents/<int:document_id>/updateData', methods=['PUT'])
 @auth.token_required
 def update_document_data(document_id):
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/updateData'}), 403
@@ -254,7 +254,7 @@ def delete_document_page(document_id):
 @bp.route('verifier/documents/<int:document_id>/update', methods=['PUT'])
 @auth.token_required
 def update_document(document_id):
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/update'}), 403
@@ -278,7 +278,7 @@ def remove_lock_by_user_id(user_id):
 @bp.route('verifier/ocrOnFly', methods=['POST'])
 @auth.token_required
 def ocr_on_fly():
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/ocrOnFly'}), 403
 
@@ -301,7 +301,7 @@ def ocr_on_fly():
 @bp.route('verifier/getThumb', methods=['POST'])
 @auth.token_required
 def get_thumb():
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier | update_position_mask']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/getThumb'}), 403
 
@@ -319,7 +319,7 @@ def get_thumb():
 @bp.route('verifier/getTokenINSEE', methods=['GET'])
 @auth.token_required
 def get_token_insee():
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/getTokenINSEE'}), 403
 
@@ -330,7 +330,7 @@ def get_token_insee():
 @bp.route('verifier/verifySIREN', methods=['POST'])
 @auth.token_required
 def verify_siren():
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/verifySIREN'}), 403
 
@@ -343,7 +343,7 @@ def verify_siren():
 @bp.route('verifier/verifySIRET', methods=['POST'])
 @auth.token_required
 def verify_siret():
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/verifySIRET'}), 403
 
@@ -356,7 +356,7 @@ def verify_siret():
 @bp.route('verifier/verifyVATNumber', methods=['POST'])
 @auth.token_required
 def verify_vat_number():
-    if not request.environ['skip']:
+    if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/verifyVATNumber'}), 403
 

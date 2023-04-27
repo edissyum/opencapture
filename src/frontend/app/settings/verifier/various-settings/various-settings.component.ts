@@ -33,14 +33,15 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/dr
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
-    selector: 'app-display-list',
-    templateUrl: './display.component.html',
-    styleUrls: ['./display.component.scss'],
+    selector: 'app-various-settings-list',
+    templateUrl: './various-settings.component.html',
+    styleUrls: ['./various-settings.component.scss'],
 })
-export class VerifierDisplayComponent implements OnInit {
+export class VariousSettingsVerifierComponent implements OnInit {
     loading             : boolean   = true;
     loadingCustomFields : boolean   = true;
     formLoaded          : boolean   = false;
+    formLoadedUnique    : boolean   = false;
     forms               : any       = [];
     availableFieldsTmp  : any       = [];
     currentForm         : any       = {};
@@ -133,6 +134,10 @@ export class VerifierDisplayComponent implements OnInit {
         ).subscribe();
     }
 
+    loadUniqueUrl(event: any) {
+        this.formLoadedUnique = true;
+    }
+
     loadDisplay(event: any) {
         this.loading = true;
         this.availableFieldsTmp = [];
@@ -161,6 +166,10 @@ export class VerifierDisplayComponent implements OnInit {
     updateLabel(event: any, subtitle: any) {
         subtitle['label'] = event.target.value;
         subtitle['updateMode'] = false;
+    }
+
+    updateUniqueUrl() {
+
     }
 
     updateDisplay() {
