@@ -61,8 +61,9 @@ def get_process_by_token():
     process, status = monitoring.get_process_by_token(token)
     if process and retrieve_data:
         if 'document_ids' in process['process'][0] and process['process'][0]['document_ids']:
-            document_data = verifier.get_document_by_id(process['process'][0]['document_ids'][0])
-            if document_data:
-                process['document_data'] = document_data[0]['datas']
-
+            process['document_data'] = {}
+            for document_id in process['process'][0]['document_ids']:
+                document_data = verifier.get_document_by_id(document_id)
+                if document_data:
+                    process['document_data'][document_id] = (document_data[0]['datas'])
     return make_response(jsonify(process)), status

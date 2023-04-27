@@ -21,14 +21,13 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
 import { catchError, map, startWith, tap } from "rxjs/operators";
 import { Observable, of } from "rxjs";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { FormControl } from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import { LocalStorageService } from "../../../services/local-storage.service";
-import { ConfigService } from "../../../services/config.service";
 import * as moment from 'moment';
 import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
@@ -43,24 +42,24 @@ declare const $: any;
 })
 
 export class VerifierViewerComponent implements OnInit {
-    imageDocument            : any;
+    imageDocument           : any;
     documentId              : any;
     document                : any;
     fields                  : any;
-    config                  : any;
+    saveInfo                : boolean     = true;
+    loading                 : boolean     = true;
+    supplierExists          : boolean     = true;
+    deleteDataOnChangeForm  : boolean     = true;
     isOCRRunning            : boolean     = false;
+    fromToken               : boolean     = false;
     settingsOpen            : boolean     = false;
     ocrFromUser             : boolean     = false;
     accountingPlanEmpty     : boolean     = false;
     getOnlyRawFooter        : boolean     = false;
     disableOCR              : boolean     = false;
-    tokenError              : boolean     = false;
+    tokenINSEEError         : boolean     = false;
     visualIsHide            : boolean     = false;
-    saveInfo                : boolean     = true;
-    loading                 : boolean     = true;
     loadingSubmit           : boolean     = false;
-    supplierExists          : boolean     = true;
-    deleteDataOnChangeForm  : boolean     = true;
     formEmpty               : boolean     = false;
     oldVAT                  : string      = '';
     oldSIRET                : string      = '';
@@ -71,7 +70,7 @@ export class VerifierViewerComponent implements OnInit {
     lastColor               : string      = '';
     toHighlight             : string      = '';
     toHighlightAccounting   : string      = '';
-    token                   : string      = '';
+    tokenINSEE              : string      = '';
     imgSrc                  : SafeUrl     = '';
     ratio                   : number      = 0;
     currentPage             : number      = 1;
@@ -130,20 +129,28 @@ export class VerifierViewerComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         private localeService: LocaleService,
-        private configService: ConfigService,
         private historyService: HistoryService,
         private localStorageService: LocalStorageService
     ) {}
 
     async ngOnInit(): Promise<void> {
-        if (!this.authService.headersExists) {
-            this.authService.generateHeaders();
-        }
         this.localStorageService.save('splitter_or_verifier', 'verifier');
         this.ocrFromUser = false;
         this.saveInfo = true;
-        this.config = this.configService.getConfig();
-        this.documentId = this.route.snapshot.params['id'];
+
+        if (this.route.snapshot.params['token']) {
+            const token = this.route.snapshot.params['token'];
+            const res: any = await this.retrieveDocumentIdFromToken(token);
+            this.fromToken = true;
+            this.documentId = res['document_id'];
+            this.authService.headers = new HttpHeaders().set('Authorization', 'Bearer ' + token);
+        } else {
+            this.documentId = this.route.snapshot.params['id'];
+            if (!this.authService.headersExists) {
+                this.authService.generateHeaders();
+            }
+        }
+
         this.translate.get('HISTORY-DESC.viewer', {document_id: this.documentId}).subscribe((translated: string) => {
             this.historyService.addHistory('verifier', 'viewer', translated);
         });
@@ -231,6 +238,10 @@ export class VerifierViewerComponent implements OnInit {
             );
     }
 
+    async retrieveDocumentIdFromToken(token: any) {
+        return await this.http.post(environment['url'] + '/ws/verifier/documents/getDocumentIdByToken', {'token': token}).toPromise();
+    }
+
     convertAutocomplete() {
         this.outputs.forEach((output: any) => {
             if (output.data.options.links && output.output_type_id === 'export_mem') {
@@ -269,7 +280,7 @@ export class VerifierViewerComponent implements OnInit {
 
                     this.form.facturation.forEach((element: any) => {
                        if (element.id === data['autocompleteField']) {
-                           this.http.post(environment['url'] + '/ws/mem/getDocumentsWithContact', data, {headers: this.authService.headers},
+                           this.http.post(environment['url'] + 'getDocumentsWithContact/ws/mem/', data, {headers: this.authService.headers},
                            ).pipe(
                                tap((_return: any) => {
                                    element.type = 'autocomplete';
@@ -304,15 +315,15 @@ export class VerifierViewerComponent implements OnInit {
                 this.outputsLabel.push(output.output_label);
             }
         }
-        if (this.formSettings.settings.supplier_verif && !this.token) {
+        if (this.formSettings.settings.supplier_verif && !this.tokenINSEE) {
             const token: any = await this.generateTokenInsee();
             if (token['token']) {
                 if (token['token'].includes('ERROR')) {
-                    this.tokenError = true;
-                    this.token = token['token'].replace('ERROR : ', '');
+                    this.tokenINSEEError = true;
+                    this.tokenINSEE = token['token'].replace('ERROR : ', '');
                 } else {
-                    this.tokenError = false;
-                    this.token = token['token'];
+                    this.tokenINSEEError = false;
+                    this.tokenINSEE = token['token'];
                 }
             }
         }
@@ -1394,8 +1405,8 @@ export class VerifierViewerComponent implements OnInit {
                         error = siren_error;
                     } else if (vat_error) {
                         error = vat_error;
-                    } else if (this.tokenError) {
-                        error = this.token;
+                    } else if (this.tokenINSEEError) {
+                        error = this.tokenINSEE;
                     } else {
                         error = this.translate.instant('ERROR.unknow_error');
                     }
@@ -1629,9 +1640,9 @@ export class VerifierViewerComponent implements OnInit {
             const sizeSIREN = 9;
             const sizeSIRET = 14;
             if (siretOrSiren === 'siren' && this.oldSIREN !== value) {
-                if (this.verify(value, sizeSIREN) && this.token) {
+                if (this.verify(value, sizeSIREN) && this.tokenINSEE) {
                     this.oldSIREN = value;
-                    this.http.post(environment['url'] + '/ws/verifier/verifySIREN', {'token': this.token, 'siren': value}, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/verifier/verifySIREN', {'token': this.tokenINSEE, 'siren': value}, {headers: this.authService.headers}).pipe(
                         catchError((err: any) => {
                             this.form['supplier'].forEach((element: any) => {
                                 if (element.id === 'siren') {
@@ -1649,7 +1660,7 @@ export class VerifierViewerComponent implements OnInit {
                     this.form['supplier'].forEach((element: any) => {
                         if (element.id === 'siren') {
                             setTimeout(() => {
-                                if (!this.token) {
+                                if (!this.tokenINSEE) {
                                     element.control.setErrors({'siren_error': this.translate.instant('ERROR.insee_api_not_up')});
                                 } else {
                                     element.control.setErrors({'siren_error': this.translate.instant('ERROR.wrong_siren_format')});
@@ -1660,9 +1671,9 @@ export class VerifierViewerComponent implements OnInit {
                     });
                 }
             } else if (siretOrSiren === 'siret'  && this.oldSIRET !== value) {
-                if (this.verify(value, sizeSIRET) && this.token) {
+                if (this.verify(value, sizeSIRET) && this.tokenINSEE) {
                     this.oldSIRET = value;
-                    this.http.post(environment['url'] + '/ws/verifier/verifySIRET', {'token': this.token, 'siret': value}, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/verifier/verifySIRET', {'token': this.tokenINSEE, 'siret': value}, {headers: this.authService.headers}).pipe(
                         catchError((err: any) => {
                             this.form['supplier'].forEach((element: any) => {
                                 if (element.id === 'siret') {
@@ -1680,7 +1691,7 @@ export class VerifierViewerComponent implements OnInit {
                     this.form['supplier'].forEach((element: any) => {
                         if (element.id === 'siret') {
                             setTimeout(() => {
-                                if (!this.token) {
+                                if (!this.tokenINSEE) {
                                     element.control.setErrors({'siret_error': this.translate.instant('ERROR.insee_api_not_up')});
                                 } else {
                                     element.control.setErrors({'siret_error': this.translate.instant('ERROR.wrong_siret_format')});
@@ -1717,7 +1728,7 @@ export class VerifierViewerComponent implements OnInit {
                     this.form['supplier'].forEach((element: any) => {
                         if (element.id === 'vat_number') {
                             setTimeout(() => {
-                                if (!this.token) {
+                                if (!this.tokenINSEE) {
                                     element.control.setErrors({'vat_error': this.translate.instant('ERROR.ecu_api_not_up')});
                                 } else {
                                     element.control.setErrors({'vat_error': this.translate.instant('ERROR.wrong_vat_number_format')});

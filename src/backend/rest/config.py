@@ -30,12 +30,7 @@ def read_config():
     if not privileges.has_privileges(request.environ['user_id'], ['access_config']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/readConfig'}), 403
 
-    if 'config' in current_context:
-        configurations = current_context.config
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[1]
+    configurations = config.read_config()
     return make_response(jsonify({'config': configurations})), 200
 
 

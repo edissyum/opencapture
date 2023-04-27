@@ -67,6 +67,10 @@ const routes: Routes = [
     },
     { path: 'splitter', redirectTo: 'splitter/list', pathMatch: 'full' },
     {
+        path: 'verifier/viewer_token/:token', component: VerifierViewerComponent,
+        data: { title: marker('VERIFIER.viewer'), showMenu: false }
+    },
+    {
         path: 'verifier/viewer/:id', component: VerifierViewerComponent,
         data: { title: marker('VERIFIER.viewer'), privileges: ['access_verifier'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]

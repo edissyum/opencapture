@@ -638,7 +638,7 @@
 	},
 	"MONITORING": {
 		"and": "and",
-		"batch_ids": "Batch ids",
+		"documents_id": "Documents identifiers",
 		"document_id": "Document identifier",
 		"done": "Process done",
 		"error": "Process error",

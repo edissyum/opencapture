@@ -52,10 +52,12 @@ export class MenuComponent implements OnInit {
         setTimeout(() => {
             this.userService.user = this.userService.getUserFromLocal();
         }, 100);
+
         if (this.userService.user) {
             this.localeService.getLocales();
             this.localeService.getCurrentLocale();
         }
+
         const k = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
         let n = 0;
         document.addEventListener('keydown', (e) => {

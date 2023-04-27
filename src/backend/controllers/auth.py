@@ -28,10 +28,10 @@ from ldap3 import Server, ALL
 from flask_babel import gettext
 from src.backend.controllers import privileges
 from ldap3.core.exceptions import LDAPException
-from werkzeug.security import generate_password_hash, check_password_hash
-from src.backend.import_models import auth, user, roles
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from werkzeug.security import generate_password_hash, check_password_hash
+from src.backend.import_models import auth, user, roles, monitoring
 from flask import request, g as current_context, jsonify, current_app, session
 
 
@@ -91,6 +91,30 @@ def encode_auth_token(user_id):
         return str(_e)
 
 
+def generate_unique_url_token(document_id):
+    if 'configurations' in current_context:
+        configurations = current_context.configurations
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[10]
+    days_before_expo = int(configurations['uniqueUrlExpiration'])
+
+    try:
+        payload = {
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=days_before_expo),
+            'iat': datetime.datetime.utcnow(),
+            'sub': document_id
+        }
+        return jwt.encode(
+            payload,
+            current_app.config['SECRET_KEY'].replace("\n", ""),
+            algorithm='HS512'
+        )
+    except Exception as _e:
+        return str(_e)
+
+
 def generate_reset_token(user_id):
     try:
         payload = {
@@ -113,6 +137,15 @@ def decode_reset_token(token):
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         return {"errors": gettext("RESET_JWT_ERROR"), "message": str(_e)}, 500
+    return decoded_token, 200
+
+
+def decode_unique_url_token(token):
+    try:
+        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
+    except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
+            jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
+        return {"errors": gettext("UNIQUE_URL_JWT_ERROR"), "message": str(_e)}, 500
     return decoded_token, 200
 
 
@@ -255,7 +288,6 @@ def token_required(view):
         if 'Authorization' in request.headers:
             where = ['username = %s']
             user_ws = token = password = False
-
             if 'Bearer' in request.headers['Authorization']:
                 token = request.headers['Authorization'].split('Bearer')[1].lstrip()
                 try:
@@ -282,8 +314,36 @@ def token_required(view):
             })
 
             if token and not user_ws:
-                if user_info[0]['last_connection'] and token['iat'] < datetime.datetime.timestamp(user_info[0]['last_connection']):
+                if user_info and user_info[0]['last_connection'] and token['iat'] < datetime.datetime.timestamp(user_info[0]['last_connection']):
                     return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('ACCOUNT_ALREADY_LOGGED')}), 500
+
+            if token:
+                process, _ = monitoring.get_process_by_token(token['sub'], '')
+                allowed_path = [
+                    'verifier/getThumb',
+                    'verifier/ocrOnFly',
+                    'forms/verifier/list',
+                    'verifier/verifySIRET',
+                    'verifier/verifySIREN',
+                    'forms/verifier/getById',
+                    'accounts/getAdressById',
+                    'verifier/getTokenINSEE',
+                    'accounts/suppliers/list',
+                    'verifier/verifyVATNumber',
+                    'forms/fields/getByFormId',
+                    'outputs/verifier/getById',
+                    'accounts/supplier/2/updatePage',
+                    'accounts/supplier/2/updatePosition'
+                ]
+                if process and process[0]['document_ids']:
+                    for document_id in process[0]['document_ids']:
+                        if str(document_id) in request.url:
+                            request.environ['skip'] = True
+                            return view(**kwargs)
+                    for path in allowed_path:
+                        if path in request.url:
+                            request.environ['skip'] = True
+                            return view(**kwargs)
 
             if not user_info:
                 error = gettext("JWT_ERROR")

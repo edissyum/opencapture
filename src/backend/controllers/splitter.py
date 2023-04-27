@@ -17,9 +17,11 @@
 
 import re
 import json
+import uuid
 import pypdf
 import base64
 import shutil
+import secrets
 import os.path
 import datetime
 import pandas as pd
@@ -36,18 +38,27 @@ from src.backend.import_classes import _Files, _Splitter, _CMIS, _MEMWebServices
 def handle_uploaded_file(files, input_id, workflow_id, user_id):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER_SPLITTER']
+    tokens = []
 
     for file in files:
         _f = files[file]
         filename = _Files.save_uploaded_file(_f, path, False)
 
+        now = datetime.datetime.now()
+        year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]
+        hour, minute, second, microsecond = [str('%02d' % now.hour), str('%02d' % now.minute), str('%02d' % now.second), str('%02d' % now.microsecond)]
+        date_batch = year + month + day + '_' + hour + minute + second + microsecond
+        token = date_batch + '_' + secrets.token_hex(32) + '_' + str(uuid.uuid4())
+        tokens.append({'filename': os.path.basename(filename), 'token': token})
+
         task_id_monitor = monitoring.create_process({
+            'token': token,
             'status': 'wait',
             'module': 'splitter',
+            'source': 'interface',
             'filename': os.path.basename(filename),
             'input_id': input_id if input_id else None,
-            'workflow_id': workflow_id if workflow_id else None,
-            'source': 'interface',
+            'workflow_id': workflow_id if workflow_id else None
         })
 
         if task_id_monitor:
@@ -59,8 +70,8 @@ def handle_uploaded_file(files, input_id, workflow_id, user_id):
                 'task_id_monitor': task_id_monitor[0]['process']
             })
         else:
-            return False
-    return True
+            return False, 500
+    return tokens, 200
 
 
 def launch_referential_update(form_data):
