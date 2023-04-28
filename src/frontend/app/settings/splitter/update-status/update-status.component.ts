@@ -51,11 +51,10 @@ export class SplitterUpdateStatusComponent implements OnInit {
   }
 
   addIdentifier() {
-    console.log(this.identifierControl.value);
-    if (this.identifierControl.value) {
+    if (this.identifierControl.value && this.identifiers.indexOf(this.identifierControl.value) === -1) {
       this.identifiers.push(this.identifierControl.value);
-      this.identifierControl.setValue('');
     }
+    this.identifierControl.setValue('');
   }
 
   removeIdentifier(identifier: number) {
