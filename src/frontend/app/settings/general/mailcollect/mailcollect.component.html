@@ -2,7 +2,7 @@
     <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
-    <mat-sidenav-content class="bg-white">
+    <mat-sidenav-content class="bg-white overflow-hidden">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
@@ -20,8 +20,8 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div *ngIf="!this.loading" class="w-full overflow-auto h-full-overflow">
-            <mat-tab-group class="mx-5" [selectedIndex]="this.selectedIndex">
+        <div *ngIf="!this.loading" class="w-full">
+            <mat-tab-group class="mx-5" [selectedIndex]="this.selectedIndex" dynamicHeight>
                 <mat-tab *ngFor="let process of this.processes">
                     <ng-template mat-tab-label>
                         <span class="actions" *ngIf="getNameOfProcess(process) !== '' && getNameOfProcess(process) !== null else input">
@@ -74,88 +74,91 @@
                             </div>
                         </ng-template>
                     </ng-template>
-                    <div class="flex flex-wrap m-10 mb-0 text-center">
-                        <ng-container *ngFor="let field of process">
-                            <div [class]="field.class" *ngIf="field.type === 'text' || field.type === 'password'">
-                                <mat-form-field class="block m-2">
-                                    <mat-label>{{ field.label | translate }}</mat-label>
-                                    <input matInput [formControl]="field['control']" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field['required']">
-                                    <mat-icon matSuffix *ngIf="field.id === 'password'" (click)="field.type === 'text' ? field.type = 'password' : field.type = 'text' "
-                                              class="text-green-400 relative cursor-pointer -top-0.5 text-base">
-                                        <i class="fa fa-1x" [class.fa-eye-slash]="field.type !== 'password'" [class.fa-eye]="field.type === 'password'"></i>
-                                    </mat-icon>
-                                </mat-form-field>
+                    <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 9rem) !important">
+                        <ng-container *ngFor="let unit of this.units">
+                            <h2 class="text-gray-900">{{ unit['label'] | translate }}</h2>
+                            <div class="flex justify-center mx-10">
+                                <div class="grid grid-cols-2 gap-6 w-full mb-0 text-center">
+                                    <ng-container *ngFor="let field of process">
+                                        <ng-container *ngIf="field.unit === unit['id']">
+                                            <div *ngIf="field.type === 'boolean'" class="col-span-2 mb-8">
+                                                <mat-slide-toggle class="relative m-auto top-4" [formControl]="field['control']">
+                                                    {{ field.label | translate }}
+                                                </mat-slide-toggle>
+                                            </div>
+                                            <mat-form-field class="w-full" *ngIf="field.type === 'text' || field.type === 'password' || field.type === 'number'">
+                                                <mat-label>{{ field.label | translate }}</mat-label>
+                                                <input matInput [type]="field.type" [formControl]="field['control']">
+                                                <mat-icon matSuffix *ngIf="field.id === 'password'"
+                                                          (click)="field.type === 'text' ? field.type = 'password' : field.type = 'text' "
+                                                          class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                                                    <i class="fa fa-1x" [class.fa-eye-slash]="field.type !== 'password'" [class.fa-eye]="field.type === 'password'"></i>
+                                                </mat-icon>
+                                            </mat-form-field>
+                                            <mat-form-field class="w-full" *ngIf="field.type === 'autocomplete' && field.id !== 'splitter_technical_input_id' && field.id !== 'verifier_customer_id' && field.id !== 'verifier_form_id'">
+                                                <mat-label>{{ field.label | translate }}</mat-label>
+                                                <input matInput [formControl]="field['control']" [required]="field['required']"
+                                                       [type]="field.type" [matAutocomplete]="autocomplete">
+                                                <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
+                                                      [matTooltip]="field.hint | translate">
+                                                    <i class="fa-solid fa-circle-question text-md"></i>
+                                                </span>
+                                                <mat-autocomplete #autocomplete="matAutocomplete">
+                                                    <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option.id">
+                                                        <span [innerHTML]="option | highlight: toHighlight"></span>
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                            <mat-form-field class="w-full" *ngIf="field.type === 'autocomplete' && (field.id === 'splitter_technical_input_id' || field.id === 'verifier_customer_id' || field.id === 'verifier_form_id')">
+                                                <mat-label>{{ field.label | translate }}</mat-label>
+                                                <input matInput [formControl]="field['control']" [required]="field['required']"
+                                                       [type]="field.type" [matAutocomplete]="autocomplete">
+                                                <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
+                                                      [matTooltip]="field.hint | translate">
+                                                    <i class="fa-solid fa-circle-question text-md"></i>
+                                                </span>
+                                                <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn">
+                                                    <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option.id">
+                                                        <span [innerHTML]="option.name ? option.name : option.label ? option.label : option.input_label | highlight: toHighlight"></span>
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                            <mat-form-field class="w-full" *ngIf="field.type === 'select'">
+                                                <mat-label>{{ field.label | translate }}</mat-label>
+                                                <mat-select [formControl]="field['control']" [required]="field['required']">
+                                                    <mat-option *ngFor="let option of field.values" [value]="option['id']">
+                                                        {{ option['label'] | translate }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </ng-container>
+                                    </ng-container>
+                                </div>
                             </div>
-                            <div [class]="field.class" *ngIf="field.type === 'autocomplete' &&
-                                                            field.id !== 'splitter_technical_input_id' &&
-                                                            field.id !== 'verifier_customer_id' &&
-                                                            field.id !== 'verifier_form_id'">
-                                <mat-form-field class="block m-2">
-                                    <mat-label>{{ field.label | translate }}</mat-label>
-                                    <input matInput [formControl]="field['control']" [required]="field['required']"
-                                           [type]="field.type" [matAutocomplete]="autocomplete">
-                                    <mat-hint class="text-gray-600" *ngIf="field.hint">{{ field.hint | translate }}</mat-hint>
-                                    <mat-autocomplete #autocomplete="matAutocomplete">
-                                        <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option.id">
-                                            <span [innerHTML]="option | highlight: toHighlight"></span>
-                                        </mat-option>
-                                    </mat-autocomplete>
-                                </mat-form-field>
-                            </div>
-                            <div [class]="field.class" *ngIf="field.type === 'autocomplete' &&
-                                                                (field.id === 'splitter_technical_input_id' ||
-                                                                field.id === 'verifier_customer_id' ||
-                                                                field.id === 'verifier_form_id')">
-                                <mat-form-field class="block m-2">
-                                    <mat-label>{{ field.label | translate }}</mat-label>
-                                    <input matInput [formControl]="field['control']" [required]="field['required']"
-                                           [type]="field.type" [matAutocomplete]="autocomplete">
-                                    <mat-hint *ngIf="field.hint">{{ field.hint | translate }}</mat-hint>
-                                    <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn">
-                                        <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option.id">
-                                            <span [innerHTML]="option.name ? option.name : option.label ? option.label : option.input_label | highlight: toHighlight"></span>
-                                        </mat-option>
-                                    </mat-autocomplete>
-                                </mat-form-field>
-                            </div>
-                            <div [class]="field.class" *ngIf="field.type === 'select'">
-                                <mat-form-field class="block m-2">
-                                    <mat-label>{{ field.label | translate }}</mat-label>
-                                    <mat-select [formControl]="field['control']" [required]="field['required']">
-                                        <mat-option *ngFor="let option of field.values" [value]="option">
-                                            {{ option }}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                            <div [class]="field.class" *ngIf="field.type === 'number'">
-                                <mat-form-field class="block m-2">
-                                    <mat-label>{{ field.label | translate }}</mat-label>
-                                    <input matInput [formControl]="field['control']" [type]="field.type"
-                                           placeholder="{{ field.label | translate }}" [required]="field['required']">
-                                </mat-form-field>
-                            </div>
-                            <div [class]="field.class" *ngIf="field.type === 'boolean' && !field.disabled">
-                                <mat-slide-toggle class="relative m-auto top-4" [formControl]="field['control']">
-                                    {{ field.label | translate }}
-                                </mat-slide-toggle>
-                            </div>
+
+                            <span *ngIf="unit['id'] === 'general'">
+                                <div class="hint text-center">
+                                    <i class="fa-solid fa-circle-exclamation fa-2x pl-1"></i>
+                                    <div class="message w-auto">
+                                        <button class="gray_button col-start-3" mat-button (click)="retrieveFolders(process)">
+                                            <span *ngIf="!this.folderLoading">{{ 'MAILCOLLECT.test_settings_and_retrieve_folders' | translate }}</span>
+                                            <i *ngIf="this.folderLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-green-400"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </span>
                         </ng-container>
-                    </div>
-                    <div class="mb-6 grid grid-cols-6 gap-4 h-10 mt-8">
-                        <button class="gray_button col-start-3" mat-button (click)="retrieveFolders(process)">
-                            <span *ngIf="!this.folderLoading">{{ 'MAILCOLLECT.retrieve_folders' | translate }}</span>
-                            <i *ngIf="this.folderLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-green-400"></i>
-                        </button>
-                        <button *ngIf="process.exists" mat-button (click)="updateProcess(process)" class="valid_button">
-                            <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.update_process' | translate }}</span>
-                            <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
-                        </button>
-                        <button *ngIf="!process.exists" mat-button (click)="createProcess(process)"
-                                class="valid_button">
-                            <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.create_process' | translate }}</span>
-                            <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
-                        </button>
+                        <div class="mb-6 flex justify-center">
+                            <button *ngIf="process.exists" mat-button (click)="updateProcess(process)" class="valid_button">
+                                <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.update_process' | translate }}</span>
+                                <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                            </button>
+                            <button *ngIf="!process.exists" mat-button (click)="createProcess(process)"
+                                    class="valid_button">
+                                <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.create_process' | translate }}</span>
+                                <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                            </button>
+                        </div>
                     </div>
                 </mat-tab>
             </mat-tab-group>

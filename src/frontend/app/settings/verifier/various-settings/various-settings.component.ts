@@ -147,7 +147,7 @@ export class VariousSettingsVerifierComponent implements OnInit {
             if (element.id === form_id) {
                 this.formLoadedUnique = true;
                 this.currentForm = element;
-                console.log(this.currentForm);
+
                 if (this.currentForm.settings.unique_url) {
                     this.uniqueURlExpirationControl.setValue(this.currentForm.settings.unique_url.expiration);
                     this.changeFormControl.setValue(this.currentForm.settings.unique_url.change_form);

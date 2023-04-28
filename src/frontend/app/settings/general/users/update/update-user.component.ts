@@ -240,7 +240,6 @@ export class UpdateUserComponent implements OnInit {
                     if (data.hasOwnProperty(field)) {
                         this.userFields.forEach(element => {
                             if (element.id === field) {
-                                console.log(field, element)
                                 element.control.setValue(data[field]);
                                 if (element.id === 'role') {
                                     element.values = this.roles;

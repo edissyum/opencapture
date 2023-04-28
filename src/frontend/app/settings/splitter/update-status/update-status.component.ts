@@ -51,7 +51,6 @@ export class SplitterUpdateStatusComponent implements OnInit {
   }
 
   addIdentifier() {
-    console.log(this.identifierControl.value);
     if (this.identifierControl.value) {
       this.identifiers.push(this.identifierControl.value);
       this.identifierControl.setValue('');

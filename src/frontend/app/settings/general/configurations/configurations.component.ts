@@ -62,15 +62,15 @@ export class ConfigurationsComponent implements OnInit {
     units               : any           = [
         {
             id: 'general',
-            label: marker('MAILCOLLECT.general'),
+            label: marker('MAILCOLLECT.smtp_general')
         },
         {
             id: 'auth',
-            label: marker('MAILCOLLECT.auth'),
+            label: marker('MAILCOLLECT.smtp_auth')
         },
         {
             id: 'notif_error',
-            label: marker('MAILCOLLECT.notif_error'),
+            label: marker('MAILCOLLECT.smtp_notif_error')
         }
     ];
     smtpForm            : any[]         = [
@@ -132,7 +132,7 @@ export class ConfigurationsComponent implements OnInit {
             id: 'smtpAuth',
             unit: 'auth',
             control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_auth'),
+            label: marker('MAILCOLLECT.enable_smtp_auth'),
             type: 'boolean',
             required: false,
         },
@@ -338,7 +338,7 @@ export class ConfigurationsComponent implements OnInit {
         this.http.put(environment['url'] + '/ws/config/updateConfiguration/smtp', {'args': data}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 if (showSuccess) {
-                    this.notify.success(this.translate.instant('MAILCOLLECT.general_settings_updated'));
+                    this.notify.success(this.translate.instant('MAILCOLLECT.smtp_general_settings_updated'));
                 }
                 this.historyService.addHistory('general', 'mailcollect', this.translate.instant('HISTORY-DESC.smtp_settings_updated'));
             }),

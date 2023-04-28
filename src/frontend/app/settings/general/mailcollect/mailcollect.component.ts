@@ -46,8 +46,16 @@ export class MailCollectComponent implements OnInit {
             control: new FormControl(),
         },
         {
+            id: 'secured_connection',
+            unit: 'general',
+            control: new FormControl(true),
+            label: marker('MAILCOLLECT.secured_connection'),
+            type: 'boolean',
+            required: true,
+        },
+        {
             id: 'hostname',
-            class: 'w-1/4',
+            unit: 'general',
             control: new FormControl(),
             label: marker('MAILCOLLECT.hostname'),
             type: 'text',
@@ -55,7 +63,6 @@ export class MailCollectComponent implements OnInit {
         },
         {
             id: 'enabled',
-            class: 'w-1/4',
             control: new FormControl(),
             disabled: true,
             type: 'boolean',
@@ -63,7 +70,7 @@ export class MailCollectComponent implements OnInit {
         },
         {
             id: 'port',
-            class: 'w-1/4',
+            unit: 'general',
             control: new FormControl(),
             label: marker('MAILCOLLECT.port'),
             type: 'number',
@@ -71,7 +78,7 @@ export class MailCollectComponent implements OnInit {
         },
         {
             id: 'login',
-            class: 'w-1/4',
+            unit: 'general',
             control: new FormControl(),
             label: marker('FORMATS.email'),
             type: 'text',
@@ -79,23 +86,15 @@ export class MailCollectComponent implements OnInit {
         },
         {
             id: 'password',
-            class: 'w-1/4',
+            unit: 'general',
             control: new FormControl(),
             label: marker('USER.password'),
             type: 'password',
             required: true,
         },
         {
-            id: 'secured_connection',
-            class: 'w-1/5',
-            control: new FormControl(true),
-            label: marker('MAILCOLLECT.secured_connection'),
-            type: 'boolean',
-            required: true,
-        },
-        {
             id: 'is_splitter',
-            class: 'w-1/5',
+            unit: 'splitter',
             control: new FormControl(false),
             label: marker('MAILCOLLECT.is_splitter'),
             type: 'boolean',
@@ -103,7 +102,7 @@ export class MailCollectComponent implements OnInit {
         },
         {
             id: 'splitter_technical_input_id',
-            class: 'w-30',
+            unit: 'splitter',
             control: new FormControl(''),
             label: marker('MAILCOLLECT.splitter_technical_input_id'),
             type: 'autocomplete',
@@ -111,7 +110,7 @@ export class MailCollectComponent implements OnInit {
         },
         {
             id: 'folder_to_crawl',
-            class: 'w-30',
+            unit: 'folders',
             hint: marker('MAILCOLLECT.load_folders_first'),
             control: new FormControl(),
             label: marker('MAILCOLLECT.folder_to_crawl'),
@@ -120,7 +119,7 @@ export class MailCollectComponent implements OnInit {
         },
         {
             id: 'folder_destination',
-            class: 'w-1/5',
+            unit: 'folders',
             hint: marker('MAILCOLLECT.load_folders_first'),
             control: new FormControl(),
             label: marker('MAILCOLLECT.folder_destination'),
@@ -129,7 +128,7 @@ export class MailCollectComponent implements OnInit {
         },
         {
             id: 'folder_trash',
-            class: 'w-1/5',
+            unit: 'folders',
             hint: marker('MAILCOLLECT.load_folders_first'),
             control: new FormControl(),
             label: marker('MAILCOLLECT.folder_trash'),
@@ -138,16 +137,29 @@ export class MailCollectComponent implements OnInit {
         },
         {
             id: 'action_after_process',
-            class: 'w-1/5',
+            unit: 'folders',
             control: new FormControl(''),
             label: marker('MAILCOLLECT.action_after_process'),
             type: 'select',
-            values: ['move', 'delete', 'none'],
+            values: [
+                {
+                    id: 'move',
+                    label: marker('MAILCOLLECT.move')
+                },
+                {
+                    id: 'delete',
+                    label: marker('MAILCOLLECT.delete')
+                },
+                {
+                    id: 'none',
+                    label: marker('MAILCOLLECT.none')
+                }
+            ],
             required: true,
         },
         {
             id: 'verifier_customer_id',
-            class: 'w-1/5',
+            unit: 'verifier',
             control: new FormControl(),
             label: marker('INPUT.associated_customer'),
             type: 'autocomplete',
@@ -155,7 +167,7 @@ export class MailCollectComponent implements OnInit {
         },
         {
             id: 'verifier_form_id',
-            class: 'w-1/5',
+            unit: 'verifier',
             control: new FormControl(),
             label: marker('POSITIONS-MASKS.form_associated'),
             type: 'autocomplete',
@@ -164,6 +176,24 @@ export class MailCollectComponent implements OnInit {
     ];
     toHighlight         : string        = '';
     folders             : any[]         = [];
+    units               : any           = [
+        {
+            id: 'general',
+            label: marker('MAILCOLLECT.general')
+        },
+        {
+            id: 'folders',
+            label: marker('MAILCOLLECT.folders')
+        },
+        {
+            id: 'splitter',
+            label: marker('MAILCOLLECT.splitter')
+        },
+        {
+            id: 'verifier',
+            label: marker('MAILCOLLECT.verifier')
+        }
+    ];
 
     constructor(
         public router: Router,

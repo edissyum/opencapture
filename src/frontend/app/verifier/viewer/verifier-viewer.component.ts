@@ -314,7 +314,6 @@ export class VerifierViewerComponent implements OnInit {
     async generateOutputs(formId: any) {
         this.currentFormFields = await this.getFormFieldsById(formId);
         this.formSettings = await this.getFormById(formId);
-        console.log(this.formSettings.settings['unique_url']['update_supplier'])
         if (this.formSettings.outputs.length !== 0) {
             for (const outputId in this.formSettings.outputs) {
                 const output = await this.getOutputs(this.formSettings.outputs[outputId]);
