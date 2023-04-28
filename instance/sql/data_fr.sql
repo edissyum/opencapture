@@ -17,7 +17,6 @@ INSERT INTO "mailcollect" ("name", "hostname", "port", "login", "password", "sec
 
 -- CRÉATION DES PARAMÈTRES
 INSERT INTO "configurations" ("label", "data") VALUES ('jwtExpiration', '{"type": "int", "value": "1440", "description": "Délai avant expiration du token d''authentification (en minutes)"}');
-INSERT INTO "configurations" ("label", "data") VALUES ('uniqueUrlExpiration', '{"type": "int", "value": "7", "description": "Délai avant expiration de l''URL unique générée à l''upload du Verifier (en jours)"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('timeDelta', '{"type": "int", "value": "-1", "description": "Delta maximum pour remonter une date de facture, en jours. -1 pour désactiver"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('invoiceSizeMin', '{"type": "int", "value": "6", "description": "Taille minimale pour un numéro de facture"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('devisSizeMin', '{"type": "int", "value": "3", "description": "Taille minimale pour un numéro de devis"}');
@@ -570,6 +569,14 @@ INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verif
             {"id": "original_filename", "label": "VERIFIER.original_file"},
             {"id": "form_label", "label": "ACCOUNTS.form"}
         ]
+    },
+    "unique_url": {
+        "expiration": 7,
+        "change_form": true,
+        "create_supplier": true,
+        "enable_supplier": true,
+        "refuse_document": true,
+        "validate_document": true
     },
     "supplier_verif": false
 }');

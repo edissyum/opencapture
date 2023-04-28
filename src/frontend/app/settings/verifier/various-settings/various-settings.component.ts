@@ -19,7 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { UserService } from "../../../../services/user.service";
-import { FormBuilder, FormControl } from "@angular/forms";
+import {Form, FormBuilder, FormControl} from "@angular/forms";
 import { AuthService } from "../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
@@ -38,18 +38,24 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
     styleUrls: ['./various-settings.component.scss'],
 })
 export class VariousSettingsVerifierComponent implements OnInit {
-    loading             : boolean   = true;
-    loadingCustomFields : boolean   = true;
-    formLoaded          : boolean   = false;
-    formLoadedUnique    : boolean   = false;
-    forms               : any       = [];
-    availableFieldsTmp  : any       = [];
-    currentForm         : any       = {};
-    formInput           : any       = {
+    loading                     : boolean       = true;
+    loadingCustomFields         : boolean       = true;
+    formLoaded                  : boolean       = false;
+    formLoadedUnique            : boolean       = false;
+    forms                       : any           = [];
+    availableFieldsTmp          : any           = [];
+    currentForm                 : any           = {};
+    formInput                   : any           = {
         control: new FormControl(),
         values:[]
     };
-    availableFields     : any       = [
+    changeFormControl           : FormControl   = new FormControl(true);
+    createSupplierControl       : FormControl   = new FormControl(true);
+    updateSupplierControl       : FormControl   = new FormControl(true);
+    validateDocumentControl     : FormControl   = new FormControl(true);
+    refuseDocumentControl       : FormControl   = new FormControl(true);
+    uniqueURlExpirationControl  : FormControl   = new FormControl(7);
+    availableFields             : any           = [
         {
             "id": 'document_id',
             'label': marker('VERIFIER.document_id')
@@ -135,7 +141,38 @@ export class VariousSettingsVerifierComponent implements OnInit {
     }
 
     loadUniqueUrl(event: any) {
-        this.formLoadedUnique = true;
+        this.loading = true;
+        const form_id = event.value;
+        this.forms.forEach((element: any) => {
+            if (element.id === form_id) {
+                this.formLoadedUnique = true;
+                this.currentForm = element;
+                console.log(this.currentForm);
+                if (this.currentForm.settings.unique_url) {
+                    this.uniqueURlExpirationControl.setValue(this.currentForm.settings.unique_url.expiration);
+                    this.changeFormControl.setValue(this.currentForm.settings.unique_url.change_form);
+                    this.refuseDocumentControl.setValue(this.currentForm.settings.unique_url.refuse_document);
+                    this.validateDocumentControl.setValue(this.currentForm.settings.unique_url.validate_document);
+                    this.createSupplierControl.setValue(this.currentForm.settings.unique_url.create_supplier);
+                    this.updateSupplierControl.setValue(this.currentForm.settings.unique_url.update_supplier);
+                } else {
+                    this.uniqueURlExpirationControl.setValue(7);
+                    this.changeFormControl.setValue(true);
+                    this.refuseDocumentControl.setValue(true);
+                    this.validateDocumentControl.setValue(true);
+                    this.createSupplierControl.setValue(true);
+                    this.updateSupplierControl.setValue(true);
+                }
+            }
+        });
+        this.loading = false;
+    }
+
+    resetSelectedForm() {
+        this.currentForm = {};
+        this.formLoaded = false;
+        this.formLoadedUnique = false;
+        this.formInput.control.setValue('');
     }
 
     loadDisplay(event: any) {
@@ -169,7 +206,31 @@ export class VariousSettingsVerifierComponent implements OnInit {
     }
 
     updateUniqueUrl() {
+        this.loading = true;
+        this.currentForm.settings.unique_url  = {
+            change_form: this.changeFormControl.value,
+            refuse_document: this.refuseDocumentControl.value,
+            create_supplier: this.createSupplierControl.value,
+            update_supplier: this.updateSupplierControl.value,
+            expiration: this.uniqueURlExpirationControl.value,
+            validate_document: this.validateDocumentControl.value
+        };
 
+        this.http.put(environment['url'] + '/ws/forms/updateUniqueUrl/' + this.currentForm.id, {
+                'args': this.currentForm.settings.unique_url
+            },
+            {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.historyService.addHistory('verifier', 'update_unique_url', this.translate.instant('HISTORY-DESC.update_unique_url', {'form': this.currentForm.label}));
+                this.notify.success(this.translate.instant('FORMS.unique_url_updated_success'));
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     updateDisplay() {
@@ -177,7 +238,9 @@ export class VariousSettingsVerifierComponent implements OnInit {
             delete element['updateMode'];
         });
 
-        this.http.put(environment['url'] + '/ws/forms/updateDisplay/' + this.currentForm.id, this.currentForm.settings.display,
+        this.http.put(environment['url'] + '/ws/forms/updateDisplay/' + this.currentForm.id, {
+                'args': this.currentForm.settings.display
+            },
             {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.historyService.addHistory('verifier', 'update_form_display', this.translate.instant('HISTORY-DESC.update_form_display', {'form': this.currentForm.label}));

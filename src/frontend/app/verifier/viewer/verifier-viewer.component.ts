@@ -46,6 +46,7 @@ export class VerifierViewerComponent implements OnInit {
     documentId              : any;
     document                : any;
     fields                  : any;
+    fromTokenFormId         : any;
     saveInfo                : boolean     = true;
     loading                 : boolean     = true;
     supplierExists          : boolean     = true;
@@ -161,6 +162,11 @@ export class VerifierViewerComponent implements OnInit {
         this.document = await this.getDocument();
         this.currentFilename = this.document.full_jpg_filename;
         await this.getThumb(this.document.full_jpg_filename);
+
+        if (this.fromTokenFormId) {
+            this.document.form_id = this.fromTokenFormId;
+        }
+
         if (this.document.form_id) {
             await this.generateOutputs(this.document.form_id);
         }
@@ -308,6 +314,7 @@ export class VerifierViewerComponent implements OnInit {
     async generateOutputs(formId: any) {
         this.currentFormFields = await this.getFormFieldsById(formId);
         this.formSettings = await this.getFormById(formId);
+        console.log(this.formSettings.settings['unique_url']['update_supplier'])
         if (this.formSettings.outputs.length !== 0) {
             for (const outputId in this.formSettings.outputs) {
                 const output = await this.getOutputs(this.formSettings.outputs[outputId]);
@@ -1560,7 +1567,11 @@ export class VerifierViewerComponent implements OnInit {
         const newFormId = event.value;
         for (const cpt in this.formList) {
             if (this.formList[cpt].id === newFormId) {
-                this.updateDocument({'form_id': newFormId});
+                if (!this.fromToken) {
+                    this.updateDocument({'form_id': newFormId});
+                } else {
+                    this.fromTokenFormId = newFormId;
+                }
                 this.currentFormFields = await this.getFormFieldsById(newFormId);
                 this.deleteDataOnChangeForm = false;
                 this.imageDocument.selectAreas('destroy');

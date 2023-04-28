@@ -42,12 +42,17 @@ def upload():
 
     if res and res[0] is not False:
         for file in res[0]:
-            if True or ('returnUniqueUrl' in request.args and request.args['returnUniqueUrl']):
-                token = auth.generate_unique_url_token(file['token'])
-                cfg, _ = config.read_config()
-                url = f"{cfg['GLOBAL']['applicationurl']}/verifier/viewer/token/{token}"
-                print(url)
-
+            if 'returnUniqueUrl' in request.args and request.args['returnUniqueUrl']:
+                token = auth.generate_unique_url_token(file['token'], input_id, workflow_id)
+                if token:
+                    cfg, _ = config.read_config()
+                    url = f"{cfg['GLOBAL']['applicationurl']}/verifier/viewer_token/{token}"
+                    print(url)
+                else:
+                    res = {
+                        'errors': gettext('UNIQUE_URL_TOKEN_GENERATION_ERROR'),
+                        'message': gettext('INTERFACE_IS_NOT_USED')
+                    }, 200
         return make_response(res[0], res[1])
     else:
         return make_response(gettext('UNKNOW_ERROR'), 400)
