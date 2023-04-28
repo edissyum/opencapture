@@ -141,7 +141,9 @@
                                     <i class="fa-solid fa-circle-exclamation fa-2x pl-1"></i>
                                     <div class="message w-auto">
                                         <button class="gray_button col-start-3" mat-button (click)="retrieveFolders(process)">
-                                            <span *ngIf="!this.folderLoading">{{ 'MAILCOLLECT.test_settings_and_retrieve_folders' | translate }}</span>
+                                            <span *ngIf="!this.folderLoading">
+                                                {{ 'MAILCOLLECT.test_settings_and_retrieve_folders' | translate }}
+                                            </span>
                                             <i *ngIf="this.folderLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-green-400"></i>
                                         </button>
                                     </div>
