@@ -54,7 +54,7 @@
                                             <mat-form-field appearance="outline" *ngIf="field.type === 'password'">
                                                 <mat-label>{{ field.label | translate }}</mat-label>
                                                 <input matInput [formControl]="field['control']"
-                                                       placeholder="{{ field.label | translate }}"
+                                                       [placeholder]="field.label | translate"
                                                        [required]="field['required']"
                                                        [type]="showPassword ? 'text' : 'password'">
                                                 <mat-icon matSuffix class="text-green-400 relative cursor-pointer -top-1.5 text-base"
@@ -68,7 +68,7 @@
                                                 <mat-label>{{ field.label | translate }}</mat-label>
                                                 <input matInput [formControl]="field['control']"
                                                        [type]="field.type" [required]="field['required']"
-                                                       placeholder="{{ field.label | translate }}">
+                                                       [placeholder]="field.label | translate">
                                                 <mat-hint>{{ field.hint }}</mat-hint>
                                             </mat-form-field>
                                         </ng-container>
@@ -110,7 +110,7 @@
                                                 <mat-label>{{ field.label | translate }}</mat-label>
                                                 <input matInput [formControl]="field['control']"
                                                        [required]="field['required']"
-                                                       [type]="field.type" placeholder="{{ field.label | translate }}">
+                                                       [type]="field.type" [placeholder]="field.label | translate">
                                                 <mat-hint>{{ field.hint }}</mat-hint>
                                             </mat-form-field>
                                         </ng-container>

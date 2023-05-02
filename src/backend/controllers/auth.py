@@ -91,18 +91,51 @@ def encode_auth_token(user_id):
         return str(_e)
 
 
-def generate_unique_url_token(document_id):
-    if 'configurations' in current_context:
-        configurations = current_context.configurations
+def generate_unique_url_token(document_id, input_id, workflow_id):
+    if 'database' in current_context:
+        database = current_context.database
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[10]
-    days_before_expo = int(configurations['uniqueUrlExpiration'])
+        database = _vars[0]
+
+    form_settings = None
+    days_before_exp = None
+    error = True
+
+    if input_id:
+        form_settings = database.select({
+            "select": ["settings"],
+            "table": ["form_models", "inputs"],
+            "left_join": ["form_models.id = inputs.form_id"],
+            "where": ["inputs.input_id = %s"],
+            "data": [input_id]
+        })
+    elif workflow_id:
+        form_settings = database.select({
+            "select": ["settings", "input", "process"],
+            "table": ["form_models", "workflows"],
+            "left_join": ["form_models.id::TEXT = workflows.process ->> 'form_id'"],
+            "where": ["workflows.workflow_id = %s"],
+            "data": [workflow_id]
+        })
+        if form_settings:
+            form_settings = form_settings[0]
+            if form_settings['input']['apply_process'] and form_settings['process']['use_interface']:
+                if form_settings['process']['form_id']:
+                    error = False
+
+    if not error and form_settings:
+        if form_settings['settings'] and 'unique_url' in form_settings['settings']:
+            if form_settings['settings']['unique_url']:
+                days_before_exp = int(form_settings['settings']['unique_url']['expiration'])
+
+    if days_before_exp is None or error:
+        return False
 
     try:
         payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=days_before_expo),
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0),
             'iat': datetime.datetime.utcnow(),
             'sub': document_id
         }
@@ -320,6 +353,8 @@ def token_required(view):
             if token:
                 process, _ = monitoring.get_process_by_token(token['sub'], '')
                 allowed_path = [
+                    'updatePage',
+                    'updatePosition',
                     'verifier/getThumb',
                     'verifier/ocrOnFly',
                     'forms/verifier/list',
@@ -331,9 +366,7 @@ def token_required(view):
                     'accounts/suppliers/list',
                     'verifier/verifyVATNumber',
                     'forms/fields/getByFormId',
-                    'outputs/verifier/getById',
-                    'accounts/supplier/2/updatePage',
-                    'accounts/supplier/2/updatePosition'
+                    'outputs/verifier/getById'
                 ]
                 if process and process[0]['document_ids']:
                     for document_id in process[0]['document_ids']:

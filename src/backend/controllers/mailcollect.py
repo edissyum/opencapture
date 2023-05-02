@@ -137,26 +137,25 @@ def retrieve_folders(args):
             conn = MailBox(host=args['hostname'], port=args['port'])
         else:
             conn = MailBoxUnencrypted(host=args['hostname'], port=args['port'])
-    except (gaierror, IMAP4_SSL.error, ssl.SSLError) as e:
+    except (gaierror, IMAP4_SSL.error, ssl.SSLError) as _e:
         response = {
             "errors": gettext("MAILCOLLECT_ERROR"),
-            "message": str(e)
+            "message": str(_e)
         }
         return response, 400
 
     if conn:
         try:
             conn.login(args['login'], args['password'])
-        except (gaierror, IMAP4_SSL.error, imap_tools.errors.MailboxLoginError) as e:
+        except (gaierror, IMAP4_SSL.error, imap_tools.errors.MailboxLoginError) as _e:
             response = {
                 "errors": gettext("MAILCOLLECT_ERROR"),
-                "message": str(e)
+                "message": str(_e)
             }
             return response, 400
 
     folders = conn.folder.list()
     folder_list = []
-    for f in folders:
-        folder_list.append(f.name)
-
-    return folder_list, 200
+    for _f in folders:
+        folder_list.append(_f.name)
+    return sorted(folder_list), 200

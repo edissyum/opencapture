@@ -1,3 +1,11 @@
 ::ng-deep .mat-mdc-slide-toggle-content {
     overflow: inherit!important;
 }
+
+::ng-deep .mat-mdc-tab-header .mat-mdc-tab-label-container .mat-mdc-tab-list .mat-mdc-tab-labels .mdc-tab {
+    @apply w-1/5 #{!important};
+}
+
+::ng-deep .mat-mdc-tab-group-dynamic-height .mat-mdc-tab-body-content {
+    @apply mx-5;
+}

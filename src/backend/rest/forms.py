@@ -113,8 +113,19 @@ def update_form_display(form_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'verifier_settings']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/updateDisplay/{form_id}'}), 403
 
-    display = request.json
+    display = request.json['args']
     res = forms.update_form(form_id, {"settings": {"display": display}})
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('forms/updateUniqueUrl/<int:form_id>', methods=['PUT'])
+@auth.token_required
+def update_form_unique_url(form_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'verifier_settings']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/updateUniqueUrl/{form_id}'}), 403
+
+    unique_url = request.json['args']
+    res = forms.update_form(form_id, {"settings": {"unique_url": unique_url}})
     return make_response(jsonify(res[0])), res[1]
 
 

@@ -21,7 +21,7 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div *ngIf="!loading" class="w-full ">
+        <div *ngIf="!loading" class="w-full">
             <mat-tab-group dynamicHeight>
                 <mat-tab [label]="'CONFIGURATIONS.global' | translate">
                     <div class="overflow-x-hidden overflow-y-auto h-full-overflow text-center grid grid-cols-2 gap-6">
@@ -94,7 +94,7 @@
                     </div>
                 </mat-tab>
                 <mat-tab [label]="'CONFIGURATIONS.smtp' | translate">
-                    <div class="overflow-x-hidden overflow-y-auto h-full-overflow text-center p-8">
+                    <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 11rem) !important">
                         <div class="hint text-center">
                             <i class="fa-solid fa-circle-exclamation fa-2x pl-1"></i>
                             <div class="message w-auto">

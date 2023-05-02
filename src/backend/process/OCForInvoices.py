@@ -203,9 +203,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             'where': ['workflow_id = %s', 'module = %s'],
             'data': [args['workflow_id'], 'verifier'],
         })
-        if workflow_settings and workflow_settings[0]['input']['apply_process']:
+        if workflow_settings:
             workflow_settings = workflow_settings[0]
-            if workflow_settings['process']['rotation']:
+            if workflow_settings['input']['apply_process'] and workflow_settings['process']['rotation']:
                 if workflow_settings['process']['rotation'] != 'no_rotation':
                     rotate_document(file, workflow_settings['process']['rotation'])
                     log.info('Document rotated by ' + str(workflow_settings['process']['rotation']) +
