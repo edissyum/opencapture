@@ -1,11 +1,3 @@
-.mat-column-id {
-    flex: 0 0 10%;
-}
-
-.mat-column-actions {
-    flex: 0 0 5%;
-}
-
 ::ng-deep .mat-mdc-tab-labels {
     & .mat-mdc-tab-disabled {
         @apply opacity-100 #{!important};

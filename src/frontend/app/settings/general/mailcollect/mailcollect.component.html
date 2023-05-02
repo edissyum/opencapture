@@ -21,7 +21,7 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!this.loading" class="w-full">
-            <mat-tab-group class="mx-5" [selectedIndex]="this.selectedIndex" dynamicHeight>
+            <mat-tab-group [selectedIndex]="this.selectedIndex" dynamicHeight>
                 <mat-tab *ngFor="let process of this.processes">
                     <ng-template mat-tab-label>
                         <span class="actions" *ngIf="getNameOfProcess(process) !== '' && getNameOfProcess(process) !== null else input">
@@ -88,48 +88,38 @@
                                             </div>
                                             <mat-form-field class="w-full" *ngIf="field.type === 'text' || field.type === 'password' || field.type === 'number'">
                                                 <mat-label>{{ field.label | translate }}</mat-label>
-                                                <input matInput [type]="field.type" [formControl]="field['control']">
+                                                <input matInput [type]="field.type" [formControl]="field['control']" [required]="field['required']"
+                                                       (keyup)="isValidForm(process, false)">
+                                                <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, process) }}</mat-error>
                                                 <mat-icon matSuffix *ngIf="field.id === 'password'"
-                                                          (click)="field.type === 'text' ? field.type = 'password' : field.type = 'text' "
+                                                          (click)="field.type === 'text' ? field.type = 'password' : field.type = 'text'"
                                                           class="text-green-400 relative cursor-pointer -top-0.5 text-base">
                                                     <i class="fa fa-1x" [class.fa-eye-slash]="field.type !== 'password'" [class.fa-eye]="field.type === 'password'"></i>
                                                 </mat-icon>
                                             </mat-form-field>
-                                            <mat-form-field class="w-full" *ngIf="field.type === 'autocomplete' && field.id !== 'splitter_technical_input_id' && field.id !== 'verifier_customer_id' && field.id !== 'verifier_form_id'">
+                                            <mat-form-field class="w-full" *ngIf="field.type === 'autocomplete'">
                                                 <mat-label>{{ field.label | translate }}</mat-label>
                                                 <input matInput [formControl]="field['control']" [required]="field['required']"
-                                                       [type]="field.type" [matAutocomplete]="autocomplete">
+                                                       [type]="field.type" [matAutocomplete]="autocomplete" (keyup)="isValidForm(process, false)">
                                                 <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
                                                       [matTooltip]="field.hint | translate">
                                                     <i class="fa-solid fa-circle-question text-md"></i>
                                                 </span>
-                                                <mat-autocomplete #autocomplete="matAutocomplete">
+                                                <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, process) }}</mat-error>
+                                                <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn" (optionSelected)="isValidForm(process, false)">
                                                     <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option.id">
-                                                        <span [innerHTML]="option | highlight: toHighlight"></span>
-                                                    </mat-option>
-                                                </mat-autocomplete>
-                                            </mat-form-field>
-                                            <mat-form-field class="w-full" *ngIf="field.type === 'autocomplete' && (field.id === 'splitter_technical_input_id' || field.id === 'verifier_customer_id' || field.id === 'verifier_form_id')">
-                                                <mat-label>{{ field.label | translate }}</mat-label>
-                                                <input matInput [formControl]="field['control']" [required]="field['required']"
-                                                       [type]="field.type" [matAutocomplete]="autocomplete">
-                                                <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
-                                                      [matTooltip]="field.hint | translate">
-                                                    <i class="fa-solid fa-circle-question text-md"></i>
-                                                </span>
-                                                <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn">
-                                                    <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option.id">
-                                                        <span [innerHTML]="option.name ? option.name : option.label ? option.label : option.input_label | highlight: toHighlight"></span>
+                                                        <span [innerHTML]="option.label | highlight: toHighlight"></span>
                                                     </mat-option>
                                                 </mat-autocomplete>
                                             </mat-form-field>
                                             <mat-form-field class="w-full" *ngIf="field.type === 'select'">
                                                 <mat-label>{{ field.label | translate }}</mat-label>
-                                                <mat-select [formControl]="field['control']" [required]="field['required']">
+                                                <mat-select [formControl]="field['control']" [required]="field['required']" (selectionChange)="isValidForm(process, false)">
                                                     <mat-option *ngFor="let option of field.values" [value]="option['id']">
                                                         {{ option['label'] | translate }}
                                                     </mat-option>
                                                 </mat-select>
+                                                <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, process) }}</mat-error>
                                             </mat-form-field>
                                         </ng-container>
                                     </ng-container>
@@ -151,12 +141,17 @@
                             </span>
                         </ng-container>
                         <div class="mb-6 flex justify-center">
-                            <button *ngIf="process.exists" mat-button (click)="updateProcess(process)" class="valid_button">
+                            <button *ngIf="process.exists" mat-button (click)="updateProcess(process)" class="min-w-56 p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                                    [disabled]="!this.formValid[getNameOfProcess(process)]"
+                                    [class.bg-gray-400]="!this.formValid[getNameOfProcess(process)]"
+                                    [class.bg-green-400]="this.formValid[getNameOfProcess(process)]">
                                 <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.update_process' | translate }}</span>
                                 <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                             </button>
-                            <button *ngIf="!process.exists" mat-button (click)="createProcess(process)"
-                                    class="valid_button">
+                            <button *ngIf="!process.exists" mat-button (click)="createProcess(process)" class="min-w-56 p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                                    [disabled]="!this.formValid[getNameOfProcess(process)]"
+                                    [class.bg-gray-400]="!this.formValid[getNameOfProcess(process)]"
+                                    [class.bg-green-400]="this.formValid[getNameOfProcess(process)]">
                                 <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.create_process' | translate }}</span>
                                 <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                             </button>

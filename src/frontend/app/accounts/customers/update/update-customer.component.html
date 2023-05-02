@@ -20,7 +20,7 @@
                 <ng-container *ngFor="let field of customerForm">
                     <mat-form-field class="block" *ngIf="field.type !== 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field['control']" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field['required']">
+                        <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessageCustomer(field.id) }}</mat-error>
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.type === 'select'">
@@ -37,7 +37,7 @@
                 <ng-container *ngFor="let field of addressForm">
                     <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block" *ngIf="field.type !== 'country'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field['control']" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field['required']">
+                        <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessageAddress(field.id) }}</mat-error>
                     </mat-form-field>
                     <mat-select-country class="w-full" *ngIf="field.type === 'country'"

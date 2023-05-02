@@ -353,6 +353,8 @@ def token_required(view):
             if token:
                 process, _ = monitoring.get_process_by_token(token['sub'], '')
                 allowed_path = [
+                    'updatePage',
+                    'updatePosition',
                     'verifier/getThumb',
                     'verifier/ocrOnFly',
                     'forms/verifier/list',
@@ -364,9 +366,7 @@ def token_required(view):
                     'accounts/suppliers/list',
                     'verifier/verifyVATNumber',
                     'forms/fields/getByFormId',
-                    'outputs/verifier/getById',
-                    'accounts/supplier/2/updatePage',
-                    'accounts/supplier/2/updatePosition'
+                    'outputs/verifier/getById'
                 ]
                 if process and process[0]['document_ids']:
                     for document_id in process[0]['document_ids']:

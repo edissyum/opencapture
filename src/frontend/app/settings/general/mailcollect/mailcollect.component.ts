@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture.
+
+ Open-Capture is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from "../../../../services/settings.service";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -28,18 +45,19 @@ export class MailCollectComponent implements OnInit {
     folderLoading       : boolean       = false;
     processLoading      : boolean       = false;
     loadingProcessName  : boolean       = false;
+    formValid           : { [key: string]: boolean } = {};
     allCustomers        : any           = [];
     allForms            : any           = [];
     allSplitterInputs   : any           = [];
     processesMail       : any           = [];
     allprocessesMail    : any           = [];
+    processes           : any           = [];
     pageSize            : number        = 10;
     pageIndex           : number        = 0;
     total               : number        = 0;
     offset              : number        = 0;
     selectedIndex       : number        = 0;
     search              : string        = '';
-    processes           : any           = [];
     defaultProcessData  : any           = [
         {
             id: 'name',
@@ -51,7 +69,7 @@ export class MailCollectComponent implements OnInit {
             control: new FormControl(true),
             label: marker('MAILCOLLECT.secured_connection'),
             type: 'boolean',
-            required: true,
+            required: false,
         },
         {
             id: 'hostname',
@@ -214,6 +232,9 @@ export class MailCollectComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allCustomers = data.customers;
+                this.allCustomers.forEach((element: any) => {
+                    element.label = element.name;
+                });
                 this.defaultProcessData.forEach((element: any) => {
                     if (element.id === 'verifier_customer_id') {
                         element.values = element.control.valueChanges
@@ -251,9 +272,12 @@ export class MailCollectComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/inputs/spitter/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allSplitterInputs = data.inputs;
+                this.allSplitterInputs.forEach((element: any) => {
+                    element.label = element.input_label;
+                });
                 this.defaultProcessData.forEach((element: any) => {
                     if (element.id === 'splitter_technical_input_id') {
                         element.values = element.control.valueChanges
@@ -289,6 +313,7 @@ export class MailCollectComponent implements OnInit {
     updateProcessName(process: any, new_process_name: any, updateDatabase: boolean = true) {
         if (new_process_name) {
             this.loadingProcessName = true;
+            this.formValid[new_process_name] = false;
             let oldProcessName = '';
             process.forEach((element: any) => {
                 if (element.id === 'name') {
@@ -296,7 +321,6 @@ export class MailCollectComponent implements OnInit {
                     element.control.setValue(new_process_name);
                 }
             });
-
             if (updateDatabase && oldProcessName) {
                 this.http.post(environment['url'] + '/ws/mailcollect/updateProcess/' + oldProcessName, {"name": new_process_name}, {headers: this.authService.headers}).pipe(
                     tap(() => {
@@ -340,6 +364,9 @@ export class MailCollectComponent implements OnInit {
                         Object.keys(process).forEach((element: any) => {
                             if (element === process_default.id) {
                                 let value = process[element];
+                                if (element === 'name') {
+                                    this.formValid[value] = true;
+                                }
                                 if (element === 'verifier_customer_id') {
                                     for (let i = 0; i < this.allCustomers.length; i++) {
                                         if (parseInt(this.allCustomers[i].id) === parseInt(process[element])) {
@@ -358,6 +385,8 @@ export class MailCollectComponent implements OnInit {
                                             value = this.allSplitterInputs[i];
                                         }
                                     }
+                                } else if (element === 'folder_trash' || element === 'folder_to_crawl' || element === 'folder_destination') {
+                                    value = {id: process[element], label: process[element]};
                                 }
                                 process_default.control.setValue(value);
                                 newProcess.push(process_default);
@@ -382,123 +411,135 @@ export class MailCollectComponent implements OnInit {
         this.defaultProcessData = [
             {
                 id: 'name',
-                control: new FormControl()
-            },
-            {
-                id: 'enabled',
-                class: 'w-1/4',
                 control: new FormControl(),
-                disabled: true,
-                type: 'boolean',
-                required: false
-            },
-            {
-                id: 'hostname',
-                class: 'w-1/4',
-                control: new FormControl(),
-                label: marker('MAILCOLLECT.hostname'),
-                type: 'text',
-                required: true
-            },
-            {
-                id: 'port',
-                class: 'w-1/4',
-                control: new FormControl(),
-                label: marker('MAILCOLLECT.port'),
-                type: 'number',
-                required: true
-            },
-            {
-                id: 'login',
-                class: 'w-1/4',
-                control: new FormControl(),
-                label: marker('FORMATS.email'),
-                type: 'text',
-                required: true
-            },
-            {
-                id: 'password',
-                class: 'w-1/4',
-                control: new FormControl(),
-                label: marker('USER.password'),
-                type: 'password',
-                required: true
             },
             {
                 id: 'secured_connection',
-                class: 'w-1/5',
+                unit: 'general',
                 control: new FormControl(true),
                 label: marker('MAILCOLLECT.secured_connection'),
                 type: 'boolean',
-                required: true
+                required: false,
+            },
+            {
+                id: 'hostname',
+                unit: 'general',
+                control: new FormControl(),
+                label: marker('MAILCOLLECT.hostname'),
+                type: 'text',
+                required: true,
+            },
+            {
+                id: 'enabled',
+                control: new FormControl(),
+                disabled: true,
+                type: 'boolean',
+                required: false,
+            },
+            {
+                id: 'port',
+                unit: 'general',
+                control: new FormControl(),
+                label: marker('MAILCOLLECT.port'),
+                type: 'number',
+                required: true,
+            },
+            {
+                id: 'login',
+                unit: 'general',
+                control: new FormControl(),
+                label: marker('FORMATS.email'),
+                type: 'text',
+                required: true,
+            },
+            {
+                id: 'password',
+                unit: 'general',
+                control: new FormControl(),
+                label: marker('USER.password'),
+                type: 'password',
+                required: true,
             },
             {
                 id: 'is_splitter',
-                class: 'w-1/5',
+                unit: 'splitter',
                 control: new FormControl(false),
                 label: marker('MAILCOLLECT.is_splitter'),
                 type: 'boolean',
-                required: false
+                required: false,
             },
             {
                 id: 'splitter_technical_input_id',
-                class: 'w-30',
+                unit: 'splitter',
                 control: new FormControl(''),
                 label: marker('MAILCOLLECT.splitter_technical_input_id'),
                 type: 'autocomplete',
-                required: false
+                required: false,
             },
             {
                 id: 'folder_to_crawl',
-                class: 'w-30',
+                unit: 'folders',
                 hint: marker('MAILCOLLECT.load_folders_first'),
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.folder_to_crawl'),
                 type: 'autocomplete',
-                required: true
+                required: true,
             },
             {
                 id: 'folder_destination',
-                class: 'w-1/5',
+                unit: 'folders',
                 hint: marker('MAILCOLLECT.load_folders_first'),
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.folder_destination'),
                 type: 'autocomplete',
-                required: true
+                required: true,
             },
             {
                 id: 'folder_trash',
-                class: 'w-1/5',
+                unit: 'folders',
                 hint: marker('MAILCOLLECT.load_folders_first'),
                 control: new FormControl(),
                 label: marker('MAILCOLLECT.folder_trash'),
                 type: 'autocomplete',
-                required: false
+                required: false,
             },
             {
                 id: 'action_after_process',
-                class: 'w-1/5',
+                unit: 'folders',
                 control: new FormControl(''),
                 label: marker('MAILCOLLECT.action_after_process'),
                 type: 'select',
-                values: ['move', 'delete', 'none'],
-                required: true
+                values: [
+                    {
+                        id: 'move',
+                        label: marker('MAILCOLLECT.move')
+                    },
+                    {
+                        id: 'delete',
+                        label: marker('MAILCOLLECT.delete')
+                    },
+                    {
+                        id: 'none',
+                        label: marker('MAILCOLLECT.none')
+                    }
+                ],
+                required: true,
             },
             {
                 id: 'verifier_customer_id',
-                class: 'w-1/5',
+                unit: 'verifier',
                 control: new FormControl(),
                 label: marker('INPUT.associated_customer'),
                 type: 'autocomplete',
-                required: false
+                required: false,
             },
             {
                 id: 'verifier_form_id',
-                class: 'w-1/5',
+                unit: 'verifier',
                 control: new FormControl(),
                 label: marker('POSITIONS-MASKS.form_associated'),
                 type: 'autocomplete',
-                required: false
+                required: false,
             }
         ];
 
@@ -552,7 +593,9 @@ export class MailCollectComponent implements OnInit {
         if (this.isValidForm(process)) {
             const data: any = {};
             process.forEach((element: any) => {
-                if (element.id !== 'verifier_customer_id' && element.id !== 'verifier_form_id' && element.id !== 'splitter_technical_input_id') {
+                if (element.id !== 'verifier_customer_id' && element.id !== 'verifier_form_id' &&
+                    element.id !== 'splitter_technical_input_id' && element.id !== 'folder_to_crawl' &&
+                    element.id !== 'folder_destination' && element.id !== 'folder_trash') {
                     data[element.id] = element.control.value;
                 } else {
                     data[element.id] = element.control.value ? element.control.value.id : null;
@@ -728,7 +771,9 @@ export class MailCollectComponent implements OnInit {
 
             const data: any = {};
             process.forEach((element: any) => {
-                if (element.id !== 'verifier_customer_id' && element.id !== 'verifier_form_id' && element.id !== 'splitter_technical_input_id') {
+                if (element.id !== 'verifier_customer_id' && element.id !== 'verifier_form_id' &&
+                    element.id !== 'splitter_technical_input_id' && element.id !== 'folder_to_crawl' &&
+                    element.id !== 'folder_destination' && element.id !== 'folder_trash') {
                     data[element.id] = element.control.value;
                 } else {
                     data[element.id] = element.control.value ? element.control.value.id : null;
@@ -751,6 +796,7 @@ export class MailCollectComponent implements OnInit {
     }
 
     retrieveFolders(process: any) {
+        this.formValid[this.getNameOfProcess(process)] = false;
         this.folderLoading = true;
         let port = '';
         let login = '';
@@ -786,7 +832,10 @@ export class MailCollectComponent implements OnInit {
 
             this.http.post(environment['url'] + '/ws/mailcollect/retrieveFolders', data, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
-                    this.folders = data;
+                    data.forEach((element: any) => {
+                        this.folders.push({'id': element, 'label': element});
+                    });
+
                     process.forEach((element: any) => {
                         if (element.id === 'folder_trash' || element.id === 'folder_to_crawl' || element.id === 'folder_destination') {
                             element.values = element.control.valueChanges
@@ -797,6 +846,7 @@ export class MailCollectComponent implements OnInit {
                         }
                     });
                     this.notify.success(this.translate.instant('MAILCOLLECT.folders_updated'));
+                    this.formValid[this.getNameOfProcess(process)] = true;
                 }),
                 finalize(() => this.folderLoading = false),
                 catchError((err: any) => {
@@ -814,7 +864,7 @@ export class MailCollectComponent implements OnInit {
         if (typeof value === 'string') {
             this.toHighlight = value;
             const filterValue = value.toLowerCase();
-            return array.filter((option: any) => option.toLowerCase().indexOf(filterValue) !== -1);
+            return array.filter((option: any) => option['label'].toLowerCase().indexOf(filterValue) !== -1);
         } else {
             return array;
         }
@@ -843,7 +893,7 @@ export class MailCollectComponent implements OnInit {
         return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
     }
 
-    isValidForm(process: any) {
+    isValidForm(process: any, notify: boolean = true) {
         let state = true;
 
         process.forEach((element: any) => {
@@ -853,10 +903,25 @@ export class MailCollectComponent implements OnInit {
             element.control.markAsTouched();
         });
 
-        if (!state) {
+        if (!state && notify) {
             this.notify.error(this.translate.instant('ERROR.form_not_valid'));
+        } else {
+            this.formValid[this.getNameOfProcess(process)] = true;
         }
 
         return state;
+    }
+
+    getErrorMessage(field: any, process: any) {
+        let error: any;
+        process.forEach((element: any) => {
+            if (element.id === field) {
+                if (element.required) {
+                    error = this.translate.instant('AUTH.field_required');
+                    this.formValid[this.getNameOfProcess(process)] = false;
+                }
+            }
+        });
+        return error;
     }
 }
