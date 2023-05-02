@@ -321,6 +321,18 @@ export class VerifierViewerComponent implements OnInit {
                 this.outputsLabel.push(output.output_label);
             }
         }
+
+        if (!this.fromToken && !this.formSettings.settings.unique_url) {
+            this.formSettings.settings.unique_url = {
+                "expiration": 7,
+                "change_form": true,
+                "create_supplier": true,
+                "enable_supplier": true,
+                "refuse_document": true,
+                "validate_document": true
+            };
+        }
+
         if (this.formSettings.settings.supplier_verif && !this.tokenINSEE) {
             const token: any = await this.generateTokenInsee();
             if (token['token']) {

@@ -133,18 +133,7 @@ def launch(args):
     remove_blank_pages = splitter_method = False
     separate_every_x_page = 0
 
-    if 'input_id' in args and args['input_id']:
-        input_settings = database.select({
-            'select': ['*'],
-            'table': ['inputs'],
-            'where': ['input_id = %s', 'module = %s'],
-            'data': [args['input_id'], 'verifier']
-        })
-
-        if input_settings:
-            splitter_method = input_settings[0]['splitter_method_id']
-            remove_blank_pages = input_settings[0]['remove_blank_pages']
-    elif 'workflow_id' in args and args['workflow_id']:
+    if 'workflow_id' in args and args['workflow_id']:
         workflow_settings = database.select({
             'select': ['separation'],
             'table': ['workflows'],
