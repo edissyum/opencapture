@@ -444,7 +444,10 @@ export class WorkflowBuilderComponent implements OnInit {
 
     setUseInterface(value: any) {
         this.useInterface = value;
-        this.outputAllowed = !value;
+        if (this.processAllowed) {
+            this.outputAllowed = !value;
+        }
+
         this.fields['process'].forEach((element: any) => {
             if (element.id === 'form_id' || element.id === 'system_fields' || element.id === 'allow_automatic_validation' || element.id === 'override_supplier_form') {
                 element.show = this.useInterface;
