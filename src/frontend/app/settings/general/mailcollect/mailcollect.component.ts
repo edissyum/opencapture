@@ -237,11 +237,10 @@ export class MailCollectComponent implements OnInit {
                 });
                 this.defaultProcessData.forEach((element: any) => {
                     if (element.id === 'verifier_customer_id') {
-                        element.values = element.control.valueChanges
-                            .pipe(
-                                startWith(''),
-                                map(option => option ? this._filter(option, this.allCustomers) : this.allCustomers)
-                            );
+                        element.values = element.control.valueChanges.pipe(
+                            startWith(''),
+                            map(option => option ? this._filter(option, this.allCustomers) : this.allCustomers)
+                        );
                     }
                 });
             }),
@@ -257,11 +256,10 @@ export class MailCollectComponent implements OnInit {
                 this.allForms = data.forms;
                 this.defaultProcessData.forEach((element: any) => {
                     if (element.id === 'verifier_form_id') {
-                        element.values = element.control.valueChanges
-                            .pipe(
-                                startWith(''),
-                                map(option => option ? this._filter(option, this.allForms) : this.allForms)
-                            );
+                        element.values = element.control.valueChanges.pipe(
+                            startWith(''),
+                            map(option => option ? this._filter(option, this.allForms) : this.allForms)
+                        );
                     }
                 });
             }),
@@ -280,11 +278,10 @@ export class MailCollectComponent implements OnInit {
                 });
                 this.defaultProcessData.forEach((element: any) => {
                     if (element.id === 'splitter_technical_input_id') {
-                        element.values = element.control.valueChanges
-                            .pipe(
-                                startWith(''),
-                                map(option => option ? this._filter(option, this.allSplitterInputs) : this.allSplitterInputs)
-                            );
+                        element.values = element.control.valueChanges.pipe(
+                            startWith(''),
+                            map(option => option ? this._filter(option, this.allSplitterInputs) : this.allSplitterInputs)
+                        );
                     }
                 });
             }),
@@ -545,31 +542,28 @@ export class MailCollectComponent implements OnInit {
 
         this.defaultProcessData.forEach((element: any) => {
             if (element.id === 'splitter_technical_input_id') {
-                element.values = element.control.valueChanges
-                    .pipe(
-                        startWith(''),
-                        map(option => option ? this._filter(option, this.allSplitterInputs) : this.allSplitterInputs)
-                    );
+                element.values = element.control.valueChanges.pipe(
+                    startWith(''),
+                    map(option => option ? this._filter(option, this.allSplitterInputs) : this.allSplitterInputs)
+                );
             }
         });
 
         this.defaultProcessData.forEach((element: any) => {
             if (element.id === 'verifier_customer_id') {
-                element.values = element.control.valueChanges
-                    .pipe(
-                        startWith(''),
-                        map(option => option ? this._filter(option, this.allCustomers) : this.allCustomers)
-                    );
+                element.values = element.control.valueChanges.pipe(
+                    startWith(''),
+                    map(option => option ? this._filter(option, this.allCustomers) : this.allCustomers)
+                );
             }
         });
 
         this.defaultProcessData.forEach((element: any) => {
             if (element.id === 'verifier_form_id') {
-                element.values = element.control.valueChanges
-                    .pipe(
-                        startWith(''),
-                        map(option => option ? this._filter(option, this.allForms) : this.allForms)
-                    );
+                element.values = element.control.valueChanges.pipe(
+                    startWith(''),
+                    map(option => option ? this._filter(option, this.allForms) : this.allForms)
+                );
             }
         });
     }
@@ -838,11 +832,10 @@ export class MailCollectComponent implements OnInit {
 
                     process.forEach((element: any) => {
                         if (element.id === 'folder_trash' || element.id === 'folder_to_crawl' || element.id === 'folder_destination') {
-                            element.values = element.control.valueChanges
-                                .pipe(
-                                    startWith(''),
-                                    map(option => option ? this._filter(option, this.folders) : this.folders)
-                                );
+                            element.values = element.control.valueChanges.pipe(
+                                startWith(''),
+                                map(option => option ? this._filter(option, this.folders) : this.folders)
+                            );
                         }
                     });
                     this.notify.success(this.translate.instant('MAILCOLLECT.folders_updated'));
