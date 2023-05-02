@@ -141,3 +141,9 @@ if test -f "$OpenCapturePath/bin/install/migration_sql/$latest_tag.sql"; then
     echo "     in order to take advantage of the latest modifications         "
     echo "####################################################################"
 fi
+
+####################
+# Run bash migration file if present for new version
+if test -f "$OpenCapturePath/bin/install/migration_bash/$latest_tag.sh"; then
+    bash "$OpenCapturePath/bin/install/migration_bash/$latest_tag.sh"
+fi

@@ -167,8 +167,17 @@
                 <button matStepperPrevious mat-button class="gray_button">
                     {{ "WORKFLOW.back" | translate }}
                 </button>
-                <button matStepperNext mat-button class="valid_button" (click)="!this.creationMode ? this.updateWorkflow('separation') : ''">
+
+                <button matStepperNext mat-button class="valid_button" *ngIf="this.outputAllowed" (click)="!this.creationMode ? this.updateWorkflow('separation') : ''">
                     {{ 'WORKFLOW.next' | translate }}
+                </button>
+                <button matStepperNext mat-button class="valid_button" *ngIf="!this.outputAllowed" (click)="!this.creationMode ? this.updateWorkflow('separation') : ''">
+                    <span *ngIf="this.creationMode">
+                        {{ 'WORKFLOW.create' | translate }}
+                    </span>
+                    <span *ngIf="!this.creationMode">
+                        {{ 'WORKFLOW.update' | translate }}
+                    </span>
                 </button>
             </mat-step>
             <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.output' | translate" *ngIf="this.outputAllowed">
