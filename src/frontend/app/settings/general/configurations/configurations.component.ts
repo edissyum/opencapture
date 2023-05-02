@@ -45,17 +45,18 @@ import {FormControl, Validators} from "@angular/forms";
 })
 export class ConfigurationsComponent implements OnInit {
     columnsToDisplay    : string[]      = ['id', 'label', 'description', 'type', 'content', 'actions'];
-    headers             : HttpHeaders   = this.authService.headers;
     emailTestControl    : FormControl   = new FormControl('', Validators.email);
+    headers             : HttpHeaders   = this.authService.headers;
     updateLoading       : boolean       = false;
     updating            : boolean       = false;
     sending             : boolean       = false;
+    smtpFormValid       : boolean       = false;
     loading             : boolean       = true;
     configurations      : any           = [];
     allConfigurations   : any           = [];
-    pageSize            : number        = 10;
     search              : string        = '';
     loginImage          : SafeUrl       = '';
+    pageSize            : number        = 10;
     pageIndex           : number        = 0;
     total               : number        = 0;
     offset              : number        = 0;
@@ -80,7 +81,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_host'),
             type: 'text',
-            required: false
+            required: true
         },
         {
             id: 'smtpPort',
@@ -88,7 +89,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_port'),
             type: 'number',
-            required: false,
+            required: true,
         },
         {
             id: 'smtpProtocoleSecure',
@@ -96,7 +97,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_protocol'),
             type: 'select',
-            required: false,
+            required: true,
             values: [
                 {
                     id: 'none',
@@ -313,11 +314,15 @@ export class ConfigurationsComponent implements OnInit {
         this.updateSmtp(false);
 
         this.sending = true;
+        this.smtpFormValid = false;
         this.http.post(environment['url'] + '/ws/smtp/test', {'email': this.emailTestControl.value}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('MAILCOLLECT.smtp_test_success', {email: this.emailTestControl.value}));
             }),
-            finalize(() => this.sending = false),
+            finalize(() => {
+                this.sending = false;
+                this.smtpFormValid = true;
+            }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -327,27 +332,29 @@ export class ConfigurationsComponent implements OnInit {
     }
 
     updateSmtp(showSuccess: boolean = true) {
-        const data: any = {
-            'value': {}
-        };
+        if (this.isValidForm(this.smtpForm)) {
+            const data: any = {
+                'value': {}
+            };
 
-        this.smtpForm.forEach((element: any) => {
-            data['value'][element.id] = element.control.value;
-        });
+            this.smtpForm.forEach((element: any) => {
+                data['value'][element.id] = element.control.value;
+            });
 
-        this.http.put(environment['url'] + '/ws/config/updateConfiguration/smtp', {'args': data}, {headers: this.authService.headers}).pipe(
-            tap(() => {
-                if (showSuccess) {
-                    this.notify.success(this.translate.instant('MAILCOLLECT.smtp_general_settings_updated'));
-                }
-                this.historyService.addHistory('general', 'mailcollect', this.translate.instant('HISTORY-DESC.smtp_settings_updated'));
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+            this.http.put(environment['url'] + '/ws/config/updateConfiguration/smtp', {'args': data}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    if (showSuccess) {
+                        this.notify.success(this.translate.instant('MAILCOLLECT.smtp_general_settings_updated'));
+                    }
+                    this.historyService.addHistory('general', 'mailcollect', this.translate.instant('HISTORY-DESC.smtp_settings_updated'));
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
     }
 
     upload(fileInput: any) {
@@ -478,5 +485,37 @@ export class ConfigurationsComponent implements OnInit {
 
     compare(a: number | string, b: number | string, isAsc: boolean) {
         return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    }
+
+    isValidForm(form: any, notify: boolean = true) {
+        let state = true;
+
+        form.forEach((element: any) => {
+            if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
+                state = false;
+            }
+            element.control.markAsTouched();
+        });
+
+        if (!state && notify) {
+            this.notify.error(this.translate.instant('ERROR.form_not_valid'));
+        } else {
+            this.smtpFormValid = true;
+        }
+
+        return state;
+    }
+
+    getErrorMessage(field: any, process: any) {
+        let error: any;
+        process.forEach((element: any) => {
+            if (element.id === field) {
+                if (element.required) {
+                    error = this.translate.instant('AUTH.field_required');
+                    this.smtpFormValid = false;
+                }
+            }
+        });
+        return error;
     }
 }
