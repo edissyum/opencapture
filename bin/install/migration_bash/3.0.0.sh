@@ -27,6 +27,8 @@ opencapturePath="/var/www/html/opencapture/"
 # Update input_id to workflow_id
 SECTIONS=$(crudini --get $opencapturePath/custom/custom.ini | sed 's/:.*//')
 for custom_name in ${SECTIONS[@]}; do
+    mkdir -p custom/$custom_name/bin/scripts/verifier_workflows/
+    cp $opencapturePath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh custom/$custom_name/bin/scripts/verifier_workflows/
     for script in custom/$custom_name/bin/scripts/verifier_inputs/*.sh; do
         if [[ ! $script =~ 'script_sample_dont_touch.sh' ]]; then
             sed -i 's/input_id/workflow_id/g' "$script"

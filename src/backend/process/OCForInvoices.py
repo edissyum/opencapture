@@ -75,21 +75,11 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
         })
 
     if args.get('isMail') is None or args.get('isMail') is False:
-        if 'input_id' in args and args['input_id'] and input_settings:
-            if input_settings['purchase_or_sale']:
+        if 'workflow_id' in args and args['workflow_id'] and workflow_settings:
+            if 'customer_id' in workflow_settings['input'] and workflow_settings['input']['customer_id']:
                 document_data.update({
-                    'purchase_or_sale': input_settings['purchase_or_sale']
+                    'customer_id': workflow_settings['input']['customer_id']
                 })
-            if input_settings['customer_id']:
-                document_data.update({
-                    'customer_id': input_settings['customer_id']
-                })
-        elif 'workflow_id' in args and args['workflow_id']:
-            if workflow_settings:
-                if 'customer_id' in workflow_settings['input'] and workflow_settings['input']['customer_id']:
-                    document_data.update({
-                        'customer_id': workflow_settings['input']['customer_id']
-                    })
     else:
         if 'customer_id' in args and args['customer_id']:
             document_data.update({

@@ -31,19 +31,17 @@ def upload():
     if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'upload']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/upload'}), 403
 
-    input_id = workflow_id = None
-    if 'inputId' in request.args:
-        input_id = request.args['inputId']
+    workflow_id = None
     if 'workflowId' in request.args:
         workflow_id = request.args['workflowId']
 
     files = request.files
-    res = verifier.handle_uploaded_file(files, input_id, workflow_id)
+    res = verifier.handle_uploaded_file(files, workflow_id)
 
     if res and res[0] is not False:
         for file in res[0]:
             if 'returnUniqueUrl' in request.args and request.args['returnUniqueUrl']:
-                token = auth.generate_unique_url_token(file['token'], input_id, workflow_id)
+                token = auth.generate_unique_url_token(file['token'], workflow_id)
                 if token:
                     cfg, _ = config.read_config()
                     url = f"{cfg['GLOBAL']['applicationurl']}/verifier/viewer_token/{token}"

@@ -91,7 +91,7 @@ def encode_auth_token(user_id):
         return str(_e)
 
 
-def generate_unique_url_token(document_id, input_id, workflow_id):
+def generate_unique_url_token(document_id, workflow_id):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -103,15 +103,7 @@ def generate_unique_url_token(document_id, input_id, workflow_id):
     days_before_exp = None
     error = True
 
-    if input_id:
-        form_settings = database.select({
-            "select": ["settings"],
-            "table": ["form_models", "inputs"],
-            "left_join": ["form_models.id = inputs.form_id"],
-            "where": ["inputs.input_id = %s"],
-            "data": [input_id]
-        })
-    elif workflow_id:
+    if workflow_id:
         form_settings = database.select({
             "select": ["settings", "input", "process"],
             "table": ["form_models", "workflows"],
