@@ -2,7 +2,7 @@
     <app-loader></app-loader>
 </div>
 <div *ngIf="!this.processDone && this.fromToken">
-    <div class="flex justify-center items-center h-screen w-screen">
+    <div class="flex justify-center items-center h-screen">
         <div class="flex flex-col justify-center">
             <div class="flex justify-center">
                 <i class="fa-solid text-6xl" [class]="this.processErrorIcon"></i>
@@ -13,7 +13,24 @@
         </div>
     </div>
 </div>
-<span *ngIf="!this.fromToken || (this.processDone && this.fromToken)">
+<div *ngIf="this.processMultiDocument && this.processDone && this.fromToken">
+    <div class="flex justify-center items-center h-screen">
+        <div class="flex flex-col justify-center">
+            <div class="flex justify-center text-center mt-4 text-gray-900">
+                <span class="text-xl">{{ 'VERIFIER.multiple_documents' | translate }}</span>
+            </div>
+            <div class="flex justify-center text-center mt-4 text-gray-900 m-4">
+                <div class="grid grid-cols-4 grid-flow-row gap-6 text-center">
+                    <mat-card *ngFor="let doc of this.multiDocumentsData" (click)="loadDocument(doc['id'])"
+                              class="cursor-pointer scale-1 hover:scale-103 transition-all duration-300">
+                        <img mat-card-image class="m-auto p-4" [src]="doc['thumb']" alt="Open-Capture image">
+                    </mat-card>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<span *ngIf="!this.fromToken || (this.processDone && this.fromToken && !this.processMultiDocument)">
     <div class="grid grid-cols-2 overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem)' : 'height: 100vh'">
         <div id="image" class="overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem); direction: rtl' : 'height: 100vh;direction: rtl'">
             <div class="relative ml-4 z-50 text-xl text-left py-2">

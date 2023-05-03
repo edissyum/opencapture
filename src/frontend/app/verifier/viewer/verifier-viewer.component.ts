@@ -52,6 +52,7 @@ export class VerifierViewerComponent implements OnInit {
     loading                 : boolean     = true;
     supplierExists          : boolean     = true;
     deleteDataOnChangeForm  : boolean     = true;
+    processMultiDocument    : boolean     = false;
     isOCRRunning            : boolean     = false;
     processDone             : boolean     = false;
     fromToken               : boolean     = false;
@@ -83,11 +84,12 @@ export class VerifierViewerComponent implements OnInit {
     formSettings            : any         = {};
     formList                : any         = {};
     currentFormFields       : any         = {};
-    suppliers               : any         = [];
+    imgArray                : any         = {};
     currentSupplier         : any         = {};
+    suppliers               : any         = [];
     outputsLabel            : any         = [];
     outputs                 : any         = [];
-    imgArray                : any         = {};
+    multiDocumentsData      : any         = [];
     fieldCategories         : any[]       = [
         {
             id: 'supplier',
@@ -138,7 +140,7 @@ export class VerifierViewerComponent implements OnInit {
         private localStorageService: LocalStorageService
     ) {}
 
-    async ngOnInit(): Promise<void> {
+    async ngOnInit(document_id_from_multi = false): Promise<void> {
         this.localStorageService.save('splitter_or_verifier', 'verifier');
         this.ocrFromUser = false;
         this.saveInfo = true;
@@ -164,9 +166,36 @@ export class VerifierViewerComponent implements OnInit {
                 return;
             } else {
                 this.processDone = true;
-                this.documentId = res['document_ids'][0];
+                this.authService.headers = new HttpHeaders().set('Authorization', 'Bearer ' + token);
+                if (res['document_ids'] && res['document_ids'].length  === 1) {
+                    this.documentId = res['document_ids'][0];
+                } else {
+                    if (!document_id_from_multi) {
+                        this.loading = false;
+                        this.processMultiDocument = true;
+                        for (const cpt in res['document_ids']) {
+                            if (res['document_ids'].hasOwnProperty(cpt)) {
+                                const id = res['document_ids'][cpt];
+                                const tmp_thumb: any = await this.getThumbByDocumentId(id);
+                                const thumb: SafeUrl = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + tmp_thumb['file']);
+                                const document: any = await this.getDocumentById(id);
+                                if (document['status'] === 'NEW') {
+                                    this.multiDocumentsData.push({
+                                        id: id,
+                                        thumb: thumb
+                                    });
+                                }
+                            }
+                            if (this.multiDocumentsData.length === 1) {
+                                this.loadDocument(this.multiDocumentsData[0].id);
+                            }
+                        }
+                        return;
+                    } else {
+                        this.documentId = document_id_from_multi;
+                    }
+                }
             }
-            this.authService.headers = new HttpHeaders().set('Authorization', 'Bearer ' + token);
         } else {
             this.documentId = this.route.snapshot.params['id'];
             if (!this.authService.headersExists) {
@@ -189,7 +218,6 @@ export class VerifierViewerComponent implements OnInit {
             'locked_by': this.userService.user.username
         });
         this.document = await this.getDocument();
-
         if (this.fromToken && (this.document.status === 'END' || this.document.status === 'ERR')) {
             this.loading = false;
             this.processDone = false;
@@ -275,11 +303,16 @@ export class VerifierViewerComponent implements OnInit {
         }, 500);
         const triggerEvent = $('.trigger');
         triggerEvent.hide();
-        this.filteredOptions = this.supplierNamecontrol.valueChanges
-            .pipe(
-                startWith(''),
-                map(option => option ? this._filter(option) : this.suppliers.slice())
-            );
+        this.filteredOptions = this.supplierNamecontrol.valueChanges.pipe(
+            startWith(''),
+            map(option => option ? this._filter(option) : this.suppliers.slice())
+        );
+    }
+
+    loadDocument(documentId: any) {
+        this.loading = true;
+        this.processMultiDocument = false;
+        this.ngOnInit(documentId).then();
     }
 
     async retrieveDocumentIdAndStatusFromToken(token: any) {
@@ -394,6 +427,10 @@ export class VerifierViewerComponent implements OnInit {
 
     getCategoryLabel(category: any) {
         return this.formSettings.labels[category.id] ? this.formSettings.labels[category.id] : this.translate.instant(category.label);
+    }
+
+    async getThumbByDocumentId(documentId: any) {
+        return this.http.post(environment['url'] + '/ws/verifier/getThumbByDocumentId', {'documentId': documentId}, {headers: this.authService.headers}).toPromise();
     }
 
     async getThumb(filename:string) {
@@ -513,6 +550,10 @@ export class VerifierViewerComponent implements OnInit {
 
     async getDocument(): Promise<any> {
         return await this.http.get(environment['url'] + '/ws/verifier/documents/' + this.documentId, {headers: this.authService.headers}).toPromise();
+    }
+
+    async getDocumentById(id: any): Promise<any> {
+        return await this.http.get(environment['url'] + '/ws/verifier/documents/' + id, {headers: this.authService.headers}).toPromise();
     }
 
     async getForm(): Promise<any> {

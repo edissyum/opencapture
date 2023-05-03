@@ -33,6 +33,10 @@ module.exports = {
             '100': '100%',
         },
         extend: {
+            scale: {
+                '103': '1.03',
+                '105': '1.05',
+            },
             backgroundImage: {
                 'verifier': "url('../../assets/imgs/Open-Capture_Verifier.svg')",
                 'splitter': "url('../../assets/imgs/Open-Capture_Splitter.svg')"

@@ -361,8 +361,10 @@ def token_required(view):
                     'verifier/verifyVATNumber',
                     'forms/fields/getByFormId',
                     'outputs/verifier/getById',
-                    'getDefaultAccountingPlan'
+                    'getDefaultAccountingPlan',
+                    'verifier/getThumbByDocumentId'
                 ]
+
                 if process and process[0]['document_ids']:
                     for document_id in process[0]['document_ids']:
                         if str(document_id) in request.url:

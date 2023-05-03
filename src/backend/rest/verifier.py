@@ -322,6 +322,18 @@ def get_thumb():
     return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
 
 
+@bp.route('verifier/getThumbByDocumentId', methods=['POST'])
+@auth.token_required
+def get_thumb_by_document_id():
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/getThumb'}), 403
+
+    document_id = request.json['documentId']
+    file_content = verifier.get_thumb_by_document_id(document_id)
+    return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
+
+
 @bp.route('verifier/getTokenINSEE', methods=['GET'])
 @auth.token_required
 def get_token_insee():

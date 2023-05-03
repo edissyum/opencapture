@@ -18,6 +18,8 @@
 import os
 import uuid
 import json
+
+import pandas as pd
 import zeep
 import base64
 import secrets
@@ -482,6 +484,18 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
         files.improve_image_detection(path)
         text = files.ocr_on_fly(path, selection, ocr, thumb_size, lang=lang)
         return text
+
+
+def get_thumb_by_document_id(document_id):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+    if not error:
+        register_date = pd.to_datetime(document_info['register_date'])
+        year = register_date.strftime('%Y')
+        month = register_date.strftime('%m')
+        year_and_month = year + '/' + month
+        return get_file_content('full', document_info['full_jpg_filename'], 'image/jpeg', year_and_month=year_and_month)
+    else:
+        return '', 404
 
 
 def get_file_content(file_type, filename, mime_type, compress=False, year_and_month=False):
