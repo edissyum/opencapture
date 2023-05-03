@@ -262,6 +262,11 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
+        path: 'settings/splitter/workflows/builder/edit/:id', component: WorkflowBuilderSplitterComponent,
+        data: {title: 'SETTINGS.workflow_update', privileges: ['settings', 'update_workflow']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
         path: 'settings/splitter/forms', component: SplitterFormListComponent,
         data: {title: 'SETTINGS.list_forms', privileges: ['settings', 'forms_list_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
