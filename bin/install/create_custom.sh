@@ -288,7 +288,7 @@ mkdir -p $customPath/instance/referencial/
 mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $customPath/bin/data/log/Supervisor/
 touch $customPath/bin/data/log/OpenCapture.log
-mkdir -p $customPath/bin/scripts/{verifier_workflows,splitter_inputs,MailCollect,ai}/
+mkdir -p $customPath/bin/scripts/{verifier_workflows,splitter_workflows,MailCollect,ai}/
 mkdir -p $customPath/bin/scripts/ai/{splitter,verifier}
 mkdir -p $customPath/src/backend/
 touch $customPath/config/secret_key
@@ -378,7 +378,7 @@ sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCaptur
 ####################
 # Move defaults scripts to new custom location
 cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/"
-cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
+cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/"
 
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh"
 cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh $defaultScriptFile
@@ -396,12 +396,12 @@ sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCaptur
 sed -i 's#"§§ARGUMENTS§§"#-workflow_id ocr_only#g' $ocrOnlyFile
 sed -i "s#§§CUSTOM_ID§§#$customId#g" $ocrOnlyFile
 
-defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh"
-cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh $defaultScriptFile
-sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
+defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_workflows.sh"
+cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh $defaultScriptFile
+sed -i "s#§§SCRIPT_NAME§§#splitter_workflows#g" $defaultScriptFile
 sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
 sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
-sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
+sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 
 ####################
@@ -416,10 +416,10 @@ crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workfl
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh \$filename"
 
-crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId watch /var/share/"$customId"/entrant/splitter/
-crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId events move,close
-crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId include_extensions pdf,PDF
-crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId command "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh \$filename"
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId watch /var/share/"$customId"/entrant/splitter/
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId include_extensions pdf,PDF
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_input.sh \$filename"
 
 ####################
 # Fix the rights after root launch to avoid permissions issues
@@ -524,5 +524,5 @@ fi
 # Makes scripts executable
 chmod u+x $customPath/bin/scripts/*.sh
 chmod u+x $customPath/bin/scripts/verifier_workflows/*.sh
-chmod u+x $customPath/bin/scripts/splitter_inputs/*.sh
+chmod u+x $customPath/bin/scripts/splitter_workflows/*.sh
 chown -R "$user":"$user" $customPath/bin/scripts/
