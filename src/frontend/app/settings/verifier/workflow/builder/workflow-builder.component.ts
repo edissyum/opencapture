@@ -458,8 +458,8 @@ export class WorkflowBuilderComponent implements OnInit {
         });
     }
 
-    checkFolder(field: any) {
-        if (field && field.control.value && field.control.value !== this.oldFolder) {
+    checkFolder(field: any, fromUser = false) {
+        if (fromUser || (field && field.control.value && field.control.value !== this.oldFolder)) {
             this.http.post(environment['url'] + '/ws/workflows/verifier/verifyInputFolder',
                 {'input_folder': field.control.value}, {headers: this.authService.headers}).pipe(
                 tap(() => {

@@ -91,3 +91,17 @@ INSERT INTO "workflows" ("workflow_id", "label", "module", "input", "process", "
      WHERE module = 'verifier';
 
 DROP TABLE inputs;
+
+UPDATE form_models SET settings = jsonb_set(settings, '{unique_url}', '{"expiration": 7,
+     "change_form": true,
+     "create_supplier": true,
+     "enable_supplier": true,
+     "refuse_document": true,
+     "validate_document": true}') WHERE module = 'verifier';
+
+UPDATE form_model_settings SET settings = jsonb_set(settings, '{unique_url}', '{"expiration": 7,
+     "change_form": true,
+     "create_supplier": true,
+     "enable_supplier": true,
+     "refuse_document": true,
+     "validate_document": true}') WHERE module = 'verifier';

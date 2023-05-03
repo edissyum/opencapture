@@ -48,7 +48,7 @@ export class MailCollectComponent implements OnInit {
     formValid           : { [key: string]: boolean } = {};
     allCustomers        : any           = [];
     allForms            : any           = [];
-    allSplitterInputs   : any           = [];
+    allSplitterWorkflows   : any           = [];
     processesMail       : any           = [];
     allprocessesMail    : any           = [];
     processes           : any           = [];
@@ -270,17 +270,14 @@ export class MailCollectComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/inputs/splitter/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/workflows/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.allSplitterInputs = data.inputs;
-                this.allSplitterInputs.forEach((element: any) => {
-                    element.label = element.input_label;
-                });
+                this.allSplitterWorkflows = data.workflows;
                 this.defaultProcessData.forEach((element: any) => {
                     if (element.id === 'splitter_technical_input_id') {
                         element.values = element.control.valueChanges.pipe(
                             startWith(''),
-                            map(option => option ? this._filter(option, this.allSplitterInputs) : this.allSplitterInputs)
+                            map(option => option ? this._filter(option, this.allSplitterWorkflows) : this.allSplitterWorkflows)
                         );
                     }
                 });
@@ -377,9 +374,9 @@ export class MailCollectComponent implements OnInit {
                                         }
                                     }
                                 } else if (element === 'splitter_technical_input_id') {
-                                    for (let i = 0; i < this.allSplitterInputs.length; i++) {
-                                        if (parseInt(this.allSplitterInputs[i].id) === parseInt(process[element])) {
-                                            value = this.allSplitterInputs[i];
+                                    for (let i = 0; i < this.allSplitterWorkflows.length; i++) {
+                                        if (parseInt(this.allSplitterWorkflows[i].id) === parseInt(process[element])) {
+                                            value = this.allSplitterWorkflows[i];
                                         }
                                     }
                                 } else if (element === 'folder_trash' || element === 'folder_to_crawl' || element === 'folder_destination') {
@@ -544,7 +541,7 @@ export class MailCollectComponent implements OnInit {
             if (element.id === 'splitter_technical_input_id') {
                 element.values = element.control.valueChanges.pipe(
                     startWith(''),
-                    map(option => option ? this._filter(option, this.allSplitterInputs) : this.allSplitterInputs)
+                    map(option => option ? this._filter(option, this.allSplitterWorkflows) : this.allSplitterWorkflows)
                 );
             }
         });

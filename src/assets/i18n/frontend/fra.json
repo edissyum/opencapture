@@ -13,6 +13,7 @@
 		"thanks_to_developers": "Merci aux developpeurs de ces solutions"
 	},
 	"ACCOUNTS": {
+		"choose_workflow_upload": "Choix du workflow",
 		"company_number": "Numéro de société",
 		"confirm_delete_customer": "Êtes vous sûr de vouloir supprimer le compte client <strong>{{ customer }}</strong> ?",
 		"confirm_delete_supplier": "Êtes vous sûr de vouloir supprimer le compte tiers <strong>{{ supplier }}</strong> ?",
@@ -474,7 +475,6 @@
 		"enable-form": "Activation du formulaire&nbsp;<strong>{{ form }}</strong>",
 		"enable-mailcollect-process": "Activation du processus MailCollect&nbsp;<strong>{{ process }}</strong>",
 		"enable-user": "Activation de l'utilisateur&nbsp;<strong>{{ user }}</strong>",
-		"file_uploaded": "Fichier téléversé via l'interface avec la chaîne entrante&nbsp;<strong>{{ input }}</strong>",
 		"file_uploaded_workflow": "Fichier téléversé via l'interface avec le workflow&nbsp;<strong>{{ workflow }}</strong>",
 		"language_changed": "Changemement de la langue vers <strong>{{ lang }}</strong>",
 		"login": "Connexion de l'utilisateur",
@@ -771,8 +771,6 @@
 		"add_document_type": "Ajouter un type de document",
 		"add_form": "Ajouter un formulaire",
 		"add_form_splitter": "Ajouter un formulaire",
-		"add_input": "Ajouter une chaîne entrante",
-		"add_input_splitter": "Ajouter une chaîne entrante",
 		"add_output": "Ajouter une chaîne sortante",
 		"add_output_splitter": "Ajouter une chaîne sortante",
 		"add_position_mask": "Ajouter un masque de positionnement",
@@ -798,8 +796,6 @@
 		"general": "Privilèges globaux",
 		"history": "Historique",
 		"import_suppliers": "Importer les tiers",
-		"inputs_list": "Liste des chaînes entrantes",
-		"inputs_list_splitter": "Liste des chaînes entrantes",
 		"list": "Liste des privilèges",
 		"list_ai_model": "Liste des modèles d'IA",
 		"list_ai_model_splitter": "Liste des modèles d'IA",
@@ -822,8 +818,6 @@
 		"update_document_type": "Mettre à jour un type de document",
 		"update_form": "Mettre à jour le formulaire",
 		"update_form_splitter": "Mettre à jour le formulaire",
-		"update_input": "Mettre à jour la chaîne entrante",
-		"update_input_splitter": "Mettre à jour la chaîne entrante",
 		"update_output": "Mettre à jour la chaîne sortante",
 		"update_output_splitter": "Mettre à jour la chaîne sortante",
 		"update_position_mask": "Mettre à jour le masque de positionnement",
@@ -1014,15 +1008,13 @@
 	},
 	"UPLOAD": {
 		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
-		"inputs": "Chaînes entrantes",
 		"no_file": "Aucun fichier à téléverser",
 		"placeholder": "Cliquez pour choisir un ou plusieurs documents PDF (3 maximum) ou faites glisser vos documents",
-		"please_select_input_or_workflow": "Choisissez une chaîne entrante ou un workflow avant de procéder au téléversement",
+		"please_select_workflow": "Choisissez un workflow avant de procéder au téléversement",
 		"purchase_invoice": "Facture d'achat",
 		"sale_invoice": "Facture de vente",
 		"upload_file": "Téléverser le fichier",
-		"upload_success": "Fichier(s) téléversé(s) avec succès",
-		"workflows": "Workflows"
+		"upload_success": "Fichier(s) téléversé(s) avec succès"
 	},
 	"USER-QUOTA": {
 		"description": "Le quota utilisateur permet de limiter la création d'utilisateur à un certains nombres (utile pour des installations mutualisés sur un VPS par exemple)",
