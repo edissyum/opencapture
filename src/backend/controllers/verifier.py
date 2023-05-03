@@ -232,7 +232,7 @@ def update_page_by_document_id(document_id, args):
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_document_PAGES_ERROR'),
+                "errors": gettext('UPDATE_DOCUMENT_PAGES_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
@@ -311,7 +311,7 @@ def delete_document_position_by_document_id(document_id, field_id):
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_document_POSITIONS_ERROR'),
+                "errors": gettext('UPDATE_DOCUMENT_POSITIONS_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
@@ -329,7 +329,7 @@ def delete_document_page_by_document_id(document_id, field_id):
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_document_PAGES_ERROR'),
+                "errors": gettext('UPDATE_DOCUMENT_PAGES_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
