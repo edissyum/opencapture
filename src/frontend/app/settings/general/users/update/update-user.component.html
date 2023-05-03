@@ -28,25 +28,24 @@
         <div class="flex justify-center items-center align-middle">
             <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
                 <ng-container *ngFor="let field of userFields">
-                    <mat-form-field class="block" *ngIf="field.type !== 'select'"
-                                    [class.pointer-events-none]="field.type === 'password' && this.disablePasswordModification">
-                        <mat-label [class.text-gray-400]="field.type === 'password' && this.disablePasswordModification">
-                            {{ field.label | translate }}
-                        </mat-label>
-                        <input matInput [readonly]="field.id === 'username' || (field.type === 'password' && this.disablePasswordModification)"
-                               [formControl]="field['control']" [type]="field.type === 'password' && showPassword ? 'text' : field.type"
-                               [placeholder]="field.label | translate" [required]="field['required']">
-                        <mat-error class="text-red-400" [innerHTML]="getErrorMessage(field.id)" *ngIf="field.control.invalid"></mat-error>
-                        <mat-icon *ngIf="field.id === 'password'" matSuffix (click)="showPassword = !showPassword;"
-                                  class="text-green-400 relative cursor-pointer -top-0.5 text-base">
-                            <i class="fa fa-1x" [class.fa-eye-slash]="!showPassword" [class.fa-eye]="showPassword"></i>
-                        </mat-icon>
-                        <mat-icon *ngIf="field.id === 'password_check'" matSuffix
-                                  (click)="showPassword = !showPassword;"
-                                  class="text-green-400 relative cursor-pointer -top-0.5 text-base">
-                            <i class="fa fa-1x" [class.fa-eye-slash]="!showPassword" [class.fa-eye]="showPassword"></i>
-                        </mat-icon>
-                    </mat-form-field>
+                    <span *ngIf="field.type !== 'select'" [class.cursor-not-allowed]="field.id === 'username' || (field.type === 'password' && this.disablePasswordModification)">
+                        <mat-form-field class="block" [class.pointer-events-none]="field.id === 'username' || (field.type === 'password' && this.disablePasswordModification)">
+                            <mat-label [class.text-gray-400]="field.type === 'password' && this.disablePasswordModification">
+                                {{ field.label | translate }}
+                            </mat-label>
+                            <input matInput [readonly]="field.id === 'username' || (field.type === 'password' && this.disablePasswordModification)"
+                                   [class.text-gray-400]="field.id === 'username' || (field.type === 'password' && this.disablePasswordModification)"
+                                   [formControl]="field['control']" [type]="field.type === 'password' && showPassword ? 'text' : field.type"
+                                   [placeholder]="field.label | translate" [required]="field['required']">
+                            <mat-error class="text-red-400" [innerHTML]="getErrorMessage(field.id)" *ngIf="field.control.invalid"></mat-error>
+                            <mat-icon *ngIf="field.id === 'password'" matSuffix (click)="showPassword = !showPassword;" class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                                <i class="fa fa-1x" [class.fa-eye-slash]="!showPassword" [class.fa-eye]="showPassword"></i>
+                            </mat-icon>
+                            <mat-icon *ngIf="field.id === 'password_check'" matSuffix (click)="showPassword = !showPassword;" class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                                <i class="fa fa-1x" [class.fa-eye-slash]="!showPassword" [class.fa-eye]="showPassword"></i>
+                            </mat-icon>
+                        </mat-form-field>
+                    </span>
                     <mat-form-field class="block" *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <mat-select [formControl]="field['control']" [(value)]="field.control.value" [required]="field['required']">
