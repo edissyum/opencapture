@@ -37,7 +37,7 @@ import * as moment from "moment";
     providers: [DatePipe]
 })
 export class HistoryComponent implements OnInit {
-    filteredUsers       : Observable<any> | undefined;
+    filteredUsers       : Observable<any> | any;
     columnsToDisplay    : string[] = ['id', 'history_module', 'history_submodule', 'history_date', 'user_info', 'history_desc', 'user_ip'];
     loading             : boolean  = true;
     toHighlight         : string   = '';

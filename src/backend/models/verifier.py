@@ -44,6 +44,29 @@ def get_document_by_id(args):
     return document, error
 
 
+def get_document_id_by_token(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    document_ids = database.select({
+        'select': ['document_ids'],
+        'table': ['monitoring'],
+        'where': ['token = %s'],
+        'data': [args['token']]
+    })
+
+    if not document_ids:
+        error = gettext('GET_DOCUMENT_ID_BY_TOKEN_ERROR')
+    else:
+        document_ids = document_ids[0]
+    return document_ids, error
+
+
 def get_documents(args):
     if 'database' in current_context:
         database = current_context.database

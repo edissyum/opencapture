@@ -570,12 +570,21 @@ INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verif
             {"id": "form_label", "label": "ACCOUNTS.form"}
         ]
     },
+    "unique_url": {
+        "expiration": 7,
+        "change_form": true,
+        "create_supplier": true,
+        "enable_supplier": true,
+        "refuse_document": true,
+        "validate_document": true
+    },
     "supplier_verif": false
 }');
 INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (2, 'splitter', '{
     "metadata_method": "",
     "export_zip_file": ""
 }');
+ALTER SEQUENCE "form_model_settings_id_seq" RESTART WITH 3;
 
 -- CRÉATION DES FORMULAIRES VERIFIER PAR DÉFAUT
 INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "settings") VALUES (1, 'Formulaire par défaut', true, '{1,3}', 'verifier',  '{
@@ -621,11 +630,6 @@ INSERT INTO "doctypes" ("key", "label", "code", "is_default", "type", "form_id")
 INSERT INTO "doctypes" ("key", "label", "code", "is_default", "type", "form_id") VALUES ('passport', 'Passeport', '0.1.2', 'f', 'document', 3);
 INSERT INTO "doctypes" ("key", "label", "code", "is_default", "type", "form_id") VALUES ('driving_license', 'Permis de conduire', '0.1.3', 'f', 'document', 3);
 
--- CRÉATION DES CHAINES ENTRANTES
-INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder", "module", "splitter_method_id") VALUES (1, 'default_input', 'Chaîne entrante par défaut', 1, '/var/share/entrant/verifier/', 'verifier', 'no_sep');
-INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder", "module", "splitter_method_id") VALUES (2, 'default_input', 'Chaîne entrante par défaut', 3, '/var/share/entrant/splitter/', 'splitter', 'qr_code_OC');
-ALTER SEQUENCE "inputs_id_seq" RESTART WITH 3;
-
 -- CRÉATION DES WORKFLOWS
 INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "separation", "output") VALUES (1, 'default_workflow', 'Workflow par défaut', 'verifier', '{"ai_model_id": null, "customer_id": null, "facturx_only": false, "input_folder": "/var/share/entrant/verifier/", "apply_process": true}', '{"form_id": 1, "rotation": "no_rotation", "system_fields": ["name", "invoice_number", "quotation_number", "document_date", "document_due_date", "footer"], "use_interface": true, "delete_documents": false, "allow_automatic_validation": false, "override_supplier_form": false}', '{"remove_blank_pages": true, "splitter_method_id": "no_sep", "separate_by_document_number_value": 2}', '{"outputs_id": [1, 3]}');
 INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "separation", "output") VALUES (2, 'ocr_only', 'OCRisation simple par défaut', 'verifier', '{"ai_model_id": null, "customer_id": null, "facturx_only": false, "input_folder": "/var/share/entrant/verifier/ocr/", "apply_process": false}', '{"form_id": null, "rotation": "no_rotation", "system_fields": [], "use_interface": false, "delete_documents": false, "override_supplier_form": false, "allow_automatic_validation": false}', '{"remove_blank_pages": true, "splitter_method_id": "no_sep", "separate_by_document_number_value": 2}', '{"outputs_id": [3]}');
@@ -664,53 +668,47 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (22, 'change_language'
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (23, 'outputs_list', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (24, 'add_output', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (25, 'update_output', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (26, 'inputs_list', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (27, 'update_input', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (28, 'add_input', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (29, 'export_suppliers', 'accounts');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (30, 'position_mask_list', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (31, 'add_position_mask', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (32, 'update_position_mask', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (33, 'history', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (34, 'separator_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (35, 'add_input_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (36, 'update_input_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (37, 'inputs_list_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (38, 'update_output_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (39, 'add_output_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (40, 'outputs_list_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (41, 'update_form_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (42, 'add_form_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (43, 'forms_list_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (44, 'add_document_type', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (45, 'update_document_type', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (46, 'import_suppliers', 'accounts');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (47, 'statistics', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'configurations', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'login_methods', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (53, 'verifier_display', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (54, 'mailcollect', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (55, 'user_quota', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (56, 'list_ai_model_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (57, 'create_ai_model_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (58, 'update_ai_model_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (59, 'monitoring', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (60, 'list_ai_model', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (61, 'create_ai_model', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (62, 'update_ai_model', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (63, 'update_status_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (64, 'update_status', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (65, 'access_config', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (66, 'workflows_list', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (67, 'add_workflow', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (68, 'update_workflow', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (69, 'workflows_list_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (70, 'add_workflow_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (71, 'update_workflow_splitter', 'splitter');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 72;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (26, 'export_suppliers', 'accounts');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (27, 'position_mask_list', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (28, 'add_position_mask', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (29, 'update_position_mask', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (30, 'history', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (31, 'separator_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (32, 'update_output_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (33, 'add_output_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (34, 'outputs_list_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (35, 'update_form_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (36, 'add_form_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (37, 'forms_list_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (38, 'add_document_type', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (39, 'update_document_type', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (40, 'import_suppliers', 'accounts');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (41, 'statistics', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (42, 'configurations', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (43, 'docservers', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (44, 'regex', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (45, 'document_type_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (46, 'login_methods', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (47, 'verifier_settings', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'mailcollect', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'user_quota', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'list_ai_model_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'create_ai_model_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'update_ai_model_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (53, 'monitoring', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (54, 'list_ai_model', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (55, 'create_ai_model', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (56, 'update_ai_model', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (57, 'update_status_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (58, 'update_status', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (59, 'access_config', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (60, 'workflows_list', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (61, 'add_workflow', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (62, 'update_workflow', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (63, 'workflows_list_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (64, 'add_workflow_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (65, 'update_workflow_splitter', 'splitter');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 66;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');
@@ -721,9 +719,9 @@ ALTER SEQUENCE "roles_id_seq" RESTART WITH 5;
 
 -- AJOUT DES PRIVILEGES LIÉS AUX ROLES
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (1, '{"data" : "[''*'']"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 51]"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[1, 2, 4, 16, 17, 18, 29, 33, 47]"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (4, '{"data" : "[3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 47, 48, 49, 50, 51, 52, 54, 55]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 51, 65]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[1, 2, 4, 16, 17, 18, 29, 33, 47, 65]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (4, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 47, 48, 49, 50, 51, 52, 54, 55, 65]"}');
 
 -- CRÉATION DE L'UTILISATEUR superadmin
 INSERT INTO "users" ("username", "firstname", "lastname", "password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);
@@ -1073,5 +1071,4 @@ DO $$
     DECLARE new_customer_id integer;
 BEGIN
     INSERT INTO accounts_customer (name, module, status, creation_date) VALUES ('Splitter - Compte client par défaut', 'splitter', 'OK', '2023-01-09 11:26:38.989482') RETURNING id INTO new_customer_id;
-    UPDATE inputs SET customer_id = new_customer_id WHERE module = 'splitter';
 END $$;

@@ -1,4 +1,5 @@
 [GLOBAL]
+applicationUrl   =
 configMail       = /var/www/html/opencapture/custom/§§CUSTOM_ID§§/config/mail.ini
 watcherConfig    = /var/www/html/opencapture/instance/config/watcher.ini
 logFile          = /var/www/html/opencapture/custom/§§CUSTOM_ID§§/bin/data/log/OpenCapture.log

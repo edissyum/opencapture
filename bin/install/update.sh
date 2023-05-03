@@ -77,12 +77,12 @@ git config core.fileMode False
 # in case of older version without somes packages/libs
 echo "APT & PIP packages installation ......."
 cd bin/install/ || exit 2
-apt-get update >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-apt-get install php >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+apt-get -y update >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+apt-get install -y php >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 xargs -a apt-requirements.txt apt-get install -y >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 if [ $pythonVenv = 'true' ]; then
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip uninstall pyocr  >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip uninstall -y pyocr  >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -92,7 +92,7 @@ if [ $pythonVenv = 'true' ]; then
 nltk.download('stopwords')
 nltk.download('punkt')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 else
-    python3 -m pip uninstall pyocr >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    python3 -m pip uninstall -y pyocr >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     python3 -m pip install --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     python3 -m pip install --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     python3 -m pip install --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -140,4 +140,10 @@ if test -f "$OpenCapturePath/bin/install/migration_sql/$latest_tag.sql"; then
     echo "           If necessary, do not hesitate to execute it              "
     echo "     in order to take advantage of the latest modifications         "
     echo "####################################################################"
+fi
+
+####################
+# Run bash migration file if present for new version
+if test -f "$OpenCapturePath/bin/install/migration_bash/$latest_tag.sh"; then
+    bash "$OpenCapturePath/bin/install/migration_bash/$latest_tag.sh"
 fi

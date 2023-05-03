@@ -23,7 +23,7 @@
                         <mat-label>
                             {{ field.label | translate }}
                         </mat-label>
-                        <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field['required']">
+                        <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
                         <mat-error *ngIf="field.control.hasError('required')">
                             {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
                         </mat-error>
@@ -33,7 +33,7 @@
                     </mat-form-field>
                     <mat-form-field *ngIf="field.type === 'text' && field.id === 'min_proba'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field['required']">
+                        <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
                         <mat-error *ngIf="field.control.hasError('required')">{{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}</mat-error>
                         <mat-error *ngIf="field.control.hasError('pattern') && !field.control.hasError('required')">
                             {{ 'ARTIFICIAL-INTELLIGENCE.invalid_selection' | translate }}

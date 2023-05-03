@@ -21,7 +21,7 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div *ngIf="!loading" class="w-full ">
+        <div *ngIf="!loading" class="w-full">
             <mat-tab-group dynamicHeight>
                 <mat-tab [label]="'CONFIGURATIONS.global' | translate">
                     <div class="overflow-x-hidden overflow-y-auto h-full-overflow text-center grid grid-cols-2 gap-6">
@@ -94,7 +94,7 @@
                     </div>
                 </mat-tab>
                 <mat-tab [label]="'CONFIGURATIONS.smtp' | translate">
-                    <div class="overflow-x-hidden overflow-y-auto h-full-overflow text-center p-8">
+                    <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 11rem) !important">
                         <div class="hint text-center">
                             <i class="fa-solid fa-circle-exclamation fa-2x pl-1"></i>
                             <div class="message w-auto">
@@ -120,8 +120,8 @@
                                             <mat-form-field class="w-full" *ngIf="field.type === 'text' || field.type === 'password' || field.type === 'number'"
                                                 [class.pointer-events-none]="disableField(unit['id'])">
                                                 <mat-label>{{ field.label | translate }}</mat-label>
-                                                <input matInput [type]="field.type" [formControl]="field['control']"
-                                                       [readonly]="disableField(unit['id'])">
+                                                <input matInput [type]="field.type" [formControl]="field['control']" [required]="field['required']"
+                                                       [readonly]="disableField(unit['id'])" (keyup)="isValidForm(this.smtpForm, false)">
                                                 <mat-icon matSuffix *ngIf="field.id === 'smtpPwd'" (click)="field.type === 'text' ? field.type = 'password' : field.type = 'text' "
                                                           class="text-green-400 relative cursor-pointer -top-0.5 text-base">
                                                     <i class="fa fa-1x" [class.fa-eye-slash]="field.type !== 'password'" [class.fa-eye]="field.type === 'password'"></i>
@@ -129,7 +129,7 @@
                                             </mat-form-field>
                                             <mat-form-field class="w-full" *ngIf="field.type === 'select'">
                                                 <mat-label>{{ field.label | translate }}</mat-label>
-                                                <mat-select [formControl]="field['control']" [required]="field['required']">
+                                                <mat-select [formControl]="field['control']" [required]="field['required']" (selectionChange)="isValidForm(this.smtpForm, false)">
                                                     <mat-option *ngFor="let option of field.values" [value]="option['id']">
                                                         {{ option['label'] | translate }}
                                                     </mat-option>
@@ -154,7 +154,11 @@
                                     </span>
                                 </button>
                             </span>
-                            <button class="ml-4 valid_button" type="submit" mat-button (click)="this.updateSmtp()">
+                            <button class="ml-4 min-w-56 p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                                    [disabled]="!this.smtpFormValid"
+                                    [class.bg-gray-400]="!this.smtpFormValid"
+                                    [class.bg-green-400]="this.smtpFormValid"
+                                    type="submit" mat-button (click)="this.updateSmtp()">
                                 {{ 'CONFIGURATIONS.update_smtp' | translate }}
                             </button>
                         </div>

@@ -102,13 +102,10 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.import_suppliers'),
         marker('PRIVILEGES.history'),
         marker('PRIVILEGES.add_output'),
-        marker('PRIVILEGES.add_input'),
         marker('PRIVILEGES.add_form'),
         marker('PRIVILEGES.update_output'),
-        marker('PRIVILEGES.update_input'),
         marker('PRIVILEGES.position_mask_list'),
         marker('PRIVILEGES.update_form'),
-        marker('PRIVILEGES.inputs_list'),
         marker('PRIVILEGES.outputs_list'),
         marker('PRIVILEGES.add_position_mask'),
         marker('PRIVILEGES.update_position_mask'),
@@ -116,9 +113,6 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.update_customer'),
         marker('PRIVILEGES.document_type_splitter'),
         marker('PRIVILEGES.separator_splitter'),
-        marker('PRIVILEGES.add_input_splitter'),
-        marker('PRIVILEGES.update_input_splitter'),
-        marker('PRIVILEGES.inputs_list_splitter'),
         marker('PRIVILEGES.update_output_splitter'),
         marker('PRIVILEGES.add_output_splitter'),
         marker('PRIVILEGES.outputs_list_splitter'),
@@ -132,7 +126,7 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.update_document_type'),
         marker('PRIVILEGES.add_document_type'),
         marker('PRIVILEGES.login_methods'),
-        marker('PRIVILEGES.verifier_display'),
+        marker('PRIVILEGES.verifier_settings'),
         marker('PRIVILEGES.mailcollect'),
         marker('PRIVILEGES.user_quota'),
         marker('PRIVILEGES.list_ai_model'),
@@ -144,7 +138,14 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.update_status'),
         marker('PRIVILEGES.update_status_splitter'),
         marker('PRIVILEGES.access_config'),
-        marker('PRIVILEGES.monitoring')
+        marker('PRIVILEGES.monitoring'),
+        marker('PRIVILEGES.verifier_display'),
+        marker('PRIVILEGES.workflows_list'),
+        marker('PRIVILEGES.add_workflow'),
+        marker('PRIVILEGES.update_workflow'),
+        marker('PRIVILEGES.workflows_list_splitter'),
+        marker('PRIVILEGES.add_workflow_splitter'),
+        marker('PRIVILEGES.update_workflow_splitter')
     ];
     // End translation
     constructor(

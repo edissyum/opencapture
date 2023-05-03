@@ -112,7 +112,7 @@ import { ErrorServiceComponent } from "../services/error/error.service";
 import { Error500Component } from './errors/error-500/error-500.component';
 import { MatSelectCountryModule } from "@angular-material-extensions/select-country";
 import { MiddlewareComponent } from "./middleware.component";
-import { VerifierDisplayComponent } from './settings/verifier/display/display.component';
+import { VariousSettingsVerifierComponent } from './settings/verifier/various-settings/various-settings.component';
 import { MailCollectComponent } from './settings/general/mailcollect/mailcollect.component';
 import { UserQuotaComponent } from './settings/general/user-quota/user-quota.component';
 import { SettingsMenuComponent } from './settings/settings-menu.component';
@@ -198,7 +198,7 @@ export function createTranslateLoader(http: HttpClient) {
         ErrorServiceComponent,
         Error500Component,
         LoginMethodsComponent,
-        VerifierDisplayComponent,
+        VariousSettingsVerifierComponent,
         MailCollectComponent,
         UserQuotaComponent,
         SettingsMenuComponent,

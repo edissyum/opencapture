@@ -822,33 +822,33 @@ msgstr "Erreur lors de la mise à jour des formulaires de l'utilisateur"
 
 #: src/backend/controllers/verifier.py:85 src/backend/models/splitter.py:219
 #: src/backend/models/verifier.py:40
-msgid "GET_INVOICE_BY_ID_ERROR"
-msgstr "Erreur lors de la récupération de la facture"
+msgid "GET_DOCUMENT_BY_ID_ERROR"
+msgstr "Erreur lors de la récupération du document"
 
 #: src/backend/controllers/verifier.py:199
 #: src/backend/controllers/verifier.py:301
-msgid "UPDATE_INVOICE_POSITIONS_ERROR"
-msgstr "Erreur lors de la mise à jour des positions de la facture"
+msgid "UPDATE_DOCUMENT_POSITIONS_ERROR"
+msgstr "Erreur lors de la mise à jour des positions du document"
 
 #: src/backend/controllers/verifier.py:222
 #: src/backend/controllers/verifier.py:319
-msgid "UPDATE_INVOICE_PAGES_ERROR"
-msgstr "Erreur lors de la mise à jour des pages de la facture"
+msgid "UPDATE_DOCUMENT_PAGES_ERROR"
+msgstr "Erreur lors de la mise à jour des pages du document"
 
 #: src/backend/controllers/verifier.py:245
 #: src/backend/controllers/verifier.py:263
-msgid "UPDATE_INVOICE_DATA_ERROR"
-msgstr "Erreur lors de la mise à jour des données de la facture"
+msgid "UPDATE_DOCUMENT_DATA_ERROR"
+msgstr "Erreur lors de la mise à jour des données du document"
 
 #: src/backend/controllers/verifier.py:333
 #: src/backend/controllers/verifier.py:339
-msgid "DELETE_INVOICE_ERROR"
-msgstr "Erreur lors de la suppression de la facture"
+msgid "DELETE_DOCUMENT_ERROR"
+msgstr "Erreur lors de la suppression du document"
 
 #: src/backend/controllers/verifier.py:354
 #: src/backend/controllers/verifier.py:360
-msgid "UPDATE_INVOICE_ERROR"
-msgstr "Erreur lors de la mise à jour de la facture"
+msgid "UPDATE_DOCUMENT_ERROR"
+msgstr "Erreur lors de la mise à jour du document"
 
 #: src/backend/controllers/verifier.py:522
 #: src/backend/controllers/verifier.py:525
@@ -868,12 +868,12 @@ msgid "VAT_API_ERROR"
 msgstr "Impossible de joindre l'API de vérification du numéro de TVA"
 
 #: src/backend/controllers/verifier.py:633
-msgid "INVOICE_NOT_FOUND"
-msgstr "Facture non trouvée"
+msgid "DOCUMENT_NOT_FOUND"
+msgstr "Document non trouvé"
 
 #: src/backend/controllers/verifier.py:634
-msgid "INVOICE_ID_NOT_FOUND"
-msgstr "Facture  %(id)s non trouvée"
+msgid "DOCUMENT_ID_NOT_FOUND"
+msgstr "Document %(id)s non trouvée"
 
 #: src/backend/controllers/workflow.py:53
 #: src/backend/controllers/workflow.py:60
@@ -1139,8 +1139,8 @@ msgid "GET_FORMS_BY_USER_ID_ERROR"
 msgstr "Erreur lors de la récupération des formulaires de l'utilisateur"
 
 #: src/backend/models/verifier.py:104 src/backend/models/verifier.py:125
-msgid "INVOICE_UPDATE_ERROR"
-msgstr "Erreur lors de la mise à jour de la facture"
+msgid "DOCUMENT_UPDATE_ERROR"
+msgstr "Erreur lors de la mise à jour du document"
 
 #: src/backend/models/workflow.py:60 src/backend/models/workflow.py:83
 msgid "WORKFLOW_DOESNT_EXISTS"

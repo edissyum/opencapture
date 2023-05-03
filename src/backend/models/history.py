@@ -34,7 +34,7 @@ def add_history(args):
             'history_module': args['module'],
             'user_info': args['user_info'],
             'history_desc': args['desc'],
-            'user_id': args['user_id'],
+            'user_id': args['user_id'] if 'user_id' in args else None,
             'user_ip': args['ip'],
         }
     }

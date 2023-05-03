@@ -409,25 +409,7 @@ def insert(args):
 
     workflow_settings = {}
     if args.get('isMail') is None or args.get('isMail') is False:
-        if 'input_id' in args and args['input_id']:
-            input_settings = database.select({
-                'select': ['*'],
-                'table': ['inputs'],
-                'where': ['input_id = %s', 'module = %s'],
-                'data': [args['input_id'], 'verifier']
-            })
-            if input_settings:
-                input_settings = input_settings[0]
-                if input_settings['purchase_or_sale']:
-                    invoice_data.update({
-                        'purchase_or_sale': input_settings['purchase_or_sale']
-                    })
-                if input_settings['customer_id']:
-                    invoice_data.update({
-                        'customer_id': input_settings['customer_id']
-                    })
-
-        elif 'workflow_id' in args and args['workflow_id']:
+        if 'workflow_id' in args and args['workflow_id']:
             workflow_settings = database.select({
                 'select': ['input', 'process', 'separation', 'output'],
                 'table': ['workflows'],

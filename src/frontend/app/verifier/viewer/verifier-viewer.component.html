@@ -1,10 +1,10 @@
 <div *ngIf="this.loading">
     <app-loader></app-loader>
 </div>
-<div class="grid grid-cols-2 overflow-auto" style="height: calc(100vh - 4rem) !important">
-    <div id="image" class="overflow-auto" style="height: calc(100vh - 4rem) !important; direction: rtl">
+<div class="grid grid-cols-2 overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem)' : 'height: 100vh'">
+    <div id="image" class="overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem); direction: rtl' : 'height: 100vh;direction: rtl'">
         <div class="relative ml-4 z-50 text-xl text-left py-2">
-            <ng-container *ngIf="!this.loading && this.document.nb_pages> 1">
+            <ng-container *ngIf="!this.loading && this.document['nb_pages']> 1">
                 <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()"></i>
                 {{ 'VERIFIER.page' | translate }}
                 {{ currentPage }}
@@ -18,7 +18,7 @@
         </div>
     </div>
     <div *ngIf="this.fields" class="px-4 overflow-auto pt-2">
-        <div>
+        <div *ngIf="this.formSettings.settings['unique_url']['change_form']">
             <div class="relative float-left top-5">
                 <i class="fa-solid fa-eye cursor-pointer text-green-400 text-lg" (click)="hideVisuals()"
                    [class.fa-eye-slash]="this.visualIsHide"
@@ -34,7 +34,7 @@
                             <mat-tab [label]="'VERIFIER.change_form' | translate">
                                 <p class="mt-3 text-center text-gray-400">{{ 'VERIFIER.change_form_details' | translate }}</p>
                                 <mat-form-field class="w-full" [class.opacity-50]="this.document.status === 'END'">
-                                    <mat-select [(value)]="this.currentFormFields.form_id" (selectionChange)="changeForm($event)"
+                                    <mat-select [(value)]="this.currentFormFields['form_id']" (selectionChange)="changeForm($event)"
                                                 [disabled]="this.document.status === 'END'">
                                         <mat-option *ngFor="let form of this.formList" [value]="form['id']">
                                             {{ form['label'] }}
@@ -63,8 +63,10 @@
                               matTooltip="{{ 'VERIFIER.calculated_footer' | translate }}">&bull;</span>
                         <span *ngIf="this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')"
                               class="text-sm cursor-pointer ml-2">
-                            <i *ngIf="this.document.supplier_id && supplierExists && this.document.status !== 'END'" (click)="editSupplier()" class="fa-solid fa-edit"></i>
-                            <i *ngIf="!this.document.supplier_id || !supplierExists && this.document.status !== 'END'" (click)="createSupplier()" class="fa-solid fa-plus"></i>
+                            <i *ngIf="this.document.supplier_id && supplierExists && this.document.status !== 'END' && this.formSettings.settings['unique_url']['update_supplier']"
+                               (click)="editSupplier()" class="fa-solid fa-edit"></i>
+                            <i *ngIf="!this.document.supplier_id || !supplierExists && this.document.status !== 'END' && this.formSettings.settings['unique_url']['create_supplier']"
+                               (click)="createSupplier()" class="fa-solid fa-plus"></i>
                         </span>
                     </span>
                     <div class="relative border-green-400 border rounded-lg -top-3.5">
@@ -252,14 +254,15 @@
                 {{ 'FORMS.no_fields' | translate }}
             </div>
         </ng-template>
-        <div [class.mt-20]="this.formEmpty"
-                class="mb-6 grid grid-cols-2 gap-4 h-12 text-gray-900">
-            <button mat-button (click)="validateForm()" type="submit" [disabled]="this.document.status === 'END'"
-                    class="valid_button">
+        <div [class.mt-20]="this.formEmpty" class="mb-6 grid grid-cols-2 gap-4 h-12 text-gray-900"
+             *ngIf="this.formSettings.settings['unique_url']['validate_document'] || this.formSettings.settings['unique_url']['refuse_document']">
+            <button mat-button (click)="validateForm()" type="submit" [disabled]="this.document.status === 'END'" class="valid_button"
+                    *ngIf="this.formSettings.settings['unique_url']['validate_document']">
                 <span *ngIf="!this.loadingSubmit">{{ 'FORMS.validate' | translate }}</span>
                 <i *ngIf="this.loadingSubmit" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
             </button>
             <button mat-button (click)="refuseForm()" type="submit" [disabled]="this.document.status === 'END'"
+                    *ngIf="this.formSettings.settings['unique_url']['refuse_document']"
                     class="p-6 border-solid border-red-400 border bg-red-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                 {{ 'FORMS.refuse' | translate }}
             </button>

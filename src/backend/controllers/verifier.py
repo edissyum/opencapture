@@ -29,44 +29,40 @@ from zeep import Client, exceptions
 from src.backend import verifier_exports
 from src.backend.import_classes import _Files
 from src.backend.import_models import verifier, accounts
-from src.backend.import_controllers import user, monitoring
+from src.backend.import_controllers import auth, user, monitoring
 from src.backend.main import launch, create_classes_from_custom_id
 from flask import current_app, Response, request, g as current_context
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
-def handle_uploaded_file(files, input_id, workflow_id, return_token=False):
+def handle_uploaded_file(files, workflow_id):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER']
     tokens = []
-    token = ''
 
     for file in files:
         _f = files[file]
         filename = _Files.save_uploaded_file(_f, path)
 
-        if return_token:
-            now = datetime.datetime.now()
-            year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]
-            hour, minute, second, microsecond = [str('%02d' % now.hour), str('%02d' % now.minute), str('%02d' % now.second), str('%02d' % now.microsecond)]
-            date_batch = year + month + day + '_' + hour + minute + second + microsecond
-            token = date_batch + '_' + secrets.token_hex(32) + '_' + str(uuid.uuid4())
-            tokens.append({'filename': os.path.basename(filename), 'token': token})
+        now = datetime.datetime.now()
+        year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]
+        hour, minute, second, microsecond = [str('%02d' % now.hour), str('%02d' % now.minute), str('%02d' % now.second), str('%02d' % now.microsecond)]
+        date_batch = year + month + day + '_' + hour + minute + second + microsecond
+        token = date_batch + '_' + secrets.token_hex(32) + '_' + str(uuid.uuid4())
+        tokens.append({'filename': os.path.basename(filename), 'token': token})
 
         task_id_monitor = monitoring.create_process({
             'status': 'wait',
             'module': 'verifier',
             'source': 'interface',
             'filename': os.path.basename(filename),
-            'token': token if return_token else None,
-            'input_id': input_id if input_id else None,
+            'token': token,
             'workflow_id': workflow_id if workflow_id else None,
         })
 
         if task_id_monitor:
             launch({
                 'file': filename,
-                'input_id': input_id,
                 'custom_id': custom_id,
                 'workflow_id': workflow_id,
                 'task_id_monitor': task_id_monitor[0]['process'],
@@ -82,8 +78,25 @@ def get_document_by_id(document_id):
         return document_info, 200
     else:
         response = {
-            "errors": gettext('GET_document_BY_ID_ERROR'),
+            "errors": gettext('GET_DOCUMENT_BY_ID_ERROR'),
             "message": gettext(error)
+        }
+        return response, 400
+
+
+def get_document_id_by_token(token):
+    decoded_token, status = auth.decode_unique_url_token(token)
+    if status == 500:
+        return decoded_token, status
+
+    process, _ = monitoring.get_process_by_token(decoded_token['sub'])
+
+    if process['process'] and process['process'][0]['document_ids']:
+        return {'document_id': process['process'][0]['document_ids'][0]}, 200
+    else:
+        response = {
+            "errors": gettext('GET_DOCUMENT_ID_BY_TOKEN_ERROR'),
+            "message": gettext('GET_DOCUMENT_ID_BY_TOKEN_ERROR_MESSAGE')
         }
         return response, 400
 

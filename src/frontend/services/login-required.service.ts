@@ -106,11 +106,15 @@ export class LoginRequiredService implements CanActivate {
         if (!token) {
             this.translate.get('AUTH.not_connected').subscribe((translated: string) => {
                 const currentUrl = this.routerExtService.getCurrentUrl();
+                if (currentUrl.includes('verifier/viewer_token')) {
+                    return true;
+                }
                 if (currentUrl !== '/logout' && currentUrl !== '/login' && currentUrl !== '/500') {
                     this.authService.setCachedUrl(currentUrl.replace(/^\//g, ''));
                 }
                 this.notify.error(translated);
                 this.authService.logout();
+                return false;
             });
             return false;
         }

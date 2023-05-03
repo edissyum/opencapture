@@ -26,9 +26,10 @@ bp = Blueprint('forms', __name__, url_prefix='/ws/')
 @bp.route('forms/<string:module>/list', methods=['GET'])
 @auth.token_required
 def get_forms(module):
-    list_priv = ['settings', 'forms_list'] if module == 'verifier' else ['settings', 'forms_list_splitter']
-    if not privileges.has_privileges(request.environ['user_id'], list_priv):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/inputs/{module}/list'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        list_priv = ['settings', 'forms_list'] if module == 'verifier' else ['settings', 'forms_list_splitter']
+        if not privileges.has_privileges(request.environ['user_id'], list_priv):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/inputs/{module}/list'}), 403
 
     args = dict(request.args)
     args['module'] = module
@@ -39,9 +40,11 @@ def get_forms(module):
 @bp.route('forms/<string:module>/getById/<int:form_id>', methods=['GET'])
 @auth.token_required
 def get_form_by_id(form_id, module):
-    list_priv = ['access_verifier | update_form'] if module == 'verifier' else ['access_splitter | update_form_splitter']
-    if not privileges.has_privileges(request.environ['user_id'], list_priv):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/getById/{form_id}'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        list_priv = ['access_verifier | update_form'] if module == 'verifier' else ['access_splitter | update_form_splitter']
+        if not privileges.has_privileges(request.environ['user_id'], list_priv):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/forms/{module}/getById/{form_id}'}), 403
 
     _form = forms.get_form_by_id(form_id)
     return make_response(jsonify(_form[0])), _form[1]
@@ -107,11 +110,22 @@ def update_form_label(module, form_id, category_id):
 @bp.route('forms/updateDisplay/<int:form_id>', methods=['PUT'])
 @auth.token_required
 def update_form_display(form_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'verifier_display']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'verifier_settings']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/updateDisplay/{form_id}'}), 403
 
-    display = request.json
+    display = request.json['args']
     res = forms.update_form(form_id, {"settings": {"display": display}})
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('forms/updateUniqueUrl/<int:form_id>', methods=['PUT'])
+@auth.token_required
+def update_form_unique_url(form_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'verifier_settings']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/updateUniqueUrl/{form_id}'}), 403
+
+    unique_url = request.json['args']
+    res = forms.update_form(form_id, {"settings": {"unique_url": unique_url}})
     return make_response(jsonify(res[0])), res[1]
 
 

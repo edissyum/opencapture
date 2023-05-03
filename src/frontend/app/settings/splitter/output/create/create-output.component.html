@@ -21,7 +21,7 @@
                 <ng-container *ngFor="let field of outputForm">
                     <mat-form-field *ngIf="field.type === 'text'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field['required']">
+                        <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
                     </mat-form-field>
                     <mat-form-field *ngIf="field.type === 'select' && field.id === 'output_type_id'">

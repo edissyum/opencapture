@@ -75,21 +75,11 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
         })
 
     if args.get('isMail') is None or args.get('isMail') is False:
-        if 'input_id' in args and args['input_id'] and input_settings:
-            if input_settings['purchase_or_sale']:
+        if 'workflow_id' in args and args['workflow_id'] and workflow_settings:
+            if 'customer_id' in workflow_settings['input'] and workflow_settings['input']['customer_id']:
                 document_data.update({
-                    'purchase_or_sale': input_settings['purchase_or_sale']
+                    'customer_id': workflow_settings['input']['customer_id']
                 })
-            if input_settings['customer_id']:
-                document_data.update({
-                    'customer_id': input_settings['customer_id']
-                })
-        elif 'workflow_id' in args and args['workflow_id']:
-            if workflow_settings:
-                if 'customer_id' in workflow_settings['input'] and workflow_settings['input']['customer_id']:
-                    document_data.update({
-                        'customer_id': workflow_settings['input']['customer_id']
-                    })
     else:
         if 'customer_id' in args and args['customer_id']:
             document_data.update({
@@ -203,9 +193,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             'where': ['workflow_id = %s', 'module = %s'],
             'data': [args['workflow_id'], 'verifier'],
         })
-        if workflow_settings and workflow_settings[0]['input']['apply_process']:
+        if workflow_settings:
             workflow_settings = workflow_settings[0]
-            if workflow_settings['process']['rotation']:
+            if workflow_settings['input']['apply_process'] and workflow_settings['process']['rotation']:
                 if workflow_settings['process']['rotation'] != 'no_rotation':
                     rotate_document(file, workflow_settings['process']['rotation'])
                     log.info('Document rotated by ' + str(workflow_settings['process']['rotation']) +
@@ -298,10 +288,12 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         elif not input_settings['override_supplier_form'] and supplier and supplier[2]['form_id'] not in ['', [], None]:
             datas.update({'form_id': supplier[2]['form_id']})
     elif workflow_settings:
-        if workflow_settings['process']['override_supplier_form'] or not supplier or not supplier[2]['form_id']:
+        if 'override_supplier_form' in workflow_settings['process'] and \
+                workflow_settings['process']['override_supplier_form'] or not supplier or not supplier[2]['form_id']:
             if not form_id_found_with_ai:
                 datas.update({'form_id': workflow_settings['process']['form_id']})
-        elif not workflow_settings['process']['override_supplier_form'] and supplier and supplier[2]['form_id']:
+        elif ('override_supplier_form' not in workflow_settings['process'] or
+              not workflow_settings['process']['override_supplier_form']) and supplier and supplier[2]['form_id']:
             datas.update({'form_id': supplier[2]['form_id']})
 
     # Find custom informations using mask

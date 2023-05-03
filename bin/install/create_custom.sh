@@ -288,7 +288,7 @@ mkdir -p $customPath/instance/referencial/
 mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $customPath/bin/data/log/Supervisor/
 touch $customPath/bin/data/log/OpenCapture.log
-mkdir -p $customPath/bin/scripts/{verifier_workflows,verifier_inputs,splitter_inputs,MailCollect,ai}/
+mkdir -p $customPath/bin/scripts/{verifier_workflows,splitter_inputs,MailCollect,ai}/
 mkdir -p $customPath/bin/scripts/ai/{splitter,verifier}
 mkdir -p $customPath/src/backend/
 touch $customPath/config/secret_key
@@ -310,7 +310,6 @@ mkdir -p /var/share/"$customId"/entrant/verifier/ocr/
 chmod -R 775 /var/share/"$customId"/
 chown -R "$user":"$group" /var/share/"$customId"/
 
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName" > /dev/null
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE workflows SET input=REPLACE(input::TEXT, '/var/share/', '/var/share/$customId/')::JSONB" "$databaseName" > /dev/null
 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName" > /dev/null
@@ -378,7 +377,6 @@ sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCaptur
 
 ####################
 # Move defaults scripts to new custom location
-cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
 cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/"
 cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
 
@@ -397,14 +395,6 @@ sed -i "s#§§OC_PATH§§#$defaultPath#g" $ocrOnlyFile
 sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $ocrOnlyFile
 sed -i 's#"§§ARGUMENTS§§"#-workflow_id ocr_only#g' $ocrOnlyFile
 sed -i "s#§§CUSTOM_ID§§#$customId#g" $ocrOnlyFile
-
-defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh"
-cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
-sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
-sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
-sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
-sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
-sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh"
 cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh $defaultScriptFile
@@ -425,11 +415,6 @@ crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workfl
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId events move,close
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh \$filename"
-
-crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId watch /var/share/"$customId"/entrant/verifier/
-crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId events move,close
-crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId include_extensions pdf,PDF
-crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_input_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh \$filename"
 
 crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId watch /var/share/"$customId"/entrant/splitter/
 crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_input_$customId events move,close
@@ -538,6 +523,6 @@ fi
 ####################
 # Makes scripts executable
 chmod u+x $customPath/bin/scripts/*.sh
-chmod u+x $customPath/bin/scripts/splitter_inputs/*.sh
+chmod u+x $customPath/bin/scripts/verifier_workflows/*.sh
 chmod u+x $customPath/bin/scripts/splitter_inputs/*.sh
 chown -R "$user":"$user" $customPath/bin/scripts/

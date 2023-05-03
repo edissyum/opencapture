@@ -32,7 +32,7 @@
             </mat-form-field>
         </div>
         <mat-stepper orientation="horizontal" class="text-center">
-            <mat-step [aria-labelledby]="!this.creationMode ? 'disabled_step' : ''" [label]="'WORKFLOW.input' | translate">
+            <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.input' | translate">
                 <div class="mt-2 grid grid-cols-2 gap-6">
                     <ng-container *ngFor="let field of this.fields['input']">
                         <div *ngIf="field.type === 'boolean'">
@@ -82,7 +82,7 @@
                     </button>
                 </div>
             </mat-step>
-            <mat-step [aria-labelledby]="!this.creationMode ? 'disabled_step' : ''" *ngIf="this.processAllowed" [label]="'WORKFLOW.process' | translate">
+            <mat-step [aria-labelledby]="'disabled_step'" *ngIf="this.processAllowed" [label]="'WORKFLOW.process' | translate">
                 <app-hint [message]="'WORKFLOW.process_hint' | translate"></app-hint>
 
                 <div class="mt-6 grid grid-cols-2 gap-6" [class.grid-cols-4]="this.useInterface">
@@ -134,7 +134,7 @@
                     </button>
                 </span>
             </mat-step>
-            <mat-step [aria-labelledby]="!this.creationMode ? 'disabled_step' : ''" [label]="'WORKFLOW.separation' | translate">
+            <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.separation' | translate">
                 <div class="mt-2 grid grid-cols-3 gap-6">
                     <ng-container *ngFor="let field of this.fields['separation']">
                         <mat-form-field *ngIf="field.type === 'text' || field.type === 'number' && (field.id !== 'separate_by_document_number_value' || (field.id === 'separate_by_document_number_value' && this.separationMode === 'separate_by_document_number'))">
@@ -167,11 +167,20 @@
                 <button matStepperPrevious mat-button class="gray_button">
                     {{ "WORKFLOW.back" | translate }}
                 </button>
-                <button matStepperNext mat-button class="valid_button" (click)="!this.creationMode ? this.updateWorkflow('separation') : ''">
+
+                <button matStepperNext mat-button class="valid_button" *ngIf="this.outputAllowed" (click)="!this.creationMode ? this.updateWorkflow('separation') : ''">
                     {{ 'WORKFLOW.next' | translate }}
                 </button>
+                <button matStepperNext mat-button class="valid_button" *ngIf="!this.outputAllowed" (click)="!this.creationMode ? this.updateWorkflow('separation') : ''">
+                    <span *ngIf="this.creationMode">
+                        {{ 'WORKFLOW.create' | translate }}
+                    </span>
+                    <span *ngIf="!this.creationMode">
+                        {{ 'WORKFLOW.update' | translate }}
+                    </span>
+                </button>
             </mat-step>
-            <mat-step [aria-labelledby]="!this.creationMode ? 'disabled_step' : ''" [label]="'WORKFLOW.output' | translate" *ngIf="this.outputAllowed">
+            <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.output' | translate" *ngIf="this.outputAllowed">
                 <div class="mt-2 w-full">
                     <ng-container *ngFor="let field of this.fields['output']">
                         <mat-form-field *ngIf="field.type === 'select'" class="w-full">
