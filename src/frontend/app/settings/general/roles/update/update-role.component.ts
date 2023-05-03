@@ -46,15 +46,15 @@ export class UpdateRoleComponent implements OnInit {
     rolePrivileges: any;
     roleForm    : any[]     = [
         {
-            id: 'label',
-            label: this.translate.instant('HEADER.label'),
+            id: 'label_short',
+            label: this.translate.instant('HEADER.label_short'),
             type: 'text',
             control: new FormControl(),
             required: true,
         },
         {
-            id: 'label_short',
-            label: this.translate.instant('HEADER.label_short'),
+            id: 'label',
+            label: this.translate.instant('HEADER.label'),
             type: 'text',
             control: new FormControl(),
             required: true,
