@@ -17,6 +17,8 @@
 
 import json
 import base64
+import re
+
 import pandas as pd
 from flask_babel import gettext
 from flask import Blueprint, make_response, request, jsonify
@@ -45,6 +47,8 @@ def upload():
                 if token:
                     cfg, _ = config.read_config()
                     file['uniqueUrl'] = f"{cfg['GLOBAL']['applicationurl']}/verifier/viewer_token/{token}"
+                    if not re.search(r'dist(/)+#', file['uniqueUrl']):
+                        file['uniqueUrl'] = file['uniqueUrl'].replace('/dist/', '/dist/#/')
                 else:
                     res = [{
                         'errors': gettext('UNIQUE_URL_TOKEN_GENERATION_ERROR'),

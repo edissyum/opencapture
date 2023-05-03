@@ -127,7 +127,7 @@ def generate_unique_url_token(document_id, workflow_id):
 
     try:
         payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0),
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=days_before_exp),
             'iat': datetime.datetime.utcnow(),
             'sub': document_id
         }
@@ -349,6 +349,7 @@ def token_required(view):
                     'updatePosition',
                     'verifier/getThumb',
                     'verifier/ocrOnFly',
+                    'getAccountingPlan',
                     'forms/verifier/list',
                     'verifier/verifySIRET',
                     'verifier/verifySIREN',
@@ -358,7 +359,8 @@ def token_required(view):
                     'accounts/suppliers/list',
                     'verifier/verifyVATNumber',
                     'forms/fields/getByFormId',
-                    'outputs/verifier/getById'
+                    'outputs/verifier/getById',
+                    'getDefaultAccountingPlan'
                 ]
                 if process and process[0]['document_ids']:
                     for document_id in process[0]['document_ids']:

@@ -153,8 +153,15 @@ export class VerifierViewerComponent implements OnInit {
         }
 
         this.translate.get('HISTORY-DESC.viewer', {document_id: this.documentId}).subscribe((translated: string) => {
-            this.historyService.addHistory('verifier', 'viewer', translated);
+            this.translate.get('HISTORY.user').subscribe((firstname: string) => {
+                this.historyService.addHistory('verifier', 'viewer', translated, {
+                    'username': 'token_user',
+                    'lastname': 'Token',
+                    'firstname': firstname
+                });
+            });
         });
+
         this.updateDocument({
             'locked': true,
             'locked_by': this.userService.user.username
@@ -245,7 +252,10 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async retrieveDocumentIdFromToken(token: any) {
-        return await this.http.post(environment['url'] + '/ws/verifier/documents/getDocumentIdByToken', {'token': token}).toPromise();
+        return await this.http.post(environment['url'] + '/ws/verifier/documents/getDocumentIdByToken', {'token': token}).toPromise().catch(() => {
+            this.notify.error(this.translate.instant('ERROR.JWT_NOT_VALID'));
+            this.authService.logout();
+        });
     }
 
     convertAutocomplete() {
@@ -533,7 +543,9 @@ export class VerifierViewerComponent implements OnInit {
                 const _field = this.form[category][this.form[category].length - 1];
                 if (field.id === 'accounting_plan') {
                     let array : any = {};
-                    array = await this.retrieveAccountingPlan();
+                    if (this.document.customer_id && this.document.customer_id !== 0) {
+                        array = await this.retrieveAccountingPlan();
+                    }
                     this.accountingPlanEmpty = Object.keys(array).length === 0;
                     if (this.accountingPlanEmpty) {
                         array = await this.retrieveDefaultAccountingPlan();

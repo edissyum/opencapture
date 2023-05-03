@@ -52,32 +52,32 @@
         <div class="flex justify-center">
             <mat-table matSort [dataSource]="history" (matSortChange)="sortData($event)" class="w-full">
                 <ng-container matColumnDef="id">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 180px!important;"> {{ 'HEADER.id' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element" style="flex: 0 0 180px!important;"> {{ element.id }} </mat-cell>
+                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 100px!important;">{{ 'HEADER.id_simple' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="flex: 0 0 100px!important;">{{ element.id }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="history_module">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 220px!important;"> {{ 'CUSTOM-FIELDS.module' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element" style="flex: 0 0 220px!important;"> {{ element.history_module }} </mat-cell>
+                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 220px!important;">{{ 'CUSTOM-FIELDS.module' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="flex: 0 0 220px!important;">{{ element['history_module'] }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="history_submodule">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 190px!important;"> {{ 'HISTORY.submodule' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element" style="flex: 0 0 190px!important;"> {{ element.history_submodule }} </mat-cell>
+                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 190px!important;">{{ 'HISTORY.submodule' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="flex: 0 0 190px!important;">{{ element['history_submodule'] }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="history_date">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 220px!important;"> {{ 'HISTORY.history_date' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element" style="flex: 0 0 220px!important;"> {{ element.date }} </mat-cell>
+                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 220px!important;">{{ 'HISTORY.history_date' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="flex: 0 0 220px!important;">{{ element.date }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="user_info">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 220px!important;"> {{ 'HISTORY.user_info' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element" style="flex: 0 0 220px!important;"> {{ element.user_info }} </mat-cell>
+                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 285px!important;">{{ 'HISTORY.user_info' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="flex: 0 0 300px!important;">{{ element['user_info'] }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="history_desc">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HISTORY.history_desc' | translate }} </mat-header-cell>
-                    <mat-cell class="p-0.5" *matCellDef="let element" [innerHTML]="'<span>' + element.history_desc + '</span>'"></mat-cell>
+                    <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'HISTORY.history_desc' | translate }}</mat-header-cell>
+                    <mat-cell class="p-0.5" *matCellDef="let element" [innerHTML]="'<span>' + element['history_desc'] + '</span>'"></mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="user_ip">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 350px !important"> {{ 'HISTORY.user_ip' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element" style="flex: 0 0 350px !important"> {{ element.user_ip }} </mat-cell>
+                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 250px !important">{{ 'HISTORY.user_ip' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="flex: 0 0 250px !important">{{ element['user_ip'] }}</mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: columnsToDisplay;"

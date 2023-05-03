@@ -345,8 +345,8 @@ export class WorkflowBuilderComponent implements OnInit {
                             elem.label = elem.model_label;
                         });
                         element.values = [{'id': 0, 'label': this.translate.instant('INPUT.no_ai_model_associated')}].concat(element.values);
-                        if (aiModel.models.length === 1) {
-                            element.control.setValue(aiModel.models[0].id);
+                        if (element.values.length === 1) {
+                            element.control.setValue(element.values[0].id);
                         }
                     }
                 });
