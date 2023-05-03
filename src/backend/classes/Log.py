@@ -38,7 +38,7 @@ class Log:
         self.current_step = 1
         self.task_id_watcher = None
         self.task_id_monitor = None
-        self.processInError = False
+        self.process_in_error = False
         self.logger = logging.getLogger('Open-Capture')
         if self.logger.hasHandlers():
             self.logger.handlers.clear()  # Clear the handlers to avoid double logs
@@ -57,7 +57,7 @@ class Log:
         self.logger.info(msg)
 
     def error(self, msg, send_notif=True):
-        self.processInError = True
+        self.process_in_error = True
         if self.smtp and self.smtp.enabled and send_notif:
             self.smtp.send_notification(msg, self.filename)
 
@@ -79,7 +79,7 @@ class Log:
         self.database.update({
             'table': ['monitoring'],
             'set': {
-                "error": status == 'error' or self.processInError,
+                "error": status == 'error' or self.process_in_error,
                 'steps': "jsonb_set(steps, '{" + str(self.current_step) + "}', '" + json.dumps(new_step) + "')"
             },
             'where': ['id = %s'],

@@ -32,6 +32,7 @@ import * as moment from 'moment';
 import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
 import { LocaleService } from "../../../services/locale.service";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 declare const $: any;
 
 @Component({
@@ -52,6 +53,7 @@ export class VerifierViewerComponent implements OnInit {
     supplierExists          : boolean     = true;
     deleteDataOnChangeForm  : boolean     = true;
     isOCRRunning            : boolean     = false;
+    processDone             : boolean     = false;
     fromToken               : boolean     = false;
     settingsOpen            : boolean     = false;
     ocrFromUser             : boolean     = false;
@@ -62,6 +64,8 @@ export class VerifierViewerComponent implements OnInit {
     visualIsHide            : boolean     = false;
     loadingSubmit           : boolean     = false;
     formEmpty               : boolean     = false;
+    processErrorMessage     : string      = '';
+    processErrorIcon        : string      = '';
     oldVAT                  : string      = '';
     oldSIRET                : string      = '';
     oldSIREN                : string      = '';
@@ -141,9 +145,27 @@ export class VerifierViewerComponent implements OnInit {
 
         if (this.route.snapshot.params['token']) {
             const token = this.route.snapshot.params['token'];
-            const res: any = await this.retrieveDocumentIdFromToken(token);
+            const res: any = await this.retrieveDocumentIdAndStatusFromToken(token);
             this.fromToken = true;
-            this.documentId = res['document_id'];
+            if (res['status'] === 'wait') {
+                this.loading = false;
+                this.processErrorIcon = 'fa-clock fa-fade text-gray-400';
+                this.processErrorMessage = marker('VERIFIER.waiting');
+                return;
+            } else if (res['status'] === 'running') {
+                this.loading = false;
+                this.processErrorIcon = 'fa-circle-notch fa-spin text-green-400';
+                this.processErrorMessage = marker('VERIFIER.processing');
+                return;
+            } else if (res['status'] === 'error') {
+                this.loading = false;
+                this.processErrorIcon = 'fa-xmark text-red-400';
+                this.processErrorMessage = this.translate.instant('VERIFIER.error', {reference: res['token']});
+                return;
+            } else {
+                this.processDone = true;
+                this.documentId = res['document_ids'][0];
+            }
             this.authService.headers = new HttpHeaders().set('Authorization', 'Bearer ' + token);
         } else {
             this.documentId = this.route.snapshot.params['id'];
@@ -167,6 +189,15 @@ export class VerifierViewerComponent implements OnInit {
             'locked_by': this.userService.user.username
         });
         this.document = await this.getDocument();
+
+        if (this.fromToken && (this.document.status === 'END' || this.document.status === 'ERR')) {
+            this.loading = false;
+            this.processDone = false;
+            this.processErrorIcon = 'fa-check text-green-400';
+            this.processErrorMessage = marker('VERIFIER.document_already_processed');
+            return;
+        }
+
         this.currentFilename = this.document.full_jpg_filename;
         await this.getThumb(this.document.full_jpg_filename);
 
@@ -251,9 +282,9 @@ export class VerifierViewerComponent implements OnInit {
             );
     }
 
-    async retrieveDocumentIdFromToken(token: any) {
-        return await this.http.post(environment['url'] + '/ws/verifier/documents/getDocumentIdByToken', {'token': token}).toPromise().catch(() => {
-            this.notify.error(this.translate.instant('ERROR.JWT_NOT_VALID'));
+    async retrieveDocumentIdAndStatusFromToken(token: any) {
+        return await this.http.post(environment['url'] + '/ws/verifier/documents/getDocumentIdAndStatusByToken', {'token': token}).toPromise().catch((err: any) => {
+            this.notify.handleErrors(err);
             this.authService.logout();
         });
     }

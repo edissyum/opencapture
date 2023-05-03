@@ -84,19 +84,19 @@ def get_document_by_id(document_id):
         return response, 400
 
 
-def get_document_id_by_token(token):
+def get_document_id_and_status_by_token(token):
     decoded_token, status = auth.decode_unique_url_token(token)
     if status == 500:
         return decoded_token, status
 
     process, _ = monitoring.get_process_by_token(decoded_token['sub'])
 
-    if process['process'] and process['process'][0]['document_ids']:
-        return {'document_id': process['process'][0]['document_ids'][0]}, 200
+    if process['process'] and process['process'][0]:
+        return process['process'][0], 200
     else:
         response = {
-            "errors": gettext('GET_DOCUMENT_ID_BY_TOKEN_ERROR'),
-            "message": gettext('GET_DOCUMENT_ID_BY_TOKEN_ERROR_MESSAGE')
+            "errors": gettext('GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR'),
+            "message": gettext('GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR_MESSAGE')
         }
         return response, 400
 

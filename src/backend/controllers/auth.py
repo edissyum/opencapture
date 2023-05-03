@@ -312,7 +312,8 @@ def token_required(view):
     def wrapped_view(**kwargs):
         if 'Authorization' in request.headers:
             where = ['username = %s']
-            user_ws = token = password = False
+            user_ws = password = False
+            token = None
             if 'Bearer' in request.headers['Authorization']:
                 token = request.headers['Authorization'].split('Bearer')[1].lstrip()
                 try:

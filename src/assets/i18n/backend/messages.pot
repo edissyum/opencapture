@@ -822,11 +822,11 @@ msgid "GET_DOCUMENT_BY_ID_ERROR"
 msgstr ""
 
 #: src/backend/controllers/verifier.py:98 src/backend/models/verifier.py:64
-msgid "GET_DOCUMENT_ID_BY_TOKEN_ERROR"
+msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR"
 msgstr ""
 
 #: src/backend/controllers/verifier.py:99
-msgid "GET_DOCUMENT_ID_BY_TOKEN_ERROR_MESSAGE"
+msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR_MESSAGE"
 msgstr ""
 
 #: src/backend/controllers/verifier.py:212

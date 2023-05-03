@@ -82,10 +82,10 @@ def document_info(document_id):
     return make_response(res[0], res[1])
 
 
-@bp.route('verifier/documents/getDocumentIdByToken', methods=['POST'])
-def get_document_id_by_token():
+@bp.route('verifier/documents/getDocumentIdAndStatusByToken', methods=['POST'])
+def get_document_informations_by_token():
     if 'token' in request.json and request.json['token']:
-        res = verifier.get_document_id_by_token(request.json['token'])
+        res = verifier.get_document_id_and_status_by_token(request.json['token'])
         return make_response(res[0], res[1])
     else:
         return jsonify({'errors': gettext('TOKEN_IS_MANDATORY'), 'message': ''}), 400
