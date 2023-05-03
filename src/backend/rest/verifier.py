@@ -44,13 +44,12 @@ def upload():
                 token = auth.generate_unique_url_token(file['token'], workflow_id)
                 if token:
                     cfg, _ = config.read_config()
-                    url = f"{cfg['GLOBAL']['applicationurl']}/verifier/viewer_token/{token}"
-                    print(url)
+                    file['uniqueUrl'] = f"{cfg['GLOBAL']['applicationurl']}/verifier/viewer_token/{token}"
                 else:
-                    res = {
+                    res = [{
                         'errors': gettext('UNIQUE_URL_TOKEN_GENERATION_ERROR'),
-                        'message': gettext('INTERFACE_IS_NOT_USED')
-                    }, 200
+                        'message': gettext('INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET')
+                    }, 200]
         return make_response(res[0], res[1])
     else:
         return make_response(gettext('UNKNOW_ERROR'), 400)

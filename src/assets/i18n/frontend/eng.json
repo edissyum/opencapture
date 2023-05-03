@@ -13,6 +13,7 @@
 		"thanks_to_developers": "Thanks to the developers of this solutions"
 	},
 	"ACCOUNTS": {
+		"choose_workflow_upload": "Choose a workflow",
 		"company_number": "Company number",
 		"confirm_delete_customer": "Are you sure you want to delete the customer account <strong>{{ customer }}</strong> ?",
 		"confirm_delete_supplier": "Are you sure you want to delete the supplier customer <strong>{{ supplier }}</strong> ?",
@@ -474,7 +475,6 @@
 		"enable-form": "Form enabled&nbsp;<strong>{{ form }}</strong>",
 		"enable-mailcollect-process": "MailCollect process enabled&nbsp;<strong>{{ process }}</strong>",
 		"enable-user": "User enabled&nbsp;<strong>{{ user }}</strong>",
-		"file_uploaded": "File uploaded successfully with input&nbsp;<strong>{{ input }}</strong>",
 		"file_uploaded_workflow": "File uploaded successfully with workflow&nbsp;<strong>{{ workflow }}</strong>",
 		"language_changed": "Change lang to <strong>{{ lang }}",
 		"login": "Login of user",
@@ -649,7 +649,7 @@
 		"test_email_bad_format": "The email address format is not valid",
 		"test_settings_and_retrieve_folders": "Test connection and retrieve folders",
 		"update_process": "Update process",
-		"verifier": "Verifier",
+		"verifier": "Verifier"
 	},
 	"MANDATORY": {
 		"not_required": "Field not required",
@@ -771,8 +771,6 @@
 		"add_document_type": "Add document type",
 		"add_form": "Add form",
 		"add_form_splitter": "Add form",
-		"add_input": "Add input",
-		"add_input_splitter": "Add input",
 		"add_output": "Add output",
 		"add_output_splitter": "Add output",
 		"add_position_mask": "Add positions mask",
@@ -798,8 +796,6 @@
 		"general": "Global privileges",
 		"history": "History",
 		"import_suppliers": "Import suppliers",
-		"inputs_list": "Inputs list",
-		"inputs_list_splitter": "Inputs list",
 		"list": "Privileges list",
 		"list_ai_model": "List AI models",
 		"list_ai_model_splitter": "List AI models",
@@ -822,8 +818,6 @@
 		"update_document_type": "Update document type",
 		"update_form": "Update form",
 		"update_form_splitter": "Update form",
-		"update_input": "Update input",
-		"update_input_splitter": "Update input",
 		"update_output": "Update output",
 		"update_output_splitter": "Update output",
 		"update_position_mask": "Update positions mask",
@@ -1014,15 +1008,13 @@
 	},
 	"UPLOAD": {
 		"extension_unauthorized": "One or more files aren't in PDF format",
-		"inputs": "Inputs",
 		"no_file": "No file to upload",
 		"placeholder": "Drag and drop or click to upload PDF file(s) (maximum 3)",
-		"please_select_input_or_workflow": "Please select input or workflow",
+		"please_select_workflow": "Please select a workflow",
 		"purchase_invoice": "Purchase invoice",
 		"sale_invoice": "Sale invoice",
 		"upload_file": "Upload file",
-		"upload_success": "File upload successfully",
-		"workflows": "Workflows"
+		"upload_success": "File upload successfully"
 	},
 	"USER-QUOTA": {
 		"description": "The user quota allows you to limit user creation to a certain number (useful for shared installations on a VPS for example)",

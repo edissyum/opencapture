@@ -41,7 +41,7 @@ def execute_outputs(output_info, log, regex, document_data, database, current_la
 
 
 def insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status,
-           nb_pages, docservers, workflow_settings, input_settings, log, regex, supplier_lang_different, current_lang):
+           nb_pages, docservers, workflow_settings, log, regex, supplier_lang_different, current_lang):
     try:
         filename = os.path.splitext(files.custom_file_name)
         improved_img = filename[0] + '_improved' + filename[1]
@@ -184,7 +184,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     else:
         original_file = os.path.basename(file)
 
-    input_settings = workflow_settings = None
+    workflow_settings = None
 
     if 'workflow_id' in args:
         workflow_settings = database.select({
@@ -205,22 +205,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     convert(file, files, ocr, nb_pages)
 
     form_id_found_with_ai = False
-    if 'input_id' in args and args['input_id']:
-        input_settings = database.select({
-            'select': ['*'],
-            'table': ['inputs'],
-            'where': ['input_id = %s', 'module = %s'],
-            'data': [args['input_id'], 'verifier'],
-        })
-        input_settings = input_settings[0]
-        ai_model_id = input_settings['ai_model_id'] if input_settings['ai_model_id'] else False
-        if ai_model_id:
-            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, artificial_intelligence, ocr, log,
-                                    'verifier')
-            if res:
-                form_id_found_with_ai = True
-                datas.update({'form_id': res})
-
     if workflow_settings and 'workflow_id' in args:
         if 'ai_model_id' in workflow_settings['input'] and workflow_settings['input']['ai_model_id']:
             ai_model_id = workflow_settings['input']['ai_model_id']
@@ -281,13 +265,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             ocr = _PyTesseract(supplier[2]['document_lang'], log, config, docservers)
             convert(file, files, ocr, nb_pages)
 
-    if input_settings:
-        if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
-            if not form_id_found_with_ai:
-                datas.update({'form_id': input_settings['form_id']})
-        elif not input_settings['override_supplier_form'] and supplier and supplier[2]['form_id'] not in ['', [], None]:
-            datas.update({'form_id': supplier[2]['form_id']})
-    elif workflow_settings:
+    if workflow_settings:
         if 'override_supplier_form' in workflow_settings['process'] and \
                 workflow_settings['process']['override_supplier_form'] or not supplier or not supplier[2]['form_id']:
             if not form_id_found_with_ai:
@@ -295,6 +273,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         elif ('override_supplier_form' not in workflow_settings['process'] or
               not workflow_settings['process']['override_supplier_form']) and supplier and supplier[2]['form_id']:
             datas.update({'form_id': supplier[2]['form_id']})
+
+    if 'form_id' not in datas or not datas['form_id']:
+        datas.update({'form_id': 0})
 
     # Find custom informations using mask
     custom_fields = FindCustom(ocr.header_text, log, regex, config, ocr, files, supplier, file, database,
@@ -534,11 +515,11 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
         log.info('All the usefull informations are found. Execute outputs action and end process')
         document_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file,
-                            supplier, 'END', nb_pages, docservers, workflow_settings, input_settings, log, regex,
+                            supplier, 'END', nb_pages, docservers, workflow_settings, log, regex,
                             supplier_lang_different, configurations['locale'])
     else:
         document_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file,
-                            supplier, 'NEW', nb_pages, docservers, workflow_settings, input_settings, log, regex,
+                            supplier, 'NEW', nb_pages, docservers, workflow_settings, log, regex,
                             supplier_lang_different, configurations['locale'])
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
