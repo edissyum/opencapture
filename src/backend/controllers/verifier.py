@@ -466,8 +466,8 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
-        files = _vars[3]
         ocr = _vars[4]
+        files = _vars[3]
         docservers = _vars[9]
 
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + file_name
