@@ -32,14 +32,11 @@ import { CreateUserComponent } from "./general/users/create/create-user.componen
 import { UpdateUserComponent } from "./general/users/update/update-user.component";
 import { CreateRoleComponent } from "./general/roles/create/create-role.component";
 import { UpdateRoleComponent } from "./general/roles/update/update-role.component";
-import { InputsListComponent } from "./verifier/inputs/list/inputs-list.component";
 import { FormBuilderComponent } from "./verifier/form/builder/form-builder.component";
 import { WorkflowBuilderComponent } from "./verifier/workflow/builder/workflow-builder.component";
 import { WorkflowBuilderSplitterComponent } from "./splitter/workflow/builder/workflow-builder.component";
 import { OutputsListComponent } from "./verifier/outputs/list/outputs-list.component";
-import { UpdateInputComponent } from "./verifier/inputs/update/update-input.component";
 import { SplitterInputListComponent } from "./splitter/inputs/list/input-list.component";
-import { CreateInputComponent } from "./verifier/inputs/create/create-input.component";
 import { ListDocTypeComponent } from "./splitter/doc-types/list/list-doc-type.component";
 import { CustomFieldsComponent } from "./general/custom-fields/custom-fields.component";
 import { SplitterOutputListComponent } from "./splitter/output/list/output-list.component";
@@ -197,21 +194,6 @@ const routes: Routes = [
     {
         path: 'settings/verifier/outputs/update/:id', component: UpdateOutputComponent,
         data: {title: 'SETTINGS.update_output', privileges: ['settings', 'update_output']},
-        canActivate: [LoginRequiredService, HasPrivilegeService]
-    },
-    {
-        path: 'settings/verifier/inputs', component: InputsListComponent,
-        data: {title: 'FORMS.input_settings', privileges: ['settings', 'inputs_list']},
-        canActivate: [LoginRequiredService, HasPrivilegeService]
-    },
-    {
-        path: 'settings/verifier/inputs/new', component: CreateInputComponent,
-        data: {title: 'SETTINGS.add_input', privileges: ['settings', 'add_input']},
-        canActivate: [LoginRequiredService, HasPrivilegeService]
-    },
-    {
-        path: 'settings/verifier/inputs/update/:id', component: UpdateInputComponent,
-        data: {title: 'SETTINGS.update_input', privileges: ['settings', 'update_input']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
