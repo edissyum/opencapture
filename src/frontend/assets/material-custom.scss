@@ -204,11 +204,11 @@
     }
 
     & .mat-mdc-tab-body-wrapper > .mat-mdc-tab-body > .mat-mdc-tab-body-content {
-        height: calc(100vh - 8rem) !important;
-        @apply overflow-x-hidden;
-        & .verifier-container > .content > .list > .mat-mdc-card:nth-last-child(-n+4) {
-            @apply mb-5 #{!important};
+        & .verifier-container {
+            @apply mb-5;
         }
+        @apply h-full-overflow;
+        @apply overflow-x-hidden;
     }
 }
 
@@ -218,11 +218,11 @@
         @apply xl:flex;
     }
     & .mat-mdc-tab-body-wrapper > .mat-mdc-tab-body > .mat-mdc-tab-body-content {
-        height: calc(100vh - 8rem) !important;
-        @apply overflow-x-hidden #{!important};
-        & .splitter-container > .content > .list > .mat-card:nth-last-child(-n+4) {
-            @apply mb-5
+        .splitter-container {
+            @apply mb-5;
         }
+        @apply h-full-overflow;
+        @apply overflow-x-hidden;
     }
 }
 

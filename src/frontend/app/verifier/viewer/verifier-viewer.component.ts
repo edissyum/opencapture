@@ -303,10 +303,13 @@ export class VerifierViewerComponent implements OnInit {
         }, 500);
         const triggerEvent = $('.trigger');
         triggerEvent.hide();
-        this.filteredOptions = this.supplierNamecontrol.valueChanges.pipe(
-            startWith(''),
-            map(option => option ? this._filter(option) : this.suppliers.slice())
-        );
+
+        if (this.formSettings.settings.unique_url && this.formSettings.settings.unique_url.allow_supplier_autocomplete) {
+            this.filteredOptions = this.supplierNamecontrol.valueChanges.pipe(
+                startWith(''),
+                map(option => option ? this._filter(option) : this.suppliers.slice())
+            );
+        }
     }
 
     loadDocument(documentId: any) {
@@ -365,11 +368,10 @@ export class VerifierViewerComponent implements OnInit {
                                tap((_return: any) => {
                                    element.type = 'autocomplete';
                                    if (_return && _return.count > 0) {
-                                       element.autocomplete_values = element.control.valueChanges
-                                            .pipe(
-                                               startWith(''),
-                                               map(option => option ? this._filter_data(option, _return.resources) : _return.resources.slice())
-                                           );
+                                       element.autocomplete_values = element.control.valueChanges.pipe(
+                                           startWith(''),
+                                           map(option => option ? this._filter_data(option, _return.resources) : _return.resources.slice())
+                                       );
                                    }
                                }),
                                catchError((err: any) => {

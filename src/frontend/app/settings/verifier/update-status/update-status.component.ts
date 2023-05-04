@@ -9,7 +9,7 @@ import {AuthService} from "../../../../services/auth.service";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
 import {FormControl} from "@angular/forms";
 import {environment} from "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
+import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
 
 @Component({
