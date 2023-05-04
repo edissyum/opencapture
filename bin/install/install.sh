@@ -276,7 +276,7 @@ mkdir -p $customPath/bin/ldap/config/
 mkdir -p $customPath/instance/referencial/
 mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $customPath/bin/data/log/Supervisor/
-mkdir -p $customPath/bin/scripts/{verifier_workflows,splitter_inputs,MailCollect,ai}/
+mkdir -p $customPath/bin/scripts/{verifier_workflows,splitter_workflows,MailCollect,ai}/
 mkdir -p $customPath/bin/scripts/ai/{splitter,verifier}/
 mkdir -p $customPath/src/backend/
 touch $customPath/config/secret_key
@@ -620,16 +620,16 @@ if ! test -f "$ocrOnlyFile"; then
 fi
 
 ####################
-# Create default splitter input script (based on default input created in data_fr.sql)
-defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh"
+# Create default splitter workflow script (based on default workflow created in data_fr.sql)
+defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_workflows.sh"
 if ! test -f "$defaultScriptFile"; then
-    mkdir -p "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
-    cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
-    cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh $defaultScriptFile
-    sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
+    mkdir -p "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/"
+    cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/"
+    cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh $defaultScriptFile
+    sed -i "s#§§SCRIPT_NAME§§#default_workflow#g" $defaultScriptFile
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
     sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
-    sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
+    sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
 fi
 
@@ -656,8 +656,8 @@ chown -R "$user":"$group" $defaultPath
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/*.sh
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/verifier_workflows/*.sh
 chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/verifier_workflows/*.sh
-chmod u+x $defaultPath/custom/"$customId"/bin/scripts/splitter_inputs/*.sh
-chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/splitter_inputs/*.sh
+chmod u+x $defaultPath/custom/"$customId"/bin/scripts/splitter_workflows/*.sh
+chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/splitter_workflows/*.sh
 
 ####################
 # Create docservers

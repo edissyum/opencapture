@@ -309,7 +309,7 @@ export class SettingsService {
                         "icon"      : "fa-solid fa-tools"
                     },
                     {
-                        "id"                : "splitter_update_workflonw",
+                        "id"                : "splitter_update_workflow",
                         "label"             : this.translate.instant("SETTINGS.workflow_update"),
                         "route"             : "/settings/splitter/workflows/builder/edit/",
                         "privilege"         : "update_workflow_splitter",

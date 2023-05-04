@@ -123,20 +123,20 @@ class Splitter:
 
         return default_values
 
-    def create_batches(self, batch_folder, file, input_id, user_id, original_filename):
+    def create_batches(self, batch_folder, file, workflow_id, user_id, original_filename):
         batches_id = []
         for _, batch in enumerate(self.result_batches):
-            input_settings = self.db.select({
-                'select': ['*'],
-                'table': ['inputs'],
-                'where': ['input_id = %s', 'module = %s'],
-                'data': [input_id, 'splitter']
+            workflow_settings = self.db.select({
+                'select': ['input, process'],
+                'table': ['workflows'],
+                'where': ['workflow_id = %s', 'module = %s'],
+                'data': [workflow_id, 'splitter']
             })
 
             clean_path = re.sub(r"/+", "/", file)
             clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_PDF'])
 
-            default_values = self.get_default_values(input_settings[0]['default_form_id'], user_id)
+            default_values = self.get_default_values(workflow_settings[0]['default_form_id'], user_id)
             args = {
                 'table': 'splitter_batches',
                 'columns': {
@@ -144,8 +144,8 @@ class Splitter:
                     'file_path': clean_path.replace(clean_ds, ''),
                     'thumbnail': os.path.basename(batch[0]['path']),
                     'file_name': os.path.basename(original_filename),
-                    'form_id': str(input_settings[0]['default_form_id']),
-                    'customer_id': str(input_settings[0]['customer_id']),
+                    'form_id': str(workflow_settings[0]['process']['form_id']),
+                    'customer_id': str(workflow_settings[0]['input']['customer_id']),
                     'data': json.dumps({'custom_fields': default_values['batch']}),
                     'documents_count': str(max((node['split_document'] for node in batch)))
                 }
@@ -177,7 +177,7 @@ class Splitter:
                             'select': ['*'],
                             'table': ['doctypes'],
                             'where': ['status <> %s', 'form_id = %s', 'is_default = %s'],
-                            'data': ['DEL', input_settings[0]['default_form_id'], 'true'],
+                            'data': ['DEL', workflow_settings[0]['process']['form_id'], 'true'],
                         })
                         if default_doctype:
                             args['columns']['doctype_key'] = default_doctype[0]['key']
