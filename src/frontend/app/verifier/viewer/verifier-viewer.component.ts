@@ -32,6 +32,7 @@ import * as moment from 'moment';
 import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
 import { LocaleService } from "../../../services/locale.service";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 declare const $: any;
 
 @Component({
@@ -51,7 +52,9 @@ export class VerifierViewerComponent implements OnInit {
     loading                 : boolean     = true;
     supplierExists          : boolean     = true;
     deleteDataOnChangeForm  : boolean     = true;
+    processMultiDocument    : boolean     = false;
     isOCRRunning            : boolean     = false;
+    processDone             : boolean     = false;
     fromToken               : boolean     = false;
     settingsOpen            : boolean     = false;
     ocrFromUser             : boolean     = false;
@@ -62,6 +65,8 @@ export class VerifierViewerComponent implements OnInit {
     visualIsHide            : boolean     = false;
     loadingSubmit           : boolean     = false;
     formEmpty               : boolean     = false;
+    processErrorMessage     : string      = '';
+    processErrorIcon        : string      = '';
     oldVAT                  : string      = '';
     oldSIRET                : string      = '';
     oldSIREN                : string      = '';
@@ -79,11 +84,12 @@ export class VerifierViewerComponent implements OnInit {
     formSettings            : any         = {};
     formList                : any         = {};
     currentFormFields       : any         = {};
-    suppliers               : any         = [];
+    imgArray                : any         = {};
     currentSupplier         : any         = {};
+    suppliers               : any         = [];
     outputsLabel            : any         = [];
     outputs                 : any         = [];
-    imgArray                : any         = {};
+    multiDocumentsData      : any         = [];
     fieldCategories         : any[]       = [
         {
             id: 'supplier',
@@ -134,17 +140,62 @@ export class VerifierViewerComponent implements OnInit {
         private localStorageService: LocalStorageService
     ) {}
 
-    async ngOnInit(): Promise<void> {
+    async ngOnInit(document_id_from_multi = false): Promise<void> {
         this.localStorageService.save('splitter_or_verifier', 'verifier');
         this.ocrFromUser = false;
         this.saveInfo = true;
 
         if (this.route.snapshot.params['token']) {
             const token = this.route.snapshot.params['token'];
-            const res: any = await this.retrieveDocumentIdFromToken(token);
+            const res: any = await this.retrieveDocumentIdAndStatusFromToken(token);
             this.fromToken = true;
-            this.documentId = res['document_id'];
-            this.authService.headers = new HttpHeaders().set('Authorization', 'Bearer ' + token);
+            if (res['status'] === 'wait') {
+                this.loading = false;
+                this.processErrorIcon = 'fa-clock fa-fade text-gray-400';
+                this.processErrorMessage = marker('VERIFIER.waiting');
+                return;
+            } else if (res['status'] === 'running') {
+                this.loading = false;
+                this.processErrorIcon = 'fa-circle-notch fa-spin text-green-400';
+                this.processErrorMessage = marker('VERIFIER.processing');
+                return;
+            } else if (res['status'] === 'error') {
+                this.loading = false;
+                this.processErrorIcon = 'fa-xmark text-red-400';
+                this.processErrorMessage = this.translate.instant('VERIFIER.error', {reference: res['token']});
+                return;
+            } else {
+                this.processDone = true;
+                this.authService.headers = new HttpHeaders().set('Authorization', 'Bearer ' + token);
+                if (res['document_ids'] && res['document_ids'].length  === 1) {
+                    this.documentId = res['document_ids'][0];
+                } else {
+                    if (!document_id_from_multi) {
+                        this.loading = false;
+                        this.processMultiDocument = true;
+                        for (const cpt in res['document_ids']) {
+                            if (res['document_ids'].hasOwnProperty(cpt)) {
+                                const id = res['document_ids'][cpt];
+                                const tmp_thumb: any = await this.getThumbByDocumentId(id);
+                                const thumb: SafeUrl = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + tmp_thumb['file']);
+                                const document: any = await this.getDocumentById(id);
+                                if (document['status'] === 'NEW') {
+                                    this.multiDocumentsData.push({
+                                        id: id,
+                                        thumb: thumb
+                                    });
+                                }
+                            }
+                            if (this.multiDocumentsData.length === 1) {
+                                this.loadDocument(this.multiDocumentsData[0].id);
+                            }
+                        }
+                        return;
+                    } else {
+                        this.documentId = document_id_from_multi;
+                    }
+                }
+            }
         } else {
             this.documentId = this.route.snapshot.params['id'];
             if (!this.authService.headersExists) {
@@ -153,13 +204,28 @@ export class VerifierViewerComponent implements OnInit {
         }
 
         this.translate.get('HISTORY-DESC.viewer', {document_id: this.documentId}).subscribe((translated: string) => {
-            this.historyService.addHistory('verifier', 'viewer', translated);
+            this.translate.get('HISTORY.user').subscribe((firstname: string) => {
+                this.historyService.addHistory('verifier', 'viewer', translated, {
+                    'username': 'token_user',
+                    'lastname': 'Token',
+                    'firstname': firstname
+                });
+            });
         });
+
         this.updateDocument({
             'locked': true,
             'locked_by': this.userService.user.username
         });
         this.document = await this.getDocument();
+        if (this.fromToken && (this.document.status === 'END' || this.document.status === 'ERR')) {
+            this.loading = false;
+            this.processDone = false;
+            this.processErrorIcon = 'fa-check text-green-400';
+            this.processErrorMessage = marker('VERIFIER.document_already_processed');
+            return;
+        }
+
         this.currentFilename = this.document.full_jpg_filename;
         await this.getThumb(this.document.full_jpg_filename);
 
@@ -237,15 +303,26 @@ export class VerifierViewerComponent implements OnInit {
         }, 500);
         const triggerEvent = $('.trigger');
         triggerEvent.hide();
-        this.filteredOptions = this.supplierNamecontrol.valueChanges
-            .pipe(
+
+        if (this.formSettings.settings.unique_url && this.formSettings.settings.unique_url.allow_supplier_autocomplete) {
+            this.filteredOptions = this.supplierNamecontrol.valueChanges.pipe(
                 startWith(''),
                 map(option => option ? this._filter(option) : this.suppliers.slice())
             );
+        }
     }
 
-    async retrieveDocumentIdFromToken(token: any) {
-        return await this.http.post(environment['url'] + '/ws/verifier/documents/getDocumentIdByToken', {'token': token}).toPromise();
+    loadDocument(documentId: any) {
+        this.loading = true;
+        this.processMultiDocument = false;
+        this.ngOnInit(documentId).then();
+    }
+
+    async retrieveDocumentIdAndStatusFromToken(token: any) {
+        return await this.http.post(environment['url'] + '/ws/verifier/documents/getDocumentIdAndStatusByToken', {'token': token}).toPromise().catch((err: any) => {
+            this.notify.handleErrors(err);
+            this.authService.logout();
+        });
     }
 
     convertAutocomplete() {
@@ -291,11 +368,10 @@ export class VerifierViewerComponent implements OnInit {
                                tap((_return: any) => {
                                    element.type = 'autocomplete';
                                    if (_return && _return.count > 0) {
-                                       element.autocomplete_values = element.control.valueChanges
-                                            .pipe(
-                                               startWith(''),
-                                               map(option => option ? this._filter_data(option, _return.resources) : _return.resources.slice())
-                                           );
+                                       element.autocomplete_values = element.control.valueChanges.pipe(
+                                           startWith(''),
+                                           map(option => option ? this._filter_data(option, _return.resources) : _return.resources.slice())
+                                       );
                                    }
                                }),
                                catchError((err: any) => {
@@ -353,6 +429,10 @@ export class VerifierViewerComponent implements OnInit {
 
     getCategoryLabel(category: any) {
         return this.formSettings.labels[category.id] ? this.formSettings.labels[category.id] : this.translate.instant(category.label);
+    }
+
+    async getThumbByDocumentId(documentId: any) {
+        return this.http.post(environment['url'] + '/ws/verifier/getThumbByDocumentId', {'documentId': documentId}, {headers: this.authService.headers}).toPromise();
     }
 
     async getThumb(filename:string) {
@@ -474,6 +554,10 @@ export class VerifierViewerComponent implements OnInit {
         return await this.http.get(environment['url'] + '/ws/verifier/documents/' + this.documentId, {headers: this.authService.headers}).toPromise();
     }
 
+    async getDocumentById(id: any): Promise<any> {
+        return await this.http.get(environment['url'] + '/ws/verifier/documents/' + id, {headers: this.authService.headers}).toPromise();
+    }
+
     async getForm(): Promise<any> {
         if (this.document.form_id) {
             return await this.http.get(environment['url'] + '/ws/forms/fields/getByFormId/' + this.document.form_id, {headers: this.authService.headers}).toPromise();
@@ -533,7 +617,9 @@ export class VerifierViewerComponent implements OnInit {
                 const _field = this.form[category][this.form[category].length - 1];
                 if (field.id === 'accounting_plan') {
                     let array : any = {};
-                    array = await this.retrieveAccountingPlan();
+                    if (this.document.customer_id && this.document.customer_id !== 0) {
+                        array = await this.retrieveAccountingPlan();
+                    }
                     this.accountingPlanEmpty = Object.keys(array).length === 0;
                     if (this.accountingPlanEmpty) {
                         array = await this.retrieveDefaultAccountingPlan();

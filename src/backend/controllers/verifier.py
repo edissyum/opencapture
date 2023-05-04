@@ -18,6 +18,8 @@
 import os
 import uuid
 import json
+
+import pandas as pd
 import zeep
 import base64
 import secrets
@@ -84,19 +86,19 @@ def get_document_by_id(document_id):
         return response, 400
 
 
-def get_document_id_by_token(token):
+def get_document_id_and_status_by_token(token):
     decoded_token, status = auth.decode_unique_url_token(token)
     if status == 500:
         return decoded_token, status
 
     process, _ = monitoring.get_process_by_token(decoded_token['sub'])
 
-    if process['process'] and process['process'][0]['document_ids']:
-        return {'document_id': process['process'][0]['document_ids'][0]}, 200
+    if process['process'] and process['process'][0]:
+        return process['process'][0], 200
     else:
         response = {
-            "errors": gettext('GET_DOCUMENT_ID_BY_TOKEN_ERROR'),
-            "message": gettext('GET_DOCUMENT_ID_BY_TOKEN_ERROR_MESSAGE')
+            "errors": gettext('GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR'),
+            "message": gettext('GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR_MESSAGE')
         }
         return response, 400
 
@@ -232,7 +234,7 @@ def update_page_by_document_id(document_id, args):
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_document_PAGES_ERROR'),
+                "errors": gettext('UPDATE_DOCUMENT_PAGES_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
@@ -311,7 +313,7 @@ def delete_document_position_by_document_id(document_id, field_id):
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_document_POSITIONS_ERROR'),
+                "errors": gettext('UPDATE_DOCUMENT_POSITIONS_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
@@ -329,7 +331,7 @@ def delete_document_page_by_document_id(document_id, field_id):
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_document_PAGES_ERROR'),
+                "errors": gettext('UPDATE_DOCUMENT_PAGES_ERROR'),
                 "message": gettext(error)
             }
             return response, 400
@@ -466,8 +468,8 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
-        files = _vars[3]
         ocr = _vars[4]
+        files = _vars[3]
         docservers = _vars[9]
 
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + file_name
@@ -482,6 +484,18 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
         files.improve_image_detection(path)
         text = files.ocr_on_fly(path, selection, ocr, thumb_size, lang=lang)
         return text
+
+
+def get_thumb_by_document_id(document_id):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+    if not error:
+        register_date = pd.to_datetime(document_info['register_date'])
+        year = register_date.strftime('%Y')
+        month = register_date.strftime('%m')
+        year_and_month = year + '/' + month
+        return get_file_content('full', document_info['full_jpg_filename'], 'image/jpeg', year_and_month=year_and_month)
+    else:
+        return '', 404
 
 
 def get_file_content(file_type, filename, mime_type, compress=False, year_and_month=False):
@@ -539,10 +553,9 @@ def get_token_insee():
         (config['API']['siret-consumer'] + ':' + config['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
 
     try:
-        res = requests.post(config['API']['siret-url-token'],
-                            data={'grant_type': 'client_credentials'},
-                            headers={"Authorization": f"Basic {credentials}"})
-    except requests.exceptions.SSLError:
+        res = requests.post(config['API']['siret-url-token'], data={'grant_type': 'client_credentials'},
+                            headers={"Authorization": f"Basic {credentials}"}, timeout=5)
+    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     if 'Maintenance - INSEE' in res.text or res.status_code != 200:

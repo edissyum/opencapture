@@ -40,8 +40,6 @@ import { HistoryService } from "../../services/history.service";
 
 export class UploadComponent implements OnInit {
     headers                     : HttpHeaders   = this.authService.headers;
-    selectedInput               : any           = '';
-    selectedInputTechnicalId    : any           = '';
     selectedWorkflow            : any           = '';
     selectedWorkflowTechnicalId : any           = '';
     inputs                      : any[]         = [];
@@ -81,28 +79,13 @@ export class UploadComponent implements OnInit {
         }
 
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
-        this.http.get(environment['url'] + '/ws/inputs/' + splitterOrVerifier + '/list?userId=' + this.userService.user.id, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.inputs = data.inputs;
-                if (this.inputs.length === 1) {
-                    this.selectedInput = data.inputs[0].id;
-                    this.selectedInputTechnicalId = data.inputs[0].input_id;
-                }
-             }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-
         this.http.get(environment['url'] + '/ws/workflows/' + splitterOrVerifier + '/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.workflows = data.workflows;
-                // if (this.workflows.length === 1) {
-                //     this.selectedWorkflow = data.workflows[0].id;
-                //     this.selectedWorkflowTechnicalId = data.workflows[0].input_id;
-                // }
+                if (this.workflows.length === 1) {
+                    this.selectedWorkflow = data.workflows[0].id;
+                    this.selectedWorkflowTechnicalId = data.workflows[0].input_id;
+                }
              }),
             finalize(() => {this.loading = false;}),
             catchError((err: any) => {
@@ -128,17 +111,6 @@ export class UploadComponent implements OnInit {
         }
     }
 
-    setInput(inputId: any) {
-        this.inputs.forEach((element: any) => {
-            if (element.id === inputId) {
-                this.selectedInputTechnicalId = element.input_id;
-            }
-        });
-        this.selectedInput = inputId;
-        this.selectedWorkflow = '';
-        this.selectedWorkflowTechnicalId = '';
-    }
-
     setWorkflow(workflowId: any) {
         this.workflows.forEach((element: any) => {
             if (element.id === workflowId) {
@@ -146,8 +118,6 @@ export class UploadComponent implements OnInit {
             }
         });
         this.selectedWorkflow = workflowId;
-        this.selectedInput = '';
-        this.selectedInputTechnicalId = '';
     }
 
     uploadFile(): void {
@@ -172,7 +142,7 @@ export class UploadComponent implements OnInit {
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
                 environment['url'] + '/ws/' + splitterOrVerifier + '/upload' +
-                '?inputId=' + this.selectedInputTechnicalId + '&workflowId=' + this.selectedWorkflowTechnicalId +
+                '?workflowId=' + this.selectedWorkflowTechnicalId +
                 '&userId=' + this.userService.user.id, formData, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
@@ -180,9 +150,7 @@ export class UploadComponent implements OnInit {
                     this.fileControl.setValue([]);
                     this.notify.success(this.translate.instant('UPLOAD.upload_success'));
                     for (const cpt of Array(numberOFFiles).keys()) {
-                        if (this.selectedInput) {
-                            this.historyService.addHistory(splitterOrVerifier, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded', {input: this.selectedInputTechnicalId}));
-                        } else if (this.selectedWorkflow) {
+                        if (this.selectedWorkflow) {
                             this.historyService.addHistory(splitterOrVerifier, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded_workflow', {workflow: this.selectedWorkflowTechnicalId}));
                         }
                     }

@@ -79,9 +79,6 @@ import { CreateCustomerComponent } from './accounts/customers/create/create-cust
 import { CreateOutputComponent } from './settings/verifier/outputs/create/create-output.component';
 import { OutputsListComponent } from './settings/verifier/outputs/list/outputs-list.component';
 import { HighlightPipe, UpdateOutputComponent } from './settings/verifier/outputs/update/update-output.component';
-import { CreateInputComponent } from './settings/verifier/inputs/create/create-input.component';
-import { InputsListComponent } from './settings/verifier/inputs/list/inputs-list.component';
-import { UpdateInputComponent } from './settings/verifier/inputs/update/update-input.component';
 import { UpdatePositionsMaskComponent } from './settings/verifier/positions-mask/update/update-positions-mask.component';
 import { PositionsMaskListComponent } from './settings/verifier/positions-mask/list/positions-mask-list.component';
 import { CreatePositionsMaskComponent } from './settings/verifier/positions-mask/create/create-positions-mask.component';
@@ -168,9 +165,6 @@ export function createTranslateLoader(http: HttpClient) {
         CreateOutputComponent,
         OutputsListComponent,
         UpdateOutputComponent,
-        CreateInputComponent,
-        InputsListComponent,
-        UpdateInputComponent,
         UpdatePositionsMaskComponent,
         PositionsMaskListComponent,
         CreatePositionsMaskComponent,

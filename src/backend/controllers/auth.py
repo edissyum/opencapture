@@ -87,7 +87,8 @@ def encode_auth_token(user_id):
             current_app.config['SECRET_KEY'].replace("\n", ""),
             algorithm='HS512'
         ), minutes_before_exp
-    except Exception as _e:
+    except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
+            jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         return str(_e)
 
 
@@ -127,7 +128,7 @@ def generate_unique_url_token(document_id, workflow_id):
 
     try:
         payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0),
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=days_before_exp),
             'iat': datetime.datetime.utcnow(),
             'sub': document_id
         }
@@ -136,7 +137,8 @@ def generate_unique_url_token(document_id, workflow_id):
             current_app.config['SECRET_KEY'].replace("\n", ""),
             algorithm='HS512'
         )
-    except Exception as _e:
+    except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
+            jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         return str(_e)
 
 
@@ -312,7 +314,8 @@ def token_required(view):
     def wrapped_view(**kwargs):
         if 'Authorization' in request.headers:
             where = ['username = %s']
-            user_ws = token = password = False
+            user_ws = password = False
+            token = None
             if 'Bearer' in request.headers['Authorization']:
                 token = request.headers['Authorization'].split('Bearer')[1].lstrip()
                 try:
@@ -349,6 +352,7 @@ def token_required(view):
                     'updatePosition',
                     'verifier/getThumb',
                     'verifier/ocrOnFly',
+                    'getAccountingPlan',
                     'forms/verifier/list',
                     'verifier/verifySIRET',
                     'verifier/verifySIREN',
@@ -358,8 +362,11 @@ def token_required(view):
                     'accounts/suppliers/list',
                     'verifier/verifyVATNumber',
                     'forms/fields/getByFormId',
-                    'outputs/verifier/getById'
+                    'outputs/verifier/getById',
+                    'getDefaultAccountingPlan',
+                    'verifier/getThumbByDocumentId'
                 ]
+
                 if process and process[0]['document_ids']:
                     for document_id in process[0]['document_ids']:
                         if str(document_id) in request.url:

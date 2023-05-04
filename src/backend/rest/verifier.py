@@ -17,6 +17,8 @@
 
 import json
 import base64
+import re
+
 import pandas as pd
 from flask_babel import gettext
 from flask import Blueprint, make_response, request, jsonify
@@ -44,13 +46,14 @@ def upload():
                 token = auth.generate_unique_url_token(file['token'], workflow_id)
                 if token:
                     cfg, _ = config.read_config()
-                    url = f"{cfg['GLOBAL']['applicationurl']}/verifier/viewer_token/{token}"
-                    print(url)
+                    file['uniqueUrl'] = f"{cfg['GLOBAL']['applicationurl']}/verifier/viewer_token/{token}"
+                    if not re.search(r'dist(/)+#', file['uniqueUrl']):
+                        file['uniqueUrl'] = file['uniqueUrl'].replace('/dist/', '/dist/#/')
                 else:
-                    res = {
+                    res = [{
                         'errors': gettext('UNIQUE_URL_TOKEN_GENERATION_ERROR'),
-                        'message': gettext('INTERFACE_IS_NOT_USED')
-                    }, 200
+                        'message': gettext('INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET')
+                    }, 200]
         return make_response(res[0], res[1])
     else:
         return make_response(gettext('UNKNOW_ERROR'), 400)
@@ -79,10 +82,10 @@ def document_info(document_id):
     return make_response(res[0], res[1])
 
 
-@bp.route('verifier/documents/getDocumentIdByToken', methods=['POST'])
-def get_document_id_by_token():
+@bp.route('verifier/documents/getDocumentIdAndStatusByToken', methods=['POST'])
+def get_document_informations_by_token():
     if 'token' in request.json and request.json['token']:
-        res = verifier.get_document_id_by_token(request.json['token'])
+        res = verifier.get_document_id_and_status_by_token(request.json['token'])
         return make_response(res[0], res[1])
     else:
         return jsonify({'errors': gettext('TOKEN_IS_MANDATORY'), 'message': ''}), 400
@@ -316,6 +319,18 @@ def get_thumb():
         month = register_date.strftime('%m')
         year_and_month = year + '/' + month
     file_content = verifier.get_file_content(data['type'], data['filename'], 'image/jpeg', year_and_month=year_and_month)
+    return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
+
+
+@bp.route('verifier/getThumbByDocumentId', methods=['POST'])
+@auth.token_required
+def get_thumb_by_document_id():
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/getThumb'}), 403
+
+    document_id = request.json['documentId']
+    file_content = verifier.get_thumb_by_document_id(document_id)
     return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
 
 

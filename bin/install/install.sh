@@ -381,6 +381,9 @@ su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
         Order deny,allow
         Allow from all
         Require all granted
+        <Files ~ "(.ini|secret_key|.ods|.json)">
+            Require all denied
+        </Files>
     </Directory>
 </VirtualHost>
 EOF"
