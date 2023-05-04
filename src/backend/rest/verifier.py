@@ -36,7 +36,7 @@ def upload():
     if 'workflowId' in request.args:
         workflow_id = request.args['workflowId']
     else:
-        return jsonify({'errors': gettext('UNIQUE_URL_TOKEN_GENERATION_ERROR'),
+        return jsonify({'errors': gettext('VERIFIER_UPLOAD_ERROR'),
                         'message': gettext('WORKFLOW_ID_IS_MANDATORY')}), 400
 
     files = request.files
