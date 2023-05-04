@@ -28,6 +28,7 @@
 		"customer_updated": "Compte client mis à jour avec succès",
 		"customers": "Comptes clients",
 		"customers_list": "Liste des comptes clients",
+		"duns": "Numéro DUNS",
 		"email_format_error": "Mauvais format d'email",
 		"export_suppliers": "Exporter les tiers",
 		"form": "Nom du formulaire",

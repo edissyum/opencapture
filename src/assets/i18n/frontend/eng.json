@@ -28,6 +28,7 @@
 		"customer_updated": "Customer updated successfully",
 		"customers": "Customers",
 		"customers_list": "Customers list",
+		"duns": "DUNS number",
 		"email_format_error": "Bad email format",
 		"export_suppliers": "Export suppliers",
 		"form": "Form name",

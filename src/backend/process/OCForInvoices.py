@@ -234,6 +234,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             'vat_number': supplier[2]['vat_number'],
             'siret': supplier[2]['siret'],
             'siren': supplier[2]['siren'],
+            'duns': supplier[2]['duns'],
             'address1': supplier[2]['address1'],
             'address2': supplier[2]['address2'],
             'postal_code': supplier[2]['postal_code'],

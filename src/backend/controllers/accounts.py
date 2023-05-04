@@ -156,6 +156,8 @@ def update_supplier(supplier_id, data):
             _set.update({'siren': data['siren']})
         if 'iban' in data:
             _set.update({'iban': data['iban']})
+        if 'duns' in data:
+            _set.update({'duns': data['duns']})
         if 'email' in data:
             _set.update({'email': data['email']})
         if 'vat_number' in data:
@@ -349,9 +351,10 @@ def create_supplier(data):
         spreadsheet = _vars[7]
     _columns = {
         'name': data['name'],
+        'iban': data['iban'] if 'iban' in data else None,
+        'duns': data['duns'] if 'duns' in data else None,
         'siret': data['siret'] if 'siret' in data else None,
         'siren': data['siren'] if 'siren' in data else None,
-        'iban': data['iban'] if 'iban' in data else None,
         'email': data['email'] if 'email' in data else None,
         'vat_number': data['vat_number'] if 'vat_number' in data else None,
         'form_id': data['form_id'] if 'form_id' in data else None,

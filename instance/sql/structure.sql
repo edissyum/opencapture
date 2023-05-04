@@ -144,6 +144,7 @@ CREATE TABLE "accounts_supplier" (
     "siret"               VARCHAR(20),
     "siren"               VARCHAR(20),
     "iban"                VARCHAR(50),
+    "duns"                VARCHAR(10),
     "email"               VARCHAR,
     "address_id"          INTEGER,
     "form_id"             INTEGER,
