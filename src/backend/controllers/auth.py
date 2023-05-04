@@ -87,7 +87,8 @@ def encode_auth_token(user_id):
             current_app.config['SECRET_KEY'].replace("\n", ""),
             algorithm='HS512'
         ), minutes_before_exp
-    except Exception as _e:
+    except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
+            jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         return str(_e)
 
 
@@ -136,7 +137,8 @@ def generate_unique_url_token(document_id, workflow_id):
             current_app.config['SECRET_KEY'].replace("\n", ""),
             algorithm='HS512'
         )
-    except Exception as _e:
+    except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
+            jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         return str(_e)
 
 
