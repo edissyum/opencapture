@@ -33,10 +33,10 @@ def launch(args):
     """
     Launch Splitter process on a file
     :param args:
-    - custom_id: custom id
-    - input_id: input id
-    - user_id: user id
     - file: file path
+    - user_id: user id
+    - custom_id: custom id
+    - workflow_id: workflow id
     :return: N/A
     """
     start = time.time()
@@ -86,27 +86,26 @@ def launch(args):
     remove_blank_pages = False
     ocrise = False
 
-    input_settings = database.select({
-        'select': ['*'],
-        'table': ['inputs', 'form_models'],
-        'left_join': ['inputs.default_form_id = form_models.id'],
-        'where': ['inputs.input_id = %s', 'inputs.module = %s'],
-        'data': [args['input_id'], 'splitter'],
+    workflow_settings = database.select({
+        'select': ['input, separation, process, output'],
+        'table': ['workflows'],
+        'where': ['workflow_id = %s', 'module = %s'],
+        'data': [args['workflow_id'], 'splitter']
     })
-    if input_settings:
-        args['customer_id'] = input_settings[0]['customer_id']
-        splitter_method_id = input_settings[0]['splitter_method_id']
-        remove_blank_pages = input_settings[0]['remove_blank_pages']
-        for output_id in input_settings[0]['outputs']:
+
+    if workflow_settings:
+        args['customer_id'] = workflow_settings[0]['input']['customer_id']
+        splitter_method_id = workflow_settings[0]['separation']['splitter_method_id']
+        remove_blank_pages = workflow_settings[0]['separation']['remove_blank_pages']
+        for output_id in workflow_settings[0]['output']:
             outputs_settings = database.select({
                 'select': ['ocrise'],
                 'table': ['outputs'],
                 'where': ['id = %s'],
                 'data': [int(output_id)]
             })
-            if not outputs_settings:
-                continue
-            ocrise = outputs_settings[0]['ocrise']
+            if outputs_settings:
+                ocrise = outputs_settings[0]['ocrise']
 
     separator_qr = _SeparatorQR(log, config, batch_folder_path, 'splitter', files, remove_blank_pages, docservers,
                                 splitter_method_id)
@@ -123,7 +122,7 @@ def launch(args):
         if args['file'] is not None:
             path = args['file']
             if check_file(files, path, log, docservers) and not process_err:
-                if 'input_id' in args and args['input_id']:
+                if 'workflow_id' in args and args['workflow_id']:
                     available_split_methods_path = docservers['SPLITTER_METHODS_PATH'] + "/splitter_methods.json"
                     if splitter_method_id and os.path.isfile(available_split_methods_path):
                         with open(available_split_methods_path, encoding='UTF-8') as json_file:
@@ -146,15 +145,15 @@ def launch(args):
                                         "docservers": docservers,
                                         "user_id": args['user_id'],
                                         "batch_folder": batch_folder,
-                                        "input_id": args['input_id'],
                                         "configurations": configurations,
+                                        "workflow_id": args['workflow_id'],
                                         "customer_id": args['customer_id'],
                                     }
                                     split_res = split_method(split_args)
                                     created_batches = split_res['batches_id']
                 else:
                     process_err = True
-                    log.error("The input_id doesn't exists in database")
+                    log.error("The workflow_id doesn't exists in database")
             else:
                 process_err = True
     except Exception as _e:

@@ -51,7 +51,7 @@
             </ng-container>
             <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
             <mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                     routerLink="/settings/verifier/workflows/builder/edit/{{ row.id }}"
+                     routerLink="/settings/splitter/workflows/builder/edit/{{ row.id }}"
                      class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
         </mat-table>
         <mat-paginator showFirstLastButtons
