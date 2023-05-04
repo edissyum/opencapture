@@ -97,11 +97,16 @@ UPDATE form_models SET settings = jsonb_set(settings, '{unique_url}', '{"expirat
      "create_supplier": true,
      "enable_supplier": true,
      "refuse_document": true,
-     "validate_document": true}') WHERE module = 'verifier';
+     "validate_document": true,
+     "allow_supplier_autocomplete": true}') WHERE module = 'verifier';
 
 UPDATE form_model_settings SET settings = jsonb_set(settings, '{unique_url}', '{"expiration": 7,
      "change_form": true,
      "create_supplier": true,
      "enable_supplier": true,
      "refuse_document": true,
-     "validate_document": true}') WHERE module = 'verifier';
+     "validate_document": true,
+     "allow_supplier_autocomplete": true}') WHERE module = 'verifier';
+
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('duns', 'global', 'Numéro DUNS', '([0-9]{9})|([0-9]{2}-[0-9]{3}-[0-9]{4})');
+ALTER TABLE "accounts_supplier" ADD COLUMN "duns" VARCHAR(10);

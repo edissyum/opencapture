@@ -35,8 +35,8 @@ for custom_name in ${SECTIONS[@]}; do
         fi
     done
     for script in custom/$custom_name/bin/scripts/splitter_inputs/*.sh; do
-            if [[ ! $script =~ 'script_sample_dont_touch.sh' ]]; then
-                sed -i 's/input_id/workflow_id/g' "$script"
-            fi
-        done
+        if [[ ! $script =~ 'script_sample_dont_touch.sh' ]]; then
+            sed -i 's/input_id/workflow_id/g' "$script"
+        fi
+    done
 done

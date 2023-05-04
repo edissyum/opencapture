@@ -89,6 +89,13 @@ export class UpdateSupplierComponent implements OnInit {
             required: false
         },
         {
+            id: 'duns',
+            label: marker('ACCOUNTS.duns'),
+            type: 'text',
+            control: new FormControl(),
+            required: false
+        },
+        {
             id: 'email',
             label: marker('FORMATS.email'),
             type: 'text',

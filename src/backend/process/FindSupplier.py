@@ -196,6 +196,19 @@ class FindSupplier:
                 position = self.files.return_position_with_ratio(line, target)
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'email']
             return data
+
+        supplier = self.process(self.regex['duns'], text_as_string, 'duns')
+        if supplier:
+            self.regenerate_ocr()
+            self.log.info('Supplier found : ' + supplier[0]['name'] + ' using DUNS : ' + supplier[0]['duns'])
+            line = supplier[1]
+            if text_as_string:
+                position = (('', ''), ('', ''))
+            else:
+                position = self.files.return_position_with_ratio(line, target)
+            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'duns']
+            return data
+
         else:
             if not retry:
                 self.found_first = False
