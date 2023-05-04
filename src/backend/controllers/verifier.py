@@ -553,10 +553,9 @@ def get_token_insee():
         (config['API']['siret-consumer'] + ':' + config['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
 
     try:
-        res = requests.post(config['API']['siret-url-token'],
-                            data={'grant_type': 'client_credentials'},
-                            headers={"Authorization": f"Basic {credentials}"})
-    except requests.exceptions.SSLError:
+        res = requests.post(config['API']['siret-url-token'], data={'grant_type': 'client_credentials'},
+                            headers={"Authorization": f"Basic {credentials}"}, timeout=5)
+    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     if 'Maintenance - INSEE' in res.text or res.status_code != 200:
