@@ -1095,6 +1095,7 @@
 		"list": "Documents",
 		"loading_customers": "Loading customers accounts",
 		"make_line": "Make line with fields",
+		"multiple_documents": "Multiple documents found for this process. Please select the one you want to process below",
 		"nb_pages": "Number of pages",
 		"no_autocomplete_data": "No autocompletion data",
 		"no_customers_filter": "No customers found",

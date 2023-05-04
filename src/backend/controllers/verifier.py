@@ -18,6 +18,8 @@
 import os
 import uuid
 import json
+
+import pandas as pd
 import zeep
 import base64
 import secrets
@@ -484,6 +486,18 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
         return text
 
 
+def get_thumb_by_document_id(document_id):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+    if not error:
+        register_date = pd.to_datetime(document_info['register_date'])
+        year = register_date.strftime('%Y')
+        month = register_date.strftime('%m')
+        year_and_month = year + '/' + month
+        return get_file_content('full', document_info['full_jpg_filename'], 'image/jpeg', year_and_month=year_and_month)
+    else:
+        return '', 404
+
+
 def get_file_content(file_type, filename, mime_type, compress=False, year_and_month=False):
     if 'docservers' in current_context:
         docservers = current_context.docservers
@@ -539,10 +553,9 @@ def get_token_insee():
         (config['API']['siret-consumer'] + ':' + config['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
 
     try:
-        res = requests.post(config['API']['siret-url-token'],
-                            data={'grant_type': 'client_credentials'},
-                            headers={"Authorization": f"Basic {credentials}"})
-    except requests.exceptions.SSLError:
+        res = requests.post(config['API']['siret-url-token'], data={'grant_type': 'client_credentials'},
+                            headers={"Authorization": f"Basic {credentials}"}, timeout=5)
+    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     if 'Maintenance - INSEE' in res.text or res.status_code != 200:

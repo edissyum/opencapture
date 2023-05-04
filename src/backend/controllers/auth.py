@@ -87,7 +87,8 @@ def encode_auth_token(user_id):
             current_app.config['SECRET_KEY'].replace("\n", ""),
             algorithm='HS512'
         ), minutes_before_exp
-    except Exception as _e:
+    except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
+            jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         return str(_e)
 
 
@@ -136,7 +137,8 @@ def generate_unique_url_token(document_id, workflow_id):
             current_app.config['SECRET_KEY'].replace("\n", ""),
             algorithm='HS512'
         )
-    except Exception as _e:
+    except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
+            jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         return str(_e)
 
 
@@ -361,8 +363,10 @@ def token_required(view):
                     'verifier/verifyVATNumber',
                     'forms/fields/getByFormId',
                     'outputs/verifier/getById',
-                    'getDefaultAccountingPlan'
+                    'getDefaultAccountingPlan',
+                    'verifier/getThumbByDocumentId'
                 ]
+
                 if process and process[0]['document_ids']:
                     for document_id in process[0]['document_ids']:
                         if str(document_id) in request.url:

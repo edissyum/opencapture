@@ -1095,6 +1095,7 @@
 		"list": "Documents",
 		"loading_customers": "Chargement des comptes clients...",
 		"make_line": "Faire de ces champs une seule ligne duplicable",
+		"multiple_documents": "Plusieurs documents sont disponibles pour ce processus. Merci de sélectionner le document à traiter ci-dessous",
 		"nb_pages": "Nombre de page(s)",
 		"no_autocomplete_data": "Aucune données d'autocompletion",
 		"no_customers_filter": "Aucun compte client trouvé",
