@@ -43,13 +43,12 @@
                             <div class="h-64 bg-gradient-to-br from-green-400 to-gray-600"></div>
                             <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4">
                                 <mat-card-title class="break-all">
-                        <span class="leading-5 text-lg">
-                            {{ 'ACCOUNTS.supplier_name' | translate }}
-                        </span>
+                                    <span class="leading-5 text-lg">
+                                        {{ 'ACCOUNTS.supplier_name' | translate }}
+                                    </span>
                                     <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill">
-                            0
-                            <i class="far fa-file-alt ml-1"></i>
-                        </span>
+                                        0 <i class="far fa-file-alt ml-1"></i>
+                                    </span>
                                 </mat-card-title>
                                 <mat-card-subtitle class="subtitles mt-2 mb-2">
                                     <div cdkDropList (cdkDropListDropped)="drop_card($event)"
@@ -104,6 +103,9 @@
                         </mat-slide-toggle>
                         <mat-slide-toggle [formControl]="this.refuseDocumentControl">
                             {{ 'FORMS.refuse_document_enabled' | translate }}
+                        </mat-slide-toggle>
+                        <mat-slide-toggle [formControl]="this.allowSupplierAutoControl">
+                            {{ 'FORMS.supplier_autocomplete_enabled' | translate }}
                         </mat-slide-toggle>
                         <mat-slide-toggle [formControl]="this.validateDocumentControl">
                             {{ 'FORMS.validate_document_enabled' | translate }}

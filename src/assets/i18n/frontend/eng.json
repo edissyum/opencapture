@@ -353,6 +353,7 @@
 		"refuse": "Refuse",
 		"refuse_document_enabled": "Allow to refuse document",
 		"supplier": "Supplier",
+		"supplier_autocomplete_enabled": "Allow to supplier autocompletion",
 		"supplier_verif": "Supplication verification",
 		"supplier_verif_hint": "verification via API for SIRET / SIREN / TVA INTRA",
 		"unique_url": "Unique URL",

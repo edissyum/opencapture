@@ -576,7 +576,8 @@ INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verif
         "create_supplier": true,
         "enable_supplier": true,
         "refuse_document": true,
-        "validate_document": true
+        "validate_document": true,
+        "allow_supplier_autocomplete": true
     },
     "supplier_verif": false
 }');

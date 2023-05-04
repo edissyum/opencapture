@@ -186,8 +186,9 @@ export class VerifierViewerComponent implements OnInit {
                                     });
                                 }
                             }
+
                             if (this.multiDocumentsData.length === 1) {
-                                this.loadDocument(this.multiDocumentsData[0].id);
+                                // this.loadDocument(this.multiDocumentsData[0].id);
                             }
                         }
                         return;

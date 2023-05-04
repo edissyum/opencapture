@@ -33,9 +33,11 @@ def upload():
     if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'upload']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/upload'}), 403
 
-    workflow_id = None
     if 'workflowId' in request.args:
         workflow_id = request.args['workflowId']
+    else:
+        return jsonify({'errors': gettext('UNIQUE_URL_TOKEN_GENERATION_ERROR'),
+                        'message': gettext('WORKFLOW_ID_IS_MANDATORY')}), 400
 
     files = request.files
     res = verifier.handle_uploaded_file(files, workflow_id)
