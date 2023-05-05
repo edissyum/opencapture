@@ -30,12 +30,12 @@ def upload():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/upload'}), 403
 
     workflow_id = None
-    if 'workflowId' in request.args:
-        workflow_id = request.args['workflowId']
+    if 'workflowId' in request.form:
+        workflow_id = request.form['workflowId']
 
     user_id = None
-    if 'userId' in request.args:
-        user_id = request.args['userId']
+    if 'userId' in request.form:
+        user_id = request.form['userId']
 
     files = request.files
     res = splitter.handle_uploaded_file(files, workflow_id, user_id)
