@@ -13,7 +13,8 @@
  You should have received a copy of the GNU General Public License
  along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
- @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+ @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
