@@ -343,30 +343,6 @@ export class SettingsService {
                 ]
             },
             {
-                "id"        : "splitter_input_settings",
-                "label"     : this.translate.instant("FORMS.input_settings"),
-                "icon"      : "fa-solid fa-sign-in-alt",
-                "route"     : "/settings/splitter/inputs",
-                "privilege" : "inputs_list_splitter",
-                "actions"   : [
-                    {
-                        "id"        : "splitter_add_input",
-                        "label"     : this.translate.instant("SETTINGS.add_input"),
-                        "route"     : "/settings/splitter/inputs/new",
-                        "privilege" : "splitter_add_input",
-                        "icon"      : "fa-solid fa-plus"
-                    },
-                    {
-                        "id"                : "splitter_update_input",
-                        "label"             : this.translate.instant("SETTINGS.update_input"),
-                        "route"             : "/settings/splitter/inputs/update/",
-                        "privilege"         : "update_input",
-                        "icon"              : "fa-solid fa-edit",
-                        "showOnlyIfActive"  : true
-                    }
-                ]
-            },
-            {
                 "id"        : "splitter_output_settings",
                 "label"     : this.translate.instant("FORMS.output_settings"),
                 "icon"      : "fa-solid fa-sign-out-alt",

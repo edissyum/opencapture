@@ -36,7 +36,6 @@ import { FormBuilderComponent } from "./verifier/form/builder/form-builder.compo
 import { WorkflowBuilderComponent } from "./verifier/workflow/builder/workflow-builder.component";
 import { WorkflowBuilderSplitterComponent } from "./splitter/workflow/builder/workflow-builder.component";
 import { OutputsListComponent } from "./verifier/outputs/list/outputs-list.component";
-import { SplitterInputListComponent } from "./splitter/inputs/list/input-list.component";
 import { ListDocTypeComponent } from "./splitter/doc-types/list/list-doc-type.component";
 import { CustomFieldsComponent } from "./general/custom-fields/custom-fields.component";
 import { SplitterOutputListComponent } from "./splitter/output/list/output-list.component";
@@ -47,8 +46,6 @@ import { RegexComponent } from "./general/regex/regex.component";
 import { MailCollectComponent } from "./general/mailcollect/mailcollect.component";
 import { CreateOutputComponent } from "./verifier/outputs/create/create-output.component";
 import { SplitterFormBuilderComponent } from "./splitter/form/builder/form-builder.component";
-import { SplitterCreateInputComponent } from "./splitter/inputs/create/create-input.component";
-import { SplitterUpdateInputComponent } from "./splitter/inputs/update/update-input.component";
 import { CreateDocTypeComponent } from "./splitter/doc-types/create/create-doc-type.component";
 import { SplitterUpdateOutputComponent } from "./splitter/output/update/update-output.component";
 import { SplitterCreateOutputComponent } from "./splitter/output/create/create-output.component";
@@ -300,21 +297,6 @@ const routes: Routes = [
     {
         path: 'settings/splitter/outputs/update/:id', component: SplitterUpdateOutputComponent,
         data: {title: 'SETTINGS.update_output', privileges: ['settings', 'update_output_splitter']},
-        canActivate: [LoginRequiredService, HasPrivilegeService]
-    },
-    {
-        path: 'settings/splitter/inputs', component: SplitterInputListComponent,
-        data: {title: 'FORMS.input_settings', privileges: ['settings', 'inputs_list_splitter']},
-        canActivate: [LoginRequiredService, HasPrivilegeService]
-    },
-    {
-        path: 'settings/splitter/inputs/new', component: SplitterCreateInputComponent,
-        data: {title: 'SETTINGS.add_input', privileges: ['settings', 'add_input_splitter']},
-        canActivate: [LoginRequiredService, HasPrivilegeService]
-    },
-    {
-        path: 'settings/splitter/inputs/update/:id', component: SplitterUpdateInputComponent,
-        data: {title: 'SETTINGS.update_input', privileges: ['settings', 'update_input_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
