@@ -33,16 +33,28 @@ def upload():
     if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'upload']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/upload'}), 403
 
-    workflow_id = None
-    if 'workflowId' in request.args:
-        workflow_id = request.args['workflowId']
+    if 'workflowId' in request.form:
+        workflow_id = request.form['workflowId']
+    else:
+        return jsonify({'errors': gettext('VERIFIER_UPLOAD_ERROR'),
+                        'message': gettext('WORKFLOW_ID_IS_MANDATORY')}), 400
+
+    supplier = {}
+    if 'iban' in request.form:
+        supplier = {'column': 'iban', 'value': request.form['iban']}
+    elif 'siret' in request.form:
+        supplier = {'column': 'siret', 'value': request.form['siret']}
+    elif 'siren' in request.form:
+        supplier = {'column': 'siren', 'value': request.form['siren']}
+    elif 'duns' in request.form:
+        supplier = {'column': 'duns', 'value': request.form['duns']}
 
     files = request.files
-    res = verifier.handle_uploaded_file(files, workflow_id)
+    res = verifier.handle_uploaded_file(files, workflow_id, supplier)
 
     if res and res[0] is not False:
         for file in res[0]:
-            if 'returnUniqueUrl' in request.args and request.args['returnUniqueUrl']:
+            if 'returnUniqueUrl' in request.form and request.form['returnUniqueUrl']:
                 token = auth.generate_unique_url_token(file['token'], workflow_id)
                 if token:
                     cfg, _ = config.read_config()

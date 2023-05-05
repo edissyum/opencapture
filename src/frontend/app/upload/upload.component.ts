@@ -138,12 +138,13 @@ export class UploadComponent implements OnInit {
                 return;
             }
         }
+        formData.set('workflowId', this.selectedWorkflowTechnicalId);
+        formData.set('userId', this.userService.user.id);
+        console.log(formData)
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
-                environment['url'] + '/ws/' + splitterOrVerifier + '/upload' +
-                '?workflowId=' + this.selectedWorkflowTechnicalId +
-                '&userId=' + this.userService.user.id, formData, {headers: this.authService.headers},
+                environment['url'] + '/ws/' + splitterOrVerifier + '/upload', formData, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.sending = false;

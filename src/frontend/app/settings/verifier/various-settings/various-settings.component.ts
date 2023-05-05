@@ -55,6 +55,7 @@ export class VariousSettingsVerifierComponent implements OnInit {
     validateDocumentControl     : FormControl   = new FormControl(true);
     refuseDocumentControl       : FormControl   = new FormControl(true);
     uniqueURlExpirationControl  : FormControl   = new FormControl(7);
+    allowSupplierAutoControl    : FormControl   = new FormControl(true);
     availableFields             : any           = [
         {
             "id": 'document_id',
@@ -155,6 +156,7 @@ export class VariousSettingsVerifierComponent implements OnInit {
                     this.validateDocumentControl.setValue(this.currentForm.settings.unique_url.validate_document);
                     this.createSupplierControl.setValue(this.currentForm.settings.unique_url.create_supplier);
                     this.updateSupplierControl.setValue(this.currentForm.settings.unique_url.update_supplier);
+                    this.allowSupplierAutoControl.setValue(this.currentForm.settings.unique_url.allow_supplier_autocomplete);
                 } else {
                     this.uniqueURlExpirationControl.setValue(7);
                     this.changeFormControl.setValue(true);
@@ -162,6 +164,7 @@ export class VariousSettingsVerifierComponent implements OnInit {
                     this.validateDocumentControl.setValue(true);
                     this.createSupplierControl.setValue(true);
                     this.updateSupplierControl.setValue(true);
+                    this.allowSupplierAutoControl.setValue(true);
                 }
             }
         });
@@ -213,7 +216,8 @@ export class VariousSettingsVerifierComponent implements OnInit {
             create_supplier: this.createSupplierControl.value,
             update_supplier: this.updateSupplierControl.value,
             expiration: this.uniqueURlExpirationControl.value,
-            validate_document: this.validateDocumentControl.value
+            validate_document: this.validateDocumentControl.value,
+            allow_supplier_autocomplete: this.allowSupplierAutoControl.value
         };
 
         this.http.put(environment['url'] + '/ws/forms/updateUniqueUrl/' + this.currentForm.id, {
