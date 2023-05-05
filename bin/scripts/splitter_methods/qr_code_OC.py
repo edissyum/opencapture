@@ -62,7 +62,7 @@ def process(args):
     if args['ocrise']:
         args['files'].ocrise_pdf(file, args['configurations']['locale'], args['log'])
 
-    process_res = args['splitter'].create_batches(args['batch_folder'], file, args['input_id'], args['user_id'], original_file)
+    process_res = args['splitter'].create_batches(args['batch_folder'], file, args['workflow_id'], args['user_id'], original_file)
     return process_res
 
 

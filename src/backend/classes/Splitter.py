@@ -136,7 +136,7 @@ class Splitter:
             clean_path = re.sub(r"/+", "/", file)
             clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_PDF'])
 
-            default_values = self.get_default_values(workflow_settings[0]['default_form_id'], user_id)
+            default_values = self.get_default_values(workflow_settings[0]['process']['form_id'], user_id)
             args = {
                 'table': 'splitter_batches',
                 'columns': {
