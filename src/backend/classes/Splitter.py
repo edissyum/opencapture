@@ -136,17 +136,26 @@ class Splitter:
             clean_path = re.sub(r"/+", "/", file)
             clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_PDF'])
 
-            default_values = self.get_default_values(workflow_settings[0]['default_form_id'], user_id)
+            default_values = {
+                'document': {},
+                'batch': {}
+            }
+            form_id = None
+            if workflow_settings[0]['process']['use_interface'] and \
+                       'form_id' in workflow_settings[0]['process'] and workflow_settings[0]['process']['form_id']:
+                form_id = workflow_settings[0]['process']['form_id']
+                default_values = self.get_default_values(form_id, user_id)
+
             args = {
                 'table': 'splitter_batches',
                 'columns': {
+                    'form_id': form_id,
                     'batch_folder': batch_folder,
                     'file_path': clean_path.replace(clean_ds, ''),
                     'thumbnail': os.path.basename(batch[0]['path']),
                     'file_name': os.path.basename(original_filename),
-                    'form_id': str(workflow_settings[0]['process']['form_id']),
-                    'customer_id': str(workflow_settings[0]['input']['customer_id']),
                     'data': json.dumps({'custom_fields': default_values['batch']}),
+                    'customer_id': str(workflow_settings[0]['input']['customer_id']),
                     'documents_count': str(max((node['split_document'] for node in batch)))
                 }
             }
