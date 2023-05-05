@@ -162,24 +162,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 type: 'select',
                 control: new FormControl(),
                 required: true,
-                values: [
-                    {
-                        'id': 'no_sep',
-                        'label': this.translate.instant('INPUT.no_separation')
-                    },
-                    {
-                        'id': 'qr_code_OC',
-                        'label': this.translate.instant('INPUT.qr_code_separation')
-                    },
-                    {
-                        'id': 'c128_OC',
-                        'label': this.translate.instant('INPUT.c128_separation')
-                    },
-                    {
-                        'id': 'separate_by_document_number',
-                        'label': this.translate.instant('INPUT.separate_by_document_number')
-                    }
-                ]
+                values: []
             },
             {
                 id: 'separate_by_document_number_value',
@@ -317,6 +300,24 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                     }
                 });
             }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/splitter/splitMethods', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data.splitMethods.forEach((method: any) => {
+                    this.fields['separation'].forEach((element: any) => {
+                        if (element.id === 'splitter_method_id') {
+                            element.values.push(method);
+                        }
+                    });
+                });
+            }),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
