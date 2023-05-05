@@ -248,7 +248,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/accounts/customers/list/splitter', {headers: this.authService.headers}).pipe(
             tap((customers: any) => {
                 this.fields['input'].forEach((element: any) => {
-                    console.log(customers.customers);
                     if (element.id === 'customer_id') {
                         element.values = customers.customers;
                         element.values.forEach((elem: any) => {
