@@ -83,8 +83,9 @@ def launch(args):
 
     files = _Files('', log, docservers, configurations, regex, languages, database)
 
-    remove_blank_pages = False
     ocrise = False
+    splitter_method_id = ''
+    remove_blank_pages = False
 
     workflow_settings = database.select({
         'select': ['input, separation, process, output'],
@@ -95,7 +96,8 @@ def launch(args):
 
     if workflow_settings:
         outputs = []
-        if 'form_id' in workflow_settings[0]['process'] and workflow_settings[0]['process']['form_id']:
+        if workflow_settings[0]['process']['use_interface'] and \
+                'form_id' in workflow_settings[0]['process'] and workflow_settings[0]['process']['form_id']:
             outputs = database.select({
                 'select': ['outputs'],
                 'table': ['form_models'],
@@ -106,13 +108,13 @@ def launch(args):
                 outputs = outputs[0]['outputs']
         else:
             outputs = database.select({
-                'select': ['outputs'],
+                'select': ['output'],
                 'table': ['workflows'],
                 'where': ['workflow_id = %s', 'module = %s'],
                 'data': [args['workflow_id'], 'splitter']
             })
             if outputs:
-                outputs = outputs[0]['outputs_id']
+                outputs = outputs[0]['output']['outputs_id']
 
         args['customer_id'] = workflow_settings[0]['input']['customer_id']
         splitter_method_id = workflow_settings[0]['separation']['splitter_method_id']
