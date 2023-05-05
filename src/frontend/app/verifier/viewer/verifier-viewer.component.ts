@@ -300,6 +300,10 @@ export class VerifierViewerComponent implements OnInit {
                 top: 0,
                 behavior: 'smooth'
             });
+            document.getElementById('form')!.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
             this.loading = false;
         }, 500);
         const triggerEvent = $('.trigger');
