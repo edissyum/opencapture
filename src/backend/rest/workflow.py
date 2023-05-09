@@ -27,6 +27,7 @@ bp = Blueprint('workflow', __name__, url_prefix='/ws/')
 @auth.token_required
 def verify_input_folder(module):
     list_priv = ['settings', 'add_workflow | update_workflow'] if module == 'verifier' else ['add_workflow_splitter | update_workflow_splitter']
+
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/workflows/{module}/verifyInputFolder'}), 403

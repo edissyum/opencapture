@@ -45,7 +45,13 @@ def get_workflows(args):
 
 def verify_input_folder(args):
     if 'input_folder' in args and args['input_folder']:
-        if not os.path.exists(args['input_folder']):
+        if not is_path_allowed(args['input_folder']):
+            response = {
+                "errors": gettext('WORKFLOW_FOLDER_CREATION_ERROR'),
+                "message": gettext('FOLDER_NOT_ALLOWED_ERROR')
+            }
+            return response, 400
+        elif not os.path.exists(args['input_folder']):
             try:
                 os.mkdir(args['input_folder'], mode=0o777)
             except (PermissionError, FileNotFoundError, TypeError):
