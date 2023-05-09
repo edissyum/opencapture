@@ -319,10 +319,10 @@ def update_address_by_supplier_id(supplier_id, data):
 def create_address(data):
     _columns = {
         'address1': data['address1'],
-        'address2': data['address2'],
+        'address2': data['address2'] if 'address2' in data else None,
         'postal_code': data['postal_code'],
         'city': data['city'],
-        'country': data['country']
+        'country': data['country'] if 'country' in data else None
     }
 
     res, error = accounts.create_address({'columns': _columns})
@@ -349,6 +349,7 @@ def create_supplier(data):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
         spreadsheet = _vars[7]
+
     _columns = {
         'name': data['name'],
         'iban': data['iban'] if 'iban' in data else None,
@@ -358,12 +359,14 @@ def create_supplier(data):
         'email': data['email'] if 'email' in data else None,
         'vat_number': data['vat_number'] if 'vat_number' in data else None,
         'form_id': data['form_id'] if 'form_id' in data else None,
-        'address_id': data['address_id'],
+        'address_id': data['address_id'] if 'address_id' in data else None,
         'document_lang': data['document_lang'] if 'document_lang' in data else 'fra',
         'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False,
     }
 
-    supplier = accounts.retrieve_suppliers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
+    supplier = None
+    if 'vat_number' in data:
+        supplier = accounts.retrieve_suppliers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
 
     if not supplier:
         res, error = accounts.create_supplier({'columns': _columns})

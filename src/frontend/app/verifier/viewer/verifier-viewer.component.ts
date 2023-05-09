@@ -943,10 +943,10 @@ export class VerifierViewerComponent implements OnInit {
         for (const category in this.form) {
             this.form[category].forEach((input: any) => {
                 if (input.id.trim() === inputId.trim()) {
-                    if (input.format === 'number_int' || input.format === 'number_float') {
+                    if (value && (input.format === 'number_int' || input.format === 'number_float')) {
                         value = value.replace(/[A-Za-z€%$]/g, '');
                     }
-                    if (input.type === 'date') {
+                    if (input.type === 'date' && value) {
                         const format = moment().localeData().longDateFormat('L');
                         value = moment(value, format);
                         value = new Date(value._d);
@@ -1405,6 +1405,7 @@ export class VerifierViewerComponent implements OnInit {
     getSupplierInfo(supplierId: any, showNotif = false, launchOnInit = false) {
         this.suppliers.forEach((supplier: any) => {
             if (supplier.id === supplierId) {
+                if (!supplier.address_id) supplier.address_id = 0;
                 this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + supplier.address_id, {headers: this.authService.headers}).pipe(
                     tap((address: any) => {
                         const supplierData : any = {
@@ -1422,7 +1423,7 @@ export class VerifierViewerComponent implements OnInit {
                         };
                         this.getOnlyRawFooter = supplier.get_only_raw_footer;
                         for (const column in supplierData) {
-                            if (supplierData[column]) this.updateFormValue(column, supplierData[column]);
+                            this.updateFormValue(column, supplierData[column]);
                         }
 
                         if (!launchOnInit) {

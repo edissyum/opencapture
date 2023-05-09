@@ -80,9 +80,7 @@ def get_address_by_id(args):
         'data': [args['address_id']]
     })
 
-    if not address:
-        error = gettext('GET_ADDRESS_BY_ID_ERROR')
-    else:
+    if address:
         address = address[0]
 
     return address, error
