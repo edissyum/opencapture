@@ -56,14 +56,23 @@ def upload():
                 token = auth.generate_unique_url_token(file['token'], workflow_id)
                 if token:
                     cfg, _ = config.read_config()
-                    file['uniqueUrl'] = f"{cfg['GLOBAL']['applicationurl']}/verifier/viewer_token/{token}"
-                    if not re.search(r'dist(/)+#', file['uniqueUrl']):
-                        file['uniqueUrl'] = file['uniqueUrl'].replace('/dist/', '/dist/#/')
+                    application_url = cfg['GLOBAL']['applicationurl']
+
+                    if not re.search(r'dist(/)+#', application_url):
+                        application_url = application_url.replace('/dist', '/dist/#/')
+
+                    if 'dist/#' not in application_url:
+                        application_url = application_url + '/dist/#/'
+
+                    file['uniqueUrl'] = f"{application_url}/verifier/viewer_token/{token}"
+                    file['uniqueUrl'] = file['uniqueUrl'].replace('///', '//')
+                    file['uniqueUrl'] = file['uniqueUrl'].replace('#//', '#/').replace('//#', '/#')
+                    file['uniqueUrl'] = file['uniqueUrl'].replace('//dist', '/dist').replace('dist//', 'dist/')
                 else:
                     res = [{
                         'errors': gettext('UNIQUE_URL_TOKEN_GENERATION_ERROR'),
                         'message': gettext('INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET')
-                    }, 200]
+                    }, 403]
         return make_response(res[0], res[1])
     else:
         return make_response(gettext('UNKNOW_ERROR'), 400)
