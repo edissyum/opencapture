@@ -13,7 +13,7 @@
                 </button>
             </div>
             <h3 class="text-center m-0">
-                Open-Capture&nbsp;<span *ngIf="!this.loading"><strong>version {{ this.currentVersion }}</strong>&nbsp;</span>
+                Open-Capture&nbsp;<span *ngIf="!this.loading"><strong>version <span id="gitVersion">{{ this.currentVersion }}</span></strong>&nbsp;</span>
                 <span *ngIf="!this.lastVersion === undefined">
                     |<span class="text-red-600">&nbsp;{{ 'ERROR.git_connection' | translate }}</span>
                 </span>
