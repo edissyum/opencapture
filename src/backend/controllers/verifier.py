@@ -37,7 +37,7 @@ from flask import current_app, Response, request, g as current_context
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
-def handle_uploaded_file(files, workflow_id):
+def handle_uploaded_file(files, workflow_id, supplier):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER']
     tokens = []
@@ -65,6 +65,7 @@ def handle_uploaded_file(files, workflow_id):
         if task_id_monitor:
             launch({
                 'file': filename,
+                'supplier': supplier,
                 'custom_id': custom_id,
                 'workflow_id': workflow_id,
                 'task_id_monitor': task_id_monitor[0]['process'],
@@ -564,7 +565,7 @@ def get_token_insee():
         return json.loads(res.text)['access_token'], 200
 
 
-def verify_siren(token, siren):
+def verify_siren(token, siren, full=False):
     if 'config' in current_context:
         config = current_context.config
     else:
@@ -574,30 +575,33 @@ def verify_siren(token, siren):
 
     try:
         res = requests.get(config['API']['siren-url'] + siren,
-                           headers={"Authorization": f"Bearer {token}", "Accept": "application/json"})
+                           headers={"Authorization": f"Bearer {token}", "Accept": "application/json"}, timeout=5)
     except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     _return = json.loads(res.text)
+
     if 'header' not in res.text:
         return _return['fault']['message'], 201
     else:
-        return _return['header']['message'], 200
+        if full:
+            return _return, 200
+        return _return['header']['message'], _return['header']['statut']
 
 
-def verify_siret(token, siret):
+def verify_siret(token, siret, full=False):
     if 'config' in current_context and 'log' in current_context:
         log = current_context.log
         config = current_context.config
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
-        config = _vars[1]
         log = _vars[5]
+        config = _vars[1]
 
     try:
         res = requests.get(config['API']['siret-url'] + siret,
-                           headers={"Authorization": f"Bearer {token}", "Accept": "application/json"})
+                           headers={"Authorization": f"Bearer {token}", "Accept": "application/json"}, timeout=5)
     except (requests.exceptions.SSLError, requests.exceptions.ConnectionError) as _e:
         log.error(gettext('API_INSEE_ERROR_CONNEXION') + ' : ' + str(_e))
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
@@ -606,10 +610,12 @@ def verify_siret(token, siret):
     if 'header' not in res.text:
         return _return['fault']['message'], 201
     else:
-        return _return['header']['message'], 200
+        if full:
+            return _return, 200
+        return _return['header']['message'], _return['header']['statut']
 
 
-def verify_vat_number(vat_number):
+def verify_vat_number(vat_number, full=False):
     if 'config' in current_context and 'log' in current_context:
         log = current_context.log
         config = current_context.config
@@ -630,6 +636,8 @@ def verify_vat_number(vat_number):
         if res['valid'] is False:
             text = gettext('VAT_NOT_VALID')
             return text, 400
+        if full:
+            return res, 200
         return text, 200
     except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError,
             zeep.exceptions.XMLSyntaxError) as _e:

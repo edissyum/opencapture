@@ -47,7 +47,7 @@
                 <img id="document_image" alt="Open-Capture" [src]="this.imgSrc">
             </div>
         </div>
-        <div *ngIf="this.fields" class="px-4 overflow-auto pt-2">
+        <div *ngIf="this.fields" id="form" class="px-4 overflow-auto pt-2">
             <div *ngIf="this.formSettings.settings['unique_url']['change_form']">
                 <div class="relative float-left top-5">
                     <i class="fa-solid fa-eye cursor-pointer text-green-400 text-lg" (click)="hideVisuals()"

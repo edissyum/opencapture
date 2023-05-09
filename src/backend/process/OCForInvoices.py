@@ -21,7 +21,7 @@ import json
 import datetime
 from src.backend import verifier_exports
 from src.backend.import_classes import _PyTesseract, _Files
-from src.backend.import_controllers import artificial_intelligence
+from src.backend.import_controllers import artificial_intelligence, verifier, accounts
 from src.backend.functions import delete_documents, rotate_document, find_form_with_ia
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
@@ -115,7 +115,8 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                         regex[_r['regex_id']] = _r['content']
                 execute_outputs(output_info[0], log, regex, document_data, database, current_lang)
 
-    elif workflow_settings and (not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
+    elif workflow_settings and (
+            not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
         if 'output' in workflow_settings and workflow_settings['output']:
             for output_id in workflow_settings['output']['outputs_id']:
                 output_info = database.select({
@@ -214,21 +215,119 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 form_id_found_with_ai = True
                 datas.update({'form_id': res})
 
-    # Find supplier in document
-    supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
+    supplier = ['', (('', ''), ('', '')), {}, False, '']
+    if 'supplier' in args and args['supplier']:
+        if 'column' in args['supplier'] and args['supplier']['column']:
+            if 'value' in args['supplier'] and args['supplier']['value']:
+                column = args['supplier']['column']
+                value = args['supplier']['value']
 
-    i = 0
-    tmp_nb_pages = nb_pages
-    while not supplier:
-        tmp_nb_pages = tmp_nb_pages - 1
-        if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
-            break
+                find_supplier = database.select({
+                    'select': ['accounts_supplier.id as supplier_id', '*'],
+                    'table': ['accounts_supplier', 'addresses'],
+                    'left_join': ['accounts_supplier.address_id = addresses.id'],
+                    'where': [column + ' = %s', 'accounts_supplier.status <> %s'],
+                    'data': [value, 'DEL']
+                })
 
-        convert(file, files, ocr, tmp_nb_pages, True)
-        supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
-        i += 1
+                if find_supplier:
+                    supplier = [find_supplier[0]['vat_number'], (('', ''), ('', '')), find_supplier[0], False, column]
+                    log.info('Supplier found : ' + supplier[2]['name'] + ' using ' + column.upper() + ' : ' + value)
+                else:
+                    if column in ['siret', 'siren', 'vat_number']:
+                        token_insee, _ = verifier.get_token_insee()
+                        if token_insee or column == 'vat_number':
+                            status = 400
+                            address_args = {}
+                            supplier_args = {}
+                            if column == 'vat_number':
+                                res, status = verifier.verify_vat_number(value, full=True)
+                                if status == 200:
+                                    address = res['address'].split('\n')
+                                    postal_code = address[1].split(' ')[0]
+                                    city = address[1].split(' ')[1]
+                                    address_args = {
+                                        'address1': address[0],
+                                        'postal_code': postal_code,
+                                        'city': city
+                                    }
+                                    supplier_args = {
+                                        'name': res['name'],
+                                        'siren': value[4:13],
+                                        'siret': '',
+                                        'vat_number': value,
+                                    }
+                            if column == 'siren':
+                                res, status = verifier.verify_siren(token_insee, value, full=True)
+                                if status == 200:
+                                    if res['uniteLegale'] and len(res['uniteLegale']['periodesUniteLegale']) >= 1:
+                                        vat_number_key = (12 + (3 * (int(value) % 97)) % 97) % 97
+                                        supplier_args = {
+                                            'name': res['uniteLegale']['periodesUniteLegale'][0]['denominationUniteLegale'],
+                                            'siret': '',
+                                            'siren': value,
+                                            'vat_number': 'FR' + str(vat_number_key) + value
+                                        }
+                            if column == 'siret':
+                                res, status = verifier.verify_siret(token_insee, value, full=True)
+                                if status == 200:
+                                    insee = res['etablissement']
+                                    address_args = {
+                                        'address1': insee['adresseEtablissement']['numeroVoieEtablissement'] + ' ' +
+                                                    insee['adresseEtablissement']['typeVoieEtablissement'] + ' ' +
+                                                    insee['adresseEtablissement']['libelleVoieEtablissement'],
+                                        'postal_code': insee['adresseEtablissement']['codePostalEtablissement'],
+                                        'city': insee['adresseEtablissement']['libelleCommuneEtablissement']
+                                    }
+                                    vat_number_key = (12 + (3 * (int(insee['siren']) % 97)) % 97) % 97
+                                    supplier_args = {
+                                        'name': insee['uniteLegale']['denominationUniteLegale'],
+                                        'siret': insee['siret'],
+                                        'siren': insee['siren'],
+                                        'vat_number': 'FR' + str(vat_number_key) + insee['siren']
+                                    }
+
+                            if status == 200:
+                                if address_args:
+                                    address_id, status = accounts.create_address(address_args)
+                                    supplier_args['address_id'] = address_id['id']
+                                res, status = accounts.create_supplier(supplier_args)
+                                if status == 200:
+                                    find_supplier = {
+                                        'supplier_id': res['id'],
+                                        'vat_number': supplier_args['vat_number'],
+                                        'siren': supplier_args['siren'],
+                                        'siret': supplier_args['siret'],
+                                        'duns': '',
+                                        'name': supplier_args['name'],
+                                        'city': address_args['city'] if address_args else None,
+                                        'country': '',
+                                        'postal_code': address_args['postal_code'] if address_args else None,
+                                        'address1': address_args['address1'] if address_args else None,
+                                        'address2': '',
+                                        'get_only_raw_footer': False,
+                                        'skip_auto_validate': False,
+                                        'document_lang': ''
+                                    }
+                                    supplier = [find_supplier['vat_number'], (('', ''), ('', '')), find_supplier, False, column]
+
+    # Find supplier in document if not send using upload rest
+    if not supplier or not supplier[0] or not supplier[2]:
+        supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
+
+        i = 0
+        tmp_nb_pages = nb_pages
+        while not supplier:
+            tmp_nb_pages = tmp_nb_pages - 1
+            if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
+                break
+
+            convert(file, files, ocr, tmp_nb_pages, True)
+            supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
+            i += 1
     supplier_lang_different = False
-    if supplier:
+
+    if supplier and supplier[2]:
         datas.update({
             'name': supplier[2]['name'],
             'vat_number': supplier[2]['vat_number'],
@@ -268,7 +367,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     if workflow_settings:
         if 'override_supplier_form' in workflow_settings['process'] and \
-                workflow_settings['process']['override_supplier_form'] or not supplier or not supplier[2]['form_id']:
+                workflow_settings['process']['override_supplier_form'] or \
+                not supplier or ('form_id' not in supplier[2] or not supplier[2]['form_id']):
             if not form_id_found_with_ai:
                 datas.update({'form_id': workflow_settings['process']['form_id']})
         elif ('override_supplier_form' not in workflow_settings['process'] or
@@ -516,12 +616,12 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
         log.info('All the usefull informations are found. Execute outputs action and end process')
         document_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file,
-                            supplier, 'END', nb_pages, docservers, workflow_settings, log, regex,
-                            supplier_lang_different, configurations['locale'])
+                             supplier, 'END', nb_pages, docservers, workflow_settings, log, regex,
+                             supplier_lang_different, configurations['locale'])
     else:
         document_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file,
-                            supplier, 'NEW', nb_pages, docservers, workflow_settings, log, regex,
-                            supplier_lang_different, configurations['locale'])
+                             supplier, 'NEW', nb_pages, docservers, workflow_settings, log, regex,
+                             supplier_lang_different, configurations['locale'])
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')

@@ -40,14 +40,12 @@ def upload():
                         'message': gettext('WORKFLOW_ID_IS_MANDATORY')}), 400
 
     supplier = {}
-    if 'iban' in request.form:
-        supplier = {'column': 'iban', 'value': request.form['iban']}
-    elif 'siret' in request.form:
+    if 'siret' in request.form:
         supplier = {'column': 'siret', 'value': request.form['siret']}
     elif 'siren' in request.form:
         supplier = {'column': 'siren', 'value': request.form['siren']}
-    elif 'duns' in request.form:
-        supplier = {'column': 'duns', 'value': request.form['duns']}
+    elif 'vat_number' in request.form:
+        supplier = {'column': 'vat_number', 'value': request.form['vat_number']}
 
     files = request.files
     res = verifier.handle_uploaded_file(files, workflow_id, supplier)
