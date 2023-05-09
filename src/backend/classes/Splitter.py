@@ -233,6 +233,7 @@ class Splitter:
                     'columns': {
                         'document_id': str(documents_id),
                         'thumbnail': thumbnail,
+                        'rotation': workflow_settings[0]['process']['rotation'],
                         'source_page': page['source_page'],
                     }
                 }
