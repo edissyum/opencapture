@@ -4,7 +4,7 @@
             {{ "ACCOUNTS.choose_workflow_upload" | translate }}
         </h3>
         <mat-divider></mat-divider>
-        <mat-list>
+        <mat-list class="h-full-overflow overflow-auto">
             <mat-list-item *ngFor="let workflow of workflows" class="cursor-pointer m-2 w-auto" (click)="setWorkflow(workflow.id)">
                 <span [class.text-green-400]="this.selectedWorkflow === workflow.id" class="hover:text-green-400"
                       [matTooltip]="workflow.label" [matTooltipDisabled]="workflow.label.replace(' ', '').length <= 20">

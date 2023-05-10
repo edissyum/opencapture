@@ -2,3 +2,7 @@
 .mat-mdc-standard-chip.mat-accent.mat-mdc-chip-highlighted {
     @apply bg-green-400;
 }
+
+.mat-drawer-inner-container {
+    @apply overflow-hidden #{!important};
+}
