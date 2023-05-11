@@ -6,7 +6,7 @@ fpdf==1.7.2
 zeep==4.2.1
 ldap3==2.9.1
 pyocr==0.8.3
-PyJWT==2.6.0
+PyJWT==2.7.0
 flask==2.3.2
 pypdf==3.8.1
 pyzbar==0.1.9
