@@ -110,11 +110,6 @@ if 'mem' or 'controllers' not in custom_array['mem']['path']:
 elif 'controllers' in custom_array['mem']['path']:
     mem = getattr(__import__(custom_array['mem']['path'], fromlist=[custom_array['mem']['module']]), custom_array['mem']['module'])
 
-if 'inputs' or 'controllers' not in custom_array['inputs']['path']:
-    from .controllers import inputs
-elif 'controllers' in custom_array['inputs']['path']:
-    inputs = getattr(__import__(custom_array['inputs']['path'], fromlist=[custom_array['inputs']['module']]), custom_array['inputs']['module'])
-
 if 'doctypes' or 'controllers' not in custom_array['doctypes']['path']:
     from .controllers import doctypes
 elif 'controllers' in custom_array['doctypes']['path']:

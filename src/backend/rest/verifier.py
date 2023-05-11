@@ -53,7 +53,7 @@ def upload():
     if res and res[0] is not False:
         for file in res[0]:
             if 'returnUniqueUrl' in request.form and request.form['returnUniqueUrl']:
-                token = auth.generate_unique_url_token(file['token'], workflow_id)
+                token = auth.generate_unique_url_token(file['token'], workflow_id, 'verifier')
                 if token:
                     cfg, _ = config.read_config()
                     application_url = cfg['GLOBAL']['applicationurl']

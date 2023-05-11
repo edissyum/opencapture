@@ -343,7 +343,7 @@ CREATE TABLE "mailcollect" (
      "status"                        VARCHAR(10)  DEFAULT 'OK',
      "is_splitter"                   BOOLEAN      DEFAULT False,
      "enabled"                       BOOLEAN      DEFAULT True,
-     "splitter_technical_input_id"   VARCHAR(255),
+     "splitter_technical_workflow_id"VARCHAR(255),
      "folder_to_crawl"               VARCHAR(255) NOT NULL,
      "folder_destination"            VARCHAR(255) NOT NULL,
      "folder_trash"                  VARCHAR(255),
@@ -371,7 +371,6 @@ CREATE TABLE "ai_models" (
 CREATE TABLE "monitoring" (
     "id"                 SERIAL         UNIQUE PRIMARY KEY,
     "token"              VARCHAR(255),
-    "input_id"           VARCHAR(255),
     "workflow_id"        VARCHAR(255),
     "status"             VARCHAR(10),
     "elapsed_time"       VARCHAR(20),

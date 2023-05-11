@@ -372,7 +372,7 @@ class UserTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['customers']), 1)
+        self.assertEqual(len(response.json['customers']), 2)
 
     def test_successful_get_customers_list_search(self):
         self.create_customer()

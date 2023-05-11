@@ -65,7 +65,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             {
                 id: 'input_folder',
                 show: true,
-                label: this.translate.instant('INPUT.input_folder'),
+                label: this.translate.instant('WORKFLOW.input_folder'),
                 type: 'text',
                 control: new FormControl(),
                 placeholder: "/var/share/input",
@@ -74,7 +74,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             {
                 id: 'customer_id',
                 show: true,
-                label: this.translate.instant('INPUT.associated_customer'),
+                label: this.translate.instant('WORKFLOW.associated_customer'),
                 type: 'select',
                 control: new FormControl(),
                 required: false,
@@ -82,11 +82,11 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             {
                 id: 'ai_model_id',
                 show: true,
-                label: this.translate.instant('INPUT.ai_model_id'),
+                label: this.translate.instant('WORKFLOW.ai_model_id'),
                 type: 'select',
                 control: new FormControl(),
                 required: false,
-                hint: this.translate.instant('INPUT.ai_model_id_hint')
+                hint: this.translate.instant('WORKFLOW.ai_model_id_hint')
             },
             {
                 id: 'apply_process',
@@ -161,7 +161,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
         separation: [
             {
                 id: 'splitter_method_id',
-                label: this.translate.instant('INPUT.splitter_method'),
+                label: this.translate.instant('WORKFLOW.splitter_method'),
                 type: 'select',
                 control: new FormControl(),
                 required: true,
@@ -169,14 +169,14 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             },
             {
                 id: 'separate_by_document_number_value',
-                label: this.translate.instant('INPUT.separate_by_document_number_value'),
+                label: this.translate.instant('WORKFLOW.separate_by_document_number_value'),
                 type: 'number',
                 control: new FormControl(2),
                 required: false
             },
             {
                 id: 'remove_blank_pages',
-                label: this.translate.instant('INPUT.remove_blank_pages'),
+                label: this.translate.instant('WORKFLOW.remove_blank_pages'),
                 type: 'boolean',
                 control: new FormControl()
             }
@@ -279,7 +279,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                         element.values.forEach((elem: any) => {
                             elem.label = elem.model_label;
                         });
-                        element.values = [{'id': 0, 'label': this.translate.instant('INPUT.no_ai_model_associated')}].concat(element.values);
+                        element.values = [{'id': 0, 'label': this.translate.instant('WORKFLOW.no_ai_model_associated')}].concat(element.values);
                         if (aiModel.models.length === 1) {
                             element.control.setValue(aiModel.models[0].id);
                         }

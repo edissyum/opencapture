@@ -30,8 +30,8 @@
                 <mat-cell *matCellDef="let element"> {{ element.label }} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="input_folder">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'INPUT.input_folder_header' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.input['input_folder'] }} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'WORKFLOW.input_folder_header' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element?.input['input_folder'] }} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="actions">
                 <mat-header-cell *matHeaderCellDef> </mat-header-cell>

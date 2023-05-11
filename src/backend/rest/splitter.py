@@ -184,7 +184,7 @@ def validate():
 @bp.route('splitter/splitMethods', methods=['GET'])
 @auth.token_required
 def get_split_methods():
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_input_splitter | update_input_splitter']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_workflow_splitter | update_workflow_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/lockBatch'}), 403
 
     split_methods, status = splitter.get_split_methods()

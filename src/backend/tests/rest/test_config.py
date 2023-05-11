@@ -35,7 +35,7 @@ class ConfigTest(unittest.TestCase):
         response = self.app.get(f'/{CUSTOM_ID}/ws/config/readConfig',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.assertEqual(dict, type(response.json['config']))
+        self.assertEqual(dict, type(response.json['config'][0]))
 
     def test_successful_get_configurations_full(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/config/getConfigurations',
