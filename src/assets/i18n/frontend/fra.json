@@ -1010,7 +1010,7 @@
 		"please_select_workflow": "Choisissez un workflow avant de procéder au téléversement",
 		"purchase_invoice": "Facture d'achat",
 		"sale_invoice": "Facture de vente",
-		"upload_file": "Téléverser le fichier",
+		"upload_file": "Téléverser le(s) fichier(s)",
 		"upload_success": "Fichier(s) téléversé(s) avec succès"
 	},
 	"USER-QUOTA": {

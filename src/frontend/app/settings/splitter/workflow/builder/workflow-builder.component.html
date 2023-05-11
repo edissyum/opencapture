@@ -32,7 +32,7 @@
             </mat-form-field>
         </div>
         <mat-stepper orientation="horizontal" class="text-center">
-            <mat-step [aria-labelledby]="!this.creationMode ? 'disabled_step' : ''" [label]="'WORKFLOW.input' | translate">
+            <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.input' | translate">
                 <div class="mt-2 grid grid-cols-2 gap-6">
                     <ng-container *ngFor="let field of this.fields['input']">
                         <div *ngIf="field.type === 'boolean'">
@@ -82,13 +82,14 @@
                     </button>
                 </div>
             </mat-step>
-            <mat-step [aria-labelledby]="!this.creationMode ? 'disabled_step' : ''" *ngIf="this.processAllowed" [label]="'WORKFLOW.process' | translate">
+            <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.process' | translate">
                 <app-hint [message]="'WORKFLOW.process_hint' | translate"></app-hint>
 
                 <div class="mt-6 grid grid-cols-2 gap-6" [class.grid-cols-3]="this.useInterface">
                     <ng-container *ngFor="let field of this.fields['process']">
                         <div *ngIf="field.type === 'boolean' && field.show">
-                            <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2" (change)="field.id === 'use_interface' ? setUseInterface($event.checked) : ''">
+                            <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2"
+                                              (change)="field.id === 'use_interface' ? setUseInterface($event.checked) : field.id === 'form_id' ? setUsedOutputs(): ''">
                                 <span class="justify-center">{{ field.label | translate }}</span>
                                 <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-6 cursor-help" [matTooltip]="field.hint | translate">
                                     <i class="fa-solid fa-circle-question text-md"></i>
@@ -134,7 +135,7 @@
                     </button>
                 </span>
             </mat-step>
-            <mat-step [aria-labelledby]="!this.creationMode ? 'disabled_step' : ''" [label]="'WORKFLOW.separation' | translate">
+            <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.separation' | translate">
                 <div class="mt-2 grid grid-cols-3 gap-6">
                     <ng-container *ngFor="let field of this.fields['separation']">
                         <mat-form-field *ngIf="field.type === 'text' || field.type === 'number' && (field.id !== 'separate_by_document_number_value' || (field.id === 'separate_by_document_number_value' && this.separationMode === 'separate_by_document_number'))">
@@ -171,12 +172,12 @@
                     {{ 'WORKFLOW.next' | translate }}
                 </button>
             </mat-step>
-            <mat-step [aria-labelledby]="!this.creationMode ? 'disabled_step' : ''" [label]="'WORKFLOW.output' | translate" *ngIf="this.outputAllowed">
+            <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.output' | translate">
                 <div class="mt-2 w-full">
                     <ng-container *ngFor="let field of this.fields['output']">
                         <mat-form-field *ngIf="field.type === 'select'" class="w-full">
                             <mat-label>{{ field.label | translate }}</mat-label>
-                            <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple">
+                            <mat-select [disabled]="this.useInterface" [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple">
                                 <mat-option *ngFor="let option of field.values" [value]="option.id">
                                     {{ option.label | translate }}
                                 </mat-option>

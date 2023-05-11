@@ -85,9 +85,6 @@ import { CreatePositionsMaskComponent } from './settings/verifier/positions-mask
 import { VerifierStatusUpdateComponent } from './settings/verifier/update-status/update-status.component';
 import { HistoryComponent } from './history/history.component';
 import { SeparatorComponent } from './settings/splitter/separator/separator.component';
-import { SplitterCreateInputComponent } from './settings/splitter/inputs/create/create-input.component';
-import { SplitterUpdateInputComponent } from './settings/splitter/inputs/update/update-input.component';
-import { SplitterInputListComponent } from './settings/splitter/inputs/list/input-list.component';
 import { SplitterUpdateOutputComponent } from './settings/splitter/output/update/update-output.component';
 import { SplitterCreateOutputComponent } from './settings/splitter/output/create/create-output.component';
 import { SplitterOutputListComponent } from './settings/splitter/output/list/output-list.component';
@@ -171,9 +168,6 @@ export function createTranslateLoader(http: HttpClient) {
         FilterPipe,
         SplitterFormListComponent,
         SplitterFormBuilderComponent,
-        SplitterCreateInputComponent,
-        SplitterUpdateInputComponent,
-        SplitterInputListComponent,
         SplitterUpdateOutputComponent,
         SplitterCreateOutputComponent,
         SplitterOutputListComponent,
