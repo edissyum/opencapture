@@ -377,7 +377,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
         this.separationMode = value;
     }
 
-    setUsedOutputs(): void {
+    setUsedOutputs() {
         if (this.useInterface) {
             this.fields['output'].forEach((element: any) => {
                 if (element.id === 'outputs_id') {
