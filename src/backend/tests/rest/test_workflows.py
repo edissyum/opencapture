@@ -89,7 +89,7 @@ class WorkflowsTest(unittest.TestCase):
 
     def test_successful_update_workflow(self):
         payload = {
-            "label": "Updated test input",
+            "label": "Updated test workflow",
             "input": {
                 "ai_model_id": None,
                 "customer_id": None,
@@ -102,7 +102,7 @@ class WorkflowsTest(unittest.TestCase):
                                 json={"args": payload},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT * FROM workflows WHERE label = 'Updated test input'")
+        self.db.execute("SELECT * FROM workflows WHERE label = 'Updated test workflow'")
         new_workflow = self.db.fetchall()
         self.assertEqual(1, len(new_workflow))
 
@@ -118,6 +118,6 @@ class WorkflowsTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.db.execute(
-            "UPDATE workflows SET label = 'Workflow par défaut' WHERE label = 'Updated test input'")
+            "UPDATE workflows SET label = 'Workflow par défaut' WHERE label = 'Updated test workflow'")
         self.db.execute("DELETE FROM workflows WHERE label = 'Test Workflow'")
         self.db.execute("DELETE FROM workflows WHERE label ILIKE '%Copie de%' OR label ILIKE '%Copy of%'")
