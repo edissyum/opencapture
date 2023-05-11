@@ -386,7 +386,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                             this.form_outputs.forEach((form: any) => {
                                 if (form.form_id === elem.control.value) {
                                     element.control.setValue(form.outputs);
-                                    element.control.disable();
                                 }
                             });
                         }
@@ -398,7 +397,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             this.fields['output'].forEach((element: any) => {
                 if (element.id === 'outputs_id') {
                     element.control.setValue(this.workflow_outputs);
-                    element.control.enable();
                 }
             });
         }
