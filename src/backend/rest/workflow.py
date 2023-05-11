@@ -127,7 +127,7 @@ def update_workflow(module, workflow_id):
 @bp.route('workflows/<string:module>/createScriptAndWatcher', methods=['POST'])
 @auth.token_required
 def create_script_and_watcher(module):
-    list_priv = ['settings', 'add_input | update_input'] if module == 'verifier' else ['settings', 'add_input_splitter | update_input_splitter']
+    list_priv = ['settings', 'add_workflow | update_workflow'] if module == 'verifier' else ['settings', 'add_workflow_splitter | update_workflow_splitter']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/workflows/{module}/createScriptAndWatcher'}), 403

@@ -854,7 +854,7 @@ msgstr "The label short already exists"
 
 #: src/backend/controllers/workflow.py:173
 msgid "INPUT_FOLDER_ALREADY_EXISTS"
-msgstr "The document capture path is already set in another input"
+msgstr "The document capture path is already set in another workflow"
 
 #: src/backend/controllers/workflow.py:199
 #: src/backend/controllers/workflow.py:222
