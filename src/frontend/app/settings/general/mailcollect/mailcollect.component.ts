@@ -119,10 +119,10 @@ export class MailCollectComponent implements OnInit {
             required: false,
         },
         {
-            id: 'splitter_technical_input_id',
+            id: 'splitter_technical_workflow_id',
             unit: 'splitter',
             control: new FormControl(''),
-            label: marker('MAILCOLLECT.splitter_technical_input_id'),
+            label: marker('MAILCOLLECT.splitter_technical_workflow_id'),
             type: 'autocomplete',
             required: false,
         },
@@ -179,7 +179,7 @@ export class MailCollectComponent implements OnInit {
             id: 'verifier_customer_id',
             unit: 'verifier',
             control: new FormControl(),
-            label: marker('INPUT.associated_customer'),
+            label: marker('WORKFLOW.associated_customer'),
             type: 'autocomplete',
             required: false,
         },
@@ -274,7 +274,7 @@ export class MailCollectComponent implements OnInit {
             tap((data: any) => {
                 this.allSplitterWorkflows = data.workflows;
                 this.defaultProcessData.forEach((element: any) => {
-                    if (element.id === 'splitter_technical_input_id') {
+                    if (element.id === 'splitter_technical_workflow_id') {
                         element.values = element.control.valueChanges.pipe(
                             startWith(''),
                             map(option => option ? this._filter(option, this.allSplitterWorkflows) : this.allSplitterWorkflows)
@@ -373,7 +373,7 @@ export class MailCollectComponent implements OnInit {
                                             value = this.allForms[i];
                                         }
                                     }
-                                } else if (element === 'splitter_technical_input_id') {
+                                } else if (element === 'splitter_technical_workflow_id') {
                                     for (let i = 0; i < this.allSplitterWorkflows.length; i++) {
                                         if (parseInt(this.allSplitterWorkflows[i].id) === parseInt(process[element])) {
                                             value = this.allSplitterWorkflows[i];
@@ -463,10 +463,10 @@ export class MailCollectComponent implements OnInit {
                 required: false,
             },
             {
-                id: 'splitter_technical_input_id',
+                id: 'splitter_technical_workflow_id',
                 unit: 'splitter',
                 control: new FormControl(''),
-                label: marker('MAILCOLLECT.splitter_technical_input_id'),
+                label: marker('MAILCOLLECT.splitter_technical_workflow_id'),
                 type: 'autocomplete',
                 required: false,
             },
@@ -523,7 +523,7 @@ export class MailCollectComponent implements OnInit {
                 id: 'verifier_customer_id',
                 unit: 'verifier',
                 control: new FormControl(),
-                label: marker('INPUT.associated_customer'),
+                label: marker('WORKFLOW.associated_customer'),
                 type: 'autocomplete',
                 required: false,
             },
@@ -538,7 +538,7 @@ export class MailCollectComponent implements OnInit {
         ];
 
         this.defaultProcessData.forEach((element: any) => {
-            if (element.id === 'splitter_technical_input_id') {
+            if (element.id === 'splitter_technical_workflow_id') {
                 element.values = element.control.valueChanges.pipe(
                     startWith(''),
                     map(option => option ? this._filter(option, this.allSplitterWorkflows) : this.allSplitterWorkflows)
@@ -585,7 +585,7 @@ export class MailCollectComponent implements OnInit {
             const data: any = {};
             process.forEach((element: any) => {
                 if (element.id !== 'verifier_customer_id' && element.id !== 'verifier_form_id' &&
-                    element.id !== 'splitter_technical_input_id' && element.id !== 'folder_to_crawl' &&
+                    element.id !== 'splitter_technical_workflow_id' && element.id !== 'folder_to_crawl' &&
                     element.id !== 'folder_destination' && element.id !== 'folder_trash') {
                     data[element.id] = element.control.value;
                 } else {
@@ -763,7 +763,7 @@ export class MailCollectComponent implements OnInit {
             const data: any = {};
             process.forEach((element: any) => {
                 if (element.id !== 'verifier_customer_id' && element.id !== 'verifier_form_id' &&
-                    element.id !== 'splitter_technical_input_id' && element.id !== 'folder_to_crawl' &&
+                    element.id !== 'splitter_technical_workflow_id' && element.id !== 'folder_to_crawl' &&
                     element.id !== 'folder_destination' && element.id !== 'folder_trash') {
                     data[element.id] = element.control.value;
                 } else {

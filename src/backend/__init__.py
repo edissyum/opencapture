@@ -25,7 +25,7 @@ from src.backend.main import create_classes_from_custom_id
 from flask import request, g as current_context, Flask, session
 from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_config_from_custom_id
 from .import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
-    forms, status, accounts, outputs, mem, inputs, positions_masks, history, doctypes, tasks_watcher, mailcollect, \
+    forms, status, accounts, outputs, mem, positions_masks, history, doctypes, tasks_watcher, mailcollect, \
     artificial_intelligence, smtp, monitoring, workflow
 
 
@@ -96,7 +96,6 @@ app.register_blueprint(user.bp)
 app.register_blueprint(smtp.bp)
 app.register_blueprint(roles.bp)
 app.register_blueprint(forms.bp)
-app.register_blueprint(inputs.bp)
 app.register_blueprint(locale.bp)
 app.register_blueprint(status.bp)
 app.register_blueprint(config.bp)

@@ -111,7 +111,7 @@ for process in processes:
     folder_to_crawl = config_mail['folder_to_crawl']
     folder_destination = config_mail['folder_destination']
     isSplitter = config_mail['is_splitter']
-    splitterInputId = config_mail['splitter_technical_input_id']
+    splitterWorkflowId = config_mail['splitter_technical_workflow_id']
     verifierFormId = config_mail['verifier_form_id']
     verifierCustomerId = config_mail['verifier_customer_id']
 
@@ -191,7 +191,7 @@ for process in processes:
                                     'batch_path': batch_path,
                                     'custom_id': args['custom_id'],
                                     'file': attachment['file'],
-                                    'input_id': splitterInputId,
+                                    'workflow_id': splitterWorkflowId,
                                     'config_mail': args['config_mail'],
                                     'log': batch_path + '/' + date_batch + '.log',
                                     'nb_of_attachments': str(len(ret['attachments'])),

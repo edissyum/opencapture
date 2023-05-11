@@ -50,14 +50,6 @@
                     </span>
                 </div>
                 <div class="grid my-10 mx-10">
-                    <span *ngIf="this.processData['input_id']">
-                        <div class="text-gray-400 text-base text-center">
-                            {{ 'MONITORING.input_associated' | translate }}
-                        </div>
-                        <div class="text-center text-xl">
-                            {{ this.inputLabel }}
-                        </div>
-                    </span>
                     <span *ngIf="this.processData['workflow_id']">
                         <div class="text-gray-400 text-base text-center">
                             {{ 'MONITORING.workflow_associated' | translate }}

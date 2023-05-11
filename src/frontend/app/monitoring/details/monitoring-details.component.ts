@@ -93,19 +93,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
                         this.processData.time = 'older';
                     }
 
-                    if (this.processData.input_id && this.inputLabel === '') {
-                        this.http.get(environment['url'] + '/ws/inputs/' + this.processData.module + '/getByInputId/' + this.processData.input_id, {headers: this.authService.headers}).pipe(
-                            tap((data: any) => {
-                                this.inputLabel = data.input_label;
-                            }),
-                            catchError((err: any) => {
-                                console.debug(err);
-                                this.notify.handleErrors(err);
-                                this.router.navigate(['/monitoring']).then();
-                                return of(false);
-                            })
-                        ).subscribe();
-                    } else if (this.processData.workflow_id && this.workflowLabel === '') {
+                    if (this.processData.workflow_id && this.workflowLabel === '') {
                         this.http.get(environment['url'] + '/ws/workflows/' + this.processData.module + '/getByWorkflowId/' + this.processData.workflow_id, {headers: this.authService.headers}).pipe(
                             tap((data: any) => {
                                 this.workflowLabel = data.label;

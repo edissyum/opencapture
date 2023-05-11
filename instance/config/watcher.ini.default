@@ -11,15 +11,15 @@ working_directory=/
 ; Job Setups
 ; ----------------------
 
-[verifier_default_input]
+[verifier_default_workflow]
 watch=/var/share/entrant/verifier/
 events=close,move
 include_extensions=pdf,PDF
-command=/var/www/html/opencapture/bin/scripts/verifier_inputs/default_input.sh $filename
+command=/var/www/html/opencapture/bin/scripts/verifier_workflows/default_workflow.sh $filename
 
-[splitter_default_input]
+[splitter_default_workflow]
 watch=/var/share/entrant/splitter/
 events=close,move
 include_extensions=pdf,PDF
-command=/var/www/html/opencapture/bin/scripts/splitter_inputs/default_input.sh $filename
+command=/var/www/html/opencapture/bin/scripts/splitter_workflows/default_workflow.sh $filename
 

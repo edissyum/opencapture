@@ -204,10 +204,15 @@ def update_workflow(workflow_id, data):
     _, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
 
     if error is None:
-        data['input'] = json.dumps(data['input'])
-        data['process'] = json.dumps(data['process'])
-        data['separation'] = json.dumps(data['separation'])
-        data['output'] = json.dumps(data['output'])
+        if 'input' in data:
+            data['input'] = json.dumps(data['input'])
+        if 'process' in data:
+            data['process'] = json.dumps(data['process'])
+        if 'separation' in data:
+            data['separation'] = json.dumps(data['separation'])
+        if 'output' in data:
+            data['output'] = json.dumps(data['output'])
+
         _, error = workflow.update_workflow({'set': data, 'workflow_id': workflow_id})
 
         if error is None:
@@ -326,3 +331,8 @@ def create_script_and_watcher(args):
             "message": folder_script
         }
         return response, 400
+
+
+def get_workflow_by_form_id(form_id):
+    workflow_info, _ = workflow.get_workflow_by_form_id({'form_id': form_id})
+    return workflow_info, 200
