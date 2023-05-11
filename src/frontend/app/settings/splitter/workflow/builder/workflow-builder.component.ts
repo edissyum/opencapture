@@ -44,8 +44,6 @@ import { HistoryService } from "../../../../../services/history.service";
 export class WorkflowBuilderSplitterComponent implements OnInit {
     loading         : boolean       = true;
     creationMode    : boolean       = true;
-    processAllowed  : boolean       = false;
-    outputAllowed   : boolean       = true;
     useInterface    : boolean       = false;
     separationMode  : string        = 'no_sep';
     workflowId      : any;
@@ -58,6 +56,10 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
     oldFolder       : string        = '';
     idControl       : FormControl   = new FormControl('', Validators.required);
     nameControl     : FormControl   = new FormControl('', Validators.required);
+
+    form_outputs     : any          = [];
+    workflow_outputs : any          = [];
+
     fields          : any           = {
         input : [
             {
@@ -233,6 +235,9 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                             if (field.id === 'input_folder') {
                                 this.oldFolder = value;
                             }
+                            if (field.id === 'outputs_id') {
+                                this.workflow_outputs = value;
+                            }
                             field.control.setValue(value);
                         });
                     });
@@ -292,6 +297,12 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/forms/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.fields['process'].forEach((element: any) => {
+                    data.forms.forEach((form: any) => {
+                        this.form_outputs.push({
+                            'form_id': form.id,
+                            'outputs': form.outputs.map(Number),
+                        })
+                    });
                     if (element.id === 'form_id') {
                         element.values = data.forms;
                         if (data.forms.length === 1) {
@@ -299,6 +310,21 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                         }
                     }
                 });
+                if (this.useInterface) {
+                    this.fields['process'].forEach((element: any) => {
+                        if (element.id === 'form_id' && element.control.value) {
+                            this.form_outputs.forEach((form: any) => {
+                                if (form.form_id === element.control.value) {
+                                    this.fields['output'].forEach((_element: any) => {
+                                        if (_element.id === 'outputs_id') {
+                                            _element.control.setValue(form.outputs.map(Number));
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -345,34 +371,41 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-
-        this.fields['input'].forEach((element: any) => {
-            if (element.id === 'apply_process') {
-                element.control.valueChanges.subscribe((value: any) => {
-                    this.processAllowed = value;
-                    this.fields['process'].forEach((elem: any) => {
-                        if (elem.id === 'use_interface') {
-                            if (value === false) {
-                                this.outputAllowed = true;
-                            }
-                            if (value && elem.control.value) {
-                                this.outputAllowed = false;
-                            }
-                        }
-                    });
-
-                });
-            }
-        });
     }
 
     setSeparationMode(value: any) {
         this.separationMode = value;
     }
 
+    setUsedOutputs(): void {
+        if (this.useInterface) {
+            this.fields['output'].forEach((element: any) => {
+                if (element.id === 'outputs_id') {
+                    this.fields['process'].forEach((elem: any) => {
+                        if (elem.id === 'form_id' && elem.control.value) {
+                            this.form_outputs.forEach((form: any) => {
+                                if (form.form_id === elem.control.value) {
+                                    element.control.setValue(form.outputs);
+                                    element.control.disable();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            this.fields['output'].forEach((element: any) => {
+                if (element.id === 'outputs_id') {
+                    element.control.setValue(this.workflow_outputs);
+                    element.control.enable();
+                }
+            });
+        }
+    }
+
     setUseInterface(value: any) {
         this.useInterface = value;
-        this.outputAllowed = !value;
         this.fields['process'].forEach((element: any) => {
             if (element.id === 'form_id' || element.id === 'allow_automatic_validation') {
                 element.show = this.useInterface;
@@ -381,6 +414,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 }
             }
         });
+        this.setUsedOutputs();
     }
 
     checkFolder(field: any) {
