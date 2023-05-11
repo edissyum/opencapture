@@ -232,7 +232,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
                 if find_supplier:
                     supplier = [find_supplier[0]['vat_number'], (('', ''), ('', '')), find_supplier[0], False, column]
-                    log.info('Supplier found : ' + supplier[2]['name'] + ' using ' + column.upper() + ' : ' + value)
+                    log.info('Supplier found using given informations in upload : ' + supplier[2]['name'] + ' using ' + column.upper() + ' : ' + value)
                 else:
                     if column in ['siret', 'siren', 'vat_number']:
                         token_insee, _ = verifier.get_token_insee()
@@ -293,7 +293,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                     supplier_args['address_id'] = address_id['id']
                                 res, status = accounts.create_supplier(supplier_args)
                                 if status == 200:
-                                    find_supplier = {
+                                    data = {
                                         'supplier_id': res['id'],
                                         'vat_number': supplier_args['vat_number'],
                                         'siren': supplier_args['siren'],
@@ -309,7 +309,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                         'skip_auto_validate': False,
                                         'document_lang': ''
                                     }
-                                    supplier = [find_supplier['vat_number'], (('', ''), ('', '')), find_supplier, False, column]
+                                    supplier = [data['vat_number'], (('', ''), ('', '')), data, False, column]
+                                    log.info('Supplier created using INSEE database : ' + supplier[2]['name'] + ' with ' + column.upper() + ' : ' + value)
 
     # Find supplier in document if not send using upload rest
     if not supplier or not supplier[0] or not supplier[2]:
