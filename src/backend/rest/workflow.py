@@ -143,7 +143,7 @@ def create_script_and_watcher(module):
 def get_workflows_by_form_id(module, form_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_input | update_input']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/inputs/{module}/getByFormId/{form_id}'}), 403
+                        'message': f'/workflows/{module}/getByFormId/{form_id}'}), 403
 
     _workflow = workflow.get_workflow_by_form_id(form_id)
     return make_response(jsonify(_workflow[0])), _workflow[1]
