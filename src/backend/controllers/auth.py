@@ -349,7 +349,11 @@ def token_required(view):
             if token:
                 process, _ = monitoring.get_process_by_token(token['sub'], '')
                 allowed_path = [
+                    'export_mem',
+                    'export_xml',
+                    'export_pdf',
                     'updatePage',
+                    'export_facturx',
                     'updatePosition',
                     'verifier/getThumb',
                     'verifier/ocrOnFly',
