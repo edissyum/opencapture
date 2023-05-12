@@ -94,6 +94,7 @@ export class HomeComponent implements OnInit {
             this.http.post(environment['url'] + '/ws/auth/checkToken', {'token': token}).pipe(
                 catchError((err: any) => {
                     console.debug(err);
+                    this.authService.logout();
                     this.notify.handleErrors(err);
                     return of(false);
                 })
