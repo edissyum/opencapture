@@ -542,11 +542,8 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
     return Response(content, mimetype=mime_type)
 
 
-def get_token_insee(custom_id=False):
-    if custom_id:
-        _vars = create_classes_from_custom_id(custom_id)
-        config = _vars[1]
-    elif 'config' in current_context:
+def get_token_insee():
+    if 'config' in current_context:
         config = current_context.config
     else:
         custom_id = retrieve_custom_from_url(request)
