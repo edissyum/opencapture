@@ -381,7 +381,7 @@ su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
         Order deny,allow
         Allow from all
         Require all granted
-        <Files ~ \"(.ini|secret_key|.ods|((?<!(fra|eng)).json))\">
+        <Files ~ \"(.ini|secret_key|.ods\">
             Require all denied
         </Files>
     </Directory>
