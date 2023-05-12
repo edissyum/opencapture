@@ -31,12 +31,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.file is None and os.path.isfile(args.file):
-        print("Please provide an existing the users CSV file. "
+        log.info("Please provide an existing the users CSV file. "
               "\n ex : python3 load_users.py --file users.csv --custom-id edissyum")
         exit(1)
 
     if args.custom_id is None:
-        print("Please provide custom id. "
+        log.info("Please provide custom id. "
               "\n ex : python3 load_users.py --file users.csv --custom-id edissyum")
         exit(1)
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
         # Iterate over the remaining rows
         for row in reader:
-            print("User: " + row[0])
+            log.info("User: " + row[0])
             user = {
                 'username': row[0],
                 'lastname': row[1],
@@ -67,14 +67,13 @@ if __name__ == '__main__':
             }
 
             users_res = database.select({
-                'table': 'users',
-                'columns': ['id'],
-                'where': {
-                    'username': user['username']
-                }
+                'select': ['id'],
+                'table': ['users'],
+                'where': ['username = %s'],
+                'data': [user['username']]
             })
             if users_res:
-                print(f"User {user['username']} already exists.")
+                log.info(f"User {user['username']} already exists.")
                 continue
 
             user_id = database.insert({
@@ -90,16 +89,15 @@ if __name__ == '__main__':
             })
 
             user_customers = database.select({
-                'table': 'accounts_customer',
-                'columns': ['id'],
-                'where': {
-                    'name': user['customer_name'],
-                }
+                'select': ['id'],
+                'table': ['accounts_customer'],
+                'where': ['name = %s'],
+                'data': [user['customer_name']]
             })
             if user_customers:
                 user['customer_id'] = user_customers[0]['id']
             else:
-                print(f"Customer {user['customer_name']} not found. creating customer {user['username']}.")
+                log.info(f"Customer {user['customer_name']} not found. creating customer {user['username']}.")
                 user['customer_id'] = user['customer_id'] = database.insert({
                     'table': 'accounts_customer',
                     'columns': {
@@ -123,7 +121,7 @@ if __name__ == '__main__':
                     'forms_id': json.dumps({"data": str([1, 2])})
                 }
             })
-            print(f"User {user['username']} created.")
+            log.info(f"User {user['username']} created.")
 
     # Commit and close database connection
     database.conn.commit()
