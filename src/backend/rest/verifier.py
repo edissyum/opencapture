@@ -163,9 +163,10 @@ def update_document_data(document_id):
 @bp.route('verifier/documents/<int:document_id>/export_xml', methods=['POST'])
 @auth.token_required
 def export_xml(document_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/verifier/documents/{document_id}/export_xml'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/documents/{document_id}/export_xml'}), 403
 
     data = request.json['args']
     res = verifier.export_xml(document_id, data)
@@ -175,9 +176,10 @@ def export_xml(document_id):
 @bp.route('verifier/documents/<int:document_id>/export_pdf', methods=['POST'])
 @auth.token_required
 def export_pdf(document_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/verifier/documents/{document_id}/export_pdf'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/documents/{document_id}/export_pdf'}), 403
 
     data = request.json['args']
     res = verifier.export_pdf(document_id, data)
@@ -187,9 +189,10 @@ def export_pdf(document_id):
 @bp.route('verifier/documents/<int:document_id>/export_facturx', methods=['POST'])
 @auth.token_required
 def export_facturx(document_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/verifier/documents/{document_id}/export_facturx'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/documents/{document_id}/export_facturx'}), 403
 
     data = request.json['args']
     res = verifier.export_facturx(document_id, data)
@@ -199,9 +202,10 @@ def export_facturx(document_id):
 @bp.route('verifier/documents/<int:document_id>/export_mem', methods=['POST'])
 @auth.token_required
 def export_mem(document_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/verifier/documents/{document_id}/export_mem'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/documents/{document_id}/export_mem'}), 403
 
     data = request.json['args']
     res = verifier.export_mem(document_id, data)

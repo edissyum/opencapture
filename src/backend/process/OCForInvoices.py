@@ -273,9 +273,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                 if status == 200:
                                     insee = res['etablissement']
                                     address_args = {
-                                        'address1': insee['adresseEtablissement']['numeroVoieEtablissement'] + ' ' +
-                                                    insee['adresseEtablissement']['typeVoieEtablissement'] + ' ' +
-                                                    insee['adresseEtablissement']['libelleVoieEtablissement'],
+                                        'address1': str(insee['adresseEtablissement']['numeroVoieEtablissement']) + ' ' +
+                                                    str(insee['adresseEtablissement']['typeVoieEtablissement']) + ' ' +
+                                                    str(insee['adresseEtablissement']['libelleVoieEtablissement']),
                                         'postal_code': insee['adresseEtablissement']['codePostalEtablissement'],
                                         'city': insee['adresseEtablissement']['libelleCommuneEtablissement']
                                     }
@@ -291,6 +291,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                 if address_args:
                                     address_id, status = accounts.create_address(address_args)
                                     supplier_args['address_id'] = address_id['id']
+
                                 res, status = accounts.create_supplier(supplier_args)
                                 if status == 200:
                                     data = {
