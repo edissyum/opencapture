@@ -176,7 +176,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     datas = {}
     pages = {}
     positions = {}
-
     nb_pages = files.get_pages(docservers, file)
     splitted_file = os.path.basename(file).split('_')
     if splitted_file[0] == 'SPLITTER':
@@ -235,7 +234,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     log.info('Supplier found using given informations in upload : ' + supplier[2]['name'] + ' using ' + column.upper() + ' : ' + value)
                 else:
                     if column in ['siret', 'siren', 'vat_number']:
-                        token_insee, _ = verifier.get_token_insee()
+                        token_insee, _ = verifier.get_token_insee(args['custom_id'])
                         if token_insee or column == 'vat_number':
                             status = 400
                             address_args = {}
