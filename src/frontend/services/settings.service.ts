@@ -329,14 +329,14 @@ export class SettingsService {
                         "id"        : "splitter_add_form",
                         "label"     : this.translate.instant("SETTINGS.form_builder"),
                         "route"     : "/settings/splitter/forms/builder/new",
-                        "privilege" : "add_form",
+                        "privilege" : "add_form_splitter",
                         "icon"      : "fa-solid fa-tools"
                     },
                     {
                         "id"                : "splitter_update_form",
                         "label"             : this.translate.instant("SETTINGS.form_update"),
                         "route"             : "/settings/splitter/forms/builder/edit/",
-                        "privilege"         : "update_form",
+                        "privilege"         : "update_form_splitter",
                         "icon"              : "fa-solid fa-hammer",
                         "showOnlyIfActive"  : true
                     }
