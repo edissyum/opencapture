@@ -43,8 +43,8 @@ if __name__ == '__main__':
         exit(1)
 
     if not retrieve_config_from_custom_id(args.custom_id):
-        sys.exit('Custom config file couldn\'t be found')
-
+        log.info('Custom config file couldn\'t be found')
+        exit(1)
 
     with open(args.file, 'r') as f:
         # Create a reader object
