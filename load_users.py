@@ -16,6 +16,7 @@
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
 import os
+import sys
 import csv
 import json
 import argparse
@@ -30,18 +31,17 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.custom_id is None:
-        exit("Please provide custom id. "
+        sys.exit("Please provide custom id. "
                  "\n ex : python3 load_users.py --file users.csv --custom-id edissyum")
+
+    if not retrieve_config_from_custom_id(args.custom_id):
+        sys.exit('Custom config file couldn\'t be found')
 
     database, config, _, _, _, log, _, _, _, _, _, _ = create_classes_from_custom_id(args.custom_id)
 
     if args.file is None and os.path.isfile(args.file):
         log.info("Please provide an existing the users CSV file. "
               "\n ex : python3 load_users.py --file users.csv --custom-id edissyum")
-        exit(1)
-
-    if not retrieve_config_from_custom_id(args.custom_id):
-        log.info('Custom config file couldn\'t be found')
         exit(1)
 
     with open(args.file, 'r') as f:
