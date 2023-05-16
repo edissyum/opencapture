@@ -50,7 +50,7 @@
                         <mat-form-field *ngIf="field.type === 'text' && field.show">
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <input matInput [formControl]="field['control']" [required]="field['required']"
-                                   [type]="field.type" [placeholder]="field.placeholder" (focusout)="field.id === 'input_folder' ? checkFolder(field) : '' ">
+                                   [type]="field.type" [placeholder]="field.placeholder">
                             <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
                                 <i class="fa-solid fa-circle-question text-md"></i>
                             </span>
