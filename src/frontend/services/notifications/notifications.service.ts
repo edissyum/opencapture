@@ -42,7 +42,7 @@ export class NotificationService {
 
     success(message: string, _duration?: number) {
         const duration = _duration ? this.getMessageDuration(message, _duration) :
-            this.getMessageDuration(message, 30000000);
+            this.getMessageDuration(message, 3000);
         this.toastr.success(message, '', {timeOut: duration});
     }
 
