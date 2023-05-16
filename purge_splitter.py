@@ -24,22 +24,53 @@ from datetime import datetime, timedelta
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_config_from_custom_id
 
-purge_status = 'PURGED'
-target_status = 'END'
-conservation_days = 7
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Purge splitter batches.')
     parser.add_argument("-c", '--custom-id', help='Custom id')
+    parser.add_argument("-t", '--target-status', help='Status to purge')
+    parser.add_argument("-p", '--purge-status', help='Status to set after purge')
+    parser.add_argument("-d", '--conservation-days', help='Number of days to keep batches')
     args = parser.parse_args()
 
     if args.custom_id is None:
-        sys.exit("Please provide custom id. \n Ex : python3 purge_splitter.py --custom-id edissyum")
+        sys.exit("Please provide custom id."
+                 " Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
+                 "--conservation-days 7")
 
     if not retrieve_config_from_custom_id(args.custom_id):
-        sys.exit('Custom config file couldn\'t be found')
+        sys.exit('Custom config file could not be found')
 
     database, config, _, _, _, log, _, _, _, docservers, _, _ = create_classes_from_custom_id(args.custom_id)
+
+    if args.target_status is not None:
+        target_status = args.target_status
+    else:
+        log.error("Please provide target status. "
+                 "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
+                 "--conservation-days 7")
+        exit(1)
+
+    if args.purge_status is not None:
+        purge_status = args.purge_status
+    else:
+        log.error("Please provide purge status. "
+                 "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
+                 "--conservation-days 7")
+        exit(1)
+
+    if args.conservation_days is not None:
+        try:
+            conservation_days = int(args.conservation_days)
+        except ValueError:
+            log.error("Please provide a valid conservation days. "
+                     "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
+                     "--conservation-days 7")
+            exit(1)
+    else:
+        log.error("Please provide a valid conservation days. "
+                 "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
+                 "--conservation-days 7")
+        exit(1)
 
     # Calculate the date threshold for deletion (7 days ago)
     threshold_date = datetime.now() - timedelta(days=conservation_days)
