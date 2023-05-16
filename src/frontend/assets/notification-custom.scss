@@ -1,0 +1,42 @@
+.toast-container {
+    @apply pt-16;
+
+    & .ngx-toastr {
+        @apply py-8;
+        @apply flex;
+        @apply w-fit;
+        @apply flex-col;
+        @apply transition;
+        @apply text-center;
+        @apply duration-300;
+        @apply justify-center;
+    }
+
+    & .toast-error {
+        &::before {
+            @apply left-3;
+            @apply text-2xl;
+            @apply absolute;
+            content: '\f071';
+            font-family: FontAwesome, serif;
+        }
+        @apply border-[1.5px];
+        @apply border-red-500;
+        @apply bg-white #{!important};
+        @apply text-red-500 #{!important};
+    }
+
+    & .toast-success {
+        &::before {
+            @apply left-3;
+            @apply text-2xl;
+            @apply absolute;
+            content: '\f05a';
+            font-family: FontAwesome, serif;
+        }
+        @apply border-[1.5px];
+        @apply border-green-700;
+        @apply bg-white #{!important};
+        @apply text-green-700 #{!important};
+    }
+}

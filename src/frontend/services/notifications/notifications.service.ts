@@ -15,12 +15,12 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import {  ToastrService } from "ngx-toastr";
+import { environment } from  "../../app/env";
+import { TranslateService } from '@ngx-translate/core';
 import { Injectable, Component, Inject } from '@angular/core';
 import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { environment } from  "../../app/env";
 
 @Component({
     selector: 'custom-snackbar',
@@ -29,97 +29,26 @@ import { environment } from  "../../app/env";
 })
 
 export class CustomSnackbarComponent {
-    constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) {}
-
-    dismiss() {
-        this.data.close();
-    }
+    constructor(@Inject(MAT_SNACK_BAR_DATA) public data: never) {}
 }
 
 @Injectable()
 export class NotificationService {
     constructor(
         private router: Router,
-        public snackBar: MatSnackBar,
+        private toastr: ToastrService,
         public translate: TranslateService
     ) {}
 
     success(message: string, _duration?: number) {
         const duration = _duration ? this.getMessageDuration(message, _duration) :
-            this.getMessageDuration(message, 2000);
-
-        if (this.snackBar._openedSnackBarRef) {
-            if (!this.snackBar._openedSnackBarRef.instance.data.message.includes(this.translate.instant('USER.already_logged_in'))) {
-                setTimeout(() => {
-                    const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
-                        duration: duration,
-                        panelClass: ['success-snackbar', 'mt-20', 'mr-3'],
-                        verticalPosition : 'top',
-                        horizontalPosition: 'right',
-                        data: {
-                            message: message,
-                            icon: 'info-circle',
-                            close: () => {
-                                snackBar.dismiss();
-                            }
-                        }
-                    });
-                }, duration);
-            }
-        } else {
-            const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
-                duration: duration,
-                panelClass: ['success-snackbar', 'mt-20', 'mr-3'],
-                verticalPosition : 'top',
-                horizontalPosition: 'right',
-                data: {
-                    message: message,
-                    icon: 'info-circle',
-                    close: () => {
-                        snackBar.dismiss();
-                    }
-                }
-            });
-        }
+            this.getMessageDuration(message, 3000);
+        this.toastr.success(message, '', {timeOut: duration});
     }
 
-    error(message: string, url: any = null) {
+    error(message: string) {
         const duration = this.getMessageDuration(message, 5000);
-        if (this.snackBar._openedSnackBarRef) {
-            if (!this.snackBar._openedSnackBarRef.instance.data.message.includes(this.translate.instant('USER.already_logged_in'))) {
-                setTimeout(() => {
-                    const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
-                        duration: duration,
-                        panelClass: ['error-snackbar', 'mt-20', 'mr-3'],
-                        verticalPosition : 'top',
-                        horizontalPosition: 'right',
-                        data: {
-                            url: url,
-                            message: message,
-                            icon: 'exclamation-triangle',
-                            close: () => {
-                                snackBar.dismiss();
-                            }
-                        }
-                    });
-                }, duration / 3.5);
-            }
-        } else {
-            const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
-                duration: duration,
-                panelClass: ['error-snackbar', 'mt-20', 'mr-3'],
-                verticalPosition : 'top',
-                horizontalPosition: 'right',
-                data: {
-                    url: url,
-                    message: message,
-                    icon: 'exclamation-triangle',
-                    close: () => {
-                        snackBar.dismiss();
-                    }
-                }
-            });
-        }
+        this.toastr.error(message, '', {timeOut: duration});
     }
 
     handleErrors(err: any, route = '') {
@@ -142,7 +71,7 @@ export class NotificationService {
                 } else if (err.error.message === 'missing_secret_key') {
                     this.error('<b>' + this.translate.instant('ERROR.configuration_error') + '</b> : ' + this.translate.instant('ERROR.missing_secret_key'));
                 } else {
-                    this.error('<b>' + err.error.errors + '</b> : ' + err.error.message, err.url);
+                    this.error(err.url + '<br> <b>' + err.error.errors + '</b> : ' + err.error.message);
                 }
                 if (err.status === 403 || err.status === 404) {
                     this.router.navigate(['/login']).then();
@@ -151,14 +80,14 @@ export class NotificationService {
                     this.router.navigate(['/logout']).then();
                 }
             } else if (err.error.exception !== undefined)
-                this.error(err.error.exception[0].message, err.url);
+                this.error(err.url + '<br>' +  err.error.exception[0].message);
             else if (err.error.error !== undefined) {
                 if (err.error.error[0] !== undefined)
-                    this.error(err.error.error[0].message, err.url);
+                    this.error(err.url + '<br>' +  err.error.error[0].message);
                 else
-                    this.error(err.error.error.message, err.url);
+                    this.error(err.url + '<br>' +  err.error.error.message);
             } else
-                this.error(`${err.status} : ${err.statusText}`, err.url);
+                this.error(err.url + '<br>' +  `${err.status} : ${err.statusText}`);
         } else {
             this.error(err);
         }

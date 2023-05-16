@@ -34,6 +34,7 @@ class Spreadsheet:
             self.referencialSupplierArray['name'] = fp['name']
             self.referencialSupplierArray['SIRET'] = fp['SIRET']
             self.referencialSupplierArray['SIREN'] = fp['SIREN']
+            self.referencialSupplierArray['DUNS'] = fp['DUNS']
             self.referencialSupplierArray['IBAN'] = fp['IBAN']
             self.referencialSupplierArray['EMAIL'] = fp['EMAIL']
             self.referencialSupplierArray['VATNumber'] = fp['VATNumber']
