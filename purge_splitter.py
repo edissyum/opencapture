@@ -47,15 +47,12 @@ if __name__ == '__main__':
     # Format the threshold date as a string in the format 'YYYY-MM-DD HH:MM:SS'
     threshold_date_str = threshold_date.strftime('%Y-%m-%d %H:%M:%S')
 
-    # SQL query to update batches older than 7 days with status 'END' to 'PURGED'
-
     batches = database.select({
         'select': ['id', 'status', 'file_path', 'batch_folder'],
         'table': ['splitter_batches'],
         'where': ['creation_date < %s', 'status = %s'],
         'data': [threshold_date_str, 'END']
     })
-
     log.info(f"Found {len(batches)} batches older than {conservation_days} days with status {target_status}")
     for batch in batches:
         log.info(f"Updating batch {batch['id']} status from {target_status} to {purge_status}")
