@@ -120,3 +120,7 @@ if __name__ == '__main__':
                 }
             })
             log.info(f"User {user['username']} created.")
+
+    # Commit and close database connection
+    database.conn.commit()
+    database.conn.close()
