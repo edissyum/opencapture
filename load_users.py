@@ -30,6 +30,8 @@ if __name__ == '__main__':
     parser.add_argument("-c", '--custom-id', help='Custom id')
     args = parser.parse_args()
 
+    database, config, _, _, _, log, _, spreadsheet, _, _, _, _ = create_classes_from_custom_id(args.custom_id)
+
     if args.file is None and os.path.isfile(args.file):
         log.info("Please provide an existing the users CSV file. "
               "\n ex : python3 load_users.py --file users.csv --custom-id edissyum")
@@ -43,7 +45,6 @@ if __name__ == '__main__':
     if not retrieve_config_from_custom_id(args.custom_id):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, _, _, _, log, _, spreadsheet, _, _, _, _ = create_classes_from_custom_id(args.custom_id)
 
     with open(args.file, 'r') as f:
         # Create a reader object
