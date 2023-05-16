@@ -53,7 +53,7 @@ export class NotificationService {
 
     handleErrors(err: any, route = '') {
         if (err.status === 0 && err.statusText === 'Unknown Error') {
-            const message = '<b>' + this.translate.instant('ERROR.connection_failed') + '</b> : ' +
+            const message = '<b>' + this.translate.instant('ERROR.connection_failed') + '</b> <br>' +
                 this.translate.instant('ERROR.is_server_up', {server: environment['url']});
             if (this.router.url !== '/login') {
                 this.router.navigate(['/500']).then(() => {
