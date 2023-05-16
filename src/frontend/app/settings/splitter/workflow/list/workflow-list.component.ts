@@ -73,6 +73,7 @@ export class WorkflowListSplitterComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/workflows/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allWorkflows = data.workflows;
+                this.loadWorkflows();
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -80,7 +81,6 @@ export class WorkflowListSplitterComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.loadWorkflows();
     }
 
     loadWorkflows() {

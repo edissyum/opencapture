@@ -69,11 +69,13 @@ export class PositionsMaskListComponent implements OnInit {
         this.serviceSettings.init();
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/verifier/positions-mask') || lastUrl === '/') {
-            if (this.localStorageService.get('positionMaskPageIndex'))
+            if (this.localStorageService.get('positionMaskPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('positionMaskPageIndex') as string);
+            }
             this.offset = this.pageSize * (this.pageIndex);
-        } else
+        } else {
             this.localStorageService.remove('positionMaskPageIndex');
+        }
         this.loadPositionMask().then();
     }
 

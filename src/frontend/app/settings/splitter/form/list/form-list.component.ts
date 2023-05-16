@@ -75,11 +75,13 @@ export class SplitterFormListComponent implements OnInit {
         this.serviceSettings.init();
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/splitter/forms') || lastUrl === '/') {
-            if (this.localStorageService.get('formsPageIndex'))
+            if (this.localStorageService.get('formsPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('formsPageIndex') as string);
+            }
             this.offset = this.pageSize * (this.pageIndex);
-        } else
+        } else {
             this.localStorageService.remove('formsPageIndex');
+        }
         this.loadForms();
     }
 
