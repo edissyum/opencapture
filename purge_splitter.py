@@ -114,3 +114,7 @@ if __name__ == '__main__':
         except Exception as e:
             log.error(f"Error while removing files : {e}")
             continue
+
+    # Commit and close database connection
+    database.conn.commit()
+    database.conn.close()
