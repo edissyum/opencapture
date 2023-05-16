@@ -70,11 +70,13 @@ export class SplitterOutputListComponent implements OnInit {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('outputs/') || lastUrl === '/') {
-            if (this.localStorageService.get('outputsPageIndex'))
+            if (this.localStorageService.get('outputsPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('outputsPageIndex') as string);
+            }
             this.offset = this.pageSize * (this.pageIndex);
-        } else
+        } else {
             this.localStorageService.remove('outputsPageIndex');
+        }
         this.loadOutputs();
     }
 

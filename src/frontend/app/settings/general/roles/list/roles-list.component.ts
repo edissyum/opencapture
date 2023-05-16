@@ -78,11 +78,13 @@ export class RolesListComponent implements OnInit {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/roles') || lastUrl === '/') {
-            if (this.localStorageService.get('rolesPageIndex'))
+            if (this.localStorageService.get('rolesPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('rolesPageIndex') as string);
+            }
             this.offset = this.pageSize * (this.pageIndex);
-        } else
+        } else {
             this.localStorageService.remove('rolesPageIndex');
+        }
         this.loadRoles();
     }
 

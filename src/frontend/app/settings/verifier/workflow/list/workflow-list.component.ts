@@ -73,6 +73,7 @@ export class WorkflowListComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/workflows/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allWorkflows = data.workflows;
+                this.loadWorkflows();
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -80,7 +81,6 @@ export class WorkflowListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.loadWorkflows();
     }
 
     loadWorkflows() {

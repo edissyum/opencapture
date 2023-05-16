@@ -213,7 +213,8 @@ export function createTranslateLoader(http: HttpClient) {
         NgsgModule,
         NgxChartsModule,
         ToastrModule.forRoot({
-            enableHtml: true
+            enableHtml: true,
+            maxOpened: 3
         }),
         TranslateModule.forRoot({
             defaultLanguage: 'fra',

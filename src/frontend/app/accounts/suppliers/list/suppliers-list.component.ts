@@ -85,6 +85,7 @@ export class SuppliersListComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allSuppliers = data.suppliers;
+                this.loadSuppliers();
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -92,7 +93,6 @@ export class SuppliersListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.loadSuppliers();
     }
 
     loadSuppliers() {
