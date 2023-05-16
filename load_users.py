@@ -40,8 +40,7 @@ if __name__ == '__main__':
     database, config, _, _, _, log, _, _, _, _, _, _ = create_classes_from_custom_id(args.custom_id)
 
     if args.file is None and os.path.isfile(args.file):
-        log.info("Please provide an existing the users CSV file. "
-              "\n ex : python3 load_users.py --file users.csv --custom-id edissyum")
+        log.info("Please provide an existing the users CSV file. \n Ex : python3 load_users.py --file users.csv --custom-id edissyum")
         exit(1)
 
     with open(args.file, 'r') as f:
