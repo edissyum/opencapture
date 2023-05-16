@@ -30,7 +30,7 @@ if __name__ == '__main__':
     parser.add_argument("-c", '--custom-id', help='Custom id')
     args = parser.parse_args()
 
-    database, config, _, _, _, log, _, spreadsheet, _, _, _, _ = create_classes_from_custom_id(args.custom_id)
+    database, config, _, _, _, log, _, _, _, _, _, _ = create_classes_from_custom_id(args.custom_id)
 
     if args.file is None and os.path.isfile(args.file):
         log.info("Please provide an existing the users CSV file. "
