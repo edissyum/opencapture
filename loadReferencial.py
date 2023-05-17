@@ -90,12 +90,12 @@ if __name__ == '__main__':
                         'name': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]),
                         'siren': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIREN']]),
                         'siret': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
-                        'duns': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['DUNS']]),
                         'iban': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['IBAN']]),
                         'email': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['EMAIL']]),
                         'get_only_raw_footer': GET_ONLY_RAW_FOOTER,
                         'address_id': str(address_id),
                         'document_lang': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['doc_lang']]),
+                        'duns': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['DUNS']]),
                     }
                 }
                 res = database.insert(args)
@@ -157,12 +157,12 @@ if __name__ == '__main__':
                             'name': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]),
                             'siren': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIREN']]),
                             'siret': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
-                            'duns': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['DUNS']]),
                             'iban': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['IBAN']]),
                             'email': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['EMAIL']]),
                             'get_only_raw_footer': GET_ONLY_RAW_FOOTER,
                             'address_id': address_id,
                             'document_lang': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['doc_lang']]),
+                            'duns': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['DUNS']]),
                         },
                         'where': ['vat_number = %s'],
                         'data': [vat_number]

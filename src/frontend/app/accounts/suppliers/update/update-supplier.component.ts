@@ -71,28 +71,28 @@ export class UpdateSupplierComponent implements OnInit {
             id: 'siret',
             label: marker('ACCOUNTS.siret'),
             type: 'text',
-            control: new FormControl(),
+            control: new FormControl(''),
             required: false
         },
         {
             id: 'siren',
             label: marker('ACCOUNTS.siren'),
             type: 'text',
-            control: new FormControl(),
+            control: new FormControl(''),
             required: false
         },
         {
             id: 'iban',
             label: marker('ACCOUNTS.iban'),
             type: 'text',
-            control: new FormControl(),
+            control: new FormControl(''),
             required: false
         },
         {
             id: 'duns',
             label: marker('ACCOUNTS.duns'),
             type: 'text',
-            control: new FormControl(),
+            control: new FormControl(''),
             required: false
         },
         {
@@ -187,7 +187,7 @@ export class UpdateSupplierComponent implements OnInit {
         }
         this.supplierId = this.route.snapshot.params['id'];
         this.supplierForm.forEach((element: any) => {
-            if (element.id === 'vat_number' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban') {
+            if (element.id === 'vat_number' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'duns') {
                 element.control.valueChanges.subscribe((value: any) => {
                     if (value && value.includes(' ')) {
                         element.control.setValue(value.replace(' ', ''));
