@@ -85,6 +85,7 @@ export class CustomersListComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allCustomers = data.customers;
+                this.loadCustomers();
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -92,7 +93,6 @@ export class CustomersListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.loadCustomers();
     }
 
     loadCustomers() {

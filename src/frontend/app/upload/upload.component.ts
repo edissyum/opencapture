@@ -42,7 +42,6 @@ export class UploadComponent implements OnInit {
     headers                     : HttpHeaders   = this.authService.headers;
     selectedWorkflow            : any           = '';
     selectedWorkflowTechnicalId : any           = '';
-    inputs                      : any[]         = [];
     workflows                   : any[]         = [];
     loading                     : boolean       = true;
     sending                     : boolean       = false;
@@ -84,7 +83,7 @@ export class UploadComponent implements OnInit {
                 this.workflows = data.workflows;
                 if (this.workflows.length === 1) {
                     this.selectedWorkflow = data.workflows[0].id;
-                    this.selectedWorkflowTechnicalId = data.workflows[0].input_id;
+                    this.selectedWorkflowTechnicalId = data.workflows[0].workflow_id;
                 }
              }),
             finalize(() => {this.loading = false;}),
@@ -140,7 +139,7 @@ export class UploadComponent implements OnInit {
         }
         formData.set('workflowId', this.selectedWorkflowTechnicalId);
         formData.set('userId', this.userService.user.id);
-        console.log(formData)
+
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(

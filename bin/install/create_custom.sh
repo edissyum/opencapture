@@ -415,15 +415,15 @@ crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workfl
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh \$filename"
 
-crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId watch /var/share/"$customId"/entrant/verifier/ocr_only/
-crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId events move,close
-crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
-crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh \$filename"
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId watch /var/share/"$customId"/entrant/verifier/ocr_only/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId include_extensions pdf,PDF
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh \$filename"
 
 crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId watch /var/share/"$customId"/entrant/splitter/
 crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId events move,close
 crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId include_extensions pdf,PDF
-crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_input.sh \$filename"
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_workflow.sh \$filename"
 
 ####################
 # Fix the rights after root launch to avoid permissions issues

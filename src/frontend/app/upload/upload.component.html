@@ -4,7 +4,7 @@
             {{ "ACCOUNTS.choose_workflow_upload" | translate }}
         </h3>
         <mat-divider></mat-divider>
-        <mat-list>
+        <mat-list class="h-full-overflow overflow-auto">
             <mat-list-item *ngFor="let workflow of workflows" class="cursor-pointer m-2 w-auto" (click)="setWorkflow(workflow.id)">
                 <span [class.text-green-400]="this.selectedWorkflow === workflow.id" class="hover:text-green-400"
                       [matTooltip]="workflow.label" [matTooltipDisabled]="workflow.label.replace(' ', '').length <= 20">
@@ -41,8 +41,6 @@
                     [class.bg-opacity-100]="!this.error && !this.sending && this.selectedWorkflow && this.fileControl.value!.length !== 0"
                     [class.bg-green-400]="!this.error && !this.sending && this.selectedWorkflow && this.fileControl.value!.length !== 0"
                     [class.bg-gray-400]="this.error || !(!this.sending && this.selectedWorkflow && this.fileControl.value!.length !== 0)"
-                    [class.text-white]="!this.error && !this.sending && this.selectedWorkflow && this.fileControl.value!.length !== 0"
-                    [class.hover:text-gray-900]="!this.sending && this.selectedWorkflow && this.fileControl.value!.length !== 0"
                     class="p-6 mr-4 border min-w-56 text-white transition border-solid duration-300 border-green-400 hover:text-gray-900 hover:bg-transparent">
                 {{ 'UPLOAD.upload_file' | translate }}
             </button>

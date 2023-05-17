@@ -4,6 +4,7 @@ ALTER TABLE "roles" ALTER COLUMN "label" SET DATA TYPE VARCHAR(255);
 
 ALTER TABLE "invoices" RENAME TO documents;
 
+ALTER TABLE "monitoring" DROP COLUMN IF EXISTS "input_id";
 ALTER TABLE "monitoring" ADD COLUMN IF NOT EXISTS "token" VARCHAR(255);
 ALTER TABLE "monitoring" ADD COLUMN IF NOT EXISTS "workflow_id" VARCHAR(255);
 
@@ -80,12 +81,12 @@ INSERT INTO "workflows" ("workflow_id", "label", "module", "input", "process", "
           CONCAT(input_id),
           CONCAT(input_label, ' Workflow'),
           'verifier',
-          CONCAT('{"apply_process": true, "input_folder": "', input_folder, '", "ai_model_id": "', ai_model_id,
+          CONCAT('{"apply_process": true, "facturx_only": false, "input_folder": "', input_folder, '", "ai_model_id": "', ai_model_id,
              '", "customer_id": "', customer_id, '"}')::JSONB,
-          CONCAT('{"use_interface": true, "rotation": "no_rotation", "form_id": "', default_form_id,
+          CONCAT('{"delete_documents": false, "allow_automatic_validation": false, "use_interface": true, "rotation": "no_rotation", "form_id": "', default_form_id,
               '", "override_supplier_form": "', override_supplier_form,
               '", "system_fields": ["name", "invoice_number", "quotation_number", "delivery_number", "document_date", "document_due_date", "footer"]', '}')::JSONB,
-          CONCAT('{"remove_blank_page": "', remove_blank_pages,'", "splitter_method_id": "', splitter_method_id, '"}')::JSONB,
+          CONCAT('{"remove_blank_pages": "', remove_blank_pages,'", "splitter_method_id": "', splitter_method_id, '"}')::JSONB,
           '{}'
      FROM inputs
      WHERE module = 'verifier';
@@ -110,3 +111,5 @@ UPDATE form_model_settings SET settings = jsonb_set(settings, '{unique_url}', '{
 
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('duns', 'global', 'Numéro DUNS', '([0-9]{9})|([0-9]{2}-[0-9]{3}-[0-9]{4})');
 ALTER TABLE "accounts_supplier" ADD COLUMN "duns" VARCHAR(10);
+
+ALTER TABLE mailcollect RENAME COLUMN splitter_technical_input_id TO splitter_technical_workflow_id;

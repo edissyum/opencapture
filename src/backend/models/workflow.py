@@ -127,3 +127,21 @@ def update_workflow(args):
         error = gettext('WORKFLOW_UPDATE_ERROR')
 
     return _workflow, error
+
+
+def get_workflow_by_form_id(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+    _workflow = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['workflows'],
+        'where': ["input #>> '{apply_process}' = %s", "process #>> '{form_id}' = %s", 'status <> %s'],
+        'data': ['true', str(args['form_id']), 'DEL']
+    })
+
+    return _workflow, error

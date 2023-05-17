@@ -40,14 +40,12 @@ def upload():
                         'message': gettext('WORKFLOW_ID_IS_MANDATORY')}), 400
 
     supplier = {}
-    if 'iban' in request.form:
-        supplier = {'column': 'iban', 'value': request.form['iban']}
-    elif 'siret' in request.form:
+    if 'siret' in request.form:
         supplier = {'column': 'siret', 'value': request.form['siret']}
     elif 'siren' in request.form:
         supplier = {'column': 'siren', 'value': request.form['siren']}
-    elif 'duns' in request.form:
-        supplier = {'column': 'duns', 'value': request.form['duns']}
+    elif 'vat_number' in request.form:
+        supplier = {'column': 'vat_number', 'value': request.form['vat_number']}
 
     files = request.files
     res = verifier.handle_uploaded_file(files, workflow_id, supplier)
@@ -55,17 +53,26 @@ def upload():
     if res and res[0] is not False:
         for file in res[0]:
             if 'returnUniqueUrl' in request.form and request.form['returnUniqueUrl']:
-                token = auth.generate_unique_url_token(file['token'], workflow_id)
+                token = auth.generate_unique_url_token(file['token'], workflow_id, 'verifier')
                 if token:
                     cfg, _ = config.read_config()
-                    file['uniqueUrl'] = f"{cfg['GLOBAL']['applicationurl']}/verifier/viewer_token/{token}"
-                    if not re.search(r'dist(/)+#', file['uniqueUrl']):
-                        file['uniqueUrl'] = file['uniqueUrl'].replace('/dist/', '/dist/#/')
+                    application_url = cfg['GLOBAL']['applicationurl']
+
+                    if not re.search(r'dist(/)+#', application_url):
+                        application_url = application_url.replace('/dist', '/dist/#/')
+
+                    if 'dist/#' not in application_url:
+                        application_url = application_url + '/dist/#/'
+
+                    file['uniqueUrl'] = f"{application_url}/verifier/viewer_token/{token}"
+                    file['uniqueUrl'] = file['uniqueUrl'].replace('///', '//')
+                    file['uniqueUrl'] = file['uniqueUrl'].replace('#//', '#/').replace('//#', '/#')
+                    file['uniqueUrl'] = file['uniqueUrl'].replace('//dist', '/dist').replace('dist//', 'dist/')
                 else:
                     res = [{
                         'errors': gettext('UNIQUE_URL_TOKEN_GENERATION_ERROR'),
                         'message': gettext('INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET')
-                    }, 200]
+                    }, 403]
         return make_response(res[0], res[1])
     else:
         return make_response(gettext('UNKNOW_ERROR'), 400)
@@ -156,9 +163,10 @@ def update_document_data(document_id):
 @bp.route('verifier/documents/<int:document_id>/export_xml', methods=['POST'])
 @auth.token_required
 def export_xml(document_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/verifier/documents/{document_id}/export_xml'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/documents/{document_id}/export_xml'}), 403
 
     data = request.json['args']
     res = verifier.export_xml(document_id, data)
@@ -168,9 +176,10 @@ def export_xml(document_id):
 @bp.route('verifier/documents/<int:document_id>/export_pdf', methods=['POST'])
 @auth.token_required
 def export_pdf(document_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/verifier/documents/{document_id}/export_pdf'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/documents/{document_id}/export_pdf'}), 403
 
     data = request.json['args']
     res = verifier.export_pdf(document_id, data)
@@ -180,9 +189,10 @@ def export_pdf(document_id):
 @bp.route('verifier/documents/<int:document_id>/export_facturx', methods=['POST'])
 @auth.token_required
 def export_facturx(document_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/verifier/documents/{document_id}/export_facturx'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/documents/{document_id}/export_facturx'}), 403
 
     data = request.json['args']
     res = verifier.export_facturx(document_id, data)
@@ -192,9 +202,10 @@ def export_facturx(document_id):
 @bp.route('verifier/documents/<int:document_id>/export_mem', methods=['POST'])
 @auth.token_required
 def export_mem(document_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/verifier/documents/{document_id}/export_mem'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/documents/{document_id}/export_mem'}), 403
 
     data = request.json['args']
     res = verifier.export_mem(document_id, data)

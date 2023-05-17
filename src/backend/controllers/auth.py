@@ -92,7 +92,7 @@ def encode_auth_token(user_id):
         return str(_e)
 
 
-def generate_unique_url_token(document_id, workflow_id):
+def generate_unique_url_token(document_id, workflow_id, module):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -109,9 +109,10 @@ def generate_unique_url_token(document_id, workflow_id):
             "select": ["settings", "input", "process"],
             "table": ["form_models", "workflows"],
             "left_join": ["form_models.id::TEXT = workflows.process ->> 'form_id'"],
-            "where": ["workflows.workflow_id = %s"],
-            "data": [workflow_id]
+            "where": ["workflows.workflow_id = %s", 'form_models.module = %s'],
+            "data": [workflow_id, module]
         })
+
         if form_settings:
             form_settings = form_settings[0]
             if form_settings['input']['apply_process'] and form_settings['process']['use_interface']:
@@ -348,7 +349,11 @@ def token_required(view):
             if token:
                 process, _ = monitoring.get_process_by_token(token['sub'], '')
                 allowed_path = [
+                    'export_mem',
+                    'export_xml',
+                    'export_pdf',
                     'updatePage',
+                    'export_facturx',
                     'updatePosition',
                     'verifier/getThumb',
                     'verifier/ocrOnFly',

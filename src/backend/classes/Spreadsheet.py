@@ -45,6 +45,7 @@ class Spreadsheet:
             self.referencialSupplierArray['positions_mask_id'] = fp['positions_mask_id']
             self.referencialSupplierArray['get_only_raw_footer'] = fp['get_only_raw_footer']
             self.referencialSupplierArray['doc_lang'] = fp['doc_lang']
+            self.referencialSupplierArray['DUNS'] = fp['DUNS']
 
     def update_supplier_ods_sheet(self, database):
         if os.path.isfile(self.referencialSuppplierSpreadsheet):
@@ -88,7 +89,6 @@ class Spreadsheet:
                                 supplier['vat_number'] if supplier['vat_number'] is not None else '',
                                 supplier['siret'] if supplier['siret'] is not None else '',
                                 supplier['siren'] if supplier['siren'] is not None else '',
-                                supplier['duns'] if supplier['duns'] is not None else '',
                                 supplier['iban'] if supplier['iban'] is not None else '',
                                 supplier['email'] if supplier['email'] is not None else '',
                                 address['address1'] if address and address['address1'] is not None else '',
@@ -98,7 +98,8 @@ class Spreadsheet:
                                 address['country'] if address and address['country'] is not None else '',
                                 positions_mask_id[0]['id'] if positions_mask_id and positions_mask_id[0]['id'] is not None else '',
                                 str(not supplier['get_only_raw_footer']).lower() if supplier['get_only_raw_footer'] is not None else '',
-                                supplier['document_lang'] if supplier['document_lang'] is not None else '']
+                                supplier['document_lang'] if supplier['document_lang'] is not None else '',
+                                supplier['duns'] if supplier['duns'] is not None else '']
                         content_sheet[sheet_name].append(line)
             except IndexError as e:
                 self.log.error("IndexError while updating ods reference file : " + str(e), False)
@@ -126,7 +127,6 @@ class Spreadsheet:
             self.referencialSupplierArray['VATNumber'],
             self.referencialSupplierArray['SIRET'],
             self.referencialSupplierArray['SIREN'],
-            self.referencialSupplierArray['DUNS'],
             self.referencialSupplierArray['IBAN'],
             self.referencialSupplierArray['EMAIL'],
             self.referencialSupplierArray['address1'],
@@ -136,7 +136,8 @@ class Spreadsheet:
             self.referencialSupplierArray['addressCountry'],
             self.referencialSupplierArray['positions_mask_id'],
             self.referencialSupplierArray['get_only_raw_footer'],
-            self.referencialSupplierArray['doc_lang']
+            self.referencialSupplierArray['doc_lang'],
+            self.referencialSupplierArray['DUNS']
         ])
         # Drop row 0 because it contains the indexes columns
         if not content_sheet.empty:

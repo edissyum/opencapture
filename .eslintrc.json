@@ -15,9 +15,8 @@
                 "createDefaultProgram": true
             },
             "extends": [
-                "plugin:@angular-eslint/ng-cli-compat",
-                "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
-                "plugin:@angular-eslint/template/process-inline-templates"
+                "plugin:@angular-eslint/recommended",
+                "plugin:@typescript-eslint/recommended"
             ],
             "rules": {
                 "@typescript-eslint/quotes": "off",
@@ -63,6 +62,7 @@
                     }
                 ],
                 "@typescript-eslint/type-annotation-spacing": "off",
+                "@typescript-eslint/no-explicit-any": "off",
                 "radix": "off",
                 "curly": "off",
                 "one-var": [

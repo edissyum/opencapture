@@ -64,7 +64,7 @@ class WorkflowsTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['workflows']), 0)
+        self.assertEqual(len(response.json['workflows']), 1)
 
     def test_successful_get_workflow_by_id_verifier(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/workflows/verifier/getById/1',
@@ -89,19 +89,20 @@ class WorkflowsTest(unittest.TestCase):
 
     def test_successful_update_workflow(self):
         payload = {
-            "label": "Updated test input",
+            "label": "Updated test workflow",
             "input": {
+                "ai_model_id": None,
+                "customer_id": None,
+                "facturx_only": False,
+                "apply_process": True,
                 "input_folder": f"/var/share/{CUSTOM_ID}/entrant/verifier/new_workflow_folder/",
-            },
-            "process": {},
-            "separation": {},
-            "output": {},
+            }
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/workflows/verifier/update/1',
                                 json={"args": payload},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT * FROM workflows WHERE label = 'Updated test input'")
+        self.db.execute("SELECT * FROM workflows WHERE label = 'Updated test workflow'")
         new_workflow = self.db.fetchall()
         self.assertEqual(1, len(new_workflow))
 
@@ -117,6 +118,6 @@ class WorkflowsTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.db.execute(
-            "UPDATE workflows SET label = 'Workflow par défaut' WHERE label = 'Updated test input'")
+            "UPDATE workflows SET label = 'Workflow par défaut' WHERE label = 'Updated test workflow'")
         self.db.execute("DELETE FROM workflows WHERE label = 'Test Workflow'")
         self.db.execute("DELETE FROM workflows WHERE label ILIKE '%Copie de%' OR label ILIKE '%Copy of%'")

@@ -29,6 +29,7 @@ import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppRoutingModule } from './app-routing.module';
 import { SettingsRoutingModule } from './settings/settings-routing.module';
@@ -211,6 +212,11 @@ export function createTranslateLoader(http: HttpClient) {
         ServicesModule,
         NgsgModule,
         NgxChartsModule,
+        ToastrModule.forRoot({
+            maxOpened: 3,
+            enableHtml: true,
+            preventDuplicates: true
+        }),
         TranslateModule.forRoot({
             defaultLanguage: 'fra',
             loader: {
@@ -246,6 +252,4 @@ export function createTranslateLoader(http: HttpClient) {
     ],
     bootstrap: [AppComponent]
 })
-export class AppModule {
-    constructor() {}
-}
+export class AppModule {}

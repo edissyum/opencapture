@@ -47,10 +47,11 @@
                         ],
                         "styles": [
                             "./src/frontend/assets/style.scss",
-                            "./src/frontend/assets/snackbar-custom.scss",
+                            "node_modules/ngx-toastr/toastr.css",
                             "./src/frontend/assets/material-custom.scss",
-                            "./src/frontend/assets/form-builder-custom.scss",
                             "./src/frontend/assets/splitter-custom.scss",
+                            "./src/frontend/assets/form-builder-custom.scss",
+                            "./src/frontend/assets/notification-custom.scss",
                             "./node_modules/@fortawesome/fontawesome-free/css/all.css",
                             "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
                         ],

@@ -75,11 +75,13 @@ export class FormListComponent implements OnInit {
         this.serviceSettings.init();
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/verifier/forms') || lastUrl === '/') {
-            if (this.localStorageService.get('formsPageIndex'))
+            if (this.localStorageService.get('formsPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('formsPageIndex') as string);
+            }
             this.offset = this.pageSize * (this.pageIndex);
-        } else
+        } else {
             this.localStorageService.remove('formsPageIndex');
+        }
         this.loadForms();
     }
 
@@ -112,32 +114,33 @@ export class FormListComponent implements OnInit {
         ).subscribe();
     }
 
-    async getInputs(formId: any) {
-        return await this.http.get(environment['url'] + '/ws/inputs/verifier/getByFormId/' + formId, {headers: this.authService.headers}).toPromise();
+    async getWorkflows(formId: any) {
+        return await this.http.get(environment['url'] + '/ws/workflows/verifier/getByFormId/' + formId, {headers: this.authService.headers}).toPromise();
     }
 
     async deleteConfirmDialog(formId: number, form: string) {
-        const inputs: any = await this.getInputs(formId);
-        if (inputs.length !== 0) {
+        const workflows: any = await this.getWorkflows(formId);
+        if (workflows.length !== 0) {
             const forms = this.forms;
             forms.forEach((form: any, cpt: number) => {
                 if (form.id === formId) {
                     forms.splice(cpt, 1);
                 }
             });
-            const inputList: any = [];
-            const inputListLabel: any = [];
-            inputs.forEach((input: any) => {
-                inputList.push({'id': input.id, 'label': input.input_label});
-                inputListLabel.push(input.input_label);
+            const workflowList: any = [];
+            const workflowListLabel: any = [];
+            workflows.forEach((workflow: any) => {
+                workflowList.push({'id': workflow.id, 'label': workflow.label, process: workflow.process, input: workflow.input, output: workflow.output});
+                workflowListLabel.push(workflow.label);
             });
+
             const dialogRef = this.dialog.open(ConfirmDialogComponent, {
                 data: {
-                    confirmTitle        : this.translate.instant('GLOBAL.new_input_link'),
-                    confirmText         : this.translate.instant('FORMS.inputs_list_already_linked', {"inputsList": inputListLabel.join('<br>')}),
+                    confirmTitle        : this.translate.instant('GLOBAL.new_workflow_link'),
+                    confirmText         : this.translate.instant('FORMS.workflows_list_already_linked', {"workflowsList": workflowListLabel.join('<br>')}),
                     selectValues        : forms,
                     selectLabel         : this.translate.instant('FORMS.choose_form'),
-                    confirmButton       : this.translate.instant('GLOBAL.delete_form_and_reassign_input'),
+                    confirmButton       : this.translate.instant('GLOBAL.delete_form_and_reassign_workflow'),
                     confirmButtonColor  : "warn",
                     cancelButton        : this.translate.instant('GLOBAL.cancel')
                 },
@@ -146,7 +149,7 @@ export class FormListComponent implements OnInit {
 
             dialogRef.afterClosed().subscribe(result => {
                 if (result) {
-                    this.updateInputsDefaultForm(result, inputList);
+                    this.updateWorkflowsDefaultForm(result, workflowList);
                     this.deleteForm(formId);
                     this.historyService.addHistory('verifier', 'delete_form', this.translate.instant('HISTORY-DESC.delete-form', {form: form}));
                 }
@@ -248,11 +251,11 @@ export class FormListComponent implements OnInit {
         }
     }
 
-    updateInputsDefaultForm(newFormId: number, inputs: any) {
+    updateWorkflowsDefaultForm(newFormId: number, workflows: any) {
         if (newFormId !== undefined) {
-            for (const cpt in inputs) {
-                const args = {'default_form_id': newFormId};
-                this.http.put(environment['url'] + '/ws/inputs/verifier/update/' + inputs[cpt].id, {'args': args}, {headers: this.authService.headers}).pipe(
+            for (const cpt in workflows) {
+                workflows[cpt]['process'].form_id = newFormId;
+                this.http.put(environment['url'] + '/ws/workflows/verifier/update/' + workflows[cpt].id, {'args': workflows[cpt]}, {headers: this.authService.headers}).pipe(
                     catchError((err: any) => {
                         console.debug(err);
                         this.notify.handleErrors(err);

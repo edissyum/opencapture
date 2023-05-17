@@ -8,21 +8,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-05-10 09:06+0200\n"
+"POT-Creation-Date: 2023-05-11 16:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.1\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: launch_worker.py:64 launch_worker_splitter.py:64
 msgid "FILE_UPLOADED_WORKFLOW"
-msgstr ""
-
-#: launch_worker_splitter.py:60 launch_worker_splitter.py:62
-msgid "FILE_UPLOADED"
 msgstr ""
 
 #: src/backend/verifier_exports.py:87 src/backend/verifier_exports.py:90
@@ -84,7 +80,7 @@ msgstr ""
 msgid "GET_SUPPLIER_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:76 src/backend/models/accounts.py:84
+#: src/backend/controllers/accounts.py:76
 msgid "GET_ADDRESS_BY_ID_ERROR"
 msgstr ""
 
@@ -106,55 +102,55 @@ msgstr ""
 #: src/backend/controllers/accounts.py:277
 #: src/backend/controllers/accounts.py:283
 #: src/backend/controllers/accounts.py:307
-#: src/backend/controllers/accounts.py:313 src/backend/models/accounts.py:129
+#: src/backend/controllers/accounts.py:313 src/backend/models/accounts.py:127
 msgid "UPDATE_ADDRESS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:337 src/backend/models/accounts.py:149
+#: src/backend/controllers/accounts.py:337 src/backend/models/accounts.py:147
 msgid "CREATE_ADDRESS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:379
-#: src/backend/controllers/accounts.py:385 src/backend/models/accounts.py:169
+#: src/backend/controllers/accounts.py:382
+#: src/backend/controllers/accounts.py:388 src/backend/models/accounts.py:167
 msgid "CREATE_SUPPLIER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:386
+#: src/backend/controllers/accounts.py:389
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:423 src/backend/controllers/user.py:219
-#: src/backend/controllers/user.py:249 src/backend/models/accounts.py:233
-#: src/backend/models/accounts.py:256 src/backend/models/accounts.py:275
+#: src/backend/controllers/accounts.py:426 src/backend/controllers/user.py:219
+#: src/backend/controllers/user.py:249 src/backend/models/accounts.py:231
+#: src/backend/models/accounts.py:254 src/backend/models/accounts.py:273
 #: src/backend/models/user.py:210
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:465
-#: src/backend/controllers/accounts.py:471 src/backend/models/accounts.py:297
+#: src/backend/controllers/accounts.py:468
+#: src/backend/controllers/accounts.py:474 src/backend/models/accounts.py:295
 msgid "UPDATE_CUSTOMER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:500
-#: src/backend/controllers/accounts.py:506 src/backend/models/accounts.py:317
+#: src/backend/controllers/accounts.py:503
+#: src/backend/controllers/accounts.py:509 src/backend/models/accounts.py:315
 msgid "CREATE_CUSTOMER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:507
+#: src/backend/controllers/accounts.py:510
 msgid "CUSTOMER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:521
-#: src/backend/controllers/accounts.py:527 src/backend/models/accounts.py:339
+#: src/backend/controllers/accounts.py:524
+#: src/backend/controllers/accounts.py:530 src/backend/models/accounts.py:337
 msgid "DELETE_CUSTOMER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:542
-#: src/backend/controllers/accounts.py:548 src/backend/models/accounts.py:191
+#: src/backend/controllers/accounts.py:545
+#: src/backend/controllers/accounts.py:551 src/backend/models/accounts.py:189
 msgid "DELETE_SUPPLIER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:570
+#: src/backend/controllers/accounts.py:573
 msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
 msgstr ""
 
@@ -395,10 +391,9 @@ msgstr ""
 msgid "DELETE_FORM_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:243 src/backend/controllers/inputs.py:107
-#: src/backend/controllers/outputs.py:65
+#: src/backend/controllers/forms.py:243 src/backend/controllers/outputs.py:65
 #: src/backend/controllers/positions_masks.py:144
-#: src/backend/controllers/workflow.py:105
+#: src/backend/controllers/workflow.py:106
 msgid "COPY_OF"
 msgstr ""
 
@@ -420,77 +415,6 @@ msgstr ""
 
 #: src/backend/controllers/history.py:31
 msgid "ADD_HISTORY_ERROR"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:75 src/backend/controllers/inputs.py:135
-#: src/backend/controllers/inputs.py:162 src/backend/controllers/inputs.py:173
-#: src/backend/controllers/inputs.py:186
-msgid "CREATE_INPUT_ERROR"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:76 src/backend/controllers/inputs.py:136
-#: src/backend/controllers/workflow.py:149
-#: src/backend/controllers/workflow.py:199
-msgid "NOT_ALLOWED_INPUT_PATH"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:89 src/backend/controllers/inputs.py:95
-msgid "UPDATE_INPUT_ERROR"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:120 src/backend/controllers/inputs.py:126
-msgid "DUPLICATE_INPUT_ERROR"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:163
-msgid "INPUT_ID_ALREADY_EXISTS"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:174
-#: src/backend/controllers/workflow.py:172
-msgid "INPUT_FOLDER_ALREADY_EXISTS"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:199
-msgid "GET_INPUT_BY_ID_ERROR"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:212
-msgid "GET_INPUT_BY_INPUT_ID_ERROR"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:233 src/backend/controllers/inputs.py:239
-msgid "DELETE_INPUT_ERROR"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:275
-msgid "FS_WATCHER_DELETION_ERROR"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:276 src/backend/controllers/inputs.py:343
-#: src/backend/controllers/workflow.py:313
-msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:322 src/backend/controllers/inputs.py:342
-#: src/backend/controllers/workflow.py:290
-#: src/backend/controllers/workflow.py:312
-msgid "FS_WATCHER_CREATION_ERROR"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:323 src/backend/controllers/workflow.py:59
-#: src/backend/controllers/workflow.py:291
-msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:348
-#: src/backend/controllers/workflow.py:318
-msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
-msgstr ""
-
-#: src/backend/controllers/inputs.py:354
-#: src/backend/controllers/workflow.py:324
-msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr ""
 
 #: src/backend/controllers/mailcollect.py:36
@@ -648,7 +572,7 @@ msgid "LOAD_METADATA_ERROR"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:169
-#: src/backend/controllers/verifier.py:119
+#: src/backend/controllers/verifier.py:120
 msgid "AT"
 msgstr ""
 
@@ -669,12 +593,12 @@ msgid "BATCH_ID_NOT_FOUND"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:266
-#: src/backend/controllers/verifier.py:680
+#: src/backend/controllers/verifier.py:688
 msgid "UPDATE_STATUS_ERROR"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:301
-#: src/backend/controllers/verifier.py:392
+#: src/backend/controllers/verifier.py:393
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr ""
 
@@ -701,8 +625,8 @@ msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:617
-#: src/backend/controllers/verifier.py:369
-#: src/backend/controllers/verifier.py:375
+#: src/backend/controllers/verifier.py:370
+#: src/backend/controllers/verifier.py:376
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr ""
 
@@ -734,7 +658,7 @@ msgid "OPENADS_ADD_DOC_ERROR"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:1002
-#: src/backend/controllers/verifier.py:659 src/backend/models/splitter.py:572
+#: src/backend/controllers/verifier.py:667 src/backend/models/splitter.py:572
 #: src/backend/models/verifier.py:194
 msgid "GET_TOTALS_ERROR"
 msgstr ""
@@ -816,114 +740,145 @@ msgstr ""
 msgid "UPDATE_FORMS_USER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:83 src/backend/models/splitter.py:219
+#: src/backend/controllers/verifier.py:84 src/backend/models/splitter.py:219
 #: src/backend/models/verifier.py:40
 msgid "GET_DOCUMENT_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:100 src/backend/models/verifier.py:64
+#: src/backend/controllers/verifier.py:101 src/backend/models/verifier.py:64
 msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:101
+#: src/backend/controllers/verifier.py:102
 msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR_MESSAGE"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:214
-#: src/backend/controllers/verifier.py:316
+#: src/backend/controllers/verifier.py:215
+#: src/backend/controllers/verifier.py:317
 msgid "UPDATE_DOCUMENT_POSITIONS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:237
-#: src/backend/controllers/verifier.py:334
+#: src/backend/controllers/verifier.py:238
+#: src/backend/controllers/verifier.py:335
 msgid "UPDATE_DOCUMENT_PAGES_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:260
-#: src/backend/controllers/verifier.py:278
+#: src/backend/controllers/verifier.py:261
+#: src/backend/controllers/verifier.py:279
 msgid "UPDATE_DOCUMENT_DATA_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:348
-#: src/backend/controllers/verifier.py:354
+#: src/backend/controllers/verifier.py:349
+#: src/backend/controllers/verifier.py:355
 msgid "DELETE_DOCUMENT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:559
-#: src/backend/controllers/verifier.py:562
-#: src/backend/controllers/verifier.py:579
-#: src/backend/controllers/verifier.py:602
-#: src/backend/controllers/verifier.py:603
+#: src/backend/controllers/verifier.py:560
+#: src/backend/controllers/verifier.py:563
+#: src/backend/controllers/verifier.py:580
+#: src/backend/controllers/verifier.py:606
+#: src/backend/controllers/verifier.py:607
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:631
+#: src/backend/controllers/verifier.py:637
 msgid "VAT_NOT_VALID"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:636
-#: src/backend/controllers/verifier.py:637
+#: src/backend/controllers/verifier.py:644
+#: src/backend/controllers/verifier.py:645
 msgid "VAT_API_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:670
+#: src/backend/controllers/verifier.py:678
 msgid "DOCUMENT_NOT_FOUND"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:671
+#: src/backend/controllers/verifier.py:679
 msgid "DOCUMENT_ID_NOT_FOUND"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:49
-#: src/backend/controllers/workflow.py:58
-#: src/backend/controllers/workflow.py:65
+#: src/backend/controllers/workflow.py:50
+#: src/backend/controllers/workflow.py:59
+#: src/backend/controllers/workflow.py:66
 msgid "WORKFLOW_FOLDER_CREATION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:50
+#: src/backend/controllers/workflow.py:51
 msgid "FOLDER_NOT_ALLOWED_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:66
+#: src/backend/controllers/workflow.py:60
+#: src/backend/controllers/workflow.py:297
+msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
+msgstr ""
+
+#: src/backend/controllers/workflow.py:67
 msgid "CAN_NOT_ACCESS_FOLDER_PERMISSION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:80
+#: src/backend/controllers/workflow.py:81
 msgid "GET_WORKFLOW_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:93
+#: src/backend/controllers/workflow.py:94
 msgid "GET_WORKFLOW_BY_WORKFLOW_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:117
-#: src/backend/controllers/workflow.py:123
+#: src/backend/controllers/workflow.py:118
+#: src/backend/controllers/workflow.py:124
 msgid "DUPLICATE_WORKFLOW_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:148
-#: src/backend/controllers/workflow.py:160
-#: src/backend/controllers/workflow.py:171
-#: src/backend/controllers/workflow.py:189
+#: src/backend/controllers/workflow.py:149
+#: src/backend/controllers/workflow.py:161
+#: src/backend/controllers/workflow.py:172
+#: src/backend/controllers/workflow.py:190
 msgid "CREATE_WORKFLOW_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:161
+#: src/backend/controllers/workflow.py:150
+#: src/backend/controllers/workflow.py:200
+msgid "NOT_ALLOWED_INPUT_PATH"
+msgstr ""
+
+#: src/backend/controllers/workflow.py:162
 msgid "WORKFLOW_ID_ALREADY_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:198
-#: src/backend/controllers/workflow.py:216
+#: src/backend/controllers/workflow.py:173
+msgid "INPUT_FOLDER_ALREADY_EXISTS"
+msgstr ""
+
+#: src/backend/controllers/workflow.py:199
 #: src/backend/controllers/workflow.py:222
+#: src/backend/controllers/workflow.py:228
 msgid "UPDATE_WORKFLOW_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:237
 #: src/backend/controllers/workflow.py:243
+#: src/backend/controllers/workflow.py:249
 msgid "DELETE_WORKFLOW_ERROR"
 msgstr ""
 
-#: src/backend/models/accounts.py:107
+#: src/backend/controllers/workflow.py:296
+#: src/backend/controllers/workflow.py:318
+msgid "FS_WATCHER_CREATION_ERROR"
+msgstr ""
+
+#: src/backend/controllers/workflow.py:319
+msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
+msgstr ""
+
+#: src/backend/controllers/workflow.py:324
+msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
+msgstr ""
+
+#: src/backend/controllers/workflow.py:330
+msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
+msgstr ""
+
+#: src/backend/models/accounts.py:105
 msgid "SUPPLIER_UPDATE_ERROR"
 msgstr ""
 
@@ -1019,18 +974,6 @@ msgstr ""
 
 #: src/backend/models/forms.py:218
 msgid "FORM_LABEL_ALREADY_EXIST"
-msgstr ""
-
-#: src/backend/models/inputs.py:60 src/backend/models/inputs.py:83
-msgid "INPUT_DOESNT_EXISTS"
-msgstr ""
-
-#: src/backend/models/inputs.py:125
-msgid "INPUT_UPDATE_ERROR"
-msgstr ""
-
-#: src/backend/models/inputs.py:145
-msgid "INPUT_CREATE_ERROR"
 msgstr ""
 
 #: src/backend/models/mailcollect.py:85
@@ -1195,11 +1138,6 @@ msgstr ""
 #: src/backend/rest/forms.py:102 src/backend/rest/forms.py:114
 #: src/backend/rest/forms.py:125 src/backend/rest/history.py:39
 #: src/backend/rest/history.py:49 src/backend/rest/history.py:59
-#: src/backend/rest/inputs.py:30 src/backend/rest/inputs.py:43
-#: src/backend/rest/inputs.py:53 src/backend/rest/inputs.py:64
-#: src/backend/rest/inputs.py:76 src/backend/rest/inputs.py:88
-#: src/backend/rest/inputs.py:100 src/backend/rest/inputs.py:112
-#: src/backend/rest/inputs.py:124 src/backend/rest/inputs.py:137
 #: src/backend/rest/locale.py:31 src/backend/rest/mailcollect.py:29
 #: src/backend/rest/mailcollect.py:45 src/backend/rest/mailcollect.py:56
 #: src/backend/rest/mailcollect.py:72 src/backend/rest/mailcollect.py:86
@@ -1243,24 +1181,24 @@ msgstr ""
 #: src/backend/rest/user.py:128 src/backend/rest/user.py:138
 #: src/backend/rest/user.py:155 src/backend/rest/user.py:166
 #: src/backend/rest/user.py:176 src/backend/rest/verifier.py:34
-#: src/backend/rest/verifier.py:78 src/backend/rest/verifier.py:90
-#: src/backend/rest/verifier.py:111 src/backend/rest/verifier.py:124
-#: src/backend/rest/verifier.py:136 src/backend/rest/verifier.py:148
-#: src/backend/rest/verifier.py:160 src/backend/rest/verifier.py:172
-#: src/backend/rest/verifier.py:184 src/backend/rest/verifier.py:196
-#: src/backend/rest/verifier.py:208 src/backend/rest/verifier.py:219
-#: src/backend/rest/verifier.py:238 src/backend/rest/verifier.py:257
-#: src/backend/rest/verifier.py:277 src/backend/rest/verifier.py:289
-#: src/backend/rest/verifier.py:301 src/backend/rest/verifier.py:324
-#: src/backend/rest/verifier.py:342 src/backend/rest/verifier.py:354
-#: src/backend/rest/verifier.py:365 src/backend/rest/verifier.py:378
-#: src/backend/rest/verifier.py:391 src/backend/rest/verifier.py:402
-#: src/backend/rest/verifier.py:415 src/backend/rest/verifier.py:426
+#: src/backend/rest/verifier.py:85 src/backend/rest/verifier.py:97
+#: src/backend/rest/verifier.py:118 src/backend/rest/verifier.py:131
+#: src/backend/rest/verifier.py:143 src/backend/rest/verifier.py:155
+#: src/backend/rest/verifier.py:167 src/backend/rest/verifier.py:179
+#: src/backend/rest/verifier.py:191 src/backend/rest/verifier.py:203
+#: src/backend/rest/verifier.py:215 src/backend/rest/verifier.py:226
+#: src/backend/rest/verifier.py:245 src/backend/rest/verifier.py:264
+#: src/backend/rest/verifier.py:284 src/backend/rest/verifier.py:296
+#: src/backend/rest/verifier.py:308 src/backend/rest/verifier.py:331
+#: src/backend/rest/verifier.py:349 src/backend/rest/verifier.py:361
+#: src/backend/rest/verifier.py:372 src/backend/rest/verifier.py:385
+#: src/backend/rest/verifier.py:398 src/backend/rest/verifier.py:409
+#: src/backend/rest/verifier.py:422 src/backend/rest/verifier.py:433
 #: src/backend/rest/workflow.py:32 src/backend/rest/workflow.py:45
 #: src/backend/rest/workflow.py:58 src/backend/rest/workflow.py:71
 #: src/backend/rest/workflow.py:83 src/backend/rest/workflow.py:95
 #: src/backend/rest/workflow.py:107 src/backend/rest/workflow.py:119
-#: src/backend/rest/workflow.py:132
+#: src/backend/rest/workflow.py:132 src/backend/rest/workflow.py:145
 msgid "UNAUTHORIZED_ROUTE"
 msgstr ""
 
@@ -1272,11 +1210,11 @@ msgstr ""
 msgid "REQUEST_MODIFS_ERROR"
 msgstr ""
 
-#: src/backend/rest/monitoring.py:55 src/backend/rest/verifier.py:103
+#: src/backend/rest/monitoring.py:55 src/backend/rest/verifier.py:110
 msgid "TOKEN_IS_MANDATORY"
 msgstr ""
 
-#: src/backend/rest/splitter.py:45 src/backend/rest/verifier.py:71
+#: src/backend/rest/splitter.py:45 src/backend/rest/verifier.py:78
 msgid "UNKNOW_ERROR"
 msgstr ""
 
@@ -1288,11 +1226,11 @@ msgstr ""
 msgid "WORKFLOW_ID_IS_MANDATORY"
 msgstr ""
 
-#: src/backend/rest/verifier.py:66
+#: src/backend/rest/verifier.py:73
 msgid "UNIQUE_URL_TOKEN_GENERATION_ERROR"
 msgstr ""
 
-#: src/backend/rest/verifier.py:67
+#: src/backend/rest/verifier.py:74
 msgid "INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET"
 msgstr ""
 

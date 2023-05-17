@@ -135,12 +135,6 @@ elif 'rest' in custom_array['mem']['path']:
     mem = getattr(__import__(custom_array['mem']['path'], fromlist=[custom_array['mem']['module']]),
                        custom_array['mem']['module'])
 
-if 'inputs' not in custom_array or 'rest' not in custom_array['inputs']['path']:
-    from .rest import inputs
-elif 'rest' in custom_array['inputs']['path']:
-    inputs = getattr(__import__(custom_array['inputs']['path'], fromlist=[custom_array['inputs']['module']]),
-                       custom_array['inputs']['module'])
-
 if 'doctypes' not in custom_array or 'rest' not in custom_array['doctypes']['path']:
     from .rest import doctypes
 elif 'rest' in custom_array['doctypes']['path']:

@@ -30,10 +30,10 @@ class HistoryTest(unittest.TestCase):
 
     def create_history(self):
         payload = {
-            'submodule': 'update_input',
+            'submodule': 'update_workflow',
             'module': 'verifier',
             'user_info': 'ADMIN Super (admin)',
-            'desc': 'Mise à jour de la chaîne entrante <b>TEST</b>',
+            'desc': 'Mise à jour du workflow <b>TEST</b>',
             'user_id': 1
         }
 

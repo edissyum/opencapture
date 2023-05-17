@@ -101,8 +101,8 @@ def launch(args):
             outputs = database.select({
                 'select': ['outputs'],
                 'table': ['form_models'],
-                'where': ['id = %s'],
-                'data': [workflow_settings[0]['process']['form_id']]
+                'where': ['id = %s', 'module = %s'],
+                'data': [workflow_settings[0]['process']['form_id'], 'splitter']
             })
             if outputs:
                 outputs = outputs[0]['outputs']
@@ -123,8 +123,8 @@ def launch(args):
             outputs_settings = database.select({
                 'select': ['ocrise'],
                 'table': ['outputs'],
-                'where': ['id = %s'],
-                'data': [int(output_id)]
+                'where': ['id = %s', 'module = %s'],
+                'data': [int(output_id), 'splitter']
             })
             if outputs_settings:
                 ocrise = outputs_settings[0]['ocrise']
