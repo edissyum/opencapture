@@ -76,11 +76,13 @@ export class SuppliersListComponent implements OnInit {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('accounts/suppliers') || lastUrl === '/') {
-            if (this.localStorageService.get('suppliersPageIndex'))
+            if (this.localStorageService.get('suppliersPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('suppliersPageIndex') as string);
+            }
             this.offset = this.pageSize * (this.pageIndex);
-        } else
+        } else {
             this.localStorageService.remove('suppliersPageIndex');
+        }
 
         this.http.get(environment['url'] + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {

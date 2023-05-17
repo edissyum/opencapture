@@ -25,8 +25,8 @@
         "svg-country-flags": "^1.2.10"
     },
     "devDependencies": {
-        "@angular-devkit/build-angular": "^16.0.1",
-        "@angular-devkit/build-webpack": "^0.1600.1",
+        "@angular-devkit/build-angular": "^16.0.2",
+        "@angular-devkit/build-webpack": "^0.1600.2",
         "@angular-eslint/builder": "16.0.1",
         "@angular-eslint/eslint-plugin": "16.0.1",
         "@angular-eslint/eslint-plugin-template": "16.0.1",
@@ -35,7 +35,7 @@
         "@angular-material-extensions/select-country": "^8.1.0",
         "@angular/animations": "~16.0.1",
         "@angular/cdk": "^16.0.1",
-        "@angular/cli": "~16.0.1",
+        "@angular/cli": "~16.0.2",
         "@angular/common": "~16.0.1",
         "@angular/compiler": "~16.0.1",
         "@angular/compiler-cli": "~16.0.1",
@@ -51,7 +51,7 @@
         "@fortawesome/fontawesome-free": "^6.4.0",
         "@ngx-translate/core": "^15.0.0",
         "@ngx-translate/http-loader": "^8.0.0",
-        "@schematics/angular": "^16.0.1",
+        "@schematics/angular": "^16.0.2",
         "@swimlane/ngx-charts": "^20.1.2",
         "@types/d3-scale": "^4.0.3",
         "@types/d3-selection": "^3.0.5",
