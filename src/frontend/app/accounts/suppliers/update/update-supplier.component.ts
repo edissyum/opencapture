@@ -348,7 +348,6 @@ export class UpdateSupplierComponent implements OnInit {
             const address: any = {};
             this.supplierForm.forEach(element => {
                 supplier[element.id] = element.control.value;
-                console.log(element.id, element.control.value)
                 if (element.id === 'get_only_raw_footer') {
                     supplier[element.id] = !element.control.value;
                 }
@@ -356,7 +355,7 @@ export class UpdateSupplierComponent implements OnInit {
             this.addressForm.forEach(element => {
                 address[element.id] = element.control.value;
             });
-            console.log(supplier)
+
             this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': supplier}, {headers: this.authService.headers},
             ).pipe(
                 catchError((err: any) => {
