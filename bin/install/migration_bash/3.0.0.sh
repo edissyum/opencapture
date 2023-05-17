@@ -31,16 +31,26 @@ SECTIONS=$(crudini --get $opencapturePath/custom/custom.ini | sed 's/:.*//')
 for custom_name in ${SECTIONS[@]}; do
     cd $opencapturePath
     mkdir -p custom/$custom_name/bin/scripts/verifier_workflows/
+    mkdir -p custom/$custom_name/bin/scripts/splitter_workflows/
+
     cp $opencapturePath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh custom/$custom_name/bin/scripts/verifier_workflows/
+    cp $opencapturePath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh custom/$custom_name/bin/scripts/splitter_workflows/
+
     for script in custom/$custom_name/bin/scripts/verifier_inputs/*.sh; do
         if [[ ! $script =~ 'script_sample_dont_touch.sh' ]]; then
             sed -i 's/input_id/workflow_id/g' "$script"
         fi
+        mv "$script" $opencapturePath/bin/scripts/verifier_workflows/
+        sed -i "s#custom/$custom_name/bin/scripts/verifier_inputs#custom/$custom_name/bin/scripts/verifier_workflows#g" "$opencapturePath/instance/config/watcher.ini"
     done
+
     for script in custom/$custom_name/bin/scripts/splitter_inputs/*.sh; do
         if [[ ! $script =~ 'script_sample_dont_touch.sh' ]]; then
             sed -i 's/input_id/workflow_id/g' "$script"
         fi
+        mv "$script" $opencapturePath/bin/scripts/splitter_workflows/
+        sed -i "s#custom/$custom_name/bin/scripts/splitter_inputs#custom/$custom_name/bin/scripts/splitter_workflows#g" "$opencapturePath/instance/config/watcher.ini"
+        echo $script
     done
 done
 
