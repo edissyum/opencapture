@@ -81,11 +81,11 @@ INSERT INTO "workflows" ("workflow_id", "label", "module", "input", "process", "
           CONCAT(input_id),
           CONCAT(input_label, ' Workflow'),
           'verifier',
-          CONCAT('{"apply_process": true, "input_folder": "', input_folder, '", "ai_model_id": "', ai_model_id,
-             '", "customer_id": "', customer_id, ', "facturx_only": false}')::JSONB,
-          CONCAT('{"use_interface": true, "rotation": "no_rotation", "form_id": "', default_form_id,
-              '", "override_supplier_form": "', override_supplier_form, '"allow_automatic_validation: false',
-              '"system_fields": ["name", "invoice_number", "quotation_number", "delivery_number", "document_date", "document_due_date", "footer"]', '}')::JSONB,
+          CONCAT('{"apply_process": true, "facturx_only": false, "input_folder": "', input_folder, '", "ai_model_id": "', ai_model_id,
+             '", "customer_id": "', customer_id, '"}')::JSONB,
+          CONCAT('{"allow_automatic_validation": false, "use_interface": true, "rotation": "no_rotation", "form_id": "', default_form_id,
+              '", "override_supplier_form": "', override_supplier_form,
+              '", "system_fields": ["name", "invoice_number", "quotation_number", "delivery_number", "document_date", "document_due_date", "footer"]', '}')::JSONB,
           CONCAT('{"remove_blank_pages": "', remove_blank_pages,'", "splitter_method_id": "', splitter_method_id, '"}')::JSONB,
           '{}'
      FROM inputs
