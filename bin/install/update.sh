@@ -60,17 +60,7 @@ if [ ! -f "/home/$user/python-venv/opencapture/bin/python3" ]; then
     fi
 fi
 
-####################
-# Retrieve the last tags from gitlab
 cd "$OpenCapturePath" || exit 1
-git config --global user.email "update@opencapture"
-git config --global user.name "Update Open-Capture"
-git pull
-git fetch --tags
-git stash # Remove custom code if needed
-latest_tag=$(git describe --tags "$(git rev-list --tags=2.* --max-count=1)")
-git checkout "$latest_tag"
-git config core.fileMode False
 
 ####################
 # Force launch of apt and pip requirements
@@ -82,7 +72,7 @@ apt-get install -y php >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 xargs -a apt-requirements.txt apt-get install -y >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 if [ $pythonVenv = 'true' ]; then
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip uninstall -y pyocr  >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip uninstall -y pyocr >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
