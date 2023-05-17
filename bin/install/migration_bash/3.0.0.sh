@@ -51,6 +51,9 @@ for custom_name in ${SECTIONS[@]}; do
         mv "$script" $opencapturePath/custom/$custom_name/bin/scripts/splitter_workflows/
         sed -i "s#custom/$custom_name/bin/scripts/splitter_inputs#custom/$custom_name/bin/scripts/splitter_workflows#g" "$opencapturePath/instance/config/watcher.ini"
     done
+
+    rm -rf $opencapturePath/custom/$custom_name/bin/scripts/verifier_inputs/
+    rm -rf $opencapturePath/custom/$custom_name/bin/scripts/splitter_inputs/
 done
 
 ####################
