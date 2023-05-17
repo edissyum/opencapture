@@ -82,7 +82,7 @@ if __name__ == '__main__':
         'select': ['id', 'status', 'file_path', 'batch_folder'],
         'table': ['splitter_batches'],
         'where': ['creation_date < %s', 'status = %s'],
-        'data': [threshold_date_str, 'END']
+        'data': [threshold_date_str, target_status],
     })
     log.info(f"Found {len(batches)} batches older than {conservation_days} days with status {target_status}")
     for batch in batches:
