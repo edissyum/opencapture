@@ -40,7 +40,7 @@ for custom_name in ${SECTIONS[@]}; do
         if [[ ! $script =~ 'script_sample_dont_touch.sh' ]]; then
             sed -i 's/input_id/workflow_id/g' "$script"
         fi
-        mv "$script" $opencapturePath/bin/scripts/verifier_workflows/
+        mv "$script" $opencapturePath/custom/$custom_name/bin/scripts/verifier_workflows/
         sed -i "s#custom/$custom_name/bin/scripts/verifier_inputs#custom/$custom_name/bin/scripts/verifier_workflows#g" "$opencapturePath/instance/config/watcher.ini"
     done
 
@@ -48,10 +48,12 @@ for custom_name in ${SECTIONS[@]}; do
         if [[ ! $script =~ 'script_sample_dont_touch.sh' ]]; then
             sed -i 's/input_id/workflow_id/g' "$script"
         fi
-        mv "$script" $opencapturePath/bin/scripts/splitter_workflows/
+        mv "$script" $opencapturePath/custom/$custom_name/bin/scripts/splitter_workflows/
         sed -i "s#custom/$custom_name/bin/scripts/splitter_inputs#custom/$custom_name/bin/scripts/splitter_workflows#g" "$opencapturePath/instance/config/watcher.ini"
-        echo $script
     done
+
+    rm -rf $opencapturePath/custom/$custom_name/bin/scripts/verifier_inputs/
+    rm -rf $opencapturePath/custom/$custom_name/bin/scripts/splitter_inputs/
 done
 
 ####################
