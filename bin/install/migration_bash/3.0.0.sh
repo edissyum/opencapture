@@ -56,5 +56,7 @@ for custom_name in ${SECTIONS[@]}; do
         echo $JSON_VALUE > $json_file
     fi
 
-    echo "Please update manually your supplier referencial file and add a column named 'DUNS' at the end of the file, just after 'doc_lang'"
+    echo "########################################################################################################################################"
+    echo "   Please update manually your supplier referencial file and add a column named 'DUNS' at the end of the file, just after 'doc_lang'"
+    echo "########################################################################################################################################"
 done
