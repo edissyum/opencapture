@@ -21,12 +21,15 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+apt install -y jq
+
 opencapturePath="/var/www/html/opencapture/"
 
 ####################
 # Update input_id to workflow_id
 SECTIONS=$(crudini --get $opencapturePath/custom/custom.ini | sed 's/:.*//')
 for custom_name in ${SECTIONS[@]}; do
+    cd $opencapturePath
     mkdir -p custom/$custom_name/bin/scripts/verifier_workflows/
     cp $opencapturePath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh custom/$custom_name/bin/scripts/verifier_workflows/
     for script in custom/$custom_name/bin/scripts/verifier_inputs/*.sh; do
@@ -39,4 +42,19 @@ for custom_name in ${SECTIONS[@]}; do
             sed -i 's/input_id/workflow_id/g' "$script"
         fi
     done
+done
+
+####################
+# Update supplier referencial to add DUNS
+SECTIONS=$(crudini --get $opencapturePath/custom/custom.ini | sed 's/:.*//')
+for custom_name in ${SECTIONS[@]}; do
+    cd $opencapturePath
+    json_file="custom/$custom_name/instance/referencial/default_referencial_supplier_index.json"
+
+    if test -f "$json_file"; then
+        JSON_VALUE=$(jq --arg DUNS DUNS '. + {DUNS: $DUNS}' $json_file)
+        echo $JSON_VALUE > $json_file
+    fi
+
+    echo "Please update manually your supplier referencial file and add a column named 'DUNS' at the end of the file, just after 'doc_lang'"
 done
