@@ -867,7 +867,6 @@
 		"batch_locked_by": "Batch locked by following user : <strong>{{ locked_by }}</strong>",
 		"batch_metadata": "Batch metadata",
 		"batch_modification_saved": "Modifications saved",
-		"batch_validate_processing": "Batch validation processing ...",
 		"batches": "batch",
 		"bundle_separator": "Batches separator",
 		"can_not_merge_same_batch": "Please merge a batch different from the current one",
@@ -988,7 +987,6 @@
 		"updated": "User quota updated successfully"
 	},
 	"USER": {
-		"already_logged_in": "Your account is already log in another machine. Only one connection is allowed per account",
 		"confirm_delete": "Are you sure you want to delete user <strong>{{ user }}</strong> ?",
 		"confirm_disable": "Are you sure you want to delete user <strong>{{ user }}</strong> ?",
 		"confirm_enable": "Are you sure you want to delete user <strong>{{ user }}</strong> ?",
