@@ -59,12 +59,14 @@ def export_xml(data, log, regex, document_info, database):
             xml_technical = Et.SubElement(root, 'TECHNICAL')
 
             for technical in document_info:
-                if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale', 'original_filename']:
+                if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale',
+                                 'original_filename']:
                     new_field = Et.SubElement(xml_technical, technical)
                     new_field.text = str(document_info[technical])
 
             for document_data in document_info['datas']:
                 value = document_data
+
                 if 'custom_' in document_data:
                     custom_field = database.select({
                         'select': ['label_short'],
@@ -74,8 +76,71 @@ def export_xml(data, log, regex, document_info, database):
                     })
                     if custom_field and custom_field[0]:
                         value = 'custom_' + custom_field[0]['label_short']
-                new_field = Et.SubElement(xml_datas, value)
-                new_field.text = str(document_info['datas'][document_data])
+
+                if document_data == 'taxes_count':
+                    taxes_count = document_info['datas'][document_data]
+                    if taxes_count:
+                        taxes_element = Et.SubElement(xml_datas, 'taxes')
+                        for cpt in range(taxes_count):
+                            taxs_element = Et.SubElement(taxes_element, 'tax')
+                            taxs_element.set('number', str(cpt + 1))
+                            if cpt == 0:
+                                vat_rate_title = 'vat_rate'
+                                vat_amount_title = 'vat_amount'
+                                no_rate_amount_title = 'no_rate_amount'
+                            else:
+                                vat_rate_title = 'vat_rate_' + str(cpt)
+                                vat_amount_title = 'vat_amount_' + str(cpt)
+                                no_rate_amount_title = 'no_rate_amount_' + str(cpt)
+
+                            vat_rate = get_data(document_info, vat_rate_title)
+                            vat_amount = get_data(document_info, vat_amount_title)
+                            no_rate_amount = get_data(document_info, no_rate_amount_title)
+
+                            new_field = Et.SubElement(taxs_element, 'vat_rate')
+                            new_field.text = str(vat_rate)
+                            new_field = Et.SubElement(taxs_element, 'vat_amount')
+                            new_field.text = str(vat_amount)
+                            new_field = Et.SubElement(taxs_element, 'no_rate_amount')
+                            new_field.text = str(no_rate_amount)
+
+                elif document_data == 'lines_count':
+                    lines_count = document_info['datas'][document_data]
+                    if lines_count:
+                        lines_element = Et.SubElement(xml_datas, 'lines')
+                        for cpt in range(lines_count):
+                            line_element = Et.SubElement(lines_element, 'line')
+                            line_element.set('number', str(cpt + 1))
+                            if cpt == 0:
+                                line_ht_title = 'line_ht'
+                                quantity_title = 'quantity'
+                                unit_price_title = 'unit_price'
+                                description_title = 'description'
+                            else:
+                                line_ht_title = 'line_ht_' + str(cpt)
+                                quantity_title = 'quantity_' + str(cpt)
+                                unit_price_title = 'unit_price_' + str(cpt)
+                                description_title = 'description_' + str(cpt)
+
+                            line_ht = get_data(document_info, line_ht_title)
+                            quantity = get_data(document_info, quantity_title)
+                            unit_price = get_data(document_info, unit_price_title)
+                            description = get_data(document_info, description_title)
+
+                            new_field = Et.SubElement(line_element, 'line_ht')
+                            new_field.text = str(line_ht)
+                            new_field = Et.SubElement(line_element, 'quantity')
+                            new_field.text = str(quantity)
+                            new_field = Et.SubElement(line_element, 'unit_price')
+                            new_field.text = str(unit_price)
+                            new_field = Et.SubElement(line_element, 'description')
+                            new_field.text = str(description)
+                else:
+                    if 'vat_rate' not in value and 'vat_amount' not in value and 'no_rate_amount' not in value and \
+                            'line_ht' not in value and 'quantity' not in value and 'unit_price' not in value and \
+                            'description' not in value:
+                        new_field = Et.SubElement(xml_datas, value)
+                        new_field.text = str(document_info['datas'][document_data])
 
             xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
             xml_file.write(xml_root)
@@ -91,6 +156,12 @@ def export_xml(data, log, regex, document_info, database):
             "message": folder_out
         }
         return response, 400
+
+
+def get_data(document_info, child):
+    for document_data in document_info['datas']:
+        if document_data == child:
+            return document_info['datas'][document_data]
 
 
 def compress_pdf(input_file, output_file, compress_id):
@@ -153,7 +224,8 @@ def export_facturx(data, log, regex, document_info):
         issue_date_parent = Et.SubElement(facturx_document, 'ram:IssueDateTime')
         issue_date = Et.SubElement(issue_date_parent, 'udt:DateTimeString', {'format': '102'})
         if document_info['datas']['document_due_date']:
-            issue_date.text = datetime.datetime.strptime(document_info['datas']['document_due_date'], regex['format_date']).strftime('%Y%m%d')
+            issue_date.text = datetime.datetime.strptime(document_info['datas']['document_due_date'],
+                                                         regex['format_date']).strftime('%Y%m%d')
         else:
             issue_date.text = '19700101'
 
@@ -262,7 +334,8 @@ def export_facturx(data, log, regex, document_info):
         total_ht = Et.SubElement(data_parent, 'ram:TaxBasisTotalAmount')
         total_ht.text = str(document_info['datas']['total_ht'])
 
-        total_vat = Et.SubElement(data_parent, 'ram:TaxTotalAmount', {'currencyID': document_info['datas']['currency'] if 'currency' in document_info['datas'] else 'EUR'})
+        total_vat = Et.SubElement(data_parent, 'ram:TaxTotalAmount', {
+            'currencyID': document_info['datas']['currency'] if 'currency' in document_info['datas'] else 'EUR'})
         total_vat.text = str(document_info['datas']['total_vat'])
 
         total_ttc = Et.SubElement(data_parent, 'ram:GrandTotalAmount')
@@ -416,12 +489,14 @@ def export_mem(data, document_info, log, regex, database):
                     'societyShort': supplier[0]['name'],
                     'addressStreet': supplier[0]['address1'],
                     'addressPostcode': supplier[0]['postal_code'],
-                    'email': supplier[0]['email'] if supplier[0]['email'] else 'A_renseigner_' + supplier[0]['name'].replace(' ', '_') +
+                    'email': supplier[0]['email'] if supplier[0]['email'] else 'A_renseigner_' + supplier[0][
+                        'name'].replace(' ', '_') +
                                                                                '@' + supplier[0]['vat_number'] + '.fr'
                 }
 
                 if custom_field_contact_id and supplier[0]['vat_number'] and supplier[0]['siret']:
-                    contact['customFields'] = {custom_field_contact_id['id']: supplier[0]['vat_number'] + supplier[0]['siret']}
+                    contact['customFields'] = {
+                        custom_field_contact_id['id']: supplier[0]['vat_number'] + supplier[0]['siret']}
 
                 res = _ws.create_contact(contact)
                 if res is not False:
@@ -441,7 +516,8 @@ def export_mem(data, document_info, log, regex, database):
                     })
 
                     if 'document_due_date' in document_info['datas'] and document_info['datas']['document_due_date']:
-                        document_due_date = pd.to_datetime(document_info['datas']['document_due_date'], format=regex['format_date'])
+                        document_due_date = pd.to_datetime(document_info['datas']['document_due_date'],
+                                                           format=regex['format_date'])
                         if document_due_date.date() > datetime.date.today():
                             args.update({
                                 'processLimitDate': str(document_due_date.date())
@@ -481,7 +557,8 @@ def export_mem(data, document_info, log, regex, database):
                         })
 
                     if 'document_date' in document_info['datas'] and document_info['datas']['document_date']:
-                        document_date = pd.to_datetime(document_info['datas']['document_date'], format=regex['format_date'])
+                        document_date = pd.to_datetime(document_info['datas']['document_date'],
+                                                       format=regex['format_date'])
                         args.update({
                             'documentDate': str(document_date.date())
                         })
@@ -494,7 +571,8 @@ def export_mem(data, document_info, log, regex, database):
                                 opencapture_field = ''.join(construct_with_var(opencapture_field, document_info, regex))
                                 if mem_custom_field:
                                     if 'res_id' not in data or not data['res_id']:
-                                        docs = _ws.retrieve_doc_with_custom(mem_custom_field['id'], opencapture_field, mem_clause)
+                                        docs = _ws.retrieve_doc_with_custom(mem_custom_field['id'], opencapture_field,
+                                                                            mem_clause)
                                         if docs and docs['resources'] and len(docs['resources']) >= 1:
                                             res_id = docs['resources'][0]['res_id']
                                     else:
@@ -555,7 +633,8 @@ def construct_with_var(data, document_info, regex, separator=None):
         elif column == 'document_date_year':
             _data.append(datetime.datetime.strptime(document_info['datas']['document_date'], regex['format_date']).year)
         elif column == 'document_date_month':
-            _data.append(datetime.datetime.strptime(document_info['datas']['document_date'], regex['format_date']).month)
+            _data.append(
+                datetime.datetime.strptime(document_info['datas']['document_date'], regex['format_date']).month)
         elif column == 'document_date_day':
             _data.append(datetime.datetime.strptime(document_info['datas']['document_date'], regex['format_date']).day)
         elif column == 'register_date_year':
