@@ -192,11 +192,13 @@ export class ConfigurationsComponent implements OnInit {
         this.serviceSettings.init();
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/configurations') || lastUrl === '/') {
-            if (this.localStorageService.get('configurationsPageIndex'))
+            if (this.localStorageService.get('configurationsPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('configurationsPageIndex') as string);
+            }
             this.offset = this.pageSize * (this.pageIndex);
-        } else
+        } else {
             this.localStorageService.remove('configurationsPageIndex');
+        }
 
         this.http.get(environment['url'] + '/ws/config/getConfigurations', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
