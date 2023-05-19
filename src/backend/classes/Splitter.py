@@ -228,13 +228,14 @@ class Splitter:
                 previous_split_document = page['split_document']
                 paths_elements = pathlib.Path(page['path'])
                 thumbnail = os.path.join(*paths_elements.parts[-2:])
+                rotation = workflow_settings[0]['process']['rotation']
                 args = {
                     'table': 'splitter_pages',
                     'columns': {
-                        'document_id': str(documents_id),
                         'thumbnail': thumbnail,
-                        'rotation': workflow_settings[0]['process']['rotation'],
+                        'document_id': str(documents_id),
                         'source_page': page['source_page'],
+                        'rotation': rotation if rotation != 'no_rotation' else 0,
                     }
                 }
                 self.db.insert(args)
