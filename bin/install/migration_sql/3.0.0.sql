@@ -113,3 +113,5 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('duns', 'gl
 ALTER TABLE "accounts_supplier" ADD COLUMN "duns" VARCHAR(10);
 
 ALTER TABLE mailcollect RENAME COLUMN splitter_technical_input_id TO splitter_technical_workflow_id;
+
+ALTER TABLE documents ADD COLUMN "workflow_id" INTEGER DEFAULT null;
