@@ -41,7 +41,7 @@ def execute_outputs(output_info, log, regex, document_data, database, current_la
 
 
 def insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status,
-           nb_pages, docservers, workflow_settings, log, regex, supplier_lang_different, current_lang):
+           nb_pages, docservers, workflow_settings, log, regex, supplier_lang_different, current_lang, allow_auto):
     try:
         filename = os.path.splitext(files.custom_file_name)
         improved_img = filename[0] + '_improved' + filename[1]
@@ -128,7 +128,8 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                     execute_outputs(output_info[0], log, regex, document_data, database, current_lang)
 
     if workflow_settings:
-        if workflow_settings['input']['apply_process']:
+        document_data['workflow_id'] = workflow_settings['id']
+        if workflow_settings['input']['apply_process'] and allow_auto:
             if workflow_settings['process']['delete_documents']:
                 delete_documents(docservers, document_data['path'], document_data['filename'], full_jpg_filename)
                 log.info('Document not inserted in database based on workflow settings')
@@ -609,19 +610,17 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     continue
                 if field in datas and datas[field]:
                     continue
-                else:
-                    allow_auto = False
-                    break
-
+                allow_auto = False
+                break
     if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
         log.info('All the usefull informations are found. Execute outputs action and end process')
         document_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file,
                              supplier, 'END', nb_pages, docservers, workflow_settings, log, regex,
-                             supplier_lang_different, configurations['locale'])
+                             supplier_lang_different, configurations['locale'], allow_auto)
     else:
         document_id = insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file,
                              supplier, 'NEW', nb_pages, docservers, workflow_settings, log, regex,
-                             supplier_lang_different, configurations['locale'])
+                             supplier_lang_different, configurations['locale'], allow_auto)
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')
