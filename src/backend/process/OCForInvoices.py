@@ -114,7 +114,6 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                     for _r in _regex:
                         regex[_r['regex_id']] = _r['content']
                 execute_outputs(output_info[0], log, regex, document_data, database, current_lang)
-
     elif workflow_settings and (
             not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
         if 'output' in workflow_settings and workflow_settings['output']:

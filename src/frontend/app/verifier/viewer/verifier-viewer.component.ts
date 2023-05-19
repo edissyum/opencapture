@@ -82,6 +82,7 @@ export class VerifierViewerComponent implements OnInit {
     currentPage             : number      = 1;
     accountingPlan          : any         = {};
     formSettings            : any         = {};
+    workflowSettings        : any         = {};
     formList                : any         = {};
     currentFormFields       : any         = {};
     imgArray                : any         = {};
@@ -219,6 +220,9 @@ export class VerifierViewerComponent implements OnInit {
             'locked_by': this.userService.user.username
         });
         this.document = await this.getDocument();
+        if (this.document.workflow_id) {
+            this.getWorkflow();
+        }
         if (this.fromToken && (this.document.status === 'END' || this.document.status === 'ERR')) {
             this.loading = false;
             this.processDone = false;
@@ -561,6 +565,15 @@ export class VerifierViewerComponent implements OnInit {
 
     async getDocumentById(id: any): Promise<any> {
         return await this.http.get(environment['url'] + '/ws/verifier/documents/' + id, {headers: this.authService.headers}).toPromise();
+    }
+
+    getWorkflow() {
+        this.http.get(environment['url'] + '/ws/workflows/verifier/getById/' + this.document.workflow_id,
+            {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.workflowSettings = data;
+            })
+        ).subscribe();
     }
 
     async getForm(): Promise<any> {
@@ -1622,14 +1635,17 @@ export class VerifierViewerComponent implements OnInit {
                                     this.updateDocument({'status': 'END', 'locked': false, 'locked_by': null});
                                     this.router.navigate(['/verifier']).then();
                                     this.loadingSubmit = false;
-                                    if (this.formSettings.settings.delete_documents_after_outputs) {
-                                        this.http.get(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deleteDocuments', {headers: this.authService.headers}).pipe(
-                                            catchError((err: any) => {
-                                                console.debug(err);
-                                                this.notify.handleErrors(err);
-                                                return of(false);
-                                            })
-                                        ).subscribe();
+                                    if (this.workflowSettings && this.workflowSettings.process) {
+                                        if (this.workflowSettings.process['delete_documents']) {
+                                            console.log('here')
+                                            this.http.get(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deleteDocuments', {headers: this.authService.headers}).pipe(
+                                                catchError((err: any) => {
+                                                    console.debug(err);
+                                                    this.notify.handleErrors(err);
+                                                    return of(false);
+                                                })
+                                            ).subscribe();
+                                        }
                                     }
                                     this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: this.outputsLabel.join('<br>')}));
                                 }

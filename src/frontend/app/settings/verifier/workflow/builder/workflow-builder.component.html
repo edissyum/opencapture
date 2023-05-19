@@ -38,7 +38,7 @@
                         <div *ngIf="field.type === 'boolean'">
                             <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2">
                                 <span class="justify-center">{{ field.label | translate }}</span>
-                                <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-6 cursor-help" [matTooltip]="field.hint | translate">
+                                <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="field.hint | translate">
                                     <i class="fa-solid fa-circle-question text-md"></i>
                                 </span>
                             </mat-slide-toggle>
@@ -89,7 +89,7 @@
                         <div *ngIf="field.type === 'boolean' && field.show">
                             <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2" (change)="field.id === 'use_interface' ? setUseInterface($event.checked) : ''">
                                 <span class="justify-center">{{ field.label | translate }}</span>
-                                <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-6 cursor-help" [matTooltip]="field.hint | translate">
+                                <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="field.hint | translate">
                                     <i class="fa-solid fa-circle-question text-md"></i>
                                 </span>
                             </mat-slide-toggle>
