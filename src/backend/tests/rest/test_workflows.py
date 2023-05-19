@@ -15,11 +15,9 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os.path
 import unittest
 import warnings
 from src.backend import app
-from configparser import ConfigParser
 from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
