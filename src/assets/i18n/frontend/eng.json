@@ -868,7 +868,6 @@
 		"batch_locked_by": "Batch locked by following user : <strong>{{ locked_by }}</strong>",
 		"batch_metadata": "Batch metadata",
 		"batch_modification_saved": "Modifications saved",
-		"batch_validate_processing": "Batch validation processing ...",
 		"batches": "batch",
 		"bundle_separator": "Batches separator",
 		"can_not_merge_same_batch": "Please merge a batch different from the current one",

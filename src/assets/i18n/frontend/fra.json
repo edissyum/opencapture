@@ -868,7 +868,6 @@
 		"batch_locked_by": "Lot verrouillé par l'utilisateur suivant : <strong>{{ locked_by }}</strong>",
 		"batch_metadata": "Métadonnées de lot",
 		"batch_modification_saved": "Modifications enregistrées",
-		"batch_validate_processing": "Validation du lot est en cours de traitement ...",
 		"batches": "lot(s)",
 		"bundle_separator": "Séparateur de lots",
 		"can_not_merge_same_batch": "Veuillez fusionner un lot différent du lot actuel",
