@@ -72,6 +72,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     isDataEdited                : boolean       = false;
     isBatchOnDrag               : boolean       = false;
     batchesLoading              : boolean       = false;
+    validateLoading             : boolean       = false;
     downloadLoading             : boolean       = false;
     saveInfosLoading            : boolean       = false;
     documentsLoading            : boolean       = false;
@@ -1182,8 +1183,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     validate(): void {
-        this.loading = true;
-        this.notify.success(this.translate.instant('SPLITTER.batch_validate_processing'), 10000);
+        this.validateLoading = true;
         const batchMetadata             = this.batchMetadataValues;
         batchMetadata['id']             = this.currentBatch.id;
         batchMetadata['userName']       = this.userService.user['username'];
@@ -1222,15 +1222,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {
-                this.router.navigate(['splitter/list']).then();
-                this.notify.success(this.translate.instant('SPLITTER.validate_batch_success'));
                 this.translate.get('HISTORY-DESC.validate_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
                     this.historyService.addHistory('splitter', 'viewer', translated);
                 });
-                this.loading = true;
+                this.notify.success(this.translate.instant('SPLITTER.validate_batch_success'));
+                this.router.navigate(['splitter/list']).then();
             }),
             catchError((err: any) => {
-                this.loading = false;
+                this.validateLoading = false;
                 this.notify.handleErrors(err);
                 console.debug(err);
                 return of(false);
