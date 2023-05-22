@@ -30,7 +30,7 @@ from src.backend.main_splitter import launch
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
-from src.backend.import_models import splitter, doctypes, accounts
+from src.backend.import_models import splitter, doctypes, accounts, workflow
 from src.backend.import_controllers import forms, outputs, user, monitoring
 from src.backend.import_classes import _Files, _Splitter, _CMIS, _MEMWebServices, _OpenADS
 
@@ -574,17 +574,9 @@ def export_xml(documents, parameters, metadata, now):
 
 def save_infos(data):
     new_documents = []
-    args = {
-        'documents': data['documents'],
-        'batch_id': data['batchId'],
-        'moved_pages': data['movedPages'],
-        'batch_metadata': data['batchMetadata'],
-        'deleted_pages_ids': data['deletedPagesIds'],
-        'deleted_documents_ids': data['deletedDocumentsIds']
-    }
     res = splitter.update_batch({
-        'batch_id': args['batch_id'],
-        'batch_metadata': args['batch_metadata'],
+        'batch_id': data['batch_id'],
+        'batch_metadata': data['batch_metadata'],
     })[0]
     if not res:
         response = {
@@ -593,7 +585,7 @@ def save_infos(data):
         }
         return response, 400
 
-    for document in args['documents']:
+    for document in data['documents']:
         if document['displayOrder']:
             res = splitter.update_document({
                 'id': document['id'].split('-')[-1],
@@ -637,7 +629,7 @@ def save_infos(data):
     """
         moved pages
     """
-    for moved_page in args['moved_pages']:
+    for moved_page in data['moved_pages']:
         """ Check if page is added in a new document """
         if moved_page['isAddInNewDoc']:
             for new_document_item in new_documents:
@@ -658,7 +650,7 @@ def save_infos(data):
     """
         Deleted documents
     """
-    for deleted_documents_id in args['deleted_documents_ids']:
+    for deleted_documents_id in data['deleted_documents_ids']:
         res = splitter.update_document({
             'id': deleted_documents_id.split('-')[-1],
             'status': 'DEL',
@@ -673,7 +665,7 @@ def save_infos(data):
     """
         Deleted pages
     """
-    for deleted_pages_id in args['deleted_pages_ids']:
+    for deleted_pages_id in data['deleted_pages_ids']:
         res = splitter.update_page({
             'page_id': deleted_pages_id,
             'status': 'DEL',
@@ -714,7 +706,7 @@ def test_openads_connection(args):
     return {'status': True}, 200
 
 
-def validate(args):
+def validate(data):
     now = _Files.get_now_date()
     if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context:
         log = current_context.log
@@ -729,13 +721,15 @@ def validate(args):
     exported_files = []
 
     save_response = save_infos({
-        'documents': args['documents'],
-        'batch_id': args['batchMetadata']['id'],
-        'moved_pages': args['movedPages'],
-        'batch_metadata': args['batchMetadata'],
-        'deleted_pages_ids': args['deletedPagesIds'],
-        'deleted_documents_ids': args['deletedDocumentsIds']
+        'documents': data['documents'],
+        'moved_pages': data['movedPages'],
+        'batch_id': data['batchMetadata']['id'],
+        'batch_metadata': data['batchMetadata'],
+        'deleted_pages_ids': data['deletedPagesIds'],
+        'deleted_documents_ids': data['deletedDocumentsIds']
     })
+
+    batch_data = splitter.get_batch_by_id({'id': data['batchMetadata']['id']})
 
     if save_response[1] != 200:
         return save_response
@@ -745,11 +739,11 @@ def validate(args):
         'page': None,
         'size': None,
         'where': ['id = %s'],
-        'data': [args['batchMetadata']['id']]
+        'data': [data['batchMetadata']['id']]
     })[0][0]
     form = forms.get_form_by_id(batch['form_id'])
-    pages = _Splitter.get_split_pages(args['documents'])
-    batch['metadata'] = args['batchMetadata']
+    pages = _Splitter.get_split_pages(data['documents'])
+    batch['metadata'] = data['batchMetadata']
     if 'outputs' in form[0]:
         for output_id in form[0]['outputs']:
             output = outputs.get_output_by_id(output_id)
@@ -759,7 +753,7 @@ def validate(args):
                     Export PDF files
                 """
                 if output[0]['output_type_id'] in ['export_pdf']:
-                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], log)
+                    res_export_pdf = export_pdf(batch, data['documents'], parameters, pages, now, output[0], log)
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
 
@@ -767,8 +761,8 @@ def validate(args):
                     exported_files.extend(res_export_pdf[0]['doc_except_from_zip'])
                     if res_export_pdf[0]['zip_file_path']:
                         exported_files.append(res_export_pdf[0]['zip_file_path'])
-                    args['batchMetadata']['zip_filename'] = os.path.basename(res_export_pdf[0]['zip_file_path'])
-                    args['batchMetadata']['doc_except_from_zip'] = res_export_pdf[0]['doc_except_from_zip']
+                    data['batchMetadata']['zip_filename'] = os.path.basename(res_export_pdf[0]['zip_file_path'])
+                    data['batchMetadata']['doc_except_from_zip'] = res_export_pdf[0]['doc_except_from_zip']
 
                 """
                     Export XML file
@@ -779,7 +773,7 @@ def validate(args):
                     parameters['empty_line_regex'] = regex['splitter_empty_line']
                     parameters['xml_comment_regex'] = regex['splitter_xml_comment']
 
-                    res_export_xml = export_xml(args['documents'], parameters, args['batchMetadata'], now)
+                    res_export_xml = export_xml(data['documents'], parameters, data['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
                     exported_files.append(res_export_xml[0]['path'])
@@ -803,7 +797,7 @@ def validate(args):
                         'separator': cmis_params['separator'],
                         'filename': cmis_params['pdf_filename'],
                     }
-                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], log)
+                    res_export_pdf = export_pdf(batch, data['documents'], parameters, pages, now, output[0], log)
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
                     for file_path in res_export_pdf[0]['paths']:
@@ -831,7 +825,7 @@ def validate(args):
                             'empty_line_regex': regex['splitter_empty_line'],
                             'xml_comment_regex': regex['splitter_xml_comment'],
                         }
-                        res_export_xml = export_xml(args['documents'], parameters, args['batchMetadata'], now)
+                        res_export_xml = export_xml(data['documents'], parameters, data['batchMetadata'], now)
                         if res_export_xml[1] != 200:
                             return res_export_xml
                         cmis_res = cmis.create_document(res_export_xml[0]['path'], 'text/xml')
@@ -854,7 +848,7 @@ def validate(args):
                         'separator': mem_params['separator'],
                         'file_name': mem_params['filename'],
                     }
-                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], log)
+                    res_export_pdf = export_pdf(batch, data['documents'], parameters, pages, now, output[0], log)
 
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
@@ -866,7 +860,7 @@ def validate(args):
                             'separator': ' ',
                             'format': parameters['format']
                         }
-                        parameters['subject'] = _Splitter.get_value_from_mask(args['documents'][index], args['batchMetadata'],
+                        parameters['subject'] = _Splitter.get_value_from_mask(data['documents'][index], data['batchMetadata'],
                                                                               now, mask_args)
                         res_export_mem = export_mem(mem_auth, file_path, parameters, batch)
                         if res_export_mem[1] != 200:
@@ -883,7 +877,7 @@ def validate(args):
                         'mask': openads_params['folder_id'],
                         'separator': '',
                     }
-                    folder_id = _Splitter.get_value_from_mask(None, args['batchMetadata'], now, folder_id_mask)
+                    folder_id = _Splitter.get_value_from_mask(None, data['batchMetadata'], now, folder_id_mask)
                     openads_res = _openads.check_folder_by_id(folder_id)
                     if not openads_res['status']:
                         response = {
@@ -898,11 +892,11 @@ def validate(args):
                         'separator': openads_params['separator'],
                         'filename': openads_params['pdf_filename'],
                     }
-                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now, output[0], log)
+                    res_export_pdf = export_pdf(batch, data['documents'], parameters, pages, now, output[0], log)
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
 
-                    openads_res = _openads.create_documents(folder_id, res_export_pdf[0]['paths'], args['documents'])
+                    openads_res = _openads.create_documents(folder_id, res_export_pdf[0]['paths'], data['documents'])
                     if not openads_res['status']:
                         response = {
                             "errors": gettext('OPENADS_ADD_DOC_ERROR'),
@@ -924,16 +918,17 @@ def validate(args):
                 'separator': '',
                 'substitute': '_'
             }
-            export_zip_file = _Splitter.get_value_from_mask(None, args['batchMetadata'], now, mask_args)
+            export_zip_file = _Splitter.get_value_from_mask(None, data['batchMetadata'], now, mask_args)
             _Files.zip_files(files_to_zip, export_zip_file, True)
 
         """
-            Change status to END
+            Process after validation
         """
         splitter.update_status({
-            'ids': [args['batchMetadata']['id']],
-            'status': 'END'
+            'ids': [data['batchMetadata']['id']],
+            'status': 'NEW'
         })
+
 
     return {"OK": True}, 200
 
