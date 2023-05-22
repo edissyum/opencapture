@@ -192,6 +192,7 @@ CREATE TABLE "documents" (
     "supplier_id"       INTEGER,
     "customer_id"       INTEGER             DEFAULT 0,
     "form_id"           INTEGER             DEFAULT null,
+    "workflow_id"       INTEGER             DEFAULT null,
     "purchase_or_sale"  VARCHAR(8)          DEFAULT 'purchase',
     "filename"          VARCHAR(255)        NOT NULL,
     "original_filename" VARCHAR(255),

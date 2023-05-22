@@ -118,6 +118,8 @@ export class CustomFieldsComponent implements OnInit {
             class       : "",
         },
     ];
+    unallowedFields    : any[]     = ['vat_rate', 'vat_amount', 'no_rate_amount', 'description', 'line_ht',
+        'unit_price', 'quantity']
 
     constructor(
         public router: Router,
@@ -263,6 +265,7 @@ export class CustomFieldsComponent implements OnInit {
         this.loading = true;
         let newField: any = {};
         newField = this.addSelectOptionsToArgs(newField);
+
         for (const field of this.addFieldInputs) {
             if (field.required && !field.control.value) {
                 field.control.setErrors({'incorrect': true});
@@ -270,6 +273,11 @@ export class CustomFieldsComponent implements OnInit {
                 return;
             }
             newField[field.field_id] = field.control.value;
+            if (this.unallowedFields.includes(newField.label_short)) {
+                this.notify.error(this.translate.instant('CUSTOM-FIELDS.unallowed_fields'));
+                this.loading = false;
+                return;
+            }
         }
         this.http.post(environment['url'] + '/ws/customFields/add', newField, {headers: this.authService.headers}).pipe(
             tap((data: any) => {

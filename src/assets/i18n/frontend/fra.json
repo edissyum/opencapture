@@ -179,6 +179,7 @@
 		"reset": "Réinitialiser",
 		"select_options": "Liste des choix",
 		"type": "Type",
+		"unallowed_fields": "Libellé technique du champ non autorisé (champ système Open-Capture)",
 		"update": "Modifier le champ personnalisé"
 	},
 	"DISABLED": {

@@ -179,6 +179,7 @@
 		"reset": "Reset",
 		"select_options": "Select options",
 		"type": "Type",
+		"unallowed_fields": "Unallowed technical label",
 		"update": "Update custom field"
 	},
 	"DISABLED": {
