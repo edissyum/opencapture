@@ -254,6 +254,7 @@
 		"missing_secret_key": "Secret key missing for this instance",
 		"number_float_pattern": "The value is not well formatted : float",
 		"number_int_pattern": "The value is not well formatted : integer",
+		"permission_problem": "Error while uploading file, check permissions",
 		"unauthorized": "You are not allowed to see the following page : ",
 		"unknow_error": "Unknow error",
 		"wrong_siren_format": "Wrong siren number format",

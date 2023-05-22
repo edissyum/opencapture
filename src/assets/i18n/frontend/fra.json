@@ -254,6 +254,7 @@
 		"missing_secret_key": "La clé secrète est manquante pour cette instance",
 		"number_float_pattern": "La valeur n'est pas au format attendu : nombre flottant",
 		"number_int_pattern": "La valeur n'est pas au format attendu : nombre entier",
+		"permission_problem": "Erreur lors de l'upload du fichier, vérifiez les permissions",
 		"unauthorized": "Vous n'êtes pas autorisé à visualiser la page suivante : ",
 		"unknow_error": "Erreur inconnue",
 		"wrong_siren_format": "Mauvais format du SIREN",

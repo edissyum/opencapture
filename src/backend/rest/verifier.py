@@ -27,6 +27,17 @@ from src.backend.import_controllers import auth, config, verifier, privileges
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 
 
+@bp.route('verifier/checkFileBeforeUpload', methods=['POST'])
+def check_file_before_upload():
+    """
+    Check if the file is valid before upload
+    Usefull to check if file is accessible by the browser
+    :return:
+    """
+    _ = request.files
+    return '', 200
+
+
 @bp.route('verifier/upload', methods=['POST'])
 @auth.token_required
 def upload():
