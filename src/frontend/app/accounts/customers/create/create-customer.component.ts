@@ -34,7 +34,7 @@ import { HistoryService } from "../../../../services/history.service";
 import { Country } from "@angular-material-extensions/select-country";
 
 @Component({
-    selector: 'app-create',
+    selector: 'app-create-customer',
     templateUrl: './create-customer.component.html',
     styleUrls: ['./create-customer.component.scss']
 })
@@ -97,7 +97,7 @@ export class CreateCustomerComponent implements OnInit {
             label: marker('ADDRESSES.address_1'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: false,
         },
         {
             id: 'address2',
@@ -111,21 +111,21 @@ export class CreateCustomerComponent implements OnInit {
             label: marker('ADDRESSES.postal_code'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: false,
         },
         {
             id: 'city',
             label: marker('ADDRESSES.city'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: false,
         },
         {
             id: 'country',
             label: marker('ADDRESSES.country'),
             type: 'country',
             control: new FormControl(),
-            required: true,
+            required: false,
         },
     ];
     defaultValue    : Country       = {
@@ -172,7 +172,7 @@ export class CreateCustomerComponent implements OnInit {
         if (field.control.value === 'splitter') {
             requiredFields = ['name', 'module'];
         } else {
-            requiredFields = ['name', 'vat_number', 'siret', 'siren', 'module', 'address1', 'postal_code', 'city'];
+            requiredFields = ['name', 'vat_number', 'siret', 'siren', 'module'];
         }
 
         this.customerForm.forEach((element: any) => {
@@ -204,7 +204,9 @@ export class CreateCustomerComponent implements OnInit {
                 customer[element.id] = element.control.value;
             });
             this.addressForm.forEach(element => {
-                address[element.id] = element.control.value;
+                if (element.control.value) {
+                    address[element.id] = element.control.value;
+                }
             });
             address['module'] = this.currentModule;
             this.http.post(environment['url'] + '/ws/accounts/addresses/create', {'args': address}, {headers: this.authService.headers},
