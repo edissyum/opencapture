@@ -140,7 +140,9 @@ def create_address():
     if all(data[x] is None for x in data) and module == 'splitter':
         return make_response(''), 204
 
-    res = accounts.create_address(data)
+    res = [{}, 200]
+    if data:
+        res = accounts.create_address(data)
     return make_response(jsonify(res[0])), res[1]
 
 
