@@ -70,7 +70,6 @@ class Splitter:
                     'split_document': split_document,
                     'source_page': page['source_page'],
                     'doctype_value': page['doctype_value'],
-
                 })
                 is_previous_code_qr = False
 
@@ -127,7 +126,7 @@ class Splitter:
         batches_id = []
         for _, batch in enumerate(self.result_batches):
             workflow_settings = self.db.select({
-                'select': ['input, process'],
+                'select': ['id', 'input, process'],
                 'table': ['workflows'],
                 'where': ['workflow_id = %s', 'module = %s'],
                 'data': [workflow_id, 'splitter']
@@ -151,6 +150,7 @@ class Splitter:
                 'columns': {
                     'form_id': form_id,
                     'batch_folder': batch_folder,
+                    'workflow_id': workflow_settings[0]['id'],
                     'file_path': clean_path.replace(clean_ds, ''),
                     'thumbnail': os.path.basename(batch[0]['path']),
                     'file_name': os.path.basename(original_filename),
@@ -245,16 +245,16 @@ class Splitter:
 
     @staticmethod
     def get_split_pages(documents):
-        pages = []
+        documents_pages = []
         for document in documents:
-            pages.append([])
+            documents_pages.append([])
             for page in document['pages']:
-                pages[-1].append({
+                documents_pages[-1].append({
                     'page_id': page['id'],
                     'rotation': page['rotation'],
                     'source_page': page['sourcePage'],
                 })
-        return pages
+        return documents_pages
 
     @staticmethod
     def get_value_from_mask(document, metadata, date, mask_args):

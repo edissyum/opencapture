@@ -654,6 +654,34 @@ class Files:
         except Exception as error:
             log.error('Error during pdf2image conversion : ' + str(error))
 
+    @staticmethod
+    def remove_file(path, log):
+        try:
+            if os.path.exists(path):
+                os.remove(path)
+                log.info(f'File {path} deleted')
+                return True
+            else:
+                log.error(f'File {path} does not exist')
+                return False
+        except Exception as error:
+            log.error(f'Error during file deletion : {str(error)}')
+            return False
+
+    @staticmethod
+    def remove_folder(path, log):
+        try:
+            if os.path.exists(path):
+                shutil.rmtree(path)
+                log.info(f'Folder {path} deleted')
+                return True
+            else:
+                log.error(f'Folder {path} does not exist')
+                return False
+        except Exception as error:
+            log.error(f'Error during folder deletion : {str(error)}')
+            return False
+
 
 def compress_pdf(input_file, output_file, compress_id):
     gs_command = 'gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/%s#-dNOPAUSE#-dQUIET#-o#%s#%s' \
