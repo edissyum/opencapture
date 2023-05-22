@@ -409,20 +409,20 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.artificial_intelligence"),
                 "icon"      : "fa-solid fa-microchip",
                 "route"     : "/settings/splitter/ai",
-                "privilege" : "list_ai_model",
+                "privilege" : "list_ai_model_splitter",
                 "actions"   : [
                     {
                         "id"        : "splitter_add_model",
                         "label"     : this.translate.instant("ARTIFICIAL-INTELLIGENCE.add_model"),
                         "route"     : "/settings/splitter/ai/create",
-                        "privilege" : "create_ai_model",
+                        "privilege" : "create_ai_model_splitter",
                         "icon"      : "fa-solid fa-plus"
                     },
                     {
                         "id"                : "splitter_update_model",
                         "label"             : this.translate.instant("ARTIFICIAL-INTELLIGENCE.update_model"),
                         "route"             : "/settings/splitter/ai/update/",
-                        "privilege"         : "update_ai_model",
+                        "privilege"         : "update_ai_model_splitter",
                         "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }
@@ -433,7 +433,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.status_update"),
                 "icon"      : "fa-solid fa-flag",
                 "route"     : "/settings/splitter/status-update",
-                "privilege" : "update_status"
+                "privilege" : "update_status_splitter"
             }
         ]
     };
