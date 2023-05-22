@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # This file is part of Open-Capture.
-import json
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -19,6 +18,7 @@ import json
 import os
 import sys
 import uuid
+import json
 import ldap3
 import psycopg2
 import configparser
