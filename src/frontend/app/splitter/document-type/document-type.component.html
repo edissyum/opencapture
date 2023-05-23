@@ -4,16 +4,16 @@
     </button>
     <app-document-type-factory
         class="h-80"
-        [selectedDocTypeInput]="data.selectedDocType"
-        [data]="{canFolderBeSelected: false, formId: data.formId}"
-        (selectedDoctypeOutput)="getOutPut($event)">
+        [selectedDoctypeInput]="data.selectedDoctype"
+        (selectedDoctypeOutput)="getOutPut($event)"
+        [settings]="{canFolderBeSelected: false, formId: data.formId}">
     </app-document-type-factory>
     <div class="text-gray-400 mt-1 mx-4">
         <i class="fa-solid fa-circle-info"></i>
         {{ 'SPLITTER.doubleClickToSelectDoctype' | translate }}
     </div>
     <div class="w-max mt-2 mx-auto">
-        <button mat-button class="mx-auto h-12 w-48 bg-gray-200 text-gray-500" [mat-dialog-close]="selectedItem">
+        <button mat-button class="mx-auto h-12 w-48 bg-gray-200 text-gray-500" [mat-dialog-close]="data.selectedDoctype">
             {{ 'SPLITTER.select' | translate }}
         </button>
     </div>

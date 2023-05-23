@@ -18,7 +18,7 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-50">
-        <app-document-type-factory [data]="{canFolderBeSelected: false}"
+        <app-document-type-factory [settings]="{'canFolderBeSelected': false}"
                                    (selectedFormOutput)="getSelectedForm($event)"></app-document-type-factory>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">

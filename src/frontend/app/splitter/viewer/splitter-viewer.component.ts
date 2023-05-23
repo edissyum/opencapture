@@ -885,7 +885,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             width   : '800px',
             height  : '860px',
             data    : {
-                selectedDocType: {
+                selectedDoctype: {
                     key: document.documentTypeKey  ? document.documentTypeKey  : "",
                 },
                 formId: this.currentBatch.formId
