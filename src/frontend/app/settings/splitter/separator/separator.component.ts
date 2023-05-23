@@ -35,7 +35,7 @@ import { NotificationService } from "../../../../services/notifications/notifica
     styleUrls: ['./separator.component.scss']
 })
 export class SeparatorComponent implements OnInit {
-    private selectedDocType: any;
+    private selectedDoctype: any;
     public separator: any      = {
         'total'      : 0,
         'current'    : 0,
@@ -98,7 +98,7 @@ export class SeparatorComponent implements OnInit {
         }
         else {
             args = {
-                'id'   : this.selectedDocType.id ? this.selectedDocType.id : null,
+                'id'   : this.selectedDoctype.id ? this.selectedDoctype.id : null,
                 'type' : 'docTypeSeparator'
             };
         }
@@ -107,10 +107,10 @@ export class SeparatorComponent implements OnInit {
 
     getOutPut($event: any) {
         this.selectedSeparator  = 'docTypeSeparator';
-        this.selectedDocType    = $event;
+        this.selectedDoctype    = $event;
         this.generateSeparator({
             'type' : 'docTypeSeparator',
-            'id'   : this.selectedDocType.id
+            'id'   : this.selectedDoctype.id
         });
     }
 
@@ -134,7 +134,7 @@ export class SeparatorComponent implements OnInit {
     }
 
     downloadSeparator() {
-        const fileName = this.selectedSeparator + (this.selectedDocType ? '_' + this.selectedDocType.key : '');
+        const fileName = this.selectedSeparator + (this.selectedDoctype ? '_' + this.selectedDoctype.key : '');
         this.downloadPdf(this.separator.fileUrl, fileName);
     }
 

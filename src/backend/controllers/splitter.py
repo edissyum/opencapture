@@ -741,9 +741,15 @@ def validate(data):
         'where': ['id = %s'],
         'data': [data['batchMetadata']['id']]
     })[0][0]
+
+    batch['metadata'] = data['batchMetadata']
     form = forms.get_form_by_id(batch['form_id'])
     pages = _Splitter.get_split_pages(data['documents'])
-    batch['metadata'] = data['batchMetadata']
+
+    workflow_settings, error = workflow.get_workflow_by_id({'workflow_id': batch['workflow_id']})
+    if error:
+        return error, 400
+
     if 'outputs' in form[0]:
         for output_id in form[0]['outputs']:
             output = outputs.get_output_by_id(output_id)
@@ -929,6 +935,8 @@ def validate(data):
             'status': 'END'
         })
 
+        if workflow_settings['process']['delete_documents']:
+            _Files.remove_file(f"{docservers['SPLITTER_ORIGINAL_PDF']}/{batch['file_path']}", log)
 
     return {"OK": True}, 200
 

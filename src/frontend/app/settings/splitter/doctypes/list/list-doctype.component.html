@@ -22,9 +22,9 @@
         </div>
         <hr class="border-green-400 relative z-50">
         <app-document-type-factory
-                [data]="{canFolderBeSelected: true}"
-               (selectedFormOutput)="getSelectedForm($event)"
-               (selectedDoctypeOutput)="getOutPut($event)">
+            [settings]="{'canFolderBeSelected': true}"
+            (selectedFormOutput)="getSelectedForm($event)"
+            (selectedDoctypeOutput)="getOutPut($event)">
         </app-document-type-factory>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
@@ -42,8 +42,8 @@
                         </mat-option>
                         <div *ngFor="let folder of this.documentTypeFactoryComponent.treeDataObj.doctypeData">
                             <mat-option *ngIf="folder.type === 'folder' && folder.formId === selectedFormId"
-                                        [disabled]="!this.selectedDocType.key || folder.code.startsWith(this.selectedDocType.code + '.')
-                                                        || folder.key === this.selectedDocType.key"
+                                        [disabled]="!this.selectedDoctype.key || folder.code.startsWith(this.selectedDoctype.code + '.')
+                                                        || folder.key === this.selectedDoctype.key"
                                         [value]="folder.code">
                                 {{ folder.label }}
                             </mat-option>
@@ -53,7 +53,7 @@
                 <ng-container *ngFor="let field of this.fields">
                     <mat-form-field *ngIf="field.type === 'text'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControlName]="field.id" [type]="field.type" [readonly]="!this.selectedDocType.key"
+                        <input matInput [formControlName]="field.id" [type]="field.type" [readonly]="!this.selectedDoctype.key"
                                [placeholder]="field.placeholder" [required]="field['required']">
                     </mat-form-field>
                     <div class="text-center p-4" *ngIf="field.type === 'slide'">
@@ -62,10 +62,10 @@
                         </mat-slide-toggle>
                     </div>
                 </ng-container>
-                <button [disabled]="!this.selectedDocType.key" class="m-auto w-7/12 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300" type="submit" mat-button>
+                <button [disabled]="!this.selectedDoctype.key" class="m-auto w-7/12 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300" type="submit" mat-button>
                     {{ 'GLOBAL.edit' | translate }}
                 </button>
-                <button [disabled]="!this.selectedDocType.key" (click)="deleteDoctype()" class="m-auto w-7/12 border-solid border-red-400 border bg-red-400 text-white" type='button' mat-button>
+                <button [disabled]="!this.selectedDoctype.key" (click)="deleteDoctype()" class="m-auto w-7/12 border-solid border-red-400 border bg-red-400 text-white" type='button' mat-button>
                     {{ 'GLOBAL.delete' | translate }}
                 </button>
             </div>

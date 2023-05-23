@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# This file is part of Open-Capture.
 
+# This file is part of Open-Capture.
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -19,6 +19,7 @@
 import os
 import sys
 import uuid
+import json
 import ldap3
 import psycopg2
 import configparser
@@ -278,7 +279,20 @@ def check_database_users(ldap_users_data, default_role):
                         'role': default_role
                     }
                 })
-
+                database.insert({
+                    'table': 'users_customers',
+                    'columns': {
+                        'user_id': new_user,
+                        'customers_id': json.dumps({"data": []})
+                    }
+                })
+                database.insert({
+                    'table': 'users_forms',
+                    'columns': {
+                        'user_id': new_user,
+                        'forms_id': json.dumps({"data": []})
+                    }
+                })
                 if new_user:
                     print_log("User " + str(user_to_create[0]) + " successfully inserted in the users table")
                 else:

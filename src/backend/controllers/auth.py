@@ -891,7 +891,8 @@ def check_database_users(ldap_users_data, default_role):
                 'email': '',
                 'password': hash_password,
                 'role': default_role,
-                'customers': []
+                'customers': [],
+                'forms': []
             })
             if new_user:
                 user_to_create[0] = 'Created'

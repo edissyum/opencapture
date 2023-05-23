@@ -25,8 +25,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
     styleUrls: ['./document-type.component.scss']
 })
 export class DocumentTypeComponent {
-    selectedItem: any;
-
     constructor(
         public router: Router,
         private dialogRef: MatDialogRef<DocumentTypeComponent>,
@@ -34,7 +32,7 @@ export class DocumentTypeComponent {
     ) {}
 
     getOutPut($event: any) {
-        this.selectedItem = $event;
-        this.selectedItem.isDblClick ? this.dialogRef.close(this.selectedItem) : '';
+        this.data.selectedDoctype = $event;
+        this.data.selectedDoctype.isDblClick ? this.dialogRef.close(this.data.selectedDoctype) : '';
     }
 }

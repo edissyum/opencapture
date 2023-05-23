@@ -34,10 +34,10 @@ import { MatDialog } from "@angular/material/dialog";
 
 @Component({
     selector: 'app-list-doc-type',
-    templateUrl: './list-doc-type.component.html',
-    styleUrls: ['./list-doc-type.component.scss']
+    templateUrl: './list-doctype.component.html',
+    styleUrls: ['./list-doctype.component.scss']
 })
-export class ListDocTypeComponent implements OnInit {
+export class ListDoctypeComponent implements OnInit {
     @ViewChild(DocumentTypeFactoryComponent, {static : true}) documentTypeFactoryComponent! : DocumentTypeFactoryComponent;
     loading         : boolean = false;
     noMasterFolder  : string  = '_NO_MASTER';
@@ -64,7 +64,7 @@ export class ListDocTypeComponent implements OnInit {
             disabled : false,
         },
     ];
-    selectedDocType : any     = {
+    selectedDoctype : any     = {
         label   : '',
         key     : '',
         code    : '',
@@ -119,21 +119,21 @@ export class ListDocTypeComponent implements OnInit {
     }
 
     getOutPut($event: any) {
-        this.selectedDocType = $event;
-        const code = this.selectedDocType.code.split('.');
+        this.selectedDoctype = $event;
+        const code = this.selectedDoctype.code.split('.');
         code.pop();
         this.form.controls['folder'].setValue(code.join('.'));
-        this.form.controls['key'].setValue(this.selectedDocType.key);
-        this.form.controls['label'].setValue(this.selectedDocType.label);
-        this.form.controls['isDefault'].setValue(this.selectedDocType.isDefault);
-        this.selectedDocType.type === 'document' ? this.form.controls['isDefault'].enable() : this.form.controls['isDefault'].disable();
+        this.form.controls['key'].setValue(this.selectedDoctype.key);
+        this.form.controls['label'].setValue(this.selectedDoctype.label);
+        this.form.controls['isDefault'].setValue(this.selectedDoctype.isDefault);
+        this.selectedDoctype.type === 'document' ? this.form.controls['isDefault'].enable() : this.form.controls['isDefault'].disable();
     }
 
     deleteDoctype() {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {
                 confirmTitle: this.translate.instant('GLOBAL.confirm'),
-                confirmText: this.translate.instant('DOCTYPE.confirm_delete', {"doctypeLabel": this.selectedDocType.label}),
+                confirmText: this.translate.instant('DOCTYPE.confirm_delete', {"doctypeLabel": this.selectedDoctype.label}),
                 confirmButton: this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor: "warn",
                 cancelButton: this.translate.instant('GLOBAL.cancel')
@@ -192,7 +192,7 @@ export class ListDocTypeComponent implements OnInit {
                 this.notify.success(this.translate.instant('DOCTYPE.doctype_edited'));
                 if (this.selectedFormId)
                     this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);
-                this.selectedDocType.code = newDocType.code;
+                this.selectedDoctype.code = newDocType.code;
             }),
             catchError((err: any) => {
                 console.debug(err);
