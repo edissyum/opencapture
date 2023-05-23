@@ -15,7 +15,7 @@
             [matTooltip]="'DOCTYPE.maximize_tree' | translate">
         <i class="fa-solid fa-maximize text-lg"></i>
     </button>
-    <mat-form-field *ngIf="!data.hasOwnProperty('formId')" class="absolute right-4 w-60">
+    <mat-form-field *ngIf="!settings.hasOwnProperty('formId')" class="absolute right-4 w-60">
         <mat-label>{{ 'FORMS.choose_form' | translate }}</mat-label>
         <mat-select id='folder' [formControl]="selectFormControl">
             <div *ngFor="let form of forms">
@@ -41,7 +41,7 @@
             <button class="whitespace-nowrap p-1 rounded hover:text-slate-100 hover:bg-green-400 font-normal"
                     (click)="selectNode(node, false)"
                     (dblclick)="selectNode(node, true)"
-                    [ngClass]="selectedDocTypeInput.id === node.id ? 'bg-green-400 text-slate-100' : ''">
+                    [ngClass]="selectedDoctypeInput.key === node.key ? 'bg-green-400 text-slate-100' : ''">
                     <i *ngIf="!node.isDefault" class="fa-solid fa-file pr-1"></i>
                     <i *ngIf="node.isDefault" class="fa-solid fa-file-circle-check pr-1"></i>
                     <span>{{ node.label }}</span>
@@ -49,14 +49,14 @@
         </mat-tree-node>
         <mat-tree-node *matTreeNodeDef="let node;when: hasChild">
             <button matTreeNodeToggle class="p-1 rounded font-normal hover:bg-green-400 hover:text-slate-100"
-                    [ngClass]="selectedDocTypeInput.id === node.id ? 'bg-green-400 text-slate-100' : ''"
+                    [ngClass]="selectedDoctypeInput.key === node.key ? 'bg-green-400 text-slate-100' : ''"
                     [attr.aria-label]="'Toggle ' + node.label"
                     (click)="selectFolder(node)">
                     <i [ngClass]="treeControl.isExpanded(node) ? 'fa fa-minus-square' : 'fa fa-plus-square'"></i>
                     <span class="p-1" *ngIf="!searchText"> {{ node.label }}</span>
                     <span class="p-1" *ngIf="searchText" [innerHTML]="highlight(node.label)"></span>
             </button>
-            <button mat-button *ngIf="data.showFoldersSeparatorBtn"  class="p-1 hover:text-green-400"
+            <button mat-button *ngIf="settings.showFoldersSeparatorBtn"  class="p-1 hover:text-green-400"
                     (click)="selectNode(node, false)"
                     [matTooltip]="'DOCTYPE.generate_folder_separators' | translate">
                 <i class="fa-solid fa-folder-closed fa-lg"></i>

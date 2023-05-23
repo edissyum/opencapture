@@ -345,15 +345,16 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     // -- Add documents metadata --
                     this.documents[documentIndex] = {
                         id                 : "document-" + data['documents'][documentIndex]['id'],
-                        documentTypeName   : data['documents'][documentIndex]['doctype_label'] ? data['documents'][documentIndex]['doctype_label'] : (this.defaultDoctype.label || ""),
-                        documentTypeKey    : data['documents'][documentIndex]['doctype_key'] ? data['documents'][documentIndex]['doctype_key'] : (this.defaultDoctype.label || ""),
-                        status             : data['documents'][documentIndex]['status'],
-                        splitIndex         : data['documents'][documentIndex]['split_index'],
+                        doctypeLabel       : data['documents'][documentIndex]['doctype_label'] ? data['documents'][documentIndex]['doctype_label'] : (this.defaultDoctype.label || ""),
+                        doctypeKey         : data['documents'][documentIndex]['doctype_key'] ? data['documents'][documentIndex]['doctype_key'] : (this.defaultDoctype.label || ""),
                         displayOrder       : data['documents'][documentIndex]['display_order'],
+                        splitIndex         : data['documents'][documentIndex]['split_index'],
+                        status             : data['documents'][documentIndex]['status'],
                         pages              : [],
                         class              : "",
                         customFieldsValues : {},
                     };
+
                     // -- Get max split index, used when adding a new document --
                     if (this.documents[documentIndex].splitIndex > this.currentBatch.maxSplitIndex) {
                         this.currentBatch.maxSplitIndex = this.documents[documentIndex].splitIndex;
@@ -361,20 +362,23 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     if (data['documents'][documentIndex]['data'].hasOwnProperty('custom_fields')) {
                         this.documents[documentIndex].customFieldsValues = data['documents'][documentIndex]['data']['custom_fields'];
                     }
+
                     // -- Add document forms --
                     this.documents[documentIndex].form = this.getFormForDocument(documentIndex);
+
                     // -- Add documents pages --
                     for (const page of data['documents'][documentIndex]['pages']) {
                         this.documents[documentIndex].pages.push({
                             id             : page['id'],
-                            sourcePage     : page['source_page'],
-                            thumbnail      : this.sanitize(page['thumbnail']),
                             showZoomButton : false,
                             checkBox       : false,
                             rotation       : page['rotation'],
+                            sourcePage     : page['source_page'],
+                            thumbnail      : this.sanitize(page['thumbnail']),
                         });
                     }
                 }
+
                 // -- Select first document --
                 this.selectDocument(this.documents[0]);
                 this.documentsLoading = false;
@@ -425,14 +429,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 const newId = `document-${data.newDocumentId}`;
                 this.documents.push({
                     id                 : newId,
-                    documentTypeName   : this.defaultDoctype.label,
-                    documentTypeKey    : this.defaultDoctype.key,
-                    splitIndex         : this.currentBatch.maxSplitIndex + 1,
-                    displayOrder       : this.currentBatch.selectedDocument.displayOrder + 1,
-                    status             : "NEW",
+                    doctypeLabel       : "",
+                    doctypeKey         : "",
+                    class              : "",
                     pages              : [],
                     customFieldsValues : {},
-                    class              : "",
+                    status             : "NEW",
+                    splitIndex         : this.currentBatch.maxSplitIndex + 1,
+                    displayOrder       : this.currentBatch.selectedDocument.displayOrder + 1,
                 });
                 this.documents[this.documents.length - 1].form = this.getFormForDocument(this.documents.length - 1);
                 this.sortDocumentsByDisplayOrder();
@@ -880,21 +884,22 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
     }
 
-    openDocumentTypeDialog(document: any): void {
+    openDoctypeTree(document: any): void {
         const dialogRef = this.dialog.open(DocumentTypeComponent, {
             width   : '800px',
             height  : '860px',
             data    : {
-                selectedDocType: {
-                    key: document.documentTypeKey  ? document.documentTypeKey  : "",
+                selectedDoctype: {
+                    key: document.doctypeKey  ? document.doctypeKey  : "",
+                    label: document.doctypeLabel  ? document.doctypeLabel  : "",
                 },
                 formId: this.currentBatch.formId
             }
         });
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result) {
-                document.documentTypeName = result.label;
-                document.documentTypeKey = result.key;
+                document.doctypeLabel = result.label;
+                document.doctypeKey   = result.key;
                 this.isDataEdited = true;
             }
         });
@@ -941,11 +946,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {
-                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('SPLITTER.confirm_merge_batches'),
-                confirmButton       : this.translate.instant('SPLITTER.merge'),
                 confirmButtonColor  : "green",
-                cancelButton        : this.translate.instant('GLOBAL.cancel')
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmButton       : this.translate.instant('SPLITTER.merge'),
+                confirmText         : this.translate.instant('SPLITTER.confirm_merge_batches')
             },
             width: "600px",
         });
@@ -975,9 +980,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     dropBatch(event: CdkDragDrop<string[]>) {
         moveItemInArray(this.batches, event.previousIndex, event.currentIndex);
     }
-    /* End documents control */
+    /* -- End documents control -- */
 
-    /* Begin tools bar */
+    /* -- Begin toolbar -- */
     deleteItemFromList(list: any[], index: number): any[] {
         delete list[index];
         list = list.filter((x: any): x is any => x !== null);
@@ -1144,7 +1149,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.loading = false;
                 return;
             }
-            if (!document.documentTypeKey) {
+            if (!document.doctypeKey) {
                 document.class = "text-red-500";
                 this.notify.error(this.translate.instant('SPLITTER.error_no_doc_type'));
                 this.loading = false;
@@ -1194,12 +1199,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         const _documents: any[] = [];
         for (const document of this.documents) {
             const _document: any = {
-                id               : document['id'],
-                displayOrder     : document['displayOrder'],
-                documentTypeKey  : document['documentTypeKey'],
-                documentTypeName : document['documentTypeName'],
-                metadata         : document.form.getRawValue(),
-                pages            : []
+                id            : document['id'],
+                displayOrder  : document['displayOrder'],
+                doctypeKey    : document['doctypeKey'],
+                doctypeLabel  : document['doctypeLabel'],
+                metadata      : document.form.getRawValue(),
+                pages         : []
             };
             for (const page of document.pages) {
                 _document.pages.push({
@@ -1256,8 +1261,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 'movedPages'          : this.movedPages,
                 'batchId'             : this.currentBatch.id,
                 'deletedPagesIds'     : this.deletedPagesIds,
+                'deletedDocumentsIds' : this.deletedDocumentsIds,
                 'batchMetadata'       : this.batchMetadataValues,
-                'deletedDocumentsIds' : this.deletedDocumentsIds
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {
@@ -1273,5 +1278,5 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             })
         ).subscribe();
     }
-    /* -- End tools bar -- */
+    /* -- End toolbar -- */
 }

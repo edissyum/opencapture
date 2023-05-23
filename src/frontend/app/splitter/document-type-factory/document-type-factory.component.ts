@@ -202,14 +202,23 @@ export class TreeItemFlatNode {
     providers: [ChecklistDatabase]
 })
 export class DocumentTypeFactoryComponent implements OnInit {
-    loading: boolean                        = false;
-    searchText: string                      = this.localStorageService.get('doctype_last_search_value') || '';
-    @Input() selectedDocTypeInput: any      = {"key": undefined, "id": -1};
-    @Output() selectedDoctypeOutput: any    = new EventEmitter < string > ();
-    @Output() selectedFormOutput: any       = new EventEmitter < string > ();
-    selectFormControl: FormControl          = new FormControl();
-    forms: any[]                            = [];
-    @Input() data:any;
+    loading: boolean                     = false;
+    searchText: string                   = this.localStorageService.get('doctype_last_search_value') || '';
+
+    @Input() selectedDoctypeInput: any   = {
+        'key': undefined,
+        'id': undefined
+    };
+    @Input() settings: any               = {
+        'canFolderBeSelected': false,
+        'formId': undefined
+    };
+
+    @Output() selectedDoctypeOutput: any = new EventEmitter < string > ();
+    @Output() selectedFormOutput: any    = new EventEmitter < string > ();
+
+    selectFormControl: FormControl       = new FormControl();
+    forms: any[]                         = [];
 
     /** Map from flat node to nested node. This helps us finding the nested node to be modified */
     flatNodeMap    = new Map<TreeItemFlatNode, TreeItemNode>();
@@ -259,7 +268,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
             this.treeDataObj.loadTree(formId);
             this.selectedFormOutput.emit({'formId': formId});
         });
-        this.data.hasOwnProperty('formId') ? this.treeDataObj.loadTree(this.data.formId) : this.loadForms();
+        this.settings.hasOwnProperty('formId') ? this.treeDataObj.loadTree(this.settings.formId) : this.loadForms();
     }
 
     loadForms(): void {
@@ -320,15 +329,15 @@ export class DocumentTypeFactoryComponent implements OnInit {
     }
 
     selectNode(node: any, isDblClick:boolean) {
-        this.selectedDocTypeInput = node;
-        this.selectedDocTypeInput.isDblClick = isDblClick;
-        this.selectedDoctypeOutput.emit(this.selectedDocTypeInput);
+        this.selectedDoctypeInput = node;
+        this.selectedDoctypeInput.isDblClick = isDblClick;
+        this.selectedDoctypeOutput.emit(this.selectedDoctypeInput);
     }
 
     selectFolder(node: any) {
-        if (this.data.canFolderBeSelected) {
-            this.selectedDocTypeInput = node;
-            this.selectedDoctypeOutput.emit(this.selectedDocTypeInput);
+        if (this.settings.canFolderBeSelected) {
+            this.selectedDoctypeInput = node;
+            this.selectedDoctypeOutput.emit(this.selectedDoctypeInput);
         }
     }
 
