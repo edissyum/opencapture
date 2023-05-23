@@ -64,7 +64,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             $event.returnValue = true;
         }
     }
-
     @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
 
     loading                     : boolean       = true;
@@ -165,6 +164,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
             this.historyService.addHistory('splitter', 'viewer', translated);
         });
+    }
+
+    onScreenClick(event: MouseEvent) {
+        const clickedElement = event.target as HTMLElement;
+        const zoomPageElement = document.getElementById('zoom-image');
+
+        if (zoomPageElement && !zoomPageElement.contains(clickedElement)) {
+            this.showZoomPage = false;
+        }
     }
 
     setValuesFromSavedMetadata(autocompletionValue: any): void {
