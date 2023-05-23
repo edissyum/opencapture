@@ -425,7 +425,7 @@ export class WorkflowBuilderComponent implements OnInit {
                     this.fields['process'].forEach((elem: any) => {
                         if (elem.id === 'system_fields') {
                             if (value) {
-                                elem.values.push({'id': 'facturx', 'label': 'Lignes de facturation Factur-X'});
+                                elem.values.push({'id': 'facturx', 'label': 'Lignes de détails Factur-X'});
                                 elem.control.value.push('facturx');
                             } else {
                                 elem.values = elem.values.filter((elem: any) => elem.id !== 'facturx');
