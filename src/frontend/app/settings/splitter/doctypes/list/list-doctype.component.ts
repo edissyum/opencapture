@@ -34,10 +34,10 @@ import { MatDialog } from "@angular/material/dialog";
 
 @Component({
     selector: 'app-list-doc-type',
-    templateUrl: './list-doc-type.component.html',
-    styleUrls: ['./list-doc-type.component.scss']
+    templateUrl: './list-doctype.component.html',
+    styleUrls: ['./list-doctype.component.scss']
 })
-export class ListDocTypeComponent implements OnInit {
+export class ListDoctypeComponent implements OnInit {
     @ViewChild(DocumentTypeFactoryComponent, {static : true}) documentTypeFactoryComponent! : DocumentTypeFactoryComponent;
     loading         : boolean = false;
     noMasterFolder  : string  = '_NO_MASTER';
