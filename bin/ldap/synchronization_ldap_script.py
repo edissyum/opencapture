@@ -283,14 +283,14 @@ def check_database_users(ldap_users_data, default_role):
                     'table': 'users_customers',
                     'columns': {
                         'user_id': new_user,
-                        'customers_id': json.dumps({"data": []})
+                        'customers_id': json.dumps({"data": str([])})
                     }
                 })
                 database.insert({
                     'table': 'users_forms',
                     'columns': {
                         'user_id': new_user,
-                        'forms_id': json.dumps({"data": []})
+                        'forms_id': json.dumps({"data": str([])})
                     }
                 })
                 if new_user:
