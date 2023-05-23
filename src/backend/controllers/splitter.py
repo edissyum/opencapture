@@ -511,8 +511,8 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
         """
             Add PDF file names using masks
         """
-        documents[index]['metadata']['document_index'] = documents_doctypes.count(document['documentTypeKey']) + 1
-        documents_doctypes.append(document['documentTypeKey'])
+        documents[index]['metadata']['document_index'] = documents_doctypes.count(document['doctypeKey']) + 1
+        documents_doctypes.append(document['doctypeKey'])
         mask_args = {
             'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
             'separator': parameters['separator'],
@@ -521,7 +521,7 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
 
         documents[index]['fileName'] = _Splitter.get_value_from_mask(document, batch['metadata'], now, mask_args)
 
-        if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in documents[index]['documentTypeKey']:
+        if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in documents[index]['doctypeKey']:
             pdf_filepaths.append({
                 'input_path': parameters['folder_out'] + '/' + documents[index]['fileName'],
                 'path_in_zip': documents[index]['fileName']
@@ -601,7 +601,7 @@ def save_infos(data):
         document['id'] = document['id'].split('-')[-1]
         res = splitter.update_document({
             'id': document['id'].split('-')[-1],
-            'doctype_key': document['documentTypeKey'] if 'documentTypeKey' in document else None,
+            'doctype_key': document['doctypeKey'] if 'doctypeKey' in document else None,
             'document_metadata': document['metadata'],
         })[0]
         if not res:
@@ -721,15 +721,15 @@ def validate(data):
     exported_files = []
 
     save_response = save_infos({
+        'batch_id': data['batchId'],
         'documents': data['documents'],
         'moved_pages': data['movedPages'],
-        'batch_id': data['batchMetadata']['id'],
         'batch_metadata': data['batchMetadata'],
         'deleted_pages_ids': data['deletedPagesIds'],
         'deleted_documents_ids': data['deletedDocumentsIds']
     })
 
-    batch_data = splitter.get_batch_by_id({'id': data['batchMetadata']['id']})
+    batch_data = splitter.get_batch_by_id({'id': data['batchId']})
 
     if save_response[1] != 200:
         return save_response
@@ -739,7 +739,7 @@ def validate(data):
         'page': None,
         'size': None,
         'where': ['id = %s'],
-        'data': [data['batchMetadata']['id']]
+        'data': [data['batchId']]
     })[0][0]
 
     batch['metadata'] = data['batchMetadata']
@@ -931,7 +931,7 @@ def validate(data):
             Process after validation
         """
         splitter.update_status({
-            'ids': [data['batchMetadata']['id']],
+            'ids': [data['batchId']],
             'status': 'END'
         })
 

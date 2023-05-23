@@ -70,7 +70,7 @@ class OpenADS:
                 with open(path, 'rb') as f:
                     b64 = str(b64encode(f.read()), 'utf-8')
                 filename = os.path.basename(path)
-                doctype = metadata[index]['documentTypeKey'].split("-")[-1]
+                doctype = metadata[index]['doctypeKey'].split("-")[-1]
                 data = [
                     {
                         'b64_content': b64,
