@@ -32,10 +32,10 @@ import { DocumentTypeFactoryComponent } from "../../../../splitter/document-type
 
 @Component({
   selector: 'app-create-doc-type',
-  templateUrl: './create-doc-type.component.html',
-  styleUrls: ['./create-doc-type.component.scss']
+  templateUrl: './create-doctype.component.html',
+  styleUrls: ['./create-doctype.component.scss']
 })
-export class CreateDocTypeComponent implements OnInit {
+export class CreateDoctypeComponent implements OnInit {
     @ViewChild(DocumentTypeFactoryComponent, {static : true}) documentTypeFactoryComponent! : DocumentTypeFactoryComponent;
     loading         : boolean = false;
     forms           : any[]   = [];

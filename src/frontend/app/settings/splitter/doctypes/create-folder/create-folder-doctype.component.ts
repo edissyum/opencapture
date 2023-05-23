@@ -15,10 +15,10 @@ import { DocumentTypeFactoryComponent } from "../../../../splitter/document-type
 
 @Component({
   selector: 'app-create-folder-doc-type',
-  templateUrl: './create-folder-doc-type.component.html',
-  styleUrls: ['./create-folder-doc-type.component.scss']
+  templateUrl: './create-folder-doctype.component.html',
+  styleUrls: ['./create-folder-doctype.component.scss']
 })
-export class CreateFolderDocTypeComponent implements OnInit {
+export class CreateFolderDoctypeComponent implements OnInit {
     @ViewChild(DocumentTypeFactoryComponent, {static : true}) documentTypeFactoryComponent! : DocumentTypeFactoryComponent;
     loading             : boolean   = false;
     noMasterFolder      : string    = '_NO_MASTER';
