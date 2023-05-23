@@ -220,13 +220,13 @@
                                 <mat-expansion-panel-header>
                                     <mat-panel-title class="max-w-11/12">
                                         <button class="max-w-full text-lg text-left hover:text-green-400 {{ document['class'] }}"
-                                                [ngClass]="!document['documentTypeName'] ? 'text-red-500':''"
-                                                (click)="documentMetadata.toggle(); openDocumentTypeDialog(document);"
+                                                [ngClass]="!document['doctypeLabel'] ? 'text-red-500':''"
+                                                (click)="documentMetadata.toggle(); openDoctypeTree(document);"
                                                 matTooltip="{{ 'GLOBAL.edit' | translate }}">
                                             <div class="font-medium truncate">
                                                 <i class="fa-solid fa-edit"></i>
-                                                {{ document['documentTypeName'] }}
-                                                <span *ngIf="!document['documentTypeName']" class="mx-2">{{ 'SPLITTER.no_selected_doctype' | translate }}</span>
+                                                {{ document['doctypeLabel'] }}
+                                                <span *ngIf="!document['doctypeLabel']" class="mx-2">{{ 'SPLITTER.no_selected_doctype' | translate }}</span>
                                             </div>
                                         </button>
                                     </mat-panel-title>
@@ -402,7 +402,7 @@
                                 <mat-label>{{ 'SPLITTER.move_selected_to' | translate }}</mat-label>
                                 <mat-select [(ngModel)]="toolSelectedOption">
                                     <mat-option *ngFor="let document of this.documents;" [value]="document['id']" class="w-full document_type_options">
-                                        {{ document['documentTypeName'] }}
+                                        {{ document['doctypeLabel'] }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>

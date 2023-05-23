@@ -13,7 +13,10 @@
         {{ 'SPLITTER.doubleClickToSelectDoctype' | translate }}
     </div>
     <div class="w-max mt-2 mx-auto">
-        <button mat-button class="mx-auto h-12 w-48 bg-gray-200 text-gray-500" [mat-dialog-close]="data.selectedDoctype">
+        <button mat-button class="mx-auto h-12 w-48"
+                [disabled]="!data.selectedDoctype.key"
+                [mat-dialog-close]="data.selectedDoctype"
+                [class]="data.selectedDoctype.key ? 'bg-green-400 text-white': 'bg-gray-200 text-gray-500'">
             {{ 'SPLITTER.select' | translate }}
         </button>
     </div>
