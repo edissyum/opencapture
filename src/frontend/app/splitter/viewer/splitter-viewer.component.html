@@ -1,7 +1,12 @@
 <div *ngIf="this.loading || this.documentsLoading || this.batchesLoading">
     <app-loader></app-loader>
 </div>
-<mat-drawer-container [class.pointer-events-none]="validateLoading" *ngIf="!this.loading" class="w-full absolute top-16 bottom-0" hasBackdrop="false">
+<mat-drawer-container
+        hasBackdrop="false"
+        *ngIf="!this.loading"
+        (click)="onScreenClick($event)"
+        [class.pointer-events-none]="validateLoading"
+        class="w-full absolute top-16 bottom-0">
     <mat-drawer #drawer mode="side" opened class="w-1/5">
         <div class="mt-1">
             <div [ngSwitch]="currentTime" class="mt-2 w-full h-10 grid place-content-center">
@@ -53,11 +58,9 @@
             </span>
         </button>
         <div *ngIf="showZoomPage" class="fixed z-20 w-4/12 h-5/6 grid justify-items-stretch right-0 top-20">
-            <img class="justify-self-end border-2 zoom-image"
+            <img id="zoom-image" class="justify-self-end border-2"
                  mat-card-image
                  [src]="zoomPage.thumbnail"
-                 (clickOutside)="showZoomPage = false"
-                 [exclude]="'.btn-page-zoom, .btn-rotate'"
                  [ngClass]="
                     (zoomPage['rotation'] === 0)   ? 'rotate-0 h-full w-4/5 mr-6':
                     (zoomPage['rotation'] === 90)  ? 'rotate-90 h-full w-4/5 mr-36':
