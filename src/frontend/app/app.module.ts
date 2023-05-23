@@ -93,9 +93,9 @@ import { SplitterFormBuilderComponent } from './settings/splitter/form/builder/f
 import { SplitterUpdateStatusComponent } from './settings/splitter/update-status/update-status.component';
 import { SplitterFormListComponent } from './settings/splitter/form/list/form-list.component';
 import { StatisticsComponent } from './statistics/statistics.component';
-import { CreateDocTypeComponent } from './settings/splitter/doc-types/create/create-doc-type.component';
-import { ListDocTypeComponent } from './settings/splitter/doc-types/list/list-doc-type.component';
-import { CreateFolderDocTypeComponent } from './settings/splitter/doc-types/create-folder/create-folder-doc-type.component';
+import { CreateDocTypeComponent } from './settings/splitter/doctypes/create/create-doc-type.component';
+import { ListDocTypeComponent } from './settings/splitter/doctypes/list/list-doc-type.component';
+import { CreateFolderDocTypeComponent } from './settings/splitter/doctypes/create-folder/create-folder-doc-type.component';
 import { ListAiModelComponent } from "./settings/general/ai-model/list/list-ai-model.component";
 import { CreateAiModelComponent } from "./settings/general/ai-model/create/create-ai-model.component";
 import { UpdateAiModelComponent } from "./settings/general/ai-model/update/update-ai-model.component";

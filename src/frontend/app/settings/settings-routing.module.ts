@@ -37,7 +37,7 @@ import { FormBuilderComponent } from "./verifier/form/builder/form-builder.compo
 import { WorkflowBuilderComponent } from "./verifier/workflow/builder/workflow-builder.component";
 import { WorkflowBuilderSplitterComponent } from "./splitter/workflow/builder/workflow-builder.component";
 import { OutputsListComponent } from "./verifier/outputs/list/outputs-list.component";
-import { ListDocTypeComponent } from "./splitter/doc-types/list/list-doc-type.component";
+import { ListDocTypeComponent } from "./splitter/doctypes/list/list-doc-type.component";
 import { CustomFieldsComponent } from "./general/custom-fields/custom-fields.component";
 import { SplitterOutputListComponent } from "./splitter/output/list/output-list.component";
 import { UpdateOutputComponent } from "./verifier/outputs/update/update-output.component";
@@ -47,7 +47,7 @@ import { RegexComponent } from "./general/regex/regex.component";
 import { MailCollectComponent } from "./general/mailcollect/mailcollect.component";
 import { CreateOutputComponent } from "./verifier/outputs/create/create-output.component";
 import { SplitterFormBuilderComponent } from "./splitter/form/builder/form-builder.component";
-import { CreateDocTypeComponent } from "./splitter/doc-types/create/create-doc-type.component";
+import { CreateDocTypeComponent } from "./splitter/doctypes/create/create-doc-type.component";
 import { SplitterUpdateOutputComponent } from "./splitter/output/update/update-output.component";
 import { SplitterCreateOutputComponent } from "./splitter/output/create/create-output.component";
 import { ListAiModelComponent } from "./general/ai-model/list/list-ai-model.component";
@@ -56,7 +56,7 @@ import { UpdateAiModelComponent } from "./general/ai-model/update/update-ai-mode
 import { PositionsMaskListComponent } from "./verifier/positions-mask/list/positions-mask-list.component";
 import { CreatePositionsMaskComponent } from "./verifier/positions-mask/create/create-positions-mask.component";
 import { UpdatePositionsMaskComponent } from "./verifier/positions-mask/update/update-positions-mask.component";
-import { CreateFolderDocTypeComponent } from "./splitter/doc-types/create-folder/create-folder-doc-type.component";
+import { CreateFolderDocTypeComponent } from "./splitter/doctypes/create-folder/create-folder-doc-type.component";
 import { LoginMethodsComponent } from "./general/login-methods/login-methods.component";
 import { VariousSettingsVerifierComponent } from "./verifier/various-settings/various-settings.component";
 import { UserQuotaComponent } from "./general/user-quota/user-quota.component";
