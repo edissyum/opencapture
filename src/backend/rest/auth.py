@@ -91,7 +91,7 @@ def generate_auth_token():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/generateAuthToken'}), 403
 
     data = json.loads(request.data)
-    res = auth.generate_token(data['user'], data['expiration'])
+    res = auth.generate_token(data['username'], data['expiration'])
     return make_response({'token': res[0]}, res[1])
 
 

@@ -31,13 +31,13 @@ from zeep import Client, exceptions
 from src.backend import verifier_exports
 from src.backend.import_classes import _Files
 from src.backend.import_models import verifier, accounts
-from src.backend.import_controllers import auth, user, monitoring
 from src.backend.main import launch, create_classes_from_custom_id
 from flask import current_app, Response, request, g as current_context
+from src.backend.import_controllers import auth, user, monitoring, history
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
-def handle_uploaded_file(files, workflow_id, supplier):
+def handle_uploaded_file(files, workflow_id, supplier, ipaddress=None, user_id=None):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER']
     tokens = []
@@ -70,6 +70,15 @@ def handle_uploaded_file(files, workflow_id, supplier):
                 'workflow_id': workflow_id,
                 'task_id_monitor': task_id_monitor[0]['process'],
             })
+
+            if ipaddress:
+                history.add_history({
+                    'submodule': 'upload_file',
+                    'module': 'verifier',
+                    'user_info': user_id,
+                    'desc': gettext('FILE_UPLOADED_WS_WORKFLOW') + '&nbsp<strong>' + workflow_id + '</strong>',
+                    'ip': ipaddress,
+                })
         else:
             return False, 500
     return tokens, 200
@@ -92,7 +101,7 @@ def get_document_id_and_status_by_token(token):
     if status == 500:
         return decoded_token, status
 
-    process, _ = monitoring.get_process_by_token(decoded_token['sub'])
+    process, _ = monitoring.get_process_by_token(decoded_token['process_token'])
 
     if process['process'] and process['process'][0]:
         return process['process'][0], 200

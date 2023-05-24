@@ -110,7 +110,7 @@ def encode_auth_token(user_id):
         return str(_e)
 
 
-def generate_unique_url_token(document_id, workflow_id, module):
+def generate_unique_url_token(token, workflow_id, module):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -149,7 +149,7 @@ def generate_unique_url_token(document_id, workflow_id, module):
         payload = {
             'exp': datetime.datetime.utcnow() + datetime.timedelta(days=days_before_exp),
             'iat': datetime.datetime.utcnow(),
-            'sub': document_id
+            'process_token': token
         }
         return jwt.encode(
             payload,
@@ -339,7 +339,11 @@ def token_required(view):
                 token = request.headers['Authorization'].split('Bearer')[1].lstrip()
                 try:
                     token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
-                    data = [token['sub']]
+                    data = []
+                    if 'sub' in token:
+                        data = [token['sub']]
+                    elif 'process_token' in token:
+                        data = [token['process_token']]
                 except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
                         jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
                     return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
@@ -364,8 +368,8 @@ def token_required(view):
                 if user_info and user_info[0]['last_connection'] and token['iat'] < datetime.datetime.timestamp(user_info[0]['last_connection']):
                     return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('ACCOUNT_ALREADY_LOGGED')}), 500
 
-            if token:
-                process, _ = monitoring.get_process_by_token(token['sub'], '')
+            if token and 'process_token' in token:
+                process, _ = monitoring.get_process_by_token(token['process_token'], '')
                 allowed_path = [
                     'export_mem',
                     'export_xml',

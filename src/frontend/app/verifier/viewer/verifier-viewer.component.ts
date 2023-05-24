@@ -67,6 +67,7 @@ export class VerifierViewerComponent implements OnInit {
     formEmpty               : boolean     = false;
     processErrorMessage     : string      = '';
     processErrorIcon        : string      = '';
+    token                   : string      = '';
     oldVAT                  : string      = '';
     oldSIRET                : string      = '';
     oldSIREN                : string      = '';
@@ -150,6 +151,7 @@ export class VerifierViewerComponent implements OnInit {
             const token = this.route.snapshot.params['token'];
             const res: any = await this.retrieveDocumentIdAndStatusFromToken(token);
             this.fromToken = true;
+            this.token = res['token'];
             if (res['status'] === 'wait') {
                 this.loading = false;
                 this.processErrorIcon = 'fa-clock fa-fade text-gray-400';
@@ -160,7 +162,7 @@ export class VerifierViewerComponent implements OnInit {
                 this.processErrorIcon = 'fa-circle-notch fa-spin text-green-400';
                 this.processErrorMessage = marker('VERIFIER.processing');
                 return;
-            } else if (res['status'] === 'error') {
+            } else if (res['status'] === 'error' || res['error']) {
                 this.loading = false;
                 this.processErrorIcon = 'fa-xmark text-red-400';
                 this.processErrorMessage = this.translate.instant('VERIFIER.error', {reference: res['token']});
@@ -325,6 +327,12 @@ export class VerifierViewerComponent implements OnInit {
         this.loading = true;
         this.processMultiDocument = false;
         this.ngOnInit(documentId).then();
+    }
+
+    copyToken() {
+        navigator.clipboard.writeText(this.token).then(() => {
+            this.notify.success(this.translate.instant('CONFIGURATIONS.token_copied'));
+        });
     }
 
     async retrieveDocumentIdAndStatusFromToken(token: any) {
