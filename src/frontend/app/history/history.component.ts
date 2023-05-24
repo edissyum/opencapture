@@ -141,11 +141,10 @@ export class HistoryComponent implements OnInit {
                                 return of(false);
                             })
                         ).subscribe();
-                        this.filteredUsers = element.control.valueChanges
-                            .pipe(
-                                startWith(''),
-                                map(option => option ? this._filter(option, this.users) : this.users)
-                            );
+                        this.filteredUsers = element.control.valueChanges.pipe(
+                            startWith(''),
+                            map(option => option ? this._filter(option, this.users) : this.users)
+                        );
                     } else if (element.id === 'submodule') {
                         this.http.get(environment['url'] + '/ws/history/submodules', {headers: this.authService.headers}).pipe(
                             tap((data: any) => {

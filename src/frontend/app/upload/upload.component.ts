@@ -138,6 +138,7 @@ export class UploadComponent implements OnInit {
         }
         formData.set('workflowId', this.selectedWorkflowTechnicalId);
         formData.set('userId', this.userService.user.id);
+        formData.set('fillHistory', 'false');
 
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
