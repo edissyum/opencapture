@@ -364,7 +364,7 @@ class Splitter:
         documents_tags = ""
         if doc_loop_item_template:
             for index, document in enumerate(documents):
-                if document['id'] not in metadata['doc_except_from_zip'] and metadata['zip_filename']:
+                if document['id'] not in metadata['zip_except_documents'] and metadata['zip_filename']:
                     continue
                 doc_loop_item = doc_loop_item_template.group(1)
                 doc_loop_item = doc_loop_item.replace('#date', date)
@@ -432,3 +432,13 @@ class Splitter:
         script = script_name.replace('.py', '')
         module = __import__(script, fromlist=method)
         return getattr(module, method)
+
+    def batch_auto_validate(self, batch_id):
+        batch = self.db.select({
+            'select': ['*'],
+            'table': ['splitter_batches'],
+            'where': ['id = %s'],
+            'data': [str(batch_id)],
+        })
+
+        return True, ''

@@ -547,58 +547,58 @@ class Files:
         pdf_writer = pypdf.PdfWriter()
         paths = []
 
-        try:
-            for index, pages in enumerate(args['pages']):
-                pdf_reader = pypdf.PdfReader(args['filename'], strict=False)
-                if not pages:
-                    continue
-                for page in pages:
-                    pdf_page = pdf_reader.pages[page['source_page'] - args['reduce_index']]
-                    if page['rotation'] != 0:
-                        pdf_page.rotate(page['rotation'])
-                    pdf_writer.add_page(pdf_page)
+        # try:
+        for index, pages in enumerate(args['pages']):
+            pdf_reader = pypdf.PdfReader(args['filename'], strict=False)
+            if not pages:
+                continue
+            for page in pages:
+                pdf_page = pdf_reader.pages[page['source_page'] - args['reduce_index']]
+                if page['rotation'] != 0:
+                    pdf_page.rotate(page['rotation'])
+                pdf_writer.add_page(pdf_page)
 
-                if pdf_reader.metadata:
-                    pdf_writer.add_metadata(pdf_reader.metadata)
+            if pdf_reader.metadata:
+                pdf_writer.add_metadata(pdf_reader.metadata)
 
-                title = ''
-                if 'title' in args['documents'][index]['metadata']:
-                    title = args['documents'][index]['metadata']['title']
-                elif 'title' in args['metadata']:
-                    title = args['metadata']['title']
+            title = ''
+            if 'title' in args['documents'][index]['metadata']:
+                title = args['documents'][index]['metadata']['title']
+            elif 'title' in args['metadata']:
+                title = args['metadata']['title']
 
-                subject = ''
-                if 'subject' in args['documents'][index]['metadata']:
-                    subject = args['documents'][index]['metadata']['subject']
-                elif 'subject' in args['metadata']:
-                    subject = args['metadata']['subject']
+            subject = ''
+            if 'subject' in args['documents'][index]['metadata']:
+                subject = args['documents'][index]['metadata']['subject']
+            elif 'subject' in args['metadata']:
+                subject = args['metadata']['subject']
 
-                pdf_writer.add_metadata({
-                    '/Author': f"{args['metadata']['userLastName']} {args['metadata']['userFirstName']}",
-                    '/Title': title,
-                    '/Subject': subject,
-                    '/Creator': "Open-Capture",
-                })
+            pdf_writer.add_metadata({
+                '/Author': f"{args['metadata']['userLastName']} {args['metadata']['userFirstName']}",
+                '/Title': title,
+                '/Subject': subject,
+                '/Creator': "Open-Capture",
+            })
 
-                file_path = args['folder_out'] + '/' + args['documents'][index]['fileName']
+            file_path = args['folder_out'] + '/' + args['documents'][index]['fileName']
 
-                if args['output_parameter']['compress_type']:
-                    tmp_filename = '/tmp/' + args['documents'][index]['fileName']
-                    with open(tmp_filename, 'wb') as file:
-                        pdf_writer.write(file)
-                        paths.append(file_path)
-                    pdf_writer = pypdf.PdfWriter()
-                    compressed_file_path = '/tmp/min_' + args['documents'][index]['fileName']
-                    compress_pdf(tmp_filename, compressed_file_path, args['output_parameter']['compress_type'])
-                    shutil.move(compressed_file_path, file_path)
-                else:
-                    with open(file_path, 'wb') as file:
-                        pdf_writer.write(file)
-                        paths.append(file_path)
-                        args['log'].info(f"Splitter file exported to : {file_path}")
-                    pdf_writer = pypdf.PdfWriter()
-        except Exception as err:
-            return False, str(err)
+            if args['output_parameter']['compress_type']:
+                tmp_filename = '/tmp/' + args['documents'][index]['fileName']
+                with open(tmp_filename, 'wb') as file:
+                    pdf_writer.write(file)
+                    paths.append(file_path)
+                pdf_writer = pypdf.PdfWriter()
+                compressed_file_path = '/tmp/min_' + args['documents'][index]['fileName']
+                compress_pdf(tmp_filename, compressed_file_path, args['output_parameter']['compress_type'])
+                shutil.move(compressed_file_path, file_path)
+            else:
+                with open(file_path, 'wb') as file:
+                    pdf_writer.write(file)
+                    paths.append(file_path)
+                    args['log'].info(f"Splitter file exported to : {file_path}")
+                pdf_writer = pypdf.PdfWriter()
+        # except Exception as err:
+        #     return False, str(err)
 
         return paths
 
