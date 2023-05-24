@@ -59,7 +59,7 @@ def get_process_by_token():
         retrieve_data = request.json['retrieveData']
 
     process, status = monitoring.get_process_by_token(token)
-    if process and retrieve_data:
+    if process and process['process'] and retrieve_data:
         if 'document_ids' in process['process'][0] and process['process'][0]['document_ids']:
             process['document_data'] = {}
             for document_id in process['process'][0]['document_ids']:
