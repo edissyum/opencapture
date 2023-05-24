@@ -67,6 +67,24 @@ def check_token(token):
     return payload, 200
 
 
+def generate_token(user_id, days_before_exp):
+    secret_key = current_app.config['SECRET_KEY'].replace("\n", "")
+
+    try:
+        payload = {
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=days_before_exp),
+            'iat': datetime.datetime.utcnow(),
+            'sub': user_id
+        }
+        return jwt.encode(
+            payload,
+            secret_key,
+            algorithm='HS512'
+        ), 200
+    except Exception as _e:
+        return str(_e), 500
+
+
 def encode_auth_token(user_id):
     if 'configurations' in current_context:
         configurations = current_context.configurations

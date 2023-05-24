@@ -84,6 +84,17 @@ def check_token():
     return make_response(res[0], res[1])
 
 
+@bp.route('auth/generateAuthToken', methods=['POST'])
+@auth.token_required
+def generate_auth_token():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/generateAuthToken'}), 403
+
+    data = json.loads(request.data)
+    res = auth.generate_token(data['user'], data['expiration'])
+    return make_response({'token': res[0]}, res[1])
+
+
 @bp.route('auth/logout', methods=['GET'])
 def logout():
     auth.logout()
