@@ -30,8 +30,8 @@ from src.backend.controllers import privileges
 from ldap3.core.exceptions import LDAPException
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from werkzeug.security import generate_password_hash, check_password_hash
 from src.backend.import_models import auth, user, roles, monitoring
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask import request, g as current_context, jsonify, current_app, session
 
 
