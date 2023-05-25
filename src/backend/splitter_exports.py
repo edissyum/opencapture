@@ -33,7 +33,7 @@ def get_output_parameters(parameters):
     return data
 
 
-def export_pdf(batch, documents, parameters, pages, now, output_parameter, log, docservers, configurations):
+def export_pdf(batch, documents, output, pages, now, log, docservers, configurations):
     filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch['file_path']
     pdf_filepaths = []
     zip_except_documents = []
@@ -43,12 +43,12 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log, 
     """
         Add PDF file to zip archive if enabled
     """
-    if 'add_to_zip' in parameters and parameters['add_to_zip']:
-        except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) \
-            if 'Except' in parameters['add_to_zip'] else ''
+    if 'zip_filename' in output['parameters'] and output['parameters']['zip_filename']:
+        except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', output['parameters']['zip_filename']) \
+            if 'Except' in output['parameters']['zip_filename'] else ''
         mask_args = {
-            'mask': parameters['add_to_zip'].split('[Except=')[0],
-            'separator': parameters['separator'],
+            'mask': output['parameters']['zip_filename'].split('[Except=')[0],
+            'separator': output['parameters']['separator'],
             'extension': 'zip'
         }
         zip_filename = _Splitter.get_value_from_mask(None, batch['metadata'], now, mask_args)
@@ -61,21 +61,22 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log, 
         documents[index]['metadata']['document_index'] = documents_doctypes.count(document['doctypeKey']) + 1
         documents_doctypes.append(document['doctypeKey'])
         mask_args = {
-            'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
-            'separator': parameters['separator'],
-            'extension': parameters['extension']
+            'mask': output['parameters']['filename'] if 'filename' in output['parameters'] else _Files.get_random_string(10),
+            'separator': output['parameters']['separator'],
+            'extension': output['parameters']['extension']
         }
 
         documents[index]['fileName'] = _Splitter.get_value_from_mask(document, batch['metadata'], now, mask_args)
 
         if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in documents[index]['doctypeKey']:
             pdf_filepaths.append({
-                'input_path': parameters['folder_out'] + '/' + documents[index]['fileName'],
+                'input_path': output['parameters']['folder_out'] + '/' + documents[index]['fileName'],
                 'path_in_zip': documents[index]['fileName']
             })
         else:
             zip_except_documents.append(documents[index]['id'])
 
+    print(output)
     export_pdf_res = _Files.export_pdf({
         'log': log,
         'pages': pages,
@@ -84,8 +85,8 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log, 
         'documents': documents,
         'metadata': batch['metadata'],
         'lang': configurations['locale'],
-        'folder_out': parameters['folder_out'],
-        'output_parameter': output_parameter
+        'compress_type': output['compress_type'],
+        'folder_out': output['parameters']['folder_out']
     })
 
     if not export_pdf_res[0]:
@@ -95,8 +96,8 @@ def export_pdf(batch, documents, parameters, pages, now, output_parameter, log, 
         }
         return response, 400
 
-    if 'add_to_zip' in parameters and parameters['add_to_zip'] and pdf_filepaths:
-        zip_file_path = parameters['folder_out'] + '/' + zip_filename
+    if 'zip_filename' in output['parameters'] and output['parameters']['zip_filename'] and pdf_filepaths:
+        zip_file_path = output['parameters']['folder_out'] + '/' + zip_filename
         _Files.zip_files(pdf_filepaths, zip_file_path, True)
 
     return {'paths': export_pdf_res, 'zip_except_documents': zip_except_documents, 'zip_file_path': zip_file_path}, 200
@@ -168,8 +169,8 @@ def export_mem(auth_data, file_path, args, batch, custom_id, log):
         return response, 400
 
 
-def export_pdf_files(batch, data, parameters, pages, now, output, log, docservers, configurations, regex):
-    res_export_pdf = export_pdf(batch, data['documents'], parameters, pages, now, output, log, docservers, configurations)
+def export_pdf_files(batch, output, pages, now, log, docservers, configurations, regex):
+    res_export_pdf = export_pdf(batch, batch['documents'], output, pages, now, log, docservers, configurations)
     if res_export_pdf[1] != 200:
         return res_export_pdf
 

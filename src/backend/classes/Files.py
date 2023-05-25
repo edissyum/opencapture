@@ -582,14 +582,14 @@ class Files:
 
                 file_path = args['folder_out'] + '/' + args['documents'][index]['fileName']
 
-                if args['output_parameter']['compress_type']:
+                if args['compress_type']:
                     tmp_filename = '/tmp/' + args['documents'][index]['fileName']
                     with open(tmp_filename, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
                     pdf_writer = pypdf.PdfWriter()
                     compressed_file_path = '/tmp/min_' + args['documents'][index]['fileName']
-                    compress_pdf(tmp_filename, compressed_file_path, args['output_parameter']['compress_type'])
+                    compress_pdf(tmp_filename, compressed_file_path, args['compress_type'])
                     shutil.move(compressed_file_path, file_path)
                 else:
                     with open(file_path, 'wb') as file:

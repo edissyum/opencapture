@@ -118,7 +118,7 @@ UPDATE outputs_types SET "data" = '{
         "placeholder": "pdf"
       },
       {
-        "id": "add_to_zip",
+        "id": "zip_filename",
         "hint": "Ajouter le fichier au ZIP, [Except=doctype1] mentionne les types de documents à ne pas ajouter dans le ZIP",
         "type": "text",
         "label": "Nom du fichier ZIP à exporter",

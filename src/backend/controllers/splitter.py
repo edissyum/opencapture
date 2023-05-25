@@ -601,9 +601,13 @@ def validate(data):
         'data': [data['batchId']]
     })[0][0]
 
-    batch['metadata'] = data['batchMetadata']
     form = forms.get_form_by_id(batch['form_id'])
     pages = _Splitter.get_split_pages(data['documents'])
+
+    batch['metadata'] = data['batchMetadata']
+    batch['documents'] = data['documents']
+
+    print('documents', data['documents'])
 
     workflow_settings, error = workflow.get_workflow_by_id({'workflow_id': batch['workflow_id']})
     if error:
@@ -616,20 +620,20 @@ def validate(data):
                 return gettext('OUTPUT_NOT_FOUND'), 400
             else:
                 output = output[0]
-            parameters = get_output_parameters(output['data']['options']['parameters'])
+            output['parameters'] = get_output_parameters(output['data']['options']['parameters'])
 
             match output['output_type_id']:
                 case 'export_pdf':
-                    res_export_pdf = splitter_exports.export_pdf_files(batch, data, parameters, pages, now, output, log, docservers, configurations, regex)
+                    res_export_pdf = splitter_exports.export_pdf_files(batch, output, pages, now, log, docservers, configurations, regex)
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
                     res_export_pdf = res_export_pdf[0]
 
-                    data['batchMetadata']['zip_filename'] = res_export_pdf['zip_filename']
-                    data['batchMetadata']['zip_except_documents'] = res_export_pdf['zip_except_documents']
+                    batch['metadata']['zip_filename'] = res_export_pdf['zip_filename']
+                    batch['metadata']['zip_except_documents'] = res_export_pdf['zip_except_documents']
 
                 case 'export_xml':
-                    res_export_xml = splitter_exports.export_xml_files(batch, data, parameters, now, regex)
+                    res_export_xml = splitter_exports.export_xml_files(batch, output['parameters'], now, regex)
                     if res_export_xml[1] != 200:
                         return res_export_xml
                     exported_files.append(res_export_xml[0]['path'])
@@ -672,7 +676,7 @@ def validate(data):
         """
         splitter.update_status({
             'ids': [data['batchId']],
-            'status': 'END'
+            'status': 'NEW'
         })
 
         if workflow_settings['process']['delete_documents']:
