@@ -34,7 +34,6 @@ import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm
 import { MatDialog } from "@angular/material/dialog";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ConfigService } from "../../../services/config.service";
-import { HistoryService } from "../../../services/history.service";
 import { FormControl } from "@angular/forms";
 
 interface AccountsNode {
@@ -146,7 +145,6 @@ export class VerifierListComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         private configService: ConfigService,
-        private historyService: HistoryService,
         private routerExtService: LastUrlService,
         private localStorageService: LocalStorageService
     ) {}
@@ -621,7 +619,6 @@ export class VerifierListComponent implements OnInit {
                     this.loadCustomers();
                     this.notify.success(this.translate.instant('VERIFIER.documents_deleted'));
                 }
-                this.historyService.addHistory('verifier', 'delete_document', this.translate.instant('HISTORY-DESC.delete_document', {document_id: documentId}));
             }),
             catchError((err: any) => {
                 console.debug(err);

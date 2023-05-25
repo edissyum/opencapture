@@ -30,8 +30,8 @@ from src.backend.controllers import privileges
 from ldap3.core.exceptions import LDAPException
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from src.backend.import_models import auth, user, roles, monitoring
 from werkzeug.security import generate_password_hash, check_password_hash
+from src.backend.import_models import auth, user, roles, monitoring, history
 from flask import request, g as current_context, jsonify, current_app, session
 
 
@@ -195,7 +195,7 @@ def decode_unique_url_token(token):
     return decoded_token, 200
 
 
-def logout():
+def logout(user_info):
     for key in list(session.keys()):
         session.pop(key)
 
@@ -219,6 +219,14 @@ def logout():
         current_context.pop('spreadsheet')
     if 'configurations' in current_context:
         current_context.pop('configurations')
+
+    history.add_history({
+        'module': 'general',
+        'ip': request.remote_addr,
+        'submodule': 'logout',
+        'user_info': user_info,
+        'desc': gettext('LOGOUT')
+    })
 
 
 def login(username, password, lang, method='default'):
@@ -274,6 +282,14 @@ def login(username, password, lang, method='default'):
             'minutes_before_exp': encoded_token[1],
             'user': returned_user
         }
+
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'login',
+            'user_info': returned_user['lastname'] + ' ' + returned_user['firstname'] + ' (' + returned_user['username'] + ')',
+            'desc': gettext('LOGIN')
+        })
         return response, 200
     else:
         response = {
@@ -319,6 +335,14 @@ def login_with_token(token, lang):
             'minutes_before_exp': minutes_before_exp,
             'user': returned_user
         }
+
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'login',
+            'user_info': returned_user['lastname'] + ' ' + returned_user['firstname'] + ' (' + returned_user['username'] + ')',
+            'desc': gettext('LOGIN')
+        })
         return response, 200
     else:
         response = {

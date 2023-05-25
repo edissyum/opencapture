@@ -113,6 +113,10 @@ export class AuthService {
 
     logout() {
         const tokenNames = this.getTokenName();
+
+        const user = this.userService.getUser();
+        const user_info = user['lastname'] + ' ' + user['firstname'] + ' (' + user['username'] + ')';
+
         this.userService.setUser({});
         this.localStorage.remove('login_image_b64');
         this.localStorage.remove('selectedSettings');
@@ -121,7 +125,7 @@ export class AuthService {
         this.localStorage.remove('splitter_or_verifier');
         this.localStorage.remove('selectedParentSettings');
         this.localStorage.remove('task_watcher_minimize_display');
-        this.http.get(environment['url'] + '/ws/auth/logout').pipe(
+        this.http.get(environment['url'] + '/ws/auth/logout?user_info=' + user_info).pipe(
             catchError((err: any) => {
                 console.debug(err);
                 return of(false);

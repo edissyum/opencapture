@@ -579,6 +579,8 @@ def export_mem(data, document_info, log, regex, database):
                                         res_id = data['res_id']
                                     if res_id != message['resId']:
                                         _ws.link_documents(str(res_id), message['resId'])
+
+
                         return '', 200
                     else:
                         response = {
