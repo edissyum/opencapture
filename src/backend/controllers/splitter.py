@@ -66,7 +66,7 @@ def handle_uploaded_file(files, workflow_id, user_id):
                 'user_id': user_id,
                 'custom_id': custom_id,
                 'workflow_id': workflow_id,
-                'ip': request.environ['REMOTE_ADDR'],
+                'ip': request.remote_addr,
                 'user_info': request.environ['user_info'],
                 'task_id_monitor': task_id_monitor[0]['process']
             })

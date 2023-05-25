@@ -30,7 +30,6 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { HistoryService } from "../../../../services/history.service";
 import { Country } from "@angular-material-extensions/select-country";
 import { LocaleService } from "../../../../services/locale.service";
 
@@ -176,7 +175,6 @@ export class UpdateSupplierComponent implements OnInit {
         private translate: TranslateService,
         private notify: NotificationService,
         private localeService: LocaleService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
     ) { }
@@ -368,7 +366,6 @@ export class UpdateSupplierComponent implements OnInit {
             this.http.put(environment['url'] + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
-                    this.historyService.addHistory('accounts', 'update_supplier', this.translate.instant('HISTORY-DESC.update-supplier', {supplier: supplier['name']}));
                     this.notify.success(this.translate.instant('ACCOUNTS.supplier_updated'));
                     this.router.navigate(['/accounts/suppliers/list']).then();
                 }),
