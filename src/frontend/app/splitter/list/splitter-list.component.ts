@@ -31,7 +31,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { PageEvent } from "@angular/material/paginator";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from '@angular/material/dialog';
-import { HistoryService } from "../../../services/history.service";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { LastUrlService } from "../../../services/last-url.service";
@@ -88,9 +87,8 @@ export class SplitterListComponent implements OnInit {
         private _sanitizer: DomSanitizer,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         private routerExtService: LastUrlService,
-        private localStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService
     ) {}
 
     async ngOnInit() {
@@ -323,7 +321,6 @@ export class SplitterListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deleteBatches([id]);
-                this.historyService.addHistory('splitter', 'delete_batch', this.translate.instant('HISTORY-DESC.delete_batch', {batch_id: id}));
             }
         });
     }
@@ -350,7 +347,7 @@ export class SplitterListComponent implements OnInit {
     }
 
     deleteBatches(ids: number[]): void {
-        this.http.put(environment['url'] + '/ws/splitter/status', {'ids': ids, 'status': 'DEL', }, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/splitter/deleteBatches', {'ids': ids}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 if (ids.length === 1) {
                     this.notify.success(this.translate.instant('SPLITTER.batch_deleted'));

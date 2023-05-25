@@ -31,7 +31,7 @@ from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
 from src.backend.import_controllers import forms, outputs, user, monitoring
-from src.backend.import_models import splitter, doctypes, accounts, workflow
+from src.backend.import_models import splitter, doctypes, accounts, workflow, history
 from src.backend.import_classes import _Files, _Splitter, _CMIS, _MEMWebServices, _OpenADS
 
 
@@ -249,6 +249,36 @@ def download_original_file(batch_id):
     }
     return response, 400
 
+
+def delete_batches(args):
+    for _id in args['ids']:
+        batches = splitter.get_batch_by_id({'id': _id})
+        if len(batches[0]) < 1:
+            response = {
+                "errors": gettext('BATCH_NOT_FOUND'),
+                "message": gettext('BATCH_ID_NOT_FOUND', id=_id)
+            }
+            return response, 401
+
+    args['status'] = 'DEL'
+    res = splitter.update_status(args)
+
+    if res:
+        for batch_id in args['ids']:
+            history.add_history({
+                'module': 'splitter',
+                'ip': request.remote_addr,
+                'submodule': 'delete_batch',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DELETE_BATCH_SUCCESS', batch_id=batch_id)
+            })
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('UPDATE_STATUS_ERROR'),
+            "message": ''
+        }
+        return response, 400
 
 def update_status(args):
     for _id in args['ids']:
