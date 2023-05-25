@@ -548,11 +548,11 @@ class Files:
         paths = []
 
         try:
-            for index, pages in enumerate(args['pages']):
+            for document in args['batch']['documents']:
                 pdf_reader = pypdf.PdfReader(args['filename'], strict=False)
-                if not pages:
+                if not document['pages']:
                     continue
-                for page in pages:
+                for page in document['pages']:
                     pdf_page = pdf_reader.pages[page['source_page'] - args['reduce_index']]
                     if page['rotation'] != 0:
                         pdf_page.rotate(page['rotation'])
@@ -562,33 +562,33 @@ class Files:
                     pdf_writer.add_metadata(pdf_reader.metadata)
 
                 title = ''
-                if 'title' in args['documents'][index]['metadata']:
-                    title = args['documents'][index]['metadata']['title']
-                elif 'title' in args['metadata']:
+                if 'title' in document['data']['custom_fields']:
+                    title = document['data']['custom_fields']['title']
+                elif 'title' in args['batch']['metadata']:
                     title = args['metadata']['title']
 
                 subject = ''
-                if 'subject' in args['documents'][index]['metadata']:
-                    subject = args['documents'][index]['metadata']['subject']
-                elif 'subject' in args['metadata']:
-                    subject = args['metadata']['subject']
+                if 'subject' in document['data']['custom_fields']:
+                    subject = document['data']['custom_fields']['subject']
+                elif 'subject' in args['batch']['metadata']:
+                    subject = args['batch']['metadata']['subject']
 
                 pdf_writer.add_metadata({
-                    '/Author': f"{args['metadata']['userLastName']} {args['metadata']['userFirstName']}",
+                    '/Author': f"{args['batch']['metadata']['userLastName']} {args['batch']['metadata']['userFirstName']}",
                     '/Title': title,
                     '/Subject': subject,
                     '/Creator': "Open-Capture",
                 })
 
-                file_path = args['folder_out'] + '/' + args['documents'][index]['fileName']
+                file_path = args['folder_out'] + '/' + document['fileName']
 
                 if args['compress_type']:
-                    tmp_filename = '/tmp/' + args['documents'][index]['fileName']
+                    tmp_filename = '/tmp/' + document['fileName']
                     with open(tmp_filename, 'wb') as file:
                         pdf_writer.write(file)
                         paths.append(file_path)
                     pdf_writer = pypdf.PdfWriter()
-                    compressed_file_path = '/tmp/min_' + args['documents'][index]['fileName']
+                    compressed_file_path = '/tmp/min_' + document['fileName']
                     compress_pdf(tmp_filename, compressed_file_path, args['compress_type'])
                     shutil.move(compressed_file_path, file_path)
                 else:

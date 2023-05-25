@@ -244,7 +244,7 @@ class Splitter:
         return {'batches_id': batches_id}
 
     @staticmethod
-    def get_split_pages(documents):
+    def get_documents_pages(documents):
         documents_pages = []
         for document in documents:
             documents_pages.append([])
@@ -293,14 +293,14 @@ class Splitter:
                 """
                     PDF masks value
                 """
-                if key in document['metadata']:
-                    value = str(document['metadata'][key] if document['metadata'][key] else '').replace(' ', substitute)
+                if key in document:
+                    value = str(document[key] if document[key] else '').replace(' ', substitute)
                     mask_result.append(value)
                 elif key in metadata:
                     value = str(metadata[key] if metadata[key] else '').replace(' ', substitute)
                     mask_result.append(value)
                 elif key == 'doctype':
-                    mask_result.append(document['doctypeKey'].replace(' ', substitute))
+                    mask_result.append(document['doctype_key'].replace(' ', substitute))
                 elif key == 'document_identifier':
                     mask_result.append(document['id'])
                 elif key == 'document_index':

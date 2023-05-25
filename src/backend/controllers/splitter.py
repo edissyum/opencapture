@@ -313,9 +313,7 @@ def get_page_full_thumbnail(page_id):
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
 
-    res, error = splitter.get_page_by_id({
-        'id': page_id
-    })
+    res, error = splitter.get_page_by_id({'id': page_id})
     if not res:
         response = {
             "errors": "ERROR",
@@ -346,20 +344,14 @@ def retrieve_documents(batch_id):
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
 
-    args = {
-        'id': batch_id
-    }
-    documents, _ = splitter.get_batch_documents(args)
+    documents, _ = splitter.get_batch_documents({'batch_id': batch_id})
     if documents:
         for document in documents:
             document_pages = []
             doctype_key = None
             doctype_label = None
 
-            args = {
-                'id': document['id']
-            }
-            pages, _ = splitter.get_documents_pages(args)
+            pages, _ = splitter.get_document_pages({'document_id': document['id']})
             if pages:
                 for page_index, _ in enumerate(pages):
                     thumbnail = f"{docservers['SPLITTER_THUMB']}/{pages[page_index]['thumbnail']}"
@@ -601,13 +593,21 @@ def validate(data):
         'data': [data['batchId']]
     })[0][0]
 
+    # pages = _Splitter.get_documents_pages(batch['documents'])
+    documents, error = splitter.get_batch_documents({'batch_id': batch['id']})
+    if error:
+        return error, 400
+
+    for document in documents:
+        document['pages'], error = splitter.get_document_pages({'document_id': document['id']})
+        if error:
+            return error, 400
+
+    print('documents', documents)
     form = forms.get_form_by_id(batch['form_id'])
-    pages = _Splitter.get_split_pages(data['documents'])
 
     batch['metadata'] = data['batchMetadata']
-    batch['documents'] = data['documents']
-
-    print('documents', data['documents'])
+    batch['documents'] = documents
 
     workflow_settings, error = workflow.get_workflow_by_id({'workflow_id': batch['workflow_id']})
     if error:
@@ -624,7 +624,7 @@ def validate(data):
 
             match output['output_type_id']:
                 case 'export_pdf':
-                    res_export_pdf = splitter_exports.export_pdf_files(batch, output, pages, now, log, docservers, configurations, regex)
+                    res_export_pdf = splitter_exports.export_pdf_files(batch, output, now, log, docservers, configurations, regex)
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
                     res_export_pdf = res_export_pdf[0]
@@ -639,17 +639,17 @@ def validate(data):
                     exported_files.append(res_export_xml[0]['path'])
 
                 case 'export_cmis':
-                    res_export_cmis = splitter_exports.export_to_cmis(output, batch, data, pages, now, log,docservers, configurations, regex)
+                    res_export_cmis = splitter_exports.export_to_cmis(output, batch, data, now, log,docservers, configurations, regex)
                     if res_export_cmis[1] != 200:
                         return res_export_cmis
 
                 case 'export_mem':
-                    res_export_mem = splitter_exports.export_to_mem(output, data, batch, pages, now, log, docservers, configurations, regex)
+                    res_export_mem = splitter_exports.export_to_mem(output, data, batch, now, log, docservers, configurations, regex)
                     if res_export_mem[1] != 200:
                         return res_export_mem
 
                 case 'export_openads':
-                    res_export_openads = splitter_exports.export_to_openads(output, data, batch, pages, now, log, docservers, configurations, regex)
+                    res_export_openads = splitter_exports.export_to_openads(output, data, batch, now, log, docservers, configurations, regex)
                     if res_export_openads[1] != 200:
                         return res_export_openads
 
@@ -798,7 +798,7 @@ def merge_batches(parent_id, batches):
                     'split_index': parent_max_split_index + doc['split_index']
                 })
 
-                for page in splitter.get_documents_pages({'id': doc['id']})[0]:
+                for page in splitter.get_document_pages({'document_id': doc['id']})[0]:
                     parent_max_source_page = parent_max_source_page + 1
                     new_page = parent_info['batch_folder'] + '/' + 'page-' + str(parent_max_source_page).zfill(3) + '.jpg'
 
