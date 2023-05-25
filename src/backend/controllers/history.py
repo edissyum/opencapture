@@ -23,11 +23,6 @@ from src.backend.main import create_classes_from_custom_id
 
 
 def add_history(args):
-    if 'user_info' in args and args['user_info'] and type(args['user_info']) == int:
-        user_info = user.get_user_by_id({'user_id': args['user_info']})
-        if user_info:
-            args['user_info'] = user_info[0]['lastname'] + ' ' + user_info[0]['firstname'] + ' (' + user_info[0]['username'] + ')'
-
     res, error = history.add_history(args)
     if res:
         return '', 200

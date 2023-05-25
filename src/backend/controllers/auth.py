@@ -359,7 +359,7 @@ def token_required(view):
                 return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('AUTHORIZATION_HEADER_INCORRECT')}), 500
 
             user_info, _ = user.get_users({
-                'select': ['users.id', 'last_connection', 'password'],
+                'select': ['users.id', 'username', 'lastname', 'firstname', 'last_connection', 'password'],
                 'where': where,
                 'data': data
             })
@@ -415,6 +415,7 @@ def token_required(view):
                     return jsonify({"errors": gettext("REST_ERROR"), "message": gettext('PASSWORD_INCORRECT')}), 500
 
             request.environ['user_id'] = user_info[0]['id']
+            request.environ['user_info'] = user_info[0]['lastname'] + ' ' + user_info[0]['firstname'] + ' (' + user_info[0]['username'] + ')'
         else:
             return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('VALID_TOKEN_MANDATORY')}), 500
         return view(**kwargs)

@@ -77,6 +77,7 @@
 }
 
 .mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__notch {
+    @apply -mr-0.5 #{!important};
     @apply border-b-green-400 #{!important};
     @apply border-t-green-400 #{!important};
     @apply border-r-transparent #{!important};

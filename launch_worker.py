@@ -19,7 +19,6 @@ import os
 import sys
 import argparse
 from src.backend import app
-from flask_babel import gettext
 from src.backend.functions import retrieve_config_from_custom_id
 from src.backend.main import launch, create_classes_from_custom_id
 
@@ -53,16 +52,7 @@ with app.app_context():
             'source': 'interface'
         }
     })
-    launch(args)
 
-    args = {
-        'table': 'history',
-        'columns': {
-            'history_submodule': 'upload_file',
-            'history_module': 'verifier',
-            'user_info': 'fs-watcher',
-            'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>',
-            'user_ip': '0.0.0.0',
-        }
-    }
-    database.insert(args)
+    args['user_info'] = 'fs-watcher'
+    args['ip'] = '0.0.0.0'
+    launch(args)

@@ -294,7 +294,6 @@ export class CreateSupplierComponent implements OnInit {
                     this.http.post(environment['url'] + '/ws/accounts/suppliers/create', {'args': supplier}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
-                            this.historyService.addHistory('accounts', 'create_supplier', this.translate.instant('HISTORY-DESC.create-supplier', {supplier: supplier['name']}));
                             this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
                             this.router.navigate(['/accounts/suppliers/list']).then();
                         }),

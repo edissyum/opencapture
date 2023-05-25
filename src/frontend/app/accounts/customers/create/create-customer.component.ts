@@ -27,11 +27,10 @@ import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
-import { environment } from  "../../../env";
-import { catchError, tap } from "rxjs/operators";
-import { of } from "rxjs";
-import { HistoryService } from "../../../../services/history.service";
 import { Country } from "@angular-material-extensions/select-country";
+import { catchError, tap } from "rxjs/operators";
+import { environment } from  "../../../env";
+import { of } from "rxjs";
 
 @Component({
     selector: 'app-create-customer',
@@ -146,7 +145,6 @@ export class CreateCustomerComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
     ) { }
@@ -218,7 +216,6 @@ export class CreateCustomerComponent implements OnInit {
                     this.http.post(environment['url'] + '/ws/accounts/customers/create', {'args': customer}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
-                            this.historyService.addHistory('accounts', 'create_customer', this.translate.instant('HISTORY-DESC.create-customer', {customer: customer['name']}));
                             this.notify.success(this.translate.instant('ACCOUNTS.customer_created'));
                             this.router.navigate(['/accounts/customers/list']).then();
                         }),

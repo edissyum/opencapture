@@ -21,6 +21,7 @@ import sys
 import time
 import json
 from kuyruk import Kuyruk
+from flask_babel import gettext
 from src.backend.functions import retrieve_config_from_custom_id
 from src.backend.import_classes import _Files, _Splitter, _SeparatorQR, _Log
 from src.backend.main import timer, check_file, create_classes_from_custom_id
@@ -101,8 +102,8 @@ def launch(args):
             outputs = database.select({
                 'select': ['outputs'],
                 'table': ['form_models'],
-                'where': ['id = %s', 'module = %s'],
-                'data': [workflow_settings[0]['process']['form_id'], 'splitter']
+                'where': ['id = %s'],
+                'data': [workflow_settings[0]['process']['form_id']]
             })
             if outputs:
                 outputs = outputs[0]['outputs']
@@ -123,8 +124,8 @@ def launch(args):
             outputs_settings = database.select({
                 'select': ['ocrise'],
                 'table': ['outputs'],
-                'where': ['id = %s', 'module = %s'],
-                'data': [int(output_id), 'splitter']
+                'where': ['id = %s'],
+                'data': [int(output_id)]
             })
             if outputs_settings:
                 ocrise = outputs_settings[0]['ocrise']
@@ -207,5 +208,16 @@ def launch(args):
         },
         'where': ['id = %s'],
         'data': [args['task_id_monitor']]
+    })
+
+    database.insert({
+        'table': 'history',
+        'columns': {
+            'history_module': 'splitter',
+            'user_info': args['user_info'],
+            'history_submodule': 'upload_file',
+            'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>',
+            'user_ip': args['ip']
+        }
     })
     database.conn.close()

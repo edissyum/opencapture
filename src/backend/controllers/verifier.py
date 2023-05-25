@@ -37,7 +37,7 @@ from src.backend.import_controllers import auth, user, monitoring, history
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
-def handle_uploaded_file(files, workflow_id, supplier, ipaddress=None, user_id=None):
+def handle_uploaded_file(files, workflow_id, supplier, user_id=None):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER']
     tokens = []
@@ -68,17 +68,10 @@ def handle_uploaded_file(files, workflow_id, supplier, ipaddress=None, user_id=N
                 'supplier': supplier,
                 'custom_id': custom_id,
                 'workflow_id': workflow_id,
-                'task_id_monitor': task_id_monitor[0]['process'],
+                'ip': request.remote_addr,
+                'user_info': request.environ['user_info'],
+                'task_id_monitor': task_id_monitor[0]['process']
             })
-
-            if ipaddress:
-                history.add_history({
-                    'submodule': 'upload_file',
-                    'module': 'verifier',
-                    'user_info': user_id,
-                    'desc': gettext('FILE_UPLOADED_WS_WORKFLOW') + '&nbsp<strong>' + workflow_id + '</strong>',
-                    'ip': ipaddress,
-                })
         else:
             return False, 500
     return tokens, 200
