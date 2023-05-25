@@ -191,7 +191,7 @@ export class VerifierViewerComponent implements OnInit {
                             }
 
                             if (this.multiDocumentsData.length === 1) {
-                                // this.loadDocument(this.multiDocumentsData[0].id);
+                                this.loadDocument(this.multiDocumentsData[0].id);
                             }
                         }
                         return;
@@ -1089,7 +1089,6 @@ export class VerifierViewerComponent implements OnInit {
                 this.http.post(environment['url'] + '/ws/accounts/suppliers/create', {'args': supplierData}, {headers: this.authService.headers},
                 ).pipe(
                     tap(async (supplier_data: any) => {
-                        this.historyService.addHistory('accounts', 'create_supplier', this.translate.instant('HISTORY-DESC.create-supplier', {supplier: supplierData['name']}));
                         this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
                         this.updateDocument({'supplier_id': supplier_data['id']});
                         this.document.supplier_id = supplier_data['id'];
@@ -1139,7 +1138,6 @@ export class VerifierViewerComponent implements OnInit {
         this.http.put(environment['url'] + '/ws/accounts/addresses/updateBySupplierId/' + this.document.supplier_id, {'args': addressData}, {headers: this.authService.headers},
         ).pipe(
             tap(() => {
-                this.historyService.addHistory('accounts', 'update_supplier', this.translate.instant('HISTORY-DESC.update-supplier', {supplier: supplierData['name']}));
                 this.notify.success(this.translate.instant('ACCOUNTS.supplier_updated'));
             }),
             catchError((err: any) => {

@@ -97,7 +97,10 @@ def generate_auth_token():
 
 @bp.route('auth/logout', methods=['GET'])
 def logout():
-    auth.logout()
+    user_info = ''
+    if request.args.get('user_info'):
+        user_info = request.args.get('user_info')
+    auth.logout(user_info)
     return {}, 200
 
 

@@ -345,6 +345,13 @@ def delete_document(document_id):
     if error is None:
         _, error = verifier.update_document({'set': {'status': 'DEL'}, 'document_id': document_id})
         if error is None:
+            history.add_history({
+                'module': 'verifier',
+                'ip': request.remote_addr,
+                'submodule': 'delete_document',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DELETE_DOCUMENT_SUCCESS', document_id=document_id)
+            })
             return '', 200
         else:
             response = {

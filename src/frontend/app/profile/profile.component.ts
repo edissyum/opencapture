@@ -28,8 +28,7 @@ import { of } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { PrivilegesService } from "../../services/privileges.service";
-import { HistoryService } from "../../services/history.service";
-import {PasswordVerificationService} from "../../services/password-verification.service";
+import { PasswordVerificationService } from "../../services/password-verification.service";
 
 @Component({
     selector: 'app-user-profile',
@@ -99,7 +98,6 @@ export class UserProfileComponent implements OnInit {
         private translate: TranslateService,
         private notify: NotificationService,
         private localeService: LocaleService,
-        private historyService: HistoryService,
         private privilegeService: PrivilegesService,
         private passwordVerification: PasswordVerificationService
     ) { }
@@ -219,7 +217,6 @@ export class UserProfileComponent implements OnInit {
                 {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
-                    this.historyService.addHistory('general', 'profile_updated', this.translate.instant('HISTORY-DESC.profile-updated', {user: user['lastname'] + ' ' + user['firstname']}));
                     this.notify.success(this.translate.instant('USER.profile_updated'));
                     if (this.userId === this.userService.user.id) {
                         this.userService.setUser(data.user);
