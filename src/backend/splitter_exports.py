@@ -33,7 +33,7 @@ def get_output_parameters(parameters):
     return data
 
 
-def export_pdf(batch, documents, output, pages, now, log, docservers, configurations):
+def export_pdf(batch, output, now, log, docservers, configurations):
     filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch['file_path']
     pdf_filepaths = []
     zip_except_documents = []
@@ -51,39 +51,36 @@ def export_pdf(batch, documents, output, pages, now, log, docservers, configurat
             'separator': output['parameters']['separator'],
             'extension': 'zip'
         }
-        zip_filename = _Splitter.get_value_from_mask(None, batch['metadata'], now, mask_args)
+        zip_filename = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], now, mask_args)
 
     documents_doctypes = []
-    for index, document in enumerate(documents):
+    for index, document in enumerate(batch['documents']):
         """
             Add PDF file names using masks
         """
-        documents[index]['metadata']['document_index'] = documents_doctypes.count(document['doctypeKey']) + 1
-        documents_doctypes.append(document['doctypeKey'])
+        batch['documents'][index]['document_index'] = documents_doctypes.count(document['doctype_key']) + 1
+        documents_doctypes.append(document['doctype_key'])
         mask_args = {
             'mask': output['parameters']['filename'] if 'filename' in output['parameters'] else _Files.get_random_string(10),
             'separator': output['parameters']['separator'],
             'extension': output['parameters']['extension']
         }
 
-        documents[index]['fileName'] = _Splitter.get_value_from_mask(document, batch['metadata'], now, mask_args)
+        batch['documents'][index]['fileName'] = _Splitter.get_value_from_mask(document, batch['data']['custom_fields'], now, mask_args)
 
-        if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in documents[index]['doctypeKey']:
+        if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in batch['documents'][index]['doctype_key']:
             pdf_filepaths.append({
-                'input_path': output['parameters']['folder_out'] + '/' + documents[index]['fileName'],
-                'path_in_zip': documents[index]['fileName']
+                'input_path': output['parameters']['folder_out'] + '/' + batch['documents'][index]['fileName'],
+                'path_in_zip': batch['documents'][index]['fileName']
             })
         else:
-            zip_except_documents.append(documents[index]['id'])
+            zip_except_documents.append(batch['documents'][index]['id'])
 
-    print(output)
     export_pdf_res = _Files.export_pdf({
         'log': log,
-        'pages': pages,
+        'batch': batch,
         'reduce_index': 1,
         'filename': filename,
-        'documents': documents,
-        'metadata': batch['metadata'],
         'lang': configurations['locale'],
         'compress_type': output['compress_type'],
         'folder_out': output['parameters']['folder_out']
@@ -169,8 +166,8 @@ def export_mem(auth_data, file_path, args, batch, custom_id, log):
         return response, 400
 
 
-def export_pdf_files(batch, output, pages, now, log, docservers, configurations, regex):
-    res_export_pdf = export_pdf(batch, batch['documents'], output, pages, now, log, docservers, configurations)
+def export_pdf_files(batch, output, now, log, docservers, configurations, regex):
+    res_export_pdf = export_pdf(batch, output, now, log, docservers, configurations)
     if res_export_pdf[1] != 200:
         return res_export_pdf
 
@@ -282,7 +279,7 @@ def export_to_mem(output, data, batch, pages, now, log, docservers, configuratio
             return res_export_mem
 
 
-def export_to_openads(output, data, batch, docservers, pages, now, log):
+def export_to_openads(output, data, batch, docservers, pages, now, log, configurations, regex):
     openads_auth = get_output_parameters(output[0]['data']['options']['auth'])
     openads_params = get_output_parameters(output[0]['data']['options']['parameters'])
     _openads = _OpenADS(openads_auth['openads_api'], openads_auth['login'], openads_auth['password'])
@@ -291,7 +288,7 @@ def export_to_openads(output, data, batch, docservers, pages, now, log):
         'mask': openads_params['folder_id'],
         'separator': '',
     }
-    folder_id = _Splitter.get_value_from_mask(None, data['batchMetadata'], now, folder_id_mask)
+    folder_id = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], now, folder_id_mask)
     openads_res = _openads.check_folder_by_id(folder_id)
     if not openads_res['status']:
         response = {
@@ -306,11 +303,11 @@ def export_to_openads(output, data, batch, docservers, pages, now, log):
         'separator': openads_params['separator'],
         'filename': openads_params['pdf_filename'],
     }
-    res_export_pdf = export_pdf(batch, data['documents'], parameters, pages, now, output, log, docservers, configurations, regex)
+    res_export_pdf = export_pdf(batch, output, now, log, docservers, configurations)
     if res_export_pdf[1] != 200:
         return res_export_pdf
 
-    openads_res = _openads.create_documents(folder_id, res_export_pdf, data['documents'])
+    openads_res = _openads.create_documents(folder_id, res_export_pdf, batch['documents'])
     if not openads_res['status']:
         response = {
             "errors": gettext('OPENADS_ADD_DOC_ERROR'),

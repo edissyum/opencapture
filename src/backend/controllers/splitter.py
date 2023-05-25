@@ -593,26 +593,20 @@ def validate(data):
         'data': [data['batchId']]
     })[0][0]
 
-    # pages = _Splitter.get_documents_pages(batch['documents'])
     documents, error = splitter.get_batch_documents({'batch_id': batch['id']})
     if error:
         return error, 400
-
     for document in documents:
         document['pages'], error = splitter.get_document_pages({'document_id': document['id']})
         if error:
             return error, 400
-
-    print('documents', documents)
-    form = forms.get_form_by_id(batch['form_id'])
-
-    batch['metadata'] = data['batchMetadata']
     batch['documents'] = documents
 
     workflow_settings, error = workflow.get_workflow_by_id({'workflow_id': batch['workflow_id']})
     if error:
         return error, 400
 
+    form = forms.get_form_by_id(batch['form_id'])
     if 'outputs' in form[0]:
         for output_id in form[0]['outputs']:
             output = outputs.get_output_by_id(output_id)
@@ -629,8 +623,8 @@ def validate(data):
                         return res_export_pdf
                     res_export_pdf = res_export_pdf[0]
 
-                    batch['metadata']['zip_filename'] = res_export_pdf['zip_filename']
-                    batch['metadata']['zip_except_documents'] = res_export_pdf['zip_except_documents']
+                    batch['zip_filename'] = res_export_pdf['zip_filename']
+                    batch['zip_except_documents'] = res_export_pdf['zip_except_documents']
 
                 case 'export_xml':
                     res_export_xml = splitter_exports.export_xml_files(batch, output['parameters'], now, regex)
@@ -639,7 +633,7 @@ def validate(data):
                     exported_files.append(res_export_xml[0]['path'])
 
                 case 'export_cmis':
-                    res_export_cmis = splitter_exports.export_to_cmis(output, batch, data, now, log,docservers, configurations, regex)
+                    res_export_cmis = splitter_exports.export_to_cmis(output, batch, data, now, log, docservers, configurations, regex)
                     if res_export_cmis[1] != 200:
                         return res_export_cmis
 
@@ -649,7 +643,7 @@ def validate(data):
                         return res_export_mem
 
                 case 'export_openads':
-                    res_export_openads = splitter_exports.export_to_openads(output, data, batch, now, log, docservers, configurations, regex)
+                    res_export_openads = splitter_exports.export_to_openads(output, batch, now, log, docservers, configurations, regex)
                     if res_export_openads[1] != 200:
                         return res_export_openads
 
@@ -668,14 +662,14 @@ def validate(data):
                 'separator': '',
                 'substitute': '_'
             }
-            export_zip_file = _Splitter.get_value_from_mask(None, data['batchMetadata'], now, mask_args)
+            export_zip_file = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], now, mask_args)
             _Files.zip_files(files_to_zip, export_zip_file, True)
 
         """
             Process after validation
         """
         splitter.update_status({
-            'ids': [data['batchId']],
+            'ids': [batch['id']],
             'status': 'NEW'
         })
 

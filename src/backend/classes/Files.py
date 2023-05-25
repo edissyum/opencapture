@@ -564,17 +564,18 @@ class Files:
                 title = ''
                 if 'title' in document['data']['custom_fields']:
                     title = document['data']['custom_fields']['title']
-                elif 'title' in args['batch']['metadata']:
-                    title = args['metadata']['title']
+                elif 'title' in args['batch']['data']['custom_fields']:
+                    title = args['batch']['data']['custom_fields']['title']
 
                 subject = ''
                 if 'subject' in document['data']['custom_fields']:
                     subject = document['data']['custom_fields']['subject']
-                elif 'subject' in args['batch']['metadata']:
-                    subject = args['batch']['metadata']['subject']
+                elif 'subject' in args['batch']['data']['custom_fields']:
+                    subject = args['batch']['data']['custom_fields']['subject']
 
                 pdf_writer.add_metadata({
-                    '/Author': f"{args['batch']['metadata']['userLastName']} {args['batch']['metadata']['userFirstName']}",
+                    '/Author': f"{args['batch']['data']['custom_fields']['userLastName']} "
+                               f"{args['batch']['data']['custom_fields']['userFirstName']}",
                     '/Title': title,
                     '/Subject': subject,
                     '/Creator': "Open-Capture",
