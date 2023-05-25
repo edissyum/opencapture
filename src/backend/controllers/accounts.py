@@ -142,7 +142,7 @@ def update_supplier(supplier_id, data):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
         spreadsheet = _vars[7]
-    _, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
+    old_supplier, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
     if error is None:
         _set = {}
@@ -183,7 +183,7 @@ def update_supplier(supplier_id, data):
                 'ip': request.remote_addr,
                 'submodule': 'update_supplier',
                 'user_info': request.environ['user_info'],
-                'desc': gettext('SUPPLIER_UPDATED', supplier=data['name'])
+                'desc': gettext('SUPPLIER_UPDATED', supplier=data['name'] if 'name' in data else old_supplier['name'])
             })
             spreadsheet.update_supplier_ods_sheet(database)
             return '', 200
@@ -454,7 +454,7 @@ def get_default_accounting_plan():
 
 
 def update_customer(customer_id, data):
-    _, error = accounts.get_customer_by_id({'customer_id': customer_id})
+    old_customer, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
     if error is None:
         _set = {}
@@ -481,7 +481,7 @@ def update_customer(customer_id, data):
                 'ip': request.remote_addr,
                 'submodule': 'update_customer',
                 'user_info': request.environ['user_info'],
-                'desc': gettext('CUSTOMER_UPDATED', customer=data['name'])
+                'desc': gettext('CUSTOMER_UPDATED', customer=data['name'] if 'name' in data else old_customer['name'])
             })
             return '', 200
         else:
