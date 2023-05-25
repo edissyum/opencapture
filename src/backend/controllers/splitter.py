@@ -30,8 +30,8 @@ from src.backend.main_splitter import launch
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
-from src.backend.import_models import splitter, doctypes, accounts, workflow
 from src.backend.import_controllers import forms, outputs, user, monitoring
+from src.backend.import_models import splitter, doctypes, accounts, workflow
 from src.backend.import_classes import _Files, _Splitter, _CMIS, _MEMWebServices, _OpenADS
 
 
@@ -66,6 +66,8 @@ def handle_uploaded_file(files, workflow_id, user_id):
                 'user_id': user_id,
                 'custom_id': custom_id,
                 'workflow_id': workflow_id,
+                'ip': request.environ['REMOTE_ADDR'],
+                'user_info': request.environ['user_info'],
                 'task_id_monitor': task_id_monitor[0]['process']
             })
         else:

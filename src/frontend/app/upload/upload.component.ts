@@ -29,7 +29,6 @@ import { UserService } from "../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { LocalStorageService } from "../../services/local-storage.service";
-import { HistoryService } from "../../services/history.service";
 
 @Component({
     selector: 'app-upload',
@@ -56,7 +55,6 @@ export class UploadComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public localStorageService: LocalStorageService
     ) {}
 
@@ -138,7 +136,6 @@ export class UploadComponent implements OnInit {
         }
         formData.set('workflowId', this.selectedWorkflowTechnicalId);
         formData.set('userId', this.userService.user.id);
-        formData.set('fillHistory', 'false');
 
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
@@ -151,11 +148,6 @@ export class UploadComponent implements OnInit {
                             this.sending = false;
                             this.fileControl.setValue([]);
                             this.notify.success(this.translate.instant('UPLOAD.upload_success'));
-                            for (const cpt of Array(numberOFFiles).keys()) {
-                                if (this.selectedWorkflow) {
-                                    this.historyService.addHistory(splitterOrVerifier, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded_workflow', {workflow: this.selectedWorkflowTechnicalId}));
-                                }
-                            }
                         }),
                         catchError((err: any) => {
                             this.notify.handleErrors(err);

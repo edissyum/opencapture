@@ -19,7 +19,7 @@ msgstr ""
 
 #: launch_worker.py:64 launch_worker_splitter.py:64
 msgid "FILE_UPLOADED_WORKFLOW"
-msgstr "File uploaded successfully via fs-watcher with workflow"
+msgstr "File uploaded successfully with workflow"
 
 #: src/backend/verifier_exports.py:152 src/backend/verifier_exports.py:155
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"

@@ -50,10 +50,6 @@ def upload():
         return jsonify({'errors': gettext('VERIFIER_UPLOAD_ERROR'),
                         'message': gettext('WORKFLOW_ID_IS_MANDATORY')}), 400
 
-    ip_address = None
-    if 'fillHistory' not in request.form or request.form['fillHistory'] == 'false':
-        ip_address = request.environ['REMOTE_ADDR']
-
     supplier = {}
     if 'siret' in request.form:
         supplier = {'column': 'siret', 'value': request.form['siret']}
@@ -63,7 +59,7 @@ def upload():
         supplier = {'column': 'vat_number', 'value': request.form['vat_number']}
 
     files = request.files
-    res = verifier.handle_uploaded_file(files, workflow_id, supplier, ip_address, request.environ['user_id'])
+    res = verifier.handle_uploaded_file(files, workflow_id, supplier)
 
     if res and res[0] is not False:
         for file in res[0]:

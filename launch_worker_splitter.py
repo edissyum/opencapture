@@ -53,16 +53,7 @@ args['task_id_monitor'] = database.insert({
         'source': 'interface'
     }
 })
-launch(args)
 
-args = {
-    'table': 'history',
-    'columns': {
-        'history_submodule': 'upload_file',
-        'history_module': 'splitter',
-        'user_info': 'fs-watcher',
-        'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>',
-        'user_ip': '0.0.0.0',
-    }
-}
-database.insert(args)
+args['ip'] = '0.0.0.0'
+args['user_info'] = 'fs-watcher'
+launch(args)

@@ -21,6 +21,7 @@ import facturx
 import tempfile
 from lxml import etree
 from kuyruk import Kuyruk
+from flask_babel import gettext
 from src.backend.functions import recursive_delete, get_custom_array
 from src.backend.import_classes import _Files, _Log, _SeparatorQR, _Mail
 from src.backend.main import create_classes_from_custom_id, check_file, timer, str2bool
@@ -213,7 +214,6 @@ def launch(args):
             _e = _e.__class__.__name__ + ' : ' + str(_e)
             log.error(_e)
 
-
     recursive_delete(tmp_folder, log)
     if not process_err:
         database.update({
@@ -227,6 +227,7 @@ def launch(args):
         })
     end = time.time()
     _timer = timer(start, end)
+
     log.info('Process end after ' + _timer + '')
     database.update({
         'table': ['monitoring'],
@@ -239,5 +240,16 @@ def launch(args):
         },
         'where': ['id = %s'],
         'data': [args['task_id_monitor']]
+    })
+
+    database.insert({
+        'table': 'history',
+        'columns': {
+            'history_module': 'verifier',
+            'user_info': args['user_info'],
+            'history_submodule': 'upload_file',
+            'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>',
+            'user_ip': args['ip']
+        }
     })
     database.conn.close()
