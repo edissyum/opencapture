@@ -117,7 +117,7 @@ ALTER TABLE mailcollect RENAME COLUMN splitter_technical_input_id TO splitter_te
 ALTER TABLE documents ADD COLUMN "workflow_id" INTEGER DEFAULT null;
 
 ALTER TABLE splitter_batches ADD COLUMN "workflow_id" INTEGER DEFAULT null;
-UPDATE output_types SET date = '{
+UPDATE outputs_types SET data = '{
   "options": {
     "auth": [],
     "parameters": [
@@ -130,7 +130,7 @@ UPDATE output_types SET date = '{
       },
       {
         "id": "filename",
-        "hint": "Liste des identifiants techniques, séparés par #. Si l'identifiant technique n'existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
         "type": "text",
         "label": "Nom du fichier",
         "required": "true",
@@ -162,4 +162,3 @@ UPDATE output_types SET date = '{
     ]
   }
 }' WHERE output_type_id = 'export_pdf' and module = 'splitter';
-
