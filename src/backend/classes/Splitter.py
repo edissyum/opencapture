@@ -257,19 +257,18 @@ class Splitter:
         return documents_pages
 
     @staticmethod
-    def get_value_from_mask(document, metadata, date, mask_args):
-        mask_result = []
-
-        if not date:
-            date = datetime.now()
-
-        year = str(date.year)
-        day = str('%02d' % date.day)
-        month = str('%02d' % date.month)
-        hour = str('%02d' % date.hour)
-        minute = str('%02d' % date.minute)
-        seconds = str('%02d' % date.second)
+    def get_value_from_mask(document, metadata, mask_args):
+        if 'export_date' not in metadata:
+            metadata['export_date'] = datetime.now()
+        year = str(metadata['export_date'].year)
+        day = str('%02d' % metadata['export_date'].day)
+        month = str('%02d' % metadata['export_date'].month)
+        hour = str('%02d' % metadata['export_date'].hour)
+        minute = str('%02d' % metadata['export_date'].minute)
+        seconds = str('%02d' % metadata['export_date'].second)
         _date = year + month + day + hour + minute + seconds
+
+        mask_result = []
         random_num = str(random.randint(0, 99999)).zfill(5)
         mask_keys = mask_args['mask'].split('#')
         separator = mask_args['separator'] if mask_args['separator'] else ''

@@ -545,63 +545,56 @@ class Files:
     @staticmethod
     def export_pdf(args):
         pdf_writer = pypdf.PdfWriter()
-        paths = []
-
         try:
-            for document in args['batch']['documents']:
-                pdf_reader = pypdf.PdfReader(args['filename'], strict=False)
-                if not document['pages']:
-                    continue
-                for page in document['pages']:
-                    pdf_page = pdf_reader.pages[page['source_page'] - args['reduce_index']]
-                    if page['rotation'] != 0:
-                        pdf_page.rotate(page['rotation'])
-                    pdf_writer.add_page(pdf_page)
+            pdf_reader = pypdf.PdfReader(args['filename'], strict=False)
+            for page in args['document']['pages']:
+                pdf_page = pdf_reader.pages[page['source_page'] - args['reduce_index']]
+                if page['rotation'] != 0:
+                    pdf_page.rotate(page['rotation'])
+                pdf_writer.add_page(pdf_page)
 
-                if pdf_reader.metadata:
-                    pdf_writer.add_metadata(pdf_reader.metadata)
+            if pdf_reader.metadata:
+                pdf_writer.add_metadata(pdf_reader.metadata)
 
-                title = ''
-                if 'title' in document['data']['custom_fields']:
-                    title = document['data']['custom_fields']['title']
-                elif 'title' in args['batch']['data']['custom_fields']:
-                    title = args['batch']['data']['custom_fields']['title']
+            title = ''
+            if 'title' in args['document']['data']['custom_fields']:
+                title = args['document']['data']['custom_fields']['title']
+            elif 'title' in args['batch']['data']['custom_fields']:
+                title = args['batch']['data']['custom_fields']['title']
 
-                subject = ''
-                if 'subject' in document['data']['custom_fields']:
-                    subject = document['data']['custom_fields']['subject']
-                elif 'subject' in args['batch']['data']['custom_fields']:
-                    subject = args['batch']['data']['custom_fields']['subject']
+            subject = ''
+            if 'subject' in args['document']['data']['custom_fields']:
+                subject = args['document']['data']['custom_fields']['subject']
+            elif 'subject' in args['batch']['data']['custom_fields']:
+                subject = args['batch']['data']['custom_fields']['subject']
 
-                pdf_writer.add_metadata({
-                    '/Author': f"{args['batch']['data']['custom_fields']['userLastName']} "
-                               f"{args['batch']['data']['custom_fields']['userFirstName']}",
-                    '/Title': title,
-                    '/Subject': subject,
-                    '/Creator': "Open-Capture",
-                })
+            pdf_writer.add_metadata({
+                '/Author': f"{args['batch']['data']['custom_fields']['userLastName']} "
+                           f"{args['batch']['data']['custom_fields']['userFirstName']}",
+                '/Title': title,
+                '/Subject': subject,
+                '/Creator': "Open-Capture",
+            })
 
-                file_path = args['folder_out'] + '/' + document['fileName']
+            file_path = args['folder_out'] + '/' + args['document']['fileName']
 
-                if args['compress_type']:
-                    tmp_filename = '/tmp/' + document['fileName']
-                    with open(tmp_filename, 'wb') as file:
-                        pdf_writer.write(file)
-                        paths.append(file_path)
-                    pdf_writer = pypdf.PdfWriter()
-                    compressed_file_path = '/tmp/min_' + document['fileName']
-                    compress_pdf(tmp_filename, compressed_file_path, args['compress_type'])
-                    shutil.move(compressed_file_path, file_path)
-                else:
-                    with open(file_path, 'wb') as file:
-                        pdf_writer.write(file)
-                        paths.append(file_path)
-                        args['log'].info(f"Splitter file exported to : {file_path}")
-                    pdf_writer = pypdf.PdfWriter()
+            if args['compress_type']:
+                tmp_filename = '/tmp/' + args['document']['fileName']
+                with open(tmp_filename, 'wb') as file:
+                    pdf_writer.write(file)
+                pdf_writer = pypdf.PdfWriter()
+                compressed_file_path = '/tmp/min_' + args['document']['fileName']
+                compress_pdf(tmp_filename, compressed_file_path, args['compress_type'])
+                shutil.move(compressed_file_path, file_path)
+            else:
+                with open(file_path, 'wb') as file:
+                    pdf_writer.write(file)
+                    args['log'].info(f"Splitter file exported to : {file_path}")
+                pdf_writer = pypdf.PdfWriter()
         except Exception as err:
             return False, str(err)
 
-        return paths
+        return file_path, ''
 
     @staticmethod
     def list_files(directory, extension):

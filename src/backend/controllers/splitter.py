@@ -554,7 +554,7 @@ def test_openads_connection(args):
 
 
 def validate(data):
-    now = _Files.get_now_date()
+    export_date = _Files.get_now_date()
     if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context\
             and 'configurations' in current_context:
         log = current_context.log
@@ -601,6 +601,7 @@ def validate(data):
         if error:
             return error, 400
     batch['documents'] = documents
+    batch['export_date'] = export_date
 
     workflow_settings, error = workflow.get_workflow_by_id({'workflow_id': batch['workflow_id']})
     if error:
@@ -618,7 +619,7 @@ def validate(data):
 
             match output['output_type_id']:
                 case 'export_pdf':
-                    res_export_pdf = splitter_exports.export_pdf_files(batch, output, now, log, docservers, configurations, regex)
+                    res_export_pdf = splitter_exports.handle_pdf_output(batch, output, log, docservers, configurations, regex)
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
                     res_export_pdf = res_export_pdf[0]
@@ -627,23 +628,23 @@ def validate(data):
                     batch['zip_except_documents'] = res_export_pdf['zip_except_documents']
 
                 case 'export_xml':
-                    res_export_xml = splitter_exports.export_xml_files(batch, output['parameters'], now, regex)
+                    res_export_xml = splitter_exports.handle_xml_output(batch, output['parameters'], regex)
                     if res_export_xml[1] != 200:
                         return res_export_xml
                     exported_files.append(res_export_xml[0]['path'])
 
                 case 'export_cmis':
-                    res_export_cmis = splitter_exports.export_to_cmis(output, batch, data, now, log, docservers, configurations, regex)
+                    res_export_cmis = splitter_exports.export_to_cmis(output, batch, data, log, docservers, configurations, regex)
                     if res_export_cmis[1] != 200:
                         return res_export_cmis
 
                 case 'export_mem':
-                    res_export_mem = splitter_exports.export_to_mem(output, data, batch, now, log, docservers, configurations, regex)
+                    res_export_mem = splitter_exports.export_to_mem(output, data, batch, log, docservers, configurations, regex)
                     if res_export_mem[1] != 200:
                         return res_export_mem
 
                 case 'export_openads':
-                    res_export_openads = splitter_exports.export_to_openads(output, batch, now, log, docservers, configurations, regex)
+                    res_export_openads = splitter_exports.export_to_openads(output, batch, log, docservers, configurations, regex)
                     if res_export_openads[1] != 200:
                         return res_export_openads
 
@@ -662,7 +663,7 @@ def validate(data):
                 'separator': '',
                 'substitute': '_'
             }
-            export_zip_file = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], now, mask_args)
+            export_zip_file = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
             _Files.zip_files(files_to_zip, export_zip_file, True)
 
         """

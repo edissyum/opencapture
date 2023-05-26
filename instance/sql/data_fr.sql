@@ -383,12 +383,12 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
         "placeholder": "pdf"
       },
       {
-        "id": "add_to_zip",
-        "hint": "Ajouter le fichier au ZIP, [Except=doctype1] mentionne les type de document à ne pas ajouter dans le ZIP",
+        "id": "zip_filename",
+        "hint": "Compresser les fichiers exportés, [excepté=doctype1] mentionne les types de document à exclure de la compression",
         "type": "text",
-        "label": "Nom du fichier ZIP à exporter",
+        "label": "Nom du fichier compressé",
         "required": "false",
-        "placeholder": "splitter-files.zip[Except=doctype1,doctype2]"
+        "placeholder": "splitter-files[Except=doctype1,doctype2]"
       }
     ]
   }

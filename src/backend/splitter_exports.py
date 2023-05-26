@@ -33,28 +33,35 @@ def get_output_parameters(parameters):
     return data
 
 
-def export_pdf(batch, output, now, log, docservers, configurations):
+def export_pdf(batch, output, log, docservers, configurations):
     filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch['file_path']
-    pdf_filepaths = []
+    pdfs_paths = []
+
+    zip_pdfs = []
     zip_except_documents = []
-    except_from_zip_doctype = ''
+    zip_except_doctype = ''
     zip_file_path = ''
     zip_filename = ''
+
     """
         Add PDF file to zip archive if enabled
     """
     if 'zip_filename' in output['parameters'] and output['parameters']['zip_filename']:
-        except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', output['parameters']['zip_filename']) \
+        zip_except_doctype = re.search(r'\[Except=(.*?)\]', output['parameters']['zip_filename']) \
             if 'Except' in output['parameters']['zip_filename'] else ''
         mask_args = {
             'mask': output['parameters']['zip_filename'].split('[Except=')[0],
             'separator': output['parameters']['separator'],
             'extension': 'zip'
         }
-        zip_filename = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], now, mask_args)
+        metadata = batch['data']['custom_fields']
+        metadata['export_date'] = batch['export_date']
+        zip_filename = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
 
     documents_doctypes = []
     for index, document in enumerate(batch['documents']):
+        if not document['pages']:
+            continue
         """
             Add PDF file names using masks
         """
@@ -66,38 +73,39 @@ def export_pdf(batch, output, now, log, docservers, configurations):
             'extension': output['parameters']['extension']
         }
 
-        batch['documents'][index]['fileName'] = _Splitter.get_value_from_mask(document, batch['data']['custom_fields'], now, mask_args)
+        batch['documents'][index]['fileName'] = _Splitter.get_value_from_mask(document, batch['data']['custom_fields'], mask_args)
 
-        if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in batch['documents'][index]['doctype_key']:
-            pdf_filepaths.append({
+        if not zip_except_doctype or zip_except_doctype.group(1) not in batch['documents'][index]['doctype_key']:
+            zip_pdfs.append({
                 'input_path': output['parameters']['folder_out'] + '/' + batch['documents'][index]['fileName'],
                 'path_in_zip': batch['documents'][index]['fileName']
             })
         else:
             zip_except_documents.append(batch['documents'][index]['id'])
 
-    export_pdf_res = _Files.export_pdf({
-        'log': log,
-        'batch': batch,
-        'reduce_index': 1,
-        'filename': filename,
-        'lang': configurations['locale'],
-        'compress_type': output['compress_type'],
-        'folder_out': output['parameters']['folder_out']
-    })
-
-    if not export_pdf_res[0]:
-        response = {
-            "errors": gettext('EXPORT_PDF_ERROR'),
-            "message": export_pdf_res[1]
-        }
-        return response, 400
-
-    if 'zip_filename' in output['parameters'] and output['parameters']['zip_filename'] and pdf_filepaths:
+        exported_pdf, error = _Files.export_pdf({
+            'log': log,
+            'batch': batch,
+            'reduce_index': 1,
+            'filename': filename,
+            'document': document,
+            'lang': configurations['locale'],
+            'compress_type': output['compress_type'],
+            'folder_out': output['parameters']['folder_out']
+        })
+        if error:
+            response = {
+                "errors": gettext('EXPORT_PDF_ERROR'),
+                "message": error
+            }
+            return response, 400
+        pdfs_paths.append(exported_pdf)
+    print("output['parameters']", output['parameters'])
+    if 'zip_filename' in output['parameters'] and output['parameters']['zip_filename'] and zip_pdfs:
         zip_file_path = output['parameters']['folder_out'] + '/' + zip_filename
-        _Files.zip_files(pdf_filepaths, zip_file_path, True)
+        _Files.zip_files(zip_pdfs, zip_file_path, True)
 
-    return {'paths': export_pdf_res, 'zip_except_documents': zip_except_documents, 'zip_file_path': zip_file_path}, 200
+    return {'paths': pdfs_paths, 'zip_except_documents': zip_except_documents, 'zip_file_path': zip_file_path}, 200
 
 
 def export_xml(documents, parameters, metadata, now):
@@ -166,8 +174,8 @@ def export_mem(auth_data, file_path, args, batch, custom_id, log):
         return response, 400
 
 
-def export_pdf_files(batch, output, now, log, docservers, configurations, regex):
-    res_export_pdf = export_pdf(batch, output, now, log, docservers, configurations)
+def handle_pdf_output(batch, output, log, docservers, configurations, regex):
+    res_export_pdf = export_pdf(batch, output, log, docservers, configurations)
     if res_export_pdf[1] != 200:
         return res_export_pdf
 
@@ -185,7 +193,7 @@ def export_pdf_files(batch, output, now, log, docservers, configurations, regex)
     return response, 200
 
 
-def export_xml_file(data, parameters, now, regex):
+def handle_xml_output(data, parameters, now, regex):
     parameters['doc_loop_regex'] = regex['splitter_doc_loop']
     parameters['condition_regex'] = regex['splitter_condition']
     parameters['empty_line_regex'] = regex['splitter_empty_line']
