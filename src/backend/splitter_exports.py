@@ -34,9 +34,7 @@ def get_output_parameters(parameters):
 
 
 def export_pdf(batch, output, log, docservers, configurations):
-    filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch['file_path']
     pdfs_paths = []
-
     zip_pdfs = []
     zip_except_documents = []
     zip_except_doctype = ''
@@ -73,25 +71,26 @@ def export_pdf(batch, output, log, docservers, configurations):
             'extension': output['parameters']['extension']
         }
 
-        batch['documents'][index]['fileName'] = _Splitter.get_value_from_mask(document, batch['data']['custom_fields'], mask_args)
+        batch['documents'][index]['filename'] = _Splitter.get_value_from_mask(document, batch['data']['custom_fields'], mask_args)
 
         if not zip_except_doctype or zip_except_doctype.group(1) not in batch['documents'][index]['doctype_key']:
             zip_pdfs.append({
-                'input_path': output['parameters']['folder_out'] + '/' + batch['documents'][index]['fileName'],
-                'path_in_zip': batch['documents'][index]['fileName']
+                'input_path': output['parameters']['folder_out'] + '/' + batch['documents'][index]['filename'],
+                'path_in_zip': batch['documents'][index]['filename']
             })
         else:
             zip_except_documents.append(batch['documents'][index]['id'])
 
+        document['file_path'] = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch['file_path']
+        document['compress_type'] = output['compress_type']
+        document['folder_out'] = output['parameters']['folder_out']
+
         exported_pdf, error = _Files.export_pdf({
             'log': log,
-            'batch': batch,
             'reduce_index': 1,
-            'filename': filename,
             'document': document,
             'lang': configurations['locale'],
-            'compress_type': output['compress_type'],
-            'folder_out': output['parameters']['folder_out']
+            'batch_metadata': batch['data']['custom_fields']
         })
         if error:
             response = {
@@ -100,7 +99,7 @@ def export_pdf(batch, output, log, docservers, configurations):
             }
             return response, 400
         pdfs_paths.append(exported_pdf)
-    print("output['parameters']", output['parameters'])
+
     if 'zip_filename' in output['parameters'] and output['parameters']['zip_filename'] and zip_pdfs:
         zip_file_path = output['parameters']['folder_out'] + '/' + zip_filename
         _Files.zip_files(zip_pdfs, zip_file_path, True)

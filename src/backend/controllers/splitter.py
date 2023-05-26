@@ -671,7 +671,7 @@ def validate(data):
         """
         splitter.update_status({
             'ids': [batch['id']],
-            'status': 'NEW'
+            'status': 'END'
         })
 
         if workflow_settings['process']['delete_documents']:
