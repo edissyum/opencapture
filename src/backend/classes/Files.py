@@ -491,8 +491,7 @@ class Files:
 
     @staticmethod
     def get_now_date():
-        now = datetime.datetime.now()
-        return now
+        return datetime.datetime.now()
 
     @staticmethod
     def reformat_positions(positions):

@@ -323,18 +323,17 @@ class Splitter:
         return mask_result
 
     @staticmethod
-    def export_xml(documents, metadata, parameters, filename, now):
-        year = str(now.year)
-        month = str(now.month).zfill(2)
-        day = str(now.day).zfill(2)
-        hour = str(now.hour).zfill(2)
-        minute = str(now.minute).zfill(2)
-        second = str(now.second).zfill(2)
-        date = day + "-" + month + "-" + year + " " + hour + ":" + minute + ":" + second
+    def export_xml(documents, metadata, parameters, regex):
+        year = str(metadata['export_date'].year)
+        month = str(metadata['export_date'].month).zfill(2)
+        day = str(metadata['export_date'].day).zfill(2)
+        hour = str(metadata['export_date'].hour).zfill(2)
+        minute = str(metadata['export_date'].minute).zfill(2)
+        second = str(metadata['export_date'].second).zfill(2)
+        date = f"{day}-{month}-{year} {hour}:{minute}:{second}"
 
         xml_as_string = parameters['xml_template']
-
-        doc_loop_item_template = re.search(parameters['doc_loop_regex'], xml_as_string, re.DOTALL)
+        doc_loop_item_template = re.search(regex['splitter_doc_loop'], xml_as_string, re.DOTALL)
         xml_as_string = xml_as_string.replace('#date', date)
         xml_as_string = xml_as_string.replace('#documents_count', str(len(documents)))
         xml_as_string = xml_as_string.replace('#user_first_name', str(metadata['userFirstName']))
@@ -351,7 +350,7 @@ class Splitter:
         """
             Apply if conditions
         """
-        conditions_template = re.findall(parameters['condition_regex'], xml_as_string, re.DOTALL)
+        conditions_template = re.findall(regex['splitter_condition'], xml_as_string, re.DOTALL)
         for condition in conditions_template:
             condition_var = re.sub('[{}]', '', condition[0])
             if not metadata[condition_var]:
@@ -371,24 +370,24 @@ class Splitter:
                                                       document['fileName'] if 'fileName' in document else '')
                 doc_loop_item = doc_loop_item.replace('#documents_count', str(len(documents)))
                 doc_loop_item = doc_loop_item.replace('#document_identifier', str(document['id']))
-                doc_loop_item = doc_loop_item.replace('#doctype', str(document['doctypeKey']))
+                doc_loop_item = doc_loop_item.replace('#doctype', str(document['doctype_key']))
                 doc_loop_item = doc_loop_item.replace('#user_last_name', str(metadata['userLastName']))
                 doc_loop_item = doc_loop_item.replace('#random', str(random.randint(0, 99999)).zfill(5))
                 doc_loop_item = doc_loop_item.replace('#user_first_name', str(metadata['userFirstName']))
-                for key in document['metadata']:
+                for key in document['data']['custom_fields']:
                     if f'#{key}' in xml_as_string:
-                        doc_loop_item = doc_loop_item.replace(f'#{key}', str(document['metadata'][key]))
+                        doc_loop_item = doc_loop_item.replace(f'#{key}', str(document['data']['custom_fields'][key]))
                 documents_tags += doc_loop_item
 
             xml_as_string = xml_as_string.replace(doc_loop_item_template.group(1), documents_tags)
 
-        xml_file_path = parameters['folder_out'] + filename
+        xml_file_path = f"{parameters['folder_out']}/{metadata['xml_filename']}"
 
         """
             Check XML Syntax and write file result & remove tech comments
         """
-        xml_as_string = re.sub(parameters['xml_comment_regex'], '', xml_as_string)
-        xml_as_string = re.sub(parameters['empty_line_regex'], '', xml_as_string)
+        xml_as_string = re.sub(regex['splitter_xml_comment'], '', xml_as_string)
+        xml_as_string = re.sub(regex['splitter_empty_line'], '', xml_as_string)
         try:
             with open(xml_file_path, "w") as f:
                 minidom.parseString(xml_as_string)

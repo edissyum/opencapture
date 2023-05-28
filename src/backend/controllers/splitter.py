@@ -554,7 +554,6 @@ def test_openads_connection(args):
 
 
 def validate(data):
-    export_date = _Files.get_now_date()
     if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context\
             and 'configurations' in current_context:
         log = current_context.log
@@ -579,106 +578,11 @@ def validate(data):
         'deleted_pages_ids': data['deletedPagesIds'],
         'deleted_documents_ids': data['deletedDocumentsIds']
     })
-
-    batch_data = splitter.get_batch_by_id({'id': data['batchId']})
-
     if save_response[1] != 200:
         return save_response
 
-    batch = splitter.retrieve_batches({
-        'batch_id': None,
-        'page': None,
-        'size': None,
-        'where': ['id = %s'],
-        'data': [data['batchId']]
-    })[0][0]
-
-    documents, error = splitter.get_batch_documents({'batch_id': batch['id']})
-    if error:
-        return error, 400
-    for document in documents:
-        document['pages'], error = splitter.get_document_pages({'document_id': document['id']})
-        if error:
-            return error, 400
-    batch['documents'] = documents
-    batch['export_date'] = export_date
-
-    workflow_settings, error = workflow.get_workflow_by_id({'workflow_id': batch['workflow_id']})
-    if error:
-        return error, 400
-
-    form = forms.get_form_by_id(batch['form_id'])
-    if 'outputs' in form[0]:
-        for output_id in form[0]['outputs']:
-            output = outputs.get_output_by_id(output_id)
-            if not output:
-                return gettext('OUTPUT_NOT_FOUND'), 400
-            else:
-                output = output[0]
-            output['parameters'] = get_output_parameters(output['data']['options']['parameters'])
-
-            match output['output_type_id']:
-                case 'export_pdf':
-                    res_export_pdf = splitter_exports.handle_pdf_output(batch, output, log, docservers, configurations, regex)
-                    if res_export_pdf[1] != 200:
-                        return res_export_pdf
-                    res_export_pdf = res_export_pdf[0]
-
-                    batch['zip_filename'] = res_export_pdf['zip_filename']
-                    batch['zip_except_documents'] = res_export_pdf['zip_except_documents']
-
-                case 'export_xml':
-                    res_export_xml = splitter_exports.handle_xml_output(batch, output['parameters'], regex)
-                    if res_export_xml[1] != 200:
-                        return res_export_xml
-                    exported_files.append(res_export_xml[0]['path'])
-
-                case 'export_cmis':
-                    res_export_cmis = splitter_exports.export_to_cmis(output, batch, data, log, docservers, configurations, regex)
-                    if res_export_cmis[1] != 200:
-                        return res_export_cmis
-
-                case 'export_mem':
-                    res_export_mem = splitter_exports.export_to_mem(output, data, batch, log, docservers, configurations, regex)
-                    if res_export_mem[1] != 200:
-                        return res_export_mem
-
-                case 'export_openads':
-                    res_export_openads = splitter_exports.export_to_openads(output, batch, log, docservers, configurations, regex)
-                    if res_export_openads[1] != 200:
-                        return res_export_openads
-
-        """
-            Zip all exported files if enabled
-        """
-        if form[0]['settings']['export_zip_file']:
-            files_to_zip = []
-            for file in exported_files:
-                files_to_zip.append({
-                    'input_path': file,
-                    'path_in_zip': os.path.basename(file)
-                })
-            mask_args = {
-                'mask': form[0]['settings']['export_zip_file'],
-                'separator': '',
-                'substitute': '_'
-            }
-            export_zip_file = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
-            _Files.zip_files(files_to_zip, export_zip_file, True)
-
-        """
-            Process after validation
-        """
-        splitter.update_status({
-            'ids': [batch['id']],
-            'status': 'END'
-        })
-
-        if workflow_settings['process']['delete_documents']:
-            _Files.remove_file(f"{docservers['SPLITTER_ORIGINAL_PDF']}/{batch['file_path']}", log)
-
-    return {"OK": True}, 200
-
+    export_res = splitter_exports.launch_export(data['batchId'], log, docservers, configurations, regex)
+    return export_res
 
 def get_split_methods():
     if 'docservers' in current_context:
@@ -789,7 +693,7 @@ def merge_batches(parent_id, batches):
                     'batch_id': parent_id,
                     'doctype_key': doc['doctype_key'],
                     'data': json.dumps({'custom_fields': doc['data']}),
-                    'status': 'NEW',
+                    'status': 'END',
                     'split_index': parent_max_split_index + doc['split_index']
                 })
 
