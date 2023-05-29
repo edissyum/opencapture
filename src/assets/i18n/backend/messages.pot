@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-05-29 15:53+0200\n"
+"POT-Creation-Date: 2023-05-29 16:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,23 +28,23 @@ msgstr ""
 msgid "OUTPUT_NOT_FOUND"
 msgstr ""
 
-#: src/backend/splitter_exports.py:138 src/backend/splitter_exports.py:238
+#: src/backend/splitter_exports.py:138 src/backend/splitter_exports.py:240
 msgid "EXPORT_PDF_ERROR"
 msgstr ""
 
-#: src/backend/splitter_exports.py:207 src/backend/splitter_exports.py:261
+#: src/backend/splitter_exports.py:209 src/backend/splitter_exports.py:263
 msgid "EXPORT_XML_ERROR"
 msgstr ""
 
-#: src/backend/splitter_exports.py:280
+#: src/backend/splitter_exports.py:282
 msgid "CHECK_FOLDER_ERROR"
 msgstr ""
 
-#: src/backend/splitter_exports.py:281
+#: src/backend/splitter_exports.py:283
 msgid "FOLDER_DOES_NOT_EXIST"
 msgstr ""
 
-#: src/backend/splitter_exports.py:299
+#: src/backend/splitter_exports.py:301
 msgid "OPENADS_ADD_DOC_ERROR"
 msgstr ""
 
@@ -591,34 +591,50 @@ msgstr ""
 msgid "MAILCOLLECT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/outputs.py:72 src/backend/controllers/outputs.py:78
+#: src/backend/controllers/outputs.py:74
+msgid "DUPLICATE_OUTPUT"
+msgstr ""
+
+#: src/backend/controllers/outputs.py:79 src/backend/controllers/outputs.py:85
 msgid "DUPLICATE_OUTPUT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/outputs.py:107
-#: src/backend/controllers/outputs.py:129
-#: src/backend/controllers/outputs.py:135
+#: src/backend/controllers/outputs.py:114
+#: src/backend/controllers/outputs.py:143
+#: src/backend/controllers/outputs.py:149
 msgid "UPDATE_OUTPUT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/outputs.py:108
+#: src/backend/controllers/outputs.py:115
 msgid "NOT_ALLOWED_OUTPUT_PATH"
 msgstr ""
 
-#: src/backend/controllers/outputs.py:159
-msgid "CREATE_OUTPUT_ERROR"
+#: src/backend/controllers/outputs.py:138
+msgid "UPDATE_OUTPUT"
 msgstr ""
 
 #: src/backend/controllers/outputs.py:172
+msgid "CREATE_OUTPUT"
+msgstr ""
+
+#: src/backend/controllers/outputs.py:180
+msgid "CREATE_OUTPUT_ERROR"
+msgstr ""
+
+#: src/backend/controllers/outputs.py:193
 msgid "GET_OUTPUT_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/outputs.py:185
+#: src/backend/controllers/outputs.py:206
 msgid "GET_OUTPUT_TYPE_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/outputs.py:199
-#: src/backend/controllers/outputs.py:205
+#: src/backend/controllers/outputs.py:222
+msgid "DELETE_OUTPUT"
+msgstr ""
+
+#: src/backend/controllers/outputs.py:227
+#: src/backend/controllers/outputs.py:233
 msgid "DELETE_OUTPUT_ERROR"
 msgstr ""
 
@@ -997,7 +1013,7 @@ msgid "FOLDER_NOT_ALLOWED_ERROR"
 msgstr ""
 
 #: src/backend/controllers/workflow.py:60
-#: src/backend/controllers/workflow.py:297
+#: src/backend/controllers/workflow.py:325
 msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
 msgstr ""
 
@@ -1013,56 +1029,72 @@ msgstr ""
 msgid "GET_WORKFLOW_BY_WORKFLOW_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:118
-#: src/backend/controllers/workflow.py:124
+#: src/backend/controllers/workflow.py:120
+msgid "DUPLICATE_WORKFLOW"
+msgstr ""
+
+#: src/backend/controllers/workflow.py:125
+#: src/backend/controllers/workflow.py:131
 msgid "DUPLICATE_WORKFLOW_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:149
-#: src/backend/controllers/workflow.py:161
-#: src/backend/controllers/workflow.py:172
-#: src/backend/controllers/workflow.py:190
+#: src/backend/controllers/workflow.py:156
+#: src/backend/controllers/workflow.py:168
+#: src/backend/controllers/workflow.py:179
+#: src/backend/controllers/workflow.py:204
 msgid "CREATE_WORKFLOW_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:150
-#: src/backend/controllers/workflow.py:200
+#: src/backend/controllers/workflow.py:157
+#: src/backend/controllers/workflow.py:214
 msgid "NOT_ALLOWED_INPUT_PATH"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:162
+#: src/backend/controllers/workflow.py:169
 msgid "WORKFLOW_ID_ALREADY_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:173
+#: src/backend/controllers/workflow.py:180
 msgid "INPUT_FOLDER_ALREADY_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:199
-#: src/backend/controllers/workflow.py:222
-#: src/backend/controllers/workflow.py:228
+#: src/backend/controllers/workflow.py:196
+msgid "CREATE_WORKFLOW"
+msgstr ""
+
+#: src/backend/controllers/workflow.py:213
+#: src/backend/controllers/workflow.py:243
+#: src/backend/controllers/workflow.py:249
 msgid "UPDATE_WORKFLOW_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:243
-#: src/backend/controllers/workflow.py:249
+#: src/backend/controllers/workflow.py:238
+msgid "UPDATE_WORKFLOW"
+msgstr ""
+
+#: src/backend/controllers/workflow.py:266
+msgid "DELETE_WORKFLOW"
+msgstr ""
+
+#: src/backend/controllers/workflow.py:271
+#: src/backend/controllers/workflow.py:277
 msgid "DELETE_WORKFLOW_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:296
-#: src/backend/controllers/workflow.py:318
+#: src/backend/controllers/workflow.py:324
+#: src/backend/controllers/workflow.py:346
 msgid "FS_WATCHER_CREATION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:319
+#: src/backend/controllers/workflow.py:347
 msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:324
+#: src/backend/controllers/workflow.py:352
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:330
+#: src/backend/controllers/workflow.py:358
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr ""
 

@@ -21,7 +21,7 @@ import stat
 from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.import_classes import _Config
-from src.backend.import_models import workflow
+from src.backend.import_models import workflow, history
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
@@ -112,6 +112,13 @@ def duplicate_workflow(workflow_id):
 
         _, error = workflow.create_workflow({'columns': args})
         if error is None:
+            history.add_history({
+                'module': workflow_info['module'],
+                'ip': request.remote_addr,
+                'submodule': 'duplicate_workflow',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DUPLICATE_WORKFLOW', workflow=workflow_info['label'])
+            })
             return '', 200
         else:
             response = {
@@ -181,6 +188,13 @@ def create_workflow(data):
 
     res, error = workflow.create_workflow({'columns': data})
     if error is None:
+        history.add_history({
+            'module': data['module'],
+            'ip': request.remote_addr,
+            'submodule': 'create_workflow',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('CREATE_WORKFLOW', workflow=data['label'])
+        })
         response = {
             "id": res
         }
@@ -216,6 +230,13 @@ def update_workflow(workflow_id, data):
         _, error = workflow.update_workflow({'set': data, 'workflow_id': workflow_id})
 
         if error is None:
+            history.add_history({
+                'module': data['module'],
+                'ip': request.remote_addr,
+                'submodule': 'update_workflow',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('UPDATE_WORKFLOW', workflow=data['label'])
+            })
             return '', 200
         else:
             response = {
@@ -232,11 +253,18 @@ def update_workflow(workflow_id, data):
 
 
 def delete_workflow(workflow_id):
-    _, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
+    workflow_info, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
     if error is None:
         _, error = workflow.update_workflow({'set': {'status': 'DEL'}, 'workflow_id': workflow_id})
         if error is None:
             # delete_script_and_incron(workflow_info)
+            history.add_history({
+                'module': workflow_info['module'],
+                'ip': request.remote_addr,
+                'submodule': 'delete_workflow',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DELETE_WORKFLOW', workflow=workflow_info['label'])
+            })
             return '', 200
         else:
             response = {

@@ -447,15 +447,11 @@
 	"HISTORY-DESC": {
 		"change_batch_form": "The selected form for batch <strong>{{ batch_id }}</strong> has been changed to form <strong>{{ form_id }}</strong>",
 		"create-output": "New output created&nbsp;<strong>{{ output }}</strong>",
-		"create-workflow": "New workflow created&nbsp;<strong>{{ workflow }}</strong>",
 		"delete-output": "Output deleted&nbsp;<strong>{{ output }}</strong>",
-		"delete-workflow": "Workflow deleted&nbsp;<strong>{{ workflow }}</strong>",
 		"document_refused": "Document n°&nbsp;<strong>{{ document_id }}</strong> refused",
 		"document_validated": "Document n°&nbsp;<strong>{{ document_id }}</strong> validated and following outputs executed :&nbsp;<strong>{{ outputs }}</strong>",
 		"duplicate-output": "Output duplicated&nbsp;<strong>{{ output }}</strong>",
-		"duplicate-workflow": "Workflow duplicated&nbsp;<strong>{{ workflow }}</strong>",
 		"update-output": "Output updated&nbsp;<strong>{{ output }}</strong>",
-		"update-workflow": "Workflow updated&nbsp;<strong>{{ workflow }}</strong>",
 		"validate_splitter": "Validation of batch n°&nbsp;<strong>{{ batch_id }}</strong>",
 		"viewer": "Visualisation of document n°&nbsp;<strong>{{ document_id }}</strong>",
 		"viewer_splitter": "Visualisation of batch n°&nbsp;<strong>{{ batch_id }}</strong>"

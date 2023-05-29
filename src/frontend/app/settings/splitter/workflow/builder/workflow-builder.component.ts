@@ -28,7 +28,6 @@ import { of } from "rxjs";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../../../services/auth.service";
-import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-workflow-builder-splitter',
@@ -200,7 +199,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
         private authService: AuthService,
         private notify: NotificationService,
         private translate: TranslateService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService
     ) {}
 
@@ -476,9 +474,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
 
         this.http.put(environment['url'] + '/ws/workflows/splitter/update/' + this.workflowId, {'args': workflow}, {headers: this.authService.headers}).pipe(
             tap(() => {
-                if (step === 'output') {
-                    this.historyService.addHistory('splitter', 'update_workflow', this.translate.instant('HISTORY-DESC.update-workflow', {workflow: workflow['label']}));
-                }
                 this.notify.success(this.translate.instant('WORKFLOW.workflow_updated'));
             }),
             catchError((err: any) => {
@@ -514,7 +509,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                         tap(() => {
                             this.router.navigate(['/settings/splitter/workflows']).then();
                             this.notify.success(this.translate.instant('WORKFLOW.workflow_created'));
-                            this.historyService.addHistory('splitter', 'create_workflow', this.translate.instant('HISTORY-DESC.create-workflow', {workflow: workflow['label']}));
                         }),
                         catchError((err: any) => {
                             console.debug(err);
