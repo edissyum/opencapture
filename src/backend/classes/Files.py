@@ -574,7 +574,7 @@ class Files:
                 '/Creator': "Open-Capture",
             })
 
-            file_path = args['document']['folder_out'] + '/' + args['document']['export_filename']
+            file_path = args['document']['folder_out'] + '/' + args['document']['filename']
 
             if args['document']['compress_type']:
                 tmp_filename = '/tmp/' + args['document']['filename']
@@ -604,14 +604,13 @@ class Files:
         return ''.join(random.choice(letters) for _ in range(length))
 
     @staticmethod
-    def compress_files(input_paths, output_path, remove_compressed_files=False):
+    def compress_files(files, output_path, remove_compressed_files=False):
         with ZipFile(output_path, 'w') as zipObj:
-            for input_path in input_paths:
-                if os.path.exists(input_path['input_path']):
-                    zipObj.write(input_path['input_path'],
-                                 input_path['path_in_zip'] if input_path['path_in_zip'] else None)
+            for file in files:
+                if os.path.exists(file['filepath']):
+                    zipObj.write(file['filepath'], file['filename'] if file['filename'] else None)
                     if remove_compressed_files:
-                        os.remove(input_path['input_path'])
+                        os.remove(file['filepath'])
 
     @staticmethod
     def adjust_image(image_path):
