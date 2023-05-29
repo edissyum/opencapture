@@ -32,7 +32,6 @@ import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/c
 import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'positions-mask-list',
@@ -57,7 +56,6 @@ export class PositionsMaskListComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -136,7 +134,6 @@ export class PositionsMaskListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deletePositionMask(positionMaskId);
-                this.historyService.addHistory('verifier', 'delete_positions_masks', this.translate.instant('HISTORY-DESC.delete-positions-masks', {positions_masks: positionsMask}));
             }
         });
     }
@@ -156,7 +153,6 @@ export class PositionsMaskListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.duplicatePositionMask(positionMaskId);
-                this.historyService.addHistory('verifier', 'duplicate_positions_masks', this.translate.instant('HISTORY-DESC.duplicate-positions-masks', {positions_masks: positionsMask}));
             }
         });
     }

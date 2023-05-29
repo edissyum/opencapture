@@ -22,7 +22,6 @@ import { Injectable } from '@angular/core';
 import { AuthService } from "./auth.service";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
-import { HistoryService } from "./history.service";
 import { DateAdapter } from "@angular/material/core";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "./notifications/notifications.service";
@@ -42,8 +41,7 @@ export class LocaleService {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private dateAdapter: DateAdapter<any>,
-        private historyService: HistoryService
+        private dateAdapter: DateAdapter<any>
     ) {
         this.dateAdapter.setLocale('fr-FR');
         moment.updateLocale('fr-FR', {
@@ -89,8 +87,6 @@ export class LocaleService {
         }
         this.http.get(environment['url'] + '/ws/i18n/changeLanguage/' + data.value, {headers: this.authService.headers}).pipe(
             tap(() => {
-                const label = data.source._elementRef.nativeElement.textContent;
-                this.historyService.addHistory('general', 'language_changed', this.translate.instant('HISTORY-DESC.language_changed', {lang: label}));
                 this.getCurrentLocale();
             }),
             finalize(() => {

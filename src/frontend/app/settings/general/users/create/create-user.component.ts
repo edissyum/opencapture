@@ -28,8 +28,7 @@ import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { PrivilegesService } from "../../../../../services/privileges.service";
-import { HistoryService } from "../../../../../services/history.service";
-import {PasswordVerificationService} from "../../../../../services/password-verification.service";
+import { PasswordVerificationService } from "../../../../../services/password-verification.service";
 
 @Component({
     selector: 'app-create-user',
@@ -127,7 +126,6 @@ export class CreateUserComponent implements OnInit {
         private authService: AuthService,
         private notify: NotificationService,
         private translate: TranslateService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
         private passwordVerification: PasswordVerificationService
@@ -277,8 +275,6 @@ export class CreateUserComponent implements OnInit {
             this.http.post(environment['url'] + '/ws/users/new', user, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
-                    const _user = user['lastname'] + ' ' + user['firstname'];
-                    this.historyService.addHistory('general', 'create_user', this.translate.instant('HISTORY-DESC.create-user', {user: _user}));
                     this.notify.success(this.translate.instant('USER.created'));
                     this.router.navigate(['/settings/general/users/']).then();
                 }),

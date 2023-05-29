@@ -19,11 +19,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { UserService } from "../../../../services/user.service";
-import {Form, FormBuilder, FormControl} from "@angular/forms";
+import { FormBuilder, FormControl } from "@angular/forms";
 import { AuthService } from "../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
-import { HistoryService } from "../../../../services/history.service";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { environment } from "../../../env";
@@ -100,7 +99,6 @@ export class VariousSettingsVerifierComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) { }
@@ -225,7 +223,6 @@ export class VariousSettingsVerifierComponent implements OnInit {
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {
-                this.historyService.addHistory('verifier', 'update_unique_url', this.translate.instant('HISTORY-DESC.update_unique_url', {'form': this.currentForm.label}));
                 this.notify.success(this.translate.instant('FORMS.unique_url_updated_success'));
             }),
             finalize(() => this.loading = false),
@@ -247,7 +244,6 @@ export class VariousSettingsVerifierComponent implements OnInit {
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {
-                this.historyService.addHistory('verifier', 'update_form_display', this.translate.instant('HISTORY-DESC.update_form_display', {'form': this.currentForm.label}));
                 this.notify.success(this.translate.instant('FORMS.display_updated_success'));
             }),
             catchError((err: any) => {

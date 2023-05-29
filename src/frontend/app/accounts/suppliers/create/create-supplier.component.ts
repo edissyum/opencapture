@@ -30,7 +30,6 @@ import { PrivilegesService } from "../../../../services/privileges.service";
 import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { HistoryService } from "../../../../services/history.service";
 import { Country } from '@angular-material-extensions/select-country';
 import { LocaleService } from "../../../../services/locale.service";
 
@@ -175,7 +174,6 @@ export class CreateSupplierComponent implements OnInit {
         private translate: TranslateService,
         private notify: NotificationService,
         private localeService: LocaleService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {

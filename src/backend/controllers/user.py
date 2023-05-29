@@ -58,6 +58,14 @@ def create_user(args):
                     smtp = _vars[8]
                 if email_dest and smtp and smtp.is_up:
                     smtp.send_user_quota_notifications(email_dest, custom_id)
+
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'create_user',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('CREATE_USER', user=args['lastname'] + ' ' + args['firstname'] + ' (' + args['username'] + ')')
+        })
         return {'id': res}, 200
     else:
         response = {
@@ -338,10 +346,20 @@ def update_user(user_id, data):
 
 
 def delete_user(user_id):
-    _, error = user.get_user_by_id({'user_id': user_id})
+    user_info, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _, error = user.update_user({'set': {'status': 'DEL'}, 'user_id': user_id})
         if error is None:
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'delete_user',
+                'user_info': request.environ['user_info'],
+                'desc': gettext(
+                    'DELETE_USER',
+                    user=user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')'
+                )
+            })
             return '', 200
         else:
             response = {
@@ -358,10 +376,20 @@ def delete_user(user_id):
 
 
 def disable_user(user_id):
-    _, error = user.get_user_by_id({'user_id': user_id})
+    user_info, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _, error = user.update_user({'set': {'enabled': False}, 'user_id': user_id})
         if error is None:
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'disable_user',
+                'user_info': request.environ['user_info'],
+                'desc': gettext(
+                    'DISABLE_USER',
+                    user=user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')'
+                )
+            })
             return '', 200
         else:
             response = {
@@ -378,10 +406,20 @@ def disable_user(user_id):
 
 
 def enable_user(user_id):
-    _, error = user.get_user_by_id({'user_id': user_id})
+    user_info, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _, error = user.update_user({'set': {'enabled': True}, 'user_id': user_id})
         if error is None:
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'enable_user',
+                'user_info': request.environ['user_info'],
+                'desc': gettext(
+                    'ENABLE_USER',
+                    user=user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')'
+                )
+            })
             return '', 200
         else:
             response = {
