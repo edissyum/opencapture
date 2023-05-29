@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2023-05-29 11:07+0200\n"
+"POT-Creation-Date: 2023-05-29 11:56+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -361,34 +361,50 @@ msgstr "Erreur lors de la récupération des docservers"
 msgid "RETRIEVE_REGEX_ERRORS"
 msgstr "Erreur lors de la récupération des regex"
 
-#: src/backend/controllers/config.py:181 src/backend/controllers/config.py:201
-#: src/backend/controllers/config.py:213 src/backend/controllers/config.py:233
+#: src/backend/controllers/config.py:181 src/backend/controllers/config.py:208
+#: src/backend/controllers/config.py:220 src/backend/controllers/config.py:247
 #: src/backend/models/config.py:199 src/backend/models/config.py:223
 msgid "UPDATE_CONFIGURATION_ERROR"
 msgstr "Erreur lors de la mise à jour de la configuration"
 
-#: src/backend/controllers/config.py:182 src/backend/controllers/config.py:214
+#: src/backend/controllers/config.py:182 src/backend/controllers/config.py:221
 msgid "JWT_EXPIRATION_COULDNT_BE_ZERO_OR_LESS"
 msgstr "La valeur d'expiration du token ne peut être inférieure à 0"
 
-#: src/backend/controllers/config.py:254 src/backend/models/config.py:245
+#: src/backend/controllers/config.py:203 src/backend/controllers/config.py:242
+msgid "UPDATE_CONFIGURATION"
+msgstr "Mise à jour de la configuration&nbsp;<strong>%(config)s</strong>"
+
+#: src/backend/controllers/config.py:270
+msgid "UPDATE_REGEX"
+msgstr "Mise à jour de la regex&nbsp;<strong>%(regex)s</strong>"
+
+#: src/backend/controllers/config.py:275 src/backend/models/config.py:245
 msgid "UPDATE_REGEX_ERROR"
 msgstr "Erreur lors de la mise à jour des REGEX"
 
-#: src/backend/controllers/config.py:274 src/backend/models/config.py:271
+#: src/backend/controllers/config.py:297
+msgid "UPDATE_DOCSERVER"
+msgstr "Mise à jour de la zone de stockage&nbsp;<strong>%(docserver)s</strong>"
+
+#: src/backend/controllers/config.py:302 src/backend/models/config.py:271
 msgid "UPDATE_DOCSERVER_ERROR"
 msgstr "Erreur lors de la mise à jour de la docserver"
 
-#: src/backend/controllers/config.py:316 src/backend/controllers/config.py:326
-#: src/backend/controllers/config.py:331
+#: src/backend/controllers/config.py:344 src/backend/controllers/config.py:360
+#: src/backend/controllers/config.py:365
 msgid "ERROR_UPDATING_IMAGE"
 msgstr "Erreur lors de la modification de l'image de connexion"
 
-#: src/backend/controllers/config.py:317 src/backend/controllers/config.py:327
+#: src/backend/controllers/config.py:345 src/backend/controllers/config.py:361
 msgid "CUSTOM_IMAGE_PATH_NOT_WRITEABLE_OR_NOT_EXISTS"
 msgstr "Le dossier d'image du custom n'est pas accessible"
 
-#: src/backend/controllers/config.py:332
+#: src/backend/controllers/config.py:355
+msgid "UPDATE_LOGIN_IMAGE"
+msgstr "Modification de l'image de login"
+
+#: src/backend/controllers/config.py:366
 msgid "CUSTOM_NOT_PRESENT"
 msgstr "Aucun custom n'est présent"
 
@@ -481,35 +497,55 @@ msgstr "Erreur lors de la récupération des champs du formulaire"
 msgid "ADD_HISTORY_ERROR"
 msgstr "Erreur lors de l'ajout dans l'historique"
 
-#: src/backend/controllers/mailcollect.py:36
+#: src/backend/controllers/mailcollect.py:38
 msgid "RETRIEVE_PROCESSES_ERROR"
 msgstr "Erreur lors de la récupération des processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:52
+#: src/backend/controllers/mailcollect.py:53
+msgid "UPDATE_MAILCOLLECT_PROCESS"
+msgstr "Mise à jour du processus MailCollect&nbsp;<strong>%(process)s</strong>"
+
+#: src/backend/controllers/mailcollect.py:61
 msgid "UPDATE_PROCESS_ERROR"
 msgstr "Erreur lors de la mise à jour du processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:68
+#: src/backend/controllers/mailcollect.py:76
+msgid "CREATE_MAILCOLLECT_PROCESS"
+msgstr "Création du processus MailCollect&nbsp;<strong>%(process)s</strong>"
+
+#: src/backend/controllers/mailcollect.py:84
 msgid "CREATE_PROCESS_ERROR"
 msgstr "Erreur lors de la création d'un processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:82
-#: src/backend/controllers/mailcollect.py:88
+#: src/backend/controllers/mailcollect.py:100
+msgid "DELETE_MAILCOLLECT_PROCESS"
+msgstr "Suppression du processus MailCollect&nbsp;<strong>%(process)s</strong>"
+
+#: src/backend/controllers/mailcollect.py:105
+#: src/backend/controllers/mailcollect.py:111
 msgid "DELETE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Erreur lors de la suppression d'un processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:102
-#: src/backend/controllers/mailcollect.py:108
+#: src/backend/controllers/mailcollect.py:127
+msgid "ENABLE_MAILCOLLECT_PROCESS"
+msgstr "Activation du processus MailCollect&nbsp;<strong>%(process)s</strong>"
+
+#: src/backend/controllers/mailcollect.py:132
+#: src/backend/controllers/mailcollect.py:138
 msgid "ENABLE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Erreur lors de l'activation d'un processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:122
-#: src/backend/controllers/mailcollect.py:128
+#: src/backend/controllers/mailcollect.py:154
+msgid "DISABLE_MAILCOLLECT_PROCESS"
+msgstr "Désactivation du processus MailCollect&nbsp;<strong>%(process)s</strong>"
+
+#: src/backend/controllers/mailcollect.py:159
+#: src/backend/controllers/mailcollect.py:165
 msgid "DISABLE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Erreur lors de la désactivation d'un processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:142
-#: src/backend/controllers/mailcollect.py:152
+#: src/backend/controllers/mailcollect.py:179
+#: src/backend/controllers/mailcollect.py:189
 msgid "MAILCOLLECT_ERROR"
 msgstr "Erreur MailCollect"
 

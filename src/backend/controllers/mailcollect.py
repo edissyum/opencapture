@@ -18,9 +18,11 @@ import ssl
 import imap_tools
 from socket import gaierror
 from imaplib import IMAP4_SSL
+
+from flask import request
 from flask_babel import gettext
-from src.backend.import_models import mailcollect
 from imap_tools import MailBox, MailBoxUnencrypted
+from src.backend.import_models import mailcollect, history
 
 
 def retrieve_processes(args):
@@ -43,6 +45,13 @@ def update_process(args):
     process, error = mailcollect.update_process(args)
 
     if error is None:
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'update_mailcollect',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('UPDATE_MAILCOLLECT_PROCESS', process=args['process_name'])
+        })
         response = {
             "process": process
         }
@@ -59,6 +68,13 @@ def create_process(args):
     process, error = mailcollect.create_process(args)
 
     if error is None:
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'create_mailcollect_process',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('CREATE_MAILCOLLECT_PROCESS', process=args['column']['name'])
+        })
         response = {
             "process": process
         }
@@ -76,6 +92,13 @@ def delete_process(process_name):
     if error is None:
         _, error = mailcollect.update_process({'set': {'status': 'DEL', 'enabled': False}, 'process_name': process_name})
         if error is None:
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'delete_mailcollect_process',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DELETE_MAILCOLLECT_PROCESS', process=process_name)
+            })
             return '', 200
         else:
             response = {
@@ -96,6 +119,13 @@ def enable_process(process_name):
     if error is None:
         _, error = mailcollect.update_process({'set': {'enabled': True}, 'process_name': process_name})
         if error is None:
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'enable_mailcollect_process',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('ENABLE_MAILCOLLECT_PROCESS', process=process_name)
+            })
             return '', 200
         else:
             response = {
@@ -116,6 +146,13 @@ def disable_process(process_name):
     if error is None:
         _, error = mailcollect.update_process({'set': {'enabled': False}, 'process_name': process_name})
         if error is None:
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'disable_mailcollect_process',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DISABLE_MAILCOLLECT_PROCESS', process=process_name)
+            })
             return '', 200
         else:
             response = {

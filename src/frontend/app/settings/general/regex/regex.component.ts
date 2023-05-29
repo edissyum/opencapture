@@ -29,7 +29,6 @@ import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { Sort } from "@angular/material/sort";
-import { HistoryService } from "../../../../services/history.service";
 
 @Component({
     selector: 'app-regex',
@@ -56,7 +55,6 @@ export class RegexComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -108,7 +106,7 @@ export class RegexComponent implements OnInit {
         ).subscribe();
     }
 
-    updateValue(event: any, id: number, regex_id: string) {
+    updateValue(event: any, id: number) {
         this.updateLoading = true;
         const value = event.target.value;
         this.regex.forEach((element: any) => {
@@ -119,8 +117,6 @@ export class RegexComponent implements OnInit {
                         element.updateMode = false;
                         this.updateLoading = false;
                         this.notify.success(this.translate.instant('REGEX.regex_updated'));
-                        this.historyService.addHistory('general', 'update_regex', this.translate.instant('HISTORY-DESC.update_regex', {regex: regex_id}));
-
                     }),
                     catchError((err: any) => {
                         console.debug(err);

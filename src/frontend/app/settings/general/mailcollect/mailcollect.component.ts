@@ -30,7 +30,6 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { FormControl } from '@angular/forms';
 import { Sort } from "@angular/material/sort";
 import { MatDialog } from "@angular/material/dialog";
-import { HistoryService } from "../../../../services/history.service";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
 
 @Component({
@@ -221,7 +220,6 @@ export class MailCollectComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) { }
@@ -319,7 +317,6 @@ export class MailCollectComponent implements OnInit {
                 this.http.post(environment['url'] + '/ws/mailcollect/updateProcess/' + oldProcessName, {"name": new_process_name}, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('MAILCOLLECT.process_name_updated'));
-                        this.historyService.addHistory('general', 'update_mailcollect_name', this.translate.instant('HISTORY-DESC.update_mailcollect_name', {process: oldProcessName}));
                     }),
                     finalize(() => {
                         this.loadingProcessName = false;
@@ -623,7 +620,6 @@ export class MailCollectComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.duplicateProcess(process);
-                this.historyService.addHistory('general', 'duplicate_mailcollect_process', this.translate.instant('HISTORY-DESC.duplicate-mailcollect-process', {process: processName}));
             }
         });
     }
@@ -655,13 +651,12 @@ export class MailCollectComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.disableProcess(processName);
-                this.historyService.addHistory('general', 'disable_mailcollect_process', this.translate.instant('HISTORY-DESC.disable-mailcollect-process', {process: processName}));
             }
         });
     }
 
     disableProcess(processName: string) {
-        this.http.put(environment['url'] + '/ws/mailcollect/disableProcess/' + processName, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/mailcollect/disableProcess/' + processName, {}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.selectedIndex = 1;
                 this.loadProcess();
@@ -694,13 +689,12 @@ export class MailCollectComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.enableProcess(processName);
-                this.historyService.addHistory('general', 'enable_mailcollect_process', this.translate.instant('HISTORY-DESC.enable-mailcollect-process', {process: processName}));
             }
         });
     }
 
     enableProcess(processName: string) {
-        this.http.put(environment['url'] + '/ws/mailcollect/enableProcess/' + processName, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/mailcollect/enableProcess/' + processName, {}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.selectedIndex = 1;
                 this.loadProcess();
@@ -733,7 +727,6 @@ export class MailCollectComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deleteProcess(processName);
-                this.historyService.addHistory('general', 'delete_mailcollect_process', this.translate.instant('HISTORY-DESC.delete-mailcollect-process', {process: processName}));
             }
         });
     }
@@ -774,7 +767,6 @@ export class MailCollectComponent implements OnInit {
             this.http.post(environment['url'] + '/ws/mailcollect/updateProcess/' + data['name'], data, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('MAILCOLLECT.process_updated'));
-                    this.historyService.addHistory('general', 'update_mailcollect', this.translate.instant('HISTORY-DESC.update_mailcollect', {process: data['name']}));
                 }),
                 finalize(() => this.processLoading = false),
                 catchError((err: any) => {
