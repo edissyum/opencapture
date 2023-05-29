@@ -328,7 +328,7 @@
                              [cdkDropListConnectedTo]="DropListDocumentsIds">
                             <div class="page m-1.5 bg-gray-200 rounded-md cursor-move w-60 p-1.5"
                                  *ngFor="let page of document['pages']; let pageIndex = index;"
-                                 (click)="page['checkBox'] = !page['checkBox']; countSelectedPages();" cdkDrag>
+                                 (click)="selectPage(page)" cdkDrag>
                                 <div class="bg-gray-200 m-1.5 border-dashed border-2 border-gray-400 p-3" *cdkDragPlaceholder></div>
                                 <div class="flex justify-between w-60 h-12">
                                     <mat-checkbox [(ngModel)]="page['checkBox']"
@@ -368,12 +368,12 @@
             </div>
             <mat-card class="splitter-tools divide-x divide-green-500 border-gray-300 py-0 mb-8 z-10 sticky bottom-2.5">
                 <mat-card-content style="overflow: auto;" class="grid grid-rows-1 grid-cols-3">
-                    <div class="absolute top-5 left-8 text-gray-500 bg-white px-2"
+                    <div class="absolute top-5 left-8 text-gray-500 px-2 border border-gray-600 rounded-lg bg-slate-50"
                          matTooltip="{{ currentBatch.selectedPagesCount }} {{ 'SPLITTER.selected_pages' | translate }}">
                         <span class="font-medium mx-1">{{ currentBatch.selectedPagesCount }}</span>
                         <i class="fa-solid fa-file"></i>
                     </div>
-                    <div class="border border-gray-600 rounded-lg flex col-span-2 my-4 overflow-x-auto overflow-y-hidden">
+                    <div class="bg-slate-50 border border-gray-600 rounded-lg flex col-span-2 my-4 overflow-x-auto overflow-y-hidden">
                         <div class="flex items-center">
                             <button mat-button (click)="deleteSelectedPages()"
                                     class="btn-icon w-8 ml-4 rounded-none"
@@ -413,15 +413,15 @@
                                     matTooltip="{{ 'GLOBAL.move' | translate }}">
                                 <i class="fa fa-paper-plane text-lg"></i>
                             </button>
-                            <button (click)="saveInfo()" mat-button class="w-8"
-                                    matTooltip="{{ 'SPLITTER.save_changes' | translate }}" [ngClass]="{'text-green-400': isDataEdited}">
+                            <button (click)="saveModifications()" mat-button class="w-8"
+                                    matTooltip="{{ 'SPLITTER.save_changes' | translate }}" [ngClass]="{'text-green-400': hasUnsavedChanges}">
                                 <i class="fa fa-save fa-lg" *ngIf="!saveInfosLoading"></i>
                                 <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="saveInfosLoading"></i>
                             </button>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 text-gray-900 relative mt-6">
-                        <button mat-button (click)="cancel()" type="submit"
+                        <button mat-button (click)="cancelBatchModification()" type="submit"
                                 class="ml-4 p-6 border-solid border-red-400 border bg-red-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                             {{ 'GLOBAL.quit' | translate }}
                         </button>
