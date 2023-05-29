@@ -171,7 +171,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
         },
         {
             "labelShort"    : 'zip_filename',
-            'label'         : marker('OUTPUT.zip_filename')
+            'label'         : marker('OUTPUT.compressed_filename')
         },
     ];
     testConnectionMapping : any           = {

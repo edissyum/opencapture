@@ -26,6 +26,7 @@ import os.path
 import datetime
 import pandas as pd
 from flask_babel import gettext
+from src.backend import splitter_exports
 from src.backend.main_splitter import launch
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
@@ -344,9 +345,7 @@ def get_page_full_thumbnail(page_id):
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
 
-    res, error = splitter.get_page_by_id({
-        'id': page_id
-    })
+    res, error = splitter.get_page_by_id({'id': page_id})
     if not res:
         response = {
             "errors": "ERROR",
@@ -377,20 +376,14 @@ def retrieve_documents(batch_id):
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
 
-    args = {
-        'id': batch_id
-    }
-    documents, _ = splitter.get_batch_documents(args)
+    documents, _ = splitter.get_batch_documents({'batch_id': batch_id})
     if documents:
         for document in documents:
             document_pages = []
             doctype_key = None
             doctype_label = None
 
-            args = {
-                'id': document['id']
-            }
-            pages, _ = splitter.get_documents_pages(args)
+            pages, _ = splitter.get_document_pages({'document_id': document['id']})
             if pages:
                 for page_index, _ in enumerate(pages):
                     thumbnail = f"{docservers['SPLITTER_THUMB']}/{pages[page_index]['thumbnail']}"
@@ -458,152 +451,6 @@ def get_output_parameters(parameters):
     return data
 
 
-def export_mem(auth_data, file_path, args, batch):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    host = auth_data['host']
-    login = auth_data['login']
-    password = auth_data['password']
-    if host and login and password:
-        ws = _MEMWebServices(
-            host,
-            login,
-            password,
-            _vars[5]
-        )
-        if os.path.isfile(file_path):
-            args.update({
-                'fileContent': open(file_path, 'rb').read(),
-                'documentDate': str(pd.to_datetime(batch['creation_date']).date())
-            })
-            priority = ws.retrieve_priority(args['priority'])
-            if priority:
-                delays = priority['priority']['delays']
-                process_limit_date = datetime.date.today() + datetime.timedelta(days=delays)
-                args.update({
-                    'processLimitDate': str(process_limit_date)
-                })
-            args.update({
-                'customFields': {}
-            })
-            res, message = ws.insert_with_args(args)
-            if res:
-                return '', 200
-            else:
-                response = {
-                    "errors": gettext('EXPORT_MEM_ERROR'),
-                    "message": message['errors']
-                }
-                return response, 400
-        else:
-            response = {
-                "errors": gettext('EXPORT_MEM_ERROR'),
-                "message": ''
-            }
-            return response, 400
-    else:
-        response = {
-            "errors": gettext('MEM_WS_INFO_EMPTY'),
-            "message": ''
-        }
-        return response, 400
-
-
-def export_pdf(batch, documents, parameters, pages, now, output_parameter, log):
-    if 'docservers' in current_context and 'configurations' in current_context:
-        docservers = current_context.docservers
-        configurations = current_context.configurations
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
-        configurations = _vars[10]
-
-    filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch['file_path']
-    pdf_filepaths = []
-    doc_except_from_zip = []
-    except_from_zip_doctype = ''
-    zip_file_path = ''
-    zip_filename = ''
-    """
-        Add PDF file to zip archive if enabled
-    """
-    if 'add_to_zip' in parameters and parameters['add_to_zip']:
-        except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) \
-            if 'Except' in parameters['add_to_zip'] else ''
-        mask_args = {
-            'mask': parameters['add_to_zip'].split('[Except=')[0],
-            'separator': parameters['separator'],
-            'extension': 'zip'
-        }
-        zip_filename = _Splitter.get_value_from_mask(None, batch['metadata'], now, mask_args)
-
-    documents_doctypes = []
-    for index, document in enumerate(documents):
-        """
-            Add PDF file names using masks
-        """
-        documents[index]['metadata']['document_index'] = documents_doctypes.count(document['documentTypeKey']) + 1
-        documents_doctypes.append(document['documentTypeKey'])
-        mask_args = {
-            'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
-            'separator': parameters['separator'],
-            'extension': parameters['extension']
-        }
-
-        documents[index]['fileName'] = _Splitter.get_value_from_mask(document, batch['metadata'], now, mask_args)
-
-        if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in documents[index]['documentTypeKey']:
-            pdf_filepaths.append({
-                'input_path': parameters['folder_out'] + '/' + documents[index]['fileName'],
-                'path_in_zip': documents[index]['fileName']
-            })
-        else:
-            doc_except_from_zip.append(documents[index]['id'])
-
-    export_pdf_res = _Files.export_pdf({
-        'log': log,
-        'pages': pages,
-        'reduce_index': 1,
-        'filename': filename,
-        'documents': documents,
-        'metadata': batch['metadata'],
-        'lang': configurations['locale'],
-        'folder_out': parameters['folder_out'],
-        'output_parameter': output_parameter
-    })
-
-    if not export_pdf_res[0]:
-        response = {
-            "errors": gettext('EXPORT_PDF_ERROR'),
-            "message": export_pdf_res[1]
-        }
-        return response, 400
-
-    if 'add_to_zip' in parameters and parameters['add_to_zip'] and pdf_filepaths:
-        zip_file_path = parameters['folder_out'] + '/' + zip_filename
-        _Files.zip_files(pdf_filepaths, zip_file_path, True)
-
-    return {'paths': export_pdf_res, 'doc_except_from_zip': doc_except_from_zip, 'zip_file_path': zip_file_path}, 200
-
-
-def export_xml(documents, parameters, metadata, now):
-    mask_args = {
-        'mask': parameters['filename'],
-        'separator': parameters['separator'],
-        'extension': parameters['extension']
-    }
-    file_name = _Splitter.get_value_from_mask(None, metadata, now, mask_args)
-    res_xml = _Splitter.export_xml(documents, metadata, parameters, file_name, now)
-    if not res_xml[0]:
-        response = {
-            "errors": gettext('EXPORT_XML_ERROR'),
-            "message": res_xml[1]
-        }
-        return response, 400
-    return {'path': res_xml[1]}, 200
-
-
 def save_infos(data):
     new_documents = []
     res = splitter.update_batch({
@@ -633,7 +480,7 @@ def save_infos(data):
         document['id'] = document['id'].split('-')[-1]
         res = splitter.update_document({
             'id': document['id'].split('-')[-1],
-            'doctype_key': document['documentTypeKey'] if 'documentTypeKey' in document else None,
+            'doctype_key': document['doctypeKey'] if 'doctypeKey' in document else None,
             'document_metadata': document['metadata'],
         })[0]
         if not res:
@@ -739,239 +586,35 @@ def test_openads_connection(args):
 
 
 def validate(data):
-    now = _Files.get_now_date()
-    if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context:
+    if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context\
+            and 'configurations' in current_context:
         log = current_context.log
         regex = current_context.regex
         docservers = current_context.docservers
+        configurations = current_context.configurations
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         regex = _vars[2]
         log = _vars[5]
         docservers = _vars[9]
+        configurations = _vars[10]
+
     exported_files = []
 
     save_response = save_infos({
+        'batch_id': data['batchId'],
         'documents': data['documents'],
         'moved_pages': data['movedPages'],
-        'batch_id': data['batchMetadata']['id'],
         'batch_metadata': data['batchMetadata'],
         'deleted_pages_ids': data['deletedPagesIds'],
         'deleted_documents_ids': data['deletedDocumentsIds']
     })
-
-    batch_data = splitter.get_batch_by_id({'id': data['batchMetadata']['id']})
-
     if save_response[1] != 200:
         return save_response
 
-    batch = splitter.retrieve_batches({
-        'batch_id': None,
-        'page': None,
-        'size': None,
-        'where': ['id = %s'],
-        'data': [data['batchMetadata']['id']]
-    })[0][0]
-
-    batch['metadata'] = data['batchMetadata']
-    form = forms.get_form_by_id(batch['form_id'])
-    pages = _Splitter.get_split_pages(data['documents'])
-
-    workflow_settings, error = workflow.get_workflow_by_id({'workflow_id': batch['workflow_id']})
-    if error:
-        return error, 400
-
-    if 'outputs' in form[0]:
-        for output_id in form[0]['outputs']:
-            output = outputs.get_output_by_id(output_id)
-            parameters = get_output_parameters(output[0]['data']['options']['parameters'])
-            if output:
-                """
-                    Export PDF files
-                """
-                if output[0]['output_type_id'] in ['export_pdf']:
-                    res_export_pdf = export_pdf(batch, data['documents'], parameters, pages, now, output[0], log)
-                    if res_export_pdf[1] != 200:
-                        return res_export_pdf
-
-                    exported_files.extend(res_export_pdf[0]['paths'])
-                    exported_files.extend(res_export_pdf[0]['doc_except_from_zip'])
-                    if res_export_pdf[0]['zip_file_path']:
-                        exported_files.append(res_export_pdf[0]['zip_file_path'])
-                    data['batchMetadata']['zip_filename'] = os.path.basename(res_export_pdf[0]['zip_file_path'])
-                    data['batchMetadata']['doc_except_from_zip'] = res_export_pdf[0]['doc_except_from_zip']
-
-                """
-                    Export XML file
-                """
-                if output[0]['output_type_id'] in ['export_xml']:
-                    parameters['doc_loop_regex'] = regex['splitter_doc_loop']
-                    parameters['condition_regex'] = regex['splitter_condition']
-                    parameters['empty_line_regex'] = regex['splitter_empty_line']
-                    parameters['xml_comment_regex'] = regex['splitter_xml_comment']
-
-                    res_export_xml = export_xml(data['documents'], parameters, data['batchMetadata'], now)
-                    if res_export_xml[1] != 200:
-                        return res_export_xml
-                    exported_files.append(res_export_xml[0]['path'])
-                """
-                    Export to CMIS
-                """
-                if output[0]['output_type_id'] in ['export_cmis']:
-                    cmis_auth = get_output_parameters(output[0]['data']['options']['auth'])
-                    cmis_params = get_output_parameters(output[0]['data']['options']['parameters'])
-                    cmis = _CMIS(cmis_auth['cmis_ws'],
-                                 cmis_auth['login'],
-                                 cmis_auth['password'],
-                                 cmis_auth['folder'])
-
-                    """
-                        Export pdf for Alfresco
-                    """
-                    parameters = {
-                        'extension': 'pdf',
-                        'folder_out': docservers['TMP_PATH'],
-                        'separator': cmis_params['separator'],
-                        'filename': cmis_params['pdf_filename'],
-                    }
-                    res_export_pdf = export_pdf(batch, data['documents'], parameters, pages, now, output[0], log)
-                    if res_export_pdf[1] != 200:
-                        return res_export_pdf
-                    for file_path in res_export_pdf[0]['paths']:
-                        cmis_res = cmis.create_document(file_path, 'application/pdf')
-                        if not cmis_res[0]:
-                            log.error(f'File not sent : {file_path}')
-                            log.error(f'CMIS Response : {str(cmis_res)}')
-                            response = {
-                                "errors": gettext('EXPORT_PDF_ERROR'),
-                                "message": cmis_res[1]
-                            }
-                            return response, 500
-
-                    """
-                        Export xml for Alfresco
-                    """
-                    if cmis_params['xml_filename']:
-                        parameters = {
-                            'extension': 'xml',
-                            'folder_out': docservers['TMP_PATH'],
-                            'separator': cmis_params['separator'],
-                            'filename': cmis_params['xml_filename'],
-                            'doc_loop_regex': regex['splitter_doc_loop'],
-                            'condition_regex': regex['splitter_condition'],
-                            'empty_line_regex': regex['splitter_empty_line'],
-                            'xml_comment_regex': regex['splitter_xml_comment'],
-                        }
-                        res_export_xml = export_xml(data['documents'], parameters, data['batchMetadata'], now)
-                        if res_export_xml[1] != 200:
-                            return res_export_xml
-                        cmis_res = cmis.create_document(res_export_xml[0]['path'], 'text/xml')
-                        if not cmis_res[0]:
-                            response = {
-                                "errors": gettext('EXPORT_XML_ERROR'),
-                                "message": cmis_res[1]
-                            }
-                            return response, 500
-
-                """
-                    Export to MEM Courrier
-                """
-                if output[0]['output_type_id'] in ['export_mem']:
-                    mem_params = get_output_parameters(output[0]['data']['options']['parameters'])
-                    mem_auth = get_output_parameters(output[0]['data']['options']['auth'])
-                    parameters = {
-                        'filename': 'TMP_PDF_EXPORT_TO_MEM',
-                        'extension': 'pdf',
-                        'separator': mem_params['separator'],
-                        'file_name': mem_params['filename'],
-                    }
-                    res_export_pdf = export_pdf(batch, data['documents'], parameters, pages, now, output[0], log)
-
-                    if res_export_pdf[1] != 200:
-                        return res_export_pdf
-
-                    subject_mask = parameters['subject']
-                    for index, file_path in enumerate(res_export_pdf[0]['paths']):
-                        mask_args = {
-                            'mask': subject_mask,
-                            'separator': ' ',
-                            'format': parameters['format']
-                        }
-                        parameters['subject'] = _Splitter.get_value_from_mask(data['documents'][index], data['batchMetadata'],
-                                                                              now, mask_args)
-                        res_export_mem = export_mem(mem_auth, file_path, parameters, batch)
-                        if res_export_mem[1] != 200:
-                            return res_export_mem
-                """
-                    Export to OpenADS
-                """
-                if output[0]['output_type_id'] in ['export_openads']:
-                    openads_auth = get_output_parameters(output[0]['data']['options']['auth'])
-                    openads_params = get_output_parameters(output[0]['data']['options']['parameters'])
-                    _openads = _OpenADS(openads_auth['openads_api'], openads_auth['login'], openads_auth['password'])
-
-                    folder_id_mask = {
-                        'mask': openads_params['folder_id'],
-                        'separator': '',
-                    }
-                    folder_id = _Splitter.get_value_from_mask(None, data['batchMetadata'], now, folder_id_mask)
-                    openads_res = _openads.check_folder_by_id(folder_id)
-                    if not openads_res['status']:
-                        response = {
-                            "errors": gettext('CHECK_FOLDER_ERROR'),
-                            "message": openads_res['error'] if 'error' in openads_res else gettext('FOLDER_DOES_NOT_EXIST')
-                        }
-                        return response, 500
-
-                    parameters = {
-                        'extension': 'pdf',
-                        'folder_out': docservers['TMP_PATH'],
-                        'separator': openads_params['separator'],
-                        'filename': openads_params['pdf_filename'],
-                    }
-                    res_export_pdf = export_pdf(batch, data['documents'], parameters, pages, now, output[0], log)
-                    if res_export_pdf[1] != 200:
-                        return res_export_pdf
-
-                    openads_res = _openads.create_documents(folder_id, res_export_pdf[0]['paths'], data['documents'])
-                    if not openads_res['status']:
-                        response = {
-                            "errors": gettext('OPENADS_ADD_DOC_ERROR'),
-                            "message": openads_res['error']
-                        }
-                        return response, 500
-        """
-            Zip all exported files if enabled
-        """
-        if form[0]['settings']['export_zip_file']:
-            files_to_zip = []
-            for file in exported_files:
-                files_to_zip.append({
-                    'input_path': file,
-                    'path_in_zip': os.path.basename(file)
-                })
-            mask_args = {
-                'mask': form[0]['settings']['export_zip_file'],
-                'separator': '',
-                'substitute': '_'
-            }
-            export_zip_file = _Splitter.get_value_from_mask(None, data['batchMetadata'], now, mask_args)
-            _Files.zip_files(files_to_zip, export_zip_file, True)
-
-        """
-            Process after validation
-        """
-        splitter.update_status({
-            'ids': [data['batchMetadata']['id']],
-            'status': 'END'
-        })
-
-        if workflow_settings['process']['delete_documents']:
-            _Files.remove_file(f"{docservers['SPLITTER_ORIGINAL_PDF']}/{batch['file_path']}", log)
-
-    return {"OK": True}, 200
-
+    export_res = splitter_exports.launch_outputs(data['batchId'], log, docservers, configurations, regex)
+    return export_res
 
 def get_split_methods():
     if 'docservers' in current_context:
@@ -1082,11 +725,11 @@ def merge_batches(parent_id, batches):
                     'batch_id': parent_id,
                     'doctype_key': doc['doctype_key'],
                     'data': json.dumps({'custom_fields': doc['data']}),
-                    'status': 'NEW',
+                    'status': 'END',
                     'split_index': parent_max_split_index + doc['split_index']
                 })
 
-                for page in splitter.get_documents_pages({'id': doc['id']})[0]:
+                for page in splitter.get_document_pages({'document_id': doc['id']})[0]:
                     parent_max_source_page = parent_max_source_page + 1
                     new_page = parent_info['batch_folder'] + '/' + 'page-' + str(parent_max_source_page).zfill(3) + '.jpg'
 

@@ -177,6 +177,14 @@ def save_info():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/saveInfo'}), 403
 
     data = json.loads(request.data)
+    data = {
+        'batch_id': data['batchId'],
+        'documents': data['documents'],
+        'moved_pages': data['movedPages'],
+        'batch_metadata': data['batchMetadata'],
+        'deleted_pages_ids': data['deletedPagesIds'],
+        'deleted_documents_ids': data['deletedDocumentsIds']
+    }
     response, status = splitter.save_infos(data)
     return make_response(jsonify(response)), status
 

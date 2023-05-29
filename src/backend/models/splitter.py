@@ -236,7 +236,7 @@ def get_batch_documents(args):
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['splitter_documents'],
         'where': ['status = %s', 'batch_id = %s'],
-        'data': ['NEW', args['id']],
+        'data': ['NEW', args['batch_id']],
         'order_by': ['display_order'],
     })
 
@@ -268,7 +268,7 @@ def get_page_by_id(args):
     return pages, error
 
 
-def get_documents_pages(args):
+def get_document_pages(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -281,7 +281,7 @@ def get_documents_pages(args):
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['splitter_pages'],
         'where': ['status = %s', 'document_id = %s'],
-        'data': ['NEW', args['id']],
+        'data': ['NEW', args['document_id']],
         'order_by': ['document_id']
     })
 

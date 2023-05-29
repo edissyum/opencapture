@@ -115,3 +115,50 @@ ALTER TABLE "accounts_supplier" ADD COLUMN "duns" VARCHAR(10);
 ALTER TABLE mailcollect RENAME COLUMN splitter_technical_input_id TO splitter_technical_workflow_id;
 
 ALTER TABLE documents ADD COLUMN "workflow_id" INTEGER DEFAULT null;
+
+ALTER TABLE splitter_batches ADD COLUMN "workflow_id" INTEGER DEFAULT null;
+UPDATE outputs_types SET data = '{
+  "options": {
+    "auth": [],
+    "parameters": [
+      {
+        "id": "folder_out",
+        "type": "text",
+        "label": "Dossier de sortie",
+        "required": "true",
+        "placeholder": "/var/share/sortant"
+      },
+      {
+        "id": "filename",
+        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+        "type": "text",
+        "label": "Nom du fichier",
+        "required": "true",
+        "placeholder": "doctype#nom#prenom#date"
+      },
+      {
+        "id": "separator",
+        "type": "text",
+        "label": "Séparateur",
+        "required": "true",
+        "placeholder": "_"
+      },
+      {
+        "id": "extension",
+        "hint": "Ne pas mettre de point dans l''extension",
+        "type": "text",
+        "label": "Extension du fichier",
+        "required": "true",
+        "placeholder": "pdf"
+      },
+      {
+        "id": "zip_filename",
+        "hint": "Compresser les fichiers exportés, [excepté=doctype1] mentionne les types de document à exclure de la compression",
+        "type": "text",
+        "label": "Nom du fichier compressé",
+        "required": "false",
+        "placeholder": "splitter-files[Except=doctype1,doctype2]"
+      }
+    ]
+  }
+}' WHERE output_type_id = 'export_pdf' and module = 'splitter';
