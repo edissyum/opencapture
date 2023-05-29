@@ -60,7 +60,7 @@ export interface Field {
 export class SplitterViewerComponent implements OnInit, OnDestroy {
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler($event: any) {
-        if (this.isDataEdited) {
+        if (this.hasUnsavedChanges) {
             $event.returnValue = true;
         }
     }
@@ -68,13 +68,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     loading                     : boolean       = true;
     showZoomPage                : boolean       = false;
-    isDataEdited                : boolean       = false;
     isBatchOnDrag               : boolean       = false;
     batchesLoading              : boolean       = false;
     validateLoading             : boolean       = false;
     downloadLoading             : boolean       = false;
     saveInfosLoading            : boolean       = false;
     documentsLoading            : boolean       = false;
+    hasUnsavedChanges           : boolean       = false;
     addDocumentLoading          : boolean       = false;
     isMouseInDocumentList       : boolean       = false;
     batchMetadataOpenState      : boolean       = true;
@@ -223,6 +223,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     customFieldsValues  : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
                     selectedPagesCount  : 0,
                     maxSplitIndex       : 0,
+                    selectedPageId      : 0,
                     selectedDocument    : {
                         id           : '',
                         displayOrder : -1,
@@ -422,7 +423,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     createDocument() {
         if (this.addDocumentLoading) { return; }
-        this.isDataEdited = true;
+        this.hasUnsavedChanges = true;
         const documentDisplayOrder  = this.updateDocumentDisplayOrder();
         this.addDocumentLoading = true;
         this.http.post(environment['url'] + '/ws/splitter/addDocument',
@@ -555,7 +556,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     fillDataValues(data: any): void {
-        this.isDataEdited = true;
+        this.hasUnsavedChanges = true;
         for (const field of this.fieldsCategories['batch_metadata']) {
             const key = field['metadata_key'];
             const newValue = data.hasOwnProperty(key) ? data[key] : '';
@@ -621,7 +622,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadReferential(refreshAfterLoad: boolean): void {
-        if (this.isDataEdited) {
+        if (this.hasUnsavedChanges) {
             const dialogRef = this.dialog.open(ConfirmDialogComponent, {
                 data:{
                     confirmTitle       : this.translate.instant('GLOBAL.confirm'),
@@ -643,7 +644,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     setValueChange(key: string, value: string) {
-        this.isDataEdited = true;
+        this.hasUnsavedChanges = true;
         this.batchMetadataValues[key] = value;
     }
 
@@ -764,7 +765,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 this.batchForm.get('search_' + field.label_short)?.valueChanges
                                     .pipe(
                                         filter((search: string) => !!search),
-                                        tap(() => {}),
                                         takeUntil(this._onDestroy),
                                         debounceTime(200),
                                         map(search => {
@@ -862,7 +862,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     dropPage(event: CdkDragDrop<any[]>, document: any): void {
-        this.isDataEdited = true;
+        this.hasUnsavedChanges = true;
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
@@ -879,7 +879,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     dropDocument(event: CdkDragDrop<string[]>): void {
-        this.isDataEdited = true;
+        this.hasUnsavedChanges = true;
         moveItemInArray(this.documents, event.previousIndex, event.currentIndex);
         this.OrderDisplayDocumentValues();
     }
@@ -908,7 +908,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             if (result) {
                 document.doctypeLabel = result.label;
                 document.doctypeKey   = result.key;
-                this.isDataEdited = true;
+                this.hasUnsavedChanges = true;
             }
         });
     }
@@ -938,7 +938,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             if (result) {
                 this.deletedDocumentsIds.push(this.documents[documentIndex].id);
                 this.documents = this.deleteItemFromList(this.documents, documentIndex);
-                this.isDataEdited = true;
+                this.hasUnsavedChanges = true;
+                this.saveModifications();
             }
         });
     }
@@ -997,6 +998,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return list;
     }
 
+    selectPage(page: any) {
+        page['checkBox'] = !page['checkBox'];
+        this.countSelectedPages();
+    }
+
     countSelectedPages(): void {
         let selectedPageCount = 0;
         for (const document of this.documents) {
@@ -1033,7 +1039,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         }
                     }
                 }
-                this.isDataEdited = true;
+                this.hasUnsavedChanges = true;
             }
         });
     }
@@ -1051,7 +1057,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     rotatePage(documentIndex: number, pageIndex: number): void {
         const currentDegree = this.documents[documentIndex].pages[pageIndex].rotation;
-        this.isDataEdited = true;
+        this.hasUnsavedChanges = true;
         switch (currentDegree) {
             case -90: {
                 this.documents[documentIndex].pages[pageIndex].rotation = 0;
@@ -1103,7 +1109,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
-        this.isDataEdited = true;
+        this.hasUnsavedChanges = true;
     }
 
     changeBatch(id: number): void {
@@ -1114,11 +1120,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.router.navigate(['splitter/viewer/' + this.currentTime + '/' + id]).then();
         this.currentBatch.id = id;
         this.loadSelectedBatch();
-        this.isDataEdited = false;
+        this.hasUnsavedChanges = false;
     }
 
-    cancel(): void {
-        if (this.isDataEdited) {
+    cancelBatchModification(): void {
+        if (this.hasUnsavedChanges) {
             const dialogRef = this.dialog.open(ConfirmDialogComponent, {
                 data:{
                     confirmTitle       : this.translate.instant('GLOBAL.confirm'),
@@ -1250,7 +1256,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    saveInfo(): void {
+    saveModifications(): void {
         this.saveInfosLoading   = true;
         this.getFormFieldsValues();
 
@@ -1275,7 +1281,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.saveInfosLoading   = false;
-                this.isDataEdited       = false;
+                this.hasUnsavedChanges       = false;
                 this.notify.success(this.translate.instant('SPLITTER.batch_modification_saved'));
             }),
             catchError((err: any) => {
