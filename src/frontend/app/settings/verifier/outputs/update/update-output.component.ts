@@ -30,7 +30,6 @@ import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { PipeTransform, Pipe } from '@angular/core';
 import { of } from "rxjs";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { HistoryService } from "../../../../../services/history.service";
 
 @Pipe({ name: 'highlight' })
 export class HighlightPipe implements PipeTransform {
@@ -227,7 +226,6 @@ export class UpdateOutputComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {}
@@ -670,7 +668,6 @@ export class UpdateOutputComponent implements OnInit {
         this.http.put(environment['url'] + '/ws/outputs/verifier/update/' + this.outputId, {'args': _array}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('OUTPUT.output_updated'));
-                this.historyService.addHistory('verifier', 'update_output', this.translate.instant('HISTORY-DESC.update-output', {output: _array['output_label']}));
             }),
             catchError((err: any) => {
                 console.debug(err);

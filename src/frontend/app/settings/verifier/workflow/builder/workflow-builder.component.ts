@@ -15,19 +15,18 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
+import { of } from "rxjs";
+import { environment } from "../../../../env";
 import { Component, OnInit } from '@angular/core';
-import { STEPPER_GLOBAL_OPTIONS } from "@angular/cdk/stepper";
-import { SettingsService } from "../../../../../services/settings.service";
+import { HttpClient } from "@angular/common/http";
+import { TranslateService } from "@ngx-translate/core";
 import { FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
-import { environment } from "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
-import { of } from "rxjs";
-import { NotificationService } from "../../../../../services/notifications/notifications.service";
-import { HttpClient } from "@angular/common/http";
+import { STEPPER_GLOBAL_OPTIONS } from "@angular/cdk/stepper";
 import { AuthService } from "../../../../../services/auth.service";
-import { HistoryService } from "../../../../../services/history.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
 
 @Component({
     selector: 'app-workflow-builder',
@@ -268,7 +267,6 @@ export class WorkflowBuilderComponent implements OnInit {
         private authService: AuthService,
         private notify: NotificationService,
         private translate: TranslateService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService
     ) {}
 
@@ -519,9 +517,6 @@ export class WorkflowBuilderComponent implements OnInit {
 
         this.http.put(environment['url'] + '/ws/workflows/verifier/update/' + this.workflowId, {'args': workflow}, {headers: this.authService.headers}).pipe(
             tap(() => {
-                if (step === 'output') {
-                    this.historyService.addHistory('verifier', 'update_workflow', this.translate.instant('HISTORY-DESC.update-workflow', {workflow: workflow['label']}));
-                }
                 this.notify.success(this.translate.instant('WORKFLOW.workflow_updated'));
             }),
             catchError((err: any) => {
@@ -559,7 +554,6 @@ export class WorkflowBuilderComponent implements OnInit {
                         tap(() => {
                             this.router.navigate(['/settings/verifier/workflows']).then();
                             this.notify.success(this.translate.instant('WORKFLOW.workflow_created'));
-                            this.historyService.addHistory('verifier', 'create_workflow', this.translate.instant('HISTORY-DESC.create-workflow', {workflow: workflow['label']}));
                         }),
                         catchError((err: any) => {
                             console.debug(err);

@@ -446,16 +446,8 @@
 	},
 	"HISTORY-DESC": {
 		"change_batch_form": "Le formulaire sélectionné pour lot le <strong>{{ batch_id }}</strong> a été changé vers le formulaire <strong>{{ form_id }}</strong>",
-		"create-output": "Création de la chaîne sortante&nbsp;<strong>{{ output }}</strong>",
-		"create-workflow": "Création du workflow&nbsp;<strong>{{ workflow }}</strong>",
-		"delete-output": "Suppression de la chaîne sortante&nbsp;<strong>{{ output }}</strong>",
-		"delete-workflow": "Suppression du workflow&nbsp;<strong>{{ workflow }}</strong>",
 		"document_refused": "Document n°<strong>{{ document_id }}</strong> refusé",
 		"document_validated": "Document n°<strong>{{ document_id }}</strong> validé et chaîne sortante suivante effectuée :&nbsp;<strong>{{ outputs }}</strong>",
-		"duplicate-output": "Duplication de la chaîne sortante&nbsp;<strong>{{ output }}</strong>",
-		"duplicate-workflow": "Duplication du workflow&nbsp;<strong>{{ workflow }}</strong>",
-		"update-output": "Mise à jour de la chaîne sortante&nbsp;<strong>{{ output }}</strong>",
-		"update-workflow": "Mis à jour du workflow&nbsp;<strong>{{ workflow }}</strong>",
 		"validate_splitter": "Validation du lot n°<strong>{{ batch_id }}</strong>",
 		"viewer": "Visualisation du document n°<strong>{{ document_id }}</strong>",
 		"viewer_splitter": "Visualisation du lot n°<strong>{{ batch_id }}</strong>"

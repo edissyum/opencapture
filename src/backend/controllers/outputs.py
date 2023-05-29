@@ -18,8 +18,8 @@
 
 import json
 from flask_babel import gettext
-from src.backend.import_models import outputs
 from flask import request, g as current_context
+from src.backend.import_models import outputs, history
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
 
@@ -66,6 +66,13 @@ def duplicate_output(output_id):
         }
         _, error = outputs.create_output({'columns': args})
         if error is None:
+            history.add_history({
+                'module': output_info['module'],
+                'ip': request.remote_addr,
+                'submodule': 'duplicate_output',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DUPLICATE_OUTPUT', output=output_info['output_label'])
+            })
             return '', 200
         else:
             response = {
@@ -109,7 +116,7 @@ def update_output(output_id, data):
         }
         return response, 400
 
-    _, error = outputs.get_output_by_id({'output_id': output_id})
+    output_info, error = outputs.get_output_by_id({'output_id': output_id})
     if error is None:
         _, error = outputs.update_output({
             'set': {
@@ -123,6 +130,13 @@ def update_output(output_id, data):
         })
 
         if error is None:
+            history.add_history({
+                'module': output_info['module'],
+                'ip': request.remote_addr,
+                'submodule': 'update_output',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('UPDATE_OUTPUT', output=output_info['output_label'])
+            })
             return '', 200
         else:
             response = {
@@ -150,6 +164,13 @@ def create_output(data):
     res, error = outputs.create_output({'columns': _columns})
 
     if error is None:
+        history.add_history({
+            'module': data['module'],
+            'ip': request.remote_addr,
+            'submodule': 'create_output',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('CREATE_OUTPUT', output=data['output_label'])
+        })
         response = {
             "id": res
         }
@@ -191,8 +212,15 @@ def get_output_type_by_id(output_type_id):
 def delete_output(output_id):
     output_info, error = outputs.get_output_by_id({'output_id': output_id})
     if error is None:
-        res, error = outputs.update_output({'set': {'status': 'DEL'}, 'output_id': output_id})
+        _, error = outputs.update_output({'set': {'status': 'DEL'}, 'output_id': output_id})
         if error is None:
+            history.add_history({
+                'module': output_info['module'],
+                'ip': request.remote_addr,
+                'submodule': 'delete_output',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DELETE_OUTPUT', output=output_info['output_label'])
+            })
             return '', 200
         else:
             response = {

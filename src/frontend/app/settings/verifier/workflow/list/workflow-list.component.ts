@@ -17,19 +17,18 @@
 
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from "../../../../../services/settings.service";
-import {LastUrlService} from "../../../../../services/last-url.service";
-import {LocalStorageService} from "../../../../../services/local-storage.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {AuthService} from "../../../../../services/auth.service";
-import {environment} from "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
-import {Sort} from "@angular/material/sort";
-import {MatDialog} from "@angular/material/dialog";
-import {TranslateService} from "@ngx-translate/core";
-import {HistoryService} from "../../../../../services/history.service";
+import { LastUrlService } from "../../../../../services/last-url.service";
+import { LocalStorageService } from "../../../../../services/local-storage.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { AuthService } from "../../../../../services/auth.service";
+import { environment } from "../../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
+import { Sort } from "@angular/material/sort";
+import { MatDialog } from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
     selector: 'app-workflow-list',
@@ -53,7 +52,6 @@ export class WorkflowListComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         private localStorageService: LocalStorageService
@@ -127,7 +125,6 @@ export class WorkflowListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deleteWorkflow(workflowId);
-                this.historyService.addHistory('verifier', 'delete_workflow', this.translate.instant('HISTORY-DESC.delete-workflow', {workflow: workflow}));
             }
         });
     }
@@ -163,7 +160,6 @@ export class WorkflowListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.duplicateWorkflow(workflowId);
-                this.historyService.addHistory('verifier', 'duplicate_workflow', this.translate.instant('HISTORY-DESC.duplicate-workflow', {workflow: workflow}));
             }
         });
     }
