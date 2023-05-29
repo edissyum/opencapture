@@ -581,7 +581,7 @@ def validate(data):
     if save_response[1] != 200:
         return save_response
 
-    export_res = splitter_exports.launch_export(data['batchId'], log, docservers, configurations, regex)
+    export_res = splitter_exports.launch_outputs(data['batchId'], log, docservers, configurations, regex)
     return export_res
 
 def get_split_methods():

@@ -336,16 +336,16 @@ class Splitter:
         doc_loop_item_template = re.search(regex['splitter_doc_loop'], xml_as_string, re.DOTALL)
         xml_as_string = xml_as_string.replace('#date', date)
         xml_as_string = xml_as_string.replace('#documents_count', str(len(documents)))
-        xml_as_string = xml_as_string.replace('#user_first_name', str(metadata['userFirstName']))
-        xml_as_string = xml_as_string.replace('#user_last_name', str(metadata['userLastName']))
+        xml_as_string = xml_as_string.replace('#user_first_name', str(metadata['custom_fields']['userFirstName']))
+        xml_as_string = xml_as_string.replace('#user_last_name', str(metadata['custom_fields']['userLastName']))
         xml_as_string = xml_as_string.replace('#random', str(random.randint(0, 99999)).zfill(5))
 
         """
             Add batch metadata
         """
-        for key in metadata:
+        for key in metadata['custom_fields']:
             if f'#{key}' in xml_as_string:
-                xml_as_string = xml_as_string.replace(f'#{key}', str(metadata[key]))
+                xml_as_string = xml_as_string.replace(f'#{key}', str(metadata['custom_fields'][key]))
 
         """
             Apply if conditions
@@ -357,23 +357,24 @@ class Splitter:
                 xml_as_string = xml_as_string.replace(condition[1], '')
 
         """
-            Add document metadata
+            Add documents metadata
         """
+        user_firstname = metadata['custom_fields']['userFirstName'] if 'userFirstName' in metadata['custom_fields'] else ''
+        user_lastname = metadata['custom_fields']['userLastName'] if 'userLastName' in metadata['custom_fields'] else ''
         documents_tags = ""
         if doc_loop_item_template:
             for index, document in enumerate(documents):
-                if document['id'] not in metadata['zip_except_documents'] and metadata['zip_filename']:
+                if 'is_file_added_to_zip' in document and document['is_file_added_to_zip']:
                     continue
                 doc_loop_item = doc_loop_item_template.group(1)
                 doc_loop_item = doc_loop_item.replace('#date', date)
-                doc_loop_item = doc_loop_item.replace('#filename',
-                                                      document['fileName'] if 'fileName' in document else '')
+                doc_loop_item = doc_loop_item.replace('#filename', document['filename'] if 'filename' in document else '')
                 doc_loop_item = doc_loop_item.replace('#documents_count', str(len(documents)))
                 doc_loop_item = doc_loop_item.replace('#document_identifier', str(document['id']))
                 doc_loop_item = doc_loop_item.replace('#doctype', str(document['doctype_key']))
-                doc_loop_item = doc_loop_item.replace('#user_last_name', str(metadata['userLastName']))
+                doc_loop_item = doc_loop_item.replace('#user_lastname', user_lastname)
+                doc_loop_item = doc_loop_item.replace('#user_lastname', user_lastname)
                 doc_loop_item = doc_loop_item.replace('#random', str(random.randint(0, 99999)).zfill(5))
-                doc_loop_item = doc_loop_item.replace('#user_first_name', str(metadata['userFirstName']))
                 for key in document['data']['custom_fields']:
                     if f'#{key}' in xml_as_string:
                         doc_loop_item = doc_loop_item.replace(f'#{key}', str(document['data']['custom_fields'][key]))
@@ -381,10 +382,10 @@ class Splitter:
 
             xml_as_string = xml_as_string.replace(doc_loop_item_template.group(1), documents_tags)
 
-        xml_file_path = f"{parameters['folder_out']}/{metadata['xml_filename']}"
+        xml_file_path = f"{parameters['folder_out']}/{metadata['metadata_file']}"
 
         """
-            Check XML Syntax and write file result & remove tech comments
+            Check XML Syntax and write file result & remove template comments
         """
         xml_as_string = re.sub(regex['splitter_xml_comment'], '', xml_as_string)
         xml_as_string = re.sub(regex['splitter_empty_line'], '', xml_as_string)

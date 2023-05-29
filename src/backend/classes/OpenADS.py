@@ -64,13 +64,13 @@ class OpenADS:
 
         return {'status': True}
 
-    def create_documents(self, folder_id, paths, metadata):
+    def create_documents(self, folder_id, paths, documents):
         try:
             for index, path in enumerate(paths):
                 with open(path, 'rb') as f:
                     b64 = str(b64encode(f.read()), 'utf-8')
                 filename = os.path.basename(path)
-                doctype = metadata[index]['doctypeKey'].split("-")[-1]
+                doctype = documents[index]['doctype_key'].split("-")[-1]
                 data = [
                     {
                         'b64_content': b64,
