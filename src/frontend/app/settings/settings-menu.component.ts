@@ -32,6 +32,6 @@ export class SettingsMenuComponent {
     constructor(
         public router: Router,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService,
+        public privilegesService: PrivilegesService
     ) {}
 }

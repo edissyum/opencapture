@@ -59,7 +59,7 @@ export class UserQuotaComponent implements OnInit {
         private notify: NotificationService,
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService,
+        public privilegesService: PrivilegesService
     ) { }
 
     ngOnInit(): void {

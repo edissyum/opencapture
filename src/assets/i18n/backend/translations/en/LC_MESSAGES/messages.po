@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2023-05-25 16:40+0200\n"
+"POT-Creation-Date: 2023-05-29 11:07+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -186,7 +186,7 @@ msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
 msgstr "Error while loading supplier referencial"
 
 #: src/backend/controllers/artificial_intelligence.py:79
-#: src/backend/controllers/artificial_intelligence.py:403
+#: src/backend/controllers/artificial_intelligence.py:438
 msgid "GET_IA_MODEL_BY_ID_ERROR"
 msgstr "Error retrieving ai model"
 
@@ -194,14 +194,34 @@ msgstr "Error retrieving ai model"
 msgid "CREATE_IA_MODEL_ERROR"
 msgstr "Error creating ai models"
 
-#: src/backend/controllers/artificial_intelligence.py:128
+#: src/backend/controllers/artificial_intelligence.py:125
+msgid "DELETE_AI_MODEL"
+msgstr "Delete AI model&nbsp;<strong>%(model)s</strong>"
+
+#: src/backend/controllers/artificial_intelligence.py:153
+msgid "UPDATE_AI_MODEL"
+msgstr "Update AI model&nbsp;<strong>%(model)s</strong>"
+
+#: src/backend/controllers/artificial_intelligence.py:158
 msgid "UPDATE_IA_MODEL_ERROR"
 msgstr "Error updating ai model"
 
-#: src/backend/controllers/artificial_intelligence.py:404
+#: src/backend/controllers/artificial_intelligence.py:218
+msgid "CREATE_AI_MODEL"
+msgstr "Create AI model&nbsp;<strong>%(model)s</strong>"
+
+#: src/backend/controllers/artificial_intelligence.py:439
 #: src/backend/models/artificial_intelligence.py:59
 msgid "IA_MODEL_DOESNT_EXISTS"
 msgstr "AI model doesn't exists"
+
+#: src/backend/controllers/artificial_intelligence.py:551
+msgid "RENAME_AI_MODEL_ERROR"
+msgstr "Error renaming ai models"
+
+#: src/backend/controllers/artificial_intelligence.py:552
+msgid "FILE_DOESNT_EXISTS"
+msgstr "The AI file doesn't exists"
 
 #: src/backend/controllers/auth.py:66 src/backend/controllers/auth.py:317
 #: src/backend/controllers/auth.py:373 src/backend/controllers/auth.py:383
@@ -1182,10 +1202,10 @@ msgstr "Error while updating workflow"
 #: src/backend/rest/artificial_intelligence.py:40
 #: src/backend/rest/artificial_intelligence.py:51
 #: src/backend/rest/artificial_intelligence.py:61
-#: src/backend/rest/artificial_intelligence.py:71
-#: src/backend/rest/artificial_intelligence.py:83
-#: src/backend/rest/artificial_intelligence.py:96
-#: src/backend/rest/artificial_intelligence.py:108 src/backend/rest/auth.py:91
+#: src/backend/rest/artificial_intelligence.py:72
+#: src/backend/rest/artificial_intelligence.py:86
+#: src/backend/rest/artificial_intelligence.py:101
+#: src/backend/rest/artificial_intelligence.py:113 src/backend/rest/auth.py:91
 #: src/backend/rest/auth.py:117 src/backend/rest/auth.py:127
 #: src/backend/rest/auth.py:147 src/backend/rest/auth.py:158
 #: src/backend/rest/auth.py:181 src/backend/rest/auth.py:192

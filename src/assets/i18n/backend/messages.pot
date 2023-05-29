@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-05-25 16:40+0200\n"
+"POT-Creation-Date: 2023-05-29 11:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -182,7 +182,7 @@ msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
 msgstr ""
 
 #: src/backend/controllers/artificial_intelligence.py:79
-#: src/backend/controllers/artificial_intelligence.py:403
+#: src/backend/controllers/artificial_intelligence.py:438
 msgid "GET_IA_MODEL_BY_ID_ERROR"
 msgstr ""
 
@@ -190,13 +190,33 @@ msgstr ""
 msgid "CREATE_IA_MODEL_ERROR"
 msgstr ""
 
-#: src/backend/controllers/artificial_intelligence.py:128
+#: src/backend/controllers/artificial_intelligence.py:125
+msgid "DELETE_AI_MODEL"
+msgstr ""
+
+#: src/backend/controllers/artificial_intelligence.py:153
+msgid "UPDATE_AI_MODEL"
+msgstr ""
+
+#: src/backend/controllers/artificial_intelligence.py:158
 msgid "UPDATE_IA_MODEL_ERROR"
 msgstr ""
 
-#: src/backend/controllers/artificial_intelligence.py:404
+#: src/backend/controllers/artificial_intelligence.py:218
+msgid "CREATE_AI_MODEL"
+msgstr ""
+
+#: src/backend/controllers/artificial_intelligence.py:439
 #: src/backend/models/artificial_intelligence.py:59
 msgid "IA_MODEL_DOESNT_EXISTS"
+msgstr ""
+
+#: src/backend/controllers/artificial_intelligence.py:551
+msgid "RENAME_AI_MODEL_ERROR"
+msgstr ""
+
+#: src/backend/controllers/artificial_intelligence.py:552
+msgid "FILE_DOESNT_EXISTS"
 msgstr ""
 
 #: src/backend/controllers/auth.py:66 src/backend/controllers/auth.py:317
@@ -1174,10 +1194,10 @@ msgstr ""
 #: src/backend/rest/artificial_intelligence.py:40
 #: src/backend/rest/artificial_intelligence.py:51
 #: src/backend/rest/artificial_intelligence.py:61
-#: src/backend/rest/artificial_intelligence.py:71
-#: src/backend/rest/artificial_intelligence.py:83
-#: src/backend/rest/artificial_intelligence.py:96
-#: src/backend/rest/artificial_intelligence.py:108 src/backend/rest/auth.py:91
+#: src/backend/rest/artificial_intelligence.py:72
+#: src/backend/rest/artificial_intelligence.py:86
+#: src/backend/rest/artificial_intelligence.py:101
+#: src/backend/rest/artificial_intelligence.py:113 src/backend/rest/auth.py:91
 #: src/backend/rest/auth.py:117 src/backend/rest/auth.py:127
 #: src/backend/rest/auth.py:147 src/backend/rest/auth.py:158
 #: src/backend/rest/auth.py:181 src/backend/rest/auth.py:192

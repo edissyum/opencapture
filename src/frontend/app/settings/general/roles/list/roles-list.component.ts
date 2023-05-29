@@ -69,7 +69,7 @@ export class RolesListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService
     ) {
     }
 

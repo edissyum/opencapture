@@ -38,7 +38,7 @@ export class ConfirmDialogComponent implements OnInit {
     selectData: any;
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: ConfirmData,
+        @Inject(MAT_DIALOG_DATA) public data: ConfirmData
     ) { }
 
     ngOnInit(): void {}

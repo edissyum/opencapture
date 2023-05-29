@@ -35,7 +35,7 @@ export class AuthService {
         private router: Router,
         private http: HttpClient,
         private userService: UserService,
-        private localStorage: LocalStorageService,
+        private localStorage: LocalStorageService
     ) {
         if (!this.getToken()) {
             this.headersExists = false;

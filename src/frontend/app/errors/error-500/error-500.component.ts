@@ -30,7 +30,7 @@ export class Error500Component implements OnInit {
     constructor(
         public userService: UserService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService,
+        public privilegesService: PrivilegesService
     ) { }
 
     ngOnInit(): void {

@@ -71,7 +71,7 @@ export class SeparatorComponent implements OnInit {
         public privilegesService: PrivilegesService,
         private http: HttpClient,
         private authService: AuthService,
-        private notify:NotificationService,
+        private notify:NotificationService
     ) { }
 
     ngOnInit(): void {
