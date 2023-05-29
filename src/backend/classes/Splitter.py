@@ -334,11 +334,13 @@ class Splitter:
 
         xml_as_string = parameters['xml_template']
         doc_loop_item_template = re.search(regex['splitter_doc_loop'], xml_as_string, re.DOTALL)
+
         xml_as_string = xml_as_string.replace('#date', date)
         xml_as_string = xml_as_string.replace('#documents_count', str(len(documents)))
-        xml_as_string = xml_as_string.replace('#user_first_name', str(metadata['custom_fields']['userFirstName']))
-        xml_as_string = xml_as_string.replace('#user_last_name', str(metadata['custom_fields']['userLastName']))
         xml_as_string = xml_as_string.replace('#random', str(random.randint(0, 99999)).zfill(5))
+        xml_as_string = xml_as_string.replace('#user_lastname', str(metadata['custom_fields']['userLastName']))
+        xml_as_string = xml_as_string.replace('#user_firstname', str(metadata['custom_fields']['userFirstName']))
+        xml_as_string = xml_as_string.replace('#pdf_output_compress_file', str(metadata['pdf_output_compress_file']))
 
         """
             Add batch metadata
