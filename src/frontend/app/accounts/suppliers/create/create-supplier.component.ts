@@ -177,7 +177,7 @@ export class CreateSupplierComponent implements OnInit {
         private localeService: LocaleService,
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService,
+        public privilegesService: PrivilegesService
     ) {
     }
 

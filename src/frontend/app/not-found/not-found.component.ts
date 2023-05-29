@@ -29,7 +29,7 @@ export class NotFoundComponent implements OnInit {
     constructor(
         private notify: NotificationService,
         private router: Router,
-        private translate: TranslateService,
+        private translate: TranslateService
     ) { }
 
     ngOnInit(): void {

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2023-05-25 16:40+0200\n"
+"POT-Creation-Date: 2023-05-29 11:56+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -186,7 +186,7 @@ msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
 msgstr "Error while loading supplier referencial"
 
 #: src/backend/controllers/artificial_intelligence.py:79
-#: src/backend/controllers/artificial_intelligence.py:403
+#: src/backend/controllers/artificial_intelligence.py:438
 msgid "GET_IA_MODEL_BY_ID_ERROR"
 msgstr "Error retrieving ai model"
 
@@ -194,14 +194,34 @@ msgstr "Error retrieving ai model"
 msgid "CREATE_IA_MODEL_ERROR"
 msgstr "Error creating ai models"
 
-#: src/backend/controllers/artificial_intelligence.py:128
+#: src/backend/controllers/artificial_intelligence.py:125
+msgid "DELETE_AI_MODEL"
+msgstr "Delete AI model&nbsp;<strong>%(model)s</strong>"
+
+#: src/backend/controllers/artificial_intelligence.py:153
+msgid "UPDATE_AI_MODEL"
+msgstr "Update AI model&nbsp;<strong>%(model)s</strong>"
+
+#: src/backend/controllers/artificial_intelligence.py:158
 msgid "UPDATE_IA_MODEL_ERROR"
 msgstr "Error updating ai model"
 
-#: src/backend/controllers/artificial_intelligence.py:404
+#: src/backend/controllers/artificial_intelligence.py:218
+msgid "CREATE_AI_MODEL"
+msgstr "Create AI model&nbsp;<strong>%(model)s</strong>"
+
+#: src/backend/controllers/artificial_intelligence.py:439
 #: src/backend/models/artificial_intelligence.py:59
 msgid "IA_MODEL_DOESNT_EXISTS"
 msgstr "AI model doesn't exists"
+
+#: src/backend/controllers/artificial_intelligence.py:551
+msgid "RENAME_AI_MODEL_ERROR"
+msgstr "Error renaming ai models"
+
+#: src/backend/controllers/artificial_intelligence.py:552
+msgid "FILE_DOESNT_EXISTS"
+msgstr "The AI file doesn't exists"
 
 #: src/backend/controllers/auth.py:66 src/backend/controllers/auth.py:317
 #: src/backend/controllers/auth.py:373 src/backend/controllers/auth.py:383
@@ -338,34 +358,50 @@ msgstr "Error while retrieving docservers"
 msgid "RETRIEVE_REGEX_ERRORS"
 msgstr "Error while retrieving regex"
 
-#: src/backend/controllers/config.py:181 src/backend/controllers/config.py:201
-#: src/backend/controllers/config.py:213 src/backend/controllers/config.py:233
+#: src/backend/controllers/config.py:181 src/backend/controllers/config.py:208
+#: src/backend/controllers/config.py:220 src/backend/controllers/config.py:247
 #: src/backend/models/config.py:199 src/backend/models/config.py:223
 msgid "UPDATE_CONFIGURATION_ERROR"
 msgstr "Error while updating configuration"
 
-#: src/backend/controllers/config.py:182 src/backend/controllers/config.py:214
+#: src/backend/controllers/config.py:182 src/backend/controllers/config.py:221
 msgid "JWT_EXPIRATION_COULDNT_BE_ZERO_OR_LESS"
 msgstr "The value of token expiration could'nt be 0 or less"
 
-#: src/backend/controllers/config.py:254 src/backend/models/config.py:245
+#: src/backend/controllers/config.py:203 src/backend/controllers/config.py:242
+msgid "UPDATE_CONFIGURATION"
+msgstr "Configuration updated&nbsp;<strong>%(config)s</strong>"
+
+#: src/backend/controllers/config.py:270
+msgid "UPDATE_REGEX"
+msgstr "Regex updated&nbsp;<strong>%(regex)s</strong>"
+
+#: src/backend/controllers/config.py:275 src/backend/models/config.py:245
 msgid "UPDATE_REGEX_ERROR"
 msgstr "Error while updating REGEX"
 
-#: src/backend/controllers/config.py:274 src/backend/models/config.py:271
+#: src/backend/controllers/config.py:297
+msgid "UPDATE_DOCSERVER"
+msgstr "Docserver updated&nbsp;<strong>%(docserver)s</strong>"
+
+#: src/backend/controllers/config.py:302 src/backend/models/config.py:271
 msgid "UPDATE_DOCSERVER_ERROR"
 msgstr "Error while updating docserver"
 
-#: src/backend/controllers/config.py:316 src/backend/controllers/config.py:326
-#: src/backend/controllers/config.py:331
+#: src/backend/controllers/config.py:344 src/backend/controllers/config.py:360
+#: src/backend/controllers/config.py:365
 msgid "ERROR_UPDATING_IMAGE"
 msgstr "Error while updating login image"
 
-#: src/backend/controllers/config.py:317 src/backend/controllers/config.py:327
+#: src/backend/controllers/config.py:345 src/backend/controllers/config.py:361
 msgid "CUSTOM_IMAGE_PATH_NOT_WRITEABLE_OR_NOT_EXISTS"
 msgstr "Custom image path is not writeable"
 
-#: src/backend/controllers/config.py:332
+#: src/backend/controllers/config.py:355
+msgid "UPDATE_LOGIN_IMAGE"
+msgstr "Login image updated"
+
+#: src/backend/controllers/config.py:366
 msgid "CUSTOM_NOT_PRESENT"
 msgstr "No custom is present"
 
@@ -458,35 +494,55 @@ msgstr "Error while retrieving form fields"
 msgid "ADD_HISTORY_ERROR"
 msgstr "Error while adding new history"
 
-#: src/backend/controllers/mailcollect.py:36
+#: src/backend/controllers/mailcollect.py:38
 msgid "RETRIEVE_PROCESSES_ERROR"
 msgstr "Error while retrieving MailCollect processes"
 
-#: src/backend/controllers/mailcollect.py:52
+#: src/backend/controllers/mailcollect.py:53
+msgid "UPDATE_MAILCOLLECT_PROCESS"
+msgstr "MailCollect process updated&nbsp;<strong>%(process)s</strong>"
+
+#: src/backend/controllers/mailcollect.py:61
 msgid "UPDATE_PROCESS_ERROR"
 msgstr "Error while updating MailCollect process"
 
-#: src/backend/controllers/mailcollect.py:68
+#: src/backend/controllers/mailcollect.py:76
+msgid "CREATE_MAILCOLLECT_PROCESS"
+msgstr "MailCollect process created&nbsp;<strong>%(process)s</strong>"
+
+#: src/backend/controllers/mailcollect.py:84
 msgid "CREATE_PROCESS_ERROR"
 msgstr "Error while creating MailCollect process"
 
-#: src/backend/controllers/mailcollect.py:82
-#: src/backend/controllers/mailcollect.py:88
+#: src/backend/controllers/mailcollect.py:100
+msgid "DELETE_MAILCOLLECT_PROCESS"
+msgstr "MailCollect process deleted&nbsp;<strong>%(process)s</strong>"
+
+#: src/backend/controllers/mailcollect.py:105
+#: src/backend/controllers/mailcollect.py:111
 msgid "DELETE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Error while deleting MailCollect process"
 
-#: src/backend/controllers/mailcollect.py:102
-#: src/backend/controllers/mailcollect.py:108
+#: src/backend/controllers/mailcollect.py:127
+msgid "ENABLE_MAILCOLLECT_PROCESS"
+msgstr "MailCollect process enabled&nbsp;<strong>%(process)s</strong>"
+
+#: src/backend/controllers/mailcollect.py:132
+#: src/backend/controllers/mailcollect.py:138
 msgid "ENABLE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Error while enabling MailCollect process"
 
-#: src/backend/controllers/mailcollect.py:122
-#: src/backend/controllers/mailcollect.py:128
+#: src/backend/controllers/mailcollect.py:154
+msgid "DISABLE_MAILCOLLECT_PROCESS"
+msgstr "MailCollect process disabled&nbsp;<strong>%(process)s</strong>"
+
+#: src/backend/controllers/mailcollect.py:159
+#: src/backend/controllers/mailcollect.py:165
 msgid "DISABLE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Error while disabling MailCollect process"
 
-#: src/backend/controllers/mailcollect.py:142
-#: src/backend/controllers/mailcollect.py:152
+#: src/backend/controllers/mailcollect.py:179
+#: src/backend/controllers/mailcollect.py:189
 msgid "MAILCOLLECT_ERROR"
 msgstr "MailCollect error"
 
@@ -1182,10 +1238,10 @@ msgstr "Error while updating workflow"
 #: src/backend/rest/artificial_intelligence.py:40
 #: src/backend/rest/artificial_intelligence.py:51
 #: src/backend/rest/artificial_intelligence.py:61
-#: src/backend/rest/artificial_intelligence.py:71
-#: src/backend/rest/artificial_intelligence.py:83
-#: src/backend/rest/artificial_intelligence.py:96
-#: src/backend/rest/artificial_intelligence.py:108 src/backend/rest/auth.py:91
+#: src/backend/rest/artificial_intelligence.py:72
+#: src/backend/rest/artificial_intelligence.py:86
+#: src/backend/rest/artificial_intelligence.py:101
+#: src/backend/rest/artificial_intelligence.py:113 src/backend/rest/auth.py:91
 #: src/backend/rest/auth.py:117 src/backend/rest/auth.py:127
 #: src/backend/rest/auth.py:147 src/backend/rest/auth.py:158
 #: src/backend/rest/auth.py:181 src/backend/rest/auth.py:192

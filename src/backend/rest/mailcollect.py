@@ -106,7 +106,7 @@ def enable_process(process_name):
 def disable_process(process_name):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/mailcollect/disableProcess/{process_name}'}), 403
+                        'message': f'# /mailcollect/disableProcess/{process_name}'}), 403
 
     res = mailcollect.disable_process(process_name)
     return make_response(jsonify(res[0])), res[1]

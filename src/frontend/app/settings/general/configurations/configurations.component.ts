@@ -32,7 +32,6 @@ import { NotificationService } from "../../../../services/notifications/notifica
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { HistoryService } from "../../../../services/history.service";
 import { LocaleService } from "../../../../services/locale.service";
 import { PasswordVerificationService } from "../../../../services/password-verification.service";
 import {FormControl, Validators} from "@angular/forms";
@@ -185,7 +184,6 @@ export class ConfigurationsComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         public localeService: LocaleService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -412,7 +410,6 @@ export class ConfigurationsComponent implements OnInit {
                     if (showSuccess) {
                         this.notify.success(this.translate.instant('MAILCOLLECT.smtp_general_settings_updated'));
                     }
-                    this.historyService.addHistory('general', 'mailcollect', this.translate.instant('HISTORY-DESC.smtp_settings_updated'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -442,7 +439,6 @@ export class ConfigurationsComponent implements OnInit {
                         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
                             this.router.navigate([currentUrl]).then();
                         });
-                        this.historyService.addHistory('general', 'update_login_image', this.translate.instant('HISTORY-DESC.update_login_image'));
                         this.notify.success(this.translate.instant('CONFIGURATIONS.login_image_changed'));
                     }),
                     finalize(() => this.loading = false),
@@ -505,7 +501,6 @@ export class ConfigurationsComponent implements OnInit {
                         element.updateMode = false;
                         this.updateLoading = false;
                         this.notify.success(this.translate.instant('CONFIGURATIONS.configuration_updated'));
-                        this.historyService.addHistory('general', 'update_configuration', this.translate.instant('HISTORY-DESC.update_configuration', {configuration: name}));
                     }),
                     catchError((err: any) => {
                         console.debug(err);

@@ -40,8 +40,8 @@
                         </ng-container>
                         <ng-template #update>
                             <mat-form-field appearance="outline" class="w-full">
-                                <input [id]="element.id" autofocus matInput [value]="element.content" (keyup.enter)="updateValue($event, element.id, element.regex_id)"
-                                       class="relative -top-2.5" (focusout)="updateValue($event, element.id, element.regex_id)">
+                                <input [id]="element.id" autofocus matInput [value]="element.content" (keyup.enter)="updateValue($event, element.id)"
+                                       class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
                             </mat-form-field>
                         </ng-template>
                     </mat-cell>

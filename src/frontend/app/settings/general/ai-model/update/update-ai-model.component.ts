@@ -25,7 +25,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
-import { HistoryService } from "../../../../../services/history.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { lastValueFrom, of } from "rxjs";
@@ -76,7 +75,6 @@ export class UpdateAiModelComponent implements OnInit {
         public userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) { }
@@ -145,13 +143,13 @@ export class UpdateAiModelComponent implements OnInit {
 
     updateModel() {
         if (this.isValidForm(this.modelForm)) {
-            const model_name = this.getValueFromForm(this.modelForm, 'model_path');
-            const min_pred = this.getValueFromForm(this.modelForm, 'min_proba');
+            const modelName = this.getValueFromForm(this.modelForm, 'model_path');
+            const minProba = this.getValueFromForm(this.modelForm, 'min_proba');
             const doctypes = [];
             for (let i = 0; i < this.len; i++) {
-                const oc_targets = this.doctypesFormControl[i].value;
                 const fold = this.documents[i].folder;
                 const formid = this.formsFormControl[i].value;
+                const oc_targets = this.doctypesFormControl[i].value;
                 doctypes.push({
                     folder: fold,
                     doctype: oc_targets,
@@ -160,13 +158,9 @@ export class UpdateAiModelComponent implements OnInit {
             }
             if (this.modelId !== undefined) {
                 this.http.post(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/update/' + this.modelId, {
-                    model_name: model_name,
-                    min_pred: min_pred,
-                    doctypes: doctypes
-                }, {headers: this.authService.headers}).pipe(
+                    model_name: modelName, min_proba: minProba, doctypes: doctypes }, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.model_updated'));
-                        this.historyService.addHistory(this.splitterOrVerifier, 'update_ai_model', this.translate.instant('HISTORY-DESC.update-ai-model', {model: model_name}));
                         this.router.navigate(['/settings/' + this.splitterOrVerifier + '/ai']).then();
                     }),
                     catchError((err: any) => {

@@ -148,7 +148,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         private notify: NotificationService,
         private historyService: HistoryService,
         public localeService: LocaleService,
-        private localStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService
     ) {}
 
     ngOnInit(): void {

@@ -31,7 +31,6 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { HistoryService } from "../../../../services/history.service";
 
 @Component({
     selector: 'app-docservers',
@@ -61,7 +60,6 @@ export class DocserversComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -73,11 +71,13 @@ export class DocserversComponent implements OnInit {
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/docservers') || lastUrl === '/') {
-            if (this.localStorageService.get('docserversPageIndex'))
+            if (this.localStorageService.get('docserversPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('docserversPageIndex') as string);
+            }
             this.offset = this.pageSize * (this.pageIndex);
-        } else
+        } else {
             this.localStorageService.remove('docserversPageIndex');
+        }
 
         this.http.get(environment['url'] + '/ws/config/getDocservers', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -123,7 +123,6 @@ export class DocserversComponent implements OnInit {
                         element.updateMode = false;
                         this.updateLoading = false;
                         this.notify.success(this.translate.instant('DOCSERVERS.docserver_updated'));
-                        this.historyService.addHistory('general', 'update_docserver', this.translate.instant('HISTORY-DESC.update_docserver', {docserver: docserver}));
                     }),
                     catchError((err: any) => {
                         console.debug(err);

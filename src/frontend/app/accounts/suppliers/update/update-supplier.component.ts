@@ -176,7 +176,7 @@ export class UpdateSupplierComponent implements OnInit {
         private notify: NotificationService,
         private localeService: LocaleService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService,
+        public privilegesService: PrivilegesService
     ) { }
 
     ngOnInit(): void {

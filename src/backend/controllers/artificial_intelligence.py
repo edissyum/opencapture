@@ -28,7 +28,7 @@ from flask_babel import gettext
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 from flask import request, g as current_context
-from src.backend.import_models import artificial_intelligence
+from src.backend.import_models import artificial_intelligence, history
 from src.backend import create_classes_from_custom_id, retrieve_custom_from_url
 from sklearn import feature_extraction, model_selection, naive_bayes, pipeline, metrics
 
@@ -106,11 +106,33 @@ def create_model(data):
         return response, 400
 
 
-def update_model(data, model_id):
+def delete_model(data, model_id, module):
     args = {
         'set': {},
         'model_id': model_id
     }
+
+    if 'status' in data:
+        args['set']['status'] = data['status']
+    _, error = artificial_intelligence.update_models(args)
+
+    if error is None:
+        history.add_history({
+            'module': module,
+            'ip': request.remote_addr,
+            'submodule': 'update_ai_model',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('DELETE_AI_MODEL', model=model_id)
+        })
+        return '', 200
+
+
+def update_model(data, model_id, module, model_name, fill_history=False):
+    args = {
+        'set': {},
+        'model_id': model_id
+    }
+
     if 'status' in data:
         args['set']['status'] = data['status']
     if 'model_path' in data:
@@ -118,10 +140,18 @@ def update_model(data, model_id):
     if 'min_proba' in data:
         args['set']['min_proba'] = data['min_proba']
     if 'documents' in data:
-        args['set']['documents'] = json.dumps(data['documents'])
-    res, error = artificial_intelligence.update_models(args)
+        args['set']['documents'] = data['documents']
+    _, error = artificial_intelligence.update_models(args)
 
     if error is None:
+        if fill_history:
+            history.add_history({
+                'module': module,
+                'ip': request.remote_addr,
+                'submodule': 'update_ai_model',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('UPDATE_AI_MODEL', model=model_name)
+            })
         return '', 200
 
     response = {
@@ -131,10 +161,11 @@ def update_model(data, model_id):
     return response, 400
 
 
-def launch_train(data, model_name):
+def launch_train(data, model_name, module):
     """
     Preparing the model training with data treatment and creation of a new row in the ai_models table
-    :param data: The data gathered from the front, containing doctypes info and min_pred argument
+    :param module:
+    :param data: The data gathered from the front, containing doctypes info and min_proba argument
     :param model_name: The name of model
     :return: N/A
     """
@@ -148,11 +179,13 @@ def launch_train(data, model_name):
     folders = []
     for element in data['docs']:
         folders.append(element['folder'])
-    min_pred = data['min_pred']
+    min_proba = data['min_proba']
 
-    path = docservers.get('VERIFIER_TRAIN_PATH_FILES') if data['module'] == 'verifier' else docservers.get('SPLITTER_TRAIN_PATH_FILES')
+    path = docservers.get('VERIFIER_TRAIN_PATH_FILES') if data['module'] == 'verifier' else docservers.get(
+        'SPLITTER_TRAIN_PATH_FILES')
     csv_file = path + '/data.csv'
-    model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + model_name if data['module'] == 'verifier' else docservers.get('SPLITTER_AI_MODEL_PATH') + model_name
+    model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + model_name if data['module'] == 'verifier' \
+        else docservers.get('SPLITTER_AI_MODEL_PATH') + model_name
     start_time = time.time()
 
     args = {
@@ -164,24 +197,29 @@ def launch_train(data, model_name):
     }
     model_id = create_model(args)[0].get('id')
 
-    add_train_text_to_csv(path, csv_file, folders, model_id)
-    print("--- ocr time: %s seconds ---" % (time.time() - start_time))
+    add_train_text_to_csv(path, csv_file, folders, model_id, module)
+    print(f"--- ocr time: {(time.time() - start_time)} seconds ---")
 
-    launch_train_model(model_name, csv_file, model_id)
-    t2 = round(time.time() - start_time, 0)
+    launch_train_model(model_name, csv_file, model_id, module)
+    _t2 = round(time.time() - start_time, 0)
 
     args = {
-        'set': {
-            'train_time': int(t2),
-            'documents': json.dumps(data["docs"]),
-            'min_proba': min_pred if min_pred is not None else ""
-        },
-        'model_id': model_id,
+        'train_time': int(_t2),
+        'documents': json.dumps(data["docs"]),
+        'min_proba': min_proba if min_proba is not None else "",
+        'model_id': model_id
     }
-    update_model(args)
+    update_model(args, model_id, model_name, data['module'])
+    history.add_history({
+        'module': module,
+        'ip': request.remote_addr,
+        'submodule': 'create_ai_model',
+        'user_info': request.environ['user_info'],
+        'desc': gettext('CREATE_AI_MODEL', model=data['label'])
+    })
 
 
-def launch_train_model(model_name, csv_file, model_id):
+def launch_train_model(model_name, csv_file, model_id, module):
     """
     Model training using data in a csv file, shows accuracy of the model with tests
     :param model_id: model's id
@@ -210,8 +248,6 @@ def launch_train_model(model_name, csv_file, model_id):
     model = pipeline.Pipeline([("vectorizer", vectorizer),
                                ("classifier", classifier)])
 
-    # train classifier
-    print("Model training :")
     model["classifier"].fit(x_train, y_train)
 
     # test the model on test values
@@ -225,15 +261,12 @@ def launch_train_model(model_name, csv_file, model_id):
     # saving model
     save_model(model, model_name)
 
-    # update database
     args = {
-        'set': {
-            'accuracy_score': int(round(accuracy*100, 0)),
-            'status': 'OK',
-        },
+        'accuracy_score': int(round(accuracy * 100, 0)),
+        'status': 'OK',
         'model_id': model_id
     }
-    update_model(args)
+    update_model(args, model_id, model_name, module)
 
 
 def save_model(model, filename):
@@ -247,7 +280,7 @@ def save_model(model, filename):
     pickle.dump(model, open(filename, 'wb'))
 
 
-def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
+def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id, module):
     if 'ocr' in current_context and 'files' in current_context and 'docservers' in current_context:
         ocr = current_context.ocr
         files = current_context.files
@@ -275,7 +308,7 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
         if dir_name in chosen_files:
             i = 0
             list_files = [file for file in os.listdir(file_path + "/" + dir_name + "/")
-                     if file.lower().endswith(tuple(image_format))]
+                          if file.lower().endswith(tuple(image_format))]
             fold_length = len(list_files)
             j += 1
 
@@ -294,12 +327,13 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id):
                     text_stem = stemming(clean_words)
                     line = [file_name, text_stem, dir_name]
                     rows.append(line)
-                    print(file_name, ": done (" + str(i), "out of", str(fold_length) + "; folder", str(j) + "/" + str(len(chosen_files)) + ")")
+                    print(file_name, ": done (" + str(i), "out of", str(fold_length) + "; folder",
+                          str(j) + "/" + str(len(chosen_files)) + ")")
 
                     args = {
                         'status': str(round(total_files * percent, 1)) + " %"
                     }
-                    update_model(args, model_id)
+                    update_model(args, model_id, '', module)
 
     create_csv(csv_file)
     add_to_csv(csv_file, rows)
@@ -313,8 +347,8 @@ def add_to_csv(csv_file, data_list):
     :return: N/A
     """
 
-    with open(csv_file, 'a', encoding='UTF-8') as f:
-        writer = csv.writer(f)
+    with open(csv_file, 'a', encoding='UTF-8') as _f:
+        writer = csv.writer(_f)
         for val in data_list:
             writer.writerow(val)
 
@@ -345,13 +379,13 @@ def word_cleaning(text):
             words_no_punc.append(word)  # Keep only alpha characters
 
         # Help to find if document is a French driver license by detecting 'D1FRA' pattern
-        for w in ("d1fra", "dtdra", "difra", "d'fra"):
-            if w in word:
+        for _w in ("d1fra", "dtdra", "difra", "d'fra"):
+            if _w in word:
                 words_no_punc.extend(["permis", "conduire"])
 
         # Help to find if document is a French ID Card by detecting 'IDFRA' pattern
-        for w in ("idfra", "1dfra"):
-            if w in word:
+        for _w in ("idfra", "1dfra"):
+            if _w in word:
                 words_no_punc.extend(["carte", "identité"])
 
     stop_words = stopwords.words("french")  # Stopwords are determiners or much used verbs forms like "est"
@@ -391,7 +425,8 @@ def launch_pred(model_id, list_files):
         ai_model = artificial_intelligence.get_model_by_id({'model_id': model_id})
         if ai_model:
             ai_model = ai_model[0]
-            model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model['model_path'] if ai_model['module'] == 'verifier' \
+            model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model['model_path'] if ai_model[
+                                                                                                  'module'] == 'verifier' \
                 else docservers.get('SPLITTER_AI_MODEL_PATH') + ai_model['model_path']
             if os.path.exists(model_name):
                 csv_file = docservers.get('VERIFIER_TRAIN_PATH_FILES') + '/data.csv' if ai_model['module'] == 'verifier' \
@@ -417,7 +452,8 @@ def model_testing(model, csv_file):
     dataset = pd.read_csv(csv_file)
     x_test = dataset["Text"].values
 
-    loaded_model = pickle.load(open(model, 'rb'))
+    with open(model, 'rb') as _f:
+        loaded_model = pickle.load(_f)
 
     predicted = loaded_model.predict(x_test)
     predicted_prob = loaded_model.predict_proba(x_test)
@@ -482,7 +518,7 @@ def store_one_file_from_script(file_path, csv_file, files, ocr, docservers, log)
     add_to_csv(csv_file, rows)
 
 
-def rename_model(new_name, model_id):
+def rename_model(new_name, model_id, module):
     """
     Rename model .sav file when database name is updated from front
     :param new_name: New name for our model
@@ -502,5 +538,17 @@ def rename_model(new_name, model_id):
     }
     data = artificial_intelligence.get_models(args)
     old_name = [row["model_path"] for row in data][0]
-    model_path = docservers.get('SPLITTER_AI_MODEL_PATH')
-    os.rename(model_path + old_name, model_path + new_name)
+    if module == 'verifier':
+        model_path = docservers.get('VERIFIER_AI_MODEL_PATH')
+    else:
+        model_path = docservers.get('SPLITTER_AI_MODEL_PATH')
+
+    if os.path.exists(model_path + old_name):
+        os.rename(model_path + old_name, model_path + new_name)
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('RENAME_AI_MODEL_ERROR'),
+            "message": gettext('FILE_DOESNT_EXISTS')
+        }
+        return response, 400

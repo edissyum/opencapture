@@ -27,7 +27,7 @@ export class MiddlewareComponent implements HttpInterceptor {
 
     constructor(
         private router: Router,
-        private localStorage: LocalStorageService,
+        private localStorage: LocalStorageService
     ) {}
 
     isValidIP(str: any) {

@@ -201,7 +201,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
         private notify: NotificationService,
         private translate: TranslateService,
         private historyService: HistoryService,
-        public serviceSettings: SettingsService,
+        public serviceSettings: SettingsService
     ) {}
 
     ngOnInit() {

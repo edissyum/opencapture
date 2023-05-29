@@ -31,7 +31,7 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
         private http: HttpClient,
         private notify: NotificationService,
         private translate: TranslateService,
-        private localeService: LocaleService,
+        private localeService: LocaleService
     ) {
         super();
         this.getAndInitTranslations();
