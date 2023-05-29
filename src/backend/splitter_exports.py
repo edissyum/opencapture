@@ -120,12 +120,12 @@ def export_pdf_files(batch, parameters, log, docservers, configurations):
             'extension': parameters['extension']
         }
 
-        export_filename = _Splitter.get_value_from_mask(document, batch['data']['custom_fields'], mask_args)
+        filename = _Splitter.get_value_from_mask(document, batch['data']['custom_fields'], mask_args)
 
         document['file_path'] = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch['file_path']
         document['compress_type'] = parameters['compress_type']
         document['folder_out'] = parameters['folder_out']
-        document['export_filename'] = export_filename
+        document['filename'] = filename
 
         export_path, error = _Files.export_pdf({
             'log': log,
@@ -162,24 +162,26 @@ def handle_pdf_output(batch, output, log, docservers, configurations):
 
     compress_file = output['parameters']['zip_filename']
     if compress_file:
+        zip_except_doctype = re.search(r'\[Except=(.*?)\]', compress_file) if 'Except' in compress_file else ''
+        metadata = batch['data']['custom_fields']
+        metadata['export_date'] = batch['export_date']
         mask_args = {
-            'mask': parameters['zip_filename'].split('[Except=')[0],
+            'mask': output['parameters']['zip_filename'].split('[Except=')[0],
             'separator': parameters['separator'],
             'extension': 'zip'
         }
-
-        metadata = batch['data']['custom_fields']
-        metadata['export_date'] = batch['export_date']
         compress_file = _Splitter.get_value_from_mask(None, metadata, mask_args)
         compress_file = parameters['folder_out'] + '/' + compress_file
 
-        zip_except_doctype = re.search(r'\[Except=(.*?)\]', compress_file) if 'Except' in compress_file else ''
         for index, document in enumerate(batch['documents']):
             if zip_except_doctype and document['doctype_key'].startswith(zip_except_doctype.group(1)):
-                compress_pdfs.append(document['id'])
-                batch['documents'][index]['is_file_added_to_zip'] = True
+                batch['documents'][index]['is_file_added_to_zip'] = False
                 continue
-            batch['documents'][index]['is_file_added_to_zip'] = False
+            batch['documents'][index]['is_file_added_to_zip'] = True
+            compress_pdfs.append({
+                'filepath': document['export_path'],
+                'filename': document['filename']
+            })
 
         _Files.compress_files(compress_pdfs, compress_file, remove_compressed_files=True)
 
@@ -199,7 +201,7 @@ def handle_xml_output(batch, parameters, regex):
         'export_date': batch['export_date'],
         'metadata_file': metadata_file,
         'custom_fields': batch['data']['custom_fields'],
-        'pdf_outputs_compress_file': batch['pdf_output_compress_file'],
+        'pdf_output_compress_file': batch['pdf_output_compress_file'],
     }
     export_ok, export_result = _Splitter.export_xml(batch['documents'], metadata, parameters, regex)
     if not export_ok:
@@ -306,8 +308,8 @@ def compress_outputs_result(batch, exported_files, export_zip_file):
     compress_files = []
     for file in exported_files:
         compress_files.append({
-            'input_path': file,
-            'path_in_zip': os.path.basename(file)
+            'filepath': file,
+            'filename': os.path.basename(file)
         })
     mask_args = {
         'mask': export_zip_file,
