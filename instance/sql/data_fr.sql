@@ -647,11 +647,11 @@ INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "proce
 ALTER SEQUENCE "workflows_id_seq" RESTART WITH 4;
 
 -- CRÉATION DES CHAMPS CUSTOMS POUR LE SPLITTER
-INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (1, 'nom_usage', 'nom_usage', 'Nom d''usage', 'text', 'splitter');
-INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (2, 'prenom', 'prenom', 'Prénom', 'text', 'splitter');
-INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (3, 'contrat', 'contrat', 'Contrat', 'text', 'splitter');
-INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (4, 'date_naissance', 'date_naissance', 'Date de naissance', 'text', 'splitter');
-INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (5, 'matricule', 'matricule', 'Matricule', 'text', 'splitter');
+INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (1, 'nom_usage', 'Nom d''usage', 'text', 'splitter');
+INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (2, 'prenom', 'Prénom', 'text', 'splitter');
+INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (3, 'contrat', 'Contrat', 'text', 'splitter');
+INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (4, 'date_naissance', 'Date de naissance', 'text', 'splitter');
+INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (5, 'matricule', 'Matricule', 'text', 'splitter');
 ALTER SEQUENCE "custom_fields_id_seq" RESTART WITH 6;
 
 -- CRÉATION DES PRIVILEGES
