@@ -31,13 +31,13 @@ from zeep import Client, exceptions
 from src.backend import verifier_exports
 from src.backend.import_classes import _Files
 from src.backend.import_models import verifier, accounts
-from src.backend.import_controllers import auth, user, monitoring
 from src.backend.main import launch, create_classes_from_custom_id
 from flask import current_app, Response, request, g as current_context
+from src.backend.import_controllers import auth, user, monitoring, history
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
-def handle_uploaded_file(files, workflow_id, supplier):
+def handle_uploaded_file(files, workflow_id, supplier, user_id=None):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER']
     tokens = []
@@ -68,7 +68,9 @@ def handle_uploaded_file(files, workflow_id, supplier):
                 'supplier': supplier,
                 'custom_id': custom_id,
                 'workflow_id': workflow_id,
-                'task_id_monitor': task_id_monitor[0]['process'],
+                'ip': request.remote_addr,
+                'user_info': request.environ['user_info'],
+                'task_id_monitor': task_id_monitor[0]['process']
             })
         else:
             return False, 500
@@ -92,7 +94,7 @@ def get_document_id_and_status_by_token(token):
     if status == 500:
         return decoded_token, status
 
-    process, _ = monitoring.get_process_by_token(decoded_token['sub'])
+    process, _ = monitoring.get_process_by_token(decoded_token['process_token'])
 
     if process['process'] and process['process'][0]:
         return process['process'][0], 200
@@ -343,6 +345,13 @@ def delete_document(document_id):
     if error is None:
         _, error = verifier.update_document({'set': {'status': 'DEL'}, 'document_id': document_id})
         if error is None:
+            history.add_history({
+                'module': 'verifier',
+                'ip': request.remote_addr,
+                'submodule': 'delete_document',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DELETE_DOCUMENT_SUCCESS', document_id=document_id)
+            })
             return '', 200
         else:
             response = {

@@ -31,7 +31,6 @@ import { catchError, of, tap } from "rxjs";
 import { Sort } from "@angular/material/sort";
 import { finalize } from "rxjs/operators";
 import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
-import { HistoryService } from "../../../../../services/history.service";
 import { FileValidators } from "ngx-file-drag-drop";
 
 @Component({
@@ -71,7 +70,6 @@ export class ListAiModelComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) { }
@@ -184,7 +182,6 @@ export class ListAiModelComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deleteModel(modelId);
-                this.historyService.addHistory('splitter', 'delete_ai_model', this.translate.instant('HISTORY-DESC.delete-ai-model', {model: model}));
             }
         });
     }

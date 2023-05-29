@@ -34,7 +34,6 @@ import { Sort } from "@angular/material/sort";
 import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-list',
@@ -63,11 +62,10 @@ export class SplitterFormListComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService
     ) {
     }
 
@@ -123,7 +121,6 @@ export class SplitterFormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deleteForm(formId);
-                this.historyService.addHistory('splitter', 'delete_form', this.translate.instant('HISTORY-DESC.delete-form', {form: form}));
             }
         });
     }
@@ -143,7 +140,6 @@ export class SplitterFormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.duplicateForm(formId);
-                this.historyService.addHistory('splitter', 'duplicate_form', this.translate.instant('HISTORY-DESC.duplicate-form', {form: form}));
             }
         });
     }
@@ -163,7 +159,6 @@ export class SplitterFormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.disableForm(formId);
-                this.historyService.addHistory('splitter', 'disable_form', this.translate.instant('HISTORY-DESC.disable-form', {form: form}));
             }
         });
     }
@@ -183,14 +178,13 @@ export class SplitterFormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.enableForm(formId);
-                this.historyService.addHistory('splitter', 'enable_form', this.translate.instant('HISTORY-DESC.enable-form', {form: form}));
             }
         });
     }
 
     deleteForm(formId: number) {
         if (formId !== undefined) {
-            this.http.delete(environment['url'] + '/ws/forms/delete/' + formId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/forms/splitter/delete/' + formId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                     this.notify.success(this.translate.instant('FORMS.form_deleted'));
@@ -206,7 +200,7 @@ export class SplitterFormListComponent implements OnInit {
 
     duplicateForm(formId: number) {
         if (formId !== undefined) {
-            this.http.post(environment['url'] + '/ws/forms/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/forms/splitter/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                     this.notify.success(this.translate.instant('FORMS.form_duplicated'));
@@ -222,7 +216,7 @@ export class SplitterFormListComponent implements OnInit {
 
     disableForm(formId: number) {
         if (formId !== undefined) {
-            this.http.put(environment['url'] + '/ws/forms/disable/' + formId, null, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/forms/splitter/disable/' + formId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                     this.notify.success(this.translate.instant('FORMS.form_disabled'));
@@ -238,7 +232,7 @@ export class SplitterFormListComponent implements OnInit {
 
     enableForm(formId: number) {
         if (formId !== undefined) {
-            this.http.put(environment['url'] + '/ws/forms/enable/' + formId, null, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/forms/splitter/enable/' + formId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                     this.notify.success(this.translate.instant('FORMS.form_enabled'));

@@ -21,7 +21,7 @@ from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
-from src.backend.import_models import positions_masks, accounts
+from src.backend.import_models import positions_masks, history
 
 
 def get_positions_masks(data):
@@ -57,6 +57,13 @@ def add_positions_mask(args):
         spreadsheet = _vars[7]
     res, error = positions_masks.add_positions_mask(args)
     if res:
+        history.add_history({
+            'module': 'verifier',
+            'ip': request.remote_addr,
+            'submodule': 'create_positions_mask',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('CREATE_POSITIONS_MASK', mask=args['label'])
+        })
         spreadsheet.update_supplier_ods_sheet(database)
         response = {
             "id": res
@@ -103,6 +110,13 @@ def update_positions_mask(position_mask_id, args):
             response = {
                 "res": res
             }
+            history.add_history({
+                'module': 'verifier',
+                'ip': request.remote_addr,
+                'submodule': 'update_positions_mask',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('UPDATE_POSITIONS_MASK', mask=args['label'])
+            })
             return response, 200
         else:
             response = {
@@ -119,10 +133,17 @@ def update_positions_mask(position_mask_id, args):
 
 
 def delete_positions_mask(position_mask_id):
-    _, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         _, error = positions_masks.update_positions_mask({'set': {'status': 'DEL', 'enabled': False}, 'position_mask_id': position_mask_id})
         if error is None:
+            history.add_history({
+                'module': 'verifier',
+                'ip': request.remote_addr,
+                'submodule': 'delete_positions_mask',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DELETE_POSITIONS_MASK', mask=mask_info['label'])
+            })
             return '', 200
         else:
             response = {
@@ -170,10 +191,17 @@ def duplicate_positions_mask(position_mask_id):
 
 
 def disable_positions_mask(position_mask_id):
-    _, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         _, error = positions_masks.update_positions_mask({'set': {'enabled': False}, 'position_mask_id': position_mask_id})
         if error is None:
+            history.add_history({
+                'module': 'verifier',
+                'ip': request.remote_addr,
+                'submodule': 'disable_positions_mask',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DISABLE_POSITIONS_MASK', mask=mask_info['label'])
+            })
             return '', 200
         else:
             response = {
@@ -190,10 +218,17 @@ def disable_positions_mask(position_mask_id):
 
 
 def enable_positions_mask(position_mask_id):
-    _, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         _, error = positions_masks.update_positions_mask({'set': {'enabled': True}, 'position_mask_id': position_mask_id})
         if error is None:
+            history.add_history({
+                'module': 'verifier',
+                'ip': request.remote_addr,
+                'submodule': 'enable_positions_mask',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DELETE_POSITIONS_MASK', mask=mask_info['label'])
+            })
             return '', 200
         else:
             response = {

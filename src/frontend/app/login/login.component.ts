@@ -15,22 +15,21 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder } from '@angular/forms';
-import { TranslateService } from "@ngx-translate/core";
-import { environment } from "../env";
-import { HttpClient } from "@angular/common/http";
-import { NotificationService } from "../../services/notifications/notifications.service";
-import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { AuthService } from "../../services/auth.service";
+import { environment } from "../env";
 import { Router } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { TranslateService } from "@ngx-translate/core";
+import { Validators, FormBuilder } from '@angular/forms';
+import { AuthService } from "../../services/auth.service";
+import { UserService } from "../../services/user.service";
+import { catchError, finalize, tap } from "rxjs/operators";
 import { ConfigService } from "../../services/config.service";
 import { LocaleService } from "../../services/locale.service";
-import { UserService } from "../../services/user.service";
-import { HistoryService } from "../../services/history.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { LocalStorageService } from "../../services/local-storage.service";
+import { NotificationService } from "../../services/notifications/notifications.service";
 
 @Component({
     selector: 'app-login',
@@ -58,7 +57,6 @@ export class LoginComponent implements OnInit {
         private notify: NotificationService,
         private configService: ConfigService,
         private localeService: LocaleService,
-        private historyService: HistoryService,
         private localStorageService: LocalStorageService
     ) {}
 
@@ -141,7 +139,6 @@ export class LoginComponent implements OnInit {
                     this.authService.generateHeaders();
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {
-                        this.historyService.addHistory('general', 'login', this.translate.instant('HISTORY-DESC.login'));
                         if (this.authService.getCachedUrl()) {
                             this.router.navigate([this.authService.getCachedUrl()]).then(() => {
                                 if (data.body.admin_password_alert) {

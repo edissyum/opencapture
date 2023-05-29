@@ -24,7 +24,6 @@ import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { AuthService } from "../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
-import { HistoryService } from "../../../../services/history.service";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { environment } from "../../../env";
@@ -45,7 +44,6 @@ export class UserQuotaComponent implements OnInit {
     usersControlSelect      : FormControl = new FormControl();
     quotaEmailDestControl   : FormControl = new FormControl('', Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"));
     usersList               : any[]       = [];
-    userQuotaConfigId       : number      = 0;
 
     constructor(
         public router: Router,
@@ -57,9 +55,8 @@ export class UserQuotaComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService,
+        public privilegesService: PrivilegesService
     ) { }
 
     ngOnInit(): void {
@@ -69,7 +66,6 @@ export class UserQuotaComponent implements OnInit {
                 this.usersList = data_users.users;
                 this.http.get(environment['url'] + '/ws/config/getConfiguration/userQuota', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
-                        this.userQuotaConfigId = data.configuration[0].id;
                         if (data.configuration.length === 1) {
                             this.quotaEnabled = data.configuration[0].data.value.enabled;
                             this.quotaNumber = data.configuration[0].data.value.quota;
@@ -120,11 +116,10 @@ export class UserQuotaComponent implements OnInit {
             });
         }
 
-        this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + this.userQuotaConfigId,
+        this.http.put(environment['url'] + '/ws/config/updateConfiguration/userQuota',
             {'args': data}, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('USER-QUOTA.updated'));
-                this.historyService.addHistory('general', 'user_quota', this.translate.instant('HISTORY-DESC.user_quota_updated'));
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {

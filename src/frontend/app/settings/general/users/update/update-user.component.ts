@@ -28,7 +28,6 @@ import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { PrivilegesService } from "../../../../../services/privileges.service";
-import { HistoryService } from "../../../../../services/history.service";
 import {PasswordVerificationService} from "../../../../../services/password-verification.service";
 
 @Component({
@@ -131,7 +130,6 @@ export class UpdateUserComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
         private passwordVerification: PasswordVerificationService
@@ -292,7 +290,6 @@ export class UpdateUserComponent implements OnInit {
                 tap(() => {
                     this.notify.success(this.translate.instant('USER.updated'));
                     const _user = user['lastname'] + ' ' + user['firstname'];
-                    this.historyService.addHistory('general', 'update_user', this.translate.instant('HISTORY-DESC.update-user', {user: _user}));
                     this.router.navigate(['/settings/general/users/']).then();
                 }),
                 catchError((err: any) => {

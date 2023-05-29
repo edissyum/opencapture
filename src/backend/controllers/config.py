@@ -21,7 +21,7 @@ import requests
 import subprocess
 from flask_babel import gettext
 from flask import request, g as current_context
-from src.backend.import_models import config
+from src.backend.import_models import config, history
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url, get_custom_path
 
@@ -50,11 +50,19 @@ def change_locale_in_config(lang):
             language = languages[_l]
 
     locale_configuration = retrieve_configuration_by_label('locale')[0]['configuration'][0]
-    update_configuration_by_id({
+    update_configuration_by_label({
         'value': language['lang_code'],
         'type': locale_configuration['data']['type'],
         'description': locale_configuration['data']['description']
-    }, locale_configuration['id'])
+    }, 'locale')
+
+    history.add_history({
+        'module': 'general',
+        'ip': request.remote_addr,
+        'submodule': 'language_changed',
+        'user_info': request.environ['user_info'],
+        'desc': gettext('LANGUAGE_CHANGED', lang=language['label'])
+    })
 
     return {}, 200
 
@@ -195,6 +203,13 @@ def update_configuration_by_id(args, configuration_id):
             data['data']['description'] = args['description']
 
         config.update_configuration_by_id(data)
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'update_configuration',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('UPDATE_CONFIGURATION', config=configuration_id)
+        })
         return '', 200
 
     response = {
@@ -227,6 +242,13 @@ def update_configuration_by_label(args, configuration_label):
             data['data']['description'] = args['description']
 
         config.update_configuration_by_label(data)
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'update_configuration',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('UPDATE_CONFIGURATION', config=configuration_label)
+        })
         return '', 200
 
     response = {
@@ -240,14 +262,21 @@ def update_regex(args, regex_id):
     _, error = config.retrieve_regex_by_id({'id': regex_id})
 
     if error is None:
-        args = {
+        data = {
             'id': regex_id,
             'data': {
                 'label': args['label'],
                 'content': args['content']
             }
         }
-        config.update_regex(args)
+        config.update_regex(data)
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'update_regex',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('UPDATE_REGEX', regex=args['label'])
+        })
         return '', 200
 
     response = {
@@ -268,6 +297,13 @@ def update_docserver(args, docserver_id):
             'docserver_id': args['docserver_id']
         }
         config.update_docserver(args)
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'update_docserver',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('UPDATE_DOCSERVER', docserver=args['docserver_id'])
+        })
         return '', 200
 
     response = {
@@ -317,9 +353,15 @@ def update_login_image(image_content):
                     "message": gettext("CUSTOM_IMAGE_PATH_NOT_WRITEABLE_OR_NOT_EXISTS")
                 }, 400
             image_filename = 'login_image.png'
-            image_handler = open(image_path + '/' + image_filename, 'wb')
-            image_handler.write(image_data)
-            image_handler.close()
+            with open(image_path + '/' + image_filename, 'wb') as image_handler:
+                image_handler.write(image_data)
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'update_login_image',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('UPDATE_LOGIN_IMAGE')
+            })
             return '', 200
         else:
             return {

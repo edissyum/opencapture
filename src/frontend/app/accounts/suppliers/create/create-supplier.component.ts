@@ -30,7 +30,6 @@ import { PrivilegesService } from "../../../../services/privileges.service";
 import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { HistoryService } from "../../../../services/history.service";
 import { Country } from '@angular-material-extensions/select-country';
 import { LocaleService } from "../../../../services/locale.service";
 
@@ -175,9 +174,8 @@ export class CreateSupplierComponent implements OnInit {
         private translate: TranslateService,
         private notify: NotificationService,
         private localeService: LocaleService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService,
+        public privilegesService: PrivilegesService
     ) {
     }
 
@@ -294,7 +292,6 @@ export class CreateSupplierComponent implements OnInit {
                     this.http.post(environment['url'] + '/ws/accounts/suppliers/create', {'args': supplier}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
-                            this.historyService.addHistory('accounts', 'create_supplier', this.translate.instant('HISTORY-DESC.create-supplier', {supplier: supplier['name']}));
                             this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
                             this.router.navigate(['/accounts/suppliers/list']).then();
                         }),

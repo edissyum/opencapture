@@ -26,13 +26,12 @@ import { LocalStorageService } from "../../../../services/local-storage.service"
 import { LastUrlService } from "../../../../services/last-url.service";
 import { Sort } from "@angular/material/sort";
 import { environment } from  "../../../env";
-import { catchError, finalize, tap } from "rxjs/operators";
-import { of } from "rxjs";
+import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
+import {Observable, of} from "rxjs";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { HistoryService } from "../../../../services/history.service";
 import { LocaleService } from "../../../../services/locale.service";
 import { PasswordVerificationService } from "../../../../services/password-verification.service";
 import {FormControl, Validators} from "@angular/forms";
@@ -44,23 +43,28 @@ import {FormControl, Validators} from "@angular/forms";
     encapsulation: ViewEncapsulation.None
 })
 export class ConfigurationsComponent implements OnInit {
-    columnsToDisplay    : string[]      = ['id', 'label', 'description', 'type', 'content', 'actions'];
-    emailTestControl    : FormControl   = new FormControl('', Validators.email);
-    headers             : HttpHeaders   = this.authService.headers;
-    updateLoading       : boolean       = false;
-    updating            : boolean       = false;
-    sending             : boolean       = false;
-    smtpFormValid       : boolean       = false;
-    loading             : boolean       = true;
-    configurations      : any           = [];
-    allConfigurations   : any           = [];
-    search              : string        = '';
-    loginImage          : SafeUrl       = '';
-    pageSize            : number        = 10;
-    pageIndex           : number        = 0;
-    total               : number        = 0;
-    offset              : number        = 0;
-    units               : any           = [
+    columnsToDisplay        : string[]      = ['id', 'label', 'description', 'type', 'content', 'actions'];
+    emailTestControl        : FormControl   = new FormControl('', Validators.email);
+    tokenExpirationControl  : FormControl   = new FormControl(7);
+    tokenUserControl        : FormControl   = new FormControl('');
+    headers                 : HttpHeaders   = this.authService.headers;
+    filteredUsers           : Observable<any> | any;
+    updateLoading           : boolean       = false;
+    updating                : boolean       = false;
+    sending                 : boolean       = false;
+    smtpFormValid           : boolean       = false;
+    loading                 : boolean       = true;
+    configurations          : any           = [];
+    allConfigurations       : any           = [];
+    toHighlight             : string        = '';
+    token                   : string        = '';
+    search                  : string        = '';
+    loginImage              : SafeUrl       = '';
+    pageSize                : number        = 10;
+    pageIndex               : number        = 0;
+    total                   : number        = 0;
+    offset                  : number        = 0;
+    units                   : any           = [
         {
             id: 'general',
             label: marker('MAILCOLLECT.smtp_general')
@@ -74,7 +78,7 @@ export class ConfigurationsComponent implements OnInit {
             label: marker('MAILCOLLECT.smtp_notif_error')
         }
     ];
-    smtpForm            : any[]         = [
+    smtpForm                : any[]         = [
         {
             id: 'smtpHost',
             unit: 'general',
@@ -180,7 +184,6 @@ export class ConfigurationsComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         public localeService: LocaleService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -265,6 +268,66 @@ export class ConfigurationsComponent implements OnInit {
                 });
             }
         });
+        this.http.get(environment['url'] + '/ws/users/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.filteredUsers = this.tokenUserControl.valueChanges.pipe(
+                    startWith(''),
+                    map(option => option ? this._filter(option, data.users) : data.users)
+                );
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    private _filter(value: any, array: any) {
+        if (typeof value === 'string') {
+            this.toHighlight = value;
+            const filterValue = value.toLowerCase();
+            return array.filter((option: any) => (option.lastname + ' ' + option.firstname + ' (' + option.username + ')').toLowerCase().indexOf(filterValue) !== -1);
+        } else {
+            return array;
+        }
+    }
+
+    setSelectedUser(event: any) {
+        this.tokenUserControl.setValue(event.option.value.username);
+    }
+
+    displayFn(option: any) {
+        return option ? option.lastname + ' ' + option.firstname + ' (' + option.username + ')' : '';
+    }
+
+    copyToken() {
+        navigator.clipboard.writeText(this.token).then(() => {
+            this.notify.success(this.translate.instant('CONFIGURATIONS.token_copied'));
+        });
+    }
+
+    generateAuthToken() {
+        if (this.tokenUserControl.value && this.tokenExpirationControl.value) {
+            const args = {
+                'username': this.tokenUserControl.value,
+                'expiration': this.tokenExpirationControl.value
+            }
+            this.http.post(environment['url'] + '/ws/auth/generateAuthToken', args, {headers: this.authService.headers}).pipe(
+                tap((token: any) => {
+                    if (token) {
+                        this.token = token['token']
+                    }
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        } else {
+            this.notify.error(this.translate.instant('CONFIGURATIONS.check_form_completion'));
+        }
     }
 
     updatePasswordRules() {
@@ -281,8 +344,7 @@ export class ConfigurationsComponent implements OnInit {
             'description': ''
         };
         this.http.put(environment['url'] + '/ws/config/updateConfiguration/passwordRules', {'args': args},
-            {headers: this.authService.headers},
-        ).pipe(
+            {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('CONFIGURATIONS.password_rules_updated'));
             }),
@@ -348,7 +410,6 @@ export class ConfigurationsComponent implements OnInit {
                     if (showSuccess) {
                         this.notify.success(this.translate.instant('MAILCOLLECT.smtp_general_settings_updated'));
                     }
-                    this.historyService.addHistory('general', 'mailcollect', this.translate.instant('HISTORY-DESC.smtp_settings_updated'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -378,7 +439,6 @@ export class ConfigurationsComponent implements OnInit {
                         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
                             this.router.navigate([currentUrl]).then();
                         });
-                        this.historyService.addHistory('general', 'update_login_image', this.translate.instant('HISTORY-DESC.update_login_image'));
                         this.notify.success(this.translate.instant('CONFIGURATIONS.login_image_changed'));
                     }),
                     finalize(() => this.loading = false),
@@ -441,7 +501,6 @@ export class ConfigurationsComponent implements OnInit {
                         element.updateMode = false;
                         this.updateLoading = false;
                         this.notify.success(this.translate.instant('CONFIGURATIONS.configuration_updated'));
-                        this.historyService.addHistory('general', 'update_configuration', this.translate.instant('HISTORY-DESC.update_configuration', {configuration: name}));
                     }),
                     catchError((err: any) => {
                         console.debug(err);

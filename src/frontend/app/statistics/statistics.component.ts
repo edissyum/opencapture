@@ -92,7 +92,7 @@ export class StatisticsComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        public serviceSettings: SettingsService,
+        public serviceSettings: SettingsService
     ) {}
 
     ngOnInit(): void {

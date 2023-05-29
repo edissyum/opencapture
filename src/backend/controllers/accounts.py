@@ -21,7 +21,7 @@ import json
 import subprocess
 from flask_babel import gettext
 from src.backend.import_classes import _Files
-from src.backend.import_models import accounts
+from src.backend.import_models import accounts, history
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
@@ -142,7 +142,7 @@ def update_supplier(supplier_id, data):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
         spreadsheet = _vars[7]
-    _, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
+    old_supplier, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
     if error is None:
         _set = {}
@@ -178,6 +178,13 @@ def update_supplier(supplier_id, data):
         _, error = accounts.update_supplier({'set': _set, 'supplier_id': supplier_id})
 
         if error is None:
+            history.add_history({
+                'module': 'accounts',
+                'ip': request.remote_addr,
+                'submodule': 'update_supplier',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('SUPPLIER_UPDATED', supplier=data['name'] if 'name' in data else old_supplier['name'])
+            })
             spreadsheet.update_supplier_ods_sheet(database)
             return '', 200
         else:
@@ -373,6 +380,13 @@ def create_supplier(data):
 
         if error is None:
             spreadsheet.update_supplier_ods_sheet(database)
+            history.add_history({
+                'module': 'accounts',
+                'ip': request.remote_addr,
+                'submodule': 'create_supplier',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('SUPPLIER_CREATED', supplier=data['name'])
+            })
             response = {
                 "id": res
             }
@@ -440,7 +454,7 @@ def get_default_accounting_plan():
 
 
 def update_customer(customer_id, data):
-    _, error = accounts.get_customer_by_id({'customer_id': customer_id})
+    old_customer, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
     if error is None:
         _set = {}
@@ -462,6 +476,13 @@ def update_customer(customer_id, data):
         _, error = accounts.update_customer({'set': _set, 'customer_id': customer_id})
 
         if error is None:
+            history.add_history({
+                'module': 'accounts',
+                'ip': request.remote_addr,
+                'submodule': 'update_customer',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('CUSTOMER_UPDATED', customer=data['name'] if 'name' in data else old_customer['name'])
+            })
             return '', 200
         else:
             response = {
@@ -494,6 +515,13 @@ def create_customer(data):
         res, error = accounts.create_customer({'columns': _columns})
 
         if error is None:
+            history.add_history({
+                'module': 'accounts',
+                'ip': request.remote_addr,
+                'submodule': 'create_customer',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('CUSTOMER_CREATED', customer=data['name'])
+            })
             response = {
                 "id": res
             }
@@ -513,11 +541,18 @@ def create_customer(data):
 
 
 def delete_customer(customer_id):
-    _, error = accounts.get_customer_by_id({'customer_id': customer_id})
+    customer, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
     if error is None:
         _, error = accounts.delete_customer({'customer_id': customer_id})
         if error is None:
+            history.add_history({
+                'module': 'accounts',
+                'ip': request.remote_addr,
+                'submodule': 'delete_customer',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('CUSTOMER_DELETED', customer=customer['name'])
+            })
             return '', 200
         else:
             response = {
@@ -534,11 +569,18 @@ def delete_customer(customer_id):
 
 
 def delete_supplier(supplier_id):
-    _, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
+    supplier, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
     if error is None:
         _, error = accounts.delete_supplier({'supplier_id': supplier_id})
         if error is None:
+            history.add_history({
+                'module': 'accounts',
+                'ip': request.remote_addr,
+                'submodule': 'delete_supplier',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('SUPPLIER_DELETED', supplier=supplier['name'])
+            })
             return '', 200
         else:
             response = {

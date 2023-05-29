@@ -64,14 +64,17 @@ def get_model_by_id(model_id):
     return make_response(jsonify(model[0])), model[1]
 
 
-@bp.route('ai/trainModel/<string:model_name>', methods=['POST'])
+@bp.route('ai/<string:module>/trainModel/<string:model_name>', methods=['POST'])
 @auth.token_required
-def train_model(model_name):
+def train_model(model_name, module):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'create_ai_model | create_ai_model_splitter']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/trainModel/{model_name}'}), 403
+        return jsonify({
+            'errors': gettext('UNAUTHORIZED_ROUTE'),
+            'message': f'/ai/{module}/trainModel/{model_name}'
+        }), 403
 
     data = json.loads(request.data)
-    artificial_intelligence.launch_train(data, model_name)
+    artificial_intelligence.launch_train(data, model_name, module)
     return make_response(''), 200
 
 
@@ -83,8 +86,10 @@ def update_model(model_id, module):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/{module}/update/{model_id}'}), 403
 
     data = json.loads(request.data)
-    artificial_intelligence.rename_model(data['model_name'], model_id)
-    res = artificial_intelligence.update_model(data, model_id)
+    res = artificial_intelligence.rename_model(data['model_name'], model_id, module)
+    if res[1] != 200:
+        return make_response(jsonify(res[0])), res[1]
+    res = artificial_intelligence.update_model(data, model_id, data['model_name'], module, True)
     return make_response(jsonify(res)), 200
 
 
@@ -95,8 +100,8 @@ def delete_model(model_id, module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/{module}/delete/{model_id}'}), 403
 
-    args = {'set': {'status': 'DEL'}, 'model_id': model_id}
-    res = artificial_intelligence.update_model(args)
+    args = {'status': 'DEL'}
+    res = artificial_intelligence.delete_model(args, model_id, module)
     return make_response(jsonify(res)), 200
 
 

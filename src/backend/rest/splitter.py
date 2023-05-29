@@ -91,6 +91,17 @@ def update_status():
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('splitter/deleteBatches', methods=['PUT'])
+@auth.token_required
+def delete_batches():
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter | update_status_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/status'}), 403
+
+    data = json.loads(request.data)
+    res = splitter.delete_batches(data)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('splitter/documents/<int:batch_id>', methods=['GET'])
 @auth.token_required
 def retrieve_batch_documents(batch_id):

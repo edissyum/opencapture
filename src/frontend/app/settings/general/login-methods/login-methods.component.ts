@@ -198,7 +198,7 @@ export class LoginMethodsComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService,
+        public privilegesService: PrivilegesService
     ) {}
 
     ngOnInit(): void {

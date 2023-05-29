@@ -33,7 +33,6 @@ import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
-import { HistoryService } from "../../../../services/history.service";
 
 @Component({
     selector: 'suppliers-list',
@@ -62,11 +61,10 @@ export class SuppliersListComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService
     ) { }
 
     ngOnInit(): void {
@@ -157,7 +155,6 @@ export class SuppliersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deleteSupplier(supplierId);
-                this.historyService.addHistory('accounts', 'delete_supplier', this.translate.instant('HISTORY-DESC.delete-supplier', {supplier: supplier}));
             }
         });
     }
@@ -177,7 +174,6 @@ export class SuppliersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deleteSupplierPositions(supplierId);
-                this.historyService.addHistory('accounts', 'delete_supplier_positions', this.translate.instant('HISTORY-DESC.delete-supplier-positions', {supplier: supplier}));
             }
         });
     }
@@ -197,7 +193,6 @@ export class SuppliersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.skipAutoValidate(supplierId);
-                this.historyService.addHistory('accounts', 'skip_auto_validate', this.translate.instant('HISTORY-DESC.skip-auto-validate', {supplier: supplier}));
             }
         });
     }

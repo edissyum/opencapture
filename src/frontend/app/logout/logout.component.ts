@@ -15,12 +15,9 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
-import { TranslateService } from "@ngx-translate/core";
-import { NotificationService } from "../../services/notifications/notifications.service";
-import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
-import { HistoryService } from "../../services/history.service";
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from "../../services/auth.service";
 
 @Component({
     selector: 'app-logout',
@@ -30,15 +27,10 @@ import { HistoryService } from "../../services/history.service";
 export class LogoutComponent implements OnInit {
     constructor(
         private router: Router,
-        private authService: AuthService,
-        private translate: TranslateService,
-        private notify: NotificationService,
-        private historyService: HistoryService,
-    ) {
-    }
+        private authService: AuthService
+    ) {}
 
     ngOnInit(): void {
-        this.historyService.addHistory('general', 'logout', this.translate.instant('HISTORY-DESC.logout'));
         this.authService.logout();
     }
 }

@@ -34,7 +34,6 @@ import { Sort } from "@angular/material/sort";
 import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-list',
@@ -45,13 +44,13 @@ import { HistoryService } from "../../../../../services/history.service";
     ]
 })
 export class FormListComponent implements OnInit {
-    columnsToDisplay : string[]  = ['id', 'label', 'default_form', 'enabled', 'actions'];
-    loading          : boolean   = true;
-    pageSize         : number    = 10;
-    pageIndex        : number    = 0;
-    total            : number    = 0;
-    offset           : number    = 0;
-    forms            : any       = [];
+    columnsToDisplay    : string[]  = ['id', 'label', 'default_form', 'enabled', 'actions'];
+    loading             : boolean   = true;
+    pageSize            : number    = 10;
+    pageIndex           : number    = 0;
+    total               : number    = 0;
+    offset              : number    = 0;
+    forms               : any       = [];
 
     constructor(
         public router: Router,
@@ -63,16 +62,15 @@ export class FormListComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService,
-    ) {
-    }
+        private localStorageService: LocalStorageService
+    ) {}
 
     ngOnInit(): void {
         this.serviceSettings.init();
+
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/verifier/forms') || lastUrl === '/') {
             if (this.localStorageService.get('formsPageIndex')) {
@@ -151,7 +149,6 @@ export class FormListComponent implements OnInit {
                 if (result) {
                     this.updateWorkflowsDefaultForm(result, workflowList);
                     this.deleteForm(formId);
-                    this.historyService.addHistory('verifier', 'delete_form', this.translate.instant('HISTORY-DESC.delete-form', {form: form}));
                 }
             });
         } else {
@@ -169,7 +166,6 @@ export class FormListComponent implements OnInit {
             dialogRef.afterClosed().subscribe(result => {
                 if (result) {
                     this.deleteForm(formId);
-                    this.historyService.addHistory('verifier', 'delete_form', this.translate.instant('HISTORY-DESC.delete-form', {form: form}));
                 }
             });
         }
@@ -190,7 +186,6 @@ export class FormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.duplicateForm(formId);
-                this.historyService.addHistory('verifier', 'duplicate_form', this.translate.instant('HISTORY-DESC.duplicate-form', {form: form}));
             }
         });
     }
@@ -210,7 +205,6 @@ export class FormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.disableForm(formId);
-                this.historyService.addHistory('verifier', 'disable_form', this.translate.instant('HISTORY-DESC.disable-form', {form: form}));
             }
         });
     }
@@ -230,14 +224,13 @@ export class FormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.enableForm(formId);
-                this.historyService.addHistory('verifier', 'enable_form', this.translate.instant('HISTORY-DESC.enable-form', {form: form}));
             }
         });
     }
 
     deleteForm(formId: number) {
         if (formId !== undefined) {
-            this.http.delete(environment['url'] + '/ws/forms/delete/' + formId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/forms/verifier/delete/' + formId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                     this.notify.success(this.translate.instant('FORMS.form_deleted'));
@@ -268,7 +261,7 @@ export class FormListComponent implements OnInit {
 
     duplicateForm(formId: number) {
         if (formId !== undefined) {
-            this.http.post(environment['url'] + '/ws/forms/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/forms/verifier/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                     this.notify.success(this.translate.instant('FORMS.form_duplicated'));
@@ -284,7 +277,7 @@ export class FormListComponent implements OnInit {
 
     disableForm(formId: number) {
         if (formId !== undefined) {
-            this.http.put(environment['url'] + '/ws/forms/disable/' + formId, null, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/forms/verifier/disable/' + formId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                     this.notify.success(this.translate.instant('FORMS.form_disabled'));
@@ -300,7 +293,7 @@ export class FormListComponent implements OnInit {
 
     enableForm(formId: number) {
         if (formId !== undefined) {
-            this.http.put(environment['url'] + '/ws/forms/enable/' + formId, null, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/forms/verifier/enable/' + formId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                     this.notify.success(this.translate.instant('FORMS.form_enabled'));

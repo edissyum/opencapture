@@ -67,6 +67,7 @@ export class VerifierViewerComponent implements OnInit {
     formEmpty               : boolean     = false;
     processErrorMessage     : string      = '';
     processErrorIcon        : string      = '';
+    token                   : string      = '';
     oldVAT                  : string      = '';
     oldSIRET                : string      = '';
     oldSIREN                : string      = '';
@@ -150,6 +151,7 @@ export class VerifierViewerComponent implements OnInit {
             const token = this.route.snapshot.params['token'];
             const res: any = await this.retrieveDocumentIdAndStatusFromToken(token);
             this.fromToken = true;
+            this.token = res['token'];
             if (res['status'] === 'wait') {
                 this.loading = false;
                 this.processErrorIcon = 'fa-clock fa-fade text-gray-400';
@@ -160,7 +162,7 @@ export class VerifierViewerComponent implements OnInit {
                 this.processErrorIcon = 'fa-circle-notch fa-spin text-green-400';
                 this.processErrorMessage = marker('VERIFIER.processing');
                 return;
-            } else if (res['status'] === 'error') {
+            } else if (res['status'] === 'error' || res['error']) {
                 this.loading = false;
                 this.processErrorIcon = 'fa-xmark text-red-400';
                 this.processErrorMessage = this.translate.instant('VERIFIER.error', {reference: res['token']});
@@ -189,7 +191,7 @@ export class VerifierViewerComponent implements OnInit {
                             }
 
                             if (this.multiDocumentsData.length === 1) {
-                                // this.loadDocument(this.multiDocumentsData[0].id);
+                                this.loadDocument(this.multiDocumentsData[0].id);
                             }
                         }
                         return;
@@ -325,6 +327,12 @@ export class VerifierViewerComponent implements OnInit {
         this.loading = true;
         this.processMultiDocument = false;
         this.ngOnInit(documentId).then();
+    }
+
+    copyToken() {
+        navigator.clipboard.writeText(this.token).then(() => {
+            this.notify.success(this.translate.instant('CONFIGURATIONS.token_copied'));
+        });
     }
 
     async retrieveDocumentIdAndStatusFromToken(token: any) {
@@ -1081,7 +1089,6 @@ export class VerifierViewerComponent implements OnInit {
                 this.http.post(environment['url'] + '/ws/accounts/suppliers/create', {'args': supplierData}, {headers: this.authService.headers},
                 ).pipe(
                     tap(async (supplier_data: any) => {
-                        this.historyService.addHistory('accounts', 'create_supplier', this.translate.instant('HISTORY-DESC.create-supplier', {supplier: supplierData['name']}));
                         this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
                         this.updateDocument({'supplier_id': supplier_data['id']});
                         this.document.supplier_id = supplier_data['id'];
@@ -1131,7 +1138,6 @@ export class VerifierViewerComponent implements OnInit {
         this.http.put(environment['url'] + '/ws/accounts/addresses/updateBySupplierId/' + this.document.supplier_id, {'args': addressData}, {headers: this.authService.headers},
         ).pipe(
             tap(() => {
-                this.historyService.addHistory('accounts', 'update_supplier', this.translate.instant('HISTORY-DESC.update-supplier', {supplier: supplierData['name']}));
                 this.notify.success(this.translate.instant('ACCOUNTS.supplier_updated'));
             }),
             catchError((err: any) => {

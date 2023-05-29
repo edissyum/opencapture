@@ -26,7 +26,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
-import { HistoryService } from "../../../../../services/history.service";
 import { environment } from "../../../../env";
 import { catchError, of, tap } from "rxjs";
 import { finalize } from "rxjs/operators";
@@ -78,9 +77,8 @@ export class CreateAiModelComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService,
+        public privilegesService: PrivilegesService
     ) { }
 
     ngOnInit() {
@@ -191,7 +189,7 @@ export class CreateAiModelComponent implements OnInit {
         let start_training = true;
         if (this.isValidForm(this.modelForm) && this.totalChecked > 1 && this.isValidForm2(this.controls)) {
             const doctypes = [];
-            const minPred = this.getValueFromForm(this.modelForm, 'min_proba');
+            const minProba = this.getValueFromForm(this.modelForm, 'min_proba');
             const label = this.getValueFromForm(this.modelForm, 'model_label');
             const modelName = label.toLowerCase().replace(/ /g, "_") + '.sav';
             const matches = this.docStatus.filter((a: { isSelected: boolean }) => a.isSelected);
@@ -222,8 +220,8 @@ export class CreateAiModelComponent implements OnInit {
                 }
             }
             if (start_training) {
-                this.http.post(environment['url'] + '/ws/ai/trainModel/' + modelName,
-                    {label: label, docs: doctypes, min_pred: minPred, module: this.splitterOrVerifier},
+                this.http.post(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/trainModel/' + modelName,
+                    {label: label, docs: doctypes, min_proba: minProba, module: this.splitterOrVerifier},
                     {headers: this.authService.headers}).pipe(
                     catchError((err: any) => {
                         console.debug(err);
@@ -232,7 +230,6 @@ export class CreateAiModelComponent implements OnInit {
                 ).subscribe();
 
                 this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.created'));
-                this.historyService.addHistory(this.splitterOrVerifier, 'create_ai_model', this.translate.instant('HISTORY-DESC.create-ai-model', {model: modelName}));
                 this.router.navigate(['/settings/' + this.splitterOrVerifier + '/ai']).then();
             }
         } else {

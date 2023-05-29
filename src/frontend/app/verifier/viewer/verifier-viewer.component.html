@@ -9,6 +9,8 @@
             </div>
             <div class="flex justify-center text-center mt-4 text-gray-900 p-4">
                 <span class="text-xl max-w-full break-words" [innerHTML]="this.processErrorMessage | translate"></span>
+                <i class="ml-4 fa-solid fa-copy text-2xl cursor-pointer"
+                   [matTooltip]="'CONFIGURATIONS.copy_token' | translate" (click)="copyToken()"></i>
             </div>
         </div>
     </div>

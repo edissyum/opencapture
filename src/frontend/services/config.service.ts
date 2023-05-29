@@ -31,7 +31,7 @@ export class ConfigService {
     constructor(
         private http: HttpClient,
         private authService: AuthService,
-        private notify:NotificationService,
+        private notify:NotificationService
     ) {}
 
     readConfig() {

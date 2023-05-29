@@ -31,7 +31,7 @@ from ldap3.core.exceptions import LDAPException
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from werkzeug.security import generate_password_hash, check_password_hash
-from src.backend.import_models import auth, user, roles, monitoring
+from src.backend.import_models import auth, user, roles, monitoring, history
 from flask import request, g as current_context, jsonify, current_app, session
 
 
@@ -67,6 +67,24 @@ def check_token(token):
     return payload, 200
 
 
+def generate_token(user_id, days_before_exp):
+    secret_key = current_app.config['SECRET_KEY'].replace("\n", "")
+
+    try:
+        payload = {
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=days_before_exp),
+            'iat': datetime.datetime.utcnow(),
+            'sub': user_id
+        }
+        return jwt.encode(
+            payload,
+            secret_key,
+            algorithm='HS512'
+        ), 200
+    except Exception as _e:
+        return str(_e), 500
+
+
 def encode_auth_token(user_id):
     if 'configurations' in current_context:
         configurations = current_context.configurations
@@ -92,7 +110,7 @@ def encode_auth_token(user_id):
         return str(_e)
 
 
-def generate_unique_url_token(document_id, workflow_id, module):
+def generate_unique_url_token(token, workflow_id, module):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -131,7 +149,7 @@ def generate_unique_url_token(document_id, workflow_id, module):
         payload = {
             'exp': datetime.datetime.utcnow() + datetime.timedelta(days=days_before_exp),
             'iat': datetime.datetime.utcnow(),
-            'sub': document_id
+            'process_token': token
         }
         return jwt.encode(
             payload,
@@ -177,7 +195,7 @@ def decode_unique_url_token(token):
     return decoded_token, 200
 
 
-def logout():
+def logout(user_info):
     for key in list(session.keys()):
         session.pop(key)
 
@@ -201,6 +219,14 @@ def logout():
         current_context.pop('spreadsheet')
     if 'configurations' in current_context:
         current_context.pop('configurations')
+
+    history.add_history({
+        'module': 'general',
+        'ip': request.remote_addr,
+        'submodule': 'logout',
+        'user_info': user_info,
+        'desc': gettext('LOGOUT')
+    })
 
 
 def login(username, password, lang, method='default'):
@@ -256,6 +282,14 @@ def login(username, password, lang, method='default'):
             'minutes_before_exp': encoded_token[1],
             'user': returned_user
         }
+
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'login',
+            'user_info': returned_user['lastname'] + ' ' + returned_user['firstname'] + ' (' + returned_user['username'] + ')',
+            'desc': gettext('LOGIN')
+        })
         return response, 200
     else:
         response = {
@@ -301,6 +335,14 @@ def login_with_token(token, lang):
             'minutes_before_exp': minutes_before_exp,
             'user': returned_user
         }
+
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'login',
+            'user_info': returned_user['lastname'] + ' ' + returned_user['firstname'] + ' (' + returned_user['username'] + ')',
+            'desc': gettext('LOGIN')
+        })
         return response, 200
     else:
         response = {
@@ -321,7 +363,11 @@ def token_required(view):
                 token = request.headers['Authorization'].split('Bearer')[1].lstrip()
                 try:
                     token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
-                    data = [token['sub']]
+                    data = []
+                    if 'sub' in token:
+                        data = [token['sub']]
+                    elif 'process_token' in token:
+                        data = [token['process_token']]
                 except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
                         jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
                     return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
@@ -337,7 +383,7 @@ def token_required(view):
                 return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('AUTHORIZATION_HEADER_INCORRECT')}), 500
 
             user_info, _ = user.get_users({
-                'select': ['users.id', 'last_connection', 'password'],
+                'select': ['users.id', 'username', 'lastname', 'firstname', 'last_connection', 'password'],
                 'where': where,
                 'data': data
             })
@@ -346,8 +392,8 @@ def token_required(view):
                 if user_info and user_info[0]['last_connection'] and token['iat'] < datetime.datetime.timestamp(user_info[0]['last_connection']):
                     return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('ACCOUNT_ALREADY_LOGGED')}), 500
 
-            if token:
-                process, _ = monitoring.get_process_by_token(token['sub'], '')
+            if token and 'process_token' in token:
+                process, _ = monitoring.get_process_by_token(token['process_token'], '')
                 allowed_path = [
                     'export_mem',
                     'export_xml',
@@ -393,6 +439,7 @@ def token_required(view):
                     return jsonify({"errors": gettext("REST_ERROR"), "message": gettext('PASSWORD_INCORRECT')}), 500
 
             request.environ['user_id'] = user_info[0]['id']
+            request.environ['user_info'] = user_info[0]['lastname'] + ' ' + user_info[0]['firstname'] + ' (' + user_info[0]['username'] + ')'
         else:
             return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('VALID_TOKEN_MANDATORY')}), 500
         return view(**kwargs)

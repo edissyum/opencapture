@@ -26,7 +26,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { ConfigService } from "../../services/config.service";
 import { LocaleService } from "../../services/locale.service";
-import { HistoryService } from "../../services/history.service";
 import { LocalStorageService } from "../../services/local-storage.service";
 import { environment } from "../env";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -70,7 +69,6 @@ export class ResetPasswordComponent implements OnInit {
         private notify: NotificationService,
         private configService: ConfigService,
         private localeService: LocaleService,
-        private historyService: HistoryService,
         private localStorageService: LocalStorageService,
         public passwordVerification: PasswordVerificationService
     ) {}
@@ -119,7 +117,6 @@ export class ResetPasswordComponent implements OnInit {
         this.http.put(environment['url'] + '/ws/users/resetPassword', {resetToken: this.resetToken, newPassword: passwordConfirm}).pipe(
             tap((data: any) => {
                 this.notify.success(this.translate.instant('USER.password_reset_success'));
-                this.historyService.addHistory('general', 'user_reset_password', this.translate.instant('HISTORY-DESC.user_reset_password_success', {user: data.username}), data);
                 this.authService.logout();
             }),
             catchError((err: any) => {

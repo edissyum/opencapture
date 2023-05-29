@@ -24,8 +24,8 @@ import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { HttpClient } from "@angular/common/http";
 import { TranslateService } from "@ngx-translate/core";
-import {SettingsService} from "../../../services/settings.service";
-import {Sort} from "@angular/material/sort";
+import { SettingsService } from "../../../services/settings.service";
+import { Sort } from "@angular/material/sort";
 import * as moment from "moment";
 
 @Component({

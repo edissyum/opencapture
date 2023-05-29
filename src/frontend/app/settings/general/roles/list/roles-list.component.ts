@@ -34,7 +34,6 @@ import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/c
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-roles-list',
@@ -65,11 +64,10 @@ export class RolesListComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService
     ) {
     }
 
@@ -131,7 +129,6 @@ export class RolesListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deleteRole(roleId);
-                this.historyService.addHistory('verifier', 'delete_role', this.translate.instant('HISTORY-DESC.delete-role', {role: role}));
             }
         });
     }

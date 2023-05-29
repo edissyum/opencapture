@@ -22,14 +22,13 @@ import { FileValidators } from "ngx-file-drag-drop";
 import { environment } from  "../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders} from "@angular/common/http";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { LocalStorageService } from "../../services/local-storage.service";
-import { HistoryService } from "../../services/history.service";
 
 @Component({
     selector: 'app-upload',
@@ -56,10 +55,8 @@ export class UploadComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public localStorageService: LocalStorageService
-    ) {
-    }
+    ) {}
 
     fileControl = new FormControl(
         [],
@@ -143,20 +140,25 @@ export class UploadComponent implements OnInit {
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
-                environment['url'] + '/ws/' + splitterOrVerifier + '/upload', formData, {headers: this.authService.headers},
+                environment['url'] + '/ws/verifier/checkFileBeforeUpload', formData, {headers: new HttpHeaders({ timeout: `${2000}` })},
             ).pipe(
                 tap(() => {
+                    this.http.post(environment['url'] + '/ws/' + splitterOrVerifier + '/upload', formData, {headers: this.authService.headers}).pipe(
+                        tap(() => {
+                            this.sending = false;
+                            this.fileControl.setValue([]);
+                            this.notify.success(this.translate.instant('UPLOAD.upload_success'));
+                        }),
+                        catchError((err: any) => {
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                }),
+                catchError(() => {
                     this.sending = false;
                     this.fileControl.setValue([]);
-                    this.notify.success(this.translate.instant('UPLOAD.upload_success'));
-                    for (const cpt of Array(numberOFFiles).keys()) {
-                        if (this.selectedWorkflow) {
-                            this.historyService.addHistory(splitterOrVerifier, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded_workflow', {workflow: this.selectedWorkflowTechnicalId}));
-                        }
-                    }
-                }),
-                catchError((err: any) => {
-                    this.notify.handleErrors(err);
+                    this.notify.handleErrors(this.translate.instant('ERROR.permission_problem'));
                     return of(false);
                 })
             ).subscribe();

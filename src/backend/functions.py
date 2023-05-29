@@ -72,8 +72,12 @@ def retrieve_custom_from_url(request):
     url = request.environ['SCRIPT_NAME'] + request.environ['PATH_INFO'] if 'RAW_URI' not in request.environ \
         else request.environ['RAW_URI']
     splitted_request = url.replace('/backend_oc', '').split('ws/')
+
     if splitted_request[0] != '/':
         custom_id = splitted_request[0]
+
+    if not custom_id:
+        custom_id = request.environ['SERVER_NAME']
     return custom_id.replace('/', '')
 
 

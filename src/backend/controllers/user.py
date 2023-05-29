@@ -18,9 +18,9 @@
 from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.import_controllers import auth
-from src.backend.import_models import user, accounts, forms
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from src.backend.import_models import user, accounts, forms, history
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -58,6 +58,14 @@ def create_user(args):
                     smtp = _vars[8]
                 if email_dest and smtp and smtp.is_up:
                     smtp.send_user_quota_notifications(email_dest, custom_id)
+
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'create_user',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('CREATE_USER', user=args['lastname'] + ' ' + args['firstname'] + ' (' + args['username'] + ')')
+        })
         return {'id': res}, 200
     else:
         response = {
@@ -158,6 +166,14 @@ def send_email_forgot_password(args):
             reset_token = auth.generate_reset_token(args['userId'])
             user.update_user({'set': {'reset_token': reset_token}, 'user_id': args['userId']})
             smtp.send_forgot_password_email(user_info['email'], args['currentUrl'], reset_token)
+
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'user_forgot_password',
+                'user_info': user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')',
+                'desc': gettext('USER_FORGOT_SUCCESS', user=user_info['username'])
+            })
         return user_info, 200
     else:
         response = {
@@ -179,6 +195,13 @@ def reset_password(args):
                               'user_id': decoded_token['sub']})
             del user_info['password']
             del user_info['reset_token']
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'user_reset_password',
+                'user_info': user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')',
+                'desc': gettext('USER_RESET_PASSWORD_SUCCESS', user=user_info['username'])
+            })
             return user_info, 200
         response = {
             "errors": gettext('RESET_PASSWORD_ERROR'),
@@ -300,6 +323,13 @@ def update_user(user_id, data):
 
         if error is None:
             user_info = user.get_user_by_id({'user_id': user_id})
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'update_user',
+                'user_info': user_info[0]['lastname'] + ' ' + user_info[0]['firstname'] + ' (' + user_info[0]['username'] + ')',
+                'desc': gettext('USER_UPDATED', user=user_info[0]['username'])
+            })
             return {"user": user_info[0], "minutes_before_exp": minutes_before_exp}, 200
         else:
             response = {
@@ -316,10 +346,20 @@ def update_user(user_id, data):
 
 
 def delete_user(user_id):
-    _, error = user.get_user_by_id({'user_id': user_id})
+    user_info, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _, error = user.update_user({'set': {'status': 'DEL'}, 'user_id': user_id})
         if error is None:
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'delete_user',
+                'user_info': request.environ['user_info'],
+                'desc': gettext(
+                    'DELETE_USER',
+                    user=user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')'
+                )
+            })
             return '', 200
         else:
             response = {
@@ -336,10 +376,20 @@ def delete_user(user_id):
 
 
 def disable_user(user_id):
-    _, error = user.get_user_by_id({'user_id': user_id})
+    user_info, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _, error = user.update_user({'set': {'enabled': False}, 'user_id': user_id})
         if error is None:
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'disable_user',
+                'user_info': request.environ['user_info'],
+                'desc': gettext(
+                    'DISABLE_USER',
+                    user=user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')'
+                )
+            })
             return '', 200
         else:
             response = {
@@ -356,10 +406,20 @@ def disable_user(user_id):
 
 
 def enable_user(user_id):
-    _, error = user.get_user_by_id({'user_id': user_id})
+    user_info, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _, error = user.update_user({'set': {'enabled': True}, 'user_id': user_id})
         if error is None:
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'enable_user',
+                'user_info': request.environ['user_info'],
+                'desc': gettext(
+                    'ENABLE_USER',
+                    user=user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')'
+                )
+            })
             return '', 200
         else:
             response = {

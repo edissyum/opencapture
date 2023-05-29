@@ -9,7 +9,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { ConfigService } from "../../services/config.service";
 import { LocaleService } from "../../services/locale.service";
-import { HistoryService } from "../../services/history.service";
 import { LocalStorageService } from "../../services/local-storage.service";
 import { environment } from "../env";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -38,7 +37,6 @@ export class ForgotPasswordComponent implements OnInit {
         private notify: NotificationService,
         private configService: ConfigService,
         private localeService: LocaleService,
-        private historyService: HistoryService,
         private localStorageService: LocalStorageService
     ) {}
 
@@ -87,7 +85,6 @@ export class ForgotPasswordComponent implements OnInit {
                     this.http.post(environment['url'] + '/ws/users/sendEmailForgotPassword', {userId: data.id, currentUrl: currentUrl}).pipe(
                         tap((data: any) => {
                             this.notify.success(this.translate.instant('USER.forgot_password_email_sent'));
-                            this.historyService.addHistory('general', 'user_forgot_password', this.translate.instant('HISTORY-DESC.user_forgot_success', {user: data.username}), data);
                         }),
                         finalize(() => this.sending = false),
                         catchError((err: any) => {

@@ -179,6 +179,7 @@
 		"reset": "Réinitialiser",
 		"select_options": "Liste des choix",
 		"type": "Type",
+		"unallowed_fields": "Libellé technique du champ non autorisé (champ système Open-Capture)",
 		"update": "Modifier le champ personnalisé"
 	},
 	"DISABLED": {
@@ -253,6 +254,7 @@
 		"missing_secret_key": "La clé secrète est manquante pour cette instance",
 		"number_float_pattern": "La valeur n'est pas au format attendu : nombre flottant",
 		"number_int_pattern": "La valeur n'est pas au format attendu : nombre entier",
+		"permission_problem": "Erreur lors de l'upload du fichier, vérifiez les permissions",
 		"unauthorized": "Vous n'êtes pas autorisé à visualiser la page suivante : ",
 		"unknow_error": "Erreur inconnue",
 		"wrong_siren_format": "Mauvais format du SIREN",
@@ -271,9 +273,9 @@
 		"facturation": "Facturation",
 		"footer": "Pied de page",
 		"invoice_number": "Numéro de facture",
-		"lines": "Lignes de facturation",
+		"lines": "Lignes de détails",
 		"no_rate_amount": "Montant HT",
-		"only_facturx": "Les lignes de facturations remontent automatiquement seulement si le document est de type FacturX",
+		"only_facturx": "Les lignes de détails remontent automatiquement seulement si le document est de type FacturX",
 		"quantity": "Quantité",
 		"quotation_number": "Numéro de devis",
 		"register_date_day": "Jour d'enregistrement du document",
@@ -867,7 +869,6 @@
 		"batch_locked_by": "Lot verrouillé par l'utilisateur suivant : <strong>{{ locked_by }}</strong>",
 		"batch_metadata": "Métadonnées de lot",
 		"batch_modification_saved": "Modifications enregistrées",
-		"batch_validate_processing": "Validation du lot est en cours de traitement ...",
 		"batches": "lot(s)",
 		"bundle_separator": "Séparateur de lots",
 		"can_not_merge_same_batch": "Veuillez fusionner un lot différent du lot actuel",
@@ -988,7 +989,6 @@
 		"updated": "Quota d'utilisateur mis à jour"
 	},
 	"USER": {
-		"already_logged_in": "Votre compte est déjà connecté sur un autre poste. Une seule connexion est autorisée par utilisateur",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur <strong>{{ user }}</strong> ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver l'utilisateur <strong>{{ user }}</strong> ?",
 		"confirm_enable": "Êtes vous sûr de vouloir ré-activer l'utilisateur <strong>{{ user }}</strong> ?",

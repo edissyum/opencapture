@@ -118,6 +118,7 @@ import { WorkflowListComponent } from './settings/verifier/workflow/list/workflo
 import { WorkflowBuilderComponent } from './settings/verifier/workflow/builder/workflow-builder.component';
 import { WorkflowListSplitterComponent } from './settings/splitter/workflow/list/workflow-list.component';
 import { WorkflowBuilderSplitterComponent } from './settings/splitter/workflow/builder/workflow-builder.component';
+import { TimeoutInterceptor } from "../services/HttpTimeout.service";
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -212,7 +213,7 @@ export function createTranslateLoader(http: HttpClient) {
         NgsgModule,
         NgxChartsModule,
         ToastrModule.forRoot({
-            maxOpened: 3,
+            maxOpened: 1,
             enableHtml: true,
             preventDuplicates: true
         }),
@@ -246,8 +247,9 @@ export function createTranslateLoader(http: HttpClient) {
             provide: HTTP_INTERCEPTORS,
             useClass: MiddlewareComponent,
             multi: true,
-        }
-    ],
+        },
+        [{ provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }],
+],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -16,7 +16,7 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Router } from "@angular/router";
-import {Component, Input, ViewEncapsulation} from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { SettingsService } from "../../services/settings.service";
 import { PrivilegesService } from "../../services/privileges.service";
 
@@ -32,6 +32,6 @@ export class SettingsMenuComponent {
     constructor(
         public router: Router,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService,
+        public privilegesService: PrivilegesService
     ) {}
 }

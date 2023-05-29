@@ -29,7 +29,6 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-update',
@@ -149,17 +148,16 @@ export class UpdateRoleComponent implements OnInit {
     ];
     // End translation
     constructor(
-        private http: HttpClient,
         public router: Router,
+        private http: HttpClient,
         private route: ActivatedRoute,
+        public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        public userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService,
+        public privilegesService: PrivilegesService
     ) {
     }
 
@@ -251,7 +249,6 @@ export class UpdateRoleComponent implements OnInit {
             this.http.put(environment['url'] + '/ws/roles/updatePrivilege/' + this.roleId, {'privileges': rolePrivileges}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
-                    this.historyService.addHistory('general', 'update_role', this.translate.instant('HISTORY-DESC.update-role', {role: role['label']}));
                     this.notify.success(this.translate.instant('ROLE.updated'));
                     this.router.navigate(['/settings/general/roles/']).then();
                 }),

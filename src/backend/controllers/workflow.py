@@ -21,7 +21,7 @@ import stat
 from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.import_classes import _Config
-from src.backend.import_models import workflow
+from src.backend.import_models import workflow, history
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
@@ -112,6 +112,13 @@ def duplicate_workflow(workflow_id):
 
         _, error = workflow.create_workflow({'columns': args})
         if error is None:
+            history.add_history({
+                'module': workflow_info['module'],
+                'ip': request.remote_addr,
+                'submodule': 'duplicate_workflow',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DUPLICATE_WORKFLOW', workflow=workflow_info['label'])
+            })
             return '', 200
         else:
             response = {
@@ -181,6 +188,13 @@ def create_workflow(data):
 
     res, error = workflow.create_workflow({'columns': data})
     if error is None:
+        history.add_history({
+            'module': data['module'],
+            'ip': request.remote_addr,
+            'submodule': 'create_workflow',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('CREATE_WORKFLOW', workflow=data['label'])
+        })
         response = {
             "id": res
         }
@@ -201,7 +215,7 @@ def update_workflow(workflow_id, data):
         }
         return response, 400
 
-    _, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
+    workflow_info, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
 
     if error is None:
         if 'input' in data:
@@ -216,6 +230,13 @@ def update_workflow(workflow_id, data):
         _, error = workflow.update_workflow({'set': data, 'workflow_id': workflow_id})
 
         if error is None:
+            history.add_history({
+                'module': workflow_info['module'],
+                'ip': request.remote_addr,
+                'submodule': 'update_workflow',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('UPDATE_WORKFLOW', workflow=data['label'])
+            })
             return '', 200
         else:
             response = {
@@ -232,11 +253,18 @@ def update_workflow(workflow_id, data):
 
 
 def delete_workflow(workflow_id):
-    _, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
+    workflow_info, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
     if error is None:
         _, error = workflow.update_workflow({'set': {'status': 'DEL'}, 'workflow_id': workflow_id})
         if error is None:
-            # delete_script_and_incron(workflow_info)
+            delete_script_and_incron(workflow_info)
+            history.add_history({
+                'module': workflow_info['module'],
+                'ip': request.remote_addr,
+                'submodule': 'delete_workflow',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DELETE_WORKFLOW', workflow=workflow_info['label'])
+            })
             return '', 200
         else:
             response = {
@@ -336,3 +364,39 @@ def create_script_and_watcher(args):
 def get_workflow_by_form_id(form_id):
     workflow_info, _ = workflow.get_workflow_by_form_id({'form_id': form_id})
     return workflow_info, 200
+
+
+def delete_script_and_incron(args):
+    custom_id = retrieve_custom_from_url(request)
+    if 'docservers' in current_context and 'config' in current_context:
+        docservers = current_context.docservers
+        config = current_context.config
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+        config = _vars[1]
+
+    folder_script = docservers['SCRIPTS_PATH'] + args['module'] + '_workflows/'
+    script_name = args['workflow_id'] + '.sh'
+    old_script_filename = folder_script + '/' + script_name
+    if os.path.isdir(folder_script):
+        if os.path.isfile(old_script_filename):
+            os.remove(old_script_filename)
+
+    ######
+    # REMOVE FS WATCHER CONFIG
+    ######
+    if os.path.isfile(config['GLOBAL']['watcherconfig']):
+        fs_watcher_config = _Config(config['GLOBAL']['watcherconfig'], interpolation=False).cfg
+        fs_watcher_job = args['module'] + '_' + args['workflow_id']
+        if custom_id:
+            fs_watcher_job += '_' + custom_id
+        if fs_watcher_job in fs_watcher_config:
+            _Config.fswatcher_remove_section(config['GLOBAL']['watcherconfig'], fs_watcher_job)
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('FS_WATCHER_DELETION_ERROR'),
+            "message": gettext('FS_WATCHER_CONFIG_DOESNT_EXIST')
+        }
+        return response, 501
