@@ -649,6 +649,7 @@
 		"compress_printer": "Compression faible",
 		"compress_screen": "Compression très élevée",
 		"compress_type": "Type de compression",
+		"compressed_filename": "Nom du fichier compressé",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne sortante <strong>{{ output }}</strong> ?",
 		"confirm_duplicate": "Êtes vous sûr de vouloir dupliquer la chaîne sortante <strong>{{ output }}</strong> ?",
 		"create": "Créer la chaîne sortante",
@@ -683,8 +684,7 @@
 		"test_connection": "Tester la connexion",
 		"update": "Modifier la chaîne sortante",
 		"validate_by_firstname": "Prénom du validateur",
-		"validate_by_lastname": "Nom du validateur",
-		"zip_filename": "Nom du fichier ZIP"
+		"validate_by_lastname": "Nom du validateur"
 	},
 	"PAGINATOR": {
 		"first_page": "Première page",
