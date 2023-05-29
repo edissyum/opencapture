@@ -58,7 +58,7 @@ def create_form(module):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/create'}), 403
 
     args = request.json['args']
-    res = forms.create_form(args)
+    res = forms.create_form(args, module)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -91,7 +91,7 @@ def update_form(form_id, module):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/update/{form_id}'}), 403
 
     args = request.json['args']
-    res = forms.update_form(form_id, args)
+    res = forms.update_form(form_id, args, module)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -129,37 +129,58 @@ def update_form_unique_url(form_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('forms/delete/<int:form_id>', methods=['DELETE'])
+@bp.route('forms/<string:module>/delete/<int:form_id>', methods=['DELETE'])
 @auth.token_required
-def delete_form(form_id):
-    res = forms.delete_form(form_id)
+def delete_form(form_id, module):
+    list_priv = ['settings', 'forms_list'] if module == 'verifier' else ['settings', 'forms_list_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/delete/{form_id}'}), 403
+
+    res = forms.delete_form(form_id, module)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('forms/duplicate/<int:form_id>', methods=['POST'])
+@bp.route('forms/<string:module>/duplicate/<int:form_id>', methods=['POST'])
 @auth.token_required
-def duplicate_form(form_id):
-    res = forms.duplicate_form(form_id)
+def duplicate_form(form_id, module):
+    list_priv = ['settings', 'forms_list'] if module == 'verifier' else ['settings', 'forms_list_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/duplicate/{form_id}'}), 403
+
+    res = forms.duplicate_form(form_id, module)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('forms/disable/<int:form_id>', methods=['PUT'])
+@bp.route('forms/<string:module>/disable/<int:form_id>', methods=['PUT'])
 @auth.token_required
-def disable_form(form_id):
-    res = forms.disable_form(form_id)
+def disable_form(form_id, module):
+    list_priv = ['settings', 'forms_list'] if module == 'verifier' else ['settings', 'forms_list_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/disable/{form_id}'}), 403
+
+    res = forms.disable_form(form_id, module)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('forms/enable/<int:form_id>', methods=['PUT'])
+@bp.route('forms/<string:module>/enable/<int:form_id>', methods=['PUT'])
 @auth.token_required
-def enable_form(form_id):
-    res = forms.enable_form(form_id)
+def enable_form(form_id, module):
+    list_priv = ['settings', 'forms_list'] if module == 'verifier' else ['settings', 'forms_list_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/enable/{form_id}'}), 403
+
+    res = forms.enable_form(form_id, module)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('forms/updateFields/<int:form_id>', methods=['POST'])
+@bp.route('forms/<string:module>/updateFields/<int:form_id>', methods=['POST'])
 @auth.token_required
-def update_fields(form_id):
+def update_fields(form_id, module):
+    list_priv = ['settings', 'add_form | update_form'] if module == 'verifier' \
+        else ['settings', 'add_form_splitter | update_form_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/updateFields/{form_id}'}), 403
+
     args = request.json
-    res = forms.update_fields({'form_id': form_id, 'args': args})
+    res = forms.update_fields({'form_id': form_id, 'data': args})
     return make_response(jsonify(res[0])), res[1]

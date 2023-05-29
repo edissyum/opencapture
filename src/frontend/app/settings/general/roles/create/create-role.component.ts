@@ -28,7 +28,6 @@ import { PrivilegesService } from "../../../../../services/privileges.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-create',
@@ -65,7 +64,6 @@ export class CreateRoleComponent implements OnInit {
         public userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {
@@ -121,7 +119,6 @@ export class CreateRoleComponent implements OnInit {
                     this.http.put(environment['url'] + '/ws/roles/updatePrivilege/' + newRoleId, {'privileges': rolePrivileges}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
-                            this.historyService.addHistory('general', 'create_role', this.translate.instant('HISTORY-DESC.create-role', {role: role['label']}));
                             this.notify.success(this.translate.instant('ROLE.created'));
                             this.router.navigate(['/settings/general/roles/']).then();
                         }),

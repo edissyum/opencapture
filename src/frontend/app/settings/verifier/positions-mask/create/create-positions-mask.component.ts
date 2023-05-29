@@ -28,7 +28,6 @@ import { PrivilegesService } from "../../../../../services/privileges.service";
 import { environment } from "../../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { Observable, of } from "rxjs";
-import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'create-positions-mask',
@@ -60,7 +59,6 @@ export class CreatePositionsMaskComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {}
@@ -126,7 +124,6 @@ export class CreatePositionsMaskComponent implements OnInit {
             ).pipe(
                 tap((data: any) => {
                     this.notify.success(this.translate.instant('POSITIONS-MASKS.created'));
-                    this.historyService.addHistory('verifier', 'create_positions_masks', this.translate.instant('HISTORY-DESC.create-positions-masks', {positions_masks: label}));
                     this.router.navigate(['/settings/verifier/positions-mask/update/' + data.id]).then();
                 }),
                 catchError((err: any) => {

@@ -17,9 +17,10 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
+from flask import request
 from flask_babel import gettext
 from src.backend.import_controllers import user
-from src.backend.import_models import forms, accounts, verifier
+from src.backend.import_models import forms, accounts, verifier, history
 
 
 def get_forms(args):
@@ -64,7 +65,7 @@ def get_forms(args):
     return response, 200
 
 
-def create_form(args):
+def create_form(args, module):
     form_settings, error = forms.get_form_settings_by_module(args)
     if error:
         response = {
@@ -91,6 +92,14 @@ def create_form(args):
             "id": form_id
         }
         forms.add_form_fields(form_id)
+
+        history.add_history({
+            'module': module,
+            'ip': request.remote_addr,
+            'submodule': 'create_form',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('CREATE_FORM', form=args['label'])
+        })
         return response, 200
     else:
         response = {
@@ -173,7 +182,7 @@ def update_form_label(form_id, category_id, label):
     return '', 200
 
 
-def update_form(form_id, args):
+def update_form(form_id, args, module):
     form, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         # Remove previous default form is the updated one is set to default
@@ -198,11 +207,17 @@ def update_form(form_id, args):
         # Update form other database columns
         del args['settings']
         if args:
-            res, error = forms.update_form({'set': args, 'form_id': form_id})
+            _, error = forms.update_form({'set': args, 'form_id': form_id})
 
         if error is None:
+            history.add_history({
+                'module': module,
+                'ip': request.remote_addr,
+                'submodule': 'update_form',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('UPDATE_FORM', form=form['label'])
+            })
             return '', 200
-
         else:
             response = {
                 "errors": gettext('UPDATE_FORMS_FIELDS_ERROR'),
@@ -217,11 +232,18 @@ def update_form(form_id, args):
     return response, 400
 
 
-def delete_form(form_id):
-    _, error = forms.get_form_by_id({'form_id': form_id})
+def delete_form(form_id, module):
+    form_info, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         _, error = forms.update_form({'set': {'status': 'DEL', 'enabled': False}, 'form_id': form_id})
         if error is None:
+            history.add_history({
+                'module': module,
+                'ip': request.remote_addr,
+                'submodule': 'delete_form',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DELETE_FORM', form=form_info['label'])
+            })
             return '', 200
         else:
             response = {
@@ -237,7 +259,7 @@ def delete_form(form_id):
         return response, 400
 
 
-def duplicate_form(form_id):
+def duplicate_form(form_id, module):
     form_info, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         new_label = gettext('COPY_OF') + ' ' + form_info['label']
@@ -255,6 +277,14 @@ def duplicate_form(form_id):
                 forms.add_form_fields(res)
                 if 'fields' in fields['form_fields'] and fields['form_fields']['fields']:
                     update_fields({'data': fields['form_fields']['fields'], 'form_id': res})
+
+                history.add_history({
+                    'module': module,
+                    'ip': request.remote_addr,
+                    'submodule': 'duplicate_form',
+                    'user_info': request.environ['user_info'],
+                    'desc': gettext('DUPLICATE_FORM', form=form_info['label'])
+                })
                 return '', 200
         else:
             response = {
@@ -270,11 +300,18 @@ def duplicate_form(form_id):
         return response, 400
 
 
-def disable_form(form_id):
-    _, error = forms.get_form_by_id({'form_id': form_id})
+def disable_form(form_id, module):
+    form_info, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         _, error = forms.update_form({'set': {'enabled': False}, 'form_id': form_id})
         if error is None:
+            history.add_history({
+                'module': module,
+                'ip': request.remote_addr,
+                'submodule': 'disable_form',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DISABLE_FORM', form=form_info['label'])
+            })
             return '', 200
         else:
             response = {
@@ -290,11 +327,18 @@ def disable_form(form_id):
         return response, 400
 
 
-def enable_form(form_id):
-    _, error = forms.get_form_by_id({'form_id': form_id})
+def enable_form(form_id, module):
+    form_info, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         _, error = forms.update_form({'set': {'enabled': True}, 'form_id': form_id})
         if error is None:
+            history.add_history({
+                'module': module,
+                'ip': request.remote_addr,
+                'submodule': 'enable_form',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('ENABLE_FORM', form=form_info['label'])
+            })
             return '', 200
         else:
             response = {
@@ -329,7 +373,7 @@ def get_fields(form_id):
 def update_fields(args):
     _, error = forms.get_form_by_id({'form_id': args['form_id']})
     if error is None:
-        _, error = forms.update_form_fields({'set': {'fields': json.dumps(args['args'])}, 'form_id': args['form_id']})
+        _, error = forms.update_form_fields({'set': {'fields': json.dumps(args['data'])}, 'form_id': args['form_id']})
         if error is None:
             return '', 200
         else:

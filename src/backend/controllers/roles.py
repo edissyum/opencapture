@@ -15,8 +15,9 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+from flask import request
 from flask_babel import gettext
-from src.backend.import_models import roles
+from src.backend.import_models import roles, history
 
 
 def get_roles(data):
@@ -50,6 +51,13 @@ def update_role(role_id, data):
         _, error = roles.update_role({'set': _set, 'role_id': role_id})
 
         if error is None:
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'update_role',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('UPDATE_ROLE', role=data['label'])
+            })
             return '', 200
         else:
             response = {
@@ -74,6 +82,13 @@ def create_role(data):
     res, error = roles.create_role({'columns': _columns})
 
     if error is None:
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'create_role',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('CREATE_ROLE', role=data['label'])
+        })
         response = {
             "id": res
         }
@@ -127,10 +142,17 @@ def get_role_by_id(role_id):
 
 
 def delete_role(role_id):
-    _, error = roles.get_role_by_id({'role_id': role_id})
+    role_info, error = roles.get_role_by_id({'role_id': role_id})
     if error is None:
         _, error = roles.update_role({'set': {'status': 'DEL'}, 'role_id': role_id})
         if error is None:
+            history.add_history({
+                'module': 'general',
+                'ip': request.remote_addr,
+                'submodule': 'delete_role',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('DELETE_ROLE', role=role_info['label'])
+            })
             return '', 200
         else:
             response = {
