@@ -34,7 +34,10 @@ def get_output_parameters(parameters):
 
 def export_batch(batch_id, log, docservers, configurations, regex):
     export_date = _Files.get_now_date()
+    export_zip_file = ''
     exported_files = []
+    outputs_id = []
+
     batch = splitter.retrieve_batches({
         'batch_id': None,
         'page': None,
@@ -59,41 +62,48 @@ def export_batch(batch_id, log, docservers, configurations, regex):
     if error:
         return error, 400
 
-    form = forms.get_form_by_id({'form_id': batch['form_id']})
-    if 'outputs' in form[0]:
-        for output_id in form[0]['outputs']:
-            output = outputs.get_output_by_id({'output_id': output_id})
-            if not output:
-                return gettext('OUTPUT_NOT_FOUND'), 400
-            else:
-                output = output[0]
-            output['parameters'] = get_output_parameters(output['data']['options']['parameters'])
+    if workflow_settings['process']['use_interface']:
+        outputs_id = workflow_settings['output']['outputs_id']
+    else:
+        form, error = forms.get_form_by_id({'form_id': batch['form_id']})
+        if error:
+            return error, 400
+        outputs_id = form['outputs']
+        export_zip_file = form['settings']['export_zip_file']
 
-            match output['output_type_id']:
-                case 'export_pdf':
-                    res_export_pdf, status = handle_pdf_output(batch, output, log, docservers, configurations)
-                    if status != 200:
-                        return res_export_pdf, status
-                    batch = res_export_pdf['result_batch']
+    for output_id in outputs_id:
+        output = outputs.get_output_by_id({'output_id': output_id})
+        if not output:
+            return gettext('OUTPUT_NOT_FOUND'), 400
+        else:
+            output = output[0]
+        output['parameters'] = get_output_parameters(output['data']['options']['parameters'])
 
-                case 'export_xml':
-                    res_export_xml, status = handle_xml_output(batch, output['parameters'], regex)
-                    if status != 200:
-                        return res_export_xml, status
-                    batch = res_export_xml['result_batch']
+        match output['output_type_id']:
+            case 'export_pdf':
+                res_export_pdf, status = handle_pdf_output(batch, output, log, docservers, configurations)
+                if status != 200:
+                    return res_export_pdf, status
+                batch = res_export_pdf['result_batch']
 
-                case 'export_cmis':
-                    res_export_cmis, status = handle_cmis_output(output, batch, log, docservers, configurations)
-                    if status != 200:
-                        return res_export_cmis, status
+            case 'export_xml':
+                res_export_xml, status = handle_xml_output(batch, output['parameters'], regex)
+                if status != 200:
+                    return res_export_xml, status
+                batch = res_export_xml['result_batch']
 
-                case 'export_openads':
-                    res_export_openads, status = handle_openads_output(output, batch, log, docservers, configurations)
-                    if status != 200:
-                        return res_export_openads, status
+            case 'export_cmis':
+                res_export_cmis, status = handle_cmis_output(output, batch, log, docservers, configurations)
+                if status != 200:
+                    return res_export_cmis, status
 
-    if form[0]['settings']['export_zip_file']:
-        compress_outputs_result(batch, exported_files, form[0]['settings']['export_zip_file'])
+            case 'export_openads':
+                res_export_openads, status = handle_openads_output(output, batch, log, docservers, configurations)
+                if status != 200:
+                    return res_export_openads, status
+
+    if export_zip_file:
+        compress_outputs_result(batch, exported_files, export_zip_file)
 
     process_after_outputs(batch, 'END', workflow_settings, docservers, log)
     return True, 200
@@ -324,6 +334,5 @@ def process_after_outputs(batch, close_status, workflow_settings, docservers, lo
         'ids': [batch['id']],
         'status': close_status
     })
-
     if workflow_settings['process']['delete_documents']:
         _Files.remove_file(f"{docservers['SPLITTER_ORIGINAL_PDF']}/{batch['file_path']}", log)
