@@ -106,7 +106,7 @@ def export_batch(batch_id, log, docservers, configurations, regex):
     if export_zip_file:
         compress_outputs_result(batch, exported_files, export_zip_file)
 
-    process_after_outputs(batch, 'NEW', workflow_settings, docservers, log)
+    process_after_outputs(batch, 'END', workflow_settings, docservers, log)
     return True, 200
 
 
