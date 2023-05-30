@@ -50,7 +50,7 @@ class FindCustom:
             for res in re.finditer(r"" + data['regex'] + "", line):
                 return res.group()
 
-    def run(self):
+    def run_using_positions_mask(self):
         data_to_return = {}
         if self.supplier:
             list_of_fields = self.database.select({

@@ -397,7 +397,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     # Find custom informations using mask
     if custom_fields_to_find or not workflow_settings['input']['apply_process']:
         custom_fields = FindCustom(ocr.header_text, log, regex, config, ocr, files, supplier, file, database,
-                                   docservers, datas['form_id'], custom_fields_to_find).run()
+                                   docservers, datas['form_id'], custom_fields_to_find).run_using_positions_mask()
         if custom_fields:
             for field in custom_fields:
                 datas.update({field: custom_fields[field][0]})
