@@ -585,7 +585,7 @@ def test_openads_connection(args):
     return {'status': True}, 200
 
 
-def validate(data):
+def export_batch(data):
     if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context\
             and 'configurations' in current_context:
         log = current_context.log

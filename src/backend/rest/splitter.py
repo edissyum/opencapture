@@ -189,14 +189,14 @@ def save_info():
     return make_response(jsonify(response)), status
 
 
-@bp.route('splitter/validate', methods=['POST'])
+@bp.route('splitter/export', methods=['POST'])
 @auth.token_required
-def validate():
+def export():
     if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/validate'}), 403
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/export'}), 403
 
     data = json.loads(request.data)
-    response, status = splitter.validate(data)
+    response, status = splitter.export_batch(data)
     return make_response(jsonify(response)), status
 
 

@@ -1229,7 +1229,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }
             _documents.push(_document);
         }
-        this.http.post(environment['url'] + '/ws/splitter/validate',
+        this.http.post(environment['url'] + '/ws/splitter/export',
             {
                 'documents'           : _documents,
                 'batchMetadata'       : batchMetadata,
