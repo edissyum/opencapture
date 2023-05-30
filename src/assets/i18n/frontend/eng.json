@@ -310,6 +310,7 @@
 		"email": "Email address",
 		"number_float": "Floating number [0-90.0-0.9]",
 		"number_int": "Integer number [0-9]",
+		"regex": "Regular expression (REGEX)",
 		"select": "List of choices",
 		"text": "String",
 		"textarea": "Textarea"

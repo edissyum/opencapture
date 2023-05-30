@@ -94,6 +94,7 @@ export class CustomFieldsComponent implements OnInit {
             label       : this.translate.instant('CUSTOM-FIELDS.type'),
             options     : [
                 {key: 'text', value: this.translate.instant('FORMATS.text')},
+                {key: 'regex', value: this.translate.instant('FORMATS.regex')},
                 {key: 'date', value: this.translate.instant('FORMATS.date')},
                 {key: 'textarea', value: this.translate.instant('FORMATS.textarea')},
                 {key: 'select', value: this.translate.instant('FORMATS.select')},
@@ -237,6 +238,18 @@ export class CustomFieldsComponent implements OnInit {
         this.addFieldInputs.forEach((element: any) => {
             if (element.field_id === 'type') {
                 if (element.control.value && (element.control.value === 'checkbox' || element.control.value === 'select')) {
+                    _return = true;
+                }
+            }
+        });
+        return _return;
+    }
+
+    displayRegex() {
+        let _return = false;
+        this.addFieldInputs.forEach((element: any) => {
+            if (element.field_id === 'type') {
+                if (element.control.value && element.control.value === 'regex') {
                     _return = true;
                 }
             }
