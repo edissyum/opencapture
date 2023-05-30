@@ -83,7 +83,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     batches                     : any[]         = [];
     forms                       : any[]         = [];
     status                      : any[]         = [];
-    outputs                     : any[]         = [];
     metadata                    : any[]         = [];
     documents                   : any[]         = [];
     movedPages                  : any[]         = [];
@@ -113,6 +112,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         inputId             : -1,
         pageIdInLoad        : -1,
         previousFormId      : -1,
+        outputs             : [],
         status              : '',
         maxSplitIndex       : 0,
         selectedPagesCount  : 0,
@@ -222,6 +222,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     previousFormId      : data.batches[0]['form_id'],
                     customFieldsValues  : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
                     selectedPagesCount  : 0,
+                    outputs             : [],
                     maxSplitIndex       : 0,
                     selectedPageId      : 0,
                     selectedDocument    : {
@@ -267,22 +268,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     loadOutputsData(): void {
         this.loading = true;
-        this.outputs = [];
-        this.http.get(environment['url'] + '/ws/forms/splitter/getById/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
-            tap((formData: any) => {
-                for (const outputsId of formData['outputs']) {
-                    this.http.get(environment['url'] + '/ws/outputs/splitter/getById/' + outputsId, {headers: this.authService.headers}).pipe(
-                        tap((outputsData: any) => {
-                            this.outputs.push(outputsData['output_label']);
-                        }),
-                        catchError((err: any) => {
-                            this.loading = false;
-                            this.notify.handleErrors(err);
-                            console.debug(err);
-                            return of(false);
-                        })
-                    ).subscribe();
-                }
+
+        this.http.get(environment['url'] + '/ws/splitter/batch/' + this.currentBatch.id + '/outputs', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.currentBatch.outputs = data.outputs;
+                console.log("this.currentBatch.outputs : ");
+                console.log(this.currentBatch.outputs);
+
             }),
             catchError((err: any) => {
                 this.loading = false;
@@ -1229,7 +1221,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }
             _documents.push(_document);
         }
-        this.http.post(environment['url'] + '/ws/splitter/validate',
+        this.http.post(environment['url'] + '/ws/splitter/export',
             {
                 'documents'           : _documents,
                 'batchMetadata'       : batchMetadata,
@@ -1269,7 +1261,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             _documents.push(_document);
         }
 
-        this.http.post(environment['url'] + '/ws/splitter/saveInfo',
+        this.http.post(environment['url'] + '/ws/splitter/saveModifications',
             {
                 'documents'           : _documents,
                 'movedPages'          : this.movedPages,
@@ -1291,6 +1283,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    getOutputsLabels(): string {
+        const outputsLabels = [];
+        for (const output of this.currentBatch.outputs) {
+            outputsLabels.push(output.label);
+        }
+        return outputsLabels.join(', ');
     }
     /* -- End toolbar -- */
 }
