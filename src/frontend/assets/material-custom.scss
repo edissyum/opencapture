@@ -1,3 +1,7 @@
+.mdc-floating-label--required:not(.mdc-floating-label--hide-required-marker)::after {
+    @apply ml-0.5 #{!important};
+}
+
 .mdc-tooltip--shown .mdc-tooltip__surface-animation {
     @apply max-w-sm #{!important};
 }

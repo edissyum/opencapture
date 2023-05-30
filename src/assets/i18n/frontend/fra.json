@@ -1046,6 +1046,7 @@
 		"confirm_delete": "Êtes-vous sûr de vouloir supprimer le workflow <strong>{{ workflow }}</strong> ?",
 		"confirm_duplicate": "Êtes-vous sûr de vouloir dupliquer le workflow <strong>{{ workflow }}</strong> ?",
 		"create": "Créer le workflow",
+		"custom_fields_to_search": "Champs personnalisés à rechercher",
 		"delete_documents": "Supprimer le(s) document(s) après traitement",
 		"delete_documents_hint": "Toutes les données liées au document (BDD et docservers) seront supprimées après execution du workflow",
 		"duplicate": "Dupliquer le workflow",

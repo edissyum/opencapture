@@ -32,12 +32,12 @@ import { NotificationService } from "../../../../../services/notifications/notif
     selector: 'app-workflow-builder',
     templateUrl: './workflow-builder.component.html',
     styleUrls: ['./workflow-builder.component.scss'],
-    providers: [
-        {
-            provide: STEPPER_GLOBAL_OPTIONS,
-            useValue: {displayDefaultIndicatorType: false},
-        }
-    ]
+    providers: [{
+        provide: STEPPER_GLOBAL_OPTIONS,
+        useValue: {
+            displayDefaultIndicatorType: false
+        },
+    }]
 })
 export class WorkflowBuilderComponent implements OnInit {
     loading         : boolean       = true;
@@ -148,7 +148,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 type: 'select',
                 control: new FormControl(['name', 'invoice_number', 'quotation_number', 'document_date', 'document_due_date', 'footer']),
                 required: false,
-                show: false,
+                show: true,
                 values: [
                     {
                         'id': 'name',
@@ -179,6 +179,15 @@ export class WorkflowBuilderComponent implements OnInit {
                         'label': this.translate.instant('WORKFLOW.footer'),
                     }
                 ]
+            },
+            {
+                id: 'custom_fields',
+                multiple: true,
+                label: this.translate.instant('WORKFLOW.custom_fields_to_search'),
+                type: 'select',
+                control: new FormControl(),
+                required: false,
+                show: true
             },
             {
                 id: 'rotation',
@@ -396,6 +405,23 @@ export class WorkflowBuilderComponent implements OnInit {
             })
         ).subscribe();
 
+        this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if (data.customFields) {
+                    this.fields['process'].forEach((element: any) => {
+                        if (element.id === 'custom_fields') {
+                            element.values = data.customFields;
+                        }
+                    });
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.fields['input'].forEach((element: any) => {
             if (element.id === 'apply_process') {
                 element.control.valueChanges.subscribe((value: any) => {
@@ -447,7 +473,7 @@ export class WorkflowBuilderComponent implements OnInit {
         }
 
         this.fields['process'].forEach((element: any) => {
-            if (element.id === 'form_id' || element.id === 'system_fields' || element.id === 'allow_automatic_validation' || element.id === 'override_supplier_form') {
+            if (element.id === 'form_id' || element.id === 'allow_automatic_validation' || element.id === 'override_supplier_form') {
                 element.show = this.useInterface;
                 if (element.type !== 'boolean') {
                     element.required = this.useInterface;
