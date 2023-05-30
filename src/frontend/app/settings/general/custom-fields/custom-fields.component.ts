@@ -94,7 +94,7 @@ export class CustomFieldsComponent implements OnInit {
             label       : this.translate.instant('CUSTOM-FIELDS.type'),
             options     : [
                 {key: 'text', value: this.translate.instant('FORMATS.text')},
-                {key: 'regex', value: this.translate.instant('FORMATS.regex')},
+                {key: 'regex', value: this.translate.instant('FORMATS.regex'), module: 'verifier'},
                 {key: 'date', value: this.translate.instant('FORMATS.date')},
                 {key: 'textarea', value: this.translate.instant('FORMATS.textarea')},
                 {key: 'select', value: this.translate.instant('FORMATS.select')},
@@ -194,6 +194,19 @@ export class CustomFieldsComponent implements OnInit {
         }
         this.isSplitter = _return;
         return _return;
+    }
+
+    displayType(event: any) {
+        this.addFieldInputs.forEach((element: any) => {
+            if (element.field_id === 'type') {
+                element.options.forEach((option: any) =>  {
+                    option.hide = false;
+                    if (option.module && option.module !== event.value) {
+                        option.hide = true;
+                    }
+                });
+            }
+        });
     }
 
     retrieveCustomFields() {
