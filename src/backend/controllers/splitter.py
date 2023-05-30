@@ -451,7 +451,7 @@ def get_output_parameters(parameters):
     return data
 
 
-def save_infos(data):
+def save_modifications(data):
     new_documents = []
     res = splitter.update_batch({
         'batch_id': data['batch_id'],
@@ -602,7 +602,7 @@ def export_batch(data):
 
     exported_files = []
 
-    save_response = save_infos({
+    save_response = save_modifications({
         'batch_id': data['batchId'],
         'documents': data['documents'],
         'moved_pages': data['movedPages'],
@@ -613,7 +613,7 @@ def export_batch(data):
     if save_response[1] != 200:
         return save_response
 
-    export_res = splitter_exports.launch_outputs(data['batchId'], log, docservers, configurations, regex)
+    export_res = splitter_exports.export_batch(data['batchId'], log, docservers, configurations, regex)
     return export_res
 
 def get_split_methods():

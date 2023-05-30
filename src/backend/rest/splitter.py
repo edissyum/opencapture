@@ -170,11 +170,11 @@ def get_page_full_thumbnail(page_id):
     return make_response(jsonify(response)), status
 
 
-@bp.route('splitter/saveInfo', methods=['POST'])
+@bp.route('splitter/saveModifications', methods=['POST'])
 @auth.token_required
-def save_info():
+def save_modifications():
     if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/saveInfo'}), 403
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/saveModifications'}), 403
 
     data = json.loads(request.data)
     data = {
@@ -185,7 +185,7 @@ def save_info():
         'deleted_pages_ids': data['deletedPagesIds'],
         'deleted_documents_ids': data['deletedDocumentsIds']
     }
-    response, status = splitter.save_infos(data)
+    response, status = splitter.save_modifications(data)
     return make_response(jsonify(response)), status
 
 

@@ -32,10 +32,9 @@ def get_output_parameters(parameters):
     return data
 
 
-def launch_outputs(batch_id, log, docservers, configurations, regex):
+def export_batch(batch_id, log, docservers, configurations, regex):
     export_date = _Files.get_now_date()
     exported_files = []
-
     batch = splitter.retrieve_batches({
         'batch_id': None,
         'page': None,
@@ -96,7 +95,7 @@ def launch_outputs(batch_id, log, docservers, configurations, regex):
     if form[0]['settings']['export_zip_file']:
         compress_outputs_result(batch, exported_files, form[0]['settings']['export_zip_file'])
 
-    process_after_outputs(batch, 'END', workflow_settings, docservers, log)
+    process_after_outputs(batch, 'NEW', workflow_settings, docservers, log)
     return True, 200
 
 
