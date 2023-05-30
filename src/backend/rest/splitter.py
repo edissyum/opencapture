@@ -289,3 +289,13 @@ def test_openads_connection():
     data = json.loads(request.data)
     response, status = splitter.test_openads_connection(data['args'])
     return make_response(jsonify(response)), status
+
+
+@bp.route('splitter/batch/<int:batch_id>/outputs', methods=['GET'])
+@auth.token_required
+def get_batch_outputs(batch_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/splitter/batch/{batch_id}/outputs'}), 403
+
+    outputs, status = splitter.get_batch_outputs(batch_id)
+    return make_response(jsonify(outputs)), status

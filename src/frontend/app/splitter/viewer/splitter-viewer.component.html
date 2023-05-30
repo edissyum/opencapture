@@ -426,8 +426,8 @@
                             {{ 'GLOBAL.quit' | translate }}
                         </button>
                         <button mat-button (click)="validateWithConfirmation()" type="submit"
-                                [disabled]="outputs.length === 0 || currentBatch.status !== 'NEW' || documents.length === 0"
-                                [ngClass]="outputs.length === 0 || currentBatch.status !== 'NEW' || documents.length === 0 ?
+                                [disabled]="this.currentBatch.outputs.length === 0 || this.currentBatch.status !== 'NEW' || documents.length === 0"
+                                [ngClass]="this.currentBatch.outputs.length === 0 || this.currentBatch.status !== 'NEW' || documents.length === 0 ?
                                 'bg-gray-400 border-gray-400' : 'bg-green-400 border-green-400 hover:bg-transparent hover:text-gray-900 transition duration-300'"
                                 class="p-6 border border-solid text-white">
                             <span *ngIf="!validateLoading">{{ 'FORMS.validate' | translate }}</span>
@@ -436,8 +436,8 @@
                             </span>
                         </button>
                         <div class="text-gray-400 -mt-2 col-start-2">
-                            <span>{{ outputs.join(', ') }}</span>
-                            <span class="text-red-500" *ngIf="this.outputs.length === 0">{{ 'OUTPUT.no_output_configured' | translate }}</span>
+                            <span >{{ getOutputsLabels() }}</span>
+                            <span class="text-red-500" *ngIf="this.currentBatch.outputs.length === 0">{{ 'OUTPUT.no_output_configured' | translate }}</span>
                         </div>
                     </div>
                 </mat-card-content>

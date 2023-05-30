@@ -15,7 +15,6 @@
 
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-import re
 import json
 import uuid
 import pypdf
@@ -24,16 +23,15 @@ import shutil
 import secrets
 import os.path
 import datetime
-import pandas as pd
 from flask_babel import gettext
 from src.backend import splitter_exports
 from src.backend.main_splitter import launch
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
-from src.backend.import_controllers import forms, outputs, user, monitoring
-from src.backend.import_models import splitter, doctypes, accounts, workflow, history
-from src.backend.import_classes import _Files, _Splitter, _CMIS, _MEMWebServices, _OpenADS
+from src.backend.import_controllers import user, monitoring
+from src.backend.import_classes import _Files, _Splitter, _CMIS, _OpenADS
+from src.backend.import_models import splitter, doctypes, accounts, history, workflow, outputs, forms
 
 
 def handle_uploaded_file(files, workflow_id, user_id):
@@ -121,17 +119,17 @@ def launch_referential_update(form_data):
 
 
 def retrieve_referential(form_id):
-    form = forms.get_form_by_id(form_id)
-    if form and form[0]['settings']['metadata_method']:
+    form, _ = forms.get_form_by_id({'form_id': form_id})
+    if form['settings']['metadata_method']:
         res = launch_referential_update({
-            'form_id': form[0]['id'],
-            'metadata_method': form[0]['settings']['metadata_method']
+            'form_id': form['id'],
+            'metadata_method': form['settings']['metadata_method']
         })
         if res[1] != 200:
             return res
     metadata, error = splitter.retrieve_metadata({
         'type': 'referential',
-        'form_id': str(form[0]['id'])
+        'form_id': str(form['id'])
     })
 
     response = {
@@ -192,7 +190,7 @@ def retrieve_batches(data):
     count, error_count = splitter.count_batches(args)
     if not error_batches and not error_count:
         for index, batch in enumerate(batches):
-            form = forms.get_form_by_id(batch['form_id'])
+            form = forms.get_form_by_id({'form_id': batch['form_id']})
             batches[index]['form_label'] = form[0]['label'] if 'label' in form[0] else gettext('FORM_UNDEFINED')
 
             customer = accounts.get_customer_by_id({'customer_id': batch['customer_id']})
@@ -227,9 +225,7 @@ def download_original_file(batch_id):
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
 
-    res = splitter.get_batch_by_id({
-        'id': batch_id
-    })
+    res = splitter.get_batch_by_id({'id': batch_id})
     if res[0]:
         try:
             batch = res[0]
@@ -280,6 +276,7 @@ def delete_batches(args):
             "message": ''
         }
         return response, 400
+
 
 def update_status(args):
     for _id in args['ids']:
@@ -616,6 +613,7 @@ def export_batch(data):
     export_res = splitter_exports.export_batch(data['batchId'], log, docservers, configurations, regex)
     return export_res
 
+
 def get_split_methods():
     if 'docservers' in current_context:
         docservers = current_context.docservers
@@ -767,3 +765,37 @@ def get_unseen(user_id):
         'data': ['NEW', user_customers[0]]
     })[0]
     return total_unseen, 200
+
+
+def get_batch_outputs(batch_id):
+    outputs_id = []
+    _outputs = []
+
+    batch, _ = splitter.get_batch_by_id({'id': batch_id})
+    workflow_settings, error = workflow.get_workflow_by_id({'workflow_id': batch['workflow_id']})
+    if error:
+        response = {
+            "errors": gettext('GET_BATCH_OUTPUTS_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400
+
+    if workflow_settings['process']['use_interface'] and batch['form_id']:
+        form, error = forms.get_form_by_id({'form_id': batch['form_id']})
+        if error:
+            return error, 400
+        outputs_id = form['outputs']
+    else:
+        outputs_id = workflow_settings['output']['outputs_id']
+
+    for output_id in outputs_id:
+        output, error = outputs.get_output_by_id({'output_id': output_id})
+        if error:
+            return error, 400
+        _outputs.append({
+            'id': output['id'],
+            'type': output['output_type_id'],
+            'label': output['output_label'],
+        })
+
+    return {'outputs': _outputs}, 200

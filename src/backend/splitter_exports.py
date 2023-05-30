@@ -57,19 +57,20 @@ def export_batch(batch_id, log, docservers, configurations, regex):
 
     batch['documents'] = documents
     batch['export_date'] = export_date
+    batch['pdf_output_compress_file'] = ''
 
     workflow_settings, error = workflow.get_workflow_by_id({'workflow_id': batch['workflow_id']})
     if error:
         return error, 400
 
     if workflow_settings['process']['use_interface']:
-        outputs_id = workflow_settings['output']['outputs_id']
-    else:
         form, error = forms.get_form_by_id({'form_id': batch['form_id']})
         if error:
             return error, 400
         outputs_id = form['outputs']
         export_zip_file = form['settings']['export_zip_file']
+    else:
+        outputs_id = workflow_settings['output']['outputs_id']
 
     for output_id in outputs_id:
         output = outputs.get_output_by_id({'output_id': output_id})
@@ -105,7 +106,7 @@ def export_batch(batch_id, log, docservers, configurations, regex):
     if export_zip_file:
         compress_outputs_result(batch, exported_files, export_zip_file)
 
-    process_after_outputs(batch, 'END', workflow_settings, docservers, log)
+    process_after_outputs(batch, 'NEW', workflow_settings, docservers, log)
     return True, 200
 
 
