@@ -80,7 +80,6 @@ class FindCustom:
                             else:
                                 data_to_return[index] = [data, position, list_of_fields['pages'][index]]
 
-        if self.supplier:
             custom_with_position = self.database.select({
                 'select': [
                     "positions -> '" + str(self.form_id) + "' as positions"
@@ -89,6 +88,7 @@ class FindCustom:
                 'where': ['vat_number = %s', 'status <> %s'],
                 'data': [self.supplier[0], 'DEL']
             })[0]
+
             if custom_with_position and custom_with_position['positions']:
                 for field in custom_with_position['positions']:
                     if 'custom_' in field:
