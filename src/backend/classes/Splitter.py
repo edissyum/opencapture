@@ -338,9 +338,9 @@ class Splitter:
         xml_as_string = xml_as_string.replace('#date', date)
         xml_as_string = xml_as_string.replace('#documents_count', str(len(documents)))
         xml_as_string = xml_as_string.replace('#random', str(random.randint(0, 99999)).zfill(5))
-        xml_as_string = xml_as_string.replace('#user_lastname', str(metadata['custom_fields']['userLastName']))
-        xml_as_string = xml_as_string.replace('#user_firstname', str(metadata['custom_fields']['userFirstName']))
-        xml_as_string = xml_as_string.replace('#pdf_output_compress_file', str(metadata['pdf_output_compress_file']))
+        xml_as_string = xml_as_string.replace('#user_lastname', metadata['custom_fields']['userLastName'])
+        xml_as_string = xml_as_string.replace('#user_firstname', metadata['custom_fields']['userFirstName'])
+        xml_as_string = xml_as_string.replace('#pdf_output_compress_file', metadata['pdf_output_compress_file'])
 
         """
             Add batch metadata
