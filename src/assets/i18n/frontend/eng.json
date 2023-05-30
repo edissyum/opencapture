@@ -1046,6 +1046,7 @@
 		"confirm_delete": "Are you sure you want to delete workflow <strong>{{ workflow }}</strong> ?",
 		"confirm_duplicate": "Are you sure you want to duplicate workflow <strong>{{ workflow }}</strong> ?",
 		"create": "Create workflow",
+		"custom_fields_to_search": "Custom fields to search",
 		"delete_documents": "Delete documents after processing",
 		"delete_documents_hint": "Documents and database related informations will be deleted after processing",
 		"duplicate": "Duplicate workflow",

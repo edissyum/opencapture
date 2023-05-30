@@ -458,10 +458,9 @@ def export_pdf(document_id, data):
 def export_facturx(document_id, data):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
-        if 'configurations' in current_context and 'log' in current_context and 'regex' in current_context:
+        if 'log' in current_context and 'regex' in current_context:
             log = current_context.log
             regex = current_context.regex
-            configurations = current_context.configurations
         else:
             custom_id = retrieve_custom_from_url(request)
             _vars = create_classes_from_custom_id(custom_id)
