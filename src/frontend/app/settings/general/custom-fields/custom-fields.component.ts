@@ -36,11 +36,12 @@ import { remove } from "remove-accents";
 @Component({
     selector: 'app-custom-fields',
     templateUrl: './custom-fields.component.html',
-    styleUrls: ['./custom-fields.component.scss'],
+    styleUrls: ['./custom-fields.component.scss']
 })
 export class CustomFieldsComponent implements OnInit {
     update              : boolean   = false;
     loading             : boolean   = true;
+    isSplitter          : boolean   = false;
     inactiveFields      : any[]     = [];
     activeFields        : any[]     = [];
     selectOptions       : any[]     = [];
@@ -190,6 +191,7 @@ export class CustomFieldsComponent implements OnInit {
                 }
             });
         }
+        this.isSplitter = _return;
         return _return;
     }
 

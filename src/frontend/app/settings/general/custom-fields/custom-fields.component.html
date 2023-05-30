@@ -28,34 +28,31 @@
                          (click)="resetForm()">
                         <i class="self-center fa-solid fa-sync fa-lg hover:text-green-400"></i>
                     </div>
-                    <div class="mx-12 grid grid-cols-6 gap-4">
+                    <div class="mx-12 grid grid-cols-4 gap-4" [class.grid-cols-5]="isSplitter">
                         <div *ngFor="let input of addFieldInputs">
-                            <mat-form-field class="w-full" *ngIf="!input.limit || (input.limit && displayInput(input))">
-                                <mat-label [attr.for]="input.field_id">{{ input.label | translate }}</mat-label>
-                                <div [ngSwitch]="input.controlType">
-                                    <div *ngSwitchCase="'text'">
-                                        <input matInput [formControl]="input.control" [id]="input.field_id"
-                                               [type]="input.type" [matAutocomplete]="autocomplete">
-                                        <mat-autocomplete #autocomplete="matAutocomplete">
-                                            <div *ngIf="input.control.value === null || input.control.value === '' || input.control.value === undefined">
-                                                <mat-option *ngFor="let option of input.autoComplete" [value]="option.key">
-                                                    <span style="font-size: 12px;" [innerHTML]="option.value"></span>
-                                                    <span style="font-size: 10px;" class="text-green-400 ml-3">{{ option.key }}</span>
-                                                </mat-option>
-                                            </div>
-                                        </mat-autocomplete>
-                                    </div>
-                                    <div *ngSwitchCase="'dropdown'">
-                                        <mat-select [id]="input.field_id"
-                                                    [formControl]="input.control">
-                                            <mat-option *ngFor="let opt of input.options"
-                                                        [value]="opt.key">
-                                                {{ opt.value | translate }}
+                            <div *ngIf="!input.limit || (input.limit && displayInput(input))">
+                                <mat-form-field *ngIf="input['controlType'] === 'text'" class="w-full">
+                                    <mat-label>{{ input.label | translate }}</mat-label>
+                                    <input matInput [formControl]="input.control" [id]="input.field_id"
+                                           [type]="input.type" [matAutocomplete]="autocomplete">
+                                    <mat-autocomplete #autocomplete="matAutocomplete" [panelWidth]="'auto'">
+                                        <span *ngIf="input.control.value === null || input.control.value === '' || input.control.value === undefined">
+                                            <mat-option *ngFor="let option of input.autoComplete" [value]="option.key">
+                                                <span class="text-md" [innerHTML]="option.value | translate"></span>
+                                                <span class="text-sm" class="text-green-400 ml-3">{{ option.key }}</span>
                                             </mat-option>
-                                        </mat-select>
-                                    </div>
-                                </div>
-                            </mat-form-field>
+                                        </span>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                                <mat-form-field *ngIf="input['controlType'] === 'dropdown'" class="w-full">
+                                    <mat-label>{{ input.label | translate }}</mat-label>
+                                    <mat-select [id]="input.field_id" [formControl]="input.control">
+                                        <mat-option *ngFor="let opt of input.options" [value]="opt.key">
+                                            {{ opt.value | translate }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
                         </div>
                     </div>
                     <div class="flex justify-center" *ngIf="displayChoicesList()">
