@@ -28,68 +28,71 @@
                          (click)="resetForm()">
                         <i class="self-center fa-solid fa-sync fa-lg hover:text-green-400"></i>
                     </div>
-                    <div class="mx-12 grid grid-cols-6 gap-4">
+                    <div class="mx-12 grid grid-cols-4 gap-4" [class.grid-cols-5]="isSplitter">
                         <div *ngFor="let input of addFieldInputs">
-                            <mat-form-field class="w-full" *ngIf="!input.limit || (input.limit && displayInput(input))">
-                                <mat-label [attr.for]="input.field_id">{{ input.label | translate }}</mat-label>
-                                <div [ngSwitch]="input.controlType">
-                                    <div *ngSwitchCase="'text'">
-                                        <input matInput [formControl]="input.control" [id]="input.field_id"
-                                               [type]="input.type" [matAutocomplete]="autocomplete">
-                                        <mat-autocomplete #autocomplete="matAutocomplete">
-                                            <div *ngIf="input.control.value === null || input.control.value === '' || input.control.value === undefined">
-                                                <mat-option *ngFor="let option of input.autoComplete" [value]="option.key">
-                                                    <span style="font-size: 12px;" [innerHTML]="option.value"></span>
-                                                    <span style="font-size: 10px;" class="text-green-400 ml-3">{{ option.key }}</span>
-                                                </mat-option>
-                                            </div>
-                                        </mat-autocomplete>
-                                    </div>
-                                    <div *ngSwitchCase="'dropdown'">
-                                        <mat-select [id]="input.field_id"
-                                                    [formControl]="input.control">
-                                            <mat-option *ngFor="let opt of input.options"
-                                                        [value]="opt.key">
-                                                {{ opt.value | translate }}
+                            <div *ngIf="!input.limit || (input.limit && displayInput(input))">
+                                <mat-form-field *ngIf="input['controlType'] === 'text'" class="w-full">
+                                    <mat-label>{{ input.label | translate }}</mat-label>
+                                    <input matInput [formControl]="input['control']" [id]="input.field_id"
+                                           [type]="input.type" [matAutocomplete]="autocomplete">
+                                    <mat-autocomplete #autocomplete="matAutocomplete" [panelWidth]="'auto'">
+                                        <span *ngIf="input.control.value === null || input.control.value === '' || input.control.value === undefined">
+                                            <mat-option *ngFor="let option of input['autoComplete']" [value]="option.key">
+                                                <span class="text-md" [innerHTML]="option.value | translate"></span>
+                                                <span class="text-sm text-green-400 ml-3">{{ option.key }}</span>
                                             </mat-option>
-                                        </mat-select>
-                                    </div>
-                                </div>
-                            </mat-form-field>
-                        </div>
-                    </div>
-                    <div class="flex justify-center" *ngIf="displayChoicesList()">
-                        <div>
-                            <span class="text-center">{{ 'CUSTOM-FIELDS.select_options' | translate }}</span>
-                            <div class="flex">
-                                <div cdkDropList class="select-options-list w-96"
-                                     (cdkDropListDropped)="dropSelectOption($event)">
-                                    <div *ngIf="selectOptions.length === 0" class="my-14 text-center text-gray-400">{{ 'CUSTOM-FIELDS.no_option_added' | translate }}</div>
-                                    <div class="drop-box-option p-4" *ngFor="let option of selectOptions; let optionIndex = index;" cdkDrag>
-                                        <mat-form-field class="w-40 mr-2">
-                                            <mat-label>{{ 'HEADER.id' | translate }}</mat-label>
-                                            <input matInput [formControl]="option.idControl" type="text">
-                                        </mat-form-field>
-                                        <mat-form-field class="w-40">
-                                            <mat-label>{{ 'HEADER.label' | translate }}</mat-label>
-                                            <input matInput [formControl]="option.labelControl" type="text">
-                                        </mat-form-field>
-                                        <div matTooltip="{{ 'CUSTOM-FIELDS.delete_choice' | translate }}"
-                                             (click)="deleteSelectOption(optionIndex)" class="top-0 mx-2 h-8 cursor-pointer">
-                                            <i class="fa-solid fa-trash fa-lg hover:text-green-400"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div matTooltip="{{ 'CUSTOM-FIELDS.add_choice' | translate }}"
-                                     (click)="addSelectOption()" class="top-0 mx-2 h-8 inline-block">
-                                    <i class="fa-solid fa-plus fa-lg hover:text-green-400"></i>
-                                </div>
+                                        </span>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                                <mat-form-field *ngIf="input['controlType'] === 'dropdown'" class="w-full">
+                                    <mat-label>{{ input.label | translate }}</mat-label>
+                                    <mat-select [id]="input['field_id']" [formControl]="input['control']">
+                                        <mat-option *ngFor="let opt of input.options" [value]="opt.key">
+                                            {{ opt.value | translate }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
                             </div>
                         </div>
                     </div>
+                    <div class="flex justify-center flex-col" *ngIf="displayChoicesList()">
+                        <span class="text-center">{{ 'CUSTOM-FIELDS.select_options' | translate }}</span>
+                        <div class="flex justify-center">
+                            <div cdkDropList class="select-options-list w-96"
+                                 (cdkDropListDropped)="dropSelectOption($event)">
+                                <div *ngIf="selectOptions.length === 0" class="my-14 text-center text-gray-400">{{ 'CUSTOM-FIELDS.no_option_added' | translate }}</div>
+                                <div class="drop-box-option p-4" *ngFor="let option of selectOptions; let optionIndex = index;" cdkDrag>
+                                    <mat-form-field class="w-40 mr-2">
+                                        <mat-label>{{ 'HEADER.id' | translate }}</mat-label>
+                                        <input matInput [formControl]="option.idControl" type="text">
+                                    </mat-form-field>
+                                    <mat-form-field class="w-40">
+                                        <mat-label>{{ 'HEADER.label' | translate }}</mat-label>
+                                        <input matInput [formControl]="option.labelControl" type="text">
+                                    </mat-form-field>
+                                    <div matTooltip="{{ 'CUSTOM-FIELDS.delete_choice' | translate }}"
+                                         (click)="deleteSelectOption(optionIndex)" class="top-0 mx-2 h-8 cursor-pointer">
+                                        <i class="fa-solid fa-trash fa-lg hover:text-green-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div matTooltip="{{ 'CUSTOM-FIELDS.add_choice' | translate }}"
+                                 (click)="addSelectOption()" class="top-0 mx-2 h-8 inline-block">
+                                <i class="fa-solid fa-plus fa-lg hover:text-green-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-center flex-col" *ngIf="displayRegex()">
+                        <hr class="border-green-400 w-11/12 m-auto">
+                        <div class="mx-auto mt-4">
+                            <mat-form-field>
+                                <mat-label>{{ 'CUSTOM-FIELDS.regex' | translate }}</mat-label>
+                                <input matInput type="text">
+                            </mat-form-field>
+                        </div>
+                    </div>
                     <div class="flex justify-center m-5">
-                        <button class="valid_button"
-                                mat-button (click)="addCustomField()" *ngIf="!update">
+                        <button class="valid_button" mat-button (click)="addCustomField()" *ngIf="!update">
                             {{ 'CUSTOM-FIELDS.add' | translate }}
                         </button>
                         <button class="valid_button"
