@@ -49,6 +49,22 @@ export class CustomFieldsComponent implements OnInit {
     regexResult         : string        = '';
     regexControl        : FormControl   = new FormControl();
     regexTestControl    : FormControl   = new FormControl();
+    regexRemoveKeyWord  : FormControl   = new FormControl();
+    regexFormat         : FormControl   = new FormControl();
+    formats             : any[]         = [
+        {
+            'id': 'text',
+            'label': this.translate.instant('FORMATS.text')
+        },
+        {
+            'id': 'date',
+            'label': this.translate.instant('FORMATS.date')
+        },
+        {
+            'id': 'integer',
+            'label': this.translate.instant('FORMATS.number')
+        }
+    ];
     updateCustomId      : any;
     form!               : FormGroup;
     parent              : any[]         = [
@@ -177,13 +193,23 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     checkRegex() {
-        const regex = new RegExp(this.regexControl.value, 'g');
-        this.regexResult = this.regexTestControl.value.replace(regex, function(str: any) {
-            if (str) {
-                return '<span class="text-white bg-green-400 p-1">' + str + '</span>';
+        const regex = new RegExp(this.regexControl.value, 'gi');
+        if (this.regexTestControl.value) {
+            this.regexResult = this.regexTestControl.value.replace(regex, function(str: any) {
+                if (str) {
+                    return '<span class="text-white bg-green-400 p-1">' + str + '</span>';
+                }
+                return str;
+            });
+            if (this.regexRemoveKeyWord.value) {
+                const regex = new RegExp(this.regexControl.value.substring(0, this.regexControl.value.length - 2), 'gi');
+                const tmp = this.regexTestControl.value.match(regex);
+                this.regexResult = this.regexResult.replace('<span class="text-white bg-green-400 p-1">', '');
+                this.regexResult = this.regexResult.replace('</span>', '');
+                const colored = '<span class="text-white bg-green-400 p-1">' + this.regexResult.replace(tmp, '') + '</span>';
+                this.regexResult = tmp + colored;
             }
-            return str;
-        });
+        }
     }
 
     moveToActive(index: number) {
@@ -213,10 +239,7 @@ export class CustomFieldsComponent implements OnInit {
         this.addFieldInputs.forEach((element: any) => {
             if (element.field_id === 'type') {
                 element.options.forEach((option: any) =>  {
-                    option.hide = false;
-                    if (option.module && option.module !== event.value) {
-                        option.hide = true;
-                    }
+                    option.hide = option.module && option.module !== event.value;
                 });
             }
         });
