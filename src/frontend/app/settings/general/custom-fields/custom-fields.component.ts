@@ -39,16 +39,19 @@ import { remove } from "remove-accents";
     styleUrls: ['./custom-fields.component.scss']
 })
 export class CustomFieldsComponent implements OnInit {
-    update              : boolean   = false;
-    loading             : boolean   = true;
-    isSplitter          : boolean   = false;
-    inactiveFields      : any[]     = [];
-    activeFields        : any[]     = [];
-    selectOptions       : any[]     = [];
-    inactiveOrActive    : string    = '';
+    update              : boolean       = false;
+    loading             : boolean       = true;
+    isSplitter          : boolean       = false;
+    inactiveFields      : any[]         = [];
+    activeFields        : any[]         = [];
+    selectOptions       : any[]         = [];
+    inactiveOrActive    : string        = '';
+    regexResult         : string        = '';
+    regexControl        : FormControl   = new FormControl();
+    regexTestControl    : FormControl   = new FormControl();
     updateCustomId      : any;
     form!               : FormGroup;
-    parent              : any[]     = [
+    parent              : any[]         = [
         {
             'id': 'verifier',
             'label': this.translate.instant('HOME.verifier')
@@ -58,7 +61,7 @@ export class CustomFieldsComponent implements OnInit {
             'label': this.translate.instant('HOME.splitter')
         }
     ];
-    addFieldInputs      : any[]     = [
+    addFieldInputs      : any[]         = [
         {
             field_id    : 'label_short',
             controlType : 'text',
@@ -94,7 +97,7 @@ export class CustomFieldsComponent implements OnInit {
             label       : this.translate.instant('CUSTOM-FIELDS.type'),
             options     : [
                 {key: 'text', value: this.translate.instant('FORMATS.text')},
-                {key: 'regex', value: this.translate.instant('FORMATS.regex')},
+                {key: 'regex', value: this.translate.instant('FORMATS.regex'), module: 'verifier'},
                 {key: 'date', value: this.translate.instant('FORMATS.date')},
                 {key: 'textarea', value: this.translate.instant('FORMATS.textarea')},
                 {key: 'select', value: this.translate.instant('FORMATS.select')},
@@ -120,7 +123,7 @@ export class CustomFieldsComponent implements OnInit {
             class       : "",
         },
     ];
-    unallowedFields    : any[]     = ['vat_rate', 'vat_amount', 'no_rate_amount', 'description', 'line_ht',
+    unallowedFields     : any[]         = ['vat_rate', 'vat_amount', 'no_rate_amount', 'description', 'line_ht',
         'unit_price', 'quantity']
 
     constructor(
@@ -173,6 +176,16 @@ export class CustomFieldsComponent implements OnInit {
         return new FormGroup(group);
     }
 
+    checkRegex() {
+        const regex = new RegExp(this.regexControl.value, 'g');
+        this.regexResult = this.regexTestControl.value.replace(regex, function(str: any) {
+            if (str) {
+                return '<span class="text-white bg-green-400 p-1">' + str + '</span>';
+            }
+            return str;
+        });
+    }
+
     moveToActive(index: number) {
         this.enableCustomField(this.inactiveFields, this.activeFields, index, this.activeFields.length);
     }
@@ -194,6 +207,19 @@ export class CustomFieldsComponent implements OnInit {
         }
         this.isSplitter = _return;
         return _return;
+    }
+
+    displayType(event: any) {
+        this.addFieldInputs.forEach((element: any) => {
+            if (element.field_id === 'type') {
+                element.options.forEach((option: any) =>  {
+                    option.hide = false;
+                    if (option.module && option.module !== event.value) {
+                        option.hide = true;
+                    }
+                });
+            }
+        });
     }
 
     retrieveCustomFields() {

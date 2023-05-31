@@ -46,10 +46,13 @@
                                 </mat-form-field>
                                 <mat-form-field *ngIf="input['controlType'] === 'dropdown'" class="w-full">
                                     <mat-label>{{ input.label | translate }}</mat-label>
-                                    <mat-select [id]="input['field_id']" [formControl]="input['control']">
-                                        <mat-option *ngFor="let opt of input.options" [value]="opt.key">
-                                            {{ opt.value | translate }}
-                                        </mat-option>
+                                    <mat-select [id]="input['field_id']" [formControl]="input['control']"
+                                                (selectionChange)="input['field_id'] === 'module' ? displayType($event) : ''">
+                                        <ng-container *ngFor="let opt of input.options">
+                                            <mat-option *ngIf="!opt['hide']" [value]="opt.key">
+                                                {{ opt.value | translate }}
+                                            </mat-option>
+                                        </ng-container>
                                     </mat-select>
                                 </mat-form-field>
                             </div>
@@ -84,11 +87,18 @@
                     </div>
                     <div class="flex justify-center flex-col" *ngIf="displayRegex()">
                         <hr class="border-green-400 w-11/12 m-auto">
-                        <div class="mx-auto mt-4">
-                            <mat-form-field>
-                                <mat-label>{{ 'CUSTOM-FIELDS.regex' | translate }}</mat-label>
-                                <input matInput type="text">
+                        <div class="mx-auto w-11/12 mt-4">
+                            <mat-form-field class="w-full">
+                                <mat-label>{{ 'FORMATS.regex' | translate }}</mat-label>
+                                <input matInput type="text" [formControl]="regexControl" (keyup)="checkRegex()">
                             </mat-form-field>
+                            <mat-form-field class="w-full">
+                                <mat-label>{{ 'FORMATS.test_string' | translate }}</mat-label>
+                                <input matInput type="text" [formControl]="regexTestControl" (keyup)="checkRegex()">
+                            </mat-form-field>
+                            <span>
+                                Résultat de la regex : <span [innerHTML]="regexResult"></span>
+                            </span>
                         </div>
                     </div>
                     <div class="flex justify-center m-5">

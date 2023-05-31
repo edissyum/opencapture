@@ -183,6 +183,7 @@
 		"field_updated": "Field updated successfully",
 		"module": "Module",
 		"no_option_added": "No option added",
+		"regex": "",
 		"reset": "Reset",
 		"select_options": "Select options",
 		"type": "Type",

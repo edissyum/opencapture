@@ -183,6 +183,7 @@
 		"field_updated": "Champ personnalisé modifié avec succès",
 		"module": "Module",
 		"no_option_added": "Aucune option ajoutée",
+		"regex": "",
 		"reset": "Réinitialiser",
 		"select_options": "Liste des choix",
 		"type": "Type",
