@@ -39,16 +39,19 @@ import { remove } from "remove-accents";
     styleUrls: ['./custom-fields.component.scss']
 })
 export class CustomFieldsComponent implements OnInit {
-    update              : boolean   = false;
-    loading             : boolean   = true;
-    isSplitter          : boolean   = false;
-    inactiveFields      : any[]     = [];
-    activeFields        : any[]     = [];
-    selectOptions       : any[]     = [];
-    inactiveOrActive    : string    = '';
+    update              : boolean       = false;
+    loading             : boolean       = true;
+    isSplitter          : boolean       = false;
+    inactiveFields      : any[]         = [];
+    activeFields        : any[]         = [];
+    selectOptions       : any[]         = [];
+    inactiveOrActive    : string        = '';
+    regexResult         : string        = '';
+    regexControl        : FormControl   = new FormControl();
+    regexTestControl    : FormControl   = new FormControl();
     updateCustomId      : any;
     form!               : FormGroup;
-    parent              : any[]     = [
+    parent              : any[]         = [
         {
             'id': 'verifier',
             'label': this.translate.instant('HOME.verifier')
@@ -58,7 +61,7 @@ export class CustomFieldsComponent implements OnInit {
             'label': this.translate.instant('HOME.splitter')
         }
     ];
-    addFieldInputs      : any[]     = [
+    addFieldInputs      : any[]         = [
         {
             field_id    : 'label_short',
             controlType : 'text',
@@ -120,7 +123,7 @@ export class CustomFieldsComponent implements OnInit {
             class       : "",
         },
     ];
-    unallowedFields    : any[]     = ['vat_rate', 'vat_amount', 'no_rate_amount', 'description', 'line_ht',
+    unallowedFields     : any[]         = ['vat_rate', 'vat_amount', 'no_rate_amount', 'description', 'line_ht',
         'unit_price', 'quantity']
 
     constructor(
@@ -171,6 +174,16 @@ export class CustomFieldsComponent implements OnInit {
                 : new FormControl(input.value || '');
         });
         return new FormGroup(group);
+    }
+
+    checkRegex() {
+        const regex = new RegExp(this.regexControl.value, 'g');
+        this.regexResult = this.regexTestControl.value.replace(regex, function(str: any) {
+            if (str) {
+                return '<span class="text-white bg-green-400 p-1">' + str + '</span>';
+            }
+            return str;
+        });
     }
 
     moveToActive(index: number) {

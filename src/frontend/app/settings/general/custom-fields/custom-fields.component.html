@@ -90,11 +90,15 @@
                         <div class="mx-auto w-11/12 mt-4">
                             <mat-form-field class="w-full">
                                 <mat-label>{{ 'FORMATS.regex' | translate }}</mat-label>
-                                <input matInput type="text">
-                                <mat-icon matSuffix>
-                                    done
-                                </mat-icon>
+                                <input matInput type="text" [formControl]="regexControl" (keyup)="checkRegex()">
                             </mat-form-field>
+                            <mat-form-field class="w-full">
+                                <mat-label>{{ 'FORMATS.test_string' | translate }}</mat-label>
+                                <input matInput type="text" [formControl]="regexTestControl" (keyup)="checkRegex()">
+                            </mat-form-field>
+                            <span>
+                                Résultat de la regex : <span [innerHTML]="regexResult"></span>
+                            </span>
                         </div>
                     </div>
                     <div class="flex justify-center m-5">
