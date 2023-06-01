@@ -65,5 +65,7 @@ def get_process_by_token():
             for document_id in process['process'][0]['document_ids']:
                 document_data = verifier.get_document_by_id(document_id)
                 if document_data:
-                    process['document_data'][document_id] = document_data[0]['datas']
+                    document_data = document_data[0]
+                    process['document_data'][document_id] = document_data['datas']
+                    process['document_data'][document_id]['status'] = document_data['status']
     return make_response(jsonify(process)), status
