@@ -164,11 +164,12 @@ export class CustomFieldsComponent implements OnInit {
         this.addFieldInputs.forEach((element: any) => {
             if (element.field_id === 'label_short') {
                 element.control.valueChanges.subscribe((value: any) => {
-                    if (value.match(/[\u00C0-\u017F]/g) !== null) {
+                    if (value.match(/[\u00C0-\u017F]/gi) !== null) {
                         element.control.setValue(remove(value));
                     }
-                    if (value.match(/[^\u00C0-\u017Fa-zA-Z]/g) !== null) {
-                        element.control.setValue(value.replace(/[^\u00C0-\u017Fa-zA-Z]/g, ""));
+
+                    if (value.match(/[!-\/=£`°\\|\]\[@\{\}]/g) !== null) {
+                        element.control.setValue(value.replace(/[!-\/=£`°\\|\]\[@\{\}]/g, ""));
                     }
                 });
             }
