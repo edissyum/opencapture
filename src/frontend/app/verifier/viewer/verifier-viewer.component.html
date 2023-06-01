@@ -177,12 +177,12 @@
                                             </mat-label>
                                             <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
                                                   class="absolute top-0.5 -right-2 cursor-pointer text-gray-600">
-                                            <i class="fa-solid fa-circle-plus"></i>
-                                        </span>
+                                                <i class="fa-solid fa-circle-plus"></i>
+                                            </span>
                                             <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
                                                   class="absolute top-0.5 -right-2 cursor-pointer text-red-500 opacity-70">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </span>
+                                                <i class="fa-solid fa-trash"></i>
+                                            </span>
                                             <input [id]="field.id" matInput [matDatepicker]="picker" [formControl]="field['control']"
                                                    [readonly]="this.document.status === 'END'"
                                                    (focusin)="ocr($event, true, field.color)" [required]="field['required']"
