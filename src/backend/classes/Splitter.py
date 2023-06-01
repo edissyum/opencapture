@@ -332,6 +332,9 @@ class Splitter:
         second = str(metadata['export_date'].second).zfill(2)
         date = f"{day}-{month}-{year} {hour}:{minute}:{second}"
 
+        user_firstname = metadata['custom_fields']['userFirstName'] if 'userFirstName' in metadata['custom_fields'] else ''
+        user_lastname = metadata['custom_fields']['userLastName'] if 'userLastName' in metadata['custom_fields'] else ''
+
         xml_as_string = parameters['xml_template']
         doc_loop_item_template = re.search(regex['splitter_doc_loop'], xml_as_string, re.DOTALL)
 
@@ -361,8 +364,6 @@ class Splitter:
         """
             Add documents metadata
         """
-        user_firstname = metadata['custom_fields']['userFirstName'] if 'userFirstName' in metadata['custom_fields'] else ''
-        user_lastname = metadata['custom_fields']['userLastName'] if 'userLastName' in metadata['custom_fields'] else ''
         documents_tags = ""
         if doc_loop_item_template:
             for index, document in enumerate(documents):
