@@ -420,8 +420,25 @@ class Files:
             kernel = np.ones((1, 2), np.uint8)
             src = cv2.adaptiveThreshold(dst, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
             dst = cv2.erode(src, kernel)
-            cv2.imwrite(improved_img, dst)
 
+            # Remove horizontal lines
+            horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (40, 1))
+            remove_horizontal = cv2.morphologyEx(black_and_white, cv2.MORPH_OPEN, horizontal_kernel, iterations=2)
+            cnts = cv2.findContours(remove_horizontal, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+            for _c in cnts:
+                cv2.drawContours(dst, [_c], -1, (255, 255, 255), 5)
+
+            # Remove vertical lines
+            vertical_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 40))
+            remove_vertical = cv2.morphologyEx(black_and_white, cv2.MORPH_OPEN, vertical_kernel, iterations=2)
+            cnts = cv2.findContours(remove_vertical, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+
+            for _c in cnts:
+                cv2.drawContours(dst, [_c], -1, (255, 255, 255), 5)
+
+            cv2.imwrite(improved_img, dst)
         return improved_img
 
     @staticmethod
