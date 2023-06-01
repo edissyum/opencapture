@@ -80,28 +80,33 @@ def export_batch(batch_id, log, docservers, configurations, regex):
             output = output[0]
         output['parameters'] = get_output_parameters(output['data']['options']['parameters'])
 
-        match output['output_type_id']:
-            case 'export_pdf':
-                res_export_pdf, status = handle_pdf_output(batch, output, log, docservers, configurations)
-                if status != 200:
-                    return res_export_pdf, status
-                batch = res_export_pdf['result_batch']
+        if output['output_type_id'] == 'export_pdf':
+            res_export_pdf, status = handle_pdf_output(batch, output, log, docservers, configurations)
+            if status != 200:
+                return res_export_pdf, status
+            batch = res_export_pdf['result_batch']
 
-            case 'export_xml':
-                res_export_xml, status = handle_xml_output(batch, output['parameters'], regex)
-                if status != 200:
-                    return res_export_xml, status
-                batch = res_export_xml['result_batch']
+        elif output['output_type_id'] == 'export_xml':
+            res_export_xml, status = handle_xml_output(batch, output['parameters'], regex)
+            if status != 200:
+                return res_export_xml, status
+            batch = res_export_xml['result_batch']
 
-            case 'export_cmis':
-                res_export_cmis, status = handle_cmis_output(output, batch, log, docservers, configurations)
-                if status != 200:
-                    return res_export_cmis, status
+        elif output['output_type_id'] == 'export_cmis':
+            res_export_cmis, status = handle_cmis_output(output, batch, log, docservers, configurations)
+            if status != 200:
+                return res_export_cmis, status
 
-            case 'export_openads':
-                res_export_openads, status = handle_openads_output(output, batch, log, docservers, configurations)
-                if status != 200:
-                    return res_export_openads, status
+        elif output['output_type_id'] == 'export_openads':
+            res_export_openads, status = handle_openads_output(output, batch, log, docservers, configurations)
+            if status != 200:
+                return res_export_openads, status
+        else:
+            response = {
+                "errors": gettext('OUTPUT_TYPE_DOESNT_EXISTS'),
+                "message": output['output_type_id']
+            }
+            return response, 400
 
     if export_zip_file:
         compress_outputs_result(batch, exported_files, export_zip_file)

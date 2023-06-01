@@ -433,7 +433,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
         "type": "textarea",
         "label": "Contenu de fichier XML ",
         "required": "true ",
-        "placeholder": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?> ..."
+        "placeholder": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
       }
     ]
   }
