@@ -1730,7 +1730,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     changeImage(pageToShow: number, oldPage: number) {
-        if (pageToShow) {
+        if (pageToShow !== oldPage) {
             const extension = this.currentFilename.split('.').pop();
             const oldCpt = ('000' + oldPage).substr(-3);
             const newCpt = ('000' + pageToShow).substr(-3);
