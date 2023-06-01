@@ -25,6 +25,13 @@ elif 'process' in custom_array['FindDate']['path']:
     FindDate = getattr(__import__(custom_array['FindDate']['path'] + '.' + custom_array['FindDate']['module'],
                                   fromlist=[custom_array['FindDate']['module']]), custom_array['FindDate']['module'])
 
+if 'FindDueDate' or 'process' not in custom_array['FindDueDate']['path']:
+    from src.backend.process.FindDueDate import FindDueDate
+elif 'process' in custom_array['FindDueDate']['path']:
+    FindDueDate = getattr(__import__(custom_array['FindDueDate']['path'] + '.' + custom_array['FindDueDate']['module'],
+                                     fromlist=[custom_array['FindDueDate']['module']]),
+                          custom_array['FindDueDate']['module'])
+
 if 'FindFooter' or 'process' not in custom_array['FindFooter']['path']:
     from src.backend.process.FindFooter import FindFooter
 elif 'process' in custom_array['FindFooter']['path']:

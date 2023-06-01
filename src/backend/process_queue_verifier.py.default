@@ -19,6 +19,7 @@ import os
 import time
 import facturx
 import tempfile
+import traceback
 from lxml import etree
 from kuyruk import Kuyruk
 from flask_babel import gettext
@@ -211,7 +212,7 @@ def launch(args):
                     process_err = True
         except Exception as _e:
             process_err = True
-            _e = _e.__class__.__name__ + ' : ' + str(_e)
+            _e = str(traceback.format_exc())
             log.error(_e)
 
     recursive_delete(tmp_folder, log)
