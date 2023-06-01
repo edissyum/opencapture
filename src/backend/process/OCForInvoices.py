@@ -23,7 +23,7 @@ from src.backend import verifier_exports
 from src.backend.import_classes import _PyTesseract, _Files
 from src.backend.import_controllers import artificial_intelligence, verifier, accounts
 from src.backend.functions import delete_documents, rotate_document, find_form_with_ia
-from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
+from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
 
 
@@ -62,9 +62,9 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
         'img_width': str(files.get_width(path)),
         'full_jpg_filename': full_jpg_filename + '-001.jpg',
         'original_filename': original_file,
-        'positions': json.dumps(positions),
-        'datas': json.dumps(datas),
-        'pages': json.dumps(pages),
+        'positions': json.dumps(datas['positions']),
+        'datas': json.dumps(datas['datas']),
+        'pages': json.dumps(datas['pages']),
         'form_id': datas['form_id'],
         'nb_pages': nb_pages,
         'status': status,
@@ -138,7 +138,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                 insert_document = False
 
     if insert_document:
-        document_data['datas'] = json.dumps(datas)
+        document_data['datas'] = json.dumps(datas['datas'])
         document_id = database.insert({
             'table': 'documents',
             'columns': document_data
@@ -171,6 +171,59 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
             ocr.footer_last_text = ocr.line_box_builder(files.img)
             files.pdf_to_jpg(file, nb_pages, last_image=True)
             ocr.last_text = ocr.line_box_builder(files.img)
+
+
+def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_class, _res, files):
+    if 'datas' not in _res:
+        _res['datas'] = {}
+    if 'positions' not in _res:
+        _res['positions'] = {}
+    if 'pages' not in _res:
+        _res['pages'] = {}
+
+    data = data_class.run()
+    if not data:
+        improved_image = files.improve_image_detection(files.jpg_name, remove_lines=False)
+        image = files.open_image_return(improved_image)
+        text = ocr.line_box_builder(image)
+        data_class.text = text
+        data = data_class.run()
+        if not data:
+            data_class.text = ocr.header_last_text
+            data_class.footer_text = ocr.footer_last_text
+            data_class.nb_page = nb_pages
+            data_class.custom_page = True
+            data = data_class.run()
+        if data:
+            data.append(nb_pages)
+
+    i = 0
+    tmp_nb_pages = nb_pages
+    while not data:
+        tmp_nb_pages = tmp_nb_pages - 1
+        if i == 4 or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+            break
+        convert(file, files, ocr, tmp_nb_pages, True)
+        _file = files.custom_file_name
+        image = files.open_image_return(_file)
+
+        if tmp_nb_pages not in text_by_pages:
+            text_by_pages[tmp_nb_pages] = ocr.line_box_builder(image)
+
+        data_class.text = text_by_pages[tmp_nb_pages]
+        data_class.nb_page = tmp_nb_pages
+        data_class.custom_page = True
+
+        data = data_class.run()
+        i += 1
+
+    if data:
+        _res['datas'].update({data_name: data[0]})
+        if data[1]:
+            _res['positions'].update({data_name: files.reformat_positions(data[1])})
+        if data[2]:
+            _res['pages'].update({data_name: data[2]})
+    return _res
 
 
 def process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages):
@@ -406,98 +459,36 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 if custom_fields[field][2]:
                     pages.update({field: custom_fields[field][2]})
 
-    # Find invoice number
-    invoice_found_on_first_or_last_page = False
-    tmp_nb_pages = nb_pages
-    invoice_number_class = None
+    text_by_pages = [None] * nb_pages
+
     if 'invoice_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
         invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
                                                  ocr.header_text, 1, False, ocr.footer_text, docservers, configurations,
                                                  languages, datas['form_id'])
-        invoice_number = invoice_number_class.run()
-        if not invoice_number:
-            invoice_number_class.text = ocr.header_last_text
-            invoice_number_class.footer_text = ocr.footer_last_text
-            invoice_number_class.nbPages = nb_pages
-            invoice_number_class.customPage = True
-            invoice_number = invoice_number_class.run()
-            if invoice_number:
-                invoice_number.append(nb_pages)
+        datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages, invoice_number_class, datas, files)
 
-        j = 0
-        while not invoice_number:
-            tmp_nb_pages = tmp_nb_pages - 1
-            if j == 3 or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
-                break
-            convert(file, files, ocr, tmp_nb_pages, True)
+    if 'document_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+        date_class = FindDate(ocr.text, log, regex, configurations, files, ocr, supplier, 1, database, file, docservers,
+                              languages, datas['form_id'])
+        datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class, datas, files)
 
-            _file = files.custom_file_name
-            image = files.open_image_return(_file)
-
-            invoice_number_class.text = ocr.line_box_builder(image)
-            invoice_number_class.nbPages = tmp_nb_pages
-            invoice_number_class.customPage = True
-
-            invoice_number = invoice_number_class.run()
-            if invoice_number:
-                invoice_found_on_first_or_last_page = True
-            j += 1
-
-        if invoice_number:
-            datas.update({'invoice_number': invoice_number[0]})
-            if invoice_number[1]:
-                positions.update({'invoice_number': files.reformat_positions(invoice_number[1])})
-            if invoice_number[2]:
-                pages.update({'invoice_number': invoice_number[2]})
-
-    if 'document_date' in system_fields_to_find or 'document_due_date' in system_fields_to_find \
-            or not workflow_settings['input']['apply_process']:
-        # Find invoice date number
-        if invoice_found_on_first_or_last_page and invoice_number_class:
-            log.info("Search document date using the same page as invoice number")
-            text_custom = invoice_number_class.text
-            page_for_date = tmp_nb_pages
-        else:
-            text_custom = ocr.text
-            page_for_date = 1
-        date_class = FindDate(text_custom, log, regex, configurations, files, ocr, supplier, page_for_date, database, file,
-                              docservers, languages, datas['form_id'])
-        date = date_class.run()
-
-        if date:
-            datas.update({'document_date': date[0]})
-            if date[1]:
-                positions.update({'document_date': files.reformat_positions(date[1])})
-            if date[2]:
-                pages.update({'document_date': date[2]})
-            if len(date) > 3 and date[3]:
-                datas.update({'document_due_date': date[3][0]})
-                pages.update({'document_due_date': date[2]})
-                if len(date[3]) > 1:
-                    positions.update({'document_due_date': files.reformat_positions(date[3][1])})
-
-            # Find quotation number
+    if 'document_due_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+        due_date_class = FindDueDate(ocr.text, log, regex, configurations, files, ocr, supplier, 1, database, file, docservers,
+                              languages, datas['form_id'])
+        datas = found_data_recursively('document_due_date', ocr, file, nb_pages, text_by_pages, due_date_class, datas, files)
 
     if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
         quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
                                                      ocr.header_text, 1, False, ocr.footer_text, docservers,
                                                      configurations, datas['form_id'])
-        quotation_number = quotation_number_class.run()
-        if not quotation_number:
-            quotation_number_class.text = ocr.header_last_text
-            quotation_number_class.footer_text = ocr.footer_last_text
-            quotation_number_class.nbPages = nb_pages
-            quotation_number_class.customPage = True
-            quotation_number = quotation_number_class.run()
-            if quotation_number:
-                quotation_number.append(nb_pages)
+        datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages, quotation_number_class,
+                                       datas, files)
 
-        if quotation_number:
-            datas.update({'quotation_number': quotation_number[0]})
-            if quotation_number[1]:
-                positions.update({'quotation_number': files.reformat_positions(quotation_number[1])})
-            if quotation_number[2]:
-                pages.update({'quotation_number': quotation_number[2]})
+    if 'delivery_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+        delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
+                                                   ocr.header_text, 1, False, docservers, configurations, datas['form_id'])
+        datas = found_data_recursively('delivery_number', ocr, file, nb_pages, text_by_pages, delivery_number_class,
+                                       datas, files)
 
     if 'footer' in system_fields_to_find or not workflow_settings['input']['apply_process']:
         # Find footer informations (total amount, no rate amount etc..)
@@ -511,7 +502,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if not footer and nb_pages > 1:
             footer_class.target = 'full'
             footer_class.text = ocr.last_text
-            footer_class.nbPage = nb_pages
+            footer_class.nb_pages = nb_pages
             footer_class.isLastPage = True
             footer_class.rerun = False
             footer_class.rerun_as_text = False
@@ -529,13 +520,19 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     break
                 convert(file, files, ocr, tmp_nb_pages, True)
                 _file = files.custom_file_name
-
                 image = files.open_image_return(_file)
                 text = ocr.line_box_builder(image)
+
                 footer_class.text = text
                 footer_class.target = 'full'
-                footer_class.nbPage = tmp_nb_pages
+                footer_class.nb_pages = tmp_nb_pages
                 footer = footer_class.run()
+                if not footer:
+                    improved_image = files.improve_image_detection(_file)
+                    image = files.open_image_return(improved_image)
+                    text = ocr.line_box_builder(image)
+                    footer_class.text = text
+                    footer = footer_class.run()
                 i += 1
 
         if footer:
@@ -599,23 +596,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     elif footer[3]:
                         pages.update({'vat_amount': footer[3]})
                         pages.update({'total_vat': footer[3]})
-
-    if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-        # Find delivery number
-        delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
-                                                   ocr.header_text, 1, False, docservers, configurations, datas['form_id'])
-        delivery_number = delivery_number_class.run()
-        if not delivery_number:
-            delivery_number_class.text = ocr.footer_text
-            delivery_number_class.target = 'footer'
-            delivery_number = delivery_number_class.run()
-
-        if delivery_number:
-            datas.update({'delivery_number': delivery_number[0]})
-            if delivery_number[1]:
-                positions.update({'delivery_number': files.reformat_positions(delivery_number[1])})
-            if delivery_number[2]:
-                pages.update({'delivery_number': delivery_number[2]})
 
     full_jpg_filename = str(uuid.uuid4())
     file = files.move_to_docservers(docservers, file)

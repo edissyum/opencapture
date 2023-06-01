@@ -22,7 +22,7 @@ from src.backend.functions import search_by_positions, search_custom_positions
 
 
 class FindDate:
-    def __init__(self, text, log, regex, configurations, files, ocr, supplier, nb_pages, database, file, docservers, languages, form_id):
+    def __init__(self, text, log, regex, configurations, files, ocr, supplier, nb_page, database, file, docservers, languages, form_id):
         self.date = ''
         self.log = log
         self.ocr = ocr
@@ -31,8 +31,8 @@ class FindDate:
         self.files = files
         self.regex = regex
         self.form_id = form_id
+        self.nb_page = nb_page
         self.supplier = supplier
-        self.nb_pages = nb_pages
         self.database = database
         self.languages = languages
         self.docservers = docservers
@@ -115,68 +115,29 @@ class FindDate:
                 return date
             return False
 
-    def process_due_date(self, line, position):
-        regex = self.regex['due_date'] + self.regex['date']
-        line = re.sub(r",", '', line)
-        for _date in re.finditer(r"" + regex + "", line):
-            for res in re.finditer(r"" + self.regex['date'] + "", line):
-                date = self.format_date(res.group(), position, True)
-                if date and date[0]:
-                    self.log.info('Due date found : ' + str(date[0]))
-                    return date
-                return False
-
     def run(self):
-        date, due_date = None, None
         if self.supplier:
             date = search_by_positions(self.supplier, 'document_date', self.ocr, self.files, self.database, self.form_id, self.log)
-            due_date = search_by_positions(self.supplier, 'document_due_date', self.ocr, self.files, self.database, self.form_id, self.log)
+            if date and date[0]:
+                res = self.format_date(date[0], date[1])
+                if res:
+                    self.date = res[0]
+                    self.log.info('Document date found using mask position : ' + str(res[0]))
+                    if len(date) == 3:
+                        return [res[0], res[1], date[2]]
+                    else:
+                        return [res[0], res[1], '']
 
-        if self.supplier:
             position = self.database.select({
                 'select': [
                     "positions -> '" + str(self.form_id) + "' -> 'document_date' as document_date_position",
-                    "positions -> '" + str(self.form_id) + "' -> 'document_due_date' as document_due_date_position",
                     "pages -> '" + str(self.form_id) + "' -> 'document_date' as document_date_page",
-                    "pages -> '" + str(self.form_id) + "' -> 'document_due_date' as document_due_date_page"
                 ],
                 'table': ['accounts_supplier'],
                 'where': ['vat_number = %s', 'status <> %s'],
                 'data': [self.supplier[0], 'DEL']
             })[0]
-            if position and position['document_due_date_position'] not in [False, 'NULL', '', None]:
-                data = {'position': position['document_due_date_position'], 'regex': None, 'target': 'full', 'page': position['document_due_date_page']}
-                _text, _position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
-                try:
-                    _position = json.loads(_position)
-                except TypeError:
-                    pass
-                if _text != '':
-                    res = self.format_date(_text, _position, True)
-                    if res:
-                        due_date = [res[0], res[1]]
-                        self.log.info('Due date found using position : ' + str(res[0]))
 
-        if date and date[0]:
-            res = self.format_date(date[0], date[1])
-            if res:
-                self.date = res[0]
-                self.log.info('Date found using mask position : ' + str(res[0]))
-
-                if len(date) == 3:
-                    if due_date:
-                        return [res[0], res[1], date[2], due_date]
-                    return [res[0], res[1], date[2]]
-                else:
-                    return [res[0], res[1], '']
-
-        if not due_date or due_date[0] is False:
-            for line in self.text:
-                due_date = self.process_due_date(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content.upper()), line.position)
-                if due_date:
-                    break
-
-        if self.supplier:
             if position and position['document_date_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['document_date_position'], 'regex': None, 'target': 'full', 'page': position['document_date_page']}
                 text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
@@ -185,19 +146,19 @@ class FindDate:
                     if res:
                         self.date = res[0]
                         self.log.info('Document date found using position : ' + str(res[0]))
-                        return [self.date, position, data['page'], due_date]
+                        return [self.date, position, data['page']]
 
         for line in self.text:
             res = self.process(line.content.upper(), line.position)
             if res:
                 self.log.info('Document date found : ' + res[0])
-                return [res[0], res[1], self.nb_pages, due_date]
+                return [res[0], res[1], self.nb_page]
 
         for line in self.text:
             res = self.process(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content), line.position)
             if not res:
                 res = self.process(line.content, line.position)
                 if res:
-                    return [res[0], res[1], self.nb_pages, due_date]
+                    return [res[0], res[1], self.nb_page]
             else:
-                return [res[0], res[1], self.nb_pages, due_date]
+                return [res[0], res[1], self.nb_page]
