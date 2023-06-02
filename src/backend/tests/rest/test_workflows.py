@@ -23,7 +23,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class WorkflowsTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
@@ -80,9 +80,9 @@ class WorkflowsTest(unittest.TestCase):
         response = self.app.post(f'/{CUSTOM_ID}/ws/workflows/verifier/duplicate/1',
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT * FROM workflows WHERE label ILIKE '%Copie de%' OR label ILIKE '%Copy of%'"
+        self.database.execute("SELECT * FROM workflows WHERE label ILIKE '%Copie de%' OR label ILIKE '%Copy of%'"
                         " ORDER BY id desc LIMIT 1")
-        new_workflow = self.db.fetchall()
+        new_workflow = self.database.fetchall()
         self.assertEqual(1, len(new_workflow))
 
     def test_successful_update_workflow(self):
@@ -100,8 +100,8 @@ class WorkflowsTest(unittest.TestCase):
                                 json={"args": payload},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT * FROM workflows WHERE label = 'Updated test workflow'")
-        new_workflow = self.db.fetchall()
+        self.database.execute("SELECT * FROM workflows WHERE label = 'Updated test workflow'")
+        new_workflow = self.database.fetchall()
         self.assertEqual(1, len(new_workflow))
 
     def test_successful_delete_workflow(self):
@@ -110,12 +110,12 @@ class WorkflowsTest(unittest.TestCase):
                                    headers={"Content-Type": "application/json",
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT status FROM workflows WHERE label = 'Test Workflow'")
-        new_workflow = self.db.fetchall()
+        self.database.execute("SELECT status FROM workflows WHERE label = 'Test Workflow'")
+        new_workflow = self.database.fetchall()
         self.assertEqual('DEL', new_workflow[0]['status'])
 
     def tearDown(self) -> None:
-        self.db.execute(
+        self.database.execute(
             "UPDATE workflows SET label = 'Workflow par défaut' WHERE label = 'Updated test workflow'")
-        self.db.execute("DELETE FROM workflows WHERE label = 'Test Workflow'")
-        self.db.execute("DELETE FROM workflows WHERE label ILIKE '%Copie de%' OR label ILIKE '%Copy of%'")
+        self.database.execute("DELETE FROM workflows WHERE label = 'Test Workflow'")
+        self.database.execute("DELETE FROM workflows WHERE label ILIKE '%Copie de%' OR label ILIKE '%Copy of%'")

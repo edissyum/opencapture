@@ -24,7 +24,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class RolesTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
@@ -53,8 +53,8 @@ class RolesTest(unittest.TestCase):
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT status FROM roles WHERE id = " + str(role.json['id']))
-        new_role = self.db.fetchall()
+        self.database.execute("SELECT status FROM roles WHERE id = " + str(role.json['id']))
+        new_role = self.database.fetchall()
         self.assertEqual("DEL", new_role[0]['status'])
 
     def test_successful_disable_role(self):
@@ -63,8 +63,8 @@ class RolesTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT enabled FROM roles WHERE id = " + str(role.json['id']))
-        new_role = self.db.fetchall()
+        self.database.execute("SELECT enabled FROM roles WHERE id = " + str(role.json['id']))
+        new_role = self.database.fetchall()
         self.assertFalse(new_role[0]['enabled'])
 
     def test_successful_enable_role(self):
@@ -73,8 +73,8 @@ class RolesTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT enabled FROM roles WHERE id = " + str(role.json['id']))
-        new_role = self.db.fetchall()
+        self.database.execute("SELECT enabled FROM roles WHERE id = " + str(role.json['id']))
+        new_role = self.database.fetchall()
         self.assertTrue(new_role[0]['enabled'])
 
     def test_successful_update_role(self):
@@ -89,8 +89,8 @@ class RolesTest(unittest.TestCase):
                                 json={'args': payload})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT label, label_short, enabled FROM roles WHERE id = " + str(role.json['id']))
-        new_role = self.db.fetchall()
+        self.database.execute("SELECT label, label_short, enabled FROM roles WHERE id = " + str(role.json['id']))
+        new_role = self.database.fetchall()
         self.assertEqual("TEST123", new_role[0]['label_short'])
         self.assertEqual("Rôle test updated", new_role[0]['label'])
         self.assertFalse(new_role[0]['enabled'])
@@ -103,8 +103,8 @@ class RolesTest(unittest.TestCase):
                                 json={'privileges': payload})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT privileges_id FROM roles_privileges WHERE role_id = " + str(role.json['id']))
-        new_role_privileges = self.db.fetchall()
+        self.database.execute("SELECT privileges_id FROM roles_privileges WHERE role_id = " + str(role.json['id']))
+        new_role_privileges = self.database.fetchall()
         self.assertEqual('[1, 2, 3]', new_role_privileges[0]['privileges_id']['data'])
 
     def test_successful_get_roles(self):
@@ -127,5 +127,5 @@ class RolesTest(unittest.TestCase):
         self.assertTrue(response.json['enabled'])
 
     def tearDown(self) -> None:
-        self.db.execute("DELETE FROM roles WHERE label_short = 'TEST'")
-        self.db.execute("DELETE FROM roles WHERE label_short = 'TEST123'")
+        self.database.execute("DELETE FROM roles WHERE label_short = 'TEST'")
+        self.database.execute("DELETE FROM roles WHERE label_short = 'TEST123'")

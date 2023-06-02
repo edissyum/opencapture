@@ -24,7 +24,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class CustomFieldsTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
@@ -76,8 +76,8 @@ class CustomFieldsTest(unittest.TestCase):
                                 }),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT label, type  FROM custom_fields WHERE label_short = 'test_custom_verifier'")
-        new_custom = self.db.fetchall()
+        self.database.execute("SELECT label, type  FROM custom_fields WHERE label_short = 'test_custom_verifier'")
+        new_custom = self.database.fetchall()
         self.assertEqual('select', new_custom[0]['type'])
         self.assertEqual('Labelled updated', new_custom[0]['label'])
 
@@ -86,9 +86,9 @@ class CustomFieldsTest(unittest.TestCase):
         response = self.app.delete(f'/{CUSTOM_ID}/ws/customFields/delete/' + str(custom.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT status  FROM custom_fields WHERE label_short = 'test_custom_verifier'")
-        new_custom = self.db.fetchall()
+        self.database.execute("SELECT status  FROM custom_fields WHERE label_short = 'test_custom_verifier'")
+        new_custom = self.database.fetchall()
         self.assertEqual('DEL', new_custom[0]['status'])
 
     def tearDown(self) -> None:
-        self.db.execute("DELETE FROM custom_fields WHERE module = 'verifier'")
+        self.database.execute("DELETE FROM custom_fields WHERE module = 'verifier'")

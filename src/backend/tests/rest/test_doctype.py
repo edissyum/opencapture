@@ -26,7 +26,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class DoctypeTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
@@ -114,4 +114,4 @@ class DoctypeTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
     def tearDown(self) -> None:
-        self.db.execute("DELETE FROM doctypes WHERE key IN ('test_folder', 'test_doctype')")
+        self.database.execute("DELETE FROM doctypes WHERE key IN ('test_folder', 'test_doctype')")

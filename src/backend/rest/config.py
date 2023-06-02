@@ -143,7 +143,7 @@ def update_docserver(docserver_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/updateDocserver/{docserver_id}'}), 403
 
-    args = request.json['args']
+    args = request.json['data']
     res = config.update_docserver(args, docserver_id)
     return make_response(jsonify(res[0])), res[1]
 

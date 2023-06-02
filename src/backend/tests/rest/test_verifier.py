@@ -29,7 +29,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class VerifierTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
@@ -85,8 +85,8 @@ class VerifierTest(unittest.TestCase):
         supplier = self.create_supplier()
         document_res = self.create_document()
 
-        self.db.execute("SELECT * FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT * FROM documents")
+        document = self.database.fetchall()
         self.assertEqual(supplier.json['id'], document[0]['supplier_id'])
         self.assertEqual(408.50, float(document[0]['datas']['total_vat']))
         self.assertEqual(2042.5, float(document[0]['datas']['total_ht']))
@@ -112,8 +112,8 @@ class VerifierTest(unittest.TestCase):
     def test_successful_get_document_by_id(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
         response = self.app.get(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']), json={},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -122,8 +122,8 @@ class VerifierTest(unittest.TestCase):
     def test_successful_update_positions(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
         new_position = {
             "invoice_number": {
                 "x": 467.72950819672127,
@@ -137,8 +137,8 @@ class VerifierTest(unittest.TestCase):
                                 json={"args": new_position},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT positions FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT positions FROM documents")
+        document = self.database.fetchall()
         self.assertEqual(467.72950819672127, document[0]['positions']['invoice_number']['x'])
         self.assertEqual(221.1547131147541, document[0]['positions']['invoice_number']['y'])
         self.assertEqual(343.171106557377, document[0]['positions']['invoice_number']['width'])
@@ -147,8 +147,8 @@ class VerifierTest(unittest.TestCase):
     def test_successful_update_page(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
         new_page = {
             "invoice_number": 2
         }
@@ -156,15 +156,15 @@ class VerifierTest(unittest.TestCase):
                                 json={"args": new_page},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT pages FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT pages FROM documents")
+        document = self.database.fetchall()
         self.assertEqual(2, document[0]['pages']['invoice_number'])
 
     def test_successful_update_data(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
         new_data = {
             "invoice_number": "test_document_number",
             "quotation_number": "test_quotation_number"
@@ -173,42 +173,42 @@ class VerifierTest(unittest.TestCase):
                                 json={"args": new_data},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT datas FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT datas FROM documents")
+        document = self.database.fetchall()
         self.assertEqual('test_document_number', document[0]['datas']['invoice_number'])
         self.assertEqual('test_quotation_number', document[0]['datas']['quotation_number'])
 
     def test_successful_delete_document(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
         response = self.app.delete(f'/{CUSTOM_ID}/ws/verifier/documents/delete/' + str(document[0]['id']),
                                    headers={"Content-Type": "application/json",
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT status FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT status FROM documents")
+        document = self.database.fetchall()
         self.assertEqual('DEL', document[0]['status'])
 
     def test_successful_delete_document_data(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deleteData',
                                 json={'args': 'invoice_number'},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT datas FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT datas FROM documents")
+        document = self.database.fetchall()
         self.assertTrue('invoice_number' not in document[0]['datas'])
 
     def test_successful_delete_document_document(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id, path, filename FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT id, path, filename FROM documents")
+        document = self.database.fetchall()
         response = self.app.get(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deleteDocuments',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
@@ -217,27 +217,27 @@ class VerifierTest(unittest.TestCase):
     def test_successful_delete_document_position(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deletePosition',
                                 json={'args': 'invoice_number'},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT positions FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT positions FROM documents")
+        document = self.database.fetchall()
         self.assertFalse('invoicer_number' in document[0]['positions'])
 
     def test_successful_delete_document_page(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deletePage',
                                 json={'args': 'invoice_number'},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT pages FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT pages FROM documents")
+        document = self.database.fetchall()
         self.assertFalse('invoicer_number' in document[0]['pages'])
 
     def test_successful_get_totals(self):
@@ -251,8 +251,8 @@ class VerifierTest(unittest.TestCase):
     def test_successful_get_thumb(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT full_jpg_filename FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT full_jpg_filename FROM documents")
+        document = self.database.fetchall()
         response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/getThumb',
                                  json={'args': {'type': 'full', 'filename': document[0]['full_jpg_filename']}},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
@@ -262,8 +262,8 @@ class VerifierTest(unittest.TestCase):
     def test_successful_ocr_on_fly(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT full_jpg_filename FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT full_jpg_filename FROM documents")
+        document = self.database.fetchall()
         data = {
             'selection': {
                 'id': 8,
@@ -289,8 +289,8 @@ class VerifierTest(unittest.TestCase):
     def test_successful_update(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
         new_data = {
             "locked": True
         }
@@ -298,15 +298,15 @@ class VerifierTest(unittest.TestCase):
                                 json={"args": new_data},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT locked FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT locked FROM documents")
+        document = self.database.fetchall()
         self.assertTrue(document[0]['locked'])
 
     def test_successful_remove_lock_by_user_id(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
         new_data = {
             "locked": True,
             "locked_by": "admin"
@@ -316,17 +316,17 @@ class VerifierTest(unittest.TestCase):
         response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/removeLockByUserId/admin',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT * FROM documents")
-        document = self.db.fetchall()
+        self.database.execute("SELECT * FROM documents")
+        document = self.database.fetchall()
         self.assertFalse(document[0]['locked'])
 
     def test_successful_export_xml(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id FROM documents")
-        document = self.db.fetchall()
-        self.db.execute("SELECT * FROM outputs WHERE output_type_id = 'export_xml' AND module = 'verifier'")
-        output = self.db.fetchall()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
+        self.database.execute("SELECT * FROM outputs WHERE output_type_id = 'export_xml' AND module = 'verifier'")
+        output = self.database.fetchall()
         response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/export_xml',
                                  json={'args': output[0]},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
@@ -336,10 +336,10 @@ class VerifierTest(unittest.TestCase):
     def test_successful_export_pdf(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id FROM documents")
-        document = self.db.fetchall()
-        self.db.execute("SELECT * FROM outputs WHERE output_type_id = 'export_pdf'")
-        output = self.db.fetchall()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
+        self.database.execute("SELECT * FROM outputs WHERE output_type_id = 'export_pdf'")
+        output = self.database.fetchall()
         response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/export_pdf',
                                  json={'args': output[0]},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
@@ -349,10 +349,10 @@ class VerifierTest(unittest.TestCase):
     def test_successful_export_facturx(self):
         self.create_supplier()
         self.create_document()
-        self.db.execute("SELECT id FROM documents")
-        document = self.db.fetchall()
-        self.db.execute("SELECT * FROM outputs WHERE output_type_id = 'export_facturx'")
-        output = self.db.fetchall()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
+        self.database.execute("SELECT * FROM outputs WHERE output_type_id = 'export_facturx'")
+        output = self.database.fetchall()
         response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/export_facturx',
                                  json={'args': output[0]},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
@@ -379,8 +379,8 @@ class VerifierTest(unittest.TestCase):
         with open(file, "w") as text_file:
             text_file.write(texts)
 
-        self.db.execute("TRUNCATE TABLE documents")
-        self.db.execute("TRUNCATE TABLE accounts_supplier")
+        self.database.execute("TRUNCATE TABLE documents")
+        self.database.execute("TRUNCATE TABLE accounts_supplier")
         shutil.rmtree(f'/var/share/{CUSTOM_ID}/export/verifier/')
         shutil.rmtree(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/full')
         shutil.rmtree(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/thumbs')

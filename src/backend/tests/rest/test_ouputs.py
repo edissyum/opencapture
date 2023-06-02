@@ -23,7 +23,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class OutputsTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
@@ -114,9 +114,9 @@ class OutputsTest(unittest.TestCase):
         response = self.app.post(f'/{CUSTOM_ID}/ws/outputs/verifier/duplicate/1',
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT * FROM outputs WHERE output_label ILIKE '%Copie de%' OR output_label ILIKE '%Copy of%'"
+        self.database.execute("SELECT * FROM outputs WHERE output_label ILIKE '%Copie de%' OR output_label ILIKE '%Copy of%'"
                         " ORDER BY id desc LIMIT 1")
-        new_output = self.db.fetchall()
+        new_output = self.database.fetchall()
         self.assertEqual(1, len(new_output))
 
     def test_successful_get_output_by_id(self):
@@ -163,8 +163,8 @@ class OutputsTest(unittest.TestCase):
                                 json={"args": payload},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT * FROM outputs WHERE output_label = 'Test export'")
-        new_output = self.db.fetchall()
+        self.database.execute("SELECT * FROM outputs WHERE output_label = 'Test export'")
+        new_output = self.database.fetchall()
         self.assertEqual(1, len(new_output))
 
     def test_successful_delete_output(self):
@@ -173,11 +173,11 @@ class OutputsTest(unittest.TestCase):
                                    headers={"Content-Type": "application/json",
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT status FROM outputs WHERE output_label = 'Test export PDF'")
-        new_output = self.db.fetchall()
+        self.database.execute("SELECT status FROM outputs WHERE output_label = 'Test export PDF'")
+        new_output = self.database.fetchall()
         self.assertEqual('DEL', new_output[0]['status'])
 
     def tearDown(self) -> None:
-        self.db.execute("UPDATE outputs SET output_label = 'Export XML par défaut' WHERE output_label = 'Test export'")
-        self.db.execute("DELETE FROM outputs WHERE output_label ILIKE '%Copie de%' OR output_label ILIKE '%Copy of%'")
-        self.db.execute("DELETE FROM outputs WHERE output_label = 'Test export PDF'")
+        self.database.execute("UPDATE outputs SET output_label = 'Export XML par défaut' WHERE output_label = 'Test export'")
+        self.database.execute("DELETE FROM outputs WHERE output_label ILIKE '%Copie de%' OR output_label ILIKE '%Copy of%'")
+        self.database.execute("DELETE FROM outputs WHERE output_label = 'Test export PDF'")

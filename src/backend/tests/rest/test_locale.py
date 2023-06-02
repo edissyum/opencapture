@@ -23,7 +23,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class LocaleTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
@@ -33,8 +33,8 @@ class LocaleTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT data #>> '{value}' as value FROM configurations WHERE label = 'locale'")
-        new_configuration = self.db.fetchall()
+        self.database.execute("SELECT data #>> '{value}' as value FROM configurations WHERE label = 'locale'")
+        new_configuration = self.database.fetchall()
         self.assertEqual('eng', new_configuration[0]['value'])
 
     def test_successful_get_all_lang(self):
@@ -55,7 +55,7 @@ class LocaleTest(unittest.TestCase):
         self.assertEqual('fr-FR', response.json['moment_lang'])
 
     def tearDown(self) -> None:
-        self.db.execute('UPDATE configurations '
+        self.database.execute('UPDATE configurations '
                         'SET data = \'{"type": "string", "value": "fra", "description": "Clé pour la sélection de la '
                         'langue (fra ou eng par défaut)"}\' '
                         'WHERE label = \'locale\' ')
