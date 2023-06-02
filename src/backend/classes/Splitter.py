@@ -332,17 +332,17 @@ class Splitter:
         second = str(metadata['export_date'].second).zfill(2)
         date = f"{day}-{month}-{year} {hour}:{minute}:{second}"
 
-        user_firstname = metadata['custom_fields']['userFirstName'] if 'userFirstName' in metadata['custom_fields'] else ''
         user_lastname = metadata['custom_fields']['userLastName'] if 'userLastName' in metadata['custom_fields'] else ''
+        user_firstname = metadata['custom_fields']['userFirstName'] if 'userFirstName' in metadata['custom_fields'] else ''
 
         xml_as_string = parameters['xml_template']
         doc_loop_item_template = re.search(regex['splitter_doc_loop'], xml_as_string, re.DOTALL)
 
         xml_as_string = xml_as_string.replace('#date', date)
+        xml_as_string = xml_as_string.replace('#user_lastname', user_lastname)
+        xml_as_string = xml_as_string.replace('#user_firstname', user_firstname)
         xml_as_string = xml_as_string.replace('#documents_count', str(len(documents)))
         xml_as_string = xml_as_string.replace('#random', str(random.randint(0, 99999)).zfill(5))
-        xml_as_string = xml_as_string.replace('#user_lastname', metadata['custom_fields']['userLastName'])
-        xml_as_string = xml_as_string.replace('#user_firstname', metadata['custom_fields']['userFirstName'])
         xml_as_string = xml_as_string.replace('#pdf_output_compress_file', metadata['pdf_output_compress_file'])
 
         """
@@ -369,18 +369,21 @@ class Splitter:
             for index, document in enumerate(documents):
                 if 'is_file_added_to_zip' in document and document['is_file_added_to_zip']:
                     continue
+
                 doc_loop_item = doc_loop_item_template.group(1)
                 doc_loop_item = doc_loop_item.replace('#date', date)
-                doc_loop_item = doc_loop_item.replace('#filename', document['filename'] if 'filename' in document else '')
+                doc_loop_item = doc_loop_item.replace('#user_lastname', user_lastname)
+                doc_loop_item = doc_loop_item.replace('#user_lastname', user_lastname)
                 doc_loop_item = doc_loop_item.replace('#documents_count', str(len(documents)))
-                doc_loop_item = doc_loop_item.replace('#document_identifier', str(document['id']))
                 doc_loop_item = doc_loop_item.replace('#doctype', str(document['doctype_key']))
-                doc_loop_item = doc_loop_item.replace('#user_lastname', user_lastname)
-                doc_loop_item = doc_loop_item.replace('#user_lastname', user_lastname)
+                doc_loop_item = doc_loop_item.replace('#document_identifier', str(document['id']))
                 doc_loop_item = doc_loop_item.replace('#random', str(random.randint(0, 99999)).zfill(5))
+                doc_loop_item = doc_loop_item.replace('#filename', document['filename'] if 'filename' in document else '')
+
                 for key in document['data']['custom_fields']:
                     if f'#{key}' in xml_as_string:
                         doc_loop_item = doc_loop_item.replace(f'#{key}', str(document['data']['custom_fields'][key]))
+
                 documents_tags += doc_loop_item
 
             xml_as_string = xml_as_string.replace(doc_loop_item_template.group(1), documents_tags)
