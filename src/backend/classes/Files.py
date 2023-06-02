@@ -38,10 +38,10 @@ from src.backend.functions import get_custom_array, generate_searchable_pdf
 custom_array = get_custom_array()
 
 if 'FindDate' not in custom_array:
-    from src.backend.process.FindDate import FindDate
+    from src.backend.process.find_date import FindDate
 else:
-    FindDate = getattr(__import__(custom_array['FindDate']['path'] + '.' + custom_array['FindDate']['module'],
-                                  fromlist=[custom_array['FindDate']['module']]), custom_array['FindDate']['module'])
+    FindDate = getattr(__import__(custom_array['find_date']['path'] + '.' + custom_array['find_date']['module'],
+                                  fromlist=[custom_array['find_date']['module']]), custom_array['find_date']['module'])
 
 
 class Files:

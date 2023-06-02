@@ -22,20 +22,23 @@ from src.backend.functions import search_by_positions, search_custom_positions
 
 
 class FindDate:
-    def __init__(self, text, log, regex, configurations, files, ocr, supplier, nb_page, database, file, docservers, languages, form_id):
+    def __init__(self, ocr, log, regex, configurations, files, supplier, database, file, docservers, languages, form_id):
         self.date = ''
         self.log = log
         self.ocr = ocr
-        self.text = text
+        self.nb_page = 1
         self.file = file
         self.files = files
         self.regex = regex
+        self.text = ocr.text
         self.form_id = form_id
-        self.nb_page = nb_page
         self.supplier = supplier
+        self.custom_page = False
         self.database = database
         self.languages = languages
         self.docservers = docservers
+        self.header_text = ocr.header_text
+        self.footer_text = ocr.footer_text
         self.configurations = configurations
         self.max_time_delta = configurations['timeDelta']
 
@@ -128,37 +131,53 @@ class FindDate:
                     else:
                         return [res[0], res[1], '']
 
-            position = self.database.select({
-                'select': [
-                    "positions -> '" + str(self.form_id) + "' -> 'document_date' as document_date_position",
-                    "pages -> '" + str(self.form_id) + "' -> 'document_date' as document_date_page",
-                ],
-                'table': ['accounts_supplier'],
-                'where': ['vat_number = %s', 'status <> %s'],
-                'data': [self.supplier[0], 'DEL']
-            })[0]
+            if not self.custom_page:
+                position = self.database.select({
+                    'select': [
+                        "positions -> '" + str(self.form_id) + "' -> 'document_date' as document_date_position",
+                        "pages -> '" + str(self.form_id) + "' -> 'document_date' as document_date_page",
+                    ],
+                    'table': ['accounts_supplier'],
+                    'where': ['vat_number = %s', 'status <> %s'],
+                    'data': [self.supplier[0], 'DEL']
+                })[0]
 
-            if position and position['document_date_position'] not in [False, 'NULL', '', None]:
-                data = {'position': position['document_date_position'], 'regex': None, 'target': 'full', 'page': position['document_date_page']}
-                text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
-                if text != '':
-                    res = self.format_date(text, position, True)
-                    if res:
-                        self.date = res[0]
-                        self.log.info('Document date found using position : ' + str(res[0]))
-                        return [self.date, position, data['page']]
+                if position and position['document_date_position'] not in [False, 'NULL', '', None]:
+                    data = {'position': position['document_date_position'], 'regex': None, 'target': 'full', 'page': position['document_date_page']}
+                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                    if text != '':
+                        res = self.format_date(text, position, True)
+                        if res:
+                            self.date = res[0]
+                            self.log.info('Document date found using position : ' + str(res[0]))
+                            return [self.date, position, data['page']]
 
-        for line in self.text:
-            res = self.process(line.content.upper(), line.position)
-            if res:
-                self.log.info('Document date found : ' + res[0])
-                return [res[0], res[1], self.nb_page]
-
-        for line in self.text:
-            res = self.process(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content), line.position)
-            if not res:
-                res = self.process(line.content, line.position)
+        cpt = 0
+        for text in [self.header_text, self.text, self.footer_text]:
+            for line in text:
+                res = self.process(line.content.upper(), line.position)
                 if res:
-                    return [res[0], res[1], self.nb_page]
-            else:
-                return [res[0], res[1], self.nb_page]
+                    self.log.info('Document date found : ' + res[0])
+                    position = res[1]
+                    if cpt == 2:
+                        position = self.files.return_position_with_ratio(res[1], 'footer')
+                    return [res[0], position, self.nb_page]
+            cpt += 1
+
+        cpt = 0
+        for text in [self.header_text, self.text, self.footer_text]:
+            for line in text:
+                res = self.process(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content), line.position)
+                if not res:
+                    res = self.process(line.content, line.position)
+                    if res:
+                        position = res[1]
+                        if cpt == 2:
+                            position = self.files.return_position_with_ratio(res[1], 'footer')
+                        return [res[0], position, self.nb_page]
+                else:
+                    position = res[1]
+                    if cpt == 2:
+                        position = self.files.return_position_with_ratio(res[1], 'footer')
+                    return [res[0], position, self.nb_page]
+            cpt += 1
