@@ -21,7 +21,8 @@ from src.backend.functions import search_custom_positions
 
 
 class FindCustom:
-    def __init__(self, text, log, regex, config, ocr, files, supplier, file, database, docservers, form_id):
+    def __init__(self, text, log, regex, config, ocr, files, supplier, file, database, docservers, form_id,
+                 custom_fields_to_find):
         self.ocr = ocr
         self.log = log
         self.text = text
@@ -34,13 +35,14 @@ class FindCustom:
         self.database = database
         self.docservers = docservers
         self.ocr_errors_table = ocr.ocr_errors_table
+        self.custom_fields_to_find = custom_fields_to_find
 
     def process(self, data):
         for line in self.text:
             line = line.content
             if data['type'] == 'number':
                 for item in self.ocr_errors_table['NUMBERS']:
-                    pattern = r'[%s]' % self.ocr_errors_table['NUMBERS'][item]
+                    pattern = f"[{self.ocr_errors_table['NUMBERS'][item]}]"
                     line = re.sub(pattern, item, line)
             else:
                 line = line.upper()
@@ -48,7 +50,7 @@ class FindCustom:
             for res in re.finditer(r"" + data['regex'] + "", line):
                 return res.group()
 
-    def run(self):
+    def run_using_positions_mask(self):
         data_to_return = {}
         if self.supplier:
             list_of_fields = self.database.select({
@@ -61,22 +63,23 @@ class FindCustom:
                 list_of_fields = list_of_fields[0]
                 for index in list_of_fields['positions']:
                     if 'custom_' in index:
-                        _data = {
-                            'position': list_of_fields['positions'][index],
-                            'regex': list_of_fields['regex'][index] if index in list_of_fields['regex'] else '',
-                            'target': 'full',
-                            'page': list_of_fields['pages'][index] if index in list_of_fields['pages'] else ''
-                        }
+                        index_id = int(index.replace('custom_', ''))
+                        if self.custom_fields_to_find is False or (self.custom_fields_to_find and index_id in self.custom_fields_to_find):
+                            _data = {
+                                'position': list_of_fields['positions'][index],
+                                'regex': list_of_fields['regex'][index] if index in list_of_fields['regex'] else '',
+                                'target': 'full',
+                                'page': list_of_fields['pages'][index] if index in list_of_fields['pages'] else ''
+                            }
 
-                        data, position = search_custom_positions(_data, self.ocr, self.files, self.regex, self.file, self.docservers)
-                        if not data and index in list_of_fields['regex'] and list_of_fields[index]['regex'] is not False:
-                            data_to_return[index] = [self.process(list_of_fields[index]), position, list_of_fields['pages'][index]]
-                            if index in data_to_return and data_to_return[index][0]:
+                            data, position = search_custom_positions(_data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                            if not data and index in list_of_fields['regex'] and list_of_fields[index]['regex'] is not False:
+                                data_to_return[index] = [self.process(list_of_fields[index]), position, list_of_fields['pages'][index]]
+                                if index in data_to_return and data_to_return[index][0]:
+                                    data_to_return[index] = [data, position, list_of_fields['pages'][index]]
+                            else:
                                 data_to_return[index] = [data, position, list_of_fields['pages'][index]]
-                        else:
-                            data_to_return[index] = [data, position, list_of_fields['pages'][index]]
 
-        if self.supplier:
             custom_with_position = self.database.select({
                 'select': [
                     "positions -> '" + str(self.form_id) + "' as positions"
@@ -85,6 +88,7 @@ class FindCustom:
                 'where': ['vat_number = %s', 'status <> %s'],
                 'data': [self.supplier[0], 'DEL']
             })[0]
+
             if custom_with_position and custom_with_position['positions']:
                 for field in custom_with_position['positions']:
                     if 'custom_' in field:

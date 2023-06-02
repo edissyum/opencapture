@@ -20,25 +20,23 @@ import json
 from datetime import datetime
 from src.backend.functions import search_by_positions, search_custom_positions
 
-
-class FindInvoiceNumber:
-    def __init__(self, ocr, files, log, regex, config, database, supplier, file, text, nb_page, custom_page, footer_text, docservers, configurations, languages, form_id):
-        self.ocr = ocr
+class FindDueDate:
+    def __init__(self, text, log, regex, configurations, files, ocr, supplier, nb_page, database, file, docservers, languages, form_id):
+        self.date = ''
         self.log = log
-        self.file = file
+        self.ocr = ocr
         self.text = text
+        self.file = file
         self.files = files
         self.regex = regex
-        self.config = config
         self.form_id = form_id
         self.nb_page = nb_page
         self.supplier = supplier
         self.database = database
         self.languages = languages
         self.docservers = docservers
-        self.custom_page = custom_page
-        self.footer_text = footer_text
         self.configurations = configurations
+        self.max_time_delta = configurations['timeDelta']
 
     def format_date(self, date, position, convert=False):
         if date:
@@ -47,7 +45,7 @@ class FindInvoiceNumber:
             date = date.replace('/', ' ')  # Replace some possible inconvenient char
             date = date.replace('-', ' ')  # Replace some possible inconvenient char
             date = date.replace('.', ' ')  # Replace some possible inconvenient char
-    
+
             regex = self.regex
             language = self.configurations['locale']
             if self.supplier and self.supplier[2]['document_lang']:
@@ -63,7 +61,7 @@ class FindInvoiceNumber:
                         regex = {}
                         for _r in _regex:
                             regex[_r['regex_id']] = _r['content']
-    
+
             if convert:
                 date_file = self.docservers['LOCALE_PATH'] + '/' + language + '.json'
                 with open(date_file, encoding='UTF-8') as file:
@@ -79,83 +77,90 @@ class FindInvoiceNumber:
                 date = date.replace('  ', ' ')
                 length_of_year = len(date.split(' ')[2])
                 date_format = "%d %m %Y"
-    
+
                 for _l in self.languages:
                     if language == self.languages[_l]['lang_code']:
                         date_format = self.languages[_l]['date_format']
-    
+
                 if length_of_year == 2:
                     date_format = date_format.replace('%Y', '%y')
-    
+
                 date = datetime.strptime(date, date_format).strftime(regex['format_date'])
                 # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
                 today = datetime.now()
                 doc_date = datetime.strptime(date, regex['format_date'])
                 timedelta = today - doc_date
 
+                if int(self.max_time_delta) not in [-1, 0]:
+                    if timedelta.days > int(self.max_time_delta) or timedelta.days < 0:
+                        self.log.info("Date is older than " + str(self.max_time_delta) +
+                                      " days or in the future : " + date)
+                        date = False
                 if timedelta.days < 0:
+                    self.log.info("Date is in the future " + date)
                     date = False
                 return date, position
             except (ValueError, IndexError) as _e:
+                self.log.info("Date wasn't in a good format : " + date)
                 return False
         else:
             return False
 
-    def sanitize_invoice_number(self, data):
-        invoice_res = data
-        # If the regex return a date, remove it
-        for _date in re.finditer(r"" + self.regex['date'] + "", data):
-            if _date.group():
-                date = self.format_date(_date.group(), (('', ''), ('', '')), True)
+    def process(self, line, position):
+        regex = self.regex['due_date'] + self.regex['date']
+        line = re.sub(r",", '', line)
+        for _date in re.finditer(r"" + regex + "", line):
+            for res in re.finditer(r"" + self.regex['date'] + "", line):
+                date = self.format_date(res.group(), position, True)
                 if date and date[0]:
-                    invoice_res = data.replace(_date.group(), '')
-
-        # Delete the invoice keyword
-        tmp_invoice_number = re.sub(r"" + self.regex['invoice_number'][:-2] + "", '', invoice_res)
-        invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
-        return invoice_number
+                    self.log.info('Due date found : ' + str(date[0]))
+                    return date
+                return False
 
     def run(self):
         if self.supplier:
-            invoice_number = search_by_positions(self.supplier, 'invoice_number', self.ocr, self.files, self.database, self.form_id, self.log)
-            if invoice_number and invoice_number[0]:
-                return invoice_number
+            date = search_by_positions(self.supplier, 'document_due_date', self.ocr, self.files, self.database, self.form_id, self.log)
+            if date and date[0]:
+                res = self.format_date(date[0], date[1])
+                if res:
+                    self.date = res[0]
+                    self.log.info('Document due date found using mask position : ' + str(res[0]))
+                    if len(date) == 3:
+                        return [res[0], res[1], date[2]]
+                    else:
+                        return [res[0], res[1], '']
 
-        if self.supplier and not self.custom_page:
             position = self.database.select({
                 'select': [
-                    "positions -> '" + str(self.form_id) + "' -> 'invoice_number' as invoice_number_position",
-                    "pages -> '" + str(self.form_id) + "' ->'invoice_number' as invoice_number_page"
-                ],
+                    "positions -> '" + str(self.form_id) + "' -> 'document_due_date' as document_due_date_position",
+                    "pages -> '" + str(self.form_id) + "' -> 'document_due_date' as document_due_date_page",
+                    ],
                 'table': ['accounts_supplier'],
                 'where': ['vat_number = %s', 'status <> %s'],
                 'data': [self.supplier[0], 'DEL']
             })[0]
 
-            if position and position['invoice_number_position'] not in [False, 'NULL', '', None]:
-                data = {'position': position['invoice_number_position'], 'regex': None, 'target': 'full', 'page': position['invoice_number_page']}
+            if position and position['document_due_date_position'] not in [False, 'NULL', '', None]:
+                data = {'position': position['document_due_date_position'], 'regex': None, 'target': 'full', 'page': position['document_due_date_page']}
                 text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
-
-                try:
-                    position = json.loads(position)
-                except TypeError:
-                    pass
-
                 if text != '':
-                    self.log.info('Invoice number found with position : ' + str(text))
-                    return [text, position, data['page']]
+                    res = self.format_date(text, position, True)
+                    if res:
+                        self.date = res[0]
+                        self.log.info('Document due date found using position : ' + str(res[0]))
+                        return [self.date, position, data['page']]
 
         for line in self.text:
-            for _invoice in re.finditer(r"" + self.regex['invoice_number'] + "", line.content.upper()):
-                invoice_number = self.sanitize_invoice_number(_invoice.group())
-                if len(invoice_number) >= int(self.configurations['invoiceSizeMin']):
-                    self.log.info('Invoice number found : ' + invoice_number)
-                    return [invoice_number, line.position, self.nb_page]
+            res = self.process(line.content.upper(), line.position)
+            if res:
+                self.log.info('Document due date found : ' + res[0])
+                return [res[0], res[1], self.nb_page]
 
-        for line in self.footer_text:
-            for _invoice in re.finditer(r"" + self.regex['invoice_number'] + "", line.content.upper()):
-                invoice_number = self.sanitize_invoice_number(_invoice.group())
-                if len(invoice_number) >= int(self.configurations['invoiceSizeMin']):
-                    self.log.info('Invoice number found : ' + invoice_number)
-                    position = self.files.return_position_with_ratio(line, 'footer')
-                    return [invoice_number, position, self.nb_page]
+        for line in self.text:
+            res = self.process(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content), line.position)
+            if not res:
+                res = self.process(line.content, line.position)
+                if res:
+                    return [res[0], res[1], self.nb_page]
+            else:
+                return [res[0], res[1], self.nb_page]

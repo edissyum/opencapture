@@ -78,7 +78,7 @@ class FormTest(unittest.TestCase):
             }],
             'document_metadata': []
         })
-        return self.app.post(f'/{CUSTOM_ID}/ws/forms/updateFields/{form_id}',
+        return self.app.post(f'/{CUSTOM_ID}/ws/forms/splitter/updateFields/{form_id}',
                              headers={"Content-Type": "application/json",
                                       'Authorization': 'Bearer ' + self.token}, data=payload)
 
@@ -137,7 +137,7 @@ class FormTest(unittest.TestCase):
             "other": []
         })
 
-        return self.app.post(f'/{CUSTOM_ID}/ws/forms/updateFields/{form_id}',
+        return self.app.post(f'/{CUSTOM_ID}/ws/forms/verifier/updateFields/{form_id}',
                              headers={"Content-Type": "application/json",
                                       'Authorization': 'Bearer ' + self.token}, data=payload)
 

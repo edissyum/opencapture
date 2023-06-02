@@ -83,7 +83,6 @@
             </mat-step>
             <mat-step [aria-labelledby]="'disabled_step'" *ngIf="this.processAllowed" [label]="'WORKFLOW.process' | translate">
                 <app-hint [message]="'WORKFLOW.process_hint' | translate"></app-hint>
-
                 <div class="mt-6 grid grid-cols-2 gap-6" [class.grid-cols-4]="this.useInterface">
                     <ng-container *ngFor="let field of this.fields['process']">
                         <div *ngIf="field.type === 'boolean' && field.show">
@@ -96,7 +95,7 @@
                         </div>
                     </ng-container>
                 </div>
-                <div class="mt-6 grid grid-cols-3 gap-6">
+                <div class="mt-6 grid grid-cols-4 gap-6">
                     <ng-container *ngFor="let field of this.fields['process']">
                         <mat-form-field *ngIf="field.type === 'text'">
                             <mat-label>{{ field.label | translate }}</mat-label>

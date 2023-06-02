@@ -20,6 +20,7 @@ import os
 import sys
 import time
 import json
+import traceback
 from kuyruk import Kuyruk
 from flask_babel import gettext
 from src.backend.functions import retrieve_config_from_custom_id
@@ -46,8 +47,7 @@ def launch(args):
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(
-        args['custom_id'], True)
+    database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'], True)
     task_id_watcher = database.insert({
         'table': 'tasks_watcher',
         'columns': {
@@ -153,10 +153,9 @@ def launch(args):
                             available_split_methods = json.load(json_file)
                             for available_split_method in available_split_methods['methods']:
                                 if available_split_method['id'] == splitter_method_id:
-                                    split_method = _Splitter.import_method_from_script(
-                                        docservers['SPLITTER_METHODS_PATH'],
-                                        available_split_method['script'],
-                                        available_split_method['method'])
+                                    split_method = _Splitter.import_method_from_script(docservers['SPLITTER_METHODS_PATH'],
+                                                                                       available_split_method['script'],
+                                                                                       available_split_method['method'])
                                     log.info('Split using method : {}'.format(available_split_method['id']))
                                     split_args = {
                                         "log": log,
@@ -181,16 +180,9 @@ def launch(args):
                     log.error("The workflow_id doesn't exists in database")
             else:
                 process_err = True
-
-            auto_validation = not workflow_settings[0]['process']['use_interface'] \
-                              or workflow_settings[0]['process']['allow_automatic_validation']
-            if not process_err and auto_validation:
-                for batch_id in created_batches:
-                    export_batch(batch_id, log, docservers, configurations, regex)
-
     except Exception as _e:
         process_err = True
-        _e = _e.__class__.__name__ + ' : ' + str(_e)
+        _e = str(traceback.format_exc())
         log.error(_e)
 
     if not process_err:
@@ -217,5 +209,16 @@ def launch(args):
         },
         'where': ['id = %s'],
         'data': [args['task_id_monitor']]
+    })
+
+    database.insert({
+        'table': 'history',
+        'columns': {
+            'history_module': 'splitter',
+            'user_info': args['user_info'],
+            'history_submodule': 'upload_file',
+            'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>',
+            'user_ip': args['ip']
+        }
     })
     database.conn.close()

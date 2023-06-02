@@ -33,7 +33,7 @@ class FindQuotationNumber:
         self.form_id = form_id
         self.supplier = supplier
         self.database = database
-        self.nb_pages = nb_pages
+        self.nb_page = nb_pages
         self.docservers = docservers
         self.footer_text = footer_text
         self.custom_page = custom_page
@@ -91,7 +91,7 @@ class FindQuotationNumber:
                 quotation_number = self.sanitize_quotation_number(_quotation.group())
                 if len(quotation_number) >= int(self.configurations['devisSizeMin']):
                     self.log.info('Quotation number found : ' + quotation_number)
-                    return [quotation_number, line.position, self.nb_pages]
+                    return [quotation_number, line.position, self.nb_page]
 
         for line in self.footer_text:
             for _quotation in re.finditer(r"" + self.regex['quotation_number'] + "", line.content.upper()):
@@ -99,4 +99,4 @@ class FindQuotationNumber:
                 if len(quotation_number) >= int(self.configurations['devisSizeMin']):
                     self.log.info('Quotation number found : ' + quotation_number)
                     position = self.files.return_position_with_ratio(line, 'footer')
-                    return [quotation_number, position, self.nb_pages]
+                    return [quotation_number, position, self.nb_page]

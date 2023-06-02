@@ -114,7 +114,7 @@ def update_form_display(form_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/updateDisplay/{form_id}'}), 403
 
     display = request.json['args']
-    res = forms.update_form(form_id, {"settings": {"display": display}})
+    res = forms.update_form(form_id, {"settings": {"display": display}}, 'verifier')
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -125,7 +125,7 @@ def update_form_unique_url(form_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/updateUniqueUrl/{form_id}'}), 403
 
     unique_url = request.json['args']
-    res = forms.update_form(form_id, {"settings": {"unique_url": unique_url}})
+    res = forms.update_form(form_id, {"settings": {"unique_url": unique_url}}, 'verifier')
     return make_response(jsonify(res[0])), res[1]
 
 

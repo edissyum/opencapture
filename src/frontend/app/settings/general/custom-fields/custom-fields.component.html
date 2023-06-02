@@ -2,7 +2,7 @@
     <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
-    <mat-sidenav-content class="bg-white">
+    <mat-sidenav-content class="bg-white overflow-hidden">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
@@ -16,52 +16,52 @@
             <div class="settings_search"></div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <mat-accordion>
-            <mat-expansion-panel [expanded]="true">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        {{ 'SETTINGS.add_custom_fields' | translate }}
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <form [formGroup]="form">
-                    <div class="cursor-pointer relative top-9 ml-4 w-1/12" matTooltip="{{ 'CUSTOM-FIELDS.reset' | translate }}"
-                         (click)="resetForm()">
-                        <i class="self-center fa-solid fa-sync fa-lg hover:text-green-400"></i>
-                    </div>
-                    <div class="mx-12 grid grid-cols-6 gap-4">
-                        <div *ngFor="let input of addFieldInputs">
-                            <mat-form-field class="w-full" *ngIf="!input.limit || (input.limit && displayInput(input))">
-                                <mat-label [attr.for]="input.field_id">{{ input.label | translate }}</mat-label>
-                                <div [ngSwitch]="input.controlType">
-                                    <div *ngSwitchCase="'text'">
-                                        <input matInput [formControl]="input.control" [id]="input.field_id"
-                                               [type]="input.type" [matAutocomplete]="autocomplete">
-                                        <mat-autocomplete #autocomplete="matAutocomplete">
-                                            <div *ngIf="input.control.value === null || input.control.value === '' || input.control.value === undefined">
-                                                <mat-option *ngFor="let option of input.autoComplete" [value]="option.key">
-                                                    <span style="font-size: 12px;" [innerHTML]="option.value"></span>
-                                                    <span style="font-size: 10px;" class="text-green-400 ml-3">{{ option.key }}</span>
-                                                </mat-option>
-                                            </div>
-                                        </mat-autocomplete>
-                                    </div>
-                                    <div *ngSwitchCase="'dropdown'">
-                                        <mat-select [id]="input.field_id"
-                                                    [formControl]="input.control">
-                                            <mat-option *ngFor="let opt of input.options"
-                                                        [value]="opt.key">
-                                                {{ opt.value | translate }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </div>
-                                </div>
-                            </mat-form-field>
+        <div class="overflow-x-hidden h-full-overflow">
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{ 'SETTINGS.add_custom_fields' | translate }}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form [formGroup]="form">
+                        <div class="cursor-pointer relative top-9 ml-4 w-1/12" matTooltip="{{ 'CUSTOM-FIELDS.reset' | translate }}"
+                             (click)="resetForm()">
+                            <i class="self-center fa-solid fa-sync fa-lg hover:text-green-400"></i>
                         </div>
-                    </div>
-                    <div class="flex justify-center" *ngIf="displayChoicesList()">
-                        <div>
+                        <div class="mx-12 grid grid-cols-4 gap-4" [class.grid-cols-5]="isSplitter">
+                            <div *ngFor="let input of addFieldInputs">
+                                <div *ngIf="!input.limit || (input.limit && displayInput(input))">
+                                    <mat-form-field *ngIf="input['controlType'] === 'text'" class="w-full">
+                                        <mat-label>{{ input.label | translate }}</mat-label>
+                                        <input matInput [formControl]="input['control']" [id]="input.field_id"
+                                               [type]="input.type" [matAutocomplete]="autocomplete">
+                                        <mat-autocomplete #autocomplete="matAutocomplete" [panelWidth]="'auto'">
+                                        <span *ngIf="input.control.value === null || input.control.value === '' || input.control.value === undefined">
+                                            <mat-option *ngFor="let option of input['autoComplete']" [value]="option.key">
+                                                <span class="text-md" [innerHTML]="option.value | translate"></span>
+                                                <span class="text-sm text-green-400 ml-3">{{ option.key }}</span>
+                                            </mat-option>
+                                        </span>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                    <mat-form-field *ngIf="input['controlType'] === 'dropdown'" class="w-full">
+                                        <mat-label>{{ input.label | translate }}</mat-label>
+                                        <mat-select [id]="input['field_id']" [formControl]="input['control']"
+                                                    (selectionChange)="input['field_id'] === 'module' ? displayType($event) : ''">
+                                            <ng-container *ngFor="let opt of input.options">
+                                                <mat-option *ngIf="!opt['hide']" [value]="opt.key">
+                                                    {{ opt.value | translate }}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-center flex-col" *ngIf="displayChoicesList()">
                             <span class="text-center">{{ 'CUSTOM-FIELDS.select_options' | translate }}</span>
-                            <div class="flex">
+                            <div class="flex justify-center">
                                 <div cdkDropList class="select-options-list w-96"
                                      (cdkDropListDropped)="dropSelectOption($event)">
                                     <div *ngIf="selectOptions.length === 0" class="my-14 text-center text-gray-400">{{ 'CUSTOM-FIELDS.no_option_added' | translate }}</div>
@@ -86,29 +86,64 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="flex justify-center m-5">
-                        <button class="valid_button"
-                                mat-button (click)="addCustomField()" *ngIf="!update">
-                            {{ 'CUSTOM-FIELDS.add' | translate }}
-                        </button>
-                        <button class="valid_button"
-                                mat-button (click)="$event.stopPropagation();updateCustomOnSubmit()" *ngIf="update">
-                            {{ 'CUSTOM-FIELDS.update' | translate }}
-                        </button>
-                    </div>
-                </form>
-            </mat-expansion-panel>
-        </mat-accordion>
-        <div class="custom-fields-control w-full">
-            <mat-tab-group>
-                <mat-tab *ngFor="let parent of this.parent" [label]="this.translate.instant(parent.label)">
-                    <div cdkDropListGroup class="w-max mx-auto">
-                        <div class="list-container">
-                            <h2>{{ 'HEADER.inactive' | translate }}</h2>
-                            <div cdkDropList [cdkDropListData]="inactiveFields" (cdkDropListDropped)="dropCustomField($event)"
-                                 class="custom-fields-list"
-                                 style="max-height:47vh; overflow:auto;">
+                        <div class="flex justify-center flex-col" *ngIf="displayRegex()">
+                            <hr class="border-green-400 w-11/12 m-auto">
+                            <div class="mx-auto w-11/12 mt-8">
+                                <div class="flex flex-row gap-10 justify-center">
+                                    <mat-slide-toggle [formControl]="regexRemoveKeyWord" class="mb-8 flex justify-center" (change)="checkRegex()">
+                                        <span class="justify-center">{{ 'CUSTOM-FIELDS.regex_remove_keyword' | translate }}</span>
+                                        <span class="relative text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="'CUSTOM-FIELDS.regex_remove_keyword_hint' | translate">
+                                           <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
+                                    </mat-slide-toggle>
+                                    <mat-form-field class="w-96">
+                                        <mat-label>{{ 'CUSTOM-FIELDS.regex_format' | translate }}</mat-label>
+                                        <mat-select [formControl]="regexFormat">
+                                            <mat-option *ngFor="let opt of formats" [value]="opt.id">
+                                                {{ opt.label | translate }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="-mt-4 mb-4">
+                                    <app-hint [specificClass]="'w-1/2'" *ngIf="regexRemoveKeyWord.value"
+                                              [message]="'CUSTOM-FIELDS.regex_remove_keyword_explanation' | translate"></app-hint>
+                                </div>
+                                <mat-form-field class="w-full">
+                                    <mat-label>{{ 'FORMATS.regex' | translate }}</mat-label>
+                                    <textarea cdkTextareaAutosize cdkAutosizeMinRows="1" matInput [value]="regexControl.value"
+                                              [formControl]="regexControl" (keyup)="checkRegex()" spellcheck="false"></textarea>
+                                </mat-form-field>
+                                <mat-form-field class="w-full">
+                                    <mat-label>{{ 'FORMATS.test_string' | translate }}</mat-label>
+                                    <input matInput type="text" [formControl]="regexTestControl" (keyup)="checkRegex()">
+                                </mat-form-field>
+                                <span>
+                                {{ 'CUSTOM-FIELDS.regex_results' | translate }} : <span [innerHTML]="regexResult"></span>
+                            </span>
+                            </div>
+                        </div>
+                        <div class="flex justify-center m-5">
+                            <button class="valid_button" mat-button (click)="addCustomField()" *ngIf="!update">
+                                {{ 'CUSTOM-FIELDS.add' | translate }}
+                            </button>
+                            <button class="valid_button"
+                                    mat-button (click)="$event.stopPropagation();updateCustomOnSubmit()" *ngIf="update">
+                                {{ 'CUSTOM-FIELDS.update' | translate }}
+                            </button>
+                        </div>
+                    </form>
+                </mat-expansion-panel>
+            </mat-accordion>
+            <div class="custom-fields-control w-full">
+                <mat-tab-group>
+                    <mat-tab *ngFor="let parent of this.parent" [label]="this.translate.instant(parent.label)">
+                        <div cdkDropListGroup class="w-max mx-auto">
+                            <div class="list-container">
+                                <h2>{{ 'HEADER.inactive' | translate }}</h2>
+                                <div cdkDropList [cdkDropListData]="inactiveFields" (cdkDropListDropped)="dropCustomField($event)"
+                                     class="custom-fields-list"
+                                     style="max-height:47vh; overflow:auto;">
                                 <span *ngFor="let item of inactiveFields; let i = index;">
                                     <div cdkDrag class="drop-box-custom-field" *ngIf="item.module === parent['id']">
                                         <div class="text-left">
@@ -135,13 +170,13 @@
                                         </div>
                                     </div>
                                 </span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="list-container">
-                            <h2>{{ 'HEADER.active' | translate }}</h2>
-                            <div cdkDropList [cdkDropListData]="activeFields" (cdkDropListDropped)="dropCustomField($event)"
-                                 class="custom-fields-list"
-                                 style="max-height:47vh; overflow:auto;">
+                            <div class="list-container">
+                                <h2>{{ 'HEADER.active' | translate }}</h2>
+                                <div cdkDropList [cdkDropListData]="activeFields" (cdkDropListDropped)="dropCustomField($event)"
+                                     class="custom-fields-list"
+                                     style="max-height:47vh; overflow:auto;">
                                 <span *ngFor="let item of activeFields; let i = index;">
                                     <div cdkDrag class="drop-box-custom-field" *ngIf="item.module === parent['id']">
                                         <div class="text-left">
@@ -168,11 +203,12 @@
                                         </div>
                                     </div>
                                 </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </mat-tab>
-            </mat-tab-group>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

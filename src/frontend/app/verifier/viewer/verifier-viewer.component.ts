@@ -845,6 +845,9 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     scrollToElement() {
+        if (this.document.pages[this.lastId]) {
+            this.changeImage(this.document.pages[this.lastId], this.currentPage)
+        }
         if (this.document.positions[this.lastId]) {
             const currentHeight = window.innerHeight;
             if (document.getElementsByClassName('input_' + this.lastId).length > 0) {
@@ -1727,7 +1730,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     changeImage(pageToShow: number, oldPage: number) {
-        if (pageToShow) {
+        if (pageToShow !== oldPage) {
             const extension = this.currentFilename.split('.').pop();
             const oldCpt = ('000' + oldPage).substr(-3);
             const newCpt = ('000' + pageToShow).substr(-3);
