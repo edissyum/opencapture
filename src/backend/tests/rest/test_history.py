@@ -23,7 +23,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class HistoryTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
@@ -68,4 +68,4 @@ class HistoryTest(unittest.TestCase):
         self.assertEqual(len(response.json['history']), 1)
 
     def tearDown(self) -> None:
-        self.db.execute("TRUNCATE TABLE history")
+        self.database.execute("TRUNCATE TABLE history")

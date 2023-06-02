@@ -23,7 +23,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class PrivilegesTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)

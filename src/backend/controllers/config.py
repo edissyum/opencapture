@@ -153,7 +153,7 @@ def retrieve_regex(data):
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'where': ["lang in ('global', %s)"],
-        'args': [configurations['locale']],
+        'data': [configurations['locale']],
         'offset': data['offset'] if 'offset' in data else 0,
         'limit': data['limit'] if 'limit' in data else 'ALL'
     }

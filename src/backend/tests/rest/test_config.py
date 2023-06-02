@@ -25,7 +25,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class ConfigTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed .*OpenCapture.log.*", category=ResourceWarning)
@@ -116,15 +116,15 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(len(response.json['regex']), 5)
 
     def test_successful_update_regex(self):
-        self.db.execute("SELECT id FROM regex WHERE regex_id = 'email'")
-        regex_id = self.db.fetchall()
+        self.database.execute("SELECT id FROM regex WHERE regex_id = 'email'")
+        regex_id = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateRegex/' + str(regex_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={'args': {"label": 'Adresse email', "content": "Updated_content"}})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT content FROM regex WHERE regex_id = 'email'")
-        updated_regex = self.db.fetchall()
+        self.database.execute("SELECT content FROM regex WHERE regex_id = 'email'")
+        updated_regex = self.database.fetchall()
         self.assertEqual("Updated_content", updated_regex[0]['content'])
 
     def test_successful_get_login_image(self):
@@ -150,32 +150,32 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(default_login_image.decode('utf-8'), custom_login_image.decode('utf-8'))
 
     def test_successful_update_configuration(self):
-        self.db.execute("SELECT id FROM configurations WHERE label = 'loginMessage'")
-        configuration_id = self.db.fetchall()
+        self.database.execute("SELECT id FROM configurations WHERE label = 'loginMessage'")
+        configuration_id = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateConfiguration/' + str(configuration_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={"args": {"type": "string", "value": "New loginMessage",
+                                json={"data": {"type": "string", "value": "New loginMessage",
                                                "description": "Court message affiché sur l'écran d'accueil"}})
         self.assertEqual(200, response.status_code)
-        self.db.execute("SELECT data #>> '{value}' as value FROM configurations WHERE label = 'loginMessage'")
-        updated_configuration = self.db.fetchall()
+        self.database.execute("SELECT data #>> '{value}' as value FROM configurations WHERE label = 'loginMessage'")
+        updated_configuration = self.database.fetchall()
         self.assertEqual("New loginMessage", updated_configuration[0]['value'])
 
     def test_successful_update_docservers(self):
-        self.db.execute("SELECT id, path, description, docserver_id FROM docservers WHERE docserver_id = "
+        self.database.execute("SELECT id, path, description, docserver_id FROM docservers WHERE docserver_id = "
                         "'DOCSERVERS_PATH'")
-        docserver_id = self.db.fetchall()
+        docserver_id = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateDocserver/' + str(docserver_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={"args": {"id": docserver_id[0]['id'], "docserver_id": "DOCSERVERS_PATH",
+                                json={"data": {"id": docserver_id[0]['id'], "docserver_id": "DOCSERVERS_PATH",
                                                "description": docserver_id[0]['description'], "path": "/new/path/"}})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT path FROM docservers WHERE docserver_id = 'DOCSERVERS_PATH'")
-        updated_docservers = self.db.fetchall()
+        self.database.execute("SELECT path FROM docservers WHERE docserver_id = 'DOCSERVERS_PATH'")
+        updated_docservers = self.database.fetchall()
         self.assertEqual("/new/path/", updated_docservers[0]['path'])
 
-    def test_successful_get_git_Info(self):
+    def test_successful_get_git_info(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/config/gitInfo',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
@@ -185,8 +185,8 @@ class ConfigTest(unittest.TestCase):
     def tearDown(self) -> None:
         if os.path.isfile(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.png'):
             os.remove(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.png')
-        self.db.execute("UPDATE regex "
+        self.database.execute("UPDATE regex "
                         "SET content = '([A-Za-z0-9]+[\.\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+' "
                         "WHERE regex_id = 'email'")
-        self.db.execute(f"UPDATE docservers SET path = '/var/docservers/opencapture/{CUSTOM_ID}/' "
+        self.database.execute(f"UPDATE docservers SET path = '/var/docservers/opencapture/{CUSTOM_ID}/' "
                         "WHERE docserver_id = 'DOCSERVERS_PATH'")

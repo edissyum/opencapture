@@ -26,7 +26,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class UserTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
@@ -59,8 +59,8 @@ class UserTest(unittest.TestCase):
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT status FROM users WHERE id = " + str(user.json['id']))
-        new_user = self.db.fetchall()
+        self.database.execute("SELECT status FROM users WHERE id = " + str(user.json['id']))
+        new_user = self.database.fetchall()
         self.assertEqual("DEL", new_user[0]['status'])
 
     def test_successful_disable_user(self):
@@ -69,8 +69,8 @@ class UserTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT enabled FROM users WHERE id = " + str(user.json['id']))
-        new_user = self.db.fetchall()
+        self.database.execute("SELECT enabled FROM users WHERE id = " + str(user.json['id']))
+        new_user = self.database.fetchall()
         self.assertFalse(new_user[0]['enabled'])
 
     def test_successful_enable_user(self):
@@ -79,8 +79,8 @@ class UserTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT enabled FROM users WHERE id = " + str(user.json['id']))
-        new_user = self.db.fetchall()
+        self.database.execute("SELECT enabled FROM users WHERE id = " + str(user.json['id']))
+        new_user = self.database.fetchall()
         self.assertTrue(new_user[0]['enabled'])
 
     def test_successful_update_user(self):
@@ -98,8 +98,8 @@ class UserTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
 
-        self.db.execute("SELECT firstname, lastname, password, role, email FROM users WHERE id = " + str(user.json['id']))
-        new_user = self.db.fetchall()
+        self.database.execute("SELECT firstname, lastname, password, role, email FROM users WHERE id = " + str(user.json['id']))
+        new_user = self.database.fetchall()
         self.assertEqual(1, new_user[0]['role'])
         self.assertEqual("Test", new_user[0]['firstname'])
         self.assertEqual("Test123", new_user[0]['lastname'])
@@ -114,16 +114,16 @@ class UserTest(unittest.TestCase):
             'sub': user.json['id']
         }
         reset_token = jwt.encode(payload, app.config['SECRET_KEY'].replace("\n", ""), algorithm='HS512')
-        self.db.execute('UPDATE users SET reset_token = %s WHERE id = %s', (reset_token, user.json['id']))
+        self.database.execute('UPDATE users SET reset_token = %s WHERE id = %s', (reset_token, user.json['id']))
         response = self.app.put(f'/{CUSTOM_ID}/ws/users/resetPassword',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={'resetToken': reset_token, 'newPassword': '123465'})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.db.execute("SELECT firstname, lastname, password, role, email FROM users WHERE id = " + str(user.json['id']))
-        new_user = self.db.fetchall()
+        self.database.execute("SELECT firstname, lastname, password, role, email FROM users WHERE id = " + str(user.json['id']))
+        new_user = self.database.fetchall()
         self.assertTrue(check_password_hash(new_user[0]['password'], '123465'))
-        self.db.execute('UPDATE users SET reset_token = NULL WHERE id = ' + str(user.json['id']))
+        self.database.execute('UPDATE users SET reset_token = NULL WHERE id = ' + str(user.json['id']))
 
     def test_successful_get_users_list(self):
         self.create_user()
@@ -186,10 +186,10 @@ class UserTest(unittest.TestCase):
                                 json=payload)
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT customers_id FROM users_customers WHERE user_id = " + str(user.json['id']))
-        new_customers = self.db.fetchall()
+        self.database.execute("SELECT customers_id FROM users_customers WHERE user_id = " + str(user.json['id']))
+        new_customers = self.database.fetchall()
         self.assertEqual('[1, 2, 3]', new_customers[0]['customers_id']['data'])
 
     def tearDown(self) -> None:
-        self.db.execute("TRUNCATE TABLE users_customers")
-        self.db.execute("DELETE FROM users WHERE username = 'test'")
+        self.database.execute("TRUNCATE TABLE users_customers")
+        self.database.execute("DELETE FROM users WHERE username = 'test'")

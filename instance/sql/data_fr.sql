@@ -20,6 +20,7 @@ INSERT INTO "configurations" ("label", "data") VALUES ('jwtExpiration', '{"type"
 INSERT INTO "configurations" ("label", "data") VALUES ('timeDelta', '{"type": "int", "value": "-1", "description": "Delta maximum pour remonter une date de facture, en jours. -1 pour désactiver"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('invoiceSizeMin', '{"type": "int", "value": "6", "description": "Taille minimale pour un numéro de facture"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('devisSizeMin', '{"type": "int", "value": "3", "description": "Taille minimale pour un numéro de devis"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('verifierMaxPageSearch', '{"type": "int", "value": "4", "description": "Nombre de pages maximales à parcourir pour chercher les infos du module Verifier, en partant de la dernière page (0 pour chercher dans le document complet)"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('loginMessage', '{"type": "string", "value": "Open-Capture - LAD / RAD", "description": "Court message affiché sur l''écran d''accueil"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('allowUserMultipleLogin', '{"type": "bool", "value": true, "description": "Autoriser un utilisateur à être connecté sur plusieurs machines simultanément"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('restrictInputsPath', '{"type": "bool", "value": false, "description": "Activer la restriction du chemin sur le dossier des chaînes entrantes"}');

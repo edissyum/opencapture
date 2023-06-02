@@ -23,7 +23,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class AuthTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         self.basic_auth = b64encode(b'user_ws:user_ws').decode('utf-8')

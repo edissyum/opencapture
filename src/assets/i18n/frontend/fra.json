@@ -183,7 +183,7 @@
 		"field_updated": "Champ personnalisé modifié avec succès",
 		"module": "Module",
 		"no_option_added": "Aucune option ajoutée",
-		"regex_format": "Format de la donnée à récupérer",
+		"regex_format": "Format de la donnée à récupérer (utiliser pour validation)",
 		"regex_remove_keyword": "Supprimer le mot clé de l'expression régulière",
 		"regex_remove_keyword_explanation": "Afin que cette option soit fonctionnelle, il faut que le mot clé soit présent dans l'expression régulière et qu'elle se termine par <strong>.*</strong><br>Exemple : <strong>NUM(E|É)RO\\s*DE\\s*FACTURE\\s*:\\s*.*</strong>",
 		"regex_remove_keyword_hint": "Si activé, le mot clé sera supprimé du résultat de la regex pour ne conserver que la donnée",
@@ -918,6 +918,7 @@
 	},
 	"TYPES": {
 		"date": "Date",
+		"regex": "Expression régulière",
 		"select": "Liste de choix",
 		"text": "Chaine de caractères",
 		"textarea": "Multi lignes"

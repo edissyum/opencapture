@@ -173,7 +173,7 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
             ocr.last_text = ocr.line_box_builder(files.img)
 
 
-def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_class, _res, files):
+def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_class, _res, files, configurations):
     data = data_class.run()
     if not data:
         improved_image = files.improve_image_detection(files.jpg_name, remove_lines=False)
@@ -195,8 +195,13 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
     tmp_nb_pages = nb_pages
     while not data:
         tmp_nb_pages = tmp_nb_pages - 1
-        if i == 4 or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
-            break
+        if 'verifierMaxPageSearch' in configurations and int(configurations['verifierMaxPageSearch']) > 0:
+            if i == int(configurations['verifierMaxPageSearch']) or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+                break
+        else:
+            if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+                break
+
         convert(file, files, ocr, tmp_nb_pages, True)
         _file = files.custom_file_name
         image = files.open_image_return(_file)
@@ -246,7 +251,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             'select': ['*'],
             'table': ['workflows'],
             'where': ['workflow_id = %s', 'module = %s'],
-            'data': [args['workflow_id'], 'verifier'],
+            'data': [args['workflow_id'], 'verifier']
         })
         if workflow_settings:
             workflow_settings = workflow_settings[0]
@@ -465,30 +470,31 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file, docservers,
                                                  configurations, languages, datas['form_id'])
         datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages, invoice_number_class,
-                                       datas, files)
+                                       datas, files, configurations)
 
     if 'document_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
         date_class = FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers, languages,
                               datas['form_id'])
-        datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class, datas, files)
+        datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class, datas, files,
+                                       configurations)
 
     if 'document_due_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
         due_date_class = FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                      languages, datas['form_id'])
         datas = found_data_recursively('document_due_date', ocr, file, nb_pages, text_by_pages, due_date_class,
-                                       datas, files)
+                                       datas, files, configurations)
 
     if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
         quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
                                                      docservers, configurations, datas['form_id'])
         datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages, quotation_number_class,
-                                       datas, files)
+                                       datas, files, configurations)
 
     if 'delivery_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
         delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file, docservers,
                                                    configurations, datas['form_id'])
         datas = found_data_recursively('delivery_number', ocr, file, nb_pages, text_by_pages, delivery_number_class,
-                                       datas, files)
+                                       datas, files, configurations)
 
     footer = None
     if 'footer' in system_fields_to_find or not workflow_settings['input']['apply_process']:

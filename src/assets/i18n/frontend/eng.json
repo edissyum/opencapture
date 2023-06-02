@@ -918,6 +918,7 @@
 	},
 	"TYPES": {
 		"date": "Date",
+		"regex": "Regular expression",
 		"select": "List of choices",
 		"text": "String",
 		"textarea": "Textarea"

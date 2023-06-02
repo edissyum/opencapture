@@ -26,7 +26,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class UserTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
@@ -162,8 +162,8 @@ class UserTest(unittest.TestCase):
                                 json={'args': payload})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT * FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
-        new_supplier = self.db.fetchall()
+        self.database.execute("SELECT * FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
+        new_supplier = self.database.fetchall()
         self.assertEqual(2, new_supplier[0]['form_id'])
         self.assertEqual(2, new_supplier[0]['address_id'])
         self.assertEqual("123456788", new_supplier[0]['siren'])
@@ -191,8 +191,8 @@ class UserTest(unittest.TestCase):
                                 json={'args': payload})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT * FROM addresses WHERE id = " + str(address.json['id']))
-        new_address = self.db.fetchall()
+        self.database.execute("SELECT * FROM addresses WHERE id = " + str(address.json['id']))
+        new_address = self.database.fetchall()
         self.assertEqual("Avenue de la Test UPDATED", new_address[0]['address1'])
         self.assertEqual("Bâtiment B UPDATED", new_address[0]['address2'])
         self.assertEqual("84202", new_address[0]['postal_code'])
@@ -215,8 +215,8 @@ class UserTest(unittest.TestCase):
                                 json={'args': payload})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT * FROM addresses WHERE id = " + str(address.json['id']))
-        new_address = self.db.fetchall()
+        self.database.execute("SELECT * FROM addresses WHERE id = " + str(address.json['id']))
+        new_address = self.database.fetchall()
         self.assertEqual("Avenue de la Test UPDATED", new_address[0]['address1'])
         self.assertEqual("Bâtiment B UPDATED", new_address[0]['address2'])
         self.assertEqual("84202", new_address[0]['postal_code'])
@@ -239,8 +239,8 @@ class UserTest(unittest.TestCase):
         response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/supplier/' + str(supplier.json['id']) + '/updatePosition',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={'args': payload})
-        self.db.execute("SELECT positions FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
-        new_supplier = self.db.fetchall()
+        self.database.execute("SELECT positions FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
+        new_supplier = self.database.fetchall()
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(new_supplier[0]['positions']))
         self.assertEqual({
@@ -264,8 +264,8 @@ class UserTest(unittest.TestCase):
         response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/supplier/' + str(supplier.json['id']) + '/updatePage',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={'args': payload})
-        self.db.execute("SELECT pages FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
-        new_supplier = self.db.fetchall()
+        self.database.execute("SELECT pages FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
+        new_supplier = self.database.fetchall()
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(new_supplier[0]['pages']))
         self.assertEqual({'1': {'invoice_number': 1}}, new_supplier[0]['pages'])
@@ -277,8 +277,8 @@ class UserTest(unittest.TestCase):
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT status FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
-        new_supplier = self.db.fetchall()
+        self.database.execute("SELECT status FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
+        new_supplier = self.database.fetchall()
         self.assertEqual("DEL", new_supplier[0]['status'])
 
     def test_successful_delete_supplier_positions(self):
@@ -301,8 +301,8 @@ class UserTest(unittest.TestCase):
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT positions FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
-        new_supplier = self.db.fetchall()
+        self.database.execute("SELECT positions FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
+        new_supplier = self.database.fetchall()
         self.assertEqual({}, new_supplier[0]['positions'])
 
     def test_successful_delete_supplier_position(self):
@@ -329,8 +329,8 @@ class UserTest(unittest.TestCase):
                                          'Authorization': 'Bearer ' + self.token}, json={'args': payload})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT positions FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
-        new_supplier = self.db.fetchall()
+        self.database.execute("SELECT positions FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
+        new_supplier = self.database.fetchall()
         self.assertEqual({'1': {}}, new_supplier[0]['positions'])
 
     def test_successful_delete_supplier_page(self):
@@ -351,8 +351,8 @@ class UserTest(unittest.TestCase):
                                          'Authorization': 'Bearer ' + self.token}, json={'args': payload})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT pages FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
-        new_supplier = self.db.fetchall()
+        self.database.execute("SELECT pages FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
+        new_supplier = self.database.fetchall()
         self.assertEqual({'1': {}}, new_supplier[0]['pages'])
 
     def test_successful_update_supplier_skip_autovalidate(self):
@@ -361,8 +361,8 @@ class UserTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT skip_auto_validate FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
-        new_supplier = self.db.fetchall()
+        self.database.execute("SELECT skip_auto_validate FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
+        new_supplier = self.database.fetchall()
         self.assertTrue(new_supplier[0]['skip_auto_validate'])
         self.assertEqual(200, supplier.status_code)
 
@@ -418,8 +418,8 @@ class UserTest(unittest.TestCase):
                                 json={'args': payload})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT * FROM accounts_customer WHERE id = " + str(customer.json['id']))
-        new_customer = self.db.fetchall()
+        self.database.execute("SELECT * FROM accounts_customer WHERE id = " + str(customer.json['id']))
+        new_customer = self.database.fetchall()
         self.assertEqual(2, new_customer[0]['address_id'])
         self.assertEqual("123456788", new_customer[0]['siren'])
         self.assertEqual("1234567891012", new_customer[0]['siret'])
@@ -433,8 +433,8 @@ class UserTest(unittest.TestCase):
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
 
-        self.db.execute("SELECT status FROM accounts_customer WHERE id = " + str(customer.json['id']))
-        new_customer = self.db.fetchall()
+        self.database.execute("SELECT status FROM accounts_customer WHERE id = " + str(customer.json['id']))
+        new_customer = self.database.fetchall()
         self.assertEqual("DEL", new_customer[0]['status'])
 
     def test_successful_get_default_accounting_plan(self):
@@ -458,6 +458,6 @@ class UserTest(unittest.TestCase):
     def tearDown(self) -> None:
         shutil.copy('/var/www/html/opencapture/instance/referencial/default_referencial_supplier.ods.default',
                     f'/var/www/html/opencapture/custom/{CUSTOM_ID}/instance/referencial//default_referencial_supplier.ods')
-        self.db.execute("TRUNCATE TABLE addresses")
-        self.db.execute("TRUNCATE TABLE accounts_supplier")
-        self.db.execute("DELETE FROM accounts_customer WHERE name <> 'Splitter - Compte client par défaut'")
+        self.database.execute("TRUNCATE TABLE addresses")
+        self.database.execute("TRUNCATE TABLE accounts_supplier")
+        self.database.execute("DELETE FROM accounts_customer WHERE name <> 'Splitter - Compte client par défaut'")

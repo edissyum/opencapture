@@ -96,9 +96,9 @@
                                            <i class="fa-solid fa-circle-question text-md"></i>
                                         </span>
                                     </mat-slide-toggle>
-                                    <mat-form-field class="w-96">
+                                    <mat-form-field class="w-1/3">
                                         <mat-label>{{ 'CUSTOM-FIELDS.regex_format' | translate }}</mat-label>
-                                        <mat-select [formControl]="regexFormat">
+                                        <mat-select [formControl]="regexFormat" (selectionChange)="checkRegex()">
                                             <mat-option *ngFor="let opt of formats" [value]="opt.id">
                                                 {{ opt.label | translate }}
                                             </mat-option>
