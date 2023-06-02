@@ -272,8 +272,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.http.get(environment['url'] + '/ws/splitter/batch/' + this.currentBatch.id + '/outputs', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.currentBatch.outputs = data.outputs;
-                console.log("this.currentBatch.outputs : ");
-                console.log(this.currentBatch.outputs);
 
             }),
             catchError((err: any) => {
@@ -855,19 +853,23 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     dropPage(event: CdkDragDrop<any[]>, document: any): void {
         this.hasUnsavedChanges = true;
+        let pageId = undefined;
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+            pageId = event.container.data[event.currentIndex].id;
         } else {
             transferArrayItem(event.previousContainer.data,
                 event.container.data,
                 event.previousIndex,
                 event.currentIndex);
+            pageId = event.container.data[event.currentIndex].id;
             this.movedPages.push({
-                'pageId'        : event.container.data[event.currentIndex].id,
+                'pageId'        : pageId,
                 'newDocumentId' : Number(document['id'].split('-')[1]),
                 'isAddInNewDoc' : (document.status === 'USERADD')
             });
         }
+        this.setPageSelection(pageId, false);
     }
 
     dropDocument(event: CdkDragDrop<string[]>): void {
@@ -1036,15 +1038,21 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         });
     }
 
-    setAllPagesTo(check: boolean): void {
-        let selectPagesCount = 0;
+    setPageSelection(pageId: number, check: boolean): void {
         for (const document of this.documents) {
             for (const page of document.pages) {
-                page.checkBox = check;
-                selectPagesCount++;
+                page.id === pageId ? page.checkBox = check : '';
             }
         }
-        this.currentBatch.selectedPagesCount = check ? selectPagesCount : 0;
+        this.countSelectedPages();
+    }
+
+    setAllPagesTo(check: boolean): void {
+        for (const document of this.documents) {
+            for (const page of document.pages) {
+                this.setPageSelection(page.id, check);
+            }
+        }
     }
 
     rotatePage(documentIndex: number, pageIndex: number): void {
