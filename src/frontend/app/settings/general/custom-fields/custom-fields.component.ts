@@ -32,6 +32,7 @@ import { PrivilegesService } from "../../../../services/privileges.service";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { remove } from "remove-accents";
+import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
     selector: 'app-custom-fields',
@@ -152,6 +153,7 @@ export class CustomFieldsComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private localeService: LocaleService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {
@@ -194,8 +196,8 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     checkRegex() {
-        const regex = new RegExp(this.regexControl.value, 'gi');
-        if (this.regexTestControl.value) {
+        if (this.regexTestControl.value && this.regexControl.value && this.regexControl.value !== '\\') {
+            const regex = new RegExp(this.regexControl.value, 'gi');
             this.regexResult = this.regexTestControl.value.replace(regex, function(str: any) {
                 if (str) {
                     return '<span class="text-white bg-green-400 p-1">' + str + '</span>';
@@ -344,6 +346,15 @@ export class CustomFieldsComponent implements OnInit {
                 return;
             }
         }
+
+        if (newField.type === 'regex') {
+            newField.regex = {
+                'format': this.regexFormat.value,
+                'content': this.regexControl.value,
+                'remove_keyword': this.regexRemoveKeyWord.value
+            }
+        }
+
         this.http.post(environment['url'] + '/ws/customFields/add', newField, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 newField['id'] = data.id;

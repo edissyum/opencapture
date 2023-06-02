@@ -67,6 +67,7 @@ export class SplitterFormBuilderComponent implements OnInit {
     labelType               : any []    = [
         marker('FORMATS.text'),
         marker('TYPES.text'),
+        marker('TYPES.regex'),
         marker('TYPES.textarea'),
         marker('TYPES.date'),
         marker('TYPES.select'),
