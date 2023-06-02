@@ -29,12 +29,12 @@ from src.backend.main import create_classes_from_custom_id, check_file, timer, s
 
 custom_array = get_custom_array()
 
-if 'OCForInvoices' not in custom_array:
-    from src.backend.process import OCForInvoices as OCForInvoices
+if 'verifier' not in custom_array:
+    from src.backend.process import verifier
 else:
-    OCForInvoices = getattr(__import__(custom_array['OCForInvoices']['path'],
-                                       fromlist=[custom_array['OCForInvoices']['module']]),
-                            custom_array['OCForInvoices']['module'])
+    verifier = getattr(__import__(custom_array['verifier']['path'], fromlist=[custom_array['verifier']['module']]),
+                       custom_array['verifier']['module'])
+
 if 'FacturX' not in custom_array:
     from src.backend.process import FacturX
 else:
@@ -68,7 +68,7 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
                         skip = True
 
             if not skip:
-                res = OCForInvoices.process(args, path, log, config, files, ocr, regex, database, docservers,
+                res = verifier.process(args, path, log, config, files, ocr, regex, database, docservers,
                                             configurations, languages)
         else:
             parsed_xml = etree.fromstring(xml_content)
@@ -97,7 +97,8 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
 def launch(args):
     start = time.time()
 
-    database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'], True)
+    database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(
+        args['custom_id'], True)
     task_id_watcher = database.insert({
         'table': 'tasks_watcher',
         'columns': {
@@ -187,10 +188,12 @@ def launch(args):
             if separator_qr.enabled:
                 if check_file(files, path, log, docservers):
                     separator_qr.run(path)
-                path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
+                path = separator_qr.output_dir_pdfa if str2bool(
+                    separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
 
                 for file in os.listdir(path):
-                    res = execute(args, path + file, log, config, files, ocr, regex, database, docservers, configurations,
+                    res = execute(args, path + file, log, config, files, ocr, regex, database, docservers,
+                                  configurations,
                                   languages, mail_class, smtp)
                     list_of_ids.append(res)
                     if not res:

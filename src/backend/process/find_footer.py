@@ -38,6 +38,8 @@ class FindFooter:
         self.config = config
         self.target = target
         self.vat_amount = {}
+        self.header_text = ''
+        self.footer_text = ''
         self.splitted = False
         self.form_id = form_id
         self.is_last_page = False
@@ -376,7 +378,7 @@ class FindFooter:
                 total = "%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(vat_rate[0]) / 100))
             except (TypeError, ValueError):
                 return False
-            print(self.nb_pages)
+
             if (total and total_ttc and total_ttc[0]) and (float(total) == float(total_ttc[0])):
                 self.log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
                 return [total_ht, total_ttc, vat_rate, self.nb_pages, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
