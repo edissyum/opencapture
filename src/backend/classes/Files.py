@@ -585,8 +585,11 @@ class Files:
             elif 'subject' in args['batch_metadata']:
                 subject = args['batch_metadata']['subject']
 
+            user_firstname = args['batch_metadata']['userFirstName'] if 'userFirstName' in args['batch_metadata'] else ''
+            user_lastname = args['batch_metadata']['userLastName'] if 'userLastName' in args['batch_metadata'] else ''
+
             pdf_writer.add_metadata({
-                '/Author': f"{args['batch_metadata']['userLastName']} {args['batch_metadata']['userFirstName']}",
+                '/Author': f"{user_firstname} {user_lastname}",
                 '/Title': title,
                 '/Subject': subject,
                 '/Creator': "Open-Capture",
