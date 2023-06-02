@@ -496,6 +496,7 @@ export class ConfigurationsComponent implements OnInit {
         this.configurations.forEach((element: any) => {
             if (element.id === id) {
                 element.data.value = value;
+                console.log(element);
                 this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + element.id, element, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         element.updateMode = false;
