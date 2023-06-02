@@ -925,7 +925,7 @@
 	"UPLOAD": {
 		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
 		"no_file": "Aucun fichier à téléverser",
-		"placeholder": "Cliquez pour choisir un ou plusieurs documents PDF (3 maximum) ou faites glisser vos documents",
+		"placeholder": "Cliquez pour choisir un ou plusieurs documents PDF ou faites glisser vos documents",
 		"please_select_workflow": "Choisissez un workflow avant de procéder au téléversement",
 		"purchase_invoice": "Facture d'achat",
 		"sale_invoice": "Facture de vente",
