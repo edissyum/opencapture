@@ -116,7 +116,7 @@ class Database:
 
             query = "INSERT INTO " + args['table'] + " (" + columns + ") VALUES (" + values + ") RETURNING id"
             cursor = self.conn.cursor()
-            print(query)
+
             try:
                 cursor.execute(query)
                 new_row_id = cursor.fetchone()[0]

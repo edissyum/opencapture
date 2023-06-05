@@ -351,6 +351,7 @@ export class CustomFieldsComponent implements OnInit {
             newField.regex = {
                 'format': this.regexFormat.value,
                 'content': this.regexControl.value,
+                'test': this.regexTestControl.value,
                 'remove_keyword': this.regexRemoveKeyWord.value
             }
         }
@@ -500,6 +501,15 @@ export class CustomFieldsComponent implements OnInit {
             updatedField['enabled'] = false;
         }
 
+        if (updatedField.type === 'regex') {
+            updatedField.regex = {
+                'format': this.regexFormat.value,
+                'content': this.regexControl.value,
+                'test': this.regexTestControl.value,
+                'remove_keyword': this.regexRemoveKeyWord.value
+            }
+        }
+
         this.http.put(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_updated'));
@@ -518,18 +528,25 @@ export class CustomFieldsComponent implements OnInit {
         this.update = true;
         this.selectOptions = [];
         if (customField) {
+            console.log(customField)
             this.updateCustomId = customField.id;
             this.inactiveOrActive = activeOrInactive;
             this.addFieldInputs.forEach((element: any) => {
                 element.control.setValue(customField[element.field_id]);
             });
-            if (customField.settings.hasOwnProperty('options')) {
+            if (customField.settings.options) {
                 for (const option of customField.settings.options) {
                     this.selectOptions.push({
                         'idControl'     : new FormControl(option.id),
                         'labelControl'  : new FormControl(option.label)
                     });
                 }
+            }
+
+            if (customField.settings.regex) {
+                this.regexFormat.setValue(customField.settings.regex.format);
+                this.regexControl.setValue(customField.settings.regex.content);
+                this.regexRemoveKeyWord.setValue(customField.settings.regex.remove_keyword);
             }
         }
     }
