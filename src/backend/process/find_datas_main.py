@@ -394,8 +394,12 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             tmp_nb_pages = nb_pages
             while not supplier:
                 tmp_nb_pages = tmp_nb_pages - 1
-                if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
-                    break
+                if 'verifierMaxPageSearch' in configurations and int(configurations['verifierMaxPageSearch']) > 0:
+                    if i == int(configurations['verifierMaxPageSearch']) or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+                        break
+                else:
+                    if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+                        break
 
                 convert(file, files, ocr, tmp_nb_pages, True)
                 supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
@@ -454,8 +458,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     # Find custom informations using mask
     if custom_fields_to_find or not workflow_settings['input']['apply_process']:
-        custom_fields = FindCustom(ocr.header_text, log, regex, config, ocr, files, supplier, file, database,
-                                   docservers, datas['form_id'], custom_fields_to_find).run_using_positions_mask()
+        custom_fields = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
+                                   datas['form_id'], custom_fields_to_find, False).run_using_positions_mask()
         if custom_fields:
             for field in custom_fields:
                 datas.update({field: custom_fields[field][0]})
@@ -465,6 +469,20 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     datas['pages'].update({field: custom_fields[field][2]})
 
     text_by_pages = [None] * nb_pages
+
+    custom_fields_regex = database.select({
+        'select': ['id', 'label', "settings #>> '{regex}'as regex_settings"],
+        'table': ['custom_fields'],
+        'where': ['module = %s', "settings #>> '{regex}' is not null", "enabled = %s"],
+        'data': ['verifier', True]
+    })
+    for custom_field in custom_fields_regex:
+        if custom_field['id'] in custom_fields_to_find or not workflow_settings['input']['apply_process']:
+            custom_field_class = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
+                                            datas['form_id'], custom_fields_to_find, custom_field)
+            custom_field = 'custom_' + str(custom_field['id'])
+            datas = found_data_recursively(custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
+                                           datas, files, configurations)
 
     if 'invoice_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
         invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file, docservers,

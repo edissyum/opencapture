@@ -63,7 +63,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
             label: this.translate.instant('HEADER.label'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'compress_type',
@@ -96,7 +96,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     'label': marker('OUTPUT.compress_default')
                 }
             ],
-            required: false,
+            required: false
         },
         {
             id: 'ocrise',
@@ -113,7 +113,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     'label': marker('OUTPUT.ocr_disabled')
                 },
             ],
-            required: false,
+            required: false
         }
     ];
     availableFields       : any           = [
@@ -172,7 +172,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
         {
             "labelShort"    : 'zip_filename',
             'label'         : marker('OUTPUT.compressed_filename')
-        },
+        }
     ];
     testConnectionMapping : any           = {
         'export_openads'   : "testOpenadsConnection()",
@@ -321,7 +321,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                             'id': field.id,
                             'labelShort': field.label_short,
                             'label': field.label,
-                            'enabled': field.enabled,
+                            'enabled': field.enabled
                         };
                         if (field.enabled) {
                             this.availableFields.push(newField);
@@ -432,7 +432,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
             'cmis_ws': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'cmis_ws'),
             'login': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'login'),
             'password': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'password'),
-            'folder': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'folder'),
+            'folder': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'folder')
         };
     }
 
@@ -464,7 +464,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
         return {
             'openads_api': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'openads_api'),
             'login': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'login'),
-            'password': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'password'),
+            'password': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'password')
         };
     }
 
@@ -496,7 +496,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
         return {
             'host': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
             'login': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'login'),
-            'password': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'password'),
+            'password': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'password')
         };
     }
 
@@ -651,7 +651,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     id: field.id,
                     type: field.type,
                     webservice: field.webservice,
-                    value: field.value === undefined ? field.control.value : field.value,
+                    value: field.value === undefined ? field.control.value : field.value
                 });
             }
         }

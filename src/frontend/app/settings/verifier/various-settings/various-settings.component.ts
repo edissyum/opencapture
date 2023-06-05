@@ -87,7 +87,7 @@ export class VariousSettingsVerifierComponent implements OnInit {
         {
             "id": 'original_filename',
             'label': marker('VERIFIER.original_file')
-        },
+        }
     ];
 
     constructor(

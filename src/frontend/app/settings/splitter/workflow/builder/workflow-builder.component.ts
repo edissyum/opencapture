@@ -36,7 +36,7 @@ import { AuthService } from "../../../../../services/auth.service";
     providers: [
         {
             provide: STEPPER_GLOBAL_OPTIONS,
-            useValue: {displayDefaultIndicatorType: false},
+            useValue: {displayDefaultIndicatorType: false}
         }
     ]
 })
@@ -68,7 +68,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 type: 'text',
                 control: new FormControl(),
                 placeholder: "/var/share/input",
-                required: true,
+                required: true
             },
             {
                 id: 'customer_id',
@@ -76,7 +76,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 label: this.translate.instant('WORKFLOW.associated_customer'),
                 type: 'select',
                 control: new FormControl(),
-                required: false,
+                required: false
             },
             {
                 id: 'ai_model_id',
@@ -140,7 +140,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 values: [
                     {
                         'id': 'no_rotation',
-                        'label': this.translate.instant('WORKFLOW.no_rotation'),
+                        'label': this.translate.instant('WORKFLOW.no_rotation')
                     },
                     {
                         'id': 90,
@@ -298,8 +298,8 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                     data.forms.forEach((form: any) => {
                         this.form_outputs.push({
                             'form_id': form.id,
-                            'outputs': form.outputs.map(Number),
-                        })
+                            'outputs': form.outputs.map(Number)
+                        });
                     });
                     if (element.id === 'form_id') {
                         element.values = data.forms;

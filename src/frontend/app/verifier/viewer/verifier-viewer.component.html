@@ -104,7 +104,7 @@
                         <div class="relative border-green-400 border rounded-lg -top-3.5">
                             <div id="{{ category['id'] }}" class="flex flex-wrap w-full mt-6" style="min-height: 50px;">
                                 <div *ngFor="let field of this.form[category['id']];" class="flex items-center p-2" [class]="field.class">
-                                    <ng-container *ngIf="field.type === 'text'">
+                                    <ng-container *ngIf="field.type === 'text' || field.type === 'regex'">
                                         <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'"
                                                         (click)="updateFilteredOption($event, field.control)"
                                                         *ngIf="category['id'] === 'supplier' && field.id === 'name' else other">

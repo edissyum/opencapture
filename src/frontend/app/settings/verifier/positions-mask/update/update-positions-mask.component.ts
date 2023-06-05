@@ -56,13 +56,13 @@ export class UpdatePositionsMaskComponent implements OnInit {
     forms                   : any       = [];
     form                    : any       = {
         'label': {
-            'control': new FormControl(),
+            'control': new FormControl()
         },
         'supplier_id': {
-            'control': new FormControl(),
+            'control': new FormControl()
         },
         'form_id': {
-            'control': new FormControl(),
+            'control': new FormControl()
         }
     };
     toHighlight             : string    = '';
@@ -101,7 +101,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     unit: 'facturation',
                     type: 'date',
                     color: 'yellow',
-                    regex: '',
+                    regex: ''
                 },
                 {
                     id: 'document_due_date',
@@ -109,7 +109,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     unit: 'facturation',
                     type: 'date',
                     color: 'blue',
-                    regex: '',
+                    regex: ''
                 },
                 {
                     id: 'vat_rate',
@@ -165,7 +165,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             'id': 'custom_fields',
             'label': marker('FORMS.custom_fields'),
             'values': []
-        },
+        }
     ];
     imageDocument           : any;
     documentImageSrc        : any;
@@ -370,7 +370,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         const _array = {
             'label': this.form['label'].control.value,
             'form_id': this.form['form_id'].control.value,
-            'regex': {},
+            'regex': {}
         };
         if (_array['label'] && _array['form_id']) {
             const supplierName = this.form['supplier_id'].control.value;

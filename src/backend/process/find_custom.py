@@ -20,22 +20,52 @@ import json
 from src.backend.functions import search_custom_positions
 
 
+def sanitize_keyword(data, regex):
+    tmp_invoice_number = re.sub(r"" + regex[:-2] + "", '', data, flags=re.IGNORECASE)
+    data = tmp_invoice_number.lstrip()
+    return data
+
+
 class FindCustom:
-    def __init__(self, text, log, regex, config, ocr, files, supplier, file, database, docservers, form_id,
-                 custom_fields_to_find):
+    def __init__(self, log, regex, config, ocr, files, supplier, file, database, docservers, form_id,
+                 custom_fields_to_find, custom_fields_regex):
         self.ocr = ocr
         self.log = log
-        self.text = text
         self.file = file
+        self.nb_page = 1
         self.files = files
         self.regex = regex
+        self.text = ocr.text
         self.config = config
         self.form_id = form_id
         self.supplier = supplier
         self.database = database
+        self.custom_page = False
+        self.header_text = ocr.text
+        self.footer_text = ocr.text
         self.docservers = docservers
         self.ocr_errors_table = ocr.ocr_errors_table
+        self.custom_fields_regex = custom_fields_regex
         self.custom_fields_to_find = custom_fields_to_find
+
+    def check_format_and_clean(self, data, settings):
+        if settings['remove_special_char']:
+            data_to_replace = r'[-()\"#\\/@;:<>{}\]\[`+=~|!?€$%£*]'
+            if settings['format'] == 'date':
+                data_to_replace = r'[-()\"#\\@;:<>{}\]\[`+=~|!?€$%£*]'
+            data = re.sub(data_to_replace, '', data)
+
+        match = True
+        if settings['format'] == 'number_float':
+            data = re.sub(r"\s*", '', data)
+            match = re.match(r"^[0-9]+([,.][0-9]+)?$", data)
+
+        if settings['format'] == 'date':
+            match = re.match(r"" + self.regex['date'] + "", data)
+
+        if match is None:
+            return False
+        return data
 
     def process(self, data):
         for line in self.text:
@@ -80,38 +110,60 @@ class FindCustom:
                             else:
                                 data_to_return[index] = [data, position, list_of_fields['pages'][index]]
 
-            custom_with_position = self.database.select({
-                'select': [
-                    "positions -> '" + str(self.form_id) + "' as positions"
-                ],
-                'table': ['accounts_supplier'],
-                'where': ['vat_number = %s', 'status <> %s'],
-                'data': [self.supplier[0], 'DEL']
-            })[0]
+            if not self.custom_page:
+                custom_with_position = self.database.select({
+                    'select': [
+                        "positions -> '" + str(self.form_id) + "' as positions"
+                    ],
+                    'table': ['accounts_supplier'],
+                    'where': ['vat_number = %s', 'status <> %s'],
+                    'data': [self.supplier[0], 'DEL']
+                })[0]
 
-            if custom_with_position and custom_with_position['positions']:
-                for field in custom_with_position['positions']:
-                    if 'custom_' in field:
-                        position = self.database.select({
-                            'select': [
-                                "positions -> '" + str(self.form_id) + "' -> '" + field + "' as custom_position",
-                                "pages -> '" + str(self.form_id) + "' -> '" + field + "' as custom_page"
-                            ],
-                            'table': ['accounts_supplier'],
-                            'where': ['vat_number = %s', 'status <> %s'],
-                            'data': [self.supplier[0], 'DEL']
-                        })[0]
+                if custom_with_position and custom_with_position['positions']:
+                    for field in custom_with_position['positions']:
+                        if 'custom_' in field:
+                            position = self.database.select({
+                                'select': [
+                                    "positions -> '" + str(self.form_id) + "' -> '" + field + "' as custom_position",
+                                    "pages -> '" + str(self.form_id) + "' -> '" + field + "' as custom_page"
+                                ],
+                                'table': ['accounts_supplier'],
+                                'where': ['vat_number = %s', 'status <> %s'],
+                                'data': [self.supplier[0], 'DEL']
+                            })[0]
 
-                        if position and position['custom_position'] not in [False, 'NULL', '', None]:
-                            data = {'position': position['custom_position'], 'regex': None, 'target': 'full', 'page': position['custom_page']}
-                            text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
-                            try:
-                                position = json.loads(position)
-                            except TypeError:
-                                pass
+                            if position and position['custom_position'] not in [False, 'NULL', '', None]:
+                                data = {'position': position['custom_position'], 'regex': None, 'target': 'full', 'page': position['custom_page']}
+                                text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                                try:
+                                    position = json.loads(position)
+                                except TypeError:
+                                    pass
 
-                            if text is not False:
-                                if text != "":
+                                if text is not False and text:
                                     self.log.info(field + ' found with position : ' + str(text))
                                     data_to_return[field] = [text, position, data['page']]
         return data_to_return
+
+    # Run using regex
+    def run(self):
+        cpt = 0
+        for text in [self.header_text, self.footer_text, self.text]:
+            for line in text:
+                regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
+                for _data in re.finditer(r"" + regex_settings['content'] + "",
+                                         line.content.upper(), flags=re.IGNORECASE):
+                    data = _data.group()
+
+                    if regex_settings['remove_keyword']:
+                        data = sanitize_keyword(_data.group(), regex_settings['content'])
+
+                    data = self.check_format_and_clean(data, regex_settings)
+                    if data:
+                        self.log.info(self.custom_fields_regex['label'] + ' found : ' + data)
+                        position = line.position
+                        if cpt == 1:
+                            position = self.files.return_position_with_ratio(line, 'footer')
+                        return [data, position, self.nb_page]
+            cpt += 1

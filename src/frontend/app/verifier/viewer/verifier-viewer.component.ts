@@ -758,7 +758,7 @@ export class VerifierViewerComponent implements OnInit {
                     format_icon: parent.format_icon,
                     display_icon: parent.display_icon,
                     class_label: parent.class_label,
-                    cpt: cpt,
+                    cpt: cpt
                 });
                 const value = this.document.datas[field];
                 const _field = this.form[categoryId][this.form[categoryId].length - 1];
@@ -1441,7 +1441,7 @@ export class VerifierViewerComponent implements OnInit {
                             'siren': supplier.siren,
                             'iban': supplier.iban,
                             'email': supplier.email,
-                            'vat_number': supplier.vat_number,
+                            'vat_number': supplier.vat_number
                         };
                         this.getOnlyRawFooter = supplier.get_only_raw_footer;
                         for (const column in supplierData) {

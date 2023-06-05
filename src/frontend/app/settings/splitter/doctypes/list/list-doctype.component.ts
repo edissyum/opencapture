@@ -47,22 +47,22 @@ export class ListDoctypeComponent implements OnInit {
             type      : 'text',
             label     : this.translate.instant('HEADER.id'),
             required  : true,
-            disabled  : true,
+            disabled  : true
         },
         {
             id        : 'label',
             type      : 'text',
             label     : this.translate.instant('HEADER.label'),
             required  : true,
-            disabled  : false,
+            disabled  : false
         },
         {
             id       : 'isDefault',
             type     : 'slide',
             label    : this.translate.instant('DOCTYPE.default_doctype'),
             required : false,
-            disabled : false,
-        },
+            disabled : false
+        }
     ];
     selectedDoctype : any     = {
         label   : '',
@@ -113,7 +113,7 @@ export class ListDoctypeComponent implements OnInit {
             'label'     : newDocType.label,
             'is_default': newDocType.isDefault,
             'form_id'   : this.selectedFormId,
-            'status'    : 'OK',
+            'status'    : 'OK'
         };
         this.updateDoctype(newDocType);
     }
@@ -138,7 +138,7 @@ export class ListDoctypeComponent implements OnInit {
                 confirmButtonColor: "warn",
                 cancelButton: this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe((result: any) => {
@@ -149,7 +149,7 @@ export class ListDoctypeComponent implements OnInit {
                     'label'     : this.form.controls['label'].value,
                     'is_default': this.form.controls['isDefault'].value,
                     'form_id'   : this.selectedFormId,
-                    'status'    : 'DEL',
+                    'status'    : 'DEL'
                 };
                 this.updateDoctype(updateValue);
                 this.form.reset();

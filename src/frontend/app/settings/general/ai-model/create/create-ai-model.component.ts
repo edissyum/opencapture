@@ -56,14 +56,14 @@ export class CreateAiModelComponent implements OnInit {
             placeholder: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_name_placeholder"),
             type: 'text',
             control: new FormControl(''),
-            required: true,
+            required: true
         },
         {
             id: 'min_proba',
             label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
             type: 'text',
             control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
-            required: true,
+            required: true
         }
     ];
 
@@ -135,7 +135,7 @@ export class CreateAiModelComponent implements OnInit {
                         'label': doctype.label,
                         'status': doctype.status,
                         'formId': doctype.form_id,
-                        'isDefault': doctype.is_default,
+                        'isDefault': doctype.is_default
                     };
                     this.doctypes.push(newDoctype);
                 });
@@ -206,7 +206,7 @@ export class CreateAiModelComponent implements OnInit {
                 } else if (this.splitterOrVerifier === 'verifier')  {
                     doctypes.push({
                         form: formid,
-                        folder: fold,
+                        folder: fold
                     });
                 }
             }

@@ -49,21 +49,21 @@ export class UpdateRoleComponent implements OnInit {
             label: this.translate.instant('HEADER.label_short'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'label',
             label: this.translate.instant('HEADER.label'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'enabled',
             label: this.translate.instant('ROLE.enable'),
             type: 'checkbox',
             control: new FormControl(),
-            required: true,
+            required: true
         }
     ];
 

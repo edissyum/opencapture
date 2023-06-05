@@ -38,6 +38,7 @@
                         "after": true
                     }
                 ],
+                "comma-dangle": ["error", "never"],
                 "semi": [2, "always"],
                 "space-infix-ops": "error",
                 "@typescript-eslint/dot-notation": "off",

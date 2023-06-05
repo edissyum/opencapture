@@ -54,7 +54,7 @@ export class SplitterCreateOutputComponent implements OnInit {
             label: this.translate.instant('HEADER.label'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'compress_type',
@@ -87,7 +87,7 @@ export class SplitterCreateOutputComponent implements OnInit {
                     'label': marker('OUTPUT.compress_default')
                 }
             ],
-            required: false,
+            required: false
         },
         {
             id: 'ocrise',
@@ -104,7 +104,7 @@ export class SplitterCreateOutputComponent implements OnInit {
                     'label': marker('OUTPUT.ocr_disabled')
                 },
             ],
-            required: false,
+            required: false
         }
     ];
 
@@ -167,7 +167,7 @@ export class SplitterCreateOutputComponent implements OnInit {
                         'output_label'  : outputLabel,
                         'compress_type' : compressType,
                         'module'        : 'splitter',
-                        'ocrise'        : ocrise,
+                        'ocrise'        : ocrise
                     }}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {

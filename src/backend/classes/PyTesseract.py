@@ -58,7 +58,6 @@ class PyTesseract:
                 lang=self.lang,
                 builder=pyocr.builders.LineBoxBuilder(6)  # Argument is the choosen PSM
             )
-
         except pytesseract.pytesseract.TesseractError as _t:
             self.log.error('Tesseract ERROR : ' + str(_t))
 

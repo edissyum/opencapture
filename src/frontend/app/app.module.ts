@@ -246,7 +246,7 @@ export function createTranslateLoader(http: HttpClient) {
         {
             provide: HTTP_INTERCEPTORS,
             useClass: MiddlewareComponent,
-            multi: true,
+            multi: true
         },
         [{ provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }],
 ],

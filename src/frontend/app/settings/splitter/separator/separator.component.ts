@@ -60,7 +60,7 @@ export class SeparatorComponent implements OnInit {
             id          : 'docTypeSeparator',
             name        : this.translate.instant("SPLITTER.doc_type_separator"),
             disabled    : true
-        },
+        }
     ];
 
     constructor(
@@ -78,7 +78,7 @@ export class SeparatorComponent implements OnInit {
         this.serviceSettings.init();
         this.generateSeparator( {
             'id'    : undefined,
-            'type'  : 'bundleSeparator',
+            'type'  : 'bundleSeparator'
         });
     }
 

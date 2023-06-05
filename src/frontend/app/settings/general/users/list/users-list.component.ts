@@ -40,7 +40,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
     templateUrl: './users-list.component.html',
     styleUrls: ['./users-list.component.scss'],
     providers: [
-        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
     ]
 })
 
@@ -111,7 +111,7 @@ export class UsersListComponent implements OnInit {
                     })
                 ).subscribe();
 
-                this.http.get(environment['url'] + '/ws/config/getConfiguration/userQuota', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/userQuota', {headers: this.authService.headers}).pipe(
                     tap((config: any) => {
                         this.userQuotaConfig = config.configuration[0].data.value;
                         this.activeUser = this.allUsers.length;
@@ -190,7 +190,7 @@ export class UsersListComponent implements OnInit {
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -209,7 +209,7 @@ export class UsersListComponent implements OnInit {
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -228,7 +228,7 @@ export class UsersListComponent implements OnInit {
                 confirmButtonColor  : "green",
                 cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe(result => {

@@ -65,7 +65,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 type: 'text',
                 control: new FormControl(),
                 placeholder: "/var/share/input",
-                required: true,
+                required: true
             },
             {
                 id: 'customer_id',
@@ -73,7 +73,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 label: this.translate.instant('WORKFLOW.associated_customer'),
                 type: 'select',
                 control: new FormControl(),
-                required: false,
+                required: false
             },
             {
                 id: 'ai_model_id',
@@ -152,31 +152,31 @@ export class WorkflowBuilderComponent implements OnInit {
                 values: [
                     {
                         'id': 'name',
-                        'label': this.translate.instant('FORMS.supplier'),
+                        'label': this.translate.instant('FORMS.supplier')
                     },
                     {
                         'id': 'invoice_number',
-                        'label': this.translate.instant('FACTURATION.invoice_number'),
+                        'label': this.translate.instant('FACTURATION.invoice_number')
                     },
                     {
                         'id': 'quotation_number',
-                        'label': this.translate.instant('FACTURATION.quotation_number'),
+                        'label': this.translate.instant('FACTURATION.quotation_number')
                     },
                     {
                         'id': 'delivery_number',
-                        'label': this.translate.instant('FACTURATION.delivery_number'),
+                        'label': this.translate.instant('FACTURATION.delivery_number')
                     },
                     {
                         'id': 'document_date',
-                        'label': this.translate.instant('FACTURATION.document_date'),
+                        'label': this.translate.instant('FACTURATION.document_date')
                     },
                     {
                         'id': 'document_due_date',
-                        'label': this.translate.instant('FACTURATION.document_due_date'),
+                        'label': this.translate.instant('FACTURATION.document_due_date')
                     },
                     {
                         'id': 'footer',
-                        'label': this.translate.instant('WORKFLOW.footer'),
+                        'label': this.translate.instant('WORKFLOW.footer')
                     }
                 ]
             },
@@ -200,7 +200,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 values: [
                     {
                         'id': 'no_rotation',
-                        'label': this.translate.instant('WORKFLOW.no_rotation'),
+                        'label': this.translate.instant('WORKFLOW.no_rotation')
                     },
                     {
                         'id': 90,

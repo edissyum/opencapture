@@ -93,7 +93,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_port'),
             type: 'number',
-            required: true,
+            required: true
         },
         {
             id: 'smtpProtocoleSecure',
@@ -123,7 +123,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_notif_on_error'),
             type: 'boolean',
-            required: false,
+            required: false
         },
         {
             id: 'smtpDelay',
@@ -139,7 +139,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.enable_smtp_auth'),
             type: 'boolean',
-            required: false,
+            required: false
         },
         {
             id: 'smtpLogin',
@@ -147,7 +147,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_login'),
             type: 'text',
-            required: false,
+            required: false
         },
         {
             id: 'smtpPwd',
@@ -155,7 +155,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_pwd'),
             type: 'password',
-            required: false,
+            required: false
         },
         {
             id: 'smtpFromMail',
@@ -163,7 +163,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_from_mail'),
             type: 'text',
-            required: false,
+            required: false
         },
         {
             id: 'smtpDestAdminMail',
@@ -171,7 +171,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_dest_admin_mail'),
             type: 'text',
-            required: false,
+            required: false
         }
     ];
 

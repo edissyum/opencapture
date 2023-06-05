@@ -5,8 +5,8 @@ services:
         container_name: psql-database
         image: postgres:13.9-bullseye
         environment:
-            POSTGRES_USER: nathan
-            POSTGRES_PASSWORD: rg290gli
+            POSTGRES_USER:
+            POSTGRES_PASSWORD:
             PGDATA: /data/postgres
         restart: unless-stopped
     frontend:
