@@ -37,14 +37,15 @@ import { HistoryService } from "../../../../../services/history.service";
     styleUrls: ['./update-role.component.scss']
 })
 export class UpdateRoleComponent implements OnInit {
-    headers     : HttpHeaders = this.authService.headers;
-    loading     : boolean   = true;
-    roleId      : any;
-    role        : any;
-    roles       : any[]     = [];
-    privileges  : any;
-    rolePrivileges: any;
-    roleForm    : any[]     = [
+    headers             : HttpHeaders = this.authService.headers;
+    showAuthorizedRoles : boolean   = true;
+    loading             : boolean   = true;
+    roleId              : any;
+    role                : any;
+    roles               : any[]     = [];
+    privileges          : any;
+    rolePrivileges      : any;
+    roleForm            : any[]     = [
         {
             id: 'label',
             label: this.translate.instant('HEADER.label'),
@@ -200,6 +201,23 @@ export class UpdateRoleComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err, '/settings/general/roles');
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data.roles.forEach((element: any) => {
+                    if (element.editable) {
+                        this.roles.push(element);
+                        console.log(this.roles);
+                    }
+                });
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();

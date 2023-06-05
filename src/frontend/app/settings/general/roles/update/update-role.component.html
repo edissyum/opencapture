@@ -43,6 +43,12 @@
                                           [name]="privilege" [checked]="this.hasPrivilege(privilege)"
                                           (change)="changePrivilege($event)">
                             {{ 'PRIVILEGES.' + privilege | translate }}
+                            <button (click)="$event.stopPropagation(); authorizedRoles.toggle();"
+                                  class="m-2 hover:text-green-400"
+                                  [matTooltip]="this.translate.instant('ROLE.authorized_roles')"
+                                  *ngIf="['add_role', 'update_role'].includes(privilege)">
+                                <i class="fa-solid fa-gears fa-xl"></i>
+                            </button>
                         </mat-slide-toggle>
                     </div>
                 </mat-tab>
@@ -54,4 +60,13 @@
             </button>
         </div>
     </mat-sidenav-content>
+    <mat-sidenav #authorizedRoles mode="side" position="end" class="customers w-1/4 flex flex-col h-full border-r border-green-400">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-4">
+            {{ "ROLE.authorized_roles" | translate }}
+        </h3>
+        <mat-divider class="border-green-400"></mat-divider>
+        <mat-checkbox class="mt-2 w-full text-xl" *ngFor="let role of this.roles">
+            <span>{{ role.label }}</span>
+        </mat-checkbox>
+    </mat-sidenav>
 </mat-sidenav-container>
