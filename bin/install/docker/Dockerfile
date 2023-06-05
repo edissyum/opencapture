@@ -87,7 +87,7 @@ RUN crudini --set "${confFile}" DATABASE postgresHost "psql-database"
 RUN crudini --set "${confFile}" DATABASE postgresPort "5432"
 RUN crudini --set "${confFile}" DATABASE postgresDatabase "opencapture_edissyum"
 RUN crudini --set "${confFile}" DATABASE postgresUser "nathan"
-RUN crudini --set "${confFile}" DATABASE postgresPassword "rg290gli"
+RUN crudini --set "${confFile}" DATABASE postgresPassword ""
 
 #RUN sudo touch "/etc/systemd/system/OCSplitter-worker_${custom_id}.service"
 #RUN sudo touch "/etc/systemd/system/OCVerifier-worker_${custom_id}.service"

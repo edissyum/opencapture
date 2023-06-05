@@ -50,12 +50,6 @@ def add_custom_field(args):
                 })
             }
         }
-        #
-        # if 'options' in args and args['options']:
-        #     _args['columns']['settings']['options'] = json.dumps(args['options'])
-
-        # if 'regex' in args and args['regex']:
-        #     _args['columns']['settings']['regex'] = args['regex']
 
         res = database.insert(_args)
 
@@ -102,12 +96,14 @@ def update(args):
             'enabled': args['enabled'],
             'label_short': args['label_short'],
             'metadata_key': args['metadata_key'],
+            'settings': json.dumps({
+                'options': args['options'] if 'options' in args and args['options'] else None,
+                'regex': args['regex'] if 'regex' in args and args['regex'] else None
+            })
         },
         'where': ['id = %s'],
         'data': [args['id']]
     }
-    if 'options' in args and args['options']:
-        _args['set']['settings'] = json.dumps({'options': args['options']})
 
     res = database.update(_args)
     if not res:

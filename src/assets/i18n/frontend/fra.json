@@ -187,6 +187,8 @@
 		"regex_remove_keyword": "Supprimer le mot clé de l'expression régulière",
 		"regex_remove_keyword_explanation": "Afin que cette option soit fonctionnelle, il faut que le mot clé soit présent dans l'expression régulière et qu'elle se termine par <strong>.*</strong><br>Exemple : <strong>NUM(E|É)RO\\s*DE\\s*FACTURE\\s*:\\s*.*</strong>",
 		"regex_remove_keyword_hint": "Si activé, le mot clé sera supprimé du résultat de la regex pour ne conserver que la donnée",
+		"regex_remove_special_char": "Supprimer les caractères spéciaux du résultat de la regex",
+		"regex_remove_special_char_hint": "Exemple : -()\"#@;:<>{}][`+=~|!?€$%£*",
 		"regex_results": "Résultat de la regex",
 		"reset": "Réinitialiser",
 		"select_options": "Liste des choix",

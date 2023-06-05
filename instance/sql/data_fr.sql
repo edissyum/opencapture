@@ -648,11 +648,11 @@ INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "proce
 ALTER SEQUENCE "workflows_id_seq" RESTART WITH 4;
 
 -- CRÉATION DES CHAMPS CUSTOMS POUR LE SPLITTER
-INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (1, 'nom_usage', 'Nom d''usage', 'text', 'splitter');
-INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (2, 'prenom', 'Prénom', 'text', 'splitter');
-INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (3, 'contrat', 'Contrat', 'text', 'splitter');
-INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (4, 'date_naissance', 'Date de naissance', 'text', 'splitter');
-INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (5, 'matricule', 'Matricule', 'text', 'splitter');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (1, 'nom_usage', 'Nom d''usage', 'text', 'splitter');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (2, 'prenom', 'Prénom', 'text', 'splitter');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (3, 'contrat', 'Contrat', 'text', 'splitter');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (4, 'date_naissance', 'Date de naissance', 'text', 'splitter');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (5, 'matricule', 'Matricule', 'text', 'splitter');
 ALTER SEQUENCE "custom_fields_id_seq" RESTART WITH 6;
 
 -- CRÉATION DES PRIVILEGES
@@ -1082,5 +1082,5 @@ INSERT INTO "accounting_plan" ("compte_num", "compte_lib") VALUES ('7800 0000', 
 DO $$
     DECLARE new_customer_id integer;
 BEGIN
-    INSERT INTO accounts_customer (name, module, status, creation_date) VALUES ('Splitter - Compte client par défaut', 'splitter', 'OK', '2023-01-09 11:26:38.989482') RETURNING id INTO new_customer_id;
+    INSERT INTO "accounts_customer" (name, module, status, creation_date) VALUES ('Splitter - Compte client par défaut', 'splitter', 'OK', '2023-01-09 11:26:38.989482') RETURNING id INTO new_customer_id;
 END $$;

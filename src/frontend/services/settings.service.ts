@@ -49,7 +49,7 @@ export class SettingsService {
             "label": this.translate.instant("SETTINGS.splitter"),
             "icon": 'fa-arrows-split-up-and-left',
             "opened": false
-        },
+        }
     ];
     settings                : any       = {
         "general": [
@@ -392,7 +392,7 @@ export class SettingsService {
                         "label"     : this.translate.instant("SETTINGS.add_doc_type_folder"),
                         "route"     : "/settings/splitter/document-type/create-folder",
                         "privilege" : "add_document_type",
-                        "icon"      : "fa-solid fa-folder-plus",
+                        "icon"      : "fa-solid fa-folder-plus"
                     },
                     {
                         "id"                : "splitter_update_doc_type",

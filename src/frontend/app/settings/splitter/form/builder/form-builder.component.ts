@@ -42,18 +42,18 @@ export class SplitterFormBuilderComponent implements OnInit {
     metadataMethods         : any[]     = [];
     form                    : any       = {
         'label': {
-            'control': new FormControl(),
+            'control': new FormControl()
         },
         'default_form': {
-            'control': new FormControl(),
+            'control': new FormControl()
         },
     };
     formSettings            : any       = {
         'metadata_method': {
-            'control': new FormControl(),
+            'control': new FormControl()
         },
         'export_zip_file': {
-            'control': new FormControl(),
+            'control': new FormControl()
         },
     };
     outputForm              : any       = [
@@ -83,14 +83,14 @@ export class SplitterFormBuilderComponent implements OnInit {
         {
             'id'    : 'document_metadata',
             'label' : marker('SPLITTER.document_metadata')
-        },
+        }
     ];
     availableFieldsParent   : any []    = [
         {
             'id'    : 'custom_fields',
             'label' : marker('FORMS.custom_fields'),
             'values': []
-        },
+        }
     ];
     fields                  : any       = {
         'batch_metadata'    : [],
@@ -132,7 +132,7 @@ export class SplitterFormBuilderComponent implements OnInit {
             'id'    : 'multi',
             'label' : marker('DISPLAY.multi'),
             'icon'  : 'fa-solid fa-layer-group'
-        },
+        }
     ];
     mandatoryList           : any []    = [
         {
@@ -144,7 +144,7 @@ export class SplitterFormBuilderComponent implements OnInit {
             'id'    : false,
             'label' : marker('MANDATORY.not_required'),
             'icon'  : 'far fa-star'
-        },
+        }
     ];
     disabledList            : any []    = [
         {
@@ -156,28 +156,28 @@ export class SplitterFormBuilderComponent implements OnInit {
             'id'    : false,
             'label' : marker('DISABLED.not_disabled'),
             'icon'  : ''
-        },
+        }
     ];
     fieldMetadata           : any []    = [
         {
             'id'            : 'searchMask',
             'placeholder'   : marker('FIELD_METADATA.search_mask'),
-            'control'       : new FormControl(),
+            'control'       : new FormControl()
         },
         {
             'id'            : 'resultMask',
             'placeholder'   : marker('FIELD_METADATA.result_mask'),
-            'control'       : new FormControl(),
+            'control'       : new FormControl()
         },
         {
             'id'            : 'defaultValue',
             'placeholder'   : marker('FIELD_METADATA.default_value'),
-            'control'       : new FormControl(),
+            'control'       : new FormControl()
         },
         {
             'id'            : 'validationMask',
             'placeholder'   : marker('FIELD_METADATA.validation_mask'),
-            'control'       : new FormControl(),
+            'control'       : new FormControl()
         }
     ];
 
@@ -249,7 +249,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                 data.metadataMethods.forEach((option: any) => {
                     this.metadataMethods.push({
                         id      : option.id,
-                        label   : option.label,
+                        label   : option.label
                     });
                 });
             }),
@@ -451,7 +451,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                         'settings'     : {
                             'metadata_method' : metadataMethod,
                             'export_zip_file' : exportZipFile
-                        },
+                        }
                     }
                 }, {headers: this.authService.headers},
             ).pipe(
@@ -496,7 +496,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                         'settings'      : {
                             'metadata_method' : metadataMethod,
                             'export_zip_file' : exportZipFile
-                        },
+                        }
                     }
                 }, {headers: this.authService.headers},
             ).pipe(

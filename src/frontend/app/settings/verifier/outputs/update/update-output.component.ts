@@ -76,7 +76,7 @@ export class UpdateOutputComponent implements OnInit {
             label: this.translate.instant('HEADER.label'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'compress_type',
@@ -109,7 +109,7 @@ export class UpdateOutputComponent implements OnInit {
                     'label': marker('OUTPUT.compress_default')
                 }
             ],
-            required: false,
+            required: false
         },
         {
             id: 'ocrise',
@@ -126,7 +126,7 @@ export class UpdateOutputComponent implements OnInit {
                     'label': marker('OUTPUT.ocr_disabled')
                 },
             ],
-            required: false,
+            required: false
         }
     ];
     availableFields         : any           = [
@@ -197,7 +197,7 @@ export class UpdateOutputComponent implements OnInit {
         {
             "id": 'delivery_number',
             'label': 'FACTURATION.delivery_number'
-        },
+        }
     ];
     testConnectionMapping   : any           = {
         'export_mem' : "testMEMConnection()"
@@ -457,7 +457,7 @@ export class UpdateOutputComponent implements OnInit {
         return {
             'host': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
             'login': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'login'),
-            'password': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'password'),
+            'password': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'password')
         };
     }
 
@@ -654,7 +654,7 @@ export class UpdateOutputComponent implements OnInit {
                         id: field.id,
                         type: field.type,
                         webservice: field.webservice,
-                        value: field.value === undefined ? field.control.value : field.value,
+                        value: field.value === undefined ? field.control.value : field.value
                     });
                 }
             }

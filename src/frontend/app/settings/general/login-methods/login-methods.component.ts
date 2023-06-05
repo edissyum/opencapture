@@ -49,7 +49,7 @@ export class LoginMethodsComponent implements OnInit {
     isProcessConnectionLaunched       : boolean   = false;
     label                   : any[]     = [
         marker ('LOGIN-METHODS.ldap'),
-        marker ('LOGIN-METHODS.default'),
+        marker ('LOGIN-METHODS.default')
     ];
     loginMethods      : any[]     = [
         {
@@ -64,7 +64,7 @@ export class LoginMethodsComponent implements OnInit {
             type: 'select',
             control: new FormControl(),
             values: ['openLDAP', 'adLDAP'],
-            required: true,
+            required: true
         },
         {
             id: 'host',
@@ -95,7 +95,7 @@ export class LoginMethodsComponent implements OnInit {
             label: this.translate.instant('LOGIN-METHODS.password_admin'),
             type: 'password',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'baseDN',
@@ -410,7 +410,7 @@ export class LoginMethodsComponent implements OnInit {
                     return of (false);
                 })
             ).subscribe();
-        } else{
+        } else {
             this.isLaunchBtnDisabled = true;
         }
     }

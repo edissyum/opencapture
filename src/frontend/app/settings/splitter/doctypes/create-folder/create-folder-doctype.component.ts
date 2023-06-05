@@ -29,7 +29,7 @@ export class CreateFolderDoctypeComponent implements OnInit {
             label    : this.translate.instant('HEADER.id'),
             control  : new FormControl(),
             required : true,
-            disabled : false,
+            disabled : false
         },
         {
             id       : 'label',
@@ -37,7 +37,7 @@ export class CreateFolderDoctypeComponent implements OnInit {
             label    : this.translate.instant('HEADER.label'),
             control  : new FormControl(),
             required : true,
-            disabled : false,
+            disabled : false
         }
     ];
     selectedFormId      : number | undefined;
@@ -106,7 +106,7 @@ export class CreateFolderDoctypeComponent implements OnInit {
             'label'     : newFolder.label,
             'is_default': false,
             'type'      : 'folder',
-            'form_id'   : this.selectedFormId,
+            'form_id'   : this.selectedFormId
         };
         this.loading = true;
         this.http.post(environment['url'] + '/ws/doctypes/add', newFolder, {headers: this.authService.headers}).pipe(

@@ -88,7 +88,7 @@ export class HistoryComponent implements OnInit {
             'label': this.translate.instant('HISTORY.submodule'),
             'control': new FormControl(),
             'values': []
-        },
+        }
     ];
 
     constructor(

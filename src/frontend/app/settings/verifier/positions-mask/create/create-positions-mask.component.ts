@@ -41,13 +41,13 @@ export class CreatePositionsMaskComponent implements OnInit {
     forms               : any       = [];
     form                : any       = {
         'label': {
-            'control': new FormControl(),
+            'control': new FormControl()
         },
         'supplier_id': {
-            'control': new FormControl(),
+            'control': new FormControl()
         },
         'form_id': {
-            'control': new FormControl(),
+            'control': new FormControl()
         }
     };
     toHighlight         : string = '';

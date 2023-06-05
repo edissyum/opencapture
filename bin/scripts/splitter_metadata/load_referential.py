@@ -57,7 +57,7 @@ def load_referential(args):
                     'select': ['*'],
                     'table': ['metadata'],
                     'where': ['external_id = %s', 'type = %s'],
-                    'data': [external_id, 'referential'],
+                    'data': [external_id, 'referential']
                 })
                 if not metadata:
                     args['database'].insert({
@@ -101,7 +101,7 @@ def load_referential(args):
                     'type': "referential",
                     'form_id': args['form_id'],
                     'external_id': referential['numero_dossier'],
-                    'data': json.dumps(referential),
+                    'data': json.dumps(referential)
                 }
             })
 

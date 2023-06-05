@@ -272,8 +272,7 @@
             </span>
         </div>
         <mat-tab-group class="h-full-overflow" *ngIf="!loadingCustomFields">
-            <mat-tab *ngFor="let availableFields of this.availableFieldsParent"
-                     label="{{ availableFields['label'] | translate }}">
+            <mat-tab *ngFor="let availableFields of this.availableFieldsParent" label="{{ availableFields['label'] | translate }}">
                 <div id="{{ availableFields['id'] }}" cdkDropList [cdkDropListData]="availableFields['values']"
                      (cdkDropListDropped)="dropFromAvailableFields($event)" class="min-w-full" style="min-height: 500px">
                     <div *ngIf="availableFields['id'] === 'lines_fields'">
@@ -281,7 +280,7 @@
                     </div>
                     <div *ngFor="let field of availableFields['values']">
                         <div cdkDrag class="flex flex-row items-center justify-between m-5 cursor-pointer">
-                            <ng-container *ngIf="field.type === 'text'">
+                            <ng-container *ngIf="field.type === 'text' || field.type === 'regex'">
                                 <div class="relative -top-3">
                                     <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
                                     {{ field.label | translate }}

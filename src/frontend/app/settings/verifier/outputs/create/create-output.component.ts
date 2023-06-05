@@ -53,7 +53,7 @@ export class CreateOutputComponent implements OnInit {
             label: this.translate.instant('HEADER.label'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'compress_type',
@@ -86,7 +86,7 @@ export class CreateOutputComponent implements OnInit {
                     'label': marker('OUTPUT.compress_default')
                 }
             ],
-            required: false,
+            required: false
         },
         {
             id: 'ocrise',
@@ -103,7 +103,7 @@ export class CreateOutputComponent implements OnInit {
                     'label': marker('OUTPUT.ocr_disabled')
                 },
             ],
-            required: false,
+            required: false
         }
     ];
 
@@ -165,7 +165,7 @@ export class CreateOutputComponent implements OnInit {
                     'output_label'  : outputLabel,
                     'compress_type' : compressType,
                     'ocrise'        : ocrise,
-                    'module'        : 'verifier',
+                    'module'        : 'verifier'
                 }}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {

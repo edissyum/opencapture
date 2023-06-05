@@ -176,7 +176,7 @@ export class ListAiModelComponent implements OnInit {
                 confirmButtonColor: "warn",
                 cancelButton: this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe(result => {

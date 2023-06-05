@@ -187,6 +187,8 @@
 		"regex_remove_keyword": "Remove keyword from regex",
 		"regex_remove_keyword_explanation": "For this option to be taken into account, the keyword must be present in the regular expression and the regular expression must end with <strong>.*</strong><br>Example: <strong>INVOICE\\s*NUMBER\\s*:\\s*.*</strong>\n",
 		"regex_remove_keyword_hint": "If enabled, the keyword will be removed from the regex result to keep only the data",
+		"regex_remove_special_char": "Remove special characters from regex result",
+		"regex_remove_special_char_hint": "Example : -()\"#@;:<>{}][`+=~|!?€$%£*",
 		"regex_results": "Regex results",
 		"reset": "Reset",
 		"select_options": "Select options",

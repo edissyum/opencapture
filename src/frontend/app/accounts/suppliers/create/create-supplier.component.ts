@@ -48,21 +48,21 @@ export class CreateSupplierComponent implements OnInit {
             label: marker('ACCOUNTS.get_only_raw_footer'),
             type: 'mat-slide-toggle',
             control: new FormControl(true),
-            required: true,
+            required: true
         },
         {
             id: 'name',
             label: marker('ACCOUNTS.supplier_name'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'vat_number',
             label: marker('ACCOUNTS.vat_number'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'siret',
@@ -115,7 +115,7 @@ export class CreateSupplierComponent implements OnInit {
             control: new FormControl(),
             required: true,
             values: []
-        },
+        }
     ];
     addressForm: any [] = [
         {
@@ -123,35 +123,35 @@ export class CreateSupplierComponent implements OnInit {
             label: marker('ADDRESSES.address_1'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'address2',
             label: marker('ADDRESSES.address_2'),
             type: 'text',
             control: new FormControl(),
-            required: false,
+            required: false
         },
         {
             id: 'postal_code',
             label: marker('ADDRESSES.postal_code'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'city',
             label: marker('ADDRESSES.city'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'country',
             label: marker('ADDRESSES.country'),
             type: 'country',
             control: new FormControl('France'),
-            required: true,
+            required: true
         }
     ];
 
