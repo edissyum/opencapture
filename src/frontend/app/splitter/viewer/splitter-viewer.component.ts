@@ -268,11 +268,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     loadOutputsData(): void {
         this.loading = true;
-
         this.http.get(environment['url'] + '/ws/splitter/batch/' + this.currentBatch.id + '/outputs', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.currentBatch.outputs = data.outputs;
-
             }),
             catchError((err: any) => {
                 this.loading = false;
@@ -1101,11 +1099,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     transferArrayItem(document.pages,
                         this.documents[selectedDocIndex].pages, i,
                         newPosition);
+                    const pageId = this.documents[selectedDocIndex].pages[newPosition].id;
                     this.movedPages.push({
-                        'pageId'        : this.documents[selectedDocIndex].pages[newPosition].id,
+                        'pageId'        : pageId,
                         'newDocumentId' : Number(this.documents[selectedDocIndex].id.split('-')[1]),
                         'isAddInNewDoc' : (this.documents[selectedDocIndex].status === 'USERADD')
                     });
+                    this.setPageSelection(pageId, false);
                 }
             }
         }
