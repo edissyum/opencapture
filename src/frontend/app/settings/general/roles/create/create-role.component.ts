@@ -45,7 +45,7 @@ export class CreateRoleComponent implements OnInit {
             type: 'text',
             control: new FormControl(),
             required: true,
-            maxLength: 10,
+            maxLength: 255,
         },
         {
             id: 'label_short',
@@ -53,7 +53,7 @@ export class CreateRoleComponent implements OnInit {
             type: 'text',
             control: new FormControl(),
             required: true,
-            maxLength: 255,
+            maxLength: 10,
         }
     ];
 
