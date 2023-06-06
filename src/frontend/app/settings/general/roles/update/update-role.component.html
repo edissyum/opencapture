@@ -65,7 +65,7 @@
             {{ "ROLE.authorized_roles" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <mat-checkbox class="mt-2 w-full text-xl" *ngFor="let role of this.roles">
+        <mat-checkbox *ngFor="let role of this.roles" [checked]="this.subRoles.includes(role.id)" (change)="updateSubRoles(role)" class="mt-2 w-full text-xl">
             <span>{{ role.label }}</span>
         </mat-checkbox>
     </mat-sidenav>

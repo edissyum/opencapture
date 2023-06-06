@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import json
 from flask_babel import gettext
 from src.backend.import_models import roles
 
@@ -34,10 +35,10 @@ def update_role(role_id, data):
     if error is None:
         _set = {
             'label': data['label'],
-            'label_short': data['label_short'],
-            'enabled': data['enabled']
+            'enabled': data['enabled'],
+            'sub_roles': json.dumps(data['sub_roles']),
+            'label_short': data['label_short']
         }
-
         _, error = roles.update_role({'set': _set, 'role_id': role_id})
 
         if error is None:

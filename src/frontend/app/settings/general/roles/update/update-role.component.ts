@@ -43,6 +43,7 @@ export class UpdateRoleComponent implements OnInit {
     roleId              : any;
     role                : any;
     roles               : any[]     = [];
+    subRoles            : any[]     = [];
     privileges          : any;
     rolePrivileges      : any;
     roleForm            : any[]     = [
@@ -164,6 +165,7 @@ export class UpdateRoleComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/roles/getById/' + this.roleId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.role = data;
+                this.subRoles = data['sub_roles'];
                 for (const field in data) {
                     if (data.hasOwnProperty(field)) {
                         this.roleForm.forEach(element => {
@@ -210,7 +212,6 @@ export class UpdateRoleComponent implements OnInit {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
                         this.roles.push(element);
-                        console.log(this.roles);
                     }
                 });
             }),
@@ -236,7 +237,9 @@ export class UpdateRoleComponent implements OnInit {
 
     onSubmit() {
         if (this.isValidForm()) {
-            const role: any = {};
+            const role: any = {
+                'sub_roles': this.subRoles,
+            };
             this.roleForm.forEach(element => {
                 role[element.id] = element.control.value;
             });
@@ -249,7 +252,6 @@ export class UpdateRoleComponent implements OnInit {
                     }
                 });
             });
-
             this.http.put(environment['url'] + '/ws/roles/update/' + this.roleId, {'args': role}, {headers: this.authService.headers},
             ).pipe(
                 catchError((err: any) => {
@@ -319,6 +321,16 @@ export class UpdateRoleComponent implements OnInit {
             });
         } else {
             this.rolePrivileges.push(privilege);
+        }
+    }
+
+    updateSubRoles(role: any) {
+        if (this.subRoles.includes(role.id)) {
+            const index = this.subRoles.indexOf(role.id, 0);
+            this.subRoles.splice(index, 1);
+        }
+        else {
+            this.subRoles.push(role.id);
         }
     }
 }

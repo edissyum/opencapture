@@ -808,6 +808,7 @@
 		"update": "Mettre à jour la regex"
 	},
 	"ROLE": {
+		"authorized_roles": "Rôles autorisés",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le rôle <strong>{{ role }}</strong> ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver le rôle <strong>{{ role }}</strong> ?",
 		"confirm_enable": "Êtes vous sûr de vouloir réactiver le rôle <strong>{{ role }}</strong> ?",
