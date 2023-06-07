@@ -65,8 +65,20 @@
             {{ "ROLE.authorized_roles" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <mat-checkbox *ngFor="let role of this.roles" [checked]="this.subRoles.includes(role.id)" (change)="updateSubRoles(role)" class="mt-2 w-full text-xl">
-            <span>{{ role.label }}</span>
+        <div class="w-full mt-2 flex justify-center">
+            <div class="w-20 rounded-lg bg-slate-100 border border-gray-200">
+                <button (click)="selectAllSubRoles(true)" class="m-2 hover:text-green-400" [matTooltip]="'ROLE.select_all' | translate">
+                    <i class="fa-solid fa-circle-check fa-xl"></i>
+                </button>
+                <button (click)="selectAllSubRoles(false)" class="m-2 hover:text-green-400" [matTooltip]="'ROLE.unselect_all' | translate">
+                    <i class="fa-solid fa-ban fa-xl"></i>
+                </button>
+            </div>
+        </div>
+        <mat-checkbox *ngFor="let subRoleOption of this.roles"  [disabled]="subRoleOption.id === this.role.id"
+                      [checked]="this.subRoles.includes(subRoleOption.id)"
+                      (change)="updateSubRoles(subRoleOption)" class="mt-2 w-full text-xl">
+            <span>{{ subRoleOption.label }}</span>
         </mat-checkbox>
     </mat-sidenav>
 </mat-sidenav-container>

@@ -817,6 +817,8 @@
 		"disable": "Désactiver le rôle",
 		"enable": "Activer le rôle",
 		"role_deleted": "Rôle supprimé",
+		"select_all": "Sélectionner tous les rôles",
+		"unselect_all": "Désélectionner tous les rôles",
 		"update": "Modifier le rôle",
 		"updated": "Rôle mis à jour avec succès"
 	},

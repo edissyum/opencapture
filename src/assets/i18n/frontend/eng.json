@@ -817,6 +817,8 @@
 		"disable": "Role disabled successfully",
 		"enable": "Enable role",
 		"role_deleted": "Role deleted successfully",
+		"select_all": "Select all roles",
+		"unselect_all": "Unselect all roles",
 		"update": "Update",
 		"updated": "Role updated successfully"
 	},

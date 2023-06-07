@@ -334,4 +334,13 @@ export class UpdateRoleComponent implements OnInit {
             this.subRoles.push(role.id);
         }
     }
+
+    selectAllSubRoles(check: boolean) {
+        this.subRoles = [this.role.id];
+        if (check) {
+            this.roles.forEach((element: any) => {
+                this.subRoles.push(element.id);
+            });
+        }
+    }
 }
