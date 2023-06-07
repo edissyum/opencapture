@@ -121,6 +121,7 @@ export class UpdateUserComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         this.userId = this.route.snapshot.params['id'];
+        this.userService.user   = this.userService.getUserFromLocal();
 
         this.http.get(environment['url'] + '/ws/auth/retrieveLoginMethodName').pipe(
             tap((data: any) => {
@@ -184,7 +185,7 @@ export class UpdateUserComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/roles/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {

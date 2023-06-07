@@ -37,14 +37,16 @@ import { HistoryService } from "../../../../../services/history.service";
     styleUrls: ['./update-role.component.scss']
 })
 export class UpdateRoleComponent implements OnInit {
-    headers     : HttpHeaders = this.authService.headers;
-    loading     : boolean   = true;
-    roleId      : any;
-    role        : any;
-    roles       : any[]     = [];
-    privileges  : any;
-    rolePrivileges: any;
-    roleForm    : any[]     = [
+    headers             : HttpHeaders = this.authService.headers;
+    showAuthorizedRoles : boolean   = true;
+    loading             : boolean   = true;
+    roleId              : any;
+    role                : any;
+    roles               : any[]     = [];
+    subRoles            : any[]     = [];
+    privileges          : any;
+    rolePrivileges      : any;
+    roleForm            : any[]     = [
         {
             id: 'label',
             label: this.translate.instant('HEADER.label'),
@@ -135,6 +137,7 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.verifier_display'),
         marker('PRIVILEGES.mailcollect'),
         marker('PRIVILEGES.user_quota'),
+        marker('PRIVILEGES.monitoring'),
         marker('PRIVILEGES.list_ai_model'),
         marker('PRIVILEGES.create_ai_model'),
         marker('PRIVILEGES.update_ai_model'),
@@ -158,11 +161,13 @@ export class UpdateRoleComponent implements OnInit {
 
     ngOnInit() {
         this.serviceSettings.init();
+        this.userService.user   = this.userService.getUserFromLocal();
         this.roleId = this.route.snapshot.params['id'];
 
         this.http.get(environment['url'] + '/ws/roles/getById/' + this.roleId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.role = data;
+                this.subRoles = data['sub_roles'];
                 for (const field in data) {
                     if (data.hasOwnProperty(field)) {
                         this.roleForm.forEach(element => {
@@ -203,6 +208,22 @@ export class UpdateRoleComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/roles/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data.roles.forEach((element: any) => {
+                    if (element.editable) {
+                        this.roles.push(element);
+                    }
+                });
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     isValidForm() {
@@ -218,7 +239,9 @@ export class UpdateRoleComponent implements OnInit {
 
     onSubmit() {
         if (this.isValidForm()) {
-            const role: any = {};
+            const role: any = {
+                'sub_roles': this.subRoles,
+            };
             this.roleForm.forEach(element => {
                 role[element.id] = element.control.value;
             });
@@ -231,7 +254,6 @@ export class UpdateRoleComponent implements OnInit {
                     }
                 });
             });
-
             this.http.put(environment['url'] + '/ws/roles/update/' + this.roleId, {'args': role}, {headers: this.authService.headers},
             ).pipe(
                 catchError((err: any) => {
@@ -301,6 +323,25 @@ export class UpdateRoleComponent implements OnInit {
             });
         } else {
             this.rolePrivileges.push(privilege);
+        }
+    }
+
+    updateSubRoles(role: any) {
+        if (this.subRoles.includes(role.id)) {
+            const index = this.subRoles.indexOf(role.id, 0);
+            this.subRoles.splice(index, 1);
+        }
+        else {
+            this.subRoles.push(role.id);
+        }
+    }
+
+    selectAllSubRoles(check: boolean) {
+        this.subRoles = [];
+        if (check) {
+            this.roles.forEach((element: any) => {
+                this.subRoles.push(element.id);
+            });
         }
     }
 }

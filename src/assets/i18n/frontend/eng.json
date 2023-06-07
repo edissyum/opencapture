@@ -771,6 +771,7 @@
 		"list_ai_model": "List AI models",
 		"login_methods": "Login methods",
 		"mailcollect": "MailCollect settings",
+		"monitoring": "Access to monitoring",
 		"outputs_list": "Outputs list",
 		"outputs_list_splitter": "Outputs list",
 		"position_mask_list": "Positions masks list",
@@ -808,6 +809,7 @@
 		"update": "Update regex"
 	},
 	"ROLE": {
+		"authorized_sub_roles": "Authorized assignment roles",
 		"confirm_delete": "Are you sure you want to delete role <strong>{{ role }}</strong> ?",
 		"confirm_disable": "Are you sure you want to disable role <strong>{{ role }}</strong> ?",
 		"confirm_enable": "Are you sure you want to enable role <strong>{{ role }}</strong> ?",
@@ -815,7 +817,10 @@
 		"created": "Role created successfully",
 		"disable": "Role disabled successfully",
 		"enable": "Enable role",
+		"no_authorized_sub_role": "No assignment roles to show",
 		"role_deleted": "Role deleted successfully",
+		"select_all": "Select all roles",
+		"unselect_all": "Unselect all roles",
 		"update": "Update",
 		"updated": "Role updated successfully"
 	},

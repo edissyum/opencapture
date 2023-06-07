@@ -36,10 +36,12 @@ import { HistoryService } from "../../../../../services/history.service";
     styleUrls: ['./create-role.component.scss']
 })
 export class CreateRoleComponent implements OnInit {
-    loading : boolean = true;
+    loading : boolean     = true;
     privileges: any;
     rolePrivileges: any[] = [];
-    roleForm: any[] = [
+    roles : any[]         = [];
+    subRoles: any[]       = [];
+    roleForm: any[]       = [
         {
             id: 'label',
             label: this.translate.instant('HEADER.label'),
@@ -73,6 +75,7 @@ export class CreateRoleComponent implements OnInit {
 
     ngOnInit() {
         this.serviceSettings.init();
+        this.userService.user   = this.userService.getUserFromLocal();
 
         this.http.get(environment['url'] + '/ws/privileges/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -82,6 +85,22 @@ export class CreateRoleComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err, '/settings/general/roles');
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/roles/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data.roles.forEach((element: any) => {
+                    if (element.editable) {
+                        this.roles.push(element);
+                    }
+                });
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();
@@ -99,6 +118,8 @@ export class CreateRoleComponent implements OnInit {
     }
 
     onSubmit() {
+        this.userService.user   = this.userService.getUserFromLocal();
+
         if (this.isValidForm()) {
             const role: any = {};
             this.roleForm.forEach(element => {
@@ -187,6 +208,25 @@ export class CreateRoleComponent implements OnInit {
             });
         } else {
             this.rolePrivileges.push(privilege);
+        }
+    }
+
+    updateSubRoles(role: any) {
+        if (this.subRoles.includes(role.id)) {
+            const index = this.subRoles.indexOf(role.id, 0);
+            this.subRoles.splice(index, 1);
+        }
+        else {
+            this.subRoles.push(role.id);
+        }
+    }
+
+    selectAllSubRoles(check: boolean) {
+        this.subRoles = [];
+        if (check) {
+            this.roles.forEach((element: any) => {
+                this.subRoles.push(element.id);
+            });
         }
     }
 }

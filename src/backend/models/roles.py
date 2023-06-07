@@ -52,8 +52,8 @@ def get_role_by_id(args):
     role = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['roles'],
-        'where': ['id = %s', "editable <> %s", "status NOT IN (%s)"],
-        'data': [args['role_id'], 'false', 'DEL']
+        'where': ['id = %s', "editable <> %s", "status NOT IN (%s)"] if "where" not in args else args["where"],
+        'data': [args['role_id'], 'false', 'DEL'] if 'data' not in args else args['data']
     })
 
     if not role:
