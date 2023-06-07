@@ -808,6 +808,7 @@
 		"update": "Mettre à jour la regex"
 	},
 	"ROLE": {
+		"authorized_sub_roles": "Sous-rôles autorisés",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le rôle <strong>{{ role }}</strong> ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver le rôle <strong>{{ role }}</strong> ?",
 		"confirm_enable": "Êtes vous sûr de vouloir réactiver le rôle <strong>{{ role }}</strong> ?",
@@ -815,7 +816,10 @@
 		"created": "Rôle créé avec succès",
 		"disable": "Désactiver le rôle",
 		"enable": "Activer le rôle",
+		"no_authorized_sub_role": "Aucun sous-rôle autorisé",
 		"role_deleted": "Rôle supprimé",
+		"select_all": "Sélectionner tous les rôles",
+		"unselect_all": "Désélectionner tous les rôles",
 		"update": "Modifier le rôle",
 		"updated": "Rôle mis à jour avec succès"
 	},
