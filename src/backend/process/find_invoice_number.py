@@ -152,7 +152,7 @@ class FindInvoiceNumber:
                 for _invoice in re.finditer(r"" + self.regex['invoice_number'] + "", line.content.upper()):
                     invoice_number = self.sanitize_invoice_number(_invoice.group())
                     if len(invoice_number) >= int(self.configurations['invoiceSizeMin']):
-                        self.log.info('Invoice number found : ' + invoice_number)
+                        self.log.info('Invoice number found : ' + str(invoice_number))
                         position = line.position
                         if cpt == 1:
                             position = self.files.return_position_with_ratio(line, 'footer')

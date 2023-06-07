@@ -29,12 +29,12 @@ from src.backend.main import create_classes_from_custom_id, check_file, timer, s
 
 custom_array = get_custom_array()
 
-if 'find_datas_main' not in custom_array:
-    from src.backend.process import find_datas_main
+if 'main' not in custom_array:
+    from src.backend.process import main
 else:
-    find_datas_main = getattr(__import__(custom_array['find_datas_main']['path'],
-                                         fromlist=[custom_array['find_datas_main']['module']]),
-                              custom_array['find_datas_main']['module'])
+    main = getattr(__import__(custom_array['main']['path'],
+                                         fromlist=[custom_array['main']['module']]),
+                              custom_array['main']['module'])
 
 if 'factur_x' not in custom_array:
     from src.backend.process import factur_x
@@ -69,7 +69,7 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
                         skip = True
 
             if not skip:
-                res = find_datas_main.process(args, path, log, config, files, ocr, regex, database, docservers,
+                res = main.process(args, path, log, config, files, ocr, regex, database, docservers,
                                             configurations, languages)
         else:
             parsed_xml = etree.fromstring(xml_content)
