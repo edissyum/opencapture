@@ -95,8 +95,6 @@ export class CreateRoleComponent implements OnInit {
                     if (element.editable) {
                         this.roles.push(element);
                     }
-                    console.log("this.roles : ");
-                    console.log(this.roles);
                 });
             }),
             finalize(() => this.loading = false),
