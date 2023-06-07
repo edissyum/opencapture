@@ -121,6 +121,7 @@ export class UpdateUserComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         this.userId = this.route.snapshot.params['id'];
+        this.userService.user   = this.userService.getUserFromLocal();
 
         this.http.get(environment['url'] + '/ws/auth/retrieveLoginMethodName').pipe(
             tap((data: any) => {
