@@ -75,7 +75,7 @@
                 </button>
             </div>
         </div>
-        <mat-checkbox *ngFor="let subRoleOption of this.roles"  [disabled]="subRoleOption.id === this.role.id"
+        <mat-checkbox *ngFor="let subRoleOption of this.roles"
                       [checked]="this.subRoles.includes(subRoleOption.id)"
                       (change)="updateSubRoles(subRoleOption)" class="mt-2 w-full text-xl">
             <span>{{ subRoleOption.label }}</span>

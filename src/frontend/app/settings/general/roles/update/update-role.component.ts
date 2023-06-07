@@ -137,6 +137,7 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.verifier_display'),
         marker('PRIVILEGES.mailcollect'),
         marker('PRIVILEGES.user_quota'),
+        marker('PRIVILEGES.monitoring'),
         marker('PRIVILEGES.list_ai_model'),
         marker('PRIVILEGES.create_ai_model'),
         marker('PRIVILEGES.update_ai_model'),
@@ -336,7 +337,7 @@ export class UpdateRoleComponent implements OnInit {
     }
 
     selectAllSubRoles(check: boolean) {
-        this.subRoles = [this.role.id];
+        this.subRoles = [];
         if (check) {
             this.roles.forEach((element: any) => {
                 this.subRoles.push(element.id);
