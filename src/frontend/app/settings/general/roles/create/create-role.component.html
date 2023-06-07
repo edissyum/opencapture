@@ -40,7 +40,7 @@
                             {{ 'PRIVILEGES.' + privilege | translate }}
                             <button (click)="$event.stopPropagation(); authorizedRoles.toggle();"
                                     class="m-2 hover:text-green-400"
-                                    [matTooltip]="this.translate.instant('ROLE.authorized_roles')"
+                                    [matTooltip]="this.translate.instant('ROLE.authorized_sub_roles')"
                                     *ngIf="['add_role', 'update_role'].includes(privilege)">
                                 <i class="fa-solid fa-gears fa-xl"></i>
                             </button>
@@ -55,9 +55,9 @@
             </button>
         </div>
     </mat-sidenav-content>
-    <mat-sidenav #authorizedRoles mode="side" position="end" class="customers w-1/4 flex flex-col h-full border-r border-green-400">
+    <mat-sidenav #authorizedRoles mode="side" position="end" class="h-full w-1/4 flex flex-col border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-4">
-            {{ "ROLE.authorized_roles" | translate }}
+            {{ "ROLE.authorized_sub_roles" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
         <div class="w-full mt-2 flex justify-center">
@@ -75,5 +75,8 @@
                       (change)="updateSubRoles(subRoleOption)" class="mt-2 w-full text-xl">
             <span>{{ subRoleOption.label }}</span>
         </mat-checkbox>
+        <span class="w-full mt-8 text-gray-400 flex justify-center" *ngIf="this.roles.length === 0"  style="height: calc(100% - 230px)">
+            {{ "ROLE.no_authorized_sub_role" | translate }}
+        </span>
     </mat-sidenav>
 </mat-sidenav-container>

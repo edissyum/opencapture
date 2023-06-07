@@ -75,6 +75,7 @@ export class CreateRoleComponent implements OnInit {
 
     ngOnInit() {
         this.serviceSettings.init();
+        this.userService.user   = this.userService.getUserFromLocal();
 
         this.http.get(environment['url'] + '/ws/privileges/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -84,6 +85,24 @@ export class CreateRoleComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err, '/settings/general/roles');
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/roles/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data.roles.forEach((element: any) => {
+                    if (element.editable) {
+                        this.roles.push(element);
+                    }
+                    console.log("this.roles : ");
+                    console.log(this.roles);
+                });
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();
@@ -143,22 +162,6 @@ export class CreateRoleComponent implements OnInit {
                 })
             ).subscribe();
         }
-
-        this.http.get(environment['url'] + '/ws/roles/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                data.roles.forEach((element: any) => {
-                    if (element.editable) {
-                        this.roles.push(element);
-                    }
-                });
-            }),
-            finalize(() => this.loading = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
     }
 
     getErrorMessage(field: any) {
