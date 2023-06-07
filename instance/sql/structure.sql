@@ -240,6 +240,7 @@ CREATE TABLE "splitter_batches" (
     "documents_count"   INTEGER,
     "form_id"           INTEGER,
     "customer_id"       INTEGER,
+    "workflow_id"       INTEGER         DEFAULT null,
     "locked"            BOOLEAN         DEFAULT False,
     "locked_by"         VARCHAR(50),
     "data"              JSON            DEFAULT '{}'::json
