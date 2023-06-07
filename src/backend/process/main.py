@@ -490,7 +490,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                                  configurations, languages, datas['form_id'])
         datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages, invoice_number_class,
                                        datas, files, configurations)
-        print(datas)
 
     if 'document_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
         date_class = FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers, languages,
