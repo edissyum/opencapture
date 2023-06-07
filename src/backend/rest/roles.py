@@ -21,18 +21,15 @@ from src.backend.import_controllers import auth, roles
 bp = Blueprint('roles', __name__, url_prefix='/ws/')
 
 
-@bp.route('roles/list', methods=['GET'])
+@bp.route('roles/list/user/<int:user_id>', methods=['GET'])
 @auth.token_required
-def get_roles():
+def get_roles(user_id):
     args = {
-        'select': ['*', 'count(*) OVER() as total'],
+        'user_id': user_id,
         'offset': request.args['offset'] if 'offset' in request.args else 0,
-        'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
+        'full': True if 'full' in request.args else False
     }
-    if 'full' in request.args:
-        args['where'] = ['status NOT IN (%s)']
-        args['data'] = ['DEL']
-
     _roles = roles.get_roles(args)
     return make_response(jsonify(_roles[0])), _roles[1]
 

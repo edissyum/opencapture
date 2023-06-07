@@ -79,6 +79,8 @@ export class UsersListComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
+        this.userService.user   = this.userService.getUserFromLocal();
+
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/users') || lastUrl === '/') {
@@ -91,7 +93,7 @@ export class UsersListComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/users/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allUsers = data.users;
-                this.http.get(environment['url'] + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/roles/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.roles = data.roles;
                         if (this.roles) {

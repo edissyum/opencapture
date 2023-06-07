@@ -28,6 +28,7 @@ import { of } from "rxjs";
 import { FormBuilder, FormControl } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import {UserService} from "../../../../services/user.service";
 
 @Component({
   selector: 'app-login-methods',
@@ -193,6 +194,7 @@ export class LoginMethodsComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
+        public userService: UserService,
         private authService: AuthService,
         private _formBuilder: FormBuilder,
         public translate: TranslateService,
@@ -203,6 +205,7 @@ export class LoginMethodsComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
+        this.userService.user   = this.userService.getUserFromLocal();
         this.http.get(environment['url'] + '/ws/auth/retrieveLoginMethodName').pipe(
             tap((data: any) => {
                 this.loginMethods = data.login_methods;
@@ -222,7 +225,7 @@ export class LoginMethodsComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/roles/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.synchroparamsFormGroup.forEach((element:any) => {
                     if (element.id === 'attributRoleDefault') {

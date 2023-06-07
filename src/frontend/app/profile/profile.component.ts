@@ -108,6 +108,8 @@ export class UserProfileComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+        this.userService.user   = this.userService.getUserFromLocal();
+
         this.http.get(environment['url'] + '/ws/auth/retrieveLoginMethodName').pipe(
             tap((data: any) => {
                 data.login_methods.forEach((method: any) => {
@@ -126,10 +128,7 @@ export class UserProfileComponent implements OnInit {
         ).subscribe();
 
         this.userId = parseInt(this.route.snapshot.params['id']);
-        let loggedUserId = this.userService.user.id;
-        if (loggedUserId === undefined) {
-            loggedUserId = this.userService.getUserFromLocal().id;
-        }
+        const loggedUserId = this.userService.user.id;
 
         if (this.userId !== parseInt(loggedUserId)) {
             if (!this.privilegeService.hasPrivilege('update_user')) {
@@ -140,7 +139,8 @@ export class UserProfileComponent implements OnInit {
             }
         }
 
-        this.http.get(environment['url'] + '/ws/roles/list?full', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/roles/list/user/' + this.userService.user.id + '?full',
+            {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
