@@ -121,7 +121,9 @@ export class CreateRoleComponent implements OnInit {
         this.userService.user   = this.userService.getUserFromLocal();
 
         if (this.isValidForm()) {
-            const role: any = {};
+            const role: any = {
+                'sub_roles': this.subRoles,
+            };
             this.roleForm.forEach(element => {
                 role[element.id] = element.control.value;
             });
