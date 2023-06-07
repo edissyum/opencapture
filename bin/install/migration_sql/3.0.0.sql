@@ -164,3 +164,7 @@ UPDATE outputs_types SET data = '{
 }' WHERE output_type_id = 'export_pdf' and module = 'splitter';
 
 INSERT INTO "configurations" ("label", "data") VALUES ('verifierMaxPageSearch', '{"type": "int", "value": "4", "description": "Nombre de pages maximales à parcourir pour chercher les infos du module Verifier, en partant de la dernière page (0 pour chercher dans le document complet)"}');
+
+UPDATE "configurations" SET label = 'loginTopMessage' WHERE label = 'loginMessage';
+UPDATE "configurations" SET display = false WHERE label = 'loginTopMessage';
+INSERT INTO "configurations" ("label", "data", display) VALUES ('loginBottomMessage', '{"type": "string", "value": "<p><strong><a href=\"https://kutt.it/GuideDutilisation\" target=\"_blank\" rel=\"noopener\"><span style=\"color: rgb(151, 191, 61);\">Acc&eacute;der au guide d''utilisation d''Open-Capture</span></a></strong></p>", "description": "Court message affiché sur le bas de l''écran d''accueil"}', false);

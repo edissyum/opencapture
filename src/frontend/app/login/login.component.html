@@ -3,9 +3,7 @@
     <div class="w-full flex items-center justify-center text-center flex-col">
         <div class="w-11/12 max-w-md" *ngIf="this.loginImage">
             <img class="m-auto" [src]="this.loginImage" alt="Open-Capture logo">
-            <mat-card-subtitle>
-                {{ this.subtitle }}
-            </mat-card-subtitle>
+            <mat-card-subtitle [innerHTML]="this.loginTopMessage"></mat-card-subtitle>
         </div>
         <mat-card class="text-center m-6 mb-0 w-11/12 max-w-md">
             <mat-card-title class="m-5">
@@ -52,11 +50,7 @@
                 </form>
             </mat-card-content>
         </mat-card>
-        <span class="text-green-400 font-bold mt-5 bg-white">
-            <a href="https://kutt.it/GuideDutilisation" target="_blank">
-                {{ 'GLOBAL.utilisation_guide' | translate }}
-            </a>
-        </span>
+        <span class="mt-5" [innerHTML]="this.loginBottomMessage"></span>
         <div class="flex flex-col gap-y-2 absolute bottom-px right-px">
             <div class="flex gap-x-2 mr-2 mb-2">
             <span class="text-gray-900 text-sm text-right">

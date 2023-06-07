@@ -27,7 +27,7 @@ import { UserService } from "../../services/user.service";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { ConfigService } from "../../services/config.service";
 import { LocaleService } from "../../services/locale.service";
-import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import {DomSanitizer, SafeHtml, SafeUrl} from "@angular/platform-browser";
 import { LocalStorageService } from "../../services/local-storage.service";
 import { NotificationService } from "../../services/notifications/notifications.service";
 
@@ -39,12 +39,13 @@ import { NotificationService } from "../../services/notifications/notifications.
 export class LoginComponent implements OnInit {
     loginForm               : any;
     enableLoginMethodName   : any;
-    loginImage              : SafeUrl = '';
-    subtitle                : string  = '';
-    loading                 : boolean = true;
-    processLogin            : boolean = false;
-    showPassword            : boolean = false;
-    isConnectionBtnDisabled : boolean = true;
+    loginImage              : SafeUrl   = '';
+    loginTopMessage         : SafeHtml  = '';
+    loginBottomMessage      : SafeHtml  = '';
+    loading                 : boolean   = true;
+    processLogin            : boolean   = false;
+    showPassword            : boolean   = false;
+    isConnectionBtnDisabled : boolean   = true;
 
     constructor(
         private router: Router,
@@ -82,10 +83,24 @@ export class LoginComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/loginMessage').pipe(
+        this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/loginTopMessage').pipe(
             tap((data: any) => {
                 if (data.configuration.length === 1) {
-                    this.subtitle = data.configuration[0].data.value;
+                    this.loginTopMessage = this.sanitizer.bypassSecurityTrustHtml(data.configuration[0].data.value);
+                }
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/loginBottomMessage').pipe(
+            tap((data: any) => {
+                if (data.configuration.length === 1) {
+                    this.loginBottomMessage = this.sanitizer.bypassSecurityTrustHtml(data.configuration[0].data.value);
                 }
             }),
             finalize(() => this.loading = false),
