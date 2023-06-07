@@ -48,15 +48,6 @@ def launch(args):
         sys.exit('Custom config file couldn\'t be found')
 
     database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'], True)
-    task_id_watcher = database.insert({
-        'table': 'tasks_watcher',
-        'columns': {
-            'title': os.path.basename(args['file']),
-            'type': 'upload',
-            'module': 'splitter',
-        }
-    })
-
     database.update({
         'table': ['monitoring'],
         'set': {
@@ -67,7 +58,6 @@ def launch(args):
         'data': [args['task_id_monitor']]
     })
 
-    log.task_id_watcher = task_id_watcher
     log.task_id_monitor = args['task_id_monitor']
     log.database = database
 
@@ -185,17 +175,6 @@ def launch(args):
         _e = str(traceback.format_exc())
         log.error(_e)
 
-    if not process_err:
-        database.connect()
-        database.update({
-            'table': ['tasks_watcher'],
-            'set': {
-                'status': 'done',
-                'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
-            },
-            'where': ['id = %s'],
-            'data': [task_id_watcher]
-        })
     end = time.time()
     _timer = timer(start, end)
     log.info('Process end after ' + _timer + '')
