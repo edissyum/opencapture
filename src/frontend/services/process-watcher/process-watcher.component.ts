@@ -27,17 +27,17 @@ import { Router } from "@angular/router";
 import { NotificationService } from "../notifications/notifications.service";
 
 @Component({
-    selector: 'app-tasks-watcher',
-    templateUrl: './tasks-watcher.component.html',
-    styleUrls: ['./tasks-watcher.component.scss']
+    selector: 'app-process-watcher',
+    templateUrl: './process-watcher.component.html',
+    styleUrls: ['./process-watcher.component.scss']
 })
 
-export class TasksWatcherComponent implements OnInit {
+export class ProcessWatcherComponent implements OnInit {
     minimizeDisplay     : boolean = false;
     isFirstCallDone     : boolean = false;
-    getTaskRunning      : boolean = false;
-    tasks               : any[]   = [];
-    displayedTasksData  : any[]   = [];
+    getProcessRunning   : boolean = false;
+    processes           : any[]   = [];
+    displayedProcessData: any[]   = [];
     authorizedUrl       : any[]   = ['/verifier/list', '/splitter/list', '/upload'];
 
     constructor(
@@ -51,10 +51,10 @@ export class TasksWatcherComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.minimizeDisplay = this.localStorageService.get('task_watcher_minimize_display') === 'true';
+        this.minimizeDisplay = this.localStorageService.get('monitoring_minimize_display') === 'true';
         interval(4000).subscribe(() => {
-            if (this.authorizedUrl.includes(this.router.url) && !this.getTaskRunning && !this.minimizeDisplay) {
-                this.getLastTasks();
+            if (this.authorizedUrl.includes(this.router.url) && !this.getProcessRunning && !this.minimizeDisplay) {
+                this.getLastProcesses();
             }
         });
     }
@@ -62,42 +62,51 @@ export class TasksWatcherComponent implements OnInit {
     changeDisplayMode(minimizeDisplay: boolean) {
         this.minimizeDisplay = minimizeDisplay;
         if (!this.minimizeDisplay) {
-            this.getLastTasks();
+            this.getLastProcesses();
         }
-        this.localStorageService.save('task_watcher_minimize_display', minimizeDisplay ? 'true' : 'false');
+        this.localStorageService.save('monitoring_minimize_display', minimizeDisplay ? 'true' : 'false');
     }
 
-    getLastTasks() {
+    getLastProcesses() {
         this.isFirstCallDone = true;
-        this.getTaskRunning  = true;
+        this.getProcessRunning  = true;
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier) {
-            this.http.get(environment['url'] + '/ws/tasks/' + splitterOrVerifier + '/progress',
+            this.http.get(environment['url'] + '/ws/monitoring/' + splitterOrVerifier + '/lasts',
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
-                    if (this.displayedTasksData !== data.tasks) {
-                        this.tasks = [];
+                    if (this.displayedProcessData !== data.processses) {
+                        this.processes = [];
                         let cpt = 1;
-                        for (const task of data.tasks) {
-                            this.tasks.push({
+                        for (const process of data.processses) {
+                            process.error_message = '';
+                            if (process.error) {
+                                Object.keys(process.steps).forEach((step: any) => {
+                                    if (process.steps[step].status == 'error') {
+                                        process.error_message = process.steps[step].message;
+                                    }
+                                });
+                            }
+                            this.processes.push({
                                 'id'            : cpt,
-                                'type'          : task.type,
-                                'fileName'      : task.title,
-                                'module'        : task.module,
-                                'beginTime'     : task.begin_time,
-                                'endTime'       : task.end_time,
-                                'error'         : task.error_description ? task.error_description : false,
-                                'status'        : task.status ? task.status : 'in_progress',
-                                'age'           : task.age !== 0 ?
-                                    this.translate.instant("GLOBAL.n_minutes_ago", {'minutes': task.age}) :
+                                'type'          : process.type,
+                                'fileName'      : process.filename,
+                                'module'        : process.module,
+                                'beginTime'     : process.creation_date_formated,
+                                'endTime'       : process.end_date_formated,
+                                'error'         : process.error,
+                                'errorMessage'  : process.error_message,
+                                'status'        : process.status ? process.status : 'in_progress',
+                                'age'           : process.age !== 0 ?
+                                    this.translate.instant("GLOBAL.n_minutes_ago", {'minutes': process.age}) :
                                     this.translate.instant("GLOBAL.few_seconds_ago")
                             });
                             cpt++;
                         }
                     }
-                    this.displayedTasksData = data.tasks;
+                    this.displayedProcessData = data.process;
                 }),
-                finalize(() => this.getTaskRunning = false),
+                finalize(() => this.getProcessRunning = false),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -112,7 +121,7 @@ export class TasksWatcherComponent implements OnInit {
             this.notify.handleErrors({
                 error: {
                     errors : this.translate.instant('GLOBAL.task_error_informations'),
-                    message : error
+                    message : '<br>' + error.replaceAll('\n', '<br>')
                 }
             });
         }

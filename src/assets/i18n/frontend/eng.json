@@ -433,8 +433,7 @@
 		"statistics": "Statistics",
 		"task_error": "Task error",
 		"task_error_informations": "Task error informations",
-		"upload": "Upload",
-		"utilisation_guide": "Access to user guide of Open-Capture"
+		"upload": "Upload"
 	},
 	"HEADER": {
 		"active": "Active",
@@ -584,6 +583,7 @@
 	},
 	"MONITORING": {
 		"and": "and",
+		"current_processes": "Process list in progress",
 		"document_id": "Document identifier",
 		"documents_id": "Documents identifiers",
 		"done": "Process done",

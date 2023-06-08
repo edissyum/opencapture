@@ -36,7 +36,6 @@ class Log:
         self.filename = ''
         self.database = None
         self.current_step = 1
-        self.task_id_watcher = None
         self.task_id_monitor = None
         self.process_in_error = False
         self.logger = logging.getLogger('Open-Capture')
@@ -61,11 +60,8 @@ class Log:
         if self.smtp and self.smtp.enabled and send_notif:
             self.smtp.send_notification(msg, self.filename)
 
-        if self.database:
-            if self.task_id_monitor:
-                self.update_task_monitor(str(msg), 'error')
-            if self.task_id_watcher:
-                self.update_task_watcher(msg)
+        if self.database and self.task_id_monitor:
+            self.update_task_monitor(str(msg), 'error')
         self.current_step += 1
         self.logger.error(msg)
 
@@ -84,16 +80,4 @@ class Log:
             },
             'where': ['id = %s'],
             'data': [self.task_id_monitor]
-        })
-
-    def update_task_watcher(self, msg):
-        self.database.update({
-            'table': ['tasks_watcher'],
-            'set': {
-                'status': 'error',
-                'error_description': msg,
-                'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
-            },
-            'where': ['id = %s'],
-            'data': [self.task_id_watcher]
         })

@@ -69,7 +69,7 @@ export class LoginRequiredService implements CanActivate {
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {
                         if (route) {
-                            this.localStorage.save('task_watcher_minimize_display', 'true');
+                            this.localStorage.save('monitoring_minimize_display', 'true');
                             this.router.navigate([route]).then();
                         }
                     });

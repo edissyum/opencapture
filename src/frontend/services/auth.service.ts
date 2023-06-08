@@ -124,7 +124,7 @@ export class AuthService {
         this.localStorage.remove(tokenNames['userData']);
         this.localStorage.remove('splitter_or_verifier');
         this.localStorage.remove('selectedParentSettings');
-        this.localStorage.remove('task_watcher_minimize_display');
+        this.localStorage.remove('monitoring_minimize_display');
         this.http.get(environment['url'] + '/ws/auth/logout?user_info=' + user_info).pipe(
             catchError((err: any) => {
                 console.debug(err);

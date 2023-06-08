@@ -150,7 +150,7 @@ export class LoginComponent implements OnInit {
                 tap((data: any) => {
                     this.userService.setUser(data.body.user);
                     this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())));
-                    this.localStorageService.save('task_watcher_minimize_display', 'true');
+                    this.localStorageService.save('monitoring_minimize_display', 'true');
                     this.authService.generateHeaders();
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {

@@ -240,6 +240,7 @@ CREATE TABLE "splitter_batches" (
     "documents_count"   INTEGER,
     "form_id"           INTEGER,
     "customer_id"       INTEGER,
+    "workflow_id"       INTEGER         DEFAULT null,
     "locked"            BOOLEAN         DEFAULT False,
     "locked_by"         VARCHAR(50),
     "data"              JSON            DEFAULT '{}'::json
@@ -320,17 +321,6 @@ CREATE TABLE "languages" (
     "lang_code"         VARCHAR(5),
     "moment_lang_code"  VARCHAR(10),
     "date_format"       VARCHAR(20)
-);
-
-create table "tasks_watcher" (
-    "id"                SERIAL      UNIQUE PRIMARY KEY,
-    "title"             VARCHAR(255),
-    "type"              VARCHAR(10),
-    "module"            VARCHAR(10),
-    "status"            VARCHAR(10),
-    "error_description" TEXT,
-    "creation_date"     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    "end_date"          TIMESTAMP
 );
 
 CREATE TABLE "mailcollect" (

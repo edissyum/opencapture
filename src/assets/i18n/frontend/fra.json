@@ -390,7 +390,7 @@
 		"workflows_list_already_linked": "Les workflows suivants sont liés à ce formulaire <br><br> <strong><center>{{ workflowsList }}</center></strong> <br> Merci de choisir un nouveau formulaire pour ces workflows"
 	},
 	"GLOBAL": {
-		"add_time": "Ajouté à ",
+		"add_time": "Ajouté le",
 		"allowed_path": "Chemin autorisé :  {{ allowedPath }}",
 		"back": "Retour",
 		"batches": "Lots",
@@ -433,8 +433,7 @@
 		"statistics": "Statistiques",
 		"task_error": "Erreur de traitement",
 		"task_error_informations": "Informations sur l'erreur de traitement",
-		"upload": "Téléversement",
-		"utilisation_guide": "Accéder au guide d'utilisation d'Open-Capture"
+		"upload": "Téléversement"
 	},
 	"HEADER": {
 		"active": "Actif",
@@ -584,6 +583,7 @@
 	},
 	"MONITORING": {
 		"and": "et",
+		"current_processes": "Liste des processus en cours",
 		"document_id": "Identifiant du document",
 		"documents_id": "Identifiant des documents",
 		"done": "Processus terminé",
