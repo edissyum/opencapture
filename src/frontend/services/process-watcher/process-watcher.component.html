@@ -17,7 +17,7 @@
             <i class="fa-solid fa-check fa-2x w-full text-gray-400 mt-4"></i>
             <span class="block">{{ 'GLOBAL.no_task_to_show' | translate }}</span>
         </div>
-        <div *ngFor="let process of processes" class="h-8 w-full px-4 border-t-2 grid grid-cols-10" (click)="showError(process.error)" [class.cursor-pointer] = process.error>
+        <div *ngFor="let process of processes" class="h-8 w-full px-4 border-t-2 grid grid-cols-10" (click)="showError(process.errorMessage)" [class.cursor-pointer] = process.error>
             <span class="col-span-1 pt-1">
                 {{ process.id }}
             </span>
@@ -29,13 +29,15 @@
                 {{ process.age }}
             </span>
             <span class="col-span-1 text-right">
-                <i *ngIf="process.status === 'running'" class="fa-solid fa-person-running fa-fade text-green-400 fa-lg my-4"></i>
-                <i *ngIf="process.status === 'wait'" class="fa-solid fa-clock text-gray-400 fa-lg my-4"></i>
-                <i *ngIf="process.status === 'error'" class="fas fa-triangle-exclamation fa-lg my-4 text-amber-500 cursor-pointer"
-                    matTooltip="{{ 'MONITORING.task_error' | translate }} : {{ process.error }}"></i>
+                <i *ngIf="process.status === 'running'" class="fa-solid fa-person-running fa-fade text-green-400 fa-lg my-4"
+                   [matTooltip]="'MONITORING.running' | translate"></i>
+                <i *ngIf="process.status === 'wait'" class="fa-solid fa-clock text-gray-400 fa-lg my-4"
+                   [matTooltip]="'MONITORING.wait' | translate"></i>
+                <i *ngIf="process.status === 'error'" class="fa-solid fa-xmark fa-lg my-4 text-red-400 cursor-pointer"
+                    matTooltip="{{ 'MONITORING.error' | translate }}"></i>
                 <i *ngIf="process.status === 'done'" class="fa-solid fa-check fa-lg my-4"
                    matTooltip="{{ 'GLOBAL.end_time' | translate }} {{ process.endTime }}"></i>
-            </span>>
+            </span>
         </div>
     </div>
 </mat-card>

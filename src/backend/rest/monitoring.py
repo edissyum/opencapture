@@ -39,8 +39,8 @@ def get_last_task(module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/monitoring/{module}/lasts'}), 403
 
-    tasks = monitoring.get_processes(module, get_last_processes=True)
-    return make_response(jsonify(tasks[0])), tasks[1]
+    processes = monitoring.get_processes(module, get_last_processes=True)
+    return make_response(jsonify(processes[0])), processes[1]
 
 
 @bp.route('monitoring/getProcessById/<int:process_id>', methods=['GET'])

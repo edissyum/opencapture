@@ -92,4 +92,3 @@ class SplitterTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.database.execute("TRUNCATE TABLE splitter_batches")
-        self.database.execute("TRUNCATE TABLE tasks_watcher")
