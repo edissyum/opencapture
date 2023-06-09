@@ -50,8 +50,8 @@ def get_roles(args):
             return response, 400
 
         if user_role['label_short'] == 'superadmin':
-            _args['where'] = ['status NOT IN (%s)']
-            _args['data'] = ['DEL']
+            _args['where'] = ['status NOT IN (%s)', 'editable <> %s']
+            _args['data'] = ['DEL', 'false']
         else:
             _args['where'] = ['id = ANY(%s)', 'status NOT IN (%s)', 'editable <> %s']
             _args['data'] = [user_role['sub_roles'], 'DEL', 'false']
