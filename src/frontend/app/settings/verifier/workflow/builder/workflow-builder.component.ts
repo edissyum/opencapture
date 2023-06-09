@@ -27,6 +27,9 @@ import { STEPPER_GLOBAL_OPTIONS } from "@angular/cdk/stepper";
 import { AuthService } from "../../../../../services/auth.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { CodeEditorComponent } from "../../../../../services/code-editor/code-editor.component";
+import { MatDialog } from "@angular/material/dialog";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-workflow-builder',
@@ -36,27 +39,29 @@ import { NotificationService } from "../../../../../services/notifications/notif
         provide: STEPPER_GLOBAL_OPTIONS,
         useValue: {
             displayDefaultIndicatorType: false
-        },
+        }
     }]
 })
 export class WorkflowBuilderComponent implements OnInit {
-    loading         : boolean       = true;
-    creationMode    : boolean       = true;
-    processAllowed  : boolean       = false;
-    outputAllowed   : boolean       = true;
-    useInterface    : boolean       = false;
-    separationMode  : string        = 'no_sep';
-    workflowId      : any;
-    stepValid       : any           = {
+    loading          : boolean       = true;
+    creationMode     : boolean       = true;
+    outputAllowed    : boolean       = true;
+    processAllowed   : boolean       = false;
+    useInterface     : boolean       = false;
+    separationMode   : string        = 'no_sep';
+    form_outputs     : any           = [];
+    workflow_outputs : any           = [];
+    workflowId       : any;
+    stepValid        : any           = {
         input: false,
         process: false,
         separation: false,
         output: false
     };
-    oldFolder       : string        = '';
-    idControl       : FormControl   = new FormControl('', Validators.required);
-    nameControl     : FormControl   = new FormControl('', Validators.required);
-    fields          : any           = {
+    oldFolder        : string        = '';
+    idControl        : FormControl   = new FormControl('', Validators.required);
+    nameControl      : FormControl   = new FormControl('', Validators.required);
+    fields           : any           = {
         input : [
             {
                 id: 'input_folder',
@@ -268,10 +273,17 @@ export class WorkflowBuilderComponent implements OnInit {
             }
         ]
     };
+    stepDefaultCode  : any           = {
+        'input' : marker("WORKFLOW.step_input_verifier"),
+        'process' : marker("WORKFLOW.step_process_verifier"),
+        'separation' : marker("WORKFLOW.step_separation_verifier"),
+        'output' : marker("WORKFLOW.step_output_verifier")
+    };
 
     constructor(
         private router: Router,
         private http: HttpClient,
+        private dialog: MatDialog,
         private route: ActivatedRoute,
         private authService: AuthService,
         private notify: NotificationService,
@@ -309,6 +321,9 @@ export class WorkflowBuilderComponent implements OnInit {
                             }
                             if (field.id === 'input_folder') {
                                 this.oldFolder = value;
+                            }
+                            if (field.id === 'outputs_id') {
+                                this.workflow_outputs = value;
                             }
                             field.control.setValue(value);
                         });
@@ -369,6 +384,12 @@ export class WorkflowBuilderComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.fields['process'].forEach((element: any) => {
+                    data.forms.forEach((form: any) => {
+                        this.form_outputs.push({
+                            'form_id': form.id,
+                            'outputs': form.outputs.map(Number)
+                        });
+                    });
                     if (element.id === 'form_id') {
                         element.values = data.forms;
                         if (data.forms.length === 1) {
@@ -376,6 +397,21 @@ export class WorkflowBuilderComponent implements OnInit {
                         }
                     }
                 });
+                if (this.useInterface) {
+                    this.fields['process'].forEach((element: any) => {
+                        if (element.id === 'form_id' && element.control.value) {
+                            this.form_outputs.forEach((form: any) => {
+                                if (form.form_id === element.control.value) {
+                                    this.fields['output'].forEach((_element: any) => {
+                                        if (_element.id === 'outputs_id') {
+                                            _element.control.setValue(form.outputs.map(Number));
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -435,6 +471,12 @@ export class WorkflowBuilderComponent implements OnInit {
                                 this.outputAllowed = false;
                             }
                         }
+
+                        if (!this.processAllowed) {
+                            elem.control.disable();
+                        } else {
+                            elem.control.enable();
+                        }
                     });
 
                 });
@@ -462,8 +504,52 @@ export class WorkflowBuilderComponent implements OnInit {
         });
     }
 
+    openCodeEditor(step: string) {
+        const dialogRef = this.dialog.open(CodeEditorComponent, {
+            data: {
+                confirmButton       : this.translate.instant('WORKFLOW.save_script'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                codeContent         : this.stepDefaultCode[step]
+            },
+            width: "80rem",
+            height: "calc(100vh - 5rem)"
+        });
+        dialogRef.afterClosed().subscribe(result => {
+            console.log(result);
+
+            if (result) {
+                // this.deleteSupplier(supplierId);
+            }
+        });
+    }
+
     setSeparationMode(value: any) {
         this.separationMode = value;
+    }
+
+    setUsedOutputs() {
+        if (this.useInterface) {
+            this.fields['output'].forEach((element: any) => {
+                if (element.id === 'outputs_id') {
+                    this.fields['process'].forEach((elem: any) => {
+                        if (elem.id === 'form_id' && elem.control.value) {
+                            this.form_outputs.forEach((form: any) => {
+                                if (form.form_id === elem.control.value) {
+                                    element.control.setValue(form.outputs);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            this.fields['output'].forEach((element: any) => {
+                if (element.id === 'outputs_id') {
+                    element.control.setValue(this.workflow_outputs);
+                }
+            });
+        }
     }
 
     setUseInterface(value: any) {
@@ -479,7 +565,13 @@ export class WorkflowBuilderComponent implements OnInit {
                     element.required = this.useInterface;
                 }
             }
+            if (this.processAllowed) {
+                element.control.enable();
+            } else {
+                element.control.disable();
+            }
         });
+        this.setUsedOutputs();
     }
 
     checkFolder(field: any, fromUser = false) {
