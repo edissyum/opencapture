@@ -402,7 +402,7 @@ systemctl restart apache2
 ####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content
 mkdir -p /tmp/opencapture/
-chown -R "$user":"$user" /tmp/opencapture/
+chown -R "$user":"$group" /tmp/opencapture/
 
 ####################
 # Copy file from default one
@@ -664,9 +664,9 @@ chown -R "$user":"$group" $defaultPath
 # Makes scripts executable
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/*.sh
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/verifier_workflows/*.sh
-chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/verifier_workflows/*.sh
+chown -R "$user":"$group" $defaultPath/custom/"$customId"groupbin/scripts/verifier_workflows/*.sh
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/splitter_workflows/*.sh
-chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/splitter_workflows/*.sh
+chown -R "$user":"$group" $defaultPath/custom/"$customId"/bin/scripts/splitter_workflows/*.sh
 
 ####################
 # Create docservers
