@@ -48,12 +48,20 @@ def export_batch(batch_id, log, docservers, configurations, regex):
 
     documents, error = splitter.get_batch_documents({'batch_id': batch['id']})
     if error:
-        return error, 400
+        response = {
+            "errors": error,
+            "message": batch['id']
+        }
+        return response, 400
 
     for document in documents:
         document['pages'], error = splitter.get_document_pages({'document_id': document['id']})
         if error:
-            return error, 400
+            response = {
+                "errors": error,
+                "message": document['id']
+            }
+            return response, 400
 
     batch['documents'] = documents
     batch['export_date'] = export_date
@@ -61,12 +69,21 @@ def export_batch(batch_id, log, docservers, configurations, regex):
 
     workflow_settings, error = workflow.get_workflow_by_id({'workflow_id': batch['workflow_id']})
     if error:
-        return error, 400
+        response = {
+            "errors": error,
+            "message": batch['workflow_id']
+        }
+        return response, 400
 
     if workflow_settings['process']['use_interface']:
         form, error = forms.get_form_by_id({'form_id': batch['form_id']})
         if error:
-            return error, 400
+            response = {
+                "errors": error,
+                "message": batch['form_id']
+            }
+            return response, 400
+
         outputs_id = form['outputs']
         export_zip_file = form['settings']['export_zip_file']
     else:

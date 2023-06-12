@@ -664,7 +664,7 @@ chown -R "$user":"$group" $defaultPath
 # Makes scripts executable
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/*.sh
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/verifier_workflows/*.sh
-chown -R "$user":"$group" $defaultPath/custom/"$customId"groupbin/scripts/verifier_workflows/*.sh
+chown -R "$user":"$group" $defaultPath/custom/"$customId"/bin/scripts/verifier_workflows/*.sh
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/splitter_workflows/*.sh
 chown -R "$user":"$group" $defaultPath/custom/"$customId"/bin/scripts/splitter_workflows/*.sh
 
