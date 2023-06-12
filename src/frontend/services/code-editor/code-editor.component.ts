@@ -15,10 +15,10 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, Inject, OnInit } from '@angular/core';
 import { CodeModel } from "@ngstack/code-editor";
-import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 @Component({
     selector: 'app-code-editor',
@@ -30,7 +30,7 @@ export class CodeEditorComponent implements OnInit {
     codeModel   : CodeModel = {
         language: 'python',
         uri: 'scripting.py',
-        value: 'def main:\n\tprint("Hello World")'
+        value: ''
     };
 
     options = {

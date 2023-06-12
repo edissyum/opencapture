@@ -19,6 +19,7 @@ import os
 import uuid
 import json
 import datetime
+import importlib
 from src.backend import verifier_exports
 from src.backend.import_classes import _PyTesseract, _Files
 from src.backend.import_controllers import artificial_intelligence, verifier, accounts
@@ -285,6 +286,24 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             if res:
                 form_id_found_with_ai = True
                 datas.update({'form_id': res})
+
+        # Launch input scripting if present
+        if 'script' in workflow_settings['input'] and workflow_settings['input']['script']:
+            try:
+                script = workflow_settings['input']['script']
+                tmp_file = docservers['TMP_PATH'] + 'input_scripting.py'
+                with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+                    python_script.write(script)
+                input_scripting = importlib.import_module('bin.data.tmp.input_scripting', 'main')
+                input_scripting.main({
+                    'log': log,
+                    'file': file,
+                    'database': database,
+                    'opencapture_path': config['GLOBAL']['applicationpath']
+                })
+                os.remove(tmp_file)
+            except Exception as _e:
+                log.error('Error during input scripting : ' + str(_e))
 
     supplier = None
     supplier_lang_different = False

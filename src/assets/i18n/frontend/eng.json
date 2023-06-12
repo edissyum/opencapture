@@ -1097,7 +1097,7 @@
 		"separation": "Separation",
 		"separation_scripting": "Separation scripting",
 		"splitter_method": "Split method",
-		"step_input_verifier": "# The `main` function will be called when processing a document, do not change the name of this function\n# This script will be performed before the `processing` part, if the latter is activated\n# From the `input` step you have access to the following variables:\n# - file --> (string) Full path of the file to process\n# - facturx --> (boolean) If the document is an invoice in FacturX format\n# - opencapture_path --> (string) Root of Open-Capture installation folder\n# - database --> (Database class) Instance of the Database class allowing to perform queries\n# - log --> (Log class) Instance of the Log class allowing to log (info or error) different data\n\ndef main(args):\n\tprint(f\"Processing file {args['file']}\")",
+		"step_input_verifier": "# The `main` function will be called when processing a document, do not change the name of this function\n# This script will be performed before the `processing` part, if the latter is activated\n# From the `input` step you have access to the following variables:\n# - file --> (string) Full path of the file to process\n# - opencapture_path --> (string) Root of Open-Capture installation folder\n# - database --> (Database class) Instance of the Database class allowing to perform queries\n# - log --> (Log class) Instance of the Log class allowing to log (info or error) different data\n\ndef main(args):\n\tprint(f\"Processing file {args['file']}\")",
 		"step_output_verifier": "",
 		"step_process_verifier": "",
 		"step_separation_verifier": "",

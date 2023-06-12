@@ -1097,7 +1097,7 @@
 		"separation": "Séparation",
 		"separation_scripting": "Scripting de séparation",
 		"splitter_method": "Méthode de séparation",
-		"step_input_verifier": "# La fonction `main` sera appelé lors du traitement d'un document, ne changez pas le nom de cette fonction\n# Ce script sera effectué avant la partie `traitement`, si cette dernière est activée\n# Depuis l'étape `entrée` vous avez accès aux variables suivantes : \n#\t- file --> (string) Chemin complet du fichier à traiter\n#   - facturx --> (boolean) Si le document est une facture au format FacturX\n#   - opencapture_path --> (string) Racine du dossier d'installation Open-Capture\n#\t- database --> (classe Database) Instance de la classe Database permettant d'effectuer des requêtes\n#\t- log --> (classe Log) Instance de la classe Log permettant de logger (info ou error) différentes données\n\ndef main(args):\n\tprint(f\"Traitement du fichier {args['file']}\")",
+		"step_input_verifier": "# La fonction `main` sera appelé lors du traitement d'un document, ne changez pas le nom de cette fonction\n# Ce script sera effectué avant la partie `traitement`, si cette dernière est activée\n# Depuis l'étape `entrée` vous avez accès aux variables suivantes : \n#\t- file --> (string) Chemin complet du fichier à traiter\n#   - opencapture_path --> (string) Racine du dossier d'installation Open-Capture\n#\t- database --> (classe Database) Instance de la classe Database permettant d'effectuer des requêtes\n#\t- log --> (classe Log) Instance de la classe Log permettant de logger (info ou error) différentes données\n\ndef main(args):\n\tprint(f\"Traitement du fichier {args['file']}\")",
 		"step_output_verifier": "",
 		"step_process_verifier": "",
 		"step_separation_verifier": "",

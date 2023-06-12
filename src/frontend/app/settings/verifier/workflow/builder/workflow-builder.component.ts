@@ -19,17 +19,17 @@ import { of } from "rxjs";
 import { environment } from "../../../../env";
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
+import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { STEPPER_GLOBAL_OPTIONS } from "@angular/cdk/stepper";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { AuthService } from "../../../../../services/auth.service";
 import { SettingsService } from "../../../../../services/settings.service";
-import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { CodeEditorComponent } from "../../../../../services/code-editor/code-editor.component";
-import { MatDialog } from "@angular/material/dialog";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
 
 @Component({
     selector: 'app-workflow-builder',
@@ -103,6 +103,11 @@ export class WorkflowBuilderComponent implements OnInit {
                 hint: this.translate.instant('WORKFLOW.facturx_only_hint'),
                 type: 'boolean',
                 control: new FormControl()
+            },
+            {
+                'id': 'script',
+                'control': new FormControl(),
+                'show': false
             }
         ],
         process: [
@@ -220,6 +225,11 @@ export class WorkflowBuilderComponent implements OnInit {
                         'label': this.translate.instant('WORKFLOW.rotate_270')
                     }
                 ]
+            },
+            {
+                'id': 'script',
+                'control': new FormControl(),
+                'show': false
             }
         ],
         separation: [
@@ -260,6 +270,11 @@ export class WorkflowBuilderComponent implements OnInit {
                 label: this.translate.instant('WORKFLOW.remove_blank_pages'),
                 type: 'boolean',
                 control: new FormControl()
+            },
+            {
+                'id': 'script',
+                'control': new FormControl(),
+                'show': false
             }
         ],
         output: [
@@ -270,6 +285,11 @@ export class WorkflowBuilderComponent implements OnInit {
                 multiple: true,
                 control: new FormControl(['']),
                 required: true
+            },
+            {
+                'id': 'script',
+                'control': new FormControl(),
+                'show': false
             }
         ]
     };
@@ -505,20 +525,31 @@ export class WorkflowBuilderComponent implements OnInit {
     }
 
     openCodeEditor(step: string) {
+        let codeContent = this.stepDefaultCode[step];
+        this.fields[step].forEach((element: any) => {
+            if (element.id === 'script') {
+                codeContent = element.control.value;
+            }
+        });
+
         const dialogRef = this.dialog.open(CodeEditorComponent, {
             data: {
                 confirmButton       : this.translate.instant('WORKFLOW.save_script'),
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
-                codeContent         : this.stepDefaultCode[step]
+                codeContent         : codeContent
             },
             width: "80rem",
-            height: "calc(100vh - 5rem)"
+            height: "calc(100vh - 5rem)",
+            disableClose: true
         });
-        dialogRef.afterClosed().subscribe(result => {
-            console.log(result);
 
+        dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                // this.deleteSupplier(supplierId);
+                this.fields[step].push({
+                    'id': 'script',
+                    'label': 'Script',
+                    'control': new FormControl(result, Validators.required)
+                });
             }
         });
     }
