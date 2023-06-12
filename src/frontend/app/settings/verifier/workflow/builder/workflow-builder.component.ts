@@ -524,9 +524,10 @@ export class WorkflowBuilderComponent implements OnInit {
     }
 
     openCodeEditor(step: string) {
-        let codeContent = this.stepDefaultCode[step];
+        let codeContent = this.translate.instant(this.stepDefaultCode[step]);
+
         this.fields[step].forEach((element: any) => {
-            if (element.id === 'script') {
+            if (element.id === 'script' && element.control.value) {
                 codeContent = element.control.value;
             }
         });
