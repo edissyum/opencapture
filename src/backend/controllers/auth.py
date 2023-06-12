@@ -554,6 +554,13 @@ def enable_login_method(method_name):
 
 
 def ldap_connection_bind(ldap_configs, data):
+    if 'log' in current_context:
+        log = current_context.log
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+
     ldap_configurations = ldap_configs[0]['ldap_configurations']
     data_ldap_configs = ldap_configurations[0]['data']
     type_ad = data_ldap_configs['typeAD']
@@ -565,7 +572,7 @@ def ldap_connection_bind(ldap_configs, data):
     suffix = data_ldap_configs['suffix'] if 'suffix' in data_ldap_configs else ''
     prefix = data_ldap_configs['prefix'] if 'prefix' in data_ldap_configs else ''
     username_attribute = data_ldap_configs['attributSourceUser']
-    user_connection_status = check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix, username_attribute, data['username'], data['password'])
+    user_connection_status = check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix, username_attribute, data['username'], data['password'], log)
     if user_connection_status:
         res = login(data['username'], None, data['lang'], 'ldap')
     else:
@@ -577,7 +584,7 @@ def ldap_connection_bind(ldap_configs, data):
     return res
 
 
-def check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix, username_attribute, username, password):
+def check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix, username_attribute, username, password, log):
     ldap_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
     try:
         if type_ad == 'openLDAP':
@@ -592,7 +599,7 @@ def check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, 
                                                attributes=['*'])
                     user_dn = connection.response[0]['dn']
                     if status and user_dn:
-                        connection_status = check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, password)
+                        connection_status = check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, password, log)
                         if not connection_status:
                             return False
                         else:
@@ -675,23 +682,25 @@ def connection_ldap(type_ad, domain_ldap, port_ldap, username_ldap_admin, passwo
         return {'status_server_ldap': False, 'connection_object': None}
 
 
-def check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, user_password):
-    if not user_dn and not user_password:
+def check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_DN, user_password, log):
+    if not user_DN and not user_password:
         return False
-    ldap_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
+    ldsp_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
     try:
         if type_ad == 'openLDAP':
-            server = Server(ldap_server, get_info=ALL, use_ssl=True)
+            server = Server(ldsp_server, get_info=ALL, use_ssl=True)
         elif type_ad == 'adLDAP':
-            server = Server(ldap_server, get_info=ALL)
-        with ldap3.Connection(server, authentication="SIMPLE", user=user_dn, password=user_password, auto_bind=True) as connection:
-            if connection.bind() and connection.result["description"] == 'success':
+            server = Server(ldsp_server, get_info=ALL)
+        with ldap3.Connection(server, authentication="SIMPLE", user=user_DN, password=user_password, auto_bind=True) as connection:
+            if connection.bind():
                 return True
-            else:
-                return False
+            log.error(f"LDAP connection error : {connection.last_error}")
+            return False
 
-    except LDAPException:
+    except LDAPException as e:
+        log.error("LDAP connection error : ", str(e))
         return False
+
 
 
 def get_ldap_users(connection, class_user, object_class, users_dn, base_dn):
