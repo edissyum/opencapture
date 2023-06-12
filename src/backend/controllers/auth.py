@@ -682,16 +682,16 @@ def connection_ldap(type_ad, domain_ldap, port_ldap, username_ldap_admin, passwo
         return {'status_server_ldap': False, 'connection_object': None}
 
 
-def check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_DN, user_password, log):
-    if not user_DN and not user_password:
+def check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, user_password, log):
+    if not user_dn and not user_password:
         return False
-    ldsp_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
+    ldap_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
     try:
         if type_ad == 'openLDAP':
-            server = Server(ldsp_server, get_info=ALL, use_ssl=True)
+            server = Server(ldap_server, get_info=ALL, use_ssl=True)
         elif type_ad == 'adLDAP':
-            server = Server(ldsp_server, get_info=ALL)
-        with ldap3.Connection(server, authentication="SIMPLE", user=user_DN, password=user_password, auto_bind=True) as connection:
+            server = Server(ldap_server, get_info=ALL)
+        with ldap3.Connection(server, authentication="SIMPLE", user=user_dn, password=user_password, auto_bind=True) as connection:
             if connection.bind():
                 return True
             log.error(f"LDAP connection error : {connection.last_error}")
