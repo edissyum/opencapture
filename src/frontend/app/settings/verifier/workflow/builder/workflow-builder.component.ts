@@ -498,7 +498,6 @@ export class WorkflowBuilderComponent implements OnInit {
                             elem.control.enable();
                         }
                     });
-
                 });
             }
             if (element.id === 'facturx_only') {
