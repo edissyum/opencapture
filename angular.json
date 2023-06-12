@@ -41,13 +41,18 @@
                             "src/assets",
                             {
                                 "glob": "**/*",
+                                "input": "node_modules/tinymce",
+                                "output": "/tinymce/"
+                            },
+                            {
+                                "glob": "**/*",
                                 "input": "./node_modules/svg-country-flags/svg",
                                 "output": "assets/svg-country-flags/svg"
                             }
                         ],
                         "styles": [
                             "./src/frontend/assets/style.scss",
-                            "node_modules/ngx-toastr/toastr.css",
+                            "./node_modules/ngx-toastr/toastr.css",
                             "./src/frontend/assets/material-custom.scss",
                             "./src/frontend/assets/splitter-custom.scss",
                             "./src/frontend/assets/form-builder-custom.scss",
@@ -56,8 +61,9 @@
                             "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
                         ],
                         "scripts": [
-                            "node_modules/jquery/dist/jquery.min.js",
-                            "src/assets/jqueryLib/jquery.selectareas.min.js"
+                            "./node_modules/tinymce/tinymce.min.js",
+                            "./node_modules/jquery/dist/jquery.min.js",
+                            "./src/assets/jqueryLib/jquery.selectareas.min.js"
                         ]
                     },
                     "configurations": {

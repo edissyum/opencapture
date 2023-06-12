@@ -40,7 +40,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
     templateUrl: './roles-list.component.html',
     styleUrls: ['./roles-list.component.scss'],
     providers: [
-        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
     ]
 })
 
@@ -123,7 +123,7 @@ export class RolesListComponent implements OnInit {
                 confirmButtonColor: "warn",
                 cancelButton: this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -142,7 +142,7 @@ export class RolesListComponent implements OnInit {
                 confirmButtonColor: "warn",
                 cancelButton: this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -161,7 +161,7 @@ export class RolesListComponent implements OnInit {
                 confirmButtonColor: "warn",
                 cancelButton: this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe(result => {

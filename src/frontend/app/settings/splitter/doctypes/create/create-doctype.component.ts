@@ -45,22 +45,22 @@ export class CreateDoctypeComponent implements OnInit {
             type    : 'text',
             value   : '',
             label   : this.translate.instant('HEADER.id'),
-            required: true,
+            required: true
         },
         {
             id      : 'label',
             type    : 'text',
             value   : '',
             label   : this.translate.instant('HEADER.label'),
-            required: true,
+            required: true
         },
         {
             id      : 'isDefault',
             type    : 'slide',
             value   : false,
             label   : this.translate.instant('DOCTYPE.default_doctype'),
-            required: false,
-        },
+            required: false
+        }
     ];
     selectedFormId  : number | undefined;
     form!           : FormGroup;
@@ -118,7 +118,7 @@ export class CreateDoctypeComponent implements OnInit {
             'label'         : newDocType.label,
             'is_default'    : newDocType['isDefault'],
             'type'          : 'document',
-            'form_id'       : this.selectedFormId,
+            'form_id'       : this.selectedFormId
         };
         this.http.post(environment['url'] + '/ws/doctypes/add', newDocType, {headers: this.authService.headers}).pipe(
             tap(() => {

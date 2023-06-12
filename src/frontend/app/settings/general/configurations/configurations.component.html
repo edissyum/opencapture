@@ -24,36 +24,84 @@
         <div *ngIf="!loading" class="w-full">
             <mat-tab-group dynamicHeight>
                 <mat-tab [label]="'CONFIGURATIONS.global' | translate">
-                    <div class="overflow-x-hidden overflow-y-auto h-full-overflow text-center grid grid-cols-2 gap-6">
-                        <div>
-                            <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.change_image" | translate }}</h3>
-                            <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
-                            <mat-hint class="text-gray-600">
-                                {{ "CONFIGURATIONS.authorized_extensions" | translate }}
-                            </mat-hint>
-                            <div style="min-height: 12rem" class="mt-4">
-                                <img class="shadow-md hover:shadow-xl m-auto p-2 transition-all ease-in-out duration-500
+                    <div class="overflow-x-hidden overflow-y-auto text-center" style="height: calc(100vh - 11rem) !important">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.change_image" | translate }}</h3>
+                                <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                                <mat-hint class="text-gray-600">
+                                    {{ "CONFIGURATIONS.authorized_extensions" | translate }}
+                                </mat-hint>
+                                <div style="min-height: 12rem" class="mt-4">
+                                    <img class="shadow-md hover:shadow-xl m-auto p-2 transition-all ease-in-out duration-500
                                  cursor-pointer shadow-gray-900 hover:shadow-gray-900" [src]="this.loginImage" alt="Login image"
-                                     (click)="onClick(logo)">
-                                <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
+                                         (click)="onClick(logo)">
+                                    <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-gray-900 m-4">{{ "PRIVILEGES.change_language" | translate }}</h3>
+                                <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                                <div class="ml-3 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('change_language')">
+                                    <mat-form-field class="language origin-top-right right-0 mt-4 w-1/2">
+                                        <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
+                                        <mat-select (selectionChange)="this.localeService.changeLocale($event)"
+                                                    [disabled]="this.localeService.localeLoading"
+                                                    [(value)]="this.localeService.currentLang">
+                                            <mat-option *ngFor="let lang of this.localeService.langs" [value]="lang[0]">
+                                                {{ lang[1] }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <i *ngIf="this.localeService.localeLoading"
+                                       class="fa-solid fa-earth-europe fa-beat fa-lg text-gray-900 ml-4"></i>
+                                </div>
                             </div>
                         </div>
-                        <div>
-                            <h3 class="text-gray-900 m-4">{{ "PRIVILEGES.change_language" | translate }}</h3>
-                            <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
-                            <div class="ml-3 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('change_language')">
-                                <mat-form-field class="language origin-top-right right-0 mt-4 w-1/2">
-                                    <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
-                                    <mat-select (selectionChange)="this.localeService.changeLocale($event)"
-                                                [disabled]="this.localeService.localeLoading"
-                                                [(value)]="this.localeService.currentLang">
-                                        <mat-option *ngFor="let lang of this.localeService.langs" [value]="lang[0]">
-                                            {{ lang[1] }}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                                <i *ngIf="this.localeService.localeLoading"
-                                   class="fa-solid fa-earth-europe fa-beat fa-lg text-gray-900 ml-4"></i>
+                        <div class="grid grid-cols-2">
+                            <div class="mb-5 mx-5 h-48">
+                                <h3 class="text-gray-900">{{ 'CONFIGURATIONS.top_login_text' | translate }}</h3>
+                                <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                                <editor [formControl]="loginTopMessage"
+                                        [init]="{
+                                        menubar: false,
+                                        branding: false,
+                                        promotion: false,
+                                        language: 'fr_FR',
+                                        base_url: './tinymce',
+                                        language_url: './assets/i18n/tinymce/langs/fr_FR.js',
+                                        toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
+                                        plugins: 'lists link image table code wordcount',
+                                        color_map: this.colorsMap
+                                    }">
+                                </editor>
+                                <div class="flex justify-center m-6">
+                                    <button class="p-6 valid_button" type="submit" mat-button (click)="updateLoginTopText()">
+                                        {{ 'CONFIGURATIONS.save_login_text' | translate }}
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mb-5 mx-5 h-48">
+                                <h3 class="text-gray-900">{{ 'CONFIGURATIONS.bottom_login_text' | translate }}</h3>
+                                <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                                <editor [formControl]="loginBottomMessage"
+                                        [init]="{
+                                        menubar: false,
+                                        branding: false,
+                                        promotion: false,
+                                        language: 'fr_FR',
+                                        base_url: './tinymce',
+                                        language_url: './assets/i18n/tinymce/langs/fr_FR.js',
+                                        toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
+                                        plugins: 'lists link image table code wordcount',
+                                        color_map: this.colorsMap
+                                    }">
+                                </editor>
+                                <div class="flex justify-center m-6">
+                                    <button class="p-6 valid_button" type="submit" mat-button (click)="updateLoginBottomText()">
+                                        {{ 'CONFIGURATIONS.save_login_text' | translate }}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -230,19 +278,19 @@
                                     <ng-template #update>
                                         <mat-form-field appearance="outline" *ngIf="element.data.type === 'bool'">
                                             <mat-select class="relative -top-3" [(ngModel)]="element.data.value"
-                                                        (selectionChange)="updateValue($event, element.id, element.label)">
+                                                        (selectionChange)="updateValue($event, element.id)">
                                                 <mat-option [value]="true">Activer</mat-option>
                                                 <mat-option [value]="false">Désactiver</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                         <mat-form-field appearance="outline" class="w-full"
                                                         *ngIf="element.data.type === 'int' || element.data.type === 'float'">
-                                            <input matInput type="number" [value]="element.data.value" (keyup.enter)="updateValue($event, element.id, element.label)"
-                                                   class="relative -top-2.5" (focusout)="updateValue($event, element.id, element.label)">
+                                            <input matInput type="number" [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
+                                                   class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
                                         </mat-form-field>
                                         <mat-form-field appearance="outline" class="w-full" *ngIf="element.data.type === 'string'">
-                                            <input matInput [value]="element.data.value" (keyup.enter)="updateValue($event, element.id, element.label)"
-                                                   class="relative -top-2.5" (focusout)="updateValue($event, element.id, element.label)">
+                                            <input matInput [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
+                                                   class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
                                         </mat-form-field>
                                     </ng-template>
                                 </mat-cell>

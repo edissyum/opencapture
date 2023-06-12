@@ -40,7 +40,7 @@ import { LastUrlService } from "../../../services/last-url.service";
     templateUrl: './splitter-list.component.html',
     styleUrls: ['./splitter-list.component.scss'],
     providers: [
-        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
     ]
 })
 
@@ -60,15 +60,15 @@ export class SplitterListComponent implements OnInit {
     batchList        : any[]   = [
         {
             'id': 'today',
-            'label': marker('BATCH.today'),
+            'label': marker('BATCH.today')
         },
         {
             'id': 'yesterday',
-            'label': marker('BATCH.yesterday'),
+            'label': marker('BATCH.yesterday')
         },
         {
             'id': 'older',
-            'label': marker('BATCH.older'),
+            'label': marker('BATCH.older')
         }
     ];
     totalChecked        : number  = 0;
@@ -173,7 +173,7 @@ export class SplitterListComponent implements OnInit {
                         date           : batch['batch_date'],
                         customerName   : batch['customer_name'],
                         documentsCount : batch['documents_count'],
-                        thumbnail      : this.sanitize(batch['thumbnail']),
+                        thumbnail      : this.sanitize(batch['thumbnail'])
                     })
                 );
                 this.total = data.count;
@@ -194,7 +194,7 @@ export class SplitterListComponent implements OnInit {
                 confirmButton       : this.translate.instant('GLOBAL.confirm'),
                 confirmButtonColor  : "warn"
             },
-            width: "600px",
+            width: "600px"
         });
     }
 
@@ -216,7 +216,7 @@ export class SplitterListComponent implements OnInit {
                 confirmButtonColor  : "green",
                 cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -288,7 +288,7 @@ export class SplitterListComponent implements OnInit {
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -315,7 +315,7 @@ export class SplitterListComponent implements OnInit {
                 confirmButtonColor: "warn",
                 cancelButton: this.translate.instant('GLOBAL.cancel')
             },
-            width: "400px",
+            width: "400px"
         });
 
         dialogRef.afterClosed().subscribe(result => {

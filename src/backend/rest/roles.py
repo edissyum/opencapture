@@ -25,7 +25,8 @@ bp = Blueprint('roles', __name__, url_prefix='/ws/')
 @bp.route('roles/list', methods=['GET'])
 @auth.token_required
 def get_roles():
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'roles_list | users_list']):
+    if not privileges.has_privileges(request.environ['user_id'],
+                                     ['settings', 'roles_list | add_user | users_list | login_methods']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/roles/list'}), 403
 
     _roles = roles.get_roles(request.args)

@@ -21,7 +21,7 @@ from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
 
 
-def get_processes():
+def get_processes(module=None, get_last_processes=False):
     if 'configurations' in current_context:
         configurations = current_context.configurations
     else:
@@ -49,6 +49,7 @@ def get_processes():
         'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
         'order_by': ['id DESC']
     }
+
     where = []
     data = []
 
@@ -62,6 +63,23 @@ def get_processes():
 
     if where:
         args.update({'where': where, 'data': data})
+
+    if get_last_processes:
+        if 'where' not in args:
+            args['where'] = []
+            args['data'] = []
+
+        args['select'].append('(EXTRACT(epoch FROM (CURRENT_TIMESTAMP - creation_date))/60)::INTEGER as age')
+        args['where'].append('creation_date > NOW() - INTERVAL %s')
+        args['data'].append('1 hour')
+
+    if module:
+        if 'where' not in args:
+            args['where'] = []
+            args['data'] = []
+        args['where'].append('module = %s')
+        args['data'].append(module)
+
     processses, _ = monitoring.get_processes(args)
 
     response = {

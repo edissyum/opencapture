@@ -60,6 +60,8 @@ export class ConfigurationsComponent implements OnInit {
     token                   : string        = '';
     search                  : string        = '';
     loginImage              : SafeUrl       = '';
+    loginBottomMessage      : FormControl   = new FormControl();
+    loginTopMessage         : FormControl   = new FormControl();
     pageSize                : number        = 10;
     pageIndex               : number        = 0;
     total                   : number        = 0;
@@ -93,7 +95,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_port'),
             type: 'number',
-            required: true,
+            required: true
         },
         {
             id: 'smtpProtocoleSecure',
@@ -123,7 +125,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_notif_on_error'),
             type: 'boolean',
-            required: false,
+            required: false
         },
         {
             id: 'smtpDelay',
@@ -139,7 +141,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.enable_smtp_auth'),
             type: 'boolean',
-            required: false,
+            required: false
         },
         {
             id: 'smtpLogin',
@@ -147,7 +149,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_login'),
             type: 'text',
-            required: false,
+            required: false
         },
         {
             id: 'smtpPwd',
@@ -155,7 +157,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_pwd'),
             type: 'password',
-            required: false,
+            required: false
         },
         {
             id: 'smtpFromMail',
@@ -163,7 +165,7 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_from_mail'),
             type: 'text',
-            required: false,
+            required: false
         },
         {
             id: 'smtpDestAdminMail',
@@ -171,8 +173,30 @@ export class ConfigurationsComponent implements OnInit {
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_dest_admin_mail'),
             type: 'text',
-            required: false,
+            required: false
         }
+    ];
+    colorsMap               : any[]         = [
+        '#97BF3D', 'Open-Capture Green',
+        '#A7A8AA', 'Open-Capture Light Gray',
+        '#4C4C4E', 'Open-Capture Gray',
+        '#ECCAFA', 'Light Purple',
+        '#C2E0F4', 'Light Blue',
+
+        '#2DC26B', 'Green',
+        '#F1C40F', 'Yellow',
+        '#E03E2D', 'Red',
+        '#B96AD9', 'Purple',
+        '#3598DB', 'Blue',
+
+        '#169179', 'Dark Turquoise',
+        '#E67E23', 'Orange',
+        '#BA372A', 'Dark Red',
+        '#843FA1', 'Dark Purple',
+        '#236FA1', 'Dark Blue',
+
+        '#000000', 'Black',
+        '#ffffff', 'White'
     ];
 
     constructor(
@@ -226,6 +250,32 @@ export class ConfigurationsComponent implements OnInit {
                             }
                         });
                     });
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/config/getConfiguration/loginBottomMessage', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if (data.configuration.length === 1) {
+                    this.loginBottomMessage.setValue(data.configuration[0].data.value);
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/config/getConfiguration/loginTopMessage', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if (data.configuration.length === 1) {
+                    this.loginTopMessage.setValue(data.configuration[0].data.value);
                 }
             }),
             catchError((err: any) => {
@@ -293,6 +343,42 @@ export class ConfigurationsComponent implements OnInit {
         }
     }
 
+    updateLoginBottomText() {
+        const data: any = {
+            'value': this.loginBottomMessage.value
+        };
+        this.http.put(environment['url'] + '/ws/config/updateConfiguration/loginBottomMessage', {'args': data},
+            {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('CONFIGURATIONS.login_bottom_message_updated'));
+            }),
+            finalize(() => this.updating = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    updateLoginTopText() {
+        const data: any = {
+            'value': this.loginTopMessage.value
+        };
+        this.http.put(environment['url'] + '/ws/config/updateConfiguration/loginTopMessage', {'args': data},
+            {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('CONFIGURATIONS.login_top_message_updated'));
+            }),
+            finalize(() => this.updating = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
     setSelectedUser(event: any) {
         this.tokenUserControl.setValue(event.option.value.username);
     }
@@ -312,11 +398,11 @@ export class ConfigurationsComponent implements OnInit {
             const args = {
                 'username': this.tokenUserControl.value,
                 'expiration': this.tokenExpirationControl.value
-            }
+            };
             this.http.post(environment['url'] + '/ws/auth/generateAuthToken', args, {headers: this.authService.headers}).pipe(
                 tap((token: any) => {
                     if (token) {
-                        this.token = token['token']
+                        this.token = token['token'];
                     }
                 }),
                 catchError((err: any) => {
@@ -490,7 +576,7 @@ export class ConfigurationsComponent implements OnInit {
         ).subscribe();
     }
 
-    updateValue(event: any, id: number, name: string) {
+    updateValue(event: any, id: number) {
         this.updateLoading = true;
         const value = event.target ? event.target.value : event.value;
         this.configurations.forEach((element: any) => {

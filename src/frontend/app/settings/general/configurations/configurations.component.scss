@@ -19,7 +19,7 @@
 }
 
 .mat-mdc-tab-header .mat-mdc-tab-label-container .mat-mdc-tab-list .mat-mdc-tab-labels .mdc-tab {
-    @apply w-1/4 #{!important};
+    @apply w-1/3 #{!important};
 }
 
 .hint {
@@ -47,4 +47,8 @@
 .hint .mdc-text-field--outlined .mdc-notched-outline {
     @apply h-8;
     @apply top-3;
+}
+
+.tox-tinymce {
+    @apply h-60 #{!important};
 }

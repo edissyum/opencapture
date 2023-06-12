@@ -142,6 +142,7 @@
 		"advanced": "Advanced settings",
 		"authorized_extensions": "Allowed extension : PNG",
 		"bool": "Boolean",
+		"bottom_login_text": "Show text at the bottom of the login page",
 		"change_image": "Change application image",
 		"check_form_completion": "Please check the form completion",
 		"configuration_updated": "Configuration updated successfully",
@@ -154,10 +155,13 @@
 		"generate_token": "Generate authentification token",
 		"global": "Global",
 		"int": "Integer",
+		"login_bottom_message_updated": "Login bottom message updated successfully",
 		"login_image_changed": "Login image changed successfully",
+		"login_top_message_updated": "Login top message updated successfully",
 		"password_min_length": "Password minimum length",
 		"password_rules": "Password rules",
 		"password_rules_updated": "Password rules updated successfully",
+		"save_login_text": "Save",
 		"search_config": "Search configuration",
 		"select_user": "Select user",
 		"smtp": "SMTP",
@@ -167,6 +171,7 @@
 		"token_associated_user": "Associated user",
 		"token_copied": "Token copied in clipboard successfully",
 		"token_expiration": "Expiration delay (in days)",
+		"top_login_text": "Show text at the top of the login page",
 		"update": "Update configuration",
 		"update_smtp": "Update SMTP configuration",
 		"validate": "Validate value"
@@ -187,6 +192,8 @@
 		"regex_remove_keyword": "Remove keyword from regex",
 		"regex_remove_keyword_explanation": "For this option to be taken into account, the keyword must be present in the regular expression and the regular expression must end with <strong>.*</strong><br>Example: <strong>INVOICE\\s*NUMBER\\s*:\\s*.*</strong>\n",
 		"regex_remove_keyword_hint": "If enabled, the keyword will be removed from the regex result to keep only the data",
+		"regex_remove_special_char": "Remove special characters from regex result",
+		"regex_remove_special_char_hint": "Example : -()\"#@;:<>{}][`+=~|!?€$%£*",
 		"regex_results": "Regex results",
 		"reset": "Reset",
 		"select_options": "Select options",
@@ -426,8 +433,7 @@
 		"statistics": "Statistics",
 		"task_error": "Task error",
 		"task_error_informations": "Task error informations",
-		"upload": "Upload",
-		"utilisation_guide": "Access to user guide of Open-Capture"
+		"upload": "Upload"
 	},
 	"HEADER": {
 		"active": "Active",
@@ -577,6 +583,7 @@
 	},
 	"MONITORING": {
 		"and": "and",
+		"current_processes": "Process list in progress",
 		"document_id": "Document identifier",
 		"documents_id": "Documents identifiers",
 		"done": "Process done",
@@ -918,6 +925,7 @@
 	},
 	"TYPES": {
 		"date": "Date",
+		"regex": "Regular expression",
 		"select": "List of choices",
 		"text": "String",
 		"textarea": "Textarea"
@@ -925,7 +933,7 @@
 	"UPLOAD": {
 		"extension_unauthorized": "One or more files aren't in PDF format",
 		"no_file": "No file to upload",
-		"placeholder": "Drag and drop or click to upload PDF file(s) (maximum 3)",
+		"placeholder": "Drag and drop or click to upload PDF file(s)",
 		"please_select_workflow": "Please select a workflow",
 		"purchase_invoice": "Purchase invoice",
 		"sale_invoice": "Sale invoice",

@@ -32,6 +32,7 @@ import { PrivilegesService } from "../../../../services/privileges.service";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { remove } from "remove-accents";
+import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
     selector: 'app-custom-fields',
@@ -39,19 +40,20 @@ import { remove } from "remove-accents";
     styleUrls: ['./custom-fields.component.scss']
 })
 export class CustomFieldsComponent implements OnInit {
-    update              : boolean       = false;
-    loading             : boolean       = true;
-    isSplitter          : boolean       = false;
-    inactiveFields      : any[]         = [];
-    activeFields        : any[]         = [];
-    selectOptions       : any[]         = [];
-    inactiveOrActive    : string        = '';
-    regexResult         : string        = '';
-    regexControl        : FormControl   = new FormControl();
-    regexTestControl    : FormControl   = new FormControl();
-    regexRemoveKeyWord  : FormControl   = new FormControl();
-    regexFormat         : FormControl   = new FormControl();
-    formats             : any[]         = [
+    update                  : boolean       = false;
+    loading                 : boolean       = true;
+    isSplitter              : boolean       = false;
+    inactiveFields          : any[]         = [];
+    activeFields            : any[]         = [];
+    selectOptions           : any[]         = [];
+    inactiveOrActive        : string        = '';
+    regexResult             : string        = '';
+    regexControl            : FormControl   = new FormControl();
+    regexTestControl        : FormControl   = new FormControl();
+    regexRemoveSpecialChar  : FormControl   = new FormControl();
+    regexRemoveKeyWord      : FormControl   = new FormControl();
+    regexFormat             : FormControl   = new FormControl();
+    formats                 : any[]         = [
         {
             'id': 'text',
             'label': this.translate.instant('FORMATS.text')
@@ -61,13 +63,13 @@ export class CustomFieldsComponent implements OnInit {
             'label': this.translate.instant('FORMATS.date')
         },
         {
-            'id': 'integer',
+            'id': 'number_float',
             'label': this.translate.instant('FORMATS.number')
         }
     ];
-    updateCustomId      : any;
-    form!               : FormGroup;
-    parent              : any[]         = [
+    updateCustomId          : any;
+    form!                   : FormGroup;
+    parent                  : any[]         = [
         {
             'id': 'verifier',
             'label': this.translate.instant('HOME.verifier')
@@ -77,14 +79,14 @@ export class CustomFieldsComponent implements OnInit {
             'label': this.translate.instant('HOME.splitter')
         }
     ];
-    addFieldInputs      : any[]         = [
+    addFieldInputs          : any[]         = [
         {
             field_id    : 'label_short',
             controlType : 'text',
             control     : new FormControl('', Validators.required),
             label       : this.translate.instant('HEADER.label_short'),
             autoComplete: [],
-            required    : true,
+            required    : true
         },
         {
             field_id    : 'label',
@@ -92,7 +94,7 @@ export class CustomFieldsComponent implements OnInit {
             control     : new FormControl('', Validators.required),
             label       : this.translate.instant('HEADER.label'),
             autoComplete: [],
-            required    : true,
+            required    : true
         },
         {
             field_id    : 'module',
@@ -100,11 +102,11 @@ export class CustomFieldsComponent implements OnInit {
             control     : new FormControl('', Validators.required),
             label       : this.translate.instant('CUSTOM-FIELDS.module'),
             options     : [
-                {key: 'verifier', value: this.translate.instant('HOME.verifier')},
-                {key: 'splitter', value: this.translate.instant('HOME.splitter')}
+                { key: 'verifier', value: this.translate.instant('HOME.verifier') },
+                { key: 'splitter', value: this.translate.instant('HOME.splitter') }
             ],
             required: true,
-            autoComplete: [],
+            autoComplete: []
         },
         {
             field_id    : 'type',
@@ -112,15 +114,15 @@ export class CustomFieldsComponent implements OnInit {
             control     : new FormControl('', Validators.required),
             label       : this.translate.instant('CUSTOM-FIELDS.type'),
             options     : [
-                {key: 'text', value: this.translate.instant('FORMATS.text')},
-                {key: 'regex', value: this.translate.instant('FORMATS.regex'), module: 'verifier'},
-                {key: 'date', value: this.translate.instant('FORMATS.date')},
-                {key: 'textarea', value: this.translate.instant('FORMATS.textarea')},
-                {key: 'select', value: this.translate.instant('FORMATS.select')},
-                {key: 'checkbox', value: this.translate.instant('CUSTOM-FIELDS.checkbox')},
+                { key: 'text', value: this.translate.instant('FORMATS.text') },
+                { key: 'regex', value: this.translate.instant('FORMATS.regex'), module: 'verifier' },
+                { key: 'date', value: this.translate.instant('FORMATS.date') },
+                { key: 'textarea', value: this.translate.instant('FORMATS.textarea') },
+                { key: 'select', value: this.translate.instant('FORMATS.select') },
+                { key: 'checkbox', value: this.translate.instant('CUSTOM-FIELDS.checkbox') }
             ],
             autoComplete: [],
-            required: true,
+            required: true
         },
         {
             field_id    : 'metadata_key',
@@ -129,18 +131,18 @@ export class CustomFieldsComponent implements OnInit {
             label       : this.translate.instant('SETTINGS.autocomplete'),
             limit       : 'splitter',
             autoComplete: [
-                {key: '', value: this.translate.instant('SPLITTER.Other')},
-                {key: 'SEPARATOR_MEM', value: this.translate.instant('SPLITTER.separator_mem')},
-                {key: 'SEPARATOR_META1', value: this.translate.instant('SPLITTER.separator_meta1')},
-                {key: 'SEPARATOR_META2', value: this.translate.instant('SPLITTER.separator_meta2')},
-                {key: 'SEPARATOR_META3', value: this.translate.instant('SPLITTER.separator_meta3')},
+                { key: '', value: this.translate.instant('SPLITTER.Other') },
+                { key: 'SEPARATOR_MEM', value: this.translate.instant('SPLITTER.separator_mem') },
+                { key: 'SEPARATOR_META1', value: this.translate.instant('SPLITTER.separator_meta1') },
+                { key: 'SEPARATOR_META2', value: this.translate.instant('SPLITTER.separator_meta2') },
+                { key: 'SEPARATOR_META3', value: this.translate.instant('SPLITTER.separator_meta3') }
             ],
             required    : false,
-            class       : "",
-        },
+            class       : ""
+        }
     ];
-    unallowedFields     : any[]         = ['vat_rate', 'vat_amount', 'no_rate_amount', 'description', 'line_ht',
-        'unit_price', 'quantity']
+    unallowedFields         : any[]         = ['vat_rate', 'vat_amount', 'no_rate_amount', 'description', 'line_ht',
+        'unit_price', 'quantity'];
 
     constructor(
         public router: Router,
@@ -152,6 +154,7 @@ export class CustomFieldsComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private localeService: LocaleService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {
@@ -194,8 +197,8 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     checkRegex() {
-        const regex = new RegExp(this.regexControl.value, 'gi');
-        if (this.regexTestControl.value) {
+        if (this.regexTestControl.value && this.regexControl.value && this.regexControl.value !== '\\') {
+            const regex = new RegExp(this.regexControl.value, 'gi');
             this.regexResult = this.regexTestControl.value.replace(regex, function(str: any) {
                 if (str) {
                     return '<span class="text-white bg-green-400 p-1">' + str + '</span>';
@@ -262,7 +265,7 @@ export class CustomFieldsComponent implements OnInit {
                         'type'          : field.type,
                         'enabled'       : field.enabled,
                         'settings'      : field.settings,
-                        'metadata_key'  : field.metadata_key,
+                        'metadata_key'  : field.metadata_key
                     };
                     field.enabled ? this.activeFields.push(newField) : this.inactiveFields.push(newField);
                 });
@@ -279,7 +282,7 @@ export class CustomFieldsComponent implements OnInit {
     addSelectOption() {
         this.selectOptions.push({
             idControl      : new FormControl(),
-            labelControl   : new FormControl(),
+            labelControl   : new FormControl()
         });
     }
 
@@ -344,6 +347,17 @@ export class CustomFieldsComponent implements OnInit {
                 return;
             }
         }
+
+        if (newField.type === 'regex') {
+            newField.regex = {
+                'format': this.regexFormat.value,
+                'content': this.regexControl.value,
+                'test': this.regexTestControl.value,
+                'remove_keyword': this.regexRemoveKeyWord.value,
+                'remove_special_char': this.regexRemoveSpecialChar.value
+            };
+        }
+
         this.http.post(environment['url'] + '/ws/customFields/add', newField, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 newField['id'] = data.id;
@@ -413,7 +427,7 @@ export class CustomFieldsComponent implements OnInit {
                                 confirmButtonColor  : "warn",
                                 cancelButton        : this.translate.instant('GLOBAL.cancel')
                             },
-                            width: "600px",
+                            width: "600px"
                         });
 
                         dialogRef.afterClosed().subscribe((result: any) => {
@@ -489,6 +503,16 @@ export class CustomFieldsComponent implements OnInit {
             updatedField['enabled'] = false;
         }
 
+        if (updatedField.type === 'regex') {
+            updatedField.regex = {
+                'format': this.regexFormat.value,
+                'content': this.regexControl.value,
+                'test': this.regexTestControl.value,
+                'remove_keyword': this.regexRemoveKeyWord.value,
+                'remove_special_char': this.regexRemoveSpecialChar.value
+            };
+        }
+
         this.http.put(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_updated'));
@@ -512,13 +536,20 @@ export class CustomFieldsComponent implements OnInit {
             this.addFieldInputs.forEach((element: any) => {
                 element.control.setValue(customField[element.field_id]);
             });
-            if (customField.settings.hasOwnProperty('options')) {
+            if (customField.settings.options) {
                 for (const option of customField.settings.options) {
                     this.selectOptions.push({
                         'idControl'     : new FormControl(option.id),
                         'labelControl'  : new FormControl(option.label)
                     });
                 }
+            }
+
+            if (customField.settings.regex) {
+                this.regexFormat.setValue(customField.settings.regex.format);
+                this.regexControl.setValue(customField.settings.regex.content);
+                this.regexRemoveKeyWord.setValue(customField.settings.regex.remove_keyword);
+                this.regexRemoveSpecialChar.setValue(customField.settings.regex.remove_special_char);
             }
         }
     }

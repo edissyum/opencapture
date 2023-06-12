@@ -30,6 +30,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
+import { EditorModule } from '@tinymce/tinymce-angular';
 
 import { AppRoutingModule } from './app-routing.module';
 import { SettingsRoutingModule } from './settings/settings-routing.module';
@@ -209,6 +210,7 @@ export function createTranslateLoader(http: HttpClient) {
         AppMaterialModule,
         BrowserAnimationsModule,
         HttpClientModule,
+        EditorModule,
         ServicesModule,
         NgsgModule,
         NgxChartsModule,
@@ -246,9 +248,9 @@ export function createTranslateLoader(http: HttpClient) {
         {
             provide: HTTP_INTERCEPTORS,
             useClass: MiddlewareComponent,
-            multi: true,
+            multi: true
         },
-        [{ provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }],
+        [{ provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }]
 ],
     bootstrap: [AppComponent]
 })

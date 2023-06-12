@@ -47,7 +47,7 @@ export class UserProfileComponent implements OnInit {
             label: this.translate.instant('USER.firstname'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'lastname',

@@ -25,7 +25,7 @@ import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 @Component({
     selector: 'custom-snackbar',
     templateUrl: 'notification.service.html',
-    styleUrls: ['notification.service.scss'],
+    styleUrls: ['notification.service.scss']
 })
 
 export class CustomSnackbarComponent {
@@ -43,12 +43,12 @@ export class NotificationService {
     success(message: string, _duration?: number) {
         const duration = _duration ? this.getMessageDuration(message, _duration) :
             this.getMessageDuration(message, 2000);
-        this.toastr.success(message, '', {timeOut: duration});
+        this.toastr.success(message, '', {timeOut: duration, enableHtml: true});
     }
 
     error(message: string) {
         const duration = this.getMessageDuration(message, 4000);
-        this.toastr.error(message, '', {timeOut: duration});
+        this.toastr.error(message, '', {timeOut: duration, enableHtml: true});
     }
 
     handleErrors(err: any, route = '') {
@@ -71,7 +71,11 @@ export class NotificationService {
                 } else if (err.error.message === 'missing_secret_key') {
                     this.error('<b>' + this.translate.instant('ERROR.configuration_error') + '</b> : ' + this.translate.instant('ERROR.missing_secret_key'));
                 } else {
-                    this.error(err.url + '<br> <b>' + err.error.errors + '</b> : ' + err.error.message);
+                    if (err.url) {
+                        this.error(err.url + '<br> <b>' + err.error.errors + '</b> : ' + err.error.message);
+                    } else {
+                        this.error('<b>' + err.error.errors + '</b> : ' + err.error.message);
+                    }
                 }
                 if (err.status === 403 || err.status === 404) {
                     this.router.navigate(['/login']).then();
@@ -79,15 +83,17 @@ export class NotificationService {
                 else if (err.error.errors === this.translate.instant('ERROR.jwt_error')) {
                     this.router.navigate(['/logout']).then();
                 }
-            } else if (err.error.exception !== undefined)
+            } else if (err.error.exception !== undefined) {
                 this.error(err.url + '<br>' +  err.error.exception[0].message);
-            else if (err.error.error !== undefined) {
-                if (err.error.error[0] !== undefined)
+            } else if (err.error.error !== undefined) {
+                if (err.error.error[0] !== undefined) {
                     this.error(err.url + '<br>' +  err.error.error[0].message);
-                else
-                    this.error(err.url + '<br>' +  err.error.error.message);
-            } else
-                this.error(err.url + '<br>' +  `${err.status} : ${err.statusText}`);
+                } else {
+                    this.error(err.url + '<br>' + err.error.error.message);
+                }
+            } else {
+                this.error(err.url + '<br>' + `${err.status} : ${err.statusText}`);
+            }
         } else {
             this.error(err);
         }

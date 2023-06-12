@@ -37,7 +37,7 @@ import { TranslateService } from "@ngx-translate/core";
     templateUrl: './docservers.component.html',
     styleUrls: ['./docservers.component.scss'],
     providers: [
-        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' }},
+        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' }}
     ]
 })
 export class DocserversComponent implements OnInit {
@@ -118,7 +118,7 @@ export class DocserversComponent implements OnInit {
         this.docservers.forEach((element: any) => {
             if (element.id === id) {
                 element.path = value;
-                this.http.put(environment['url'] + '/ws/config/updateDocserver/' + element.id, {'args': element}, {headers: this.authService.headers}).pipe(
+                this.http.put(environment['url'] + '/ws/config/updateDocserver/' + element.id, {'data': element}, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         element.updateMode = false;
                         this.updateLoading = false;

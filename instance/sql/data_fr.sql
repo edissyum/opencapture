@@ -20,7 +20,9 @@ INSERT INTO "configurations" ("label", "data") VALUES ('jwtExpiration', '{"type"
 INSERT INTO "configurations" ("label", "data") VALUES ('timeDelta', '{"type": "int", "value": "-1", "description": "Delta maximum pour remonter une date de facture, en jours. -1 pour désactiver"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('invoiceSizeMin', '{"type": "int", "value": "6", "description": "Taille minimale pour un numéro de facture"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('devisSizeMin', '{"type": "int", "value": "3", "description": "Taille minimale pour un numéro de devis"}');
-INSERT INTO "configurations" ("label", "data") VALUES ('loginMessage', '{"type": "string", "value": "Open-Capture - LAD / RAD", "description": "Court message affiché sur l''écran d''accueil"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('verifierMaxPageSearch', '{"type": "int", "value": "4", "description": "Nombre de pages maximales à parcourir pour chercher les infos du module Verifier, en partant de la dernière page (0 pour chercher dans le document complet)"}');
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('loginTopMessage', '{"type": "string", "value": "Open-Capture - LAD / RAD", "description": "Court message affiché sur le haut de l''écran d''accueil"}', false);
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('loginBottomMessage', '{"type": "string", "value": "<p><strong><a href=\"https://kutt.it/GuideDutilisation\" target=\"_blank\" rel=\"noopener\"><span style=\"color: rgb(151, 191, 61);\">Acc&eacute;der au guide d''utilisation d''Open-Capture</span></a></strong></p>", "description": "Court message affiché sur le bas de l''écran d''accueil"}', false);
 INSERT INTO "configurations" ("label", "data") VALUES ('allowUserMultipleLogin', '{"type": "bool", "value": true, "description": "Autoriser un utilisateur à être connecté sur plusieurs machines simultanément"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('restrictInputsPath', '{"type": "bool", "value": false, "description": "Activer la restriction du chemin sur le dossier des chaînes entrantes"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('restrictOutputsPath', '{"type": "bool", "value": false, "description": "Activer la restriction du chemin sur le dossier des chaînes sortantes"}');
@@ -647,11 +649,11 @@ INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "proce
 ALTER SEQUENCE "workflows_id_seq" RESTART WITH 4;
 
 -- CRÉATION DES CHAMPS CUSTOMS POUR LE SPLITTER
-INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (1, 'nom_usage', 'Nom d''usage', 'text', 'splitter');
-INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (2, 'prenom', 'Prénom', 'text', 'splitter');
-INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (3, 'contrat', 'Contrat', 'text', 'splitter');
-INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (4, 'date_naissance', 'Date de naissance', 'text', 'splitter');
-INSERT INTO custom_fields ("id", "label_short", "label", "type", "module") VALUES (5, 'matricule', 'Matricule', 'text', 'splitter');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (1, 'nom_usage', 'Nom d''usage', 'text', 'splitter');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (2, 'prenom', 'Prénom', 'text', 'splitter');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (3, 'contrat', 'Contrat', 'text', 'splitter');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (4, 'date_naissance', 'Date de naissance', 'text', 'splitter');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (5, 'matricule', 'Matricule', 'text', 'splitter');
 ALTER SEQUENCE "custom_fields_id_seq" RESTART WITH 6;
 
 -- CRÉATION DES PRIVILEGES
@@ -1081,5 +1083,5 @@ INSERT INTO "accounting_plan" ("compte_num", "compte_lib") VALUES ('7800 0000', 
 DO $$
     DECLARE new_customer_id integer;
 BEGIN
-    INSERT INTO accounts_customer (name, module, status, creation_date) VALUES ('Splitter - Compte client par défaut', 'splitter', 'OK', '2023-01-09 11:26:38.989482') RETURNING id INTO new_customer_id;
+    INSERT INTO "accounts_customer" (name, module, status, creation_date) VALUES ('Splitter - Compte client par défaut', 'splitter', 'OK', '2023-01-09 11:26:38.989482') RETURNING id INTO new_customer_id;
 END $$;

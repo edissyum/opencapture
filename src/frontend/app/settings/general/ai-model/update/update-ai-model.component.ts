@@ -55,14 +55,14 @@ export class UpdateAiModelComponent implements OnInit {
             label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_name"),
             type: 'text',
             control: new FormControl('', Validators.pattern("[a-zA-Z0-9+._-éùà)(î]+\\.sav+")),
-            required: true,
+            required: true
         },
         {
             id: 'min_proba',
             label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
             type: 'text',
             control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
-            required: true,
+            required: true
         }
     ];
 
@@ -208,7 +208,7 @@ export class UpdateAiModelComponent implements OnInit {
                         'type': doctype.type,
                         'status': doctype.status,
                         'isDefault': doctype.is_default,
-                        'formId': doctype.form_id,
+                        'formId': doctype.form_id
                     };
                     this.doc_types.push(newDoctype);
                 });

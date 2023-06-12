@@ -323,6 +323,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
+@tinymce/tinymce-angular
+MIT
+
 d3-array
 BSD-3-Clause
 Copyright 2010-2020 Mike Bostock

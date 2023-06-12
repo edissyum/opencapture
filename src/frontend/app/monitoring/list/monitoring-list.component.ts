@@ -80,7 +80,7 @@ export class MonitoringListComponent implements OnInit, OnDestroy {
                     'label': this.translate.instant('MONITORING.error')
                 }
             ]
-        },
+        }
     ];
     timer               : any;
 

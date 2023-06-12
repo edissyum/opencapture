@@ -50,14 +50,14 @@ export class UpdateUserComponent implements OnInit {
             label: this.translate.instant('USER.username'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'firstname',
             label: this.translate.instant('USER.firstname'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'lastname',

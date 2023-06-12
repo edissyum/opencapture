@@ -26,7 +26,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class SplitterTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', category=DeprecationWarning)
@@ -78,8 +78,8 @@ class SplitterTest(unittest.TestCase):
 
     def test_successful_get_documents(self):
         self.create_batch()
-        self.db.execute("SELECT * FROM splitter_batches")
-        batches = self.db.fetchall()
+        self.database.execute("SELECT * FROM splitter_batches")
+        batches = self.database.fetchall()
         payload = {
             'userId': 1,
             'batchId': batches[0]['id'],
@@ -91,5 +91,4 @@ class SplitterTest(unittest.TestCase):
         self.assertEqual(2, len(response.json['documents']))
 
     def tearDown(self) -> None:
-        self.db.execute("TRUNCATE TABLE splitter_batches")
-        self.db.execute("TRUNCATE TABLE tasks_watcher")
+        self.database.execute("TRUNCATE TABLE splitter_batches")

@@ -142,6 +142,7 @@
 		"advanced": "Paramètres avancés",
 		"authorized_extensions": "Extension autorisée : PNG",
 		"bool": "Booléen",
+		"bottom_login_text": "Court message affiché en bas de la page de connexion",
 		"change_image": "Changer l'image de l'application",
 		"check_form_completion": "Merci de vérifier que tous les champs sont correctement remplis",
 		"configuration_updated": "Configuration mise à jour avec succès",
@@ -154,10 +155,13 @@
 		"generate_token": "Générer un token d'authentification",
 		"global": "Global",
 		"int": "Nombre entier",
+		"login_bottom_message_updated": "Message en bas de la page de connexion modifié avec succès",
 		"login_image_changed": "Image de la page de connexion modifié avec succès",
+		"login_top_message_updated": "Message en haut de la page de connexion modifié avec succès",
 		"password_min_length": "Taille minimale",
 		"password_rules": "Règles de sécurité des mots de passe",
 		"password_rules_updated": "Règles de sécurité des mots de passe mise à jour avec succès",
+		"save_login_text": "Sauvegarder",
 		"search_config": "Chercher une configuration",
 		"select_user": "Selectionner un utilisateur",
 		"smtp": "SMTP",
@@ -167,6 +171,7 @@
 		"token_associated_user": "Utilisateur associé",
 		"token_copied": "Token d'authentification copié dans le presse papier avec succès",
 		"token_expiration": "Délai d'expiration du token (en jours)",
+		"top_login_text": "Court message affiché en haut de la page de connexion",
 		"update": "Modifier la configuration",
 		"update_smtp": "Mettre à jour les paramètres SMTP",
 		"validate": "Valider la modification"
@@ -183,10 +188,12 @@
 		"field_updated": "Champ personnalisé modifié avec succès",
 		"module": "Module",
 		"no_option_added": "Aucune option ajoutée",
-		"regex_format": "Format de la donnée à récupérer",
+		"regex_format": "Format de la donnée à récupérer (utiliser pour validation)",
 		"regex_remove_keyword": "Supprimer le mot clé de l'expression régulière",
 		"regex_remove_keyword_explanation": "Afin que cette option soit fonctionnelle, il faut que le mot clé soit présent dans l'expression régulière et qu'elle se termine par <strong>.*</strong><br>Exemple : <strong>NUM(E|É)RO\\s*DE\\s*FACTURE\\s*:\\s*.*</strong>",
 		"regex_remove_keyword_hint": "Si activé, le mot clé sera supprimé du résultat de la regex pour ne conserver que la donnée",
+		"regex_remove_special_char": "Supprimer les caractères spéciaux du résultat de la regex",
+		"regex_remove_special_char_hint": "Exemple : -()\"#@;:<>{}][`+=~|!?€$%£*",
 		"regex_results": "Résultat de la regex",
 		"reset": "Réinitialiser",
 		"select_options": "Liste des choix",
@@ -383,7 +390,7 @@
 		"workflows_list_already_linked": "Les workflows suivants sont liés à ce formulaire <br><br> <strong><center>{{ workflowsList }}</center></strong> <br> Merci de choisir un nouveau formulaire pour ces workflows"
 	},
 	"GLOBAL": {
-		"add_time": "Ajouté à ",
+		"add_time": "Ajouté le",
 		"allowed_path": "Chemin autorisé :  {{ allowedPath }}",
 		"back": "Retour",
 		"batches": "Lots",
@@ -426,8 +433,7 @@
 		"statistics": "Statistiques",
 		"task_error": "Erreur de traitement",
 		"task_error_informations": "Informations sur l'erreur de traitement",
-		"upload": "Téléversement",
-		"utilisation_guide": "Accéder au guide d'utilisation d'Open-Capture"
+		"upload": "Téléversement"
 	},
 	"HEADER": {
 		"active": "Actif",
@@ -577,6 +583,7 @@
 	},
 	"MONITORING": {
 		"and": "et",
+		"current_processes": "Liste des processus en cours",
 		"document_id": "Identifiant du document",
 		"documents_id": "Identifiant des documents",
 		"done": "Processus terminé",
@@ -918,6 +925,7 @@
 	},
 	"TYPES": {
 		"date": "Date",
+		"regex": "Expression régulière",
 		"select": "Liste de choix",
 		"text": "Chaine de caractères",
 		"textarea": "Multi lignes"
@@ -925,7 +933,7 @@
 	"UPLOAD": {
 		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
 		"no_file": "Aucun fichier à téléverser",
-		"placeholder": "Cliquez pour choisir un ou plusieurs documents PDF (3 maximum) ou faites glisser vos documents",
+		"placeholder": "Cliquez pour choisir un ou plusieurs documents PDF ou faites glisser vos documents",
 		"please_select_workflow": "Choisissez un workflow avant de procéder au téléversement",
 		"purchase_invoice": "Facture d'achat",
 		"sale_invoice": "Facture de vente",

@@ -47,13 +47,13 @@ export class ResetPasswordComponent implements OnInit {
             id: 'password',
             label: this.translate.instant('USER.password'),
             type: 'password',
-            control: new FormControl(),
+            control: new FormControl()
         },
         {
             id: 'password_check',
             label: this.translate.instant('USER.password_check'),
             type: 'password',
-            control: new FormControl(),
+            control: new FormControl()
         }
     ];
 

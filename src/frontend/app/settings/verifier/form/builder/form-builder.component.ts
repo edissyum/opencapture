@@ -15,21 +15,21 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, FormControl } from "@angular/forms";
-import { AuthService } from "../../../../../services/auth.service";
-import { UserService } from "../../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
-import { NotificationService } from "../../../../../services/notifications/notifications.service";
-import { SettingsService } from "../../../../../services/settings.service";
-import { PrivilegesService } from "../../../../../services/privileges.service";
-import { moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
-import { environment } from  "../../../../env";
-import { catchError, finalize, tap } from "rxjs/operators";
-import { of } from "rxjs";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import {Component, OnInit} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
+import {ActivatedRoute, Router} from "@angular/router";
+import {FormBuilder, FormControl} from "@angular/forms";
+import {AuthService} from "../../../../../services/auth.service";
+import {UserService} from "../../../../../services/user.service";
+import {TranslateService} from "@ngx-translate/core";
+import {NotificationService} from "../../../../../services/notifications/notifications.service";
+import {SettingsService} from "../../../../../services/settings.service";
+import {PrivilegesService} from "../../../../../services/privileges.service";
+import {moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
+import {environment} from "../../../../env";
+import {catchError, finalize, tap} from "rxjs/operators";
+import {of} from "rxjs";
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'form-builder',
@@ -48,15 +48,15 @@ export class FormBuilderComponent implements OnInit {
     outputs                 : any[]     = [];
     form                    : any       = {
         'label': {
-            'control': new FormControl(),
+            'control': new FormControl()
         },
         'default_form': {
-            'control': new FormControl(),
+            'control': new FormControl()
         }
     };
     formSettings            : any       = {
         'supplier_verif': {
-            'control': new FormControl(),
+            'control': new FormControl()
         }
     };
     outputForm              : any       = [
@@ -111,7 +111,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'siret',
@@ -126,7 +126,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_int',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'siren',
@@ -141,7 +141,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_int',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'vat_number',
@@ -156,7 +156,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'iban',
@@ -171,7 +171,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'duns',
@@ -186,7 +186,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'email',
@@ -201,7 +201,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'email',
                     format_icon:'fa-solid fa-at',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'address1',
@@ -215,7 +215,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended_with_accent',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'address2',
@@ -229,7 +229,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended_with_accent',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'postal_code',
@@ -243,7 +243,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_int',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'city',
@@ -257,7 +257,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'char',
                     format_icon:'fa-solid fa-font',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'country',
@@ -271,8 +271,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'char',
                     format_icon:'fa-solid fa-font',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
-                },
+                    display_icon:'fa-solid fa-file-alt'
+                }
             ]
         },
         {
@@ -291,7 +291,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'quantity',
@@ -305,7 +305,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'unit_price',
@@ -319,7 +319,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'line_ht',
@@ -333,7 +333,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'line_vat_rate',
@@ -347,7 +347,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 }
             ]
         },
@@ -368,7 +368,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended',
                     format_icon: 'fa-solid fa-hashtag',
                     display: 'multi',
-                    display_icon:'fa-solid fa-layer-group',
+                    display_icon:'fa-solid fa-layer-group'
                 },
                 {
                     id: 'invoice_number',
@@ -383,7 +383,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended',
                     format_icon: 'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'quotation_number',
@@ -398,7 +398,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended',
                     format_icon: 'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'document_date',
@@ -413,7 +413,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'date',
                     format_icon: 'fa-solid fa-calendar-day',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'document_due_date',
@@ -428,7 +428,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'date',
                     format_icon: 'fa-solid fa-calendar-day',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'vat_rate',
@@ -443,7 +443,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'multi',
-                    display_icon:'fa-solid fa-layer-group',
+                    display_icon:'fa-solid fa-layer-group'
                 },
                 {
                     id: 'no_rate_amount',
@@ -458,7 +458,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'multi',
-                    display_icon:'fa-solid fa-layer-group',
+                    display_icon:'fa-solid fa-layer-group'
                 },
                 {
                     id: 'vat_amount',
@@ -473,7 +473,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'multi',
-                    display_icon:'fa-solid fa-layer-group',
+                    display_icon:'fa-solid fa-layer-group'
                 },
                 {
                     id: 'accounting_plan',
@@ -486,7 +486,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     display: 'multi',
-                    display_icon:'fa-solid fa-layer-group',
+                    display_icon:'fa-solid fa-layer-group'
                 },
                 {
                     id: 'total_ttc',
@@ -500,7 +500,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'total_ht',
@@ -514,7 +514,7 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
+                    display_icon:'fa-solid fa-file-alt'
                 },
                 {
                     id: 'total_vat',
@@ -529,8 +529,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt',
-                },
+                    display_icon:'fa-solid fa-file-alt'
+                }
             ]
         },
         {
@@ -637,7 +637,7 @@ export class FormBuilderComponent implements OnInit {
         {
             'id': 'green',
             'label': marker('COLORS.green')
-        },
+        }
     ];
     formatList              : any []    = [
         {
@@ -691,7 +691,7 @@ export class FormBuilderComponent implements OnInit {
             'id': 'multi',
             'label': marker('DISPLAY.multi'),
             'icon': 'fa-solid fa-layer-group'
-        },
+        }
     ];
     mandatoryList           : any []    = [
         {
@@ -703,7 +703,7 @@ export class FormBuilderComponent implements OnInit {
             'id': false,
             'label': marker('MANDATORY.not_required'),
             'icon': 'far fa-star'
-        },
+        }
     ];
     availableFields         : any       = [
         {
@@ -807,39 +807,41 @@ export class FormBuilderComponent implements OnInit {
 
         this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.customFields) {
-                    for (const field in data.customFields) {
-                        if (data.customFields.hasOwnProperty(field)) {
-                            this.availableFields.push({
-                                'id': 'custom_' + data.customFields[field].id,
-                                'label': data.customFields[field].label
-                            });
-                            for (const parent in this.availableFieldsParent) {
+                console.log(data);
+                if (data['customFields']) {
+                    for (const field in data['customFields']) {
+                        this.availableFields.push({
+                            'id': 'custom_' + data['customFields'][field].id,
+                            'label': data['customFields'][field].label
+                        });
+                        for (const parent in this.availableFieldsParent) {
                                 if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                     this.availableFieldsParent[parent].values.push({
-                                        id: 'custom_' + data.customFields[field].id,
-                                        label: data.customFields[field].label,
+                                        id: 'custom_' + data['customFields'][field].id,
+                                        label: data['customFields'][field].label,
                                         unit: 'custom',
-                                        type: data.customFields[field].type,
-                                        required: data.customFields[field].required,
-                                        autocomplete: data.customFields[field].autocomplete,
+                                        type: data['customFields'][field].type,
+                                        required: data['customFields'][field].required,
+                                        autocomplete: data['customFields'][field].autocomplete,
                                         class: "w-1/3",
-                                        class_label: "1/33",
+                                        class_label: "1/33"
                                     });
+
                                     let format = '';
-                                    if (data.customFields[field].type === 'text') {
+                                    if (data['customFields'][field].type === 'regex') {
+                                        format = data['customFields'][field].settings['regex']['format'];
+                                    } else if (data['customFields'][field].type === 'text') {
                                         format = 'char';
-                                    } else if (data.customFields[field].type === 'select') {
+                                    } else if (data['customFields'][field].type === 'select') {
                                         format = 'select';
-                                    } else if (data.customFields[field].type === 'textarea') {
+                                    } else if (data['customFields'][field].type === 'textarea') {
                                         format = 'char';
                                     } else {
-                                        format = data.customFields[field].type;
+                                        format = data['customFields'][field].type;
                                     }
                                     this.availableFieldsParent[parent].values[this.availableFieldsParent[parent].values.length - 1]['format'] = format;
                                 }
                             }
-                        }
                     }
                 }
                 this.loadingCustomFields = false;
@@ -1135,7 +1137,7 @@ export class FormBuilderComponent implements OnInit {
                         'default_form'  : isDefault,
                         'settings'      : {
                             "supplier_verif"                 : supplierVerif
-                        },
+                        }
                     }
                 }, {headers: this.authService.headers},
             ).pipe(

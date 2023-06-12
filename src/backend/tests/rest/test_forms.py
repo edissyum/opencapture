@@ -23,7 +23,7 @@ from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 class FormTest(unittest.TestCase):
     def setUp(self):
-        self.db = get_db()
+        self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
@@ -162,5 +162,5 @@ class FormTest(unittest.TestCase):
         self.assertEqual(200, res.status_code)
 
     def tearDown(self) -> None:
-        self.db.execute("UPDATE form_models SET status = 'DEL' WHERE label = 'SPLITTER_TEST_FORM'")
-        self.db.execute("UPDATE form_models SET status = 'DEL' WHERE label = 'VERIFIER_TEST_FORM'")
+        self.database.execute("UPDATE form_models SET status = 'DEL' WHERE label = 'SPLITTER_TEST_FORM'")
+        self.database.execute("UPDATE form_models SET status = 'DEL' WHERE label = 'VERIFIER_TEST_FORM'")

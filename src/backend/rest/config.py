@@ -57,7 +57,7 @@ def get_configuration_by_label(config_label):
 
 @bp.route('config/getConfigurationNoAuth/<string:config_label>', methods=['GET'])
 def get_configuration_by_label_simple(config_label):
-    if config_label not in ('loginMessage', 'passwordRules'):
+    if config_label not in ('loginBottomMessage', 'loginTopMessage', 'passwordRules', 'userQuota'):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/getConfigurationNoAuth/{config_label}'}), 403
 
@@ -119,8 +119,7 @@ def update_configuration_by_id(configuration_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/updateConfiguration/{configuration_id}'}), 403
-
-    args = request.json['args']
+    args = request.json['data']
     res = config.update_configuration_by_id(args, configuration_id)
     return make_response(jsonify(res[0])), res[1]
 
@@ -144,7 +143,7 @@ def update_docserver(docserver_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/updateDocserver/{docserver_id}'}), 403
 
-    args = request.json['args']
+    args = request.json['data']
     res = config.update_docserver(args, docserver_id)
     return make_response(jsonify(res[0])), res[1]
 

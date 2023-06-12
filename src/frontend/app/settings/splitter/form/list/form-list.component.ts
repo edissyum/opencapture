@@ -40,7 +40,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
     templateUrl: './form-list.component.html',
     styleUrls: ['./form-list.component.scss'],
     providers: [
-        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
     ]
 })
 export class SplitterFormListComponent implements OnInit {
@@ -115,7 +115,7 @@ export class SplitterFormListComponent implements OnInit {
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -134,7 +134,7 @@ export class SplitterFormListComponent implements OnInit {
                 confirmButtonColor  : "green",
                 cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -153,7 +153,7 @@ export class SplitterFormListComponent implements OnInit {
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -172,7 +172,7 @@ export class SplitterFormListComponent implements OnInit {
                 confirmButtonColor  : "green",
                 cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
 
         dialogRef.afterClosed().subscribe(result => {

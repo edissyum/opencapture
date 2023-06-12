@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit {
         }
 
         this.setValue('');
-        this.localStorageService.save('task_watcher_minimize_display', 'true');
+        this.localStorageService.save('monitoring_minimize_display', 'true');
         const splitter = this.privilegesService.hasPrivilege('access_splitter');
         const verifier = this.privilegesService.hasPrivilege('access_verifier');
         const lastUrl = this.routerExtService.getPreviousUrl();

@@ -25,7 +25,6 @@ import { NotificationService } from "../../../services/notifications/notificatio
 import { HttpClient } from "@angular/common/http";
 import { TranslateService } from "@ngx-translate/core";
 import { SettingsService } from "../../../services/settings.service";
-import { Sort } from "@angular/material/sort";
 import * as moment from "moment";
 
 @Component({
@@ -41,12 +40,11 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
     pageSize            : number                = 10;
     pageIndex           : number                = 0;
     total               : number                = 0;
-    offset              : number                = 0;
     splitterCpt         : number                = 0;
-    inputLabel          : string                = '';
     workflowLabel       : string                = '';
     processId           : number | undefined;
     steps               : any;
+    allSteps            : any;
     timer               : any;
 
     constructor(
@@ -65,9 +63,11 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
         }
         this.processId = this.route.snapshot.params['id'];
         await this.loadProcess();
+
         this.timer = setInterval(()=> {
             if (this.processData.status === 'done') {
                 clearInterval(this.timer);
+                return;
             }
             this.loadProcess();
         }, 4000);
@@ -84,7 +84,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
                     this.processData = data.process[0];
                     const now = new Date();
                     const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-                    const diffDays = Math.abs((now.getTime() - new Date(this.processData.creation_date).getTime()) / (oneDay));
+                    const diffDays = Math.abs((now.getTime() - new Date(this.processData['creation_date']).getTime()) / (oneDay));
                     if (diffDays <= 1) {
                         this.processData.time = 'today';
                     } else if (diffDays > 1 && diffDays <= 2) {
@@ -115,7 +115,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
                             listOfSteps.push(this.processData.steps[step]);
                         });
                     }
-                    if (this.processData.elapsed_time) {
+                    if (this.processData['elapsed_time']) {
                         const hours = this.processData.elapsed_time.slice(0, 2);
                         const minutes = this.processData.elapsed_time.slice(3, 5);
                         const seconds = this.processData.elapsed_time.slice(6, 11);
@@ -152,7 +152,9 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
                         }
                         this.processData.elapsedTimeMessage = message;
                     }
-                    this.steps = listOfSteps;
+
+                    this.allSteps = listOfSteps;
+                    this.steps = listOfSteps.slice().splice(0, this.pageSize)
                 } else {
                     this.notify.error(this.translate.instant('MONITORING.process_doesnt_exist', {id: this.processId}));
                     this.router.navigate(['/monitoring']);
@@ -169,33 +171,9 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
 
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
-        this.offset = this.pageSize * (event.pageIndex);
-    }
-
-    sortData(sort: Sort) {
-        const data = this.steps.slice();
-        if (!sort.active || sort.direction === '') {
-            this.steps = data;
-            return;
-        }
-
-        this.steps = data.sort((a: any, b: any) => {
-            const isAsc = sort.direction === 'asc';
-            switch (sort.active) {
-                case 'step': return this.compare(a.steps, b.steps, isAsc);
-                case 'date': return this.compare(a.date, b.date, isAsc);
-                case 'message': return this.compare(a.message, b.message, isAsc);
-                case 'status': return this.compare(a.status, b.status, isAsc);
-                default: return 0;
-            }
-        });
-        this.steps = this.steps.splice(0, this.pageSize);
-    }
-
-    compare(a: number | string, b: number | string, isAsc: boolean) {
-        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+        const data = this.allSteps.slice();
+        this.steps = data.splice(this.pageSize * event.pageIndex, this.pageSize + (this.pageSize * (event.pageIndex)));
     }
 
     protected readonly window = window;
-    protected readonly length = length;
 }

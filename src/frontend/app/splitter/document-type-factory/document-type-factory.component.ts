@@ -87,7 +87,7 @@ export class ChecklistDatabase {
                             'type'      : doctype.type,
                             'status'    : doctype.status,
                             'isDefault' : doctype.is_default,
-                            'formId'    : doctype.form_id,
+                            'formId'    : doctype.form_id
                         };
                         this.doctypeData.push(newDoctype);
                     }
@@ -350,7 +350,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 confirmButtonColor  : "green",
                 cancelButton        : this.translate.instant('GLOBAL.cancel')
             },
-            width: "600px",
+            width: "600px"
         });
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result) {

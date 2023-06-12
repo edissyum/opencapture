@@ -96,9 +96,15 @@
                                            <i class="fa-solid fa-circle-question text-md"></i>
                                         </span>
                                     </mat-slide-toggle>
-                                    <mat-form-field class="w-96">
+                                    <mat-slide-toggle [formControl]="regexRemoveSpecialChar" class="mb-8 flex justify-center">
+                                        <span class="justify-center">{{ 'CUSTOM-FIELDS.regex_remove_special_char' | translate }}</span>
+                                        <span class="relative text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="'CUSTOM-FIELDS.regex_remove_special_char_hint' | translate">
+                                           <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
+                                    </mat-slide-toggle>
+                                    <mat-form-field class="w-1/3">
                                         <mat-label>{{ 'CUSTOM-FIELDS.regex_format' | translate }}</mat-label>
-                                        <mat-select [formControl]="regexFormat">
+                                        <mat-select [formControl]="regexFormat" (selectionChange)="checkRegex()">
                                             <mat-option *ngFor="let opt of formats" [value]="opt.id">
                                                 {{ opt.label | translate }}
                                             </mat-option>

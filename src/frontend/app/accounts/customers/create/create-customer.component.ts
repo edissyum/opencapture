@@ -48,14 +48,14 @@ export class CreateCustomerComponent implements OnInit {
             label: marker('ACCOUNTS.customer_name'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'vat_number',
             label: marker('ACCOUNTS.vat_number'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: true
         },
         {
             id: 'siret',
@@ -96,36 +96,36 @@ export class CreateCustomerComponent implements OnInit {
             label: marker('ADDRESSES.address_1'),
             type: 'text',
             control: new FormControl(),
-            required: false,
+            required: false
         },
         {
             id: 'address2',
             label: marker('ADDRESSES.address_2'),
             type: 'text',
             control: new FormControl(),
-            required: false,
+            required: false
         },
         {
             id: 'postal_code',
             label: marker('ADDRESSES.postal_code'),
             type: 'text',
             control: new FormControl(),
-            required: false,
+            required: false
         },
         {
             id: 'city',
             label: marker('ADDRESSES.city'),
             type: 'text',
             control: new FormControl(),
-            required: false,
+            required: false
         },
         {
             id: 'country',
             label: marker('ADDRESSES.country'),
             type: 'country',
             control: new FormControl(),
-            required: false,
-        },
+            required: false
+        }
     ];
     defaultValue    : Country       = {
         name: 'France',
