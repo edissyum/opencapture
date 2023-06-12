@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import os
 import sys
 from flask import g as current_context
 from .functions import get_custom_array, retrieve_config_from_custom_id
@@ -147,6 +148,10 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
 
 
 def check_file(files, path, log, docservers):
+    if not os.path.isfile(path):
+        log.error('The file doesn\'t exists : ' + str(path))
+        return False
+
     if not files.check_file_integrity(path, docservers):
         log.error('The integrity of file could\'nt be verified : ' + str(path))
         return False
