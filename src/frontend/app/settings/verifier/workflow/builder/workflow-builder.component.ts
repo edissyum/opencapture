@@ -538,7 +538,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
                 codeContent         : codeContent
             },
-            width: "80rem",
+            width: "80vw",
             height: "calc(100vh - 5rem)",
             disableClose: true
         });
@@ -546,10 +546,14 @@ export class WorkflowBuilderComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.fields[step].push({
+                    'show': false,
                     'id': 'script',
-                    'label': 'Script',
                     'control': new FormControl(result, Validators.required)
                 });
+
+                if (!this.creationMode) {
+                    this.updateWorkflow(step);
+                }
             }
         });
     }
