@@ -44,14 +44,16 @@ export class CreateRoleComponent implements OnInit {
             label: this.translate.instant('HEADER.label'),
             type: 'text',
             control: new FormControl(),
-            required: true
+            required: true,
+            maxLength: 255,
         },
         {
             id: 'label_short',
             label: this.translate.instant('HEADER.label_short'),
             type: 'text',
             control: new FormControl(),
-            required: true
+            required: true,
+            maxLength: 10,
         }
     ];
 
