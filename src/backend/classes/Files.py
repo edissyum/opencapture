@@ -275,13 +275,6 @@ class Files:
                         return False
                     else:
                         return True
-                elif file.lower().endswith(tuple(['.jpg'])):
-                    try:
-                        Image.open(file)
-                    except OSError:
-                        return False
-                    else:
-                        return True
                 else:
                     return False
             else:

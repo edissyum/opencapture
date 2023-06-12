@@ -120,6 +120,7 @@ import { WorkflowBuilderComponent } from './settings/verifier/workflow/builder/w
 import { WorkflowListSplitterComponent } from './settings/splitter/workflow/list/workflow-list.component';
 import { WorkflowBuilderSplitterComponent } from './settings/splitter/workflow/builder/workflow-builder.component';
 import { TimeoutInterceptor } from "../services/HttpTimeout.service";
+import { CodeEditorModule } from '@ngstack/code-editor';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -214,6 +215,7 @@ export function createTranslateLoader(http: HttpClient) {
         ServicesModule,
         NgsgModule,
         NgxChartsModule,
+        CodeEditorModule.forRoot(),
         ToastrModule.forRoot({
             maxOpened: 1,
             enableHtml: true,

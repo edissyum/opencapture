@@ -25,7 +25,7 @@ apt install -y jq
 
 opencapturePath="/var/www/html/opencapture/"
 
-####################
+#####################
 # Update input_id to workflow_id
 SECTIONS=$(crudini --get $opencapturePath/custom/custom.ini | sed 's/:.*//')
 for custom_name in ${SECTIONS[@]}; do
@@ -71,4 +71,12 @@ for custom_name in ${SECTIONS[@]}; do
     echo "########################################################################################################################################"
     echo "   Please update manually your supplier referencial file and add a column named 'DUNS' at the end of the file, just after 'doc_lang'"
     echo "########################################################################################################################################"
+done
+
+####################
+# Update custom config ini to add applicationPath
+SECTIONS=$(crudini --get $opencapturePath/custom/custom.ini | sed 's/:.*//')
+for custom_name in ${SECTIONS[@]}; do
+    cd $opencapturePath
+    crudini --set custom/$custom_name/config/config.ini GLOBAL applicationPath $opencapturePath
 done

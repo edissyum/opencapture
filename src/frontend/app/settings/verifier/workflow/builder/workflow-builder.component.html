@@ -79,14 +79,16 @@
                             (click)="!this.creationMode ? this.updateWorkflow('input') : ''">
                         {{ 'WORKFLOW.next' | translate }}
                     </button>
+                    <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
+                       [matTooltip]="'WORKFLOW.input_scripting' | translate" (click)="openCodeEditor('input')"></i>
                 </div>
             </mat-step>
-            <mat-step [aria-labelledby]="'disabled_step'" *ngIf="this.processAllowed" [label]="'WORKFLOW.process' | translate">
+            <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.process' | translate">
                 <app-hint [message]="'WORKFLOW.process_hint' | translate"></app-hint>
                 <div class="mt-6 grid grid-cols-2 gap-6" [class.grid-cols-4]="this.useInterface">
                     <ng-container *ngFor="let field of this.fields['process']">
                         <div *ngIf="field.type === 'boolean' && field.show">
-                            <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2" (change)="field.id === 'use_interface' ? setUseInterface($event.checked) : ''">
+                            <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2" (change)="field.id === 'use_interface' ? setUseInterface($event.checked) : field.id === 'form_id' ? setUsedOutputs(): ''">
                                 <span class="justify-center">{{ field.label | translate }}</span>
                                 <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="field.hint | translate">
                                     <i class="fa-solid fa-circle-question text-md"></i>
@@ -107,7 +109,7 @@
                         </mat-form-field>
                         <mat-form-field *ngIf="field.type === 'select' && field.show">
                             <mat-label>{{ field.label | translate }}</mat-label>
-                            <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple">
+                            <mat-select [disabled]="!this.processAllowed" [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple">
                                 <mat-option *ngFor="let option of field.values" [value]="option.id">
                                     {{ option.label | translate }}
                                 </mat-option>
@@ -130,6 +132,9 @@
                             (click)="!this.creationMode ? this.updateWorkflow('process') : ''">
                         {{ 'WORKFLOW.next' | translate }}
                     </button>
+                    <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
+                       *ngIf="this.processAllowed" [matTooltip]="'WORKFLOW.process_scripting' | translate"
+                       (click)="openCodeEditor('process')"></i>
                 </span>
             </mat-step>
             <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.separation' | translate">
@@ -143,7 +148,7 @@
                             </span>
                         </mat-form-field>
                         <mat-form-field *ngIf="field.type === 'select'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
+                            <mat-label>{{ field.label | translate }}</mat-label>
                             <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple"
                                         (selectionChange)="field.id === 'splitter_method_id' ? setSeparationMode($event.value) : ''">
                                 <mat-option *ngFor="let option of field.values" [value]="option.id">
@@ -165,7 +170,6 @@
                 <button matStepperPrevious mat-button class="gray_button">
                     {{ "WORKFLOW.back" | translate }}
                 </button>
-
                 <button matStepperNext mat-button class="valid_button" *ngIf="this.outputAllowed" (click)="!this.creationMode ? this.updateWorkflow('separation') : ''">
                     {{ 'WORKFLOW.next' | translate }}
                 </button>
@@ -177,13 +181,15 @@
                         {{ 'WORKFLOW.update' | translate }}
                     </span>
                 </button>
+                <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
+                   [matTooltip]="'WORKFLOW.separation_scripting' | translate"></i>
             </mat-step>
-            <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.output' | translate" *ngIf="this.outputAllowed">
+            <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.output' | translate">
                 <div class="mt-2 w-full">
                     <ng-container *ngFor="let field of this.fields['output']">
                         <mat-form-field *ngIf="field.type === 'select'" class="w-full">
                             <mat-label>{{ field.label | translate }}</mat-label>
-                            <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple">
+                            <mat-select [(value)]="field.control.value" [disabled]="this.useInterface" [required]="field['required']" [multiple]="field.multiple">
                                 <mat-option *ngFor="let option of field.values" [value]="option.id">
                                     {{ option.label | translate }}
                                 </mat-option>
@@ -206,6 +212,8 @@
                         {{ 'WORKFLOW.update' | translate }}
                     </span>
                 </button>
+                <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
+                   [matTooltip]="'WORKFLOW.output_scripting' | translate"></i>
             </mat-step>
         </mat-stepper>
     </mat-sidenav-content>
