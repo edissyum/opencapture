@@ -19,6 +19,7 @@
                 "plugin:@typescript-eslint/recommended"
             ],
             "rules": {
+                "@typescript-eslint/no-this-alias": "off",
                 "@typescript-eslint/quotes": "off",
                 "@typescript-eslint/no-shadow": [
                     "off",

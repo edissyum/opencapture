@@ -312,6 +312,8 @@ class FindFooter:
                 ht = total_ht[0]
             if ttc and ht and not vat_amount:
                 vat_amount = [float("%.2f" % (float(ttc) - float(ht))), (('', ''), ('', ''))]
+            if ttc and ht and not vat_rate:
+                vat_rate = [float("%.2f" % (float(vat_amount[0]) / float(ht) * 100)), (('', ''), ('', ''))]
 
         if total_ttc and vat_amount and not total_ht:
             ttc = self.return_max(total_ttc)[0]
