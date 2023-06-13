@@ -431,7 +431,6 @@
 		"settings": "Paramètres",
 		"skip_auto_validate": "Outrepasser la prochaine validation automatique",
 		"statistics": "Statistiques",
-		"task_error": "Erreur de traitement",
 		"task_error_informations": "Informations sur l'erreur de traitement",
 		"upload": "Téléversement"
 	},
@@ -770,6 +769,7 @@
 		"update": "Mettre à jour la regex"
 	},
 	"ROLE": {
+		"authorized_sub_roles": "Les rôles d'affectations autorisés",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le rôle <strong>{{ role }}</strong> ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver le rôle <strong>{{ role }}</strong> ?",
 		"confirm_enable": "Êtes vous sûr de vouloir réactiver le rôle <strong>{{ role }}</strong> ?",
@@ -777,7 +777,10 @@
 		"created": "Rôle créé avec succès",
 		"disable": "Désactiver le rôle",
 		"enable": "Activer le rôle",
+		"no_authorized_sub_role": "Aucun rôle d'affectations à afficher",
 		"role_deleted": "Rôle supprimé",
+		"select_all": "Sélectionner tout",
+		"unselect_all": "Désélectionner tout",
 		"update": "Modifier le rôle",
 		"updated": "Rôle mis à jour avec succès"
 	},

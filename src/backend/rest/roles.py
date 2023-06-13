@@ -14,6 +14,7 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
 from flask_babel import gettext
 from flask import Blueprint, request, make_response, jsonify
@@ -22,14 +23,16 @@ from src.backend.import_controllers import auth, roles, privileges
 bp = Blueprint('roles', __name__, url_prefix='/ws/')
 
 
-@bp.route('roles/list', methods=['GET'])
+@bp.route('roles/list/user/<int:user_id>', methods=['GET'])
 @auth.token_required
-def get_roles():
-    if not privileges.has_privileges(request.environ['user_id'],
-                                     ['settings', 'roles_list | add_user | users_list | login_methods']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/roles/list'}), 403
-
-    _roles = roles.get_roles(request.args)
+def get_roles(user_id):
+    args = {
+        'user_id': user_id,
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
+        'full': True if 'full' in request.args else False
+    }
+    _roles = roles.get_roles(args)
     return make_response(jsonify(_roles[0])), _roles[1]
 
 

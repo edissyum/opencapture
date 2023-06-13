@@ -108,7 +108,7 @@ class RolesTest(unittest.TestCase):
         self.assertEqual('[1, 2, 3]', new_role_privileges[0]['privileges_id']['data'])
 
     def test_successful_get_roles(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/roles/list',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/roles/list/user/1',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
