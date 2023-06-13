@@ -47,7 +47,6 @@ export class CodeEditorComponent implements OnInit {
             enabled: true
         }
     };
-    currentCode         : string    = '';
 
     constructor(
         private router: Router,
@@ -66,19 +65,14 @@ export class CodeEditorComponent implements OnInit {
         }
         if (this.data['codeContent']) {
             this.codeModel.value = this.translate.instant(this.data['codeContent']);
-            this.currentCode = this.translate.instant(this.data['codeContent']);
         }
-    }
-
-    onCodeChanged(code: any) {
-        this.currentCode = code;
     }
 
     testScript() {
         this.http.post(environment['url'] + '/ws/workflows/' + this.splitterOrVerifier + '/testScript', {
             'args': {
                 'step': this.data.step,
-                'codeContent': this.currentCode
+                'codeContent': this.codeModel.value
             }
         }, {headers: this.authService.headers},
         ).pipe(
