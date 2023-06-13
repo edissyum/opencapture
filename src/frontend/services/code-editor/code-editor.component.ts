@@ -75,7 +75,6 @@ export class CodeEditorComponent implements OnInit {
     }
 
     testScript() {
-        console.log(this.currentCode)
         this.http.post(environment['url'] + '/ws/workflows/' + this.splitterOrVerifier + '/testScript', {
             'args': {
                 'step': this.data.step,
@@ -84,7 +83,6 @@ export class CodeEditorComponent implements OnInit {
         }, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
-                console.log(data)
                 this.notify.success(this.translate.instant('WORKFLOW.test_script_success', {return: data.replace(/[\n\r]/g, '<br>')}));
             }),
             catchError((err: any) => {
