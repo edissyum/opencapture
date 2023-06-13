@@ -13,7 +13,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+ @dev : Oussama Brich <oussama.brich@edissyum.com>  */
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -73,7 +74,9 @@ export class RolesListComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
-        // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
+        this.userService.user   = this.userService.getUserFromLocal();
+
+        // If we came from another route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/roles') || lastUrl === '/') {
             if (this.localStorageService.get('rolesPageIndex')) {
@@ -87,8 +90,9 @@ export class RolesListComponent implements OnInit {
     }
 
     loadRoles(): void {
-        this.http.get(environment['url'] + '/ws/roles/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
+        this.http.get(environment['url'] + '/ws/roles/list/user/' + this.userService.user.id  +
+            '?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
                 if (data.roles[0]) this.total = data.roles[0].total;
                 else if (this.pageIndex !== 0) {
                     this.pageIndex = this.pageIndex - 1;

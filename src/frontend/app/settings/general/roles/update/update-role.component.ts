@@ -13,7 +13,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+ @dev : Oussama Brich <oussama.brich@edissyum.com>  */
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -36,14 +37,15 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
     styleUrls: ['./update-role.component.scss']
 })
 export class UpdateRoleComponent implements OnInit {
-    headers     : HttpHeaders = this.authService.headers;
-    loading     : boolean   = true;
-    roleId      : any;
-    role        : any;
-    roles       : any[]     = [];
-    privileges  : any;
-    rolePrivileges: any;
-    roleForm    : any[]     = [
+    headers         : HttpHeaders = this.authService.headers;
+    loading         : boolean   = true;
+    roleId          : any;
+    role            : any;
+    roles           : any[]     = [];
+    subRoles        : any[]     = [];
+    privileges      : any;
+    rolePrivileges  : any;
+    roleForm        : any[]     = [
         {
             id: 'label_short',
             label: this.translate.instant('HEADER.label_short'),
@@ -164,10 +166,12 @@ export class UpdateRoleComponent implements OnInit {
     ngOnInit() {
         this.serviceSettings.init();
         this.roleId = this.route.snapshot.params['id'];
+        this.userService.user   = this.userService.getUserFromLocal();
 
         this.http.get(environment['url'] + '/ws/roles/getById/' + this.roleId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.role = data;
+                this.subRoles = data['sub_roles'];
                 for (const field in data) {
                     if (data.hasOwnProperty(field)) {
                         this.roleForm.forEach(element => {
@@ -208,6 +212,22 @@ export class UpdateRoleComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/roles/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data.roles.forEach((element: any) => {
+                    if (element.editable) {
+                        this.roles.push(element);
+                    }
+                });
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     isValidForm() {
@@ -223,7 +243,9 @@ export class UpdateRoleComponent implements OnInit {
 
     onSubmit() {
         if (this.isValidForm()) {
-            const role: any = {};
+            const role: any = {
+                'sub_roles': this.subRoles,
+            };
             this.roleForm.forEach(element => {
                 role[element.id] = element.control.value;
             });
@@ -305,6 +327,25 @@ export class UpdateRoleComponent implements OnInit {
             });
         } else {
             this.rolePrivileges.push(privilege);
+        }
+    }
+
+    updateSubRoles(role: any) {
+        if (this.subRoles.includes(role.id)) {
+            const index = this.subRoles.indexOf(role.id, 0);
+            this.subRoles.splice(index, 1);
+        }
+        else {
+            this.subRoles.push(role.id);
+        }
+    }
+
+    selectAllSubRoles(check: boolean) {
+        this.subRoles = [];
+        if (check) {
+            this.roles.forEach((element: any) => {
+                this.subRoles.push(element.id);
+            });
         }
     }
 }
