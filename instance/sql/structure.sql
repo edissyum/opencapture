@@ -122,7 +122,8 @@ CREATE TABLE "roles" (
     "label"       VARCHAR(255),
     "status"      VARCHAR(3)    DEFAULT 'OK',
     "editable"    BOOLEAN       DEFAULT True,
-    "enabled"     BOOLEAN       DEFAULT True
+    "enabled"     BOOLEAN       DEFAULT True,
+    "sub_roles"   JSONB         DEFAULT '[]'
 );
 
 CREATE TABLE "roles_privileges" (

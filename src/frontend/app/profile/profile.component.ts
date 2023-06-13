@@ -13,7 +13,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+@dev : Nathan Cheval <nathan.cheval@outlook.fr>
+@dev : Oussama Brich <oussama.brich@edissyum.com>  */
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
@@ -106,6 +107,8 @@ export class UserProfileComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+        this.userService.user   = this.userService.getUserFromLocal();
+
         this.http.get(environment['url'] + '/ws/auth/retrieveLoginMethodName').pipe(
             tap((data: any) => {
                 data.login_methods.forEach((method: any) => {
@@ -124,10 +127,7 @@ export class UserProfileComponent implements OnInit {
         ).subscribe();
 
         this.userId = parseInt(this.route.snapshot.params['id']);
-        let loggedUserId = this.userService.user.id;
-        if (loggedUserId === undefined) {
-            loggedUserId = this.userService.getUserFromLocal().id;
-        }
+        const loggedUserId = this.userService.user.id;
 
         if (this.userId !== parseInt(loggedUserId)) {
             if (!this.privilegeService.hasPrivilege('update_user')) {
@@ -138,8 +138,9 @@ export class UserProfileComponent implements OnInit {
             }
         }
 
-        this.http.get(environment['url'] + '/ws/roles/list?full', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
+        this.http.get(environment['url'] + '/ws/roles/list/user/' + this.userService.user.id + '?full',
+            {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
                         this.roles.push(element);

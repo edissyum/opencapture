@@ -33,7 +33,8 @@ class RolesTest(unittest.TestCase):
         payload = json.dumps({
             "args": {
                 "label_short": "TEST",
-                "label": "Rôle test"
+                "label": "Rôle test",
+                "sub_roles": []
             }
         })
 
@@ -82,7 +83,8 @@ class RolesTest(unittest.TestCase):
         payload = {
             "label": "Rôle test updated",
             "label_short": "TEST123",
-            "enabled": False
+            "enabled": False,
+            "sub_roles": []
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/roles/update/' + str(role.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
@@ -108,7 +110,7 @@ class RolesTest(unittest.TestCase):
         self.assertEqual('[1, 2, 3]', new_role_privileges[0]['privileges_id']['data'])
 
     def test_successful_get_roles(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/roles/list',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/roles/list/user/1',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))

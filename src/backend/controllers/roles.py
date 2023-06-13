@@ -14,23 +14,51 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
+import json
 from flask import request
 from flask_babel import gettext
-from src.backend.import_models import roles, history
+from src.backend.import_models import roles, history, user
 
 
-def get_roles(data):
-    args = {
+def get_roles(args):
+    _args = {
         'select': ['*', 'count(*) OVER() as total'],
-        'offset': data['offset'] if 'offset' in data else 0,
-        'limit': data['limit'] if 'limit' in data else 'ALL'
+        'offset': args['offset'],
+        'limit': args['limit']
     }
-    if 'full' in data:
-        args['where'] = ['status NOT IN (%s)']
-        args['data'] = ['DEL']
 
-    _roles = roles.get_roles(args)
+    if args['full']:
+        _args['where'] = ['status NOT IN (%s)']
+        _args['data'] = ['DEL']
+    else:
+        user_info, error = user.get_user_by_id({'user_id': args['user_id']})
+        if error:
+            response = {
+                "errors": gettext('GET_USER_BY_ID_ERROR'),
+                "message": error
+            }
+            return response, 400
+        user_role, error = roles.get_role_by_id({
+            'where': ['id = %s', "status NOT IN (%s)"],
+            'data': [user_info['role'], 'DEL']
+        })
+        if error:
+            response = {
+                "errors": gettext('GET_ROLE_BY_ID_ERROR'),
+                "message": error
+            }
+            return response, 400
+
+        if user_role['label_short'] == 'superadmin':
+            _args['where'] = ['status NOT IN (%s)', 'editable <> %s']
+            _args['data'] = ['DEL', 'false']
+        else:
+            _args['where'] = ['id = ANY(%s)', 'status NOT IN (%s)', 'editable <> %s']
+            _args['data'] = [user_role['sub_roles'], 'DEL', 'false']
+
+    _roles = roles.get_roles(_args)
 
     response = {
         "roles": _roles
@@ -44,8 +72,9 @@ def update_role(role_id, data):
     if error is None:
         _set = {
             'label': data['label'],
+            'enabled': data['enabled'],
             'label_short': data['label_short'],
-            'enabled': data['enabled']
+            'sub_roles': json.dumps(data['sub_roles'])
         }
 
         _, error = roles.update_role({'set': _set, 'role_id': role_id})
@@ -77,6 +106,7 @@ def create_role(data):
     _columns = {
         'label': data['label'],
         'label_short': data['label_short'],
+        'sub_roles': json.dumps(data['sub_roles']),
     }
 
     res, error = roles.create_role({'columns': _columns})

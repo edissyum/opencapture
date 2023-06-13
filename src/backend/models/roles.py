@@ -14,6 +14,7 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
 from flask import request, g as current_context
 from flask_babel import gettext
@@ -52,8 +53,8 @@ def get_role_by_id(args):
     role = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['roles'],
-        'where': ['id = %s', "editable <> %s", "status NOT IN (%s)"],
-        'data': [args['role_id'], 'false', 'DEL']
+        'where': ['id = %s', "editable <> %s", "status NOT IN (%s)"] if "where" not in args else args["where"],
+        'data': [args['role_id'], 'false', 'DEL'] if 'data' not in args else args['data']
     })
 
     if not role:
