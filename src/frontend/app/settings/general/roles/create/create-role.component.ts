@@ -35,12 +35,12 @@ import { of } from "rxjs";
     styleUrls: ['./create-role.component.scss']
 })
 export class CreateRoleComponent implements OnInit {
-    loading : boolean = true;
-    privileges: any;
-    rolePrivileges: any[] = [];
-    roles: any[]         = [];
-    subRoles: any[]       = [];
-    roleForm: any[] = [
+    loading         : boolean   = true;
+    privileges      : any;
+    rolePrivileges  : any[]     = [];
+    roles           : any[]     = [];
+    assignRoles     : any[]     = [];
+    roleForm        : any[]     = [
         {
             id: 'label',
             label: this.translate.instant('HEADER.label'),
@@ -120,7 +120,7 @@ export class CreateRoleComponent implements OnInit {
     onSubmit() {
         if (this.isValidForm()) {
             const role: any = {
-                'sub_roles': this.subRoles
+                'assign_roles': this.assignRoles
             };
             this.roleForm.forEach(element => {
                 role[element.id] = element.control.value;
@@ -210,21 +210,21 @@ export class CreateRoleComponent implements OnInit {
         }
     }
 
-    updateSubRoles(role: any) {
-        if (this.subRoles.includes(role.id)) {
-            const index = this.subRoles.indexOf(role.id, 0);
-            this.subRoles.splice(index, 1);
+    updateAssignRoles(role: any) {
+        if (this.assignRoles.includes(role.id)) {
+            const index = this.assignRoles.indexOf(role.id, 0);
+            this.assignRoles.splice(index, 1);
         }
         else {
-            this.subRoles.push(role.id);
+            this.assignRoles.push(role.id);
         }
     }
 
-    selectAllSubRoles(check: boolean) {
-        this.subRoles = [];
+    selectAllAssignRoles(check: boolean) {
+        this.assignRoles = [];
         if (check) {
             this.roles.forEach((element: any) => {
-                this.subRoles.push(element.id);
+                this.assignRoles.push(element.id);
             });
         }
     }
