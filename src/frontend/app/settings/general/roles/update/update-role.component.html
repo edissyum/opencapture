@@ -2,7 +2,7 @@
     <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
-    <mat-sidenav-content class="bg-white">
+    <mat-sidenav-content class="bg-white overflow-hidden">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
@@ -18,10 +18,11 @@
             </h3>
             <div class="settings_search"></div>
         </div>
-        <hr class="border-green-400 relative z-30">
-        <div class="flex justify-center items-center">
-            <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
-                <ng-container *ngFor="let field of roleForm">
+
+        <div class="overflow-x-hidden h-full-overflow">
+            <div class="flex justify-center items-center">
+                <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
+                    <ng-container *ngFor="let field of roleForm">
                     <span *ngIf="field.type === 'text'" [class.cursor-not-allowed]="field.id === 'label_short'">
                         <mat-form-field [class.pointer-events-none]="field.id === 'label_short'" class="w-full">
                             <mat-label>{{ field.label | translate }}</mat-label>
@@ -30,40 +31,41 @@
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                         </mat-form-field>
                     </span>
-                    <mat-slide-toggle class="mt-4" *ngIf="field.type === 'checkbox'" [formControl]="field['control']">
-                        {{ field.label | translate }}
-                    </mat-slide-toggle>
-                </ng-container>
-            </form>
-        </div>
-        <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
-        <h4 class="text-center mt-10 mb-10">{{ 'PRIVILEGES.list' | translate }}</h4>
-        <div class="flex justify-center items-center mx-2">
-            <mat-tab-group *ngIf="this.privileges && this.rolePrivileges" dynamicHeight class="w-full">
-                <mat-tab *ngFor="let parent of this.privileges['parent']" [label]="this.translate.instant('PRIVILEGES.' + parent)">
-                    <div class="grid grid-cols-4 gap-x-40 gap-y-10 mt-10">
-                        <mat-slide-toggle *ngFor="let privilege of this.getChildsByParent(parent)"
-                                          [name]="privilege" [checked]="this.hasPrivilege(privilege)"
-                                          (change)="changePrivilege($event)">
-                            {{ 'PRIVILEGES.' + privilege | translate }}
-                            <button (click)="$event.stopPropagation(); authorizedRoles.toggle();"
-                                    class="m-2 hover:text-green-400"
-                                    [matTooltip]="this.translate.instant('ROLE.authorized_sub_roles')"
-                                    *ngIf="['add_role', 'update_role'].includes(privilege)">
-                                <i class="fa-solid fa-gears fa-xl"></i>
-                            </button>
+                        <mat-slide-toggle class="mt-4" *ngIf="field.type === 'checkbox'" [formControl]="field['control']">
+                            {{ field.label | translate }}
                         </mat-slide-toggle>
-                    </div>
-                </mat-tab>
-            </mat-tab-group>
-        </div>
-        <div class="flex justify-center items-center mt-10">
-            <button class="valid_button" (click)="onSubmit()" mat-button>
-                {{ 'ROLE.update' | translate }}
-            </button>
+                    </ng-container>
+                </form>
+            </div>
+            <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
+            <h4 class="text-center mt-10 mb-10">{{ 'PRIVILEGES.list' | translate }}</h4>
+            <div class="flex justify-center items-center mx-2">
+                <mat-tab-group *ngIf="this.privileges && this.rolePrivileges" dynamicHeight class="w-full">
+                    <mat-tab *ngFor="let parent of this.privileges['parent']" [label]="this.translate.instant('PRIVILEGES.' + parent)">
+                        <div class="grid grid-cols-4 gap-x-40 gap-y-10 mt-10">
+                            <mat-slide-toggle *ngFor="let privilege of this.getChildsByParent(parent)"
+                                              [name]="privilege" [checked]="this.hasPrivilege(privilege)"
+                                              (change)="changePrivilege($event)">
+                                {{ 'PRIVILEGES.' + privilege | translate }}
+                                <button (click)="$event.stopPropagation(); authorizedRoles.toggle();"
+                                        class="m-2 hover:text-green-400"
+                                        [matTooltip]="this.translate.instant('ROLE.authorized_sub_roles')"
+                                        *ngIf="['add_role', 'update_role'].includes(privilege)">
+                                    <i class="fa-solid fa-gears fa-xl"></i>
+                                </button>
+                            </mat-slide-toggle>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+            <div class="flex justify-center items-center mt-10">
+                <button class="valid_button" (click)="onSubmit()" mat-button>
+                    {{ 'ROLE.update' | translate }}
+                </button>
+            </div>
         </div>
     </mat-sidenav-content>
-    <mat-sidenav #authorizedRoles mode="side" position="end" class="customers w-1/4 flex flex-col h-full border-r border-green-400">
+    <mat-sidenav #authorizedRoles mode="side" position="end" class="w-1/5 flex flex-col h-full border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-4">
             {{ "ROLE.authorized_sub_roles" | translate }}
         </h3>
