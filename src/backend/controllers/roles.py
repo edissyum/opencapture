@@ -56,7 +56,7 @@ def get_roles(args):
             _args['data'] = ['DEL', 'false']
         else:
             _args['where'] = ['id = ANY(%s)', 'status NOT IN (%s)', 'editable <> %s']
-            _args['data'] = [user_role['sub_roles'], 'DEL', 'false']
+            _args['data'] = [user_role['assign_roles'], 'DEL', 'false']
 
     _roles = roles.get_roles(_args)
 
@@ -74,7 +74,7 @@ def update_role(role_id, data):
             'label': data['label'],
             'enabled': data['enabled'],
             'label_short': data['label_short'],
-            'sub_roles': json.dumps(data['sub_roles'])
+            'assign_roles': json.dumps(data['assign_roles'])
         }
 
         _, error = roles.update_role({'set': _set, 'role_id': role_id})
@@ -106,7 +106,7 @@ def create_role(data):
     _columns = {
         'label': data['label'],
         'label_short': data['label_short'],
-        'sub_roles': json.dumps(data['sub_roles']),
+        'assign_roles': json.dumps(data['assign_roles']),
     }
 
     res, error = roles.create_role({'columns': _columns})

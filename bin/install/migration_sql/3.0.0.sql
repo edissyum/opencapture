@@ -170,3 +170,5 @@ UPDATE "configurations" SET display = false WHERE label = 'loginTopMessage';
 INSERT INTO "configurations" ("label", "data", display) VALUES ('loginBottomMessage', '{"type": "string", "value": "<p><strong><a href=\"https://kutt.it/GuideDutilisation\" target=\"_blank\" rel=\"noopener\"><span style=\"color: rgb(151, 191, 61);\">Acc&eacute;der au guide d''utilisation d''Open-Capture</span></a></strong></p>", "description": "Court message affiché sur le bas de l''écran d''accueil"}', false);
 
 DROP TABLE IF EXISTS "tasks_watcher";
+
+ALTER TABLE roles RENAME COLUMN sub_roles to assign_roles;
