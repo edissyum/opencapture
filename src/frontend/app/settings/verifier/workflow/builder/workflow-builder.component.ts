@@ -534,8 +534,10 @@ export class WorkflowBuilderComponent implements OnInit {
 
         const dialogRef = this.dialog.open(CodeEditorComponent, {
             data: {
+                testScriptButton    : this.translate.instant('WORKFLOW.test_script'),
                 confirmButton       : this.translate.instant('WORKFLOW.save_script'),
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                step                : step,
                 codeContent         : codeContent
             },
             width: "80vw",

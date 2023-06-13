@@ -4,12 +4,19 @@
                      [codeModel]="codeModel"
                      [options]="options">
     </ngs-code-editor>
-    <span class="flex justify-end pb-4 pr-4">
-        <button mat-button [mat-dialog-close]="">
-            {{ data['cancelButton'] }}
-        </button>
-        <button class="text-green-400" mat-button [mat-dialog-close]="this.codeModel.value" cdkFocusInitial>
-            {{ data['confirmButton'] }}
-        </button>
+    <span class="flex pb-4 pr-4">
+        <span class="flex w-full justify-start pl-4" *ngIf="data['testScriptButton']">
+            <button mat-button class="text-gray-900" (click)="testScript()">
+                {{ data['testScriptButton'] }}
+            </button>
+        </span>
+        <span class="flex w-full justify-end">
+            <button mat-button [mat-dialog-close]="">
+                {{ data['cancelButton'] }}
+            </button>
+            <button class="text-green-400" mat-button [mat-dialog-close]="this.codeModel.value" cdkFocusInitial>
+                {{ data['confirmButton'] }}
+            </button>
+        </span>
     </span>
 </div>

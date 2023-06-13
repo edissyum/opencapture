@@ -16,8 +16,14 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import sys
 import json
 import stat
+import shutil
+import urllib3
+import importlib
+import traceback
+from io import StringIO
 from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.import_classes import _Config
@@ -400,3 +406,49 @@ def delete_script_and_incron(args):
             "message": gettext('FS_WATCHER_CONFIG_DOESNT_EXIST')
         }
         return response, 501
+
+
+def test_script(args):
+    if 'docservers' in current_context and 'config' in current_context \
+            and 'log' in current_context and 'database' in current_context:
+        log = current_context.log
+        config = current_context.config
+        database = current_context.database
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+        config = _vars[1]
+        database = _vars[0]
+        docservers = _vars[9]
+
+    pdf_url = 'https://open-capture.com/wp-content/uploads/2022/11/CALINDA_INV-001510.pdf'
+    http = urllib3.PoolManager()
+
+    with http.request('GET', pdf_url, preload_content=False) as _r, open(
+            './instance/upload/verifier/CALINDA_INV-001510.pdf', 'wb') as out_file:
+        shutil.copyfileobj(_r, out_file)
+
+    try:
+        tmp_file = docservers['TMP_PATH'] + args['step'] + '_scripting.py'
+        with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+            python_script.write(args['codeContent'])
+        scripting = importlib.import_module('bin.data.tmp.' + args['step'] + '_scripting', 'main')
+
+        if args['step'] == 'input':
+            args = {
+                'log': log,
+                'file': './instance/upload/verifier/CALINDA_INV-001510.pdf',
+                'database': database,
+                'opencapture_path': config['GLOBAL']['applicationpath']
+            }
+
+        result = StringIO()
+        sys.stdout = result
+        scripting.main(args)
+        result_string = result.getvalue()
+        os.remove(tmp_file)
+    except Exception as _e:
+        return traceback.format_exc(), 400
+    return result_string, 200
