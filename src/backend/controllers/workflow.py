@@ -20,6 +20,8 @@ import sys
 import json
 import stat
 import shutil
+import uuid
+
 import urllib3
 import importlib
 import traceback
@@ -150,10 +152,10 @@ def is_path_allowed(input_path):
         docservers = _vars[9]
         configurations = _vars[10]
 
-    if 'INPUTS_ALLOWED_PATH' in docservers and input_path and 'restrictInputsPath' in configurations and configurations['restrictInputsPath']:
-        return input_path.startswith(docservers['INPUTS_ALLOWED_PATH'])
-    else:
-        return True
+    if 'INPUTS_ALLOWED_PATH' in docservers and input_path:
+        if 'restrictInputsPath' in configurations and configurations['restrictInputsPath']:
+            return input_path.startswith(docservers['INPUTS_ALLOWED_PATH'])
+    return True
 
 
 def create_workflow(data):
@@ -408,7 +410,7 @@ def delete_script_and_incron(args):
         return response, 501
 
 
-def test_script(args):
+def test_script_verifier(args):
     if 'docservers' in current_context and 'config' in current_context \
             and 'log' in current_context and 'database' in current_context:
         log = current_context.log
@@ -431,10 +433,14 @@ def test_script(args):
         shutil.copyfileobj(_r, out_file)
 
     try:
-        tmp_file = docservers['TMP_PATH'] + args['step'] + '_scripting.py'
+        rand = str(uuid.uuid4())
+        tmp_file = docservers['TMP_PATH'] + args['step'] + '_scripting_' + rand + '.py'
+        if os.path.isfile(tmp_file):
+            os.remove(tmp_file)
         with open(tmp_file, 'w', encoding='UTF-8') as python_script:
             python_script.write(args['codeContent'])
-        scripting = importlib.import_module('bin.data.tmp.' + args['step'] + '_scripting', 'main')
+
+        scripting = importlib.import_module('bin.data.tmp.' + args['step'] + '_scripting_' + rand, 'main')
 
         if args['step'] == 'input':
             args = {
@@ -449,6 +455,6 @@ def test_script(args):
         scripting.main(args)
         result_string = result.getvalue()
         os.remove(tmp_file)
-    except Exception as _e:
+    except Exception:
         return traceback.format_exc(), 400
     return result_string, 200

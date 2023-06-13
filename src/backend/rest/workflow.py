@@ -149,11 +149,13 @@ def get_workflows_by_form_id(module, form_id):
     return make_response(jsonify(_workflow[0])), _workflow[1]
 
 
-@bp.route('workflows/testScript', methods=['POST'])
+@bp.route('workflows/<string:module>/testScript', methods=['POST'])
 @auth.token_required
-def test_script():
+def test_script(module):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_workflow | update_workflow']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/workflows/testScript'}), 403
-
-    res = workflow.test_script(request.json['args'])
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/workflows/{module}testScript'}), 403
+    print(module)
+    if module == 'verifier':
+        print(request.json['args'])
+        res = workflow.test_script_verifier(request.json['args'])
     return make_response(jsonify(res[0])), res[1]

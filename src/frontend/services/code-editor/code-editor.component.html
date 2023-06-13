@@ -2,7 +2,8 @@
     <ngs-code-editor style="height: 95%"
                      [theme]="theme"
                      [codeModel]="codeModel"
-                     [options]="options">
+                     [options]="options"
+                     (valueChanged)="onCodeChanged($event)">
     </ngs-code-editor>
     <span class="flex pb-4 pr-4">
         <span class="flex w-full justify-start pl-4" *ngIf="data['testScriptButton']">
