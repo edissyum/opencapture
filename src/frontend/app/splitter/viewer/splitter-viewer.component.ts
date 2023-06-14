@@ -55,7 +55,7 @@ export interface Field {
 @Component({
     selector: 'app-viewer',
     templateUrl: './splitter-viewer.component.html',
-    styleUrls: ['./splitter-viewer.component.scss'],
+    styleUrls: ['./splitter-viewer.component.scss']
 })
 export class SplitterViewerComponent implements OnInit, OnDestroy {
     @HostListener('window:beforeunload', ['$event'])
@@ -96,15 +96,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     timeLabels                  : any           = {
         'today'     : marker('BATCH.today'),
         'yesterday' : marker('BATCH.yesterday'),
-        'older'     : marker('BATCH.older'),
+        'older'     : marker('BATCH.older')
     };
     defaultDoctype              : any           = {
         label       : null,
-        key         : null,
+        key         : null
     };
     zoomPage                    : any           = {
         thumbnail   : "",
-        rotation    : 0,
+        rotation    : 0
     };
     currentBatch                : any           = {
         id                  : -1,
@@ -119,7 +119,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         selectedDocument    : {
             id              : '',
             displayOrder    : -1
-        },
+        }
     };
     fieldsCategories            : any           = {
         'batch_metadata'    : [],
@@ -508,7 +508,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 'key'       : doctype.key,
                                 'label'     : doctype.label,
                                 'type'      : doctype.type,
-                                'isDefault' : doctype.is_default,
+                                'isDefault' : doctype.is_default
                             };
                         }
                     }
@@ -735,7 +735,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 'resultMask'     : field.resultMask,
                                 'label_short'    : field.label_short,
                                 'metadata_key'   : field.metadata_key,
-                                'validationMask' : field.validationMask,
+                                'validationMask' : field.validationMask
                             });
                             if (field.metadata_key && fieldCategory === 'batch_metadata') {
                                 this.inputMode = 'Auto';
