@@ -44,7 +44,7 @@ export class MailCollectComponent implements OnInit {
     folderLoading       : boolean       = false;
     processLoading      : boolean       = false;
     loadingProcessName  : boolean       = false;
-    formValid           : { [key: string]: boolean } = {};
+    formValid           : { [key: string]: boolean; } = {};
     allCustomers        : any           = [];
     allForms            : any           = [];
     allSplitterWorkflows   : any           = [];

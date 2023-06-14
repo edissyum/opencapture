@@ -47,7 +47,6 @@ mat-expansion-panel {
     @apply border-white;
     @apply z-30;
     @apply bg-gray-100;
-    //box-shadow: 0 1px 5px 4px gray;
 
     & .mat-content mat-panel-title {
         @apply text-gray-900 #{!important};

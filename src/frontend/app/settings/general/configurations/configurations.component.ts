@@ -316,6 +316,7 @@ export class ConfigurationsComponent implements OnInit {
                         }
                     });
                 });
+                element.control.setValue(element.control.value);
             }
         });
         this.http.get(environment['url'] + '/ws/users/list', {headers: this.authService.headers}).pipe(
