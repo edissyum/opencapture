@@ -103,8 +103,7 @@
                         <i class="fa-solid fa-users"></i>
                     </button>
                 </div>
-                <div class="my_profile ml-4 relative py-2 px-1 hover:cursor-pointer" (click)="toggleProfileDropdown()"
-                     id="user-menu" aria-haspopup="true" (clickOutside)="closeprofileDropDown()"
+                <div class="my_profile ml-4 relative py-2 px-1 hover:cursor-pointer" (click)="toggleProfileDropdown()" id="user-menu" aria-haspopup="true"
                      [class.profile_active]="location.path().includes('profile/' + this.userService.user['id'])">
                     <span *ngIf="this.userService.user" class="flex items-center"
                           [matTooltip]="this.translate.instant('USER.my_profile')">
