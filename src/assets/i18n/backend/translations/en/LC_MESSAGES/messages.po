@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2023-05-29 16:51+0200\n"
+"POT-Creation-Date: 2023-06-14 16:27+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -17,34 +17,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: custom/edissyum/src/backend/process_queue_splitter.py:219
-#: custom/edissyum/src/backend/process_queue_verifier.py:251
-#: custom/test/src/backend/process_queue_splitter.py:219
-#: custom/test/src/backend/process_queue_verifier.py:251
+#: custom/edissyum/src/backend/process_queue_verifier.py:238
 msgid "FILE_UPLOADED_WORKFLOW"
 msgstr "File uploaded successfully with workflow"
 
-#: src/backend/splitter_exports.py:68
+#: src/backend/splitter_exports.py:95
 msgid "OUTPUT_NOT_FOUND"
 msgstr "Output not found"
 
-#: src/backend/splitter_exports.py:138 src/backend/splitter_exports.py:240
+#: src/backend/models/outputs.py:101 src/backend/splitter_exports.py:123
+msgid "OUTPUT_TYPE_DOESNT_EXISTS"
+msgstr "Output type doesn't exists"
+
+#: src/backend/splitter_exports.py:170 src/backend/splitter_exports.py:272
 msgid "EXPORT_PDF_ERROR"
 msgstr "Error while exporting PDF"
 
-#: src/backend/splitter_exports.py:209 src/backend/splitter_exports.py:263
+#: src/backend/splitter_exports.py:241 src/backend/splitter_exports.py:295
 msgid "EXPORT_XML_ERROR"
 msgstr "Error while exporting XML"
 
-#: src/backend/splitter_exports.py:282
+#: src/backend/splitter_exports.py:314
 msgid "CHECK_FOLDER_ERROR"
 msgstr "Check folder error"
 
-#: src/backend/splitter_exports.py:283
+#: src/backend/splitter_exports.py:315
 msgid "FOLDER_DOES_NOT_EXIST"
 msgstr "Folder does not exist"
 
-#: src/backend/splitter_exports.py:301
+#: src/backend/splitter_exports.py:333
 msgid "OPENADS_ADD_DOC_ERROR"
 msgstr "OpenADS add document error"
 
@@ -331,37 +332,37 @@ msgstr "Error while disabling login methods"
 msgid "ENABLE_LOGIN_METHOD_ERROR"
 msgstr "Error while enabling login methods"
 
-#: src/backend/controllers/auth.py:573 src/backend/controllers/auth.py:758
-#: src/backend/controllers/auth.py:814 src/backend/controllers/auth.py:829
-#: src/backend/controllers/auth.py:837 src/backend/controllers/auth.py:843
+#: src/backend/controllers/auth.py:580 src/backend/controllers/auth.py:767
+#: src/backend/controllers/auth.py:823 src/backend/controllers/auth.py:838
+#: src/backend/controllers/auth.py:846 src/backend/controllers/auth.py:852
 msgid "LDAP_CONNECTION_ERROR"
 msgstr "Unable to connect to LDAP server"
 
-#: src/backend/controllers/auth.py:574
+#: src/backend/controllers/auth.py:581
 msgid "LOGIN_LDAP_ERROR"
 msgstr "Error while logging using LDAP"
 
-#: src/backend/controllers/auth.py:746 src/backend/controllers/auth.py:752
+#: src/backend/controllers/auth.py:755 src/backend/controllers/auth.py:761
 msgid "LDAP_SYNCHRO_INFOS_ERROR"
 msgstr "Synchronization's informations are incorrect"
 
-#: src/backend/controllers/auth.py:748 src/backend/controllers/auth.py:754
-#: src/backend/controllers/auth.py:760 src/backend/controllers/auth.py:766
-#: src/backend/controllers/auth.py:772
+#: src/backend/controllers/auth.py:757 src/backend/controllers/auth.py:763
+#: src/backend/controllers/auth.py:769 src/backend/controllers/auth.py:775
+#: src/backend/controllers/auth.py:781
 msgid "LDAP_SYNCHRO_ERROR"
 msgstr "Error while syncing LDAP"
 
-#: src/backend/controllers/auth.py:764 src/backend/controllers/auth.py:770
-#: src/backend/controllers/auth.py:849 src/backend/rest/auth.py:136
+#: src/backend/controllers/auth.py:773 src/backend/controllers/auth.py:779
+#: src/backend/controllers/auth.py:858 src/backend/rest/auth.py:136
 msgid "INFOS_LDAP_NOT_COMPLETE"
 msgstr "Missing informations"
 
-#: src/backend/controllers/auth.py:812 src/backend/controllers/auth.py:827
-#: src/backend/controllers/auth.py:835
+#: src/backend/controllers/auth.py:821 src/backend/controllers/auth.py:836
+#: src/backend/controllers/auth.py:844
 msgid "BAD_CONNECTION_LDAP_INFOS"
 msgstr "Incorrect information"
 
-#: src/backend/controllers/auth.py:847 src/backend/rest/auth.py:137
+#: src/backend/controllers/auth.py:856 src/backend/rest/auth.py:137
 msgid "NOT_COMPLETE_CONNECTION_INFOS"
 msgstr "One or more information are missing to establish the connection"
 
@@ -509,7 +510,7 @@ msgstr "Error deleting form"
 
 #: src/backend/controllers/forms.py:265 src/backend/controllers/outputs.py:65
 #: src/backend/controllers/positions_masks.py:165
-#: src/backend/controllers/workflow.py:106
+#: src/backend/controllers/workflow.py:114
 msgid "COPY_OF"
 msgstr "Copy of"
 
@@ -714,41 +715,47 @@ msgstr "Error wile deleting positions mask pages"
 msgid "GET_PRIVILEGES_ERROR"
 msgstr "Error while retrieving privileges"
 
-#: src/backend/controllers/roles.py:59
-msgid "UPDATE_ROLE"
-msgstr "Role updated&nbsp;<strong>{{ role }}</strong>"
+#: src/backend/controllers/roles.py:39 src/backend/controllers/user.py:116
+#: src/backend/controllers/user.py:132 src/backend/controllers/user.py:213
+#: src/backend/models/user.py:140 src/backend/models/user.py:187
+msgid "GET_USER_BY_ID_ERROR"
+msgstr "Error while retrieving user"
 
-#: src/backend/controllers/roles.py:64 src/backend/controllers/roles.py:70
-#: src/backend/controllers/roles.py:119 src/backend/controllers/roles.py:125
-#: src/backend/models/roles.py:84
-msgid "UPDATE_ROLE_ERROR"
-msgstr "Error while trying to update role"
-
-#: src/backend/controllers/roles.py:90
-msgid "CREATE_ROLE"
-msgstr "New role created&nbsp;<strong>%(role)s</strong>"
-
-#: src/backend/controllers/roles.py:99 src/backend/models/roles.py:104
-msgid "CREATE_ROLE_ERROR"
-msgstr "Error while creating role"
-
-#: src/backend/controllers/roles.py:138
+#: src/backend/controllers/roles.py:49 src/backend/controllers/roles.py:168
 msgid "GET_ROLE_BY_ID_ERROR"
 msgstr "Error while retrieving role"
 
-#: src/backend/controllers/roles.py:154
+#: src/backend/controllers/roles.py:88
+msgid "UPDATE_ROLE"
+msgstr "Role updated&nbsp;<strong>{{ role }}</strong>"
+
+#: src/backend/controllers/roles.py:93 src/backend/controllers/roles.py:99
+#: src/backend/controllers/roles.py:149 src/backend/controllers/roles.py:155
+#: src/backend/models/roles.py:85
+msgid "UPDATE_ROLE_ERROR"
+msgstr "Error while trying to update role"
+
+#: src/backend/controllers/roles.py:120
+msgid "CREATE_ROLE"
+msgstr "New role created&nbsp;<strong>%(role)s</strong>"
+
+#: src/backend/controllers/roles.py:129 src/backend/models/roles.py:105
+msgid "CREATE_ROLE_ERROR"
+msgstr "Error while creating role"
+
+#: src/backend/controllers/roles.py:184
 msgid "DELETE_ROLE"
 msgstr "Role&nbsp;<strong>%(role)s</strong> deleted"
 
-#: src/backend/controllers/roles.py:159 src/backend/controllers/roles.py:165
+#: src/backend/controllers/roles.py:189 src/backend/controllers/roles.py:195
 msgid "DELETE_ROLE_ERROR"
 msgstr "Error while deleting role"
 
-#: src/backend/controllers/roles.py:179 src/backend/controllers/roles.py:185
+#: src/backend/controllers/roles.py:209 src/backend/controllers/roles.py:215
 msgid "DISABLE_ROLE_ERROR"
 msgstr "Error while disabling role"
 
-#: src/backend/controllers/roles.py:199 src/backend/controllers/roles.py:205
+#: src/backend/controllers/roles.py:229 src/backend/controllers/roles.py:235
 msgid "ENABLE_ROLE_ERROR"
 msgstr "Error while enabling role"
 
@@ -760,94 +767,95 @@ msgstr "Error while sending test email"
 msgid "SMTP_TEST_CONNECTION_ERROR"
 msgstr "Error while connecting to SMTP"
 
-#: src/backend/controllers/splitter.py:116
+#: src/backend/controllers/splitter.py:114
 msgid "LOAD_METADATA_ERROR"
 msgstr "Error while loading metada"
 
-#: src/backend/controllers/splitter.py:172
+#: src/backend/controllers/splitter.py:170
 #: src/backend/controllers/verifier.py:122
 msgid "AT"
 msgstr "at"
 
-#: src/backend/controllers/splitter.py:196
+#: src/backend/controllers/splitter.py:194
 msgid "FORM_UNDEFINED"
 msgstr "Form undefined"
 
-#: src/backend/controllers/splitter.py:199
+#: src/backend/controllers/splitter.py:197
 msgid "CUSTOMER_UNDEFINED"
 msgstr "Customer undefined"
 
-#: src/backend/controllers/splitter.py:259
-#: src/backend/controllers/splitter.py:289
+#: src/backend/controllers/splitter.py:255
+#: src/backend/controllers/splitter.py:286
 msgid "BATCH_NOT_FOUND"
 msgstr "Batch not found"
 
-#: src/backend/controllers/splitter.py:260
-#: src/backend/controllers/splitter.py:290
+#: src/backend/controllers/splitter.py:256
+#: src/backend/controllers/splitter.py:287
 msgid "BATCH_ID_NOT_FOUND"
 msgstr "Batch %(id)s not found"
 
-#: src/backend/controllers/splitter.py:274
+#: src/backend/controllers/splitter.py:270
 msgid "DELETE_BATCH_SUCCESS"
 msgstr "Deletion of batch n°<strong>%(batch_id)s</strong>"
 
-#: src/backend/controllers/splitter.py:279
-#: src/backend/controllers/splitter.py:299
-#: src/backend/controllers/verifier.py:697
+#: src/backend/controllers/splitter.py:275
+#: src/backend/controllers/splitter.py:296
+#: src/backend/controllers/verifier.py:696
 msgid "UPDATE_STATUS_ERROR"
 msgstr "Error while updating status"
 
-#: src/backend/controllers/splitter.py:334
+#: src/backend/controllers/splitter.py:331
 #: src/backend/controllers/verifier.py:402
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Error while removing lock"
 
-#: src/backend/controllers/splitter.py:436
+#: src/backend/controllers/splitter.py:433
 msgid "ADD_DOCUMENT_ERROR"
 msgstr "Error while adding document"
 
-#: src/backend/controllers/splitter.py:462
+#: src/backend/controllers/splitter.py:459
 msgid "UPDATE_BATCH_ERROR"
 msgstr "Error while updating batch"
 
-#: src/backend/controllers/splitter.py:475
+#: src/backend/controllers/splitter.py:472
 msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr "Error while updating document"
 
-#: src/backend/controllers/splitter.py:488
+#: src/backend/controllers/splitter.py:485
 #: src/backend/controllers/verifier.py:379
 #: src/backend/controllers/verifier.py:385
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr "Error while updating document"
 
-#: src/backend/controllers/splitter.py:503
-#: src/backend/controllers/splitter.py:524
-#: src/backend/controllers/splitter.py:539
-#: src/backend/controllers/splitter.py:554
+#: src/backend/controllers/splitter.py:500
+#: src/backend/controllers/splitter.py:521
+#: src/backend/controllers/splitter.py:536
+#: src/backend/controllers/splitter.py:551
 msgid "UPDATE_PAGES_ERROR"
 msgstr "Error while updating pages"
 
-#: src/backend/controllers/splitter.py:568
+#: src/backend/controllers/splitter.py:565
 msgid "CMIS_CONNECTION_ERROR"
 msgstr "Error while connecting to CMIS"
 
-#: src/backend/controllers/splitter.py:581
+#: src/backend/controllers/splitter.py:578
 msgid "OPENADS_CONNECTION_ERROR"
 msgstr "OpenADS connection error"
 
-#: src/backend/controllers/splitter.py:680
-#: src/backend/controllers/verifier.py:676 src/backend/models/splitter.py:572
+#: src/backend/controllers/splitter.py:678
+#: src/backend/controllers/verifier.py:675 src/backend/models/splitter.py:572
 #: src/backend/models/verifier.py:194
 msgid "GET_TOTALS_ERROR"
 msgstr "Error while retrievings totals"
 
+#: src/backend/controllers/splitter.py:778
+#, fuzzy
+msgid "GET_BATCH_OUTPUTS_ERROR"
+msgstr "Error while creating output"
+
 #: src/backend/controllers/status.py:31
 msgid "RETRIEVES_STATUS_ERROR"
 msgstr "Error while retrieving status"
-
-#: src/backend/controllers/tasks_watcher.py:34
-msgid "CREATE_TASK_ERROR"
-msgstr "Error while createing new task"
 
 #: src/backend/controllers/user.py:67
 msgid "CREATE_USER"
@@ -856,12 +864,6 @@ msgstr "User created&nbsp;<strong>%(user)s</strong>"
 #: src/backend/controllers/user.py:72
 msgid "CREATE_USER_ERROR"
 msgstr "Error while creating user"
-
-#: src/backend/controllers/user.py:116 src/backend/controllers/user.py:132
-#: src/backend/controllers/user.py:213 src/backend/models/user.py:140
-#: src/backend/models/user.py:187
-msgid "GET_USER_BY_ID_ERROR"
-msgstr "Error while retrieving user"
 
 #: src/backend/controllers/user.py:149
 msgid "GET_USER_BY_USERNAME_ERROR"
@@ -985,126 +987,132 @@ msgstr "Deletion of document n°<strong>%(document_id)s</strong>"
 msgid "DELETE_DOCUMENT_ERROR"
 msgstr "Error while deleting document"
 
-#: src/backend/controllers/verifier.py:569
-#: src/backend/controllers/verifier.py:572
-#: src/backend/controllers/verifier.py:589
+#: src/backend/controllers/verifier.py:568
+#: src/backend/controllers/verifier.py:571
+#: src/backend/controllers/verifier.py:588
+#: src/backend/controllers/verifier.py:614
 #: src/backend/controllers/verifier.py:615
-#: src/backend/controllers/verifier.py:616
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Error while connecting to INSEE API"
 
-#: src/backend/controllers/verifier.py:646
+#: src/backend/controllers/verifier.py:645
 msgid "VAT_NOT_VALID"
 msgstr "VAT number not valid"
 
+#: src/backend/controllers/verifier.py:652
 #: src/backend/controllers/verifier.py:653
-#: src/backend/controllers/verifier.py:654
 msgid "VAT_API_ERROR"
 msgstr "API for VAT number unreachable"
 
-#: src/backend/controllers/verifier.py:687
+#: src/backend/controllers/verifier.py:686
 msgid "DOCUMENT_NOT_FOUND"
 msgstr "document not found"
 
-#: src/backend/controllers/verifier.py:688
+#: src/backend/controllers/verifier.py:687
 msgid "DOCUMENT_ID_NOT_FOUND"
 msgstr "document %(id)s not found"
 
-#: src/backend/controllers/workflow.py:50
-#: src/backend/controllers/workflow.py:59
-#: src/backend/controllers/workflow.py:66
+#: src/backend/controllers/workflow.py:58
+#: src/backend/controllers/workflow.py:67
+#: src/backend/controllers/workflow.py:74
 msgid "WORKFLOW_FOLDER_CREATION_ERROR"
 msgstr "Error while creating input folder"
 
-#: src/backend/controllers/workflow.py:51
+#: src/backend/controllers/workflow.py:59
 msgid "FOLDER_NOT_ALLOWED_ERROR"
 msgstr "Capture path not allowed"
 
-#: src/backend/controllers/workflow.py:60
-#: src/backend/controllers/workflow.py:325
+#: src/backend/controllers/workflow.py:68
+#: src/backend/controllers/workflow.py:333
 msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
 msgstr "Cannot create folder because of permission issue"
 
-#: src/backend/controllers/workflow.py:67
+#: src/backend/controllers/workflow.py:75
 msgid "CAN_NOT_ACCESS_FOLDER_PERMISSION_ERROR"
 msgstr "Cannot create folder because of permission issue"
 
-#: src/backend/controllers/workflow.py:81
+#: src/backend/controllers/workflow.py:89
 msgid "GET_WORKFLOW_BY_ID_ERROR"
 msgstr "Error while retrieving workflow"
 
-#: src/backend/controllers/workflow.py:94
+#: src/backend/controllers/workflow.py:102
 msgid "GET_WORKFLOW_BY_WORKFLOW_ID_ERROR"
 msgstr "Error while retrieving workflow"
 
-#: src/backend/controllers/workflow.py:120
+#: src/backend/controllers/workflow.py:128
 msgid "DUPLICATE_WORKFLOW"
 msgstr "Workflow duplicated&nbsp;<strong>%(workflow)s</strong>"
 
-#: src/backend/controllers/workflow.py:125
-#: src/backend/controllers/workflow.py:131
+#: src/backend/controllers/workflow.py:133
+#: src/backend/controllers/workflow.py:139
 msgid "DUPLICATE_WORKFLOW_ERROR"
 msgstr "Error duplicating workflow"
 
-#: src/backend/controllers/workflow.py:156
-#: src/backend/controllers/workflow.py:168
-#: src/backend/controllers/workflow.py:179
-#: src/backend/controllers/workflow.py:204
+#: src/backend/controllers/workflow.py:164
+#: src/backend/controllers/workflow.py:176
+#: src/backend/controllers/workflow.py:187
+#: src/backend/controllers/workflow.py:212
 msgid "CREATE_WORKFLOW_ERROR"
 msgstr "Error while creating workflow"
 
-#: src/backend/controllers/workflow.py:157
-#: src/backend/controllers/workflow.py:214
+#: src/backend/controllers/workflow.py:165
+#: src/backend/controllers/workflow.py:222
 msgid "NOT_ALLOWED_INPUT_PATH"
 msgstr "The input path is not allowed"
 
-#: src/backend/controllers/workflow.py:169
+#: src/backend/controllers/workflow.py:177
 msgid "WORKFLOW_ID_ALREADY_EXISTS"
 msgstr "The label short already exists"
 
-#: src/backend/controllers/workflow.py:180
+#: src/backend/controllers/workflow.py:188
 msgid "INPUT_FOLDER_ALREADY_EXISTS"
 msgstr "The document capture path is already set in another workflow"
 
-#: src/backend/controllers/workflow.py:196
+#: src/backend/controllers/workflow.py:204
 msgid "CREATE_WORKFLOW"
 msgstr "Workflow created&nbsp;<strong>%(workflow)s</strong>"
 
-#: src/backend/controllers/workflow.py:213
-#: src/backend/controllers/workflow.py:243
-#: src/backend/controllers/workflow.py:249
+#: src/backend/controllers/workflow.py:221
+#: src/backend/controllers/workflow.py:251
+#: src/backend/controllers/workflow.py:257
 msgid "UPDATE_WORKFLOW_ERROR"
 msgstr "Error while trying to update workflow"
 
-#: src/backend/controllers/workflow.py:238
+#: src/backend/controllers/workflow.py:246
 msgid "UPDATE_WORKFLOW"
 msgstr "Workflow updated&nbsp;<strong>%(workflow)s</strong>"
 
-#: src/backend/controllers/workflow.py:266
+#: src/backend/controllers/workflow.py:274
 msgid "DELETE_WORKFLOW"
 msgstr "Workflow deleted&nbsp;<strong>%(workflow)s</strong>"
 
-#: src/backend/controllers/workflow.py:271
-#: src/backend/controllers/workflow.py:277
+#: src/backend/controllers/workflow.py:279
+#: src/backend/controllers/workflow.py:285
 msgid "DELETE_WORKFLOW_ERROR"
 msgstr "Error while deleting workflow"
 
-#: src/backend/controllers/workflow.py:324
-#: src/backend/controllers/workflow.py:346
+#: src/backend/controllers/workflow.py:332
+#: src/backend/controllers/workflow.py:354
 msgid "FS_WATCHER_CREATION_ERROR"
 msgstr "Error while creating fs watcher settings"
 
-#: src/backend/controllers/workflow.py:347
+#: src/backend/controllers/workflow.py:355
+#: src/backend/controllers/workflow.py:408
 msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
 msgstr "Fs watcher config doesnt exists"
 
-#: src/backend/controllers/workflow.py:352
+#: src/backend/controllers/workflow.py:360
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "Script sample doesn't exists"
 
-#: src/backend/controllers/workflow.py:358
+#: src/backend/controllers/workflow.py:366
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Script folder doesn't exists"
+
+#: src/backend/controllers/workflow.py:407
+#, fuzzy
+msgid "FS_WATCHER_DELETION_ERROR"
+msgstr "Error while creating fs watcher settings"
 
 #: src/backend/models/accounts.py:105
 msgid "SUPPLIER_UPDATE_ERROR"
@@ -1136,7 +1144,7 @@ msgid "USER_DISABLED"
 msgstr "User disabled"
 
 #: src/backend/models/auth.py:70 src/backend/models/auth.py:80
-#: src/backend/models/roles.py:60
+#: src/backend/models/roles.py:61
 msgid "ROLE_DOESNT_EXISTS"
 msgstr "Role doesn't exists"
 
@@ -1152,19 +1160,19 @@ msgstr "Error while disabling login method"
 msgid "ENABLE_LOGIN_METHOD_DATA_ERROR"
 msgstr "Error while enabling login method"
 
-#: src/backend/models/custom_fields.py:55
+#: src/backend/models/custom_fields.py:57
 msgid "ADD_CUSTOM_FIELD_ERROR"
 msgstr "Error while creating custom field"
 
-#: src/backend/models/custom_fields.py:58
+#: src/backend/models/custom_fields.py:60
 msgid "CUSTOM_FIELD_ALREADY_EXIST"
 msgstr "Custom field already exist"
 
-#: src/backend/models/custom_fields.py:106
+#: src/backend/models/custom_fields.py:110
 msgid "UPDATE_CUSTOM_FIELDS_ERROR"
 msgstr "Error while updating custom fields"
 
-#: src/backend/models/custom_fields.py:129
+#: src/backend/models/custom_fields.py:133
 msgid "DELETE_CUSTOM_FIELDS_ERROR"
 msgstr "Error while deleting custom field"
 
@@ -1212,10 +1220,6 @@ msgstr "Error while updating MailCollect process"
 msgid "OUTPUT_DOESNT_EXISTS"
 msgstr "Output doesn't exists"
 
-#: src/backend/models/outputs.py:101
-msgid "OUTPUT_TYPE_DOESNT_EXISTS"
-msgstr "Output type doesn't exists"
-
 #: src/backend/models/outputs.py:125
 msgid "OUTPUT_UPDATE_ERROR"
 msgstr "Error while updating output"
@@ -1249,11 +1253,11 @@ msgstr "Positions mask label already exists"
 msgid "ERROR_RETRIEVING_PRIVILEGES"
 msgstr "Error while retrieving privileges"
 
-#: src/backend/models/roles.py:126
+#: src/backend/models/roles.py:127
 msgid "ROLE_PRIVILEGES_UPDATE_ERROR"
 msgstr "Error while updating role privileges"
 
-#: src/backend/models/roles.py:148
+#: src/backend/models/roles.py:149
 msgid "ROLE_PRIVILEGES_CREATE_ERROR"
 msgstr "Error while creating role privileges"
 
@@ -1292,10 +1296,6 @@ msgstr "Error while getting splitter maximum index"
 #: src/backend/models/status.py:40
 msgid "NO_STATUS"
 msgstr "No status"
-
-#: src/backend/models/tasks_watcher.py:89
-msgid "UPDATE_TASK_ERROR"
-msgstr "Error while updating task"
 
 #: src/backend/models/user.py:47
 msgid "USER"
@@ -1355,8 +1355,8 @@ msgstr "Error while updating workflow"
 #: src/backend/rest/config.py:51 src/backend/rest/config.py:61
 #: src/backend/rest/config.py:72 src/backend/rest/config.py:82
 #: src/backend/rest/config.py:92 src/backend/rest/config.py:109
-#: src/backend/rest/config.py:120 src/backend/rest/config.py:132
-#: src/backend/rest/config.py:144 src/backend/rest/custom_fields.py:32
+#: src/backend/rest/config.py:120 src/backend/rest/config.py:131
+#: src/backend/rest/config.py:143 src/backend/rest/custom_fields.py:32
 #: src/backend/rest/custom_fields.py:46 src/backend/rest/custom_fields.py:57
 #: src/backend/rest/custom_fields.py:68 src/backend/rest/custom_fields.py:78
 #: src/backend/rest/doctypes.py:31 src/backend/rest/doctypes.py:47
@@ -1373,12 +1373,13 @@ msgstr "Error while updating workflow"
 #: src/backend/rest/mailcollect.py:45 src/backend/rest/mailcollect.py:56
 #: src/backend/rest/mailcollect.py:72 src/backend/rest/mailcollect.py:86
 #: src/backend/rest/mailcollect.py:97 src/backend/rest/mailcollect.py:108
-#: src/backend/rest/monitoring.py:29 src/backend/rest/monitoring.py:39
-#: src/backend/rest/monitoring.py:50 src/backend/rest/outputs.py:31
-#: src/backend/rest/outputs.py:44 src/backend/rest/outputs.py:63
-#: src/backend/rest/outputs.py:75 src/backend/rest/outputs.py:87
-#: src/backend/rest/outputs.py:100 src/backend/rest/outputs.py:112
-#: src/backend/rest/outputs.py:124 src/backend/rest/positions_masks.py:33
+#: src/backend/rest/monitoring.py:29 src/backend/rest/monitoring.py:40
+#: src/backend/rest/monitoring.py:50 src/backend/rest/monitoring.py:61
+#: src/backend/rest/outputs.py:31 src/backend/rest/outputs.py:44
+#: src/backend/rest/outputs.py:63 src/backend/rest/outputs.py:75
+#: src/backend/rest/outputs.py:87 src/backend/rest/outputs.py:100
+#: src/backend/rest/outputs.py:112 src/backend/rest/outputs.py:124
+#: src/backend/rest/positions_masks.py:33
 #: src/backend/rest/positions_masks.py:43
 #: src/backend/rest/positions_masks.py:54
 #: src/backend/rest/positions_masks.py:65
@@ -1390,47 +1391,47 @@ msgstr "Error while updating workflow"
 #: src/backend/rest/positions_masks.py:134
 #: src/backend/rest/positions_masks.py:145
 #: src/backend/rest/positions_masks.py:157 src/backend/rest/privileges.py:29
-#: src/backend/rest/privileges.py:39 src/backend/rest/roles.py:29
-#: src/backend/rest/roles.py:39 src/backend/rest/roles.py:49
-#: src/backend/rest/roles.py:60 src/backend/rest/roles.py:71
-#: src/backend/rest/roles.py:81 src/backend/rest/roles.py:91
-#: src/backend/rest/roles.py:101 src/backend/rest/splitter.py:30
-#: src/backend/rest/splitter.py:52 src/backend/rest/splitter.py:62
-#: src/backend/rest/splitter.py:72 src/backend/rest/splitter.py:83
-#: src/backend/rest/splitter.py:98 src/backend/rest/splitter.py:109
-#: src/backend/rest/splitter.py:119 src/backend/rest/splitter.py:130
-#: src/backend/rest/splitter.py:144 src/backend/rest/splitter.py:155
-#: src/backend/rest/splitter.py:166 src/backend/rest/splitter.py:177
-#: src/backend/rest/splitter.py:196 src/backend/rest/splitter.py:207
-#: src/backend/rest/splitter.py:222 src/backend/rest/splitter.py:225
-#: src/backend/rest/splitter.py:243 src/backend/rest/splitter.py:255
-#: src/backend/rest/splitter.py:266 src/backend/rest/splitter.py:277
-#: src/backend/rest/splitter.py:287 src/backend/rest/status.py:31
-#: src/backend/rest/tasks_watcher.py:30 src/backend/rest/user.py:29
-#: src/backend/rest/user.py:40 src/backend/rest/user.py:65
-#: src/backend/rest/user.py:75 src/backend/rest/user.py:107
-#: src/backend/rest/user.py:118 src/backend/rest/user.py:128
-#: src/backend/rest/user.py:138 src/backend/rest/user.py:155
-#: src/backend/rest/user.py:166 src/backend/rest/user.py:176
-#: src/backend/rest/verifier.py:45 src/backend/rest/verifier.py:96
-#: src/backend/rest/verifier.py:108 src/backend/rest/verifier.py:129
-#: src/backend/rest/verifier.py:142 src/backend/rest/verifier.py:154
-#: src/backend/rest/verifier.py:166 src/backend/rest/verifier.py:179
-#: src/backend/rest/verifier.py:192 src/backend/rest/verifier.py:205
-#: src/backend/rest/verifier.py:218 src/backend/rest/verifier.py:230
-#: src/backend/rest/verifier.py:241 src/backend/rest/verifier.py:260
-#: src/backend/rest/verifier.py:279 src/backend/rest/verifier.py:299
-#: src/backend/rest/verifier.py:311 src/backend/rest/verifier.py:323
-#: src/backend/rest/verifier.py:346 src/backend/rest/verifier.py:364
-#: src/backend/rest/verifier.py:376 src/backend/rest/verifier.py:387
-#: src/backend/rest/verifier.py:400 src/backend/rest/verifier.py:413
-#: src/backend/rest/verifier.py:424 src/backend/rest/verifier.py:437
-#: src/backend/rest/verifier.py:448 src/backend/rest/workflow.py:32
-#: src/backend/rest/workflow.py:45 src/backend/rest/workflow.py:58
-#: src/backend/rest/workflow.py:71 src/backend/rest/workflow.py:83
-#: src/backend/rest/workflow.py:95 src/backend/rest/workflow.py:107
-#: src/backend/rest/workflow.py:119 src/backend/rest/workflow.py:132
-#: src/backend/rest/workflow.py:145
+#: src/backend/rest/privileges.py:39 src/backend/rest/roles.py:43
+#: src/backend/rest/roles.py:53 src/backend/rest/roles.py:64
+#: src/backend/rest/roles.py:75 src/backend/rest/roles.py:85
+#: src/backend/rest/roles.py:95 src/backend/rest/roles.py:105
+#: src/backend/rest/splitter.py:30 src/backend/rest/splitter.py:52
+#: src/backend/rest/splitter.py:62 src/backend/rest/splitter.py:72
+#: src/backend/rest/splitter.py:83 src/backend/rest/splitter.py:98
+#: src/backend/rest/splitter.py:109 src/backend/rest/splitter.py:119
+#: src/backend/rest/splitter.py:130 src/backend/rest/splitter.py:144
+#: src/backend/rest/splitter.py:155 src/backend/rest/splitter.py:166
+#: src/backend/rest/splitter.py:177 src/backend/rest/splitter.py:196
+#: src/backend/rest/splitter.py:207 src/backend/rest/splitter.py:222
+#: src/backend/rest/splitter.py:225 src/backend/rest/splitter.py:243
+#: src/backend/rest/splitter.py:255 src/backend/rest/splitter.py:266
+#: src/backend/rest/splitter.py:277 src/backend/rest/splitter.py:287
+#: src/backend/rest/splitter.py:298 src/backend/rest/status.py:31
+#: src/backend/rest/user.py:29 src/backend/rest/user.py:40
+#: src/backend/rest/user.py:65 src/backend/rest/user.py:75
+#: src/backend/rest/user.py:107 src/backend/rest/user.py:118
+#: src/backend/rest/user.py:128 src/backend/rest/user.py:138
+#: src/backend/rest/user.py:155 src/backend/rest/user.py:166
+#: src/backend/rest/user.py:176 src/backend/rest/verifier.py:45
+#: src/backend/rest/verifier.py:96 src/backend/rest/verifier.py:108
+#: src/backend/rest/verifier.py:129 src/backend/rest/verifier.py:142
+#: src/backend/rest/verifier.py:154 src/backend/rest/verifier.py:166
+#: src/backend/rest/verifier.py:179 src/backend/rest/verifier.py:192
+#: src/backend/rest/verifier.py:205 src/backend/rest/verifier.py:218
+#: src/backend/rest/verifier.py:230 src/backend/rest/verifier.py:241
+#: src/backend/rest/verifier.py:260 src/backend/rest/verifier.py:279
+#: src/backend/rest/verifier.py:299 src/backend/rest/verifier.py:311
+#: src/backend/rest/verifier.py:323 src/backend/rest/verifier.py:346
+#: src/backend/rest/verifier.py:364 src/backend/rest/verifier.py:376
+#: src/backend/rest/verifier.py:387 src/backend/rest/verifier.py:400
+#: src/backend/rest/verifier.py:413 src/backend/rest/verifier.py:424
+#: src/backend/rest/verifier.py:437 src/backend/rest/verifier.py:448
+#: src/backend/rest/workflow.py:32 src/backend/rest/workflow.py:45
+#: src/backend/rest/workflow.py:58 src/backend/rest/workflow.py:71
+#: src/backend/rest/workflow.py:83 src/backend/rest/workflow.py:95
+#: src/backend/rest/workflow.py:107 src/backend/rest/workflow.py:119
+#: src/backend/rest/workflow.py:132 src/backend/rest/workflow.py:145
+#: src/backend/rest/workflow.py:156
 msgid "UNAUTHORIZED_ROUTE"
 msgstr "You are not authorized to access this route"
 
@@ -1442,7 +1443,7 @@ msgstr "Error while connecting to database"
 msgid "REQUEST_MODIFS_ERROR"
 msgstr "Error in the database impossible to make the change"
 
-#: src/backend/rest/monitoring.py:55 src/backend/rest/verifier.py:121
+#: src/backend/rest/monitoring.py:66 src/backend/rest/verifier.py:121
 msgid "TOKEN_IS_MANDATORY"
 msgstr "Valid token is mandatory"
 
@@ -1467,4 +1468,10 @@ msgid "INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET"
 msgstr ""
 "Interface use is not set in workflow or unique url settings is malformed "
 "on the form"
+
+#~ msgid "CREATE_TASK_ERROR"
+#~ msgstr "Error while createing new task"
+
+#~ msgid "UPDATE_TASK_ERROR"
+#~ msgstr "Error while updating task"
 

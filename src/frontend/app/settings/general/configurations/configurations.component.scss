@@ -52,3 +52,38 @@
 .tox-tinymce {
     @apply h-60 #{!important};
 }
+
+.tox {
+    & .tox-tbtn--enabled, .tox .tox-tbtn--enabled:hover, .tox-collection--list .tox-collection__item--active {
+        @apply bg-green-400 #{!important};
+        @apply text-gray-900 #{!important};
+    }
+
+    & .tox-tbtn:hover {
+        @apply bg-green-400 #{!important};
+        @apply bg-opacity-60 #{!important};
+        @apply text-gray-900 #{!important};
+    }
+
+    & .tox-button {
+        @apply bg-green-400 #{!important};
+        @apply text-gray-900 #{!important};
+        @apply border-green-400 #{!important};
+    }
+
+    & .tox-button--secondary {
+        @apply bg-white #{!important};
+        @apply text-gray-900 #{!important};
+    }
+
+    & .tox-textfield:focus {
+        @apply border-green-400 #{!important};
+        box-shadow: 0 0 0 2px #97BF3D !important;
+    }
+
+    & .tox-listboxfield .tox-listbox--select:focus {
+        @apply border-green-400 #{!important};
+        box-shadow: 0 0 0 2px #97BF3D !important;
+    }
+}
+

@@ -366,6 +366,7 @@ export class CustomFieldsComponent implements OnInit {
                 this.resetForm();
             }),
             catchError((err: any) => {
+                this.loading = false;
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);

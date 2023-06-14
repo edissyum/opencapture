@@ -541,7 +541,7 @@
 		"general": "Paramètres généraux",
 		"hostname": "Adresse d'hôte",
 		"is_splitter": "Processus Splitter",
-		"load_folders_first": "Récupérer la liste des dossiers afin de pouvoir en sélectionner un",
+		"load_folders_first": "Il est nécessaire de récupérer la liste des dossiers afin de pouvoir en sélectionner un",
 		"move": "Déplacer",
 		"none": "Aucune action",
 		"port": "Port de l'hôte",

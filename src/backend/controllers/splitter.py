@@ -768,7 +768,6 @@ def get_unseen(user_id):
 
 
 def get_batch_outputs(batch_id):
-    outputs_id = []
     _outputs = []
 
     batch, _ = splitter.get_batch_by_id({'id': batch_id})
