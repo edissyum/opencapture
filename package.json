@@ -15,7 +15,7 @@
     "private": true,
     "dependencies": {
         "@ngstack/code-editor": "^5.0.0",
-        "@swimlane/ngx-charts": "^20.4.0",
+        "@swimlane/ngx-charts": "^20.4.1",
         "@tinymce/tinymce-angular": "^7.0.0",
         "moment": "^2.29.4",
         "ng-sortgrid": "^15.0.1",
