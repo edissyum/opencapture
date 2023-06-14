@@ -326,6 +326,7 @@ cp $defaultPath/bin/scripts/OCVerifier_worker.sh.default "$defaultPath/custom/$c
 cp $defaultPath/bin/scripts/OCSplitter_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 cp $defaultPath/bin/scripts/MailCollect/clean.sh.default "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 cp $defaultPath/bin/scripts/load_referencial.sh.default "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
+cp $defaultPath/bin/scripts/load_users.sh.default "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
 cp $defaultPath/bin/scripts/purge_splitter.sh.default "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
 cp $defaultPath/bin/scripts/backup_database.sh.default "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 cp $defaultPath/bin/scripts/clean_backups.sh.default "$defaultPath/custom/$customId/bin/scripts/clean_backups.sh"
@@ -338,9 +339,10 @@ sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/back
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/clean_backups.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
 sed -i "s#§§DATABASE_PORT§§#$port#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 sed -i "s#§§DATABASE_PORT§§#$port#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 sed -i "s#§§DATABASE_HOST§§#$hostname#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
@@ -350,6 +352,7 @@ sed -i "s#§§DATABASE_PASSWORD§§#$databasePassword#g" "$defaultPath/custom/$c
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/bin/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
 if [ $pythonVenv = 'true' ]; then
+    sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
     sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
     sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
     sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
@@ -357,6 +360,7 @@ if [ $pythonVenv = 'true' ]; then
 else
     sed -i "s#§§PYTHON_VENV§§##g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
     sed -i "s#§§PYTHON_VENV§§##g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
+    sed -i "s#§§PYTHON_VENV§§#python3#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
     sed -i "s#§§PYTHON_VENV§§#python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
     sed -i "s#§§PYTHON_VENV§§#python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
 fi
