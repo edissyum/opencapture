@@ -26,10 +26,12 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
 import { ProcessWatcherComponent } from './process-watcher/process-watcher.component';
 import { CustomSnackbarComponent, NotificationService } from './notifications/notifications.service';
 import { DragDropModule } from "@angular/cdk/drag-drop";
+import { CodeEditorComponent } from './code-editor/code-editor.component';
+import { CodeEditorModule } from "@ngstack/code-editor";
 
 @NgModule({
-    imports: [AppMaterialModule, CommonModule, TranslateModule, DragDropModule],
-    declarations: [CustomSnackbarComponent, ConfirmDialogComponent, ProcessWatcherComponent],
+    imports: [AppMaterialModule, CommonModule, TranslateModule, DragDropModule, CodeEditorModule],
+    declarations: [CustomSnackbarComponent, ConfirmDialogComponent, ProcessWatcherComponent, CodeEditorComponent],
     exports: [ProcessWatcherComponent],
     providers: [NotificationService, LastUrlService, HintServiceComponent, ErrorServiceComponent]
 })

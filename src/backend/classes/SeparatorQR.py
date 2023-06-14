@@ -28,7 +28,6 @@ import subprocess
 from io import BytesIO
 from fpdf import Template
 from pyzbar.pyzbar import decode
-import xml.etree.ElementTree as Et
 
 
 class SeparatorQR:
@@ -39,14 +38,14 @@ class SeparatorQR:
         self.nb_doc = 0
         self.nb_pages = 0
         self.error = False
-        self.qrList = None
-        self.Files = files
+        self.files = files
+        self.barcodes = None
         self.config = config
         self.enabled = False
         self.splitter_method = splitter_method
         self.remove_blank_pages = remove_blank_pages
-        self.splitter_or_verifier = splitter_or_verifier
         self.divider = config['SEPARATORQR']['divider']
+        self.splitter_or_verifier = splitter_or_verifier
         self.convert_to_pdfa = config['SEPARATORQR']['exportpdfa']
         tmp_folder_name = os.path.basename(os.path.normpath(tmp_folder))
         self.tmp_dir = docservers['SEPARATOR_QR_TMP'] + '/' + tmp_folder_name + '/'
@@ -74,7 +73,7 @@ class SeparatorQR:
         pages_to_keep = []
         for _file in self.sorted_files(os.listdir(self.output_dir)):
             if _file.endswith('.jpg'):
-                if not self.Files.is_blank_page(self.output_dir + '/' + _file):
+                if not self.files.is_blank_page(self.output_dir + '/' + _file):
                     pages_to_keep.append(os.path.splitext(_file)[0].split('-')[1])
                 else:
                     blank_page_exists = True
@@ -113,7 +112,7 @@ class SeparatorQR:
 
         for cpt in range(0, nb_pages):
             if self.remove_blank_pages:
-                if self.Files.is_blank_page(self.tmp_dir + '/result-' + str(cpt) + '.jpg'):
+                if self.files.is_blank_page(self.tmp_dir + '/result-' + str(cpt) + '.jpg'):
                     continue
 
             output = pypdf.PdfWriter()
@@ -140,11 +139,7 @@ class SeparatorQR:
         try:
             pdf = pypdf.PdfReader(file)
             self.nb_pages = len(pdf.pages)
-            if self.splitter_method == 'qr_code_OC':
-                self.get_xml_qr_code(file)
-            elif self.splitter_method == 'c128_OC':
-                self.get_xml_c128(file)
-
+            self.get_xml(file)
             if self.splitter_or_verifier == 'verifier':
                 if self.remove_blank_pages:
                     self.remove_blank_page(file)
@@ -152,15 +147,13 @@ class SeparatorQR:
                 self.check_empty_docs()
                 self.set_doc_ends()
                 self.extract_and_convert_docs(file)
-
             elif self.splitter_or_verifier == 'splitter':
                 self.parse_xml_multi()
-
         except Exception as e:
             self.error = True
             self.log.error("INIT : " + str(e))
 
-    def get_xml_c128(self, file):
+    def get_xml(self, file):
         """
         Retrieve the content of a C128 Code
 
@@ -173,64 +166,40 @@ class SeparatorQR:
             detected_barcode = decode(page)
             if detected_barcode:
                 for barcode in detected_barcode:
-                    if barcode.type == 'CODE128':
-                        barcodes.append({'text': barcode.data.decode('utf-8'), 'attrib': {'num': cpt}})
+                    if barcode.type in ['CODE128', 'QRCODE']:
+                        barcodes.append({
+                            'type': barcode.type,
+                            'text': barcode.data.decode('utf-8'),
+                            'attrib': {'num': cpt}
+                        })
             cpt += 1
-
         if barcodes:
-            self.qrList = barcodes
-
-    def get_xml_qr_code(self, file):
-        try:
-            xml = subprocess.Popen([
-                'zbarimg',
-                '--xml',
-                '-q',
-                '-Sdisable',
-                '-Sqr.enable',
-                file
-            ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out, err = xml.communicate()
-            if err.decode('utf-8'):
-                self.log.error('ZBARIMG : ' + str(err))
-            self.qrList = Et.fromstring(out)
-        except subprocess.CalledProcessError as cpe:
-            if cpe.returncode != 4:
-                self.log.error("ZBARIMG : \nreturn code: %s\ncmd: %s\noutput: %s\nglobal : %s" % (
-                    cpe.returncode, cpe.cmd, cpe.output, cpe))
+            self.barcodes = barcodes
 
     def parse_xml_multi(self):
-        if self.qrList is None:
+        if self.barcodes is None:
             return
 
-        for index in self.qrList[0]:
+        for index in self.barcodes[0]:
             self.pages.append({
-                "qr_code": index[0][0].text,
-                "num": index.attrib['num']
+                "qr_code": index[0][0]['text'],
+                "num": index['attrib']['num']
             })
 
     def parse_xml(self):
-        if self.qrList is None:
+        if self.barcodes is None:
             return
 
-        if self.splitter_method == 'qr_code_OC':
-            ns = {'bc': 'http://zbar.sourceforge.net/2008/barcode'}
-            indexes = self.qrList[0].findall('bc:index', ns)
-        elif self.splitter_method == 'c128_OC':
-            indexes = self.qrList
-        else:
-            return
-
-        for index in indexes:
+        for index in self.barcodes:
             page = {}
-            if self.splitter_method == 'qr_code_OC':
-                data = index.find('bc:symbol', ns).find('bc:data', ns)
-                page['service'] = data.text
-                page['index_sep'] = int(index.attrib['num'])
-            elif self.splitter_method == 'c128_OC':
-                data = index
-                page['service'] = data['text']
+            if self.splitter_method == 'qr_code_OC' and index['type'] == 'QRCODE':
+                page['service'] = index['text']
                 page['index_sep'] = index['attrib']['num']
+            elif self.splitter_method == 'c128_OC' and index['type'] == 'CODE128':
+                page['service'] = index['text']
+                page['index_sep'] = index['attrib']['num']
+            else:
+                continue
 
             if page['index_sep'] + 1 >= self.nb_pages:  # If last page is a separator
                 page['is_empty'] = True
@@ -242,7 +211,6 @@ class SeparatorQR:
             page['pdf_filename'] = self.output_dir + page['service'] + self.divider + page['uuid'] + '.pdf'
             page['pdfa_filename'] = self.output_dir_pdfa + page['service'] + self.divider + page['uuid'] + '.pdf'
             self.pages.append(page)
-
         self.nb_doc = len(self.pages)
 
     def check_empty_docs(self):
@@ -263,8 +231,8 @@ class SeparatorQR:
         if len(self.pages) == 0:
             try:
                 shutil.move(file, self.output_dir)
-            except shutil.Error as e:
-                self.log.error('Moving file ' + file + ' error : ' + str(e))
+            except shutil.Error as _e:
+                self.log.error('Moving file ' + file + ' error : ' + str(_e))
             return
         try:
             for page in self.pages:
@@ -277,8 +245,8 @@ class SeparatorQR:
                 if self.convert_to_pdfa == 'True':
                     self.convert_to_pdfa(page['pdfa_filename'], page['pdf_filename'])
             os.remove(file)
-        except Exception as e:
-            self.log.error("EACD: " + str(e))
+        except Exception as _e:
+            self.log.error("EACD: " + str(_e))
 
     @staticmethod
     def convert_to_pdfa(pdfa_filename, pdf_filename):
@@ -308,9 +276,8 @@ class SeparatorQR:
         :return: base64 encoded separator file, thumbnail and total
         """
 
-        """ Defining the ELEMENTS that will compose the template"""
+        # Defining the ELEMENTS that will compose the template
         total = 0
-        encoded_file = ''
         encoded_thumbnails = []
 
         elements = [
@@ -356,33 +323,32 @@ class SeparatorQR:
         ]
 
         # Instantiating the template and defining the HEADER
-        f = Template(format="A4", elements=elements,
+        file = Template(format="A4", elements=elements,
                      title="Separator file")
         for separator in separators:
-            f.add_page()
+            file.add_page()
             total += 1
 
             # We FILL some of the fields of the template with the information we want
             # Note we access the elements treating the template instance as a dict
-            f["type"] = separator['type']
-            f["label"] = separator['label'].encode('latin-1', 'replace').decode('latin-1')
-            f["qr_code_value"] = separator['qr_code_value']
-            f["logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/login_image.png"
-            f["company_logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/logo_company.png"
-            f["icon_loop"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/Open-Capture_Splitter.png"
+            file["type"] = separator['type']
+            file["label"] = separator['label'].encode('latin-1', 'replace').decode('latin-1')
+            file["qr_code_value"] = separator['qr_code_value']
+            file["logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/login_image.png"
+            file["company_logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/logo_company.png"
+            file["icon_loop"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/Open-Capture_Splitter.png"
 
             qrcode_path = docservers['TMP_PATH'] + f"/code_qr_{separator['qr_code_value']}.png"
             img = qrcode.make(separator['qr_code_value'])
             img.save(qrcode_path)
-            f["code_qr"] = qrcode_path
+            file["code_qr"] = qrcode_path
 
         file_path = docservers['TMP_PATH'] + "/last_generated_doctype_file.pdf"
 
         try:
-            f.render(file_path)
+            file.render(file_path)
             with open(file_path, 'rb') as pdf_file:
-                encoded_file = f"data:application/pdf;base64," \
-                               f"{base64.b64encode(pdf_file.read()).decode('utf-8')}"
+                encoded_file = f"data:application/pdf;base64, {base64.b64encode(pdf_file.read()).decode('utf-8')}"
             pages = pdf2image.convert_from_path(file_path, dpi=300)
 
             for page in pages:
@@ -390,8 +356,8 @@ class SeparatorQR:
                 page.save(buffered, format="JPEG")
                 encoded_thumbnails.append(f"data:image/jpeg;base64,"
                                           f"{base64.b64encode(buffered.getvalue()).decode('utf-8')}")
-        except Exception as e:
-            return {'error': str(e)}
+        except Exception as _e:
+            return {'error': str(_e)}
 
         return {
             'total': total,

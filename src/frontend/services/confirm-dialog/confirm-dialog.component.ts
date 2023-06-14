@@ -15,7 +15,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 export interface ConfirmData {
@@ -30,16 +30,13 @@ export interface ConfirmData {
 
 @Component({
     selector: 'app-confirm-dialog',
-    templateUrl: './confirm-dialog.component.html',
-    styleUrls: ['./confirm-dialog.component.scss']
+    templateUrl: './confirm-dialog.component.html'
 })
 
-export class ConfirmDialogComponent implements OnInit {
+export class ConfirmDialogComponent {
     selectData: any;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: ConfirmData
-    ) { }
-
-    ngOnInit(): void {}
+    ) {}
 }

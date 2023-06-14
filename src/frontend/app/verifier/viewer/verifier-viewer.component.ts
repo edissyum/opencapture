@@ -658,7 +658,7 @@ export class VerifierViewerComponent implements OnInit {
                         );
                 }
 
-                if (this.document.datas[field.id]) {
+                if (this.document.datas[field.id] !== undefined && this.document.datas[field.id] !== null && this.document.datas[field.id] !== '') {
                     let value = this.document.datas[field.id];
                     if (field.format === 'date' && field.id !== '' && field.id !== undefined && value && typeof value === 'string') {
                         value = value.replaceAll('.', '/');
@@ -846,7 +846,7 @@ export class VerifierViewerComponent implements OnInit {
 
     scrollToElement() {
         if (this.document.pages[this.lastId]) {
-            this.changeImage(this.document.pages[this.lastId], this.currentPage)
+            this.changeImage(this.document.pages[this.lastId], this.currentPage);
         }
         if (this.document.positions[this.lastId]) {
             const currentHeight = window.innerHeight;
@@ -923,7 +923,7 @@ export class VerifierViewerComponent implements OnInit {
                                 x: 0,
                                 y: 0,
                                 width: 0,
-                                height: 0,
+                                height: 0
                             };
                             if (this.document.positions[inputId.trim()]) {
                                 oldPosition = {
@@ -1646,7 +1646,6 @@ export class VerifierViewerComponent implements OnInit {
                                     this.loadingSubmit = false;
                                     if (this.workflowSettings && this.workflowSettings.process) {
                                         if (this.workflowSettings.process['delete_documents']) {
-                                            console.log('here')
                                             this.http.get(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deleteDocuments', {headers: this.authService.headers}).pipe(
                                                 catchError((err: any) => {
                                                     console.debug(err);

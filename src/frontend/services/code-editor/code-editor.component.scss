@@ -1,0 +1,4 @@
+::ng-deep .mat-mdc-dialog-surface {
+    @apply pt-2 #{!important};
+    @apply overflow-hidden #{!important};
+}

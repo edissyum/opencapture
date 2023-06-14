@@ -170,7 +170,7 @@ def launch(args):
                     log.error("The workflow_id doesn't exists in database")
             else:
                 process_err = True
-    except Exception as _e:
+    except Exception:
         process_err = True
         _e = str(traceback.format_exc())
         log.error(_e)

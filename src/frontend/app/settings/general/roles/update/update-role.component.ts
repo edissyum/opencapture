@@ -42,7 +42,7 @@ export class UpdateRoleComponent implements OnInit {
     roleId          : any;
     role            : any;
     roles           : any[]     = [];
-    subRoles        : any[]     = [];
+    assignRoles     : any[]     = [];
     privileges      : any;
     rolePrivileges  : any;
     roleForm        : any[]     = [
@@ -171,7 +171,7 @@ export class UpdateRoleComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/roles/getById/' + this.roleId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.role = data;
-                this.subRoles = data['sub_roles'];
+                this.assignRoles = data['assign_roles'];
                 for (const field in data) {
                     if (data.hasOwnProperty(field)) {
                         this.roleForm.forEach(element => {
@@ -244,7 +244,7 @@ export class UpdateRoleComponent implements OnInit {
     onSubmit() {
         if (this.isValidForm()) {
             const role: any = {
-                'sub_roles': this.subRoles,
+                'assign_roles': this.assignRoles,
             };
             this.roleForm.forEach(element => {
                 role[element.id] = element.control.value;
@@ -330,21 +330,21 @@ export class UpdateRoleComponent implements OnInit {
         }
     }
 
-    updateSubRoles(role: any) {
-        if (this.subRoles.includes(role.id)) {
-            const index = this.subRoles.indexOf(role.id, 0);
-            this.subRoles.splice(index, 1);
+    updateAssignRoles(role: any) {
+        if (this.assignRoles.includes(role.id)) {
+            const index = this.assignRoles.indexOf(role.id, 0);
+            this.assignRoles.splice(index, 1);
         }
         else {
-            this.subRoles.push(role.id);
+            this.assignRoles.push(role.id);
         }
     }
 
-    selectAllSubRoles(check: boolean) {
-        this.subRoles = [];
+    selectAllAssignRoles(check: boolean) {
+        this.assignRoles = [];
         if (check) {
             this.roles.forEach((element: any) => {
-                this.subRoles.push(element.id);
+                this.assignRoles.push(element.id);
             });
         }
     }

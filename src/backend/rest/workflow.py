@@ -141,9 +141,21 @@ def create_script_and_watcher(module):
 @bp.route('workflows/<string:module>/getByFormId/<int:form_id>', methods=['GET'])
 @auth.token_required
 def get_workflows_by_form_id(module, form_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_input | update_input']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_workflow | update_workflow']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/workflows/{module}/getByFormId/{form_id}'}), 403
 
     _workflow = workflow.get_workflow_by_form_id(form_id)
     return make_response(jsonify(_workflow[0])), _workflow[1]
+
+
+@bp.route('workflows/<string:module>/testScript', methods=['POST'])
+@auth.token_required
+def test_script(module):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_workflow | update_workflow']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/workflows/{module}testScript'}), 403
+    print(module)
+    if module == 'verifier':
+        print(request.json['args'])
+        res = workflow.test_script_verifier(request.json['args'])
+    return make_response(jsonify(res[0])), res[1]

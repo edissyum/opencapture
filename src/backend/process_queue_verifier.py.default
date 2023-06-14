@@ -205,7 +205,7 @@ def launch(args):
                 list_of_ids.append(res)
                 if not res:
                     process_err = True
-        except Exception as _e:
+        except Exception:
             process_err = True
             _e = str(traceback.format_exc())
             log.error(_e)

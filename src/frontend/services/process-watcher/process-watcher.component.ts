@@ -28,8 +28,7 @@ import { NotificationService } from "../notifications/notifications.service";
 
 @Component({
     selector: 'app-process-watcher',
-    templateUrl: './process-watcher.component.html',
-    styleUrls: ['./process-watcher.component.scss']
+    templateUrl: './process-watcher.component.html'
 })
 
 export class ProcessWatcherComponent implements OnInit {
