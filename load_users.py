@@ -46,7 +46,6 @@ if __name__ == '__main__':
     with open(args.file, 'r') as f:
         # Create a reader object
         reader = csv.reader(f)
-
         # Skip the header row
         next(reader)
         # Iterate over the remaining rows
