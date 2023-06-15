@@ -76,8 +76,10 @@ def retrieve_custom_from_url(request):
     if splitted_request[0] != '/':
         custom_id = splitted_request[0]
 
-    if not custom_id:
+    if not custom_id or not retrieve_config_from_custom_id(custom_id):
         custom_id = request.environ['SERVER_NAME']
+        if not retrieve_config_from_custom_id(custom_id):
+            custom_id = request.environ['HTTP_ORIGIN'].replace('http://', '').replace('https://', '')
     return custom_id.replace('/', '')
 
 
