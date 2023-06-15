@@ -74,10 +74,10 @@ def retrieve_custom_from_url(request):
     splitted_request = url.replace('/backend_oc', '').split('ws/')
 
     if splitted_request[0] != '/':
-        custom_id = splitted_request[0]
+        custom_id = splitted_request[0].replace('/', '')
 
     if not custom_id or not retrieve_config_from_custom_id(custom_id):
-        custom_id = request.environ['SERVER_NAME']
+        custom_id = request.environ['SERVER_NAME'].replace('/', '')
         if not retrieve_config_from_custom_id(custom_id):
             custom_id = request.environ['HTTP_ORIGIN'].replace('http://', '').replace('https://', '')
     return custom_id.replace('/', '')
