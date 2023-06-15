@@ -65,6 +65,7 @@ export class VerifierViewerComponent implements OnInit {
     visualIsHide            : boolean     = false;
     loadingSubmit           : boolean     = false;
     formEmpty               : boolean     = false;
+    processInError          : boolean     = false;
     processErrorMessage     : string      = '';
     processErrorIcon        : string      = '';
     token                   : string      = '';
@@ -164,6 +165,7 @@ export class VerifierViewerComponent implements OnInit {
                 return;
             } else if (res['status'] === 'error' || res['error']) {
                 this.loading = false;
+                this.processInError = true;
                 this.processErrorIcon = 'fa-xmark text-red-400';
                 this.processErrorMessage = this.translate.instant('VERIFIER.error', {reference: res['token']});
                 return;
