@@ -24,7 +24,7 @@ import { PrivilegesService } from "../../services/privileges.service";
     selector: 'app-settings-menu',
     templateUrl: './settings-menu.component.html',
     styleUrls: ['./settings-menu.component.scss'],
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
 export class SettingsMenuComponent {
     @Input() minimizeSideNav : any;

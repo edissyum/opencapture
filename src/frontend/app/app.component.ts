@@ -44,7 +44,6 @@ export class AppComponent implements OnInit, AfterContentChecked {
     constructor(
         private router: Router,
         private http: HttpClient,
-        public location: Location,
         private titleService: Title,
         private sanitizer: DomSanitizer,
         private notify:NotificationService,

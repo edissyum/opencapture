@@ -171,9 +171,9 @@ def disable_process(process_name):
 def retrieve_folders(args):
     try:
         if args['secured_connection']:
-            conn = MailBox(host=args['hostname'], port=args['port'])
+            conn = MailBox(host=args['hostname'], port=args['port'], timeout=10)
         else:
-            conn = MailBoxUnencrypted(host=args['hostname'], port=args['port'])
+            conn = MailBoxUnencrypted(host=args['hostname'], port=args['port'], timeout=10)
     except (gaierror, IMAP4_SSL.error, ssl.SSLError) as _e:
         response = {
             "errors": gettext("MAILCOLLECT_ERROR"),

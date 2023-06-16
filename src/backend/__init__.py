@@ -38,6 +38,12 @@ class Middleware:
         splitted_request = _request.path.split('ws/')
         if 'HTTP_REFERER' in environ:
             domain_name = urllib.parse.urlparse(environ['HTTP_REFERER']).netloc
+            if not domain_name:
+                domain_name = urllib.parse.urlparse(environ['HTTP_REFERER']).path
+        elif 'HTTP_HOST' in environ:
+            domain_name = urllib.parse.urlparse(environ['HTTP_HOST']).netloc
+            if not domain_name:
+                domain_name = urllib.parse.urlparse(environ['HTTP_HOST']).path
         else:
             domain_name = 'localhost'
         local_regex = re.compile(r'^(127.0.(0|1).1|10(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){3}|((172\.(1[6-9]|2[0-9]|3[01]))|192\.168)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){2})$')
