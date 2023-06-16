@@ -49,7 +49,6 @@ if __name__ == '__main__':
 
         # Skip the header row
         next(reader)
-
         # Iterate over the remaining rows
         for row in reader:
             log.info("User: " + row[0])
@@ -61,7 +60,7 @@ if __name__ == '__main__':
                 'email': row[3],
                 'customer_name': row[4],
                 'customer_id': None,
-                'role': 4 if row[6] == 'O' else 3,
+                'role': int(row[6]) if type(row[6]) == int else 3,
             }
 
             users_res = database.select({
@@ -85,7 +84,6 @@ if __name__ == '__main__':
                     'email': user['email']
                 }
             })
-
             user_customers = database.select({
                 'select': ['id'],
                 'table': ['accounts_customer'],
@@ -116,10 +114,10 @@ if __name__ == '__main__':
                 'table': 'users_forms',
                 'columns': {
                     'user_id': user_id,
-                    'forms_id': json.dumps({"data": str([1, 2])})
+                    'forms_id': json.dumps({"data": str([])})
                 }
             })
-            log.info(f"User {user['username']} created.")
+            log.info(f"User {user['username']} created with id {user_id}.")
 
     # Commit and close database connection
     database.conn.commit()

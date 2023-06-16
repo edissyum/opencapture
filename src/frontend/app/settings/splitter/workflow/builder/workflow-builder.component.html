@@ -45,7 +45,7 @@
                         </div>
                     </ng-container>
                 </div>
-                <div class="mt-2 grid grid-cols-3 gap-6">
+                <div class="mt-4 grid grid-cols-3 gap-6">
                     <ng-container *ngFor="let field of this.fields['input']">
                         <mat-form-field *ngIf="field.type === 'text' && field.show">
                             <mat-label>{{ field.label | translate }}</mat-label>
@@ -61,7 +61,8 @@
                         </mat-form-field>
                         <mat-form-field *ngIf="field.type === 'select' && field.show">
                             <mat-label>{{ field.label | translate }}</mat-label>
-                            <mat-select [(value)]="field.control.value" [required]="field['required']">
+                            <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple"
+                                        (selectionChange)="field.id === 'splitter_method_id' ? setSeparationMode($event.value) : ''">
                                 <mat-option *ngFor="let option of field.values" [value]="option.id">
                                     {{ option.label | translate }}
                                 </mat-option>
@@ -134,43 +135,6 @@
                         {{ 'WORKFLOW.next' | translate }}
                     </button>
                 </span>
-            </mat-step>
-            <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.separation' | translate">
-                <div class="mt-2 grid grid-cols-3 gap-6">
-                    <ng-container *ngFor="let field of this.fields['separation']">
-                        <mat-form-field *ngIf="field.type === 'text' || field.type === 'number' && (field.id !== 'separate_by_document_number_value' || (field.id === 'separate_by_document_number_value' && this.separationMode === 'separate_by_document_number'))">
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <input matInput [formControl]="field['control']" [required]="field['required']" [type]="field.type" [placeholder]="field.placeholder">
-                            <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
-                                <i class="fa-solid fa-circle-question text-md"></i>
-                            </span>
-                        </mat-form-field>
-                        <mat-form-field *ngIf="field.type === 'select'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                            <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple"
-                                        (selectionChange)="field.id === 'splitter_method_id' ? setSeparationMode($event.value) : ''">
-                                <mat-option *ngFor="let option of field.values" [value]="option.id">
-                                    {{ option.label | translate }}
-                                </mat-option>
-                            </mat-select>
-                            <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
-                                <i class="fa-solid fa-circle-question text-md"></i>
-                            </span>
-                        </mat-form-field>
-                        <div *ngIf="field.type === 'boolean'">
-                            <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2">
-                                <span class="justify-center">{{ field.label | translate }}</span>
-                            </mat-slide-toggle>
-                        </div>
-                    </ng-container>
-                </div>
-
-                <button matStepperPrevious mat-button class="gray_button">
-                    {{ "WORKFLOW.back" | translate }}
-                </button>
-                <button matStepperNext mat-button class="valid_button" (click)="!this.creationMode ? this.updateWorkflow('separation') : ''">
-                    {{ 'WORKFLOW.next' | translate }}
-                </button>
             </mat-step>
             <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.output' | translate">
                 <div class="mt-2 w-full">

@@ -93,6 +93,27 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 label: this.translate.instant('WORKFLOW.apply_process'),
                 type: 'boolean',
                 control: new FormControl()
+            },
+            {
+                id: 'splitter_method_id',
+                label: this.translate.instant('WORKFLOW.splitter_method'),
+                type: 'select',
+                control: new FormControl(),
+                required: true,
+                values: []
+            },
+            {
+                id: 'separate_by_document_number_value',
+                label: this.translate.instant('WORKFLOW.separate_by_document_number_value'),
+                type: 'number',
+                control: new FormControl(2),
+                required: false
+            },
+            {
+                id: 'remove_blank_pages',
+                label: this.translate.instant('WORKFLOW.remove_blank_pages'),
+                type: 'boolean',
+                control: new FormControl()
             }
         ],
         process: [
@@ -155,29 +176,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                         'label': this.translate.instant('WORKFLOW.rotate_270')
                     }
                 ]
-            }
-        ],
-        separation: [
-            {
-                id: 'splitter_method_id',
-                label: this.translate.instant('WORKFLOW.splitter_method'),
-                type: 'select',
-                control: new FormControl(),
-                required: true,
-                values: []
-            },
-            {
-                id: 'separate_by_document_number_value',
-                label: this.translate.instant('WORKFLOW.separate_by_document_number_value'),
-                type: 'number',
-                control: new FormControl(2),
-                required: false
-            },
-            {
-                id: 'remove_blank_pages',
-                label: this.translate.instant('WORKFLOW.remove_blank_pages'),
-                type: 'boolean',
-                control: new FormControl()
             }
         ],
         output: [
@@ -334,7 +332,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/splitter/splitMethods', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.splitMethods.forEach((method: any) => {
-                    this.fields['separation'].forEach((element: any) => {
+                    this.fields['input'].forEach((element: any) => {
                         if (element.id === 'splitter_method_id') {
                             element.values.push(method);
                         }
@@ -449,7 +447,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             label: this.nameControl.value,
             input: {},
             process: {},
-            separation: {},
             output: {}
         };
 
@@ -490,7 +487,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             label: this.nameControl.value,
             input: {},
             process: {},
-            separation: {},
             output: {}
         };
         if (this.idControl.value && this.nameControl.value) {
