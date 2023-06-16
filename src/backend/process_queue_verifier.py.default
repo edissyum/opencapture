@@ -130,17 +130,17 @@ def launch(args):
 
     if 'workflow_id' in args and args['workflow_id']:
         workflow_settings = database.select({
-            'select': ['separation'],
+            'select': ['input'],
             'table': ['workflows'],
             'where': ['workflow_id = %s', 'module = %s'],
             'data': [args['workflow_id'], 'verifier']
         })
 
         if workflow_settings:
-            splitter_method = workflow_settings[0]['separation']['splitter_method_id']
-            remove_blank_pages = workflow_settings[0]['separation']['remove_blank_pages']
+            splitter_method = workflow_settings[0]['input']['splitter_method_id']
+            remove_blank_pages = workflow_settings[0]['input']['remove_blank_pages']
             if splitter_method == 'separate_by_document_number':
-                separate_every_x_page = workflow_settings[0]['separation']['separate_by_document_number_value']
+                separate_every_x_page = workflow_settings[0]['input']['separate_by_document_number_value']
 
     separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier', files, remove_blank_pages, docservers,
                                 splitter_method)
