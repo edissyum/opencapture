@@ -618,7 +618,7 @@ if ! test -f "$defaultScriptFile"; then
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
     sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
     sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
-    sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
+    sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $defaultScriptFile
 fi
 
 ocrOnlyFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh"
@@ -629,7 +629,7 @@ if ! test -f "$ocrOnlyFile"; then
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $ocrOnlyFile
     sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $ocrOnlyFile
     sed -i 's#"§§ARGUMENTS§§"#-workflow_id ocr_only#g' $ocrOnlyFile
-    sed -i "s#§§CUSTOM_ID§§#$customId#g" $ocrOnlyFile
+    sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $ocrOnlyFile
 fi
 
 ####################
@@ -643,20 +643,20 @@ if ! test -f "$defaultScriptFile"; then
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
     sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
     sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
-    sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
+    sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $defaultScriptFile
 fi
 
 ####################
 # Create default MAIL script
 cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
+sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§OC_PATH§§#$defaultPath#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 
 ####################
 # Create default LDAP script and config
 cp $defaultPath/bin/ldap/synchronization_ldap_script.sh.default "$defaultPath/custom/$customId/bin/ldap/synchronization_ldap_script.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/ldap/synchronization_ldap_script.sh"
+sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" "$defaultPath/custom/$customId/bin/ldap/synchronization_ldap_script.sh"
 
 ####################
 # Fix the rights after root launch to avoid permissions issues

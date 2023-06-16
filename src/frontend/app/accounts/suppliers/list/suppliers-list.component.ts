@@ -301,6 +301,7 @@ export class SuppliersListComponent implements OnInit {
                     this.loadSuppliers();
                 }),
                 catchError((err: any) => {
+                    this.loading = false;
                     console.debug(err);
                     this.notify.handleErrors(err, '/accounts/suppliers/list');
                     return of(false);
