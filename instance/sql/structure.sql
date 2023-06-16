@@ -384,6 +384,5 @@ CREATE TABLE "workflows" (
     "status"            VARCHAR(10)  DEFAULT 'OK',
     "input"             JSONB        DEFAULT '{}',
     "process"           JSONB        DEFAULT '{}',
-    "separation"        JSONB        DEFAULT '{}',
     "output"            JSONB        DEFAULT '{}'
 );
