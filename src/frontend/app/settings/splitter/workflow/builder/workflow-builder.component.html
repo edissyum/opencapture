@@ -59,7 +59,7 @@
                                 <i class="fa-solid fa-check text-green-400"></i>
                             </button>
                         </mat-form-field>
-                        <mat-form-field *ngIf="field.type === 'select'">
+                        <mat-form-field *ngIf="field.type === 'select' && field.show">
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple"
                                         (selectionChange)="field.id === 'splitter_method_id' ? setSeparationMode($event.value) : ''">
