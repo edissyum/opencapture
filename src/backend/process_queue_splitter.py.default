@@ -80,7 +80,7 @@ def launch(args):
     remove_blank_pages = False
 
     workflow_settings = database.select({
-        'select': ['input, separation, process, output'],
+        'select': ['input', 'process', 'output'],
         'table': ['workflows'],
         'where': ['workflow_id = %s', 'module = %s'],
         'data': [args['workflow_id'], 'splitter']

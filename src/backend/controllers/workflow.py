@@ -114,7 +114,6 @@ def duplicate_workflow(workflow_id):
             'label': gettext('COPY_OF') + ' ' + workflow_info['label'],
             'input': json.dumps(workflow_info['input']),
             'process': json.dumps(workflow_info['process']),
-            'separation': json.dumps(workflow_info['separation']),
             'output': json.dumps(workflow_info['output'])
         }
 
@@ -191,7 +190,6 @@ def create_workflow(data):
 
     data['input'] = json.dumps(data['input'])
     data['process'] = json.dumps(data['process'])
-    data['separation'] = json.dumps(data['separation'])
     data['output'] = json.dumps(data['output'])
 
     res, error = workflow.create_workflow({'columns': data})
@@ -230,8 +228,6 @@ def update_workflow(workflow_id, data):
             data['input'] = json.dumps(data['input'])
         if 'process' in data:
             data['process'] = json.dumps(data['process'])
-        if 'separation' in data:
-            data['separation'] = json.dumps(data['separation'])
         if 'output' in data:
             data['output'] = json.dumps(data['output'])
 

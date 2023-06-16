@@ -55,7 +55,6 @@ export class WorkflowBuilderComponent implements OnInit {
     stepValid        : any           = {
         input: false,
         process: false,
-        separation: false,
         output: false
     };
     oldFolder        : string        = '';
@@ -101,6 +100,46 @@ export class WorkflowBuilderComponent implements OnInit {
                 show: true,
                 label: this.translate.instant('WORKFLOW.facturx_only'),
                 hint: this.translate.instant('WORKFLOW.facturx_only_hint'),
+                type: 'boolean',
+                control: new FormControl()
+            },
+            {
+                id: 'splitter_method_id',
+                show: true,
+                label: this.translate.instant('WORKFLOW.splitter_method'),
+                type: 'select',
+                control: new FormControl(),
+                required: true,
+                values: [
+                    {
+                        'id': 'no_sep',
+                        'label': this.translate.instant('WORKFLOW.no_separation')
+                    },
+                    {
+                        'id': 'qr_code_OC',
+                        'label': this.translate.instant('WORKFLOW.qr_code_separation')
+                    },
+                    {
+                        'id': 'c128_OC',
+                        'label': this.translate.instant('WORKFLOW.c128_separation')
+                    },
+                    {
+                        'id': 'separate_by_document_number',
+                        'label': this.translate.instant('WORKFLOW.separate_by_document_number')
+                    }
+                ]
+            },
+            {
+                id: 'separate_by_document_number_value',
+                show: false,
+                label: this.translate.instant('WORKFLOW.separate_by_document_number_value'),
+                type: 'number',
+                control: new FormControl(2),
+                required: false
+            },
+            {
+                id: 'remove_blank_pages',
+                label: this.translate.instant('WORKFLOW.remove_blank_pages'),
                 type: 'boolean',
                 control: new FormControl()
             },
@@ -232,51 +271,6 @@ export class WorkflowBuilderComponent implements OnInit {
                 'show': false
             }
         ],
-        separation: [
-            {
-                id: 'splitter_method_id',
-                label: this.translate.instant('WORKFLOW.splitter_method'),
-                type: 'select',
-                control: new FormControl(),
-                required: true,
-                values: [
-                    {
-                        'id': 'no_sep',
-                        'label': this.translate.instant('WORKFLOW.no_separation')
-                    },
-                    {
-                        'id': 'qr_code_OC',
-                        'label': this.translate.instant('WORKFLOW.qr_code_separation')
-                    },
-                    {
-                        'id': 'c128_OC',
-                        'label': this.translate.instant('WORKFLOW.c128_separation')
-                    },
-                    {
-                        'id': 'separate_by_document_number',
-                        'label': this.translate.instant('WORKFLOW.separate_by_document_number')
-                    }
-                ]
-            },
-            {
-                id: 'separate_by_document_number_value',
-                label: this.translate.instant('WORKFLOW.separate_by_document_number_value'),
-                type: 'number',
-                control: new FormControl(2),
-                required: false
-            },
-            {
-                id: 'remove_blank_pages',
-                label: this.translate.instant('WORKFLOW.remove_blank_pages'),
-                type: 'boolean',
-                control: new FormControl()
-            },
-            {
-                'id': 'script',
-                'control': new FormControl(),
-                'show': false
-            }
-        ],
         output: [
             {
                 id: 'outputs_id',
@@ -296,7 +290,6 @@ export class WorkflowBuilderComponent implements OnInit {
     stepDefaultCode  : any           = {
         'input' : marker("WORKFLOW.step_input_verifier"),
         'process' : marker("WORKFLOW.step_process_verifier"),
-        'separation' : marker("WORKFLOW.step_separation_verifier"),
         'output' : marker("WORKFLOW.step_output_verifier")
     };
 
@@ -562,6 +555,13 @@ export class WorkflowBuilderComponent implements OnInit {
 
     setSeparationMode(value: any) {
         this.separationMode = value;
+        if (this.separationMode === 'separate_by_document_number') {
+            this.fields['input'].forEach((element: any) => {
+                if (element.id === 'separate_by_document_number_value') {
+                    element.show = true;
+                }
+            });
+        }
     }
 
     setUsedOutputs() {
@@ -647,7 +647,6 @@ export class WorkflowBuilderComponent implements OnInit {
             label: this.nameControl.value,
             input: {},
             process: {},
-            separation: {},
             output: {}
         };
 
@@ -688,7 +687,6 @@ export class WorkflowBuilderComponent implements OnInit {
             label: this.nameControl.value,
             input: {},
             process: {},
-            separation: {},
             output: {}
         };
         if (this.idControl.value && this.nameControl.value) {
