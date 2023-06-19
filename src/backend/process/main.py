@@ -16,10 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import sys
 import uuid
 import json
 import datetime
 import importlib
+import traceback
 from src.backend import verifier_exports
 from src.backend.import_classes import _PyTesseract, _Files
 from src.backend.import_controllers import artificial_intelligence, verifier, accounts
@@ -120,6 +122,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
     elif workflow_settings and (
             not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
         if 'output' in workflow_settings and workflow_settings['output']:
+            insert_document = False
             for output_id in workflow_settings['output']['outputs_id']:
                 output_info = database.select({
                     'select': ['output_type_id', 'data', 'compress_type', 'ocrise'],
@@ -134,9 +137,8 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
         document_data['workflow_id'] = workflow_settings['id']
         if workflow_settings['input']['apply_process'] and allow_auto:
             if workflow_settings['process']['delete_documents']:
-                delete_documents(docservers, document_data['path'], document_data['filename'], full_jpg_filename)
-                log.info('Document not inserted in database based on workflow settings')
                 insert_document = False
+                delete_documents(docservers, document_data['path'], document_data['filename'], full_jpg_filename)
 
     if insert_document:
         document_data['datas'] = json.dumps(datas['datas'])
@@ -145,6 +147,8 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
             'columns': document_data
         })
         return document_id
+
+    log.info('Document not inserted in database based on workflow settings')
     return None
 
 
@@ -289,21 +293,30 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         # Launch input scripting if present
         if 'script' in workflow_settings['input'] and workflow_settings['input']['script']:
+            script = workflow_settings['input']['script']
+            rand = str(uuid.uuid4())
+            tmp_file = docservers['TMP_PATH'] + 'input_scripting_' + rand + '.py'
             try:
-                script = workflow_settings['input']['script']
-                tmp_file = docservers['TMP_PATH'] + 'input_scripting.py'
                 with open(tmp_file, 'w', encoding='UTF-8') as python_script:
                     python_script.write(script)
-                input_scripting = importlib.import_module('bin.data.tmp.input_scripting', 'main')
-                input_scripting.main({
+                input_scripting = importlib.import_module('bin.data.tmp.input_scripting_' + rand, 'main')
+
+                res = input_scripting.main({
                     'log': log,
                     'file': file,
+                    'ip': args['ip'],
                     'database': database,
+                    'user_info': args['user_info'],
+                    'custom_id': args['custom_id'],
                     'opencapture_path': config['GLOBAL']['applicationpath']
                 })
+
                 os.remove(tmp_file)
+                if not res:
+                    sys.exit(0)
             except Exception as _e:
-                log.error('Error during input scripting : ' + str(_e))
+                os.remove(tmp_file)
+                log.error('Error during input scripting : ' + str(traceback.format_exc()))
 
     supplier = None
     supplier_lang_different = False
@@ -496,8 +509,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         'where': ['module = %s', "settings #>> '{regex}' is not null", "enabled = %s"],
         'data': ['verifier', True]
     })
+
     for custom_field in custom_fields_regex:
-        if custom_field['id'] in custom_fields_to_find or not workflow_settings['input']['apply_process']:
+        if (not custom_fields_to_find or custom_field['id'] in custom_fields_to_find) \
+                or not workflow_settings['input']['apply_process']:
             custom_field_class = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
                                             datas['form_id'], custom_fields_to_find, custom_field)
             custom_field = 'custom_' + str(custom_field['id'])

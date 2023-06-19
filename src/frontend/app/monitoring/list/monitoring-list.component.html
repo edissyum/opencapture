@@ -55,7 +55,7 @@
                     </ng-container>
                     <ng-container matColumnDef="last_message">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.last_message' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element">{{ element.last_message }}</mat-cell>
+                        <mat-cell *matCellDef="let element" [innerHTML]="element.last_message"></mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="status">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>

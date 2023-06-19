@@ -428,11 +428,12 @@ def test_script_verifier(args):
             './instance/upload/verifier/CALINDA_INV-001510.pdf', 'wb') as out_file:
         shutil.copyfileobj(_r, out_file)
 
+    rand = str(uuid.uuid4())
+    tmp_file = docservers['TMP_PATH'] + args['step'] + '_scripting_' + rand + '.py'
     try:
-        rand = str(uuid.uuid4())
-        tmp_file = docservers['TMP_PATH'] + args['step'] + '_scripting_' + rand + '.py'
         if os.path.isfile(tmp_file):
             os.remove(tmp_file)
+
         with open(tmp_file, 'w', encoding='UTF-8') as python_script:
             python_script.write(args['codeContent'])
 
@@ -452,5 +453,6 @@ def test_script_verifier(args):
         result_string = result.getvalue()
         os.remove(tmp_file)
     except Exception:
+        os.remove(tmp_file)
         return traceback.format_exc(), 400
     return result_string, 200

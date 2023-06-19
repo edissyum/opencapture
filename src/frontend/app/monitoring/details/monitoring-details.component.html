@@ -119,7 +119,7 @@
                         </ng-container>
                         <ng-container matColumnDef="event_message">
                             <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.event_message' | translate }} </mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{ element.message }}</mat-cell>
+                            <mat-cell *matCellDef="let element" [innerHTML]="element.message"></mat-cell>
                         </ng-container>
                         <ng-container matColumnDef="status">
                             <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>

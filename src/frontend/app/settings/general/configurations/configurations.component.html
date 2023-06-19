@@ -22,7 +22,7 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!loading" class="w-full">
-            <mat-tab-group dynamicHeight>
+            <mat-tab-group dynamicHeight (selectedTabChange)="onTabChanged($event)">
                 <mat-tab [label]="'CONFIGURATIONS.global' | translate">
                     <div class="overflow-x-hidden overflow-y-auto text-center" style="height: calc(100vh - 11rem) !important">
                         <div class="grid grid-cols-2 gap-6">
@@ -58,7 +58,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2">
+                        <div class="grid grid-cols-2" *ngIf="this.selectedIndex === 0">
                             <div class="mb-5 mx-5 h-48">
                                 <h3 class="text-gray-900">{{ 'CONFIGURATIONS.top_login_text' | translate }}</h3>
                                 <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">

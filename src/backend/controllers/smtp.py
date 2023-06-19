@@ -15,7 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from gettext import gettext
+from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
