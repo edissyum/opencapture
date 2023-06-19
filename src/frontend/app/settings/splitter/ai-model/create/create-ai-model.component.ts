@@ -29,6 +29,7 @@ import { PrivilegesService } from "../../../../../services/privileges.service";
 import { environment } from "../../../../env";
 import { catchError, of, tap } from "rxjs";
 import { finalize } from "rxjs/operators";
+import {DocumentTypeComponent} from "../../../../splitter/document-type/document-type.component";
 
 @Component({
   selector: 'app-create-model',
@@ -36,7 +37,7 @@ import { finalize } from "rxjs/operators";
   styleUrls: ['./create-ai-model.component.scss']
 })
 
-export class CreateAiModelComponent implements OnInit {
+export class CreateSplitterAiModelComponent implements OnInit {
     loading             : boolean   = true;
     docs                : any       = [];
     doctypes            : any       = [];
@@ -48,7 +49,6 @@ export class CreateAiModelComponent implements OnInit {
     chosenForm          : any       = [];
     chosenDocs          : any       = [];
     totalChecked        : number    = 0;
-    splitterOrVerifier  : any       = 'verifier';
     modelForm           : any[]     = [
         {
             id: 'model_label',
@@ -82,11 +82,6 @@ export class CreateAiModelComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        if (this.router.url.includes('/verifier/')) {
-            this.splitterOrVerifier = 'verifier';
-        } else if (this.router.url.includes('/splitter/')) {
-            this.splitterOrVerifier = 'splitter';
-        }
         this.serviceSettings.init();
         this.retrieveModels();
         this.retrieveDoctypes();
@@ -95,7 +90,7 @@ export class CreateAiModelComponent implements OnInit {
     }
 
     retrieveDoctypes() {
-        this.http.get(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/getTrainDocuments', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/ai/splitter/getTrainDocuments', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.docs = data;
                 this.docStatus.splice(0);
@@ -117,7 +112,7 @@ export class CreateAiModelComponent implements OnInit {
     }
 
     checkSelectedBatch(cpt: number, current_doc: any) {
-        this.totalChecked = this.docStatus.filter((a: { isSelected: boolean }) => a.isSelected).length;
+        this.totalChecked = this.docStatus.filter((a: { isSelected: boolean; }) => a.isSelected).length;
         this.onFormSelect({value: this.forms[0].id}, cpt, current_doc);
     }
 
@@ -162,7 +157,7 @@ export class CreateAiModelComponent implements OnInit {
 
     changeOutputType(event: any, doc: string) {
         const val = event.value;
-        const match = this.docStatus.find((a: { doc: string }) => a.doc === doc);
+        const match = this.docStatus.find((a: { doc: string; }) => a.doc === doc);
         match.linked_doctype = val;
         return true;
     }
@@ -172,16 +167,12 @@ export class CreateAiModelComponent implements OnInit {
         for (const element of this.forms) {
             if (element.id === val) {
                 this.chosenForm[index] = element.id;
-                this.chosenDocs[index] = this.doctypes.filter((a: { formId: number }) => a.formId === this.chosenForm[index]);
+                this.chosenDocs[index] = this.doctypes.filter((a: { formId: number;}) => a.formId === this.chosenForm[index]);
             }
         }
-        if (this.splitterOrVerifier === 'splitter') {
-            this.controls[index].value = this.chosenDocs[index][0].id;
-        }
-        const match = this.docStatus.find((a: { doc: string }) => a.doc === doc);
-        if (this.splitterOrVerifier === 'splitter') {
-            match.linked_doctype = this.chosenDocs[index][0].id;
-        }
+        this.controls[index].value = this.chosenDocs[index][0].id;
+        const match = this.docStatus.find((a: { doc: string; }) => a.doc === doc);
+        match.linked_doctype = this.chosenDocs[index][0].id;
         match.linked_form = this.chosenForm[index];
     }
 
@@ -192,23 +183,16 @@ export class CreateAiModelComponent implements OnInit {
             const minProba = this.getValueFromForm(this.modelForm, 'min_proba');
             const label = this.getValueFromForm(this.modelForm, 'model_label');
             const modelName = label.toLowerCase().replace(/ /g, "_") + '.sav';
-            const matches = this.docStatus.filter((a: { isSelected: boolean }) => a.isSelected);
+            const matches = this.docStatus.filter((a: { isSelected: boolean; }) => a.isSelected);
             for (let i = 0; i < this.totalChecked; i = i + 1) {
                 const fold = matches[i].doc;
                 const formid = matches[i].linked_form;
-                if (this.splitterOrVerifier === 'splitter') {
-                    const ocTarget = matches[i].linked_doctype;
-                    doctypes.push({
-                        form: formid,
-                        folder: fold,
-                        doctype: ocTarget
-                    });
-                } else if (this.splitterOrVerifier === 'verifier')  {
-                    doctypes.push({
-                        form: formid,
-                        folder: fold
-                    });
-                }
+                const ocTarget = matches[i].linked_doctype;
+                doctypes.push({
+                    form: formid,
+                    folder: fold,
+                    doctype: ocTarget
+                });
             }
 
             for (const element of this.listModels) {
@@ -220,8 +204,8 @@ export class CreateAiModelComponent implements OnInit {
                 }
             }
             if (start_training) {
-                this.http.post(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/trainModel/' + modelName,
-                    {label: label, docs: doctypes, min_proba: minProba, module: this.splitterOrVerifier},
+                this.http.post(environment['url'] + '/ws/ai/splitter/trainModel/' + modelName,
+                    {label: label, docs: doctypes, min_proba: minProba},
                     {headers: this.authService.headers}).pipe(
                     catchError((err: any) => {
                         console.debug(err);
@@ -230,7 +214,7 @@ export class CreateAiModelComponent implements OnInit {
                 ).subscribe();
 
                 this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.created'));
-                this.router.navigate(['/settings/' + this.splitterOrVerifier + '/ai']).then();
+                this.router.navigate(['/settings/splitter/ai']).then();
             }
         } else {
             if (this.totalChecked < 2) {
@@ -272,7 +256,7 @@ export class CreateAiModelComponent implements OnInit {
     }
 
     retrieveModels() {
-        this.http.get(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/list?limit=', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/ai/splitter/list?limit=', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.listModels = data.models;
             }),
@@ -284,7 +268,7 @@ export class CreateAiModelComponent implements OnInit {
     }
 
     retrieveForms() {
-        this.http.get(environment['url'] + '/ws/forms/' + this.splitterOrVerifier + '/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/splitter/list', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                this.forms = forms.forms;
                if (this.forms.length === 1) {
@@ -302,5 +286,25 @@ export class CreateAiModelComponent implements OnInit {
 
     displayDoctypes(form: any) {
         return !!form.value;
+    }
+
+    openDoctypeTree(document: any, formId: number): void {
+        const dialogRef = this.dialog.open(DocumentTypeComponent, {
+            width   : '800px',
+            height  : '860px',
+            data    : {
+                selectedDoctype: {
+                    key: document.doctypeKey  ? document.doctypeKey  : "",
+                    label: document.doctypeLabel  ? document.doctypeLabel  : ""
+                },
+                formId: formId
+            }
+        });
+        dialogRef.afterClosed().subscribe((result: any) => {
+            if (result) {
+                document.doctypeLabel = result.label;
+                document.doctypeKey   = result.key;
+            }
+        });
     }
 }

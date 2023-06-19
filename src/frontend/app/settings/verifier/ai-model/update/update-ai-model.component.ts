@@ -25,7 +25,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
-import { environment } from  "../../../../env";
+import { environment } from "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { lastValueFrom, of } from "rxjs";
 
@@ -35,7 +35,7 @@ import { lastValueFrom, of } from "rxjs";
   styleUrls: ['./update-ai-model.component.scss']
 })
 
-export class UpdateAiModelComponent implements OnInit {
+export class UpdateVerifierAiModelComponent implements OnInit {
     loading             : boolean   = true;
     modelId             : number    = 0;
     doc_types           : any       = [];
@@ -102,8 +102,8 @@ export class UpdateAiModelComponent implements OnInit {
                                 break;
                             }
                         }
-                        this.formById.push((this.forms.find((a: { id: number }) => a.id === selectedFormId[i])).id);
-                        this.chosenDocs[i] = this.doc_types.filter((a: { formId: number }) => a.formId === selectedFormId[i]);
+                        this.formById.push((this.forms.find((a: { id: number; }) => a.id === selectedFormId[i])).id);
+                        this.chosenDocs[i] = this.doc_types.filter((a: { formId: number; }) => a.formId === selectedFormId[i]);
                     } else if (this.splitterOrVerifier === 'verifier') {
                         for (const doc of this.documents) {
                             if (doc.form) {
@@ -240,7 +240,7 @@ export class UpdateAiModelComponent implements OnInit {
         for (const element of this.forms) {
             if (element.id === val) {
                 this.chosenForm[index] = element.id;
-                this.chosenDocs[index] = this.doc_types.filter((a: { formId: number }) => a.formId === this.chosenForm[index]);
+                this.chosenDocs[index] = this.doc_types.filter((a: { formId: number; }) => a.formId === this.chosenForm[index]);
             }
         }
         this.doctypesFormControl[index].value = this.chosenDocs[index][0].id;

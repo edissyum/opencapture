@@ -50,9 +50,12 @@ import { SplitterFormBuilderComponent } from "./splitter/form/builder/form-build
 import { CreateDoctypeComponent } from "./splitter/doctypes/create/create-doctype.component";
 import { SplitterUpdateOutputComponent } from "./splitter/output/update/update-output.component";
 import { SplitterCreateOutputComponent } from "./splitter/output/create/create-output.component";
-import { ListAiModelComponent } from "./general/ai-model/list/list-ai-model.component";
-import { CreateAiModelComponent } from "./general/ai-model/create/create-ai-model.component";
-import { UpdateAiModelComponent } from "./general/ai-model/update/update-ai-model.component";
+import { ListVerifierAiModelComponent } from "./verifier/ai-model/list/list-ai-model.component";
+import { CreateVerifierAiModelComponent } from "./verifier/ai-model/create/create-ai-model.component";
+import { UpdateVerifierAiModelComponent } from "./verifier/ai-model/update/update-ai-model.component";
+import { ListSplitterAiModelComponent } from "./splitter/ai-model/list/list-ai-model.component";
+import { CreateSplitterAiModelComponent } from "./splitter/ai-model/create/create-ai-model.component";
+import { UpdateSplitterAiModelComponent } from "./splitter/ai-model/update/update-ai-model.component";
 import { PositionsMaskListComponent } from "./verifier/positions-mask/list/positions-mask-list.component";
 import { CreatePositionsMaskComponent } from "./verifier/positions-mask/create/create-positions-mask.component";
 import { UpdatePositionsMaskComponent } from "./verifier/positions-mask/update/update-positions-mask.component";
@@ -210,17 +213,17 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/verifier/ai', component: ListAiModelComponent,
+        path: 'settings/verifier/ai', component: ListVerifierAiModelComponent,
         data: {title: 'SETTINGS.artificial_intelligence', privileges: ['settings', 'list_ai_model']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/verifier/ai/create', component: CreateAiModelComponent,
+        path: 'settings/verifier/ai/create', component: CreateVerifierAiModelComponent,
         data: {title: 'ARTIFICIAL-INTELLIGENCE.add_model', privileges: ['settings', 'create_ai_model']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/verifier/ai/update/:id', component: UpdateAiModelComponent,
+        path: 'settings/verifier/ai/update/:id', component: UpdateVerifierAiModelComponent,
         data: {title: 'ARTIFICIAL-INTELLIGENCE.update_model', privileges: ['settings', 'update_ai_model']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
@@ -301,17 +304,17 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/splitter/ai', component: ListAiModelComponent,
+        path: 'settings/splitter/ai', component: ListSplitterAiModelComponent,
         data: {title: 'SETTINGS.artificial_intelligence', privileges: ['settings', 'list_ai_model_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/splitter/ai/create', component: CreateAiModelComponent,
+        path: 'settings/splitter/ai/create', component: CreateSplitterAiModelComponent,
         data: {title: 'ARTIFICIAL-INTELLIGENCE.add_model', privileges: ['settings', 'create_ai_model']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/splitter/ai/update/:id', component: UpdateAiModelComponent,
+        path: 'settings/splitter/ai/update/:id', component: UpdateSplitterAiModelComponent,
         data: {title: 'ARTIFICIAL-INTELLIGENCE.update_model', privileges: ['settings', 'update_ai_model_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
@@ -319,7 +322,7 @@ const routes: Routes = [
         path: 'settings/splitter/status-update', component: SplitterUpdateStatusComponent,
         data: {title: 'SETTINGS.status_update', privileges: ['settings', 'update_status_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
-    },
+    }
 // -- END Splitter
 ];
 

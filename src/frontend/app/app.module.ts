@@ -96,9 +96,12 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { CreateDoctypeComponent } from './settings/splitter/doctypes/create/create-doctype.component';
 import { ListDoctypeComponent } from './settings/splitter/doctypes/list/list-doctype.component';
 import { CreateFolderDoctypeComponent } from './settings/splitter/doctypes/create-folder/create-folder-doctype.component';
-import { ListAiModelComponent } from "./settings/general/ai-model/list/list-ai-model.component";
-import { CreateAiModelComponent } from "./settings/general/ai-model/create/create-ai-model.component";
-import { UpdateAiModelComponent } from "./settings/general/ai-model/update/update-ai-model.component";
+import { ListVerifierAiModelComponent } from "./settings/verifier/ai-model/list/list-ai-model.component";
+import { CreateVerifierAiModelComponent } from "./settings/verifier/ai-model/create/create-ai-model.component";
+import { UpdateVerifierAiModelComponent } from "./settings/verifier/ai-model/update/update-ai-model.component";
+import { ListSplitterAiModelComponent } from "./settings/splitter/ai-model/list/list-ai-model.component";
+import { CreateSplitterAiModelComponent } from "./settings/splitter/ai-model/create/create-ai-model.component";
+import { UpdateSplitterAiModelComponent } from "./settings/splitter/ai-model/update/update-ai-model.component";
 import { ConfigurationsComponent } from './settings/general/configurations/configurations.component';
 import { DocserversComponent } from './settings/general/docservers/docservers.component';
 import { RegexComponent } from './settings/general/regex/regex.component';
@@ -174,9 +177,12 @@ export function createTranslateLoader(http: HttpClient) {
         SplitterUpdateOutputComponent,
         SplitterCreateOutputComponent,
         SplitterOutputListComponent,
-        ListAiModelComponent,
-        CreateAiModelComponent,
-        UpdateAiModelComponent,
+        ListVerifierAiModelComponent,
+        CreateVerifierAiModelComponent,
+        UpdateVerifierAiModelComponent,
+        ListSplitterAiModelComponent,
+        CreateSplitterAiModelComponent,
+        UpdateSplitterAiModelComponent,
         HistoryComponent,
         StatisticsComponent,
         CreateDoctypeComponent,
