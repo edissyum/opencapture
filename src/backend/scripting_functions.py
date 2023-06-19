@@ -26,13 +26,17 @@ def send_to_workflow(args):
         'where': ['workflow_id = %s'],
         'data': [args['workflow_id']]
     })
+
     if not workflow:
         args['log'].error(gettext('WORFKLOW_NOT_FOUND'))
         return False
 
     launch({
+        'ip': args['ip'],
+        'log': args['log'],
         'file': args['file'],
+        'user_info': args['user_info'],
         'custom_id': args['custom_id'],
-        'task_id_monitor': args['log'].task_id_monitor,
-        'workflow_id': args['workflow_id']
+        'workflow_id': args['workflow_id'],
+        'task_id_monitor': args['log'].task_id_monitor
     })
