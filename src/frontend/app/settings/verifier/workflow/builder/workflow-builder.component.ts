@@ -555,13 +555,11 @@ export class WorkflowBuilderComponent implements OnInit {
 
     setSeparationMode(value: any) {
         this.separationMode = value;
-        if (this.separationMode === 'separate_by_document_number') {
-            this.fields['input'].forEach((element: any) => {
-                if (element.id === 'separate_by_document_number_value') {
-                    element.show = true;
-                }
-            });
-        }
+        this.fields['input'].forEach((element: any) => {
+            if (element.id === 'separate_by_document_number_value') {
+                element.show = value === 'separate_by_document_number';
+            }
+        });
     }
 
     setUsedOutputs() {
