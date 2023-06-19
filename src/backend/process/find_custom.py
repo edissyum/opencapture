@@ -49,7 +49,7 @@ class FindCustom:
         self.custom_fields_to_find = custom_fields_to_find
 
     def check_format_and_clean(self, data, settings):
-        if settings['remove_special_char']:
+        if 'remove_special_char' in settings and settings['remove_special_char']:
             data_to_replace = r'[-()\"#\\/@;:<>{}\]\[`+=~|!?€$%£*]'
             if settings['format'] == 'date':
                 data_to_replace = r'[-()\"#\\@;:<>{}\]\[`+=~|!?€$%£*]'
