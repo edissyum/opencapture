@@ -390,7 +390,7 @@
 	},
 	"GLOBAL": {
 		"add_time": "Ajouté le",
-		"allowed_path": "Chemin autorisé :  {{ allowedPath }}",
+		"allowed_path": "Chemin autorisé : {{ allowedPath }}",
 		"back": "Retour",
 		"batches": "Lots",
 		"cancel": "Annuler",
