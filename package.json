@@ -24,7 +24,7 @@
         "ngx-toastr": "^17.0.2",
         "remove-accents": "^0.4.4",
         "svg-country-flags": "^1.2.10",
-        "tinymce": "^6.5.0"
+        "tinymce": "^6.5.1"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^16.1.0",
@@ -61,7 +61,7 @@
         "@typescript-eslint/eslint-plugin": "5.59.11",
         "@typescript-eslint/parser": "5.59.11",
         "autoprefixer": "^10.4.14",
-        "eslint": "^8.42.0",
+        "eslint": "^8.43.0",
         "eslint-plugin-import": "latest",
         "eslint-plugin-jsdoc": "latest",
         "eslint-plugin-prefer-arrow": "latest",
