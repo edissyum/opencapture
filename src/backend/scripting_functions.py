@@ -1,7 +1,6 @@
 # This file is part of Open-Capture.
 from flask_babel import gettext
 
-import requests
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -15,23 +14,25 @@ import requests
 # You should have received a copy of the GNU General Public License
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-from src.backend.import_controllers import smtp
-from flask import Blueprint, make_response, request
-
-bp = Blueprint('smtp', __name__, url_prefix='/ws/')
+from src.backend.main import launch
 
 
-@bp.route('smtp/isServerUp', methods=['GET'])
-def check_smtp_status():
-    status = smtp.check_smtp_status()
-    return make_response({'status': status}, 200)
+def send_to_workflow(args):
+    workflow = args['database'].select({
+        'select': ['input'],
+        'table': ['workflows'],
+        'where': ['workflow_id = %s'],
+        'data': [args['workflow_id']]
+    })
+    if not workflow:
+        args['log'].error(gettext('WORFKLOW_NOT_FOUND'))
+        return False
 
-
-@bp.route('smtp/test', methods=['POST'])
-def test_smtp_send():
-    res = ('', 400)
-    if 'email' in request.json and request.json['email'] is not None:
-        res = smtp.test_send(request.json['email'])
-    return make_response(res[0], res[1])
+    launch({
+        'file': args['file'],
+        'custom_id': args['custom_id'],
+        'task_id_monitor': args['log'].task_id_monitor,
+        'workflow_id': args['workflow_id']
+    })

@@ -289,21 +289,24 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         # Launch input scripting if present
         if 'script' in workflow_settings['input'] and workflow_settings['input']['script']:
-            try:
-                script = workflow_settings['input']['script']
-                tmp_file = docservers['TMP_PATH'] + 'input_scripting.py'
-                with open(tmp_file, 'w', encoding='UTF-8') as python_script:
-                    python_script.write(script)
-                input_scripting = importlib.import_module('bin.data.tmp.input_scripting', 'main')
-                input_scripting.main({
-                    'log': log,
-                    'file': file,
-                    'database': database,
-                    'opencapture_path': config['GLOBAL']['applicationpath']
-                })
-                os.remove(tmp_file)
-            except Exception as _e:
-                log.error('Error during input scripting : ' + str(_e))
+            # try:
+            print(args)
+            script = workflow_settings['input']['script']
+            rand = str(uuid.uuid4())
+            tmp_file = docservers['TMP_PATH'] + 'input_scripting_' + rand + '.py'
+            with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+                python_script.write(script)
+            input_scripting = importlib.import_module('bin.data.tmp.input_scripting_' + rand, 'main')
+            input_scripting.main({
+                'log': log,
+                'file': file,
+                'database': database,
+                'custom_id': args['custom_id'],
+                'opencapture_path': config['GLOBAL']['applicationpath']
+            })
+            os.remove(tmp_file)
+            # except Exception as _e:
+            #     log.error('Error during input scripting : ' + str(_e))
 
     supplier = None
     supplier_lang_different = False
@@ -404,7 +407,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                     }
                                     supplier = [data['vat_number'], (('', ''), ('', '')), data, False, column]
                                     log.info('Supplier created using INSEE database : ' + supplier[2]['name'] + ' with ' + column.upper() + ' : ' + value)
-
+    print(workflow_settings)
     if 'name' in system_fields_to_find or not workflow_settings['input']['apply_process']:
         # Find supplier in document if not send using upload rest
         if not supplier or not supplier[0] or not supplier[2]:

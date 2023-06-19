@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from gettext import gettext
+from flask_babel import gettext
 from src.backend.import_controllers import forms
 from src.backend.import_models import custom_fields
 

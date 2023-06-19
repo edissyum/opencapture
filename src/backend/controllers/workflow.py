@@ -428,29 +428,30 @@ def test_script_verifier(args):
             './instance/upload/verifier/CALINDA_INV-001510.pdf', 'wb') as out_file:
         shutil.copyfileobj(_r, out_file)
 
-    try:
-        rand = str(uuid.uuid4())
-        tmp_file = docservers['TMP_PATH'] + args['step'] + '_scripting_' + rand + '.py'
-        if os.path.isfile(tmp_file):
-            os.remove(tmp_file)
-        with open(tmp_file, 'w', encoding='UTF-8') as python_script:
-            python_script.write(args['codeContent'])
-
-        scripting = importlib.import_module('bin.data.tmp.' + args['step'] + '_scripting_' + rand, 'main')
-
-        if args['step'] == 'input':
-            args = {
-                'log': log,
-                'file': './instance/upload/verifier/CALINDA_INV-001510.pdf',
-                'database': database,
-                'opencapture_path': config['GLOBAL']['applicationpath']
-            }
-
-        result = StringIO()
-        sys.stdout = result
-        scripting.main(args)
-        result_string = result.getvalue()
+    # try:
+    rand = str(uuid.uuid4())
+    tmp_file = docservers['TMP_PATH'] + args['step'] + '_scripting_' + rand + '.py'
+    if os.path.isfile(tmp_file):
         os.remove(tmp_file)
-    except Exception:
-        return traceback.format_exc(), 400
+
+    with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+        python_script.write(args['codeContent'])
+
+    scripting = importlib.import_module('bin.data.tmp.' + args['step'] + '_scripting_' + rand, 'main')
+
+    if args['step'] == 'input':
+        args = {
+            'log': log,
+            'file': './instance/upload/verifier/CALINDA_INV-001510.pdf',
+            'database': database,
+            'opencapture_path': config['GLOBAL']['applicationpath']
+        }
+
+    result = StringIO()
+    sys.stdout = result
+    scripting.main(args)
+    result_string = result.getvalue()
+    os.remove(tmp_file)
+    # except Exception:
+    #     return traceback.format_exc(), 400
     return result_string, 200
