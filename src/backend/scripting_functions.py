@@ -1,5 +1,4 @@
 # This file is part of Open-Capture.
-from flask_babel import gettext
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,11 +15,14 @@ from flask_babel import gettext
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-from src.backend.main import launch
+import json
+from flask_babel import gettext
+from src.backend.main import launch, create_classes_from_custom_id
 
 
 def send_to_workflow(args):
-    workflow = args['database'].select({
+    database, _, _, _, _, _, _, _, _, _, _, _ = create_classes_from_custom_id(args['custom_id'], True)
+    workflow = database.select({
         'select': ['input'],
         'table': ['workflows'],
         'where': ['workflow_id = %s'],
@@ -40,3 +42,28 @@ def send_to_workflow(args):
         'workflow_id': args['workflow_id'],
         'task_id_monitor': args['log'].task_id_monitor
     })
+
+
+def update_document_data(args):
+    database, _, _, _, _, _, _, _, _, _, _, _ = create_classes_from_custom_id(args['custom_id'], True)
+    if args['document_id']:
+        datas = database.select({
+            'select': ['datas'],
+            'table': ['documents'],
+            'where': ['id = %s'],
+            'data': [args['document_id']]
+        })
+        if datas and datas[0]:
+            datas = datas[0]['datas']
+
+            for new_data in args['data']:
+                datas[new_data] = args['data'][new_data]
+
+            database.update({
+                'table': ['documents'],
+                'set': {
+                    'datas': json.dumps(datas)
+                },
+                'where': ['id = %s'],
+                'data': [args['document_id']]
+            })
