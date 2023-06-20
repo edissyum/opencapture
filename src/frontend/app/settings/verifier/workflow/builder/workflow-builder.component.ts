@@ -518,12 +518,17 @@ export class WorkflowBuilderComponent implements OnInit {
 
     openCodeEditor(step: string) {
         let codeContent = this.translate.instant(this.stepDefaultCode[step]);
-
+        let defaultCode = true;
         this.fields[step].forEach((element: any) => {
             if (element.id === 'script' && element.control.value) {
                 codeContent = element.control.value;
+                defaultCode = false;
             }
         });
+
+        if (defaultCode) {
+            this.notify.success(this.translate.instant('WORKFLOW.load_default_code'));
+        }
 
         const dialogRef = this.dialog.open(CodeEditorComponent, {
             data: {

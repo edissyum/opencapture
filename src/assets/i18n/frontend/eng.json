@@ -1078,6 +1078,7 @@
 		"input_folder_ok": "The input folder exists and is writable",
 		"input_scripting": "Before process scripting",
 		"label": "Workflow label",
+		"load_default_code": "No script associated to this workflow. Loading default script",
 		"next": "Next",
 		"no_ai_model_associated": "No AI model associated",
 		"no_rotation": "No rotation",
