@@ -268,6 +268,7 @@ export class WorkflowBuilderComponent implements OnInit {
             },
             {
                 'id': 'script',
+                'required': false,
                 'control': new FormControl(),
                 'show': false
             }
@@ -283,6 +284,7 @@ export class WorkflowBuilderComponent implements OnInit {
             },
             {
                 'id': 'script',
+                'required': false,
                 'control': new FormControl(),
                 'show': false
             }
@@ -549,6 +551,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 this.fields[step].push({
                     'show': false,
                     'id': 'script',
+                    'required': false,
                     'control': new FormControl(result, Validators.required)
                 });
 
