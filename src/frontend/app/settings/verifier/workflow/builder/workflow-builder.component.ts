@@ -539,7 +539,7 @@ export class WorkflowBuilderComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if (result) {
+            if (result !== false) {
                 this.fields[step].push({
                     'show': false,
                     'id': 'script',
@@ -653,7 +653,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 workflow[parent][field.id] = field.control.value;
             });
         });
-
+        console.log(workflow);
         if (step === 'input') {
             const data = workflow['input'];
             data['workflow_id'] = this.idControl.value;
