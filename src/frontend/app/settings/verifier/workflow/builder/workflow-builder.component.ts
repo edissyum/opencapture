@@ -145,6 +145,7 @@ export class WorkflowBuilderComponent implements OnInit {
             },
             {
                 'id': 'script',
+                'required': false,
                 'control': new FormControl(),
                 'show': false
             }
@@ -636,7 +637,7 @@ export class WorkflowBuilderComponent implements OnInit {
     isStepValid(step: any) {
         let valid = true;
         this.fields[step].forEach((element: any) => {
-            if ((element.required && !element.control.value) || element.control.errors) {
+            if ((element.required && !element.control.value) || (element.control.errors && element.id !== 'script')) {
                 valid = false;
             }
         });
@@ -658,7 +659,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 workflow[parent][field.id] = field.control.value;
             });
         });
-        console.log(workflow);
+
         if (step === 'input') {
             const data = workflow['input'];
             data['workflow_id'] = this.idControl.value;
