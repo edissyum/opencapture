@@ -30,6 +30,44 @@ from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindIn
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
 
 
+def launch_script(workflow_settings, docservers, step, log, file, database, args, config, datas=None):
+    if 'script' in workflow_settings[step] and workflow_settings[step]['script']:
+        script = workflow_settings[step]['script']
+        rand = str(uuid.uuid4())
+        tmp_file = docservers['TMP_PATH'] + '/' + step + '_scripting_' + rand + '.py'
+
+        try:
+            with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+                python_script.write(script)
+            script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.').replace('.py', '')
+            script_name = script_name.replace('..', '.')
+            scripting = importlib.import_module(script_name, 'main')
+
+            data = {
+                'log': log,
+                'file': file,
+                'custom_id': args['custom_id'],
+                'opencapture_path': config['GLOBAL']['applicationpath']
+            }
+
+            if step == 'input':
+                data['ip'] = args['ip']
+                data['database'] = database
+                data['user_info'] = args['user_info']
+            elif step == 'process':
+                data['document_id'] = args['document_id']
+                if datas:
+                    data['datas'] = datas
+
+            res = scripting.main(data)
+            os.remove(tmp_file)
+            if not res:
+                sys.exit(0)
+        except Exception as _e:
+            os.remove(tmp_file)
+            log.error('Error during' + step + 'scripting : ' + str(traceback.format_exc()))
+
+
 def execute_outputs(output_info, log, regex, document_data, database, current_lang):
     data = output_info['data']
     ocrise = output_info['ocrise']
@@ -292,31 +330,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 datas.update({'form_id': res})
 
         # Launch input scripting if present
-        if 'script' in workflow_settings['input'] and workflow_settings['input']['script']:
-            script = workflow_settings['input']['script']
-            rand = str(uuid.uuid4())
-            tmp_file = docservers['TMP_PATH'] + 'input_scripting_' + rand + '.py'
-            try:
-                with open(tmp_file, 'w', encoding='UTF-8') as python_script:
-                    python_script.write(script)
-                input_scripting = importlib.import_module('bin.data.tmp.input_scripting_' + rand, 'main')
-
-                res = input_scripting.main({
-                    'log': log,
-                    'file': file,
-                    'ip': args['ip'],
-                    'database': database,
-                    'user_info': args['user_info'],
-                    'custom_id': args['custom_id'],
-                    'opencapture_path': config['GLOBAL']['applicationpath']
-                })
-
-                os.remove(tmp_file)
-                if not res:
-                    sys.exit(0)
-            except Exception as _e:
-                os.remove(tmp_file)
-                log.error('Error during input scripting : ' + str(traceback.format_exc()))
+        launch_script(workflow_settings, docservers, 'input', log, file, database, args, config)
 
     supplier = None
     supplier_lang_different = False
@@ -695,4 +709,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 'where': ['vat_number = %s', 'status <> %s'],
                 'data': [supplier[2]['vat_number'], 'DEL']
             })
+    # Launch process scripting if present
+    args['document_id'] = document_id
+    launch_script(workflow_settings, docservers, 'process', log, file, database, args, config, datas)
     return document_id

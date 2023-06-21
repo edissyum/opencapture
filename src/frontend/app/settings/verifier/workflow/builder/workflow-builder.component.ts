@@ -145,6 +145,7 @@ export class WorkflowBuilderComponent implements OnInit {
             },
             {
                 'id': 'script',
+                'required': false,
                 'control': new FormControl(),
                 'show': false
             }
@@ -267,6 +268,7 @@ export class WorkflowBuilderComponent implements OnInit {
             },
             {
                 'id': 'script',
+                'required': false,
                 'control': new FormControl(),
                 'show': false
             }
@@ -282,6 +284,7 @@ export class WorkflowBuilderComponent implements OnInit {
             },
             {
                 'id': 'script',
+                'required': false,
                 'control': new FormControl(),
                 'show': false
             }
@@ -518,12 +521,17 @@ export class WorkflowBuilderComponent implements OnInit {
 
     openCodeEditor(step: string) {
         let codeContent = this.translate.instant(this.stepDefaultCode[step]);
-
+        let defaultCode = true;
         this.fields[step].forEach((element: any) => {
             if (element.id === 'script' && element.control.value) {
                 codeContent = element.control.value;
+                defaultCode = false;
             }
         });
+
+        if (defaultCode) {
+            this.notify.success(this.translate.instant('WORKFLOW.load_default_code'));
+        }
 
         const dialogRef = this.dialog.open(CodeEditorComponent, {
             data: {
@@ -539,10 +547,11 @@ export class WorkflowBuilderComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if (result) {
+            if (result !== false) {
                 this.fields[step].push({
                     'show': false,
                     'id': 'script',
+                    'required': false,
                     'control': new FormControl(result, Validators.required)
                 });
 
@@ -631,7 +640,7 @@ export class WorkflowBuilderComponent implements OnInit {
     isStepValid(step: any) {
         let valid = true;
         this.fields[step].forEach((element: any) => {
-            if ((element.required && !element.control.value) || element.control.errors) {
+            if ((element.required && !element.control.value) || (element.control.errors && element.id !== 'script')) {
                 valid = false;
             }
         });
