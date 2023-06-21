@@ -18,7 +18,7 @@
         "@swimlane/ngx-charts": "^20.4.1",
         "@tinymce/tinymce-angular": "^7.0.0",
         "moment": "^2.29.4",
-        "ng-sortgrid": "^15.0.1",
+        "ng-sortgrid": "^16.0.0",
         "ngx-file-drag-drop": "^7.0.0",
         "ngx-mat-select-search": "^7.0.2",
         "ngx-toastr": "^17.0.2",
