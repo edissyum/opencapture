@@ -134,8 +134,7 @@
                         {{ 'WORKFLOW.next' | translate }}
                     </button>
                     <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
-                       *ngIf="this.processAllowed" [matTooltip]="'WORKFLOW.process_scripting' | translate"
-                       (click)="openCodeEditor('process')"></i>
+                       *ngIf="this.processAllowed" [matTooltip]="'WORKFLOW.process_scripting' | translate" (click)="openCodeEditor('process')"></i>
                 </span>
             </mat-step>
             <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.output' | translate">
@@ -167,7 +166,7 @@
                     </span>
                 </button>
                 <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
-                   [matTooltip]="'WORKFLOW.output_scripting' | translate"></i>
+                   [matTooltip]="'WORKFLOW.output_scripting' | translate" (click)="openCodeEditor('output')"></i>
             </mat-step>
         </mat-stepper>
     </mat-sidenav-content>
