@@ -21,7 +21,7 @@ from src.backend.main import launch, create_classes_from_custom_id
 
 
 def send_to_workflow(args):
-    database, _, _, _, _, _, _, _, _, _, _, _ = create_classes_from_custom_id(args['custom_id'], True)
+    database = create_classes_from_custom_id(args['custom_id'], True)[0]
     workflow = database.select({
         'select': ['input'],
         'table': ['workflows'],
@@ -45,7 +45,7 @@ def send_to_workflow(args):
 
 
 def update_document_data(args):
-    database, _, _, _, _, _, _, _, _, _, _, _ = create_classes_from_custom_id(args['custom_id'], True)
+    database = create_classes_from_custom_id(args['custom_id'], True)[0]
     if args['document_id']:
         datas = database.select({
             'select': ['datas'],

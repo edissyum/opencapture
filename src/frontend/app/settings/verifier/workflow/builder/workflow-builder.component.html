@@ -33,44 +33,46 @@
         </div>
         <mat-stepper orientation="horizontal" class="text-center">
             <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.input' | translate">
-                <div class="mt-2 grid grid-cols-3 gap-6">
-                    <ng-container *ngFor="let field of this.fields['input']">
-                        <div *ngIf="field.type === 'boolean'">
-                            <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2">
-                                <span class="justify-center">{{ field.label | translate }}</span>
-                                <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="field.hint | translate">
+                <div>
+                    <div class="mt-2 grid grid-cols-3 gap-6">
+                        <ng-container *ngFor="let field of this.fields['input']">
+                            <div *ngIf="field.type === 'boolean'">
+                                <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2">
+                                    <span class="justify-center">{{ field.label | translate }}</span>
+                                    <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="field.hint | translate">
                                     <i class="fa-solid fa-circle-question text-md"></i>
                                 </span>
-                            </mat-slide-toggle>
-                        </div>
-                    </ng-container>
-                </div>
-                <div class="mt-2 grid grid-cols-3 gap-6">
-                    <ng-container *ngFor="let field of this.fields['input']">
-                        <mat-form-field *ngIf="(field.type === 'text' || field.type === 'number') && field.show">
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <input matInput [formControl]="field['control']" [required]="field['required']" [type]="field.type" [placeholder]="field.placeholder">
-                            <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
+                                </mat-slide-toggle>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div class="mt-2 grid grid-cols-3 gap-6">
+                        <ng-container *ngFor="let field of this.fields['input']">
+                            <mat-form-field *ngIf="(field.type === 'text' || field.type === 'number') && field.show">
+                                <mat-label>{{ field.label | translate }}</mat-label>
+                                <input matInput [formControl]="field['control']" [required]="field['required']" [type]="field.type" [placeholder]="field.placeholder">
+                                <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
                                 <i class="fa-solid fa-circle-question text-md"></i>
                             </span>
-                            <button mat-icon-button matSuffix *ngIf="field.id === 'input_folder'"
-                                    (click)="checkFolder(field, true)" [matTooltip]="'WORKFLOW.test_input_folder' | translate">
-                                <i class="fa-solid fa-check text-green-400"></i>
-                            </button>
-                        </mat-form-field>
-                        <mat-form-field *ngIf="field.type === 'select' && field.show">
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple"
-                                        (selectionChange)="field.id === 'splitter_method_id' ? setSeparationMode($event.value) : ''">
-                                <mat-option *ngFor="let option of field.values" [value]="option.id">
-                                    {{ option.label | translate }}
-                                </mat-option>
-                            </mat-select>
-                            <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
+                                <button mat-icon-button matSuffix *ngIf="field.id === 'input_folder'"
+                                        (click)="checkFolder(field, true)" [matTooltip]="'WORKFLOW.test_input_folder' | translate">
+                                    <i class="fa-solid fa-check text-green-400"></i>
+                                </button>
+                            </mat-form-field>
+                            <mat-form-field *ngIf="field.type === 'select' && field.show">
+                                <mat-label>{{ field.label | translate }}</mat-label>
+                                <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple"
+                                            (selectionChange)="field.id === 'splitter_method_id' ? setSeparationMode($event.value) : ''">
+                                    <mat-option *ngFor="let option of field.values" [value]="option.id">
+                                        {{ option.label | translate }}
+                                    </mat-option>
+                                </mat-select>
+                                <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
                                 <i class="fa-solid fa-circle-question text-md"></i>
                             </span>
-                        </mat-form-field>
-                    </ng-container>
+                            </mat-form-field>
+                        </ng-container>
+                    </div>
                 </div>
                 <div [class.cursor-not-allowed]="!this.isStepValid('input')">
                     <button matStepperNext mat-button class="min-w-56 p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
@@ -85,47 +87,49 @@
                 </div>
             </mat-step>
             <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.process' | translate">
-                <app-hint [message]="'WORKFLOW.process_hint' | translate"></app-hint>
-                <div class="mt-6 grid grid-cols-2 gap-6" [class.grid-cols-4]="this.useInterface">
-                    <ng-container *ngFor="let field of this.fields['process']">
-                        <div *ngIf="field.type === 'boolean' && field.show">
-                            <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2" (change)="field.id === 'use_interface' ? setUseInterface($event.checked) : field.id === 'form_id' ? setUsedOutputs(): ''">
-                                <span class="justify-center">{{ field.label | translate }}</span>
-                                <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="field.hint | translate">
+                <div>
+                    <app-hint [message]="'WORKFLOW.process_hint' | translate"></app-hint>
+                    <div class="mt-6 grid grid-cols-2 gap-6" [class.grid-cols-4]="this.useInterface">
+                        <ng-container *ngFor="let field of this.fields['process']">
+                            <div *ngIf="field.type === 'boolean' && field.show">
+                                <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2" (change)="field.id === 'use_interface' ? setUseInterface($event.checked) : field.id === 'form_id' ? setUsedOutputs(): ''">
+                                    <span class="justify-center">{{ field.label | translate }}</span>
+                                    <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="field.hint | translate">
                                     <i class="fa-solid fa-circle-question text-md"></i>
                                 </span>
-                            </mat-slide-toggle>
-                        </div>
-                    </ng-container>
-                </div>
-                <div class="mt-6 grid grid-cols-4 gap-6">
-                    <ng-container *ngFor="let field of this.fields['process']">
-                        <mat-form-field *ngIf="field.type === 'text'">
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <input matInput [formControl]="field['control']" [required]="field['required']"
-                                   [type]="field.type" [placeholder]="field.placeholder">
-                            <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
+                                </mat-slide-toggle>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div class="mt-6 grid grid-cols-4 gap-6">
+                        <ng-container *ngFor="let field of this.fields['process']">
+                            <mat-form-field *ngIf="field.type === 'text'">
+                                <mat-label>{{ field.label | translate }}</mat-label>
+                                <input matInput [formControl]="field['control']" [required]="field['required']"
+                                       [type]="field.type" [placeholder]="field.placeholder">
+                                <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
                                 <i class="fa-solid fa-circle-question text-md"></i>
                             </span>
-                        </mat-form-field>
-                        <mat-form-field *ngIf="field.type === 'select' && field.show">
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <mat-select [disabled]="!this.processAllowed" [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple">
-                                <mat-option *ngFor="let option of field.values" [value]="option.id">
-                                    {{ option.label | translate }}
-                                </mat-option>
-                            </mat-select>
-                            <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
+                            </mat-form-field>
+                            <mat-form-field *ngIf="field.type === 'select' && field.show">
+                                <mat-label>{{ field.label | translate }}</mat-label>
+                                <mat-select [disabled]="!this.processAllowed" [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple">
+                                    <mat-option *ngFor="let option of field.values" [value]="option.id">
+                                        {{ option.label | translate }}
+                                    </mat-option>
+                                </mat-select>
+                                <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
                                 <i class="fa-solid fa-circle-question text-md"></i>
                             </span>
-                        </mat-form-field>
-                    </ng-container>
+                            </mat-form-field>
+                        </ng-container>
+                    </div>
                 </div>
-
-                <button matStepperPrevious mat-button class="gray_button">
-                    {{ "WORKFLOW.back" | translate }}
-                </button>
-                <span [class.cursor-not-allowed]="!this.isStepValid('process')">
+                <div>
+                    <button matStepperPrevious mat-button class="gray_button">
+                        {{ "WORKFLOW.back" | translate }}
+                    </button>
+                    <span [class.cursor-not-allowed]="!this.isStepValid('process')">
                     <button matStepperNext mat-button class="min-w-56 p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
                             [disabled]="!this.stepValid['process']"
                             [class.bg-gray-400]="!this.stepValid['process']"
@@ -136,6 +140,7 @@
                     <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
                        *ngIf="this.processAllowed" [matTooltip]="'WORKFLOW.process_scripting' | translate" (click)="openCodeEditor('process')"></i>
                 </span>
+                </div>
             </mat-step>
             <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.output' | translate">
                 <div class="mt-2 w-full">
@@ -153,20 +158,21 @@
                         </mat-form-field>
                     </ng-container>
                 </div>
-
-                <button matStepperPrevious mat-button class="gray_button">
-                    {{ "WORKFLOW.back" | translate }}
-                </button>
-                <button mat-button class="valid_button" (click)="!this.creationMode ? this.updateWorkflow('output') : this.createWorkflow()">
-                    <span *ngIf="this.creationMode">
-                        {{ 'WORKFLOW.create' | translate }}
-                    </span>
-                    <span *ngIf="!this.creationMode">
-                        {{ 'WORKFLOW.update' | translate }}
-                    </span>
-                </button>
-                <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
-                   [matTooltip]="'WORKFLOW.output_scripting' | translate" (click)="openCodeEditor('output')"></i>
+                <div>
+                    <button matStepperPrevious mat-button class="gray_button">
+                        {{ "WORKFLOW.back" | translate }}
+                    </button>
+                    <button mat-button class="valid_button" (click)="!this.creationMode ? this.updateWorkflow('output') : this.createWorkflow()">
+                        <span *ngIf="this.creationMode">
+                            {{ 'WORKFLOW.create' | translate }}
+                        </span>
+                        <span *ngIf="!this.creationMode">
+                            {{ 'WORKFLOW.update' | translate }}
+                        </span>
+                    </button>
+                    <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
+                       [matTooltip]="'WORKFLOW.output_scripting' | translate" (click)="openCodeEditor('output')"></i>
+                </div>
             </mat-step>
         </mat-stepper>
     </mat-sidenav-content>

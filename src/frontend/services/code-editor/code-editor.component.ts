@@ -34,6 +34,7 @@ import { Router } from "@angular/router";
 })
 export class CodeEditorComponent implements OnInit {
     theme               : string    = 'vs';
+    testing             : boolean   = false;
     splitterOrVerifier  : any       = 'verifier';
     codeModel           : CodeModel = {
         language: 'python',
@@ -69,6 +70,8 @@ export class CodeEditorComponent implements OnInit {
     }
 
     testScript() {
+        if (this.testing) return;
+        this.testing = true;
         this.http.post(environment['url'] + '/ws/workflows/' + this.splitterOrVerifier + '/testScript', {
             'args': {
                 'step': this.data.step,
@@ -77,9 +80,11 @@ export class CodeEditorComponent implements OnInit {
         }, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
+                this.testing = false;
                 this.notify.success(this.translate.instant('WORKFLOW.test_script_success', {return: data.replace(/[\n\r]/g, '<br>')}));
             }),
             catchError((err: any) => {
+                this.testing = false;
                 console.debug(err);
                 this.notify.error(this.translate.instant('WORKFLOW.test_script_error', {return: err.error.replace(/[\n\r]/g, '<br>')}));
                 return of(false);
