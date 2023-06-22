@@ -36,43 +36,44 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
         rand = str(uuid.uuid4())
         tmp_file = docservers['TMP_PATH'] + '/' + step + '_scripting_' + rand + '.py'
 
-        # try:
-        with open(tmp_file, 'w', encoding='UTF-8') as python_script:
-            python_script.write(script)
+        try:
+            with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+                python_script.write(script)
 
-        if os.path.isfile(tmp_file):
-            script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.').replace('.py', '')
-            script_name = script_name.replace('..', '.')
-            scripting = importlib.import_module(script_name, 'main')
+            if os.path.isfile(tmp_file):
+                script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.')\
+                    .replace('.py', '')
+                script_name = script_name.replace('..', '.')
+                scripting = importlib.import_module(script_name, 'main')
 
-        data = {
-            'log': log,
-            'file': file,
-            'custom_id': args['custom_id'],
-            'opencapture_path': config['GLOBAL']['applicationpath']
-        }
+                data = {
+                    'log': log,
+                    'file': file,
+                    'custom_id': args['custom_id'],
+                    'opencapture_path': config['GLOBAL']['applicationpath']
+                }
 
-        if step == 'input':
-            data['ip'] = args['ip']
-            data['database'] = database
-            data['user_info'] = args['user_info']
-        elif step in 'process' 'output':
-            if 'document_id' in args:
-                data['document_id'] = args['document_id']
+                if step == 'input':
+                    data['ip'] = args['ip']
+                    data['database'] = database
+                    data['user_info'] = args['user_info']
+                elif step in 'process' 'output':
+                    if 'document_id' in args:
+                        data['document_id'] = args['document_id']
 
-            if datas:
-                data['datas'] = datas
+                    if datas:
+                        data['datas'] = datas
 
-            if step == 'output' and 'outputs' in args:
-                data['outputs'] = args['outputs']
+                    if step == 'output' and 'outputs' in args:
+                        data['outputs'] = args['outputs']
 
-        res = scripting.main(data)
-        os.remove(tmp_file)
-        if not res:
-            sys.exit(0)
-        # except Exception as _e:
-        #     os.remove(tmp_file)
-        #     log.error('Error during' + step + 'scripting : ' + str(traceback.format_exc()))
+                res = scripting.main(data)
+                os.remove(tmp_file)
+                if not res:
+                    sys.exit(0)
+        except Exception as _e:
+            os.remove(tmp_file)
+            log.error('Error during' + step + 'scripting : ' + str(traceback.format_exc()))
 
 
 def execute_outputs(output_info, log, regex, document_data, database, current_lang):
@@ -95,7 +96,7 @@ def execute_outputs(output_info, log, regex, document_data, database, current_la
 
 
 def insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status, nb_pages, docservers,
-           workflow_settings, log, regex, supplier_lang_different, current_lang, allow_auto, config):
+           workflow_settings, log, regex, supplier_lang_different, current_lang, allow_auto):
     try:
         filename = os.path.splitext(files.custom_file_name)
         improved_img = filename[0] + '_improved' + filename[1]
@@ -169,7 +170,8 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
 
                     for _r in _regex:
                         regex[_r['regex_id']] = _r['content']
-                args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database, current_lang))
+                args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database,
+                                                       current_lang))
     elif workflow_settings and (
             not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
         if 'output' in workflow_settings and workflow_settings['output']:
@@ -183,7 +185,8 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
                     'data': [output_id]
                 })
                 if output_info:
-                    args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database, current_lang))
+                    args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database,
+                                                           current_lang))
 
     if workflow_settings:
         document_data['workflow_id'] = workflow_settings['id']
@@ -365,7 +368,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
                 if find_supplier:
                     supplier = [find_supplier[0]['vat_number'], (('', ''), ('', '')), find_supplier[0], False, column]
-                    log.info('Supplier found using given informations in upload : ' + supplier[2]['name'] + ' using ' + column.upper() + ' : ' + value)
+                    log.info('Supplier found using given informations in upload : ' + supplier[2]['name'] + ' using ' +
+                             column.upper() + ' : ' + value)
                 else:
                     if column in ['siret', 'siren', 'vat_number']:
                         token_insee, _ = verifier.get_token_insee()
@@ -444,7 +448,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                         'document_lang': ''
                                     }
                                     supplier = [data['vat_number'], (('', ''), ('', '')), data, False, column]
-                                    log.info('Supplier created using INSEE database : ' + supplier[2]['name'] + ' with ' + column.upper() + ' : ' + value)
+                                    log.info('Supplier created using INSEE database : ' + supplier[2]['name'] + ' with '
+                                             + column.upper() + ' : ' + value)
 
     if 'name' in system_fields_to_find or not workflow_settings['input']['apply_process']:
         # Find supplier in document if not send using upload rest
@@ -707,11 +712,11 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         log.info('All the usefull informations are found. Execute outputs action and end process')
         document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, 'END',
                              nb_pages, docservers, workflow_settings, log, regex, supplier_lang_different,
-                             configurations['locale'], allow_auto, config)
+                             configurations['locale'], allow_auto)
     else:
         document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, 'NEW',
                              nb_pages, docservers, workflow_settings, log, regex, supplier_lang_different,
-                             configurations['locale'], allow_auto, config)
+                             configurations['locale'], allow_auto)
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')
