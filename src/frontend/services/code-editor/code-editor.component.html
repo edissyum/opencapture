@@ -8,6 +8,7 @@
         <span class="flex w-full justify-start pl-4" *ngIf="data['testScriptButton']">
             <button mat-button class="text-gray-900" (click)="testScript()">
                 {{ data['testScriptButton'] }}
+                <i *ngIf="this.testing" class="fa-solid fa-circle-notch fa-spin"></i>
             </button>
         </span>
         <span class="flex w-full justify-end">
