@@ -74,7 +74,10 @@ def train_model(model_name, module):
         }), 403
 
     data = json.loads(request.data)
-    artificial_intelligence.launch_train(data, model_name, module)
+    try:
+        artificial_intelligence.launch_train(data, model_name, module)
+    except Exception as e:
+        return make_response(jsonify({'errors': str(e)})), 500
     return make_response(''), 200
 
 
