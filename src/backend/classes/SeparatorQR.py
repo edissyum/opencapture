@@ -179,6 +179,7 @@ class SeparatorQR:
     def parse_xml_multi(self):
         if self.barcodes is None:
             return
+
         for barcode in self.barcodes:
             self.pages.append({
                 "qr_code": barcode['text'],
