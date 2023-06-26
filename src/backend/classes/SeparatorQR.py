@@ -136,22 +136,22 @@ class SeparatorQR:
     def run(self, file):
         self.log.info('Start page separation using QR CODE')
         self.pages = []
-        # try:
-        pdf = pypdf.PdfReader(file)
-        self.nb_pages = len(pdf.pages)
-        self.get_xml(file)
-        if self.splitter_or_verifier == 'verifier':
-            if self.remove_blank_pages:
-                self.remove_blank_page(file)
-            self.parse_xml()
-            self.check_empty_docs()
-            self.set_doc_ends()
-            self.extract_and_convert_docs(file)
-        elif self.splitter_or_verifier == 'splitter':
-            self.parse_xml_multi()
-        # except Exception as e:
-        #     self.error = True
-        #     self.log.error("INIT : " + str(e))
+        try:
+            pdf = pypdf.PdfReader(file)
+            self.nb_pages = len(pdf.pages)
+            self.get_xml(file)
+            if self.splitter_or_verifier == 'verifier':
+                if self.remove_blank_pages:
+                    self.remove_blank_page(file)
+                self.parse_xml()
+                self.check_empty_docs()
+                self.set_doc_ends()
+                self.extract_and_convert_docs(file)
+            elif self.splitter_or_verifier == 'splitter':
+                self.parse_xml_multi()
+        except Exception as e:
+            self.error = True
+            self.log.error("INIT : " + str(e))
 
     def get_xml(self, file):
         """
