@@ -13,24 +13,24 @@
  You should have received a copy of the GNU General Public License
  along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
- @dev : Tristan Coulange <tristan.coulange@free.fr> */
+ @dev : Tristan Coulange <tristan.coulange@free.fr>
+ @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
+import { lastValueFrom, of } from "rxjs";
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import {MatDialog} from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { environment } from "../../../../env";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
-import { environment } from "../../../../env";
-import { catchError, finalize, tap } from "rxjs/operators";
-import { lastValueFrom, of } from "rxjs";
 import {DocumentTypeComponent} from "../../../../splitter/document-type/document-type.component";
-import {MatDialog} from "@angular/material/dialog";
-
 @Component({
   selector: 'app-update-model',
   templateUrl: './update-ai-model.component.html',
