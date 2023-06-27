@@ -423,12 +423,11 @@ def test_script_verifier(args):
 
     rand = str(uuid.uuid4())
     tmp_file = docservers['TMP_PATH'] + args['step'] + '_scripting_' + rand + '.py'
-    # try:
-    result_string = launch_script(tmp_file, log, pdf_path, database, args, config)
-    # except Exception:
-    #     os.remove(tmp_file)
-    #     print(traceback.format_exc())
-    #     return traceback.format_exc(), 400
+    try:
+        result_string = launch_script(tmp_file, log, pdf_path, database, args, config)
+    except Exception:
+        os.remove(tmp_file)
+        return traceback.format_exc(), 400
     return result_string, 200
 
 
