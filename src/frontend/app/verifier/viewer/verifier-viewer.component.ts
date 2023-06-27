@@ -1639,7 +1639,12 @@ export class VerifierViewerComponent implements OnInit {
                         }
 
                         this.http.post(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/' + data.output_type_id, {'args': data}, {headers: this.authService.headers}).pipe(
-                            tap(() => {
+                            tap((filename) => {
+                                this.outputs.forEach((output: any) => {
+                                    if (output.output_type_id === data.output_type_id) {
+                                        output.file_path = filename;
+                                    }
+                                });
                                 /* Actions à effectuer après le traitement des chaînes sortantes */
                                 if (cpt + 1 === this.formSettings.outputs.length) {
                                     this.historyService.addHistory('verifier', 'document_validated', this.translate.instant('HISTORY-DESC.document_validated', {document_id: this.documentId, outputs: this.outputsLabel.join(', ')}));
@@ -1657,6 +1662,21 @@ export class VerifierViewerComponent implements OnInit {
                                             ).subscribe();
                                         }
                                     }
+                                    this.http.get(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deleteDocuments', {headers: this.authService.headers}).pipe(
+                                        catchError((err: any) => {
+                                            console.debug(err);
+                                            this.notify.handleErrors(err);
+                                            return of(false);
+                                        })
+                                    ).subscribe();
+
+                                    this.http.post(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/outputScript', {'workflow': this.workflowSettings, 'outputs': this.outputs}, {headers: this.authService.headers}).pipe(
+                                        catchError((err: any) => {
+                                            console.debug(err);
+                                            this.notify.handleErrors(err);
+                                            return of(false);
+                                        })
+                                    ).subscribe();
                                     this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: this.outputsLabel.join('<br>')}));
                                 }
                             }),

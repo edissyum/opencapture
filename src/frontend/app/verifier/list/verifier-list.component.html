@@ -103,7 +103,7 @@
                 </ng-template>
                 <div class="verifier-container flex flex-col">
                     <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
-                        <mat-form-field class="relative mt-0.5 left-4 w-1/2" appearance="outline">
+                        <mat-form-field class="mb-3 relative left-4 w-3/4" appearance="outline">
                             <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
                             <input matInput type="text" [(ngModel)]="search" [disabled]="this.total === 0" (keyup)="searchDocument($event)">
                         </mat-form-field>
