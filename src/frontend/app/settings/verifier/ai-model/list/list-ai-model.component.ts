@@ -39,7 +39,7 @@ import { FileValidators } from "ngx-file-drag-drop";
   styleUrls: ['./list-ai-model.component.scss']
 })
 
-export class ListAiModelComponent implements OnInit {
+export class ListVerifierAiModelComponent implements OnInit {
     loading             : boolean     = true;
     showResponse        : boolean     = false;
     isPredicting        : boolean     = false;
@@ -162,7 +162,7 @@ export class ListAiModelComponent implements OnInit {
     displaySelectedRowId() {
         const disp = Object.values(this.clickedRow)[2];
         if (disp) {
-            return(disp);
+            return (disp);
         }
         else return 0;
     }

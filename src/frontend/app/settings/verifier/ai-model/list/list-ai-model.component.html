@@ -77,7 +77,7 @@
                     </mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;" routerLink="/settings/{{ splitterOrVerifier }}/ai/update/{{ row.id }}"
+                <mat-row *matRowDef="let row; columns: displayedColumns;" routerLink="/settings/verifier/ai/update/{{ row.id }}"
                          class="cursor-pointer hover:shadow-md transition-colors duration-300">
                 </mat-row>
             </mat-table>

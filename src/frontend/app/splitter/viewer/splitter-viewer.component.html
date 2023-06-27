@@ -78,7 +78,7 @@
                 </div>
             </div>
             <mat-accordion class="w-full">
-                <mat-expansion-panel class="my-6 bg-gray-20" [expanded]="true" (opened)="batchMetadataOpenState = true"
+                <mat-expansion-panel class="my-6" [expanded]="true" (opened)="batchMetadataOpenState = true"
                                      (closed)="batchMetadataOpenState = false" #batchMetadata>
                     <mat-expansion-panel-header>
                         <mat-panel-title class="grid grid-cols-3 gap-3">
@@ -199,16 +199,16 @@
             </mat-accordion>
             <span *ngIf="documents.length === 0" class="block align-text-top text-center text-red-600">{{ 'SPLITTER.no_document_to_show' | translate }}</span>
             <div cdkDropList (cdkDropListDropped)="dropDocument($event)">
-                <mat-card class="document w-full shadow-lg mb-4"
+                <mat-card class="document w-full shadow-lg mb-4 border-2 border-slate-200"
                           *ngFor="let document of documents; let documentIndex = index;" (click)="selectDocument(document)" cdkDrag>
                     <div class="w-full h-40 border-dashed border-2 border-gray-400 bg-gray-200" *cdkDragPlaceholder></div>
-                    <div class="drag-document absolute w-6 h-6 -left-1 -top-1 z-10 rounded-full text-gray-400 text-center
+                    <div class="drag-document absolute w-6 h-6 -left-2 -top-2 z-10 rounded-full text-gray-400 text-center
                       align-middle bg-slate-50 drop-shadow-xl hover:cursor-grabbing group-hover:text-gray-500
                       " matTooltip="{{ 'SPLITTER.change_document_position' | translate }}" cdkDragHandle>
                         <i class="fa-solid fa-arrows-up-down-left-right text-lg"></i>
                     </div>
                     <div *cdkDragPreview class="mt-4 drop-shadow-xl w-4/6 h-40 text-center text-gray-500 bg-slate-50 grid place-content-center">
-                        <div class="absolute w-8 h-8 -left-1 -top-1 z-10 rounded-full text-center
+                        <div class="absolute w-8 h-8 -left-2 -top-2 z-10 rounded-full text-center
                               align-middle bg-slate-50 drop-shadow-xl hover:cursor-grabbing group-hover:text-gray-500
                               grid place-content-center" cdkDragHandle>
                             <i class="fa-solid fa-arrows-up-down-left-right text-lg"></i>

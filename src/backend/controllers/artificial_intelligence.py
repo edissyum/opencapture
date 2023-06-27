@@ -181,10 +181,10 @@ def launch_train(data, model_name, module):
         folders.append(element['folder'])
     min_proba = data['min_proba']
 
-    path = docservers.get('VERIFIER_TRAIN_PATH_FILES') if data['module'] == 'verifier' else docservers.get(
+    path = docservers.get('VERIFIER_TRAIN_PATH_FILES') if module == 'verifier' else docservers.get(
         'SPLITTER_TRAIN_PATH_FILES')
     csv_file = path + '/data.csv'
-    model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + model_name if data['module'] == 'verifier' \
+    model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + model_name if module == 'verifier' \
         else docservers.get('SPLITTER_AI_MODEL_PATH') + model_name
     start_time = time.time()
 
@@ -192,7 +192,7 @@ def launch_train(data, model_name, module):
         'model_path': model_name.split("/")[-1],
         'type': 'doctype',
         'status': 'training',
-        'module': data['module'],
+        'module': module,
         'model_label': data['label']
     }
     model_id = create_model(args)[0].get('id')
@@ -209,7 +209,7 @@ def launch_train(data, model_name, module):
         'min_proba': min_proba if min_proba is not None else "",
         'model_id': model_id
     }
-    update_model(args, model_id, model_name, data['module'])
+    update_model(args, model_id, model_name, module)
     history.add_history({
         'module': module,
         'ip': request.remote_addr,
