@@ -64,6 +64,7 @@ export class CodeEditorComponent implements OnInit {
         } else if (this.router.url.includes('/splitter/')) {
             this.splitterOrVerifier = 'splitter';
         }
+
         if (this.data['codeContent']) {
             this.codeModel.value = this.translate.instant(this.data['codeContent']);
         }
@@ -74,6 +75,7 @@ export class CodeEditorComponent implements OnInit {
         this.testing = true;
         this.http.post(environment['url'] + '/ws/workflows/' + this.splitterOrVerifier + '/testScript', {
             'args': {
+                'input_folder': this.data.input_folder,
                 'step': this.data.step,
                 'codeContent': this.codeModel.value
             }

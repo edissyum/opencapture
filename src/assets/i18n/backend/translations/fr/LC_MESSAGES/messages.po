@@ -998,7 +998,7 @@ msgstr "Erreur lors de la suppression du document"
 
 #: src/backend/controllers/verifier.py:494 src/backend/process/main.py:40
 msgid "SCRIPT_CONTAINS_NOT_ALLOWED_CODE"
-msgstr "Le script contient du code non autorisé"
+msgstr "Le script contient du code non autorisé :"
 
 #: src/backend/controllers/verifier.py:636
 #: src/backend/controllers/verifier.py:639

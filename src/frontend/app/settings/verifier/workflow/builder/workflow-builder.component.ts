@@ -539,6 +539,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 confirmButton       : this.translate.instant('WORKFLOW.save_script'),
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
                 step                : step,
+                input_folder        : this.fields['input'].find((element: any) => element.id === 'input_folder').control.value,
                 codeContent         : codeContent
             },
             width: "80vw",
