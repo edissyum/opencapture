@@ -16,16 +16,18 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import sys
 import uuid
 import json
-
-import pandas as pd
 import zeep
 import base64
 import secrets
 import logging
 import datetime
 import requests
+import traceback
+import importlib
+import pandas as pd
 from flask_babel import gettext
 from zeep import Client, exceptions
 from src.backend import verifier_exports
@@ -37,7 +39,7 @@ from src.backend.import_controllers import auth, user, monitoring, history
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
-def handle_uploaded_file(files, workflow_id, supplier, user_id=None):
+def handle_uploaded_file(files, workflow_id, supplier):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER']
     tokens = []
@@ -467,6 +469,66 @@ def export_facturx(document_id, data):
             log = _vars[5]
             regex = _vars[2]
         return verifier_exports.export_facturx(data['data'], log, regex, document_info)
+
+
+def launch_output_script(document_id, workflow_settings, outputs):
+    custom_id = retrieve_custom_from_url(request)
+    if 'config' in current_context and 'docservers' in current_context and 'log' in current_context \
+            and 'database' in current_context:
+        log = current_context.log
+        config = current_context.config
+        database = current_context.database
+        docservers = current_context.docservers
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+        config = _vars[1]
+        database = _vars[0]
+        docservers = _vars[9]
+
+    if 'script' in workflow_settings['output'] and workflow_settings['output']['script']:
+        script = workflow_settings['output']['script']
+        rand = str(uuid.uuid4())
+        tmp_file = docservers['TMP_PATH'] + '/output_scripting_' + rand + '.py'
+
+        try:
+            with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+                python_script.write(script)
+
+            if os.path.isfile(tmp_file):
+                script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.')\
+                    .replace('.py', '')
+                script_name = script_name.replace('..', '.')
+                scripting = importlib.import_module(script_name, 'main')
+                res = False
+
+                if document_id:
+                    document_info = database.select({
+                        'select': ['datas', 'filename', 'path'],
+                        'table': ['documents'],
+                        'where': ['id = %s'],
+                        'data': [document_id]
+                    })
+                    if document_info:
+                        datas = document_info[0]
+                        file = datas['path'] + '/' + datas['filename']
+                        data = {
+                            'log': log,
+                            'file': file,
+                            'outputs': outputs,
+                            'custom_id': custom_id,
+                            'datas': datas['datas'],
+                            'document_id': document_id,
+                            'opencapture_path': config['GLOBAL']['applicationpath']
+                        }
+
+                        res = scripting.main(data)
+                os.remove(tmp_file)
+                if not res:
+                    sys.exit(0)
+        except Exception as _e:
+            os.remove(tmp_file)
+            log.error('Error during output scripting : ' + str(traceback.format_exc()))
 
 
 def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):

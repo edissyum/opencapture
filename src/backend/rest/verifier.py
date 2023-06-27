@@ -181,7 +181,7 @@ def export_xml(document_id):
 
     data = request.json['args']
     res = verifier.export_xml(document_id, data)
-    return make_response(res[0], res[1])
+    return make_response(jsonify(res[0]), res[1])
 
 
 @bp.route('verifier/documents/<int:document_id>/export_pdf', methods=['POST'])
@@ -194,7 +194,7 @@ def export_pdf(document_id):
 
     data = request.json['args']
     res = verifier.export_pdf(document_id, data)
-    return make_response(res[0], res[1])
+    return make_response(jsonify(res[0]), res[1])
 
 
 @bp.route('verifier/documents/<int:document_id>/export_facturx', methods=['POST'])
@@ -207,7 +207,7 @@ def export_facturx(document_id):
 
     data = request.json['args']
     res = verifier.export_facturx(document_id, data)
-    return make_response(res[0], res[1])
+    return make_response(jsonify(res[0]), res[1])
 
 
 @bp.route('verifier/documents/<int:document_id>/export_mem', methods=['POST'])
@@ -220,7 +220,21 @@ def export_mem(document_id):
 
     data = request.json['args']
     res = verifier.export_mem(document_id, data)
-    return make_response(res[0], res[1])
+    return make_response(jsonify(res[0]), res[1])
+
+
+@bp.route('verifier/documents/<int:document_id>/outputScript', methods=['POST'])
+@auth.token_required
+def launch_output_script(document_id):
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/documents/{document_id}/outputScript'}), 403
+
+    outputs = request.json['outputs']
+    workflow = request.json['workflow']
+    verifier.launch_output_script(document_id, workflow, outputs)
+    return make_response('', 200)
 
 
 @bp.route('verifier/documents/<int:document_id>/deleteDocuments', methods=['GET'])

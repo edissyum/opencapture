@@ -709,12 +709,14 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 break
 
     if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
+        status = 'END'
         log.info('All the usefull informations are found. Execute outputs action and end process')
-        document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, 'END',
+        document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,
                              nb_pages, docservers, workflow_settings, log, regex, supplier_lang_different,
                              configurations['locale'], allow_auto)
     else:
-        document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, 'NEW',
+        status = 'NEW'
+        document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,
                              nb_pages, docservers, workflow_settings, log, regex, supplier_lang_different,
                              configurations['locale'], allow_auto)
 
@@ -734,7 +736,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     # Launch process scripting if present
     launch_script(workflow_settings, docservers, 'process', log, file, database, args, config, datas)
 
-    # Launch outputs scripting if present
-    launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
+    if (status == 'END') or (workflow_settings and (not workflow_settings['process']['use_interface'] or
+                                                    not workflow_settings['input']['apply_process'])):
+        # Launch outputs scripting if present
+        launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
 
     return document_id
