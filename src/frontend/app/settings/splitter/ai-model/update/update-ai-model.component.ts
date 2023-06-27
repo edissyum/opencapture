@@ -45,8 +45,15 @@ export class UpdateSplitterAiModelComponent implements OnInit {
         trainDocuments : [],
         fields         : [
             {
+                id: 'model_label',
+                label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_label"),
+                type: 'text',
+                control: new FormControl('', Validators.required),
+                required: true
+            },
+            {
                 id: 'model_path',
-                label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_name"),
+                label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_path"),
                 type: 'text',
                 control: new FormControl('', Validators.pattern("[a-zA-Z0-9+._-éùà)(î]+\\.sav+")),
                 required: true
@@ -54,7 +61,7 @@ export class UpdateSplitterAiModelComponent implements OnInit {
             {
                 id: 'min_proba',
                 label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
-                type: 'text',
+                type: 'number',
                 control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
                 required: true
             }
@@ -82,8 +89,9 @@ export class UpdateSplitterAiModelComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/ai/getById/' + this.AiModel.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.AiModel.trainDocuments = data.documents;
-                console.log("this.AiModel.trainDocuments : ");
-                console.log(this.AiModel.trainDocuments);
+                this.setFormValue(this.AiModel.fields, 'model_label', data.model_label);
+                this.setFormValue(this.AiModel.fields, 'model_path', data.model_path);
+                this.setFormValue(this.AiModel.fields, 'min_proba', data.min_proba);
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -97,12 +105,17 @@ export class UpdateSplitterAiModelComponent implements OnInit {
 
     updateModel() {
         if (this.isValidForm(this.AiModel.fields)) {
-            const modelName = this.getValueFromForm(this.AiModel.fields, 'model_path');
             const minProba = this.getValueFromForm(this.AiModel.fields, 'min_proba');
+            const modelPath = this.getValueFromForm(this.AiModel.fields, 'model_path');
+            const modelLabel = this.getValueFromForm(this.AiModel.fields, 'model_label');
 
             if (this.AiModel.id !== undefined) {
                 this.http.post(environment['url'] + '/ws/ai/splitter/update/' + this.AiModel.id, {
-                    model_name: modelName, min_proba: minProba, doctypes: this.AiModel.trainDocuments }, {headers: this.authService.headers}).pipe(
+                        min_proba: minProba,
+                        model_label: modelLabel,
+                        model_path: modelPath,
+                        doctypes: this.AiModel.trainDocuments
+                    }, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.model_updated'));
                         this.router.navigate(['/settings/splitter/ai']).then();
@@ -136,6 +149,14 @@ export class UpdateSplitterAiModelComponent implements OnInit {
             }
         });
         return value;
+    }
+
+    setFormValue(form: any, fieldId: any, value: any) {
+        form.forEach((element: any) => {
+            if (fieldId === element.id) {
+                element.control.setValue(value);
+            }
+        });
     }
 
     async retrieveForms() {

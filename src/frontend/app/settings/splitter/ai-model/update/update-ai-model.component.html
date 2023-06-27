@@ -17,9 +17,9 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!loading">
-            <div class="grid grid-cols-3 gap-6 m-10 w-full">
+            <div class="grid grid-cols-3 gap-6 m-10 w-11/12">
                 <ng-container *ngFor="let field of AiModel['fields']">
-                    <mat-form-field *ngIf="field.type === 'text' && field.id === 'model_path'">
+                    <mat-form-field *ngIf="field.type === 'text'">
                         <mat-label>
                             {{ field.label | translate }}
                         </mat-label>
@@ -31,7 +31,7 @@
                             {{ 'ARTIFICIAL-INTELLIGENCE.invalid_selection' | translate }}
                         </mat-error>
                     </mat-form-field>
-                    <mat-form-field *ngIf="field.type === 'text' && field.id === 'min_proba'">
+                    <mat-form-field *ngIf="field.type === 'number'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
                         <mat-error *ngIf="field.control.hasError('required')">{{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}</mat-error>
@@ -43,6 +43,7 @@
             </div>
             <div class="mx-10 my-2 grid grid-cols-5 gap-4 place-items-stretch">
                 <div *ngFor="let trainDocument of this.AiModel['trainDocuments']" class="text-center">
+                    {{ trainDocument['folder'] }}
                     <div class="mt-4">
                         <mat-form-field>
                             <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.form" | translate }}</mat-label>

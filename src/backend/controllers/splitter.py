@@ -746,7 +746,7 @@ def merge_batches(parent_id, batches):
                     })
 
                 splitter.update_status({
-                    'ids': [batch],
+                    'ids': [int(batch)],
                     'status': 'MERG'
                 })
 
