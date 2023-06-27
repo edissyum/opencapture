@@ -18,7 +18,7 @@
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!loading">
             <div class="grid grid-cols-3 gap-6 m-10 w-full">
-                <ng-container *ngFor="let field of modelForm">
+                <ng-container *ngFor="let field of AiModel['fields']">
                     <mat-form-field *ngIf="field.type === 'text' && field.id === 'model_path'">
                         <mat-label>
                             {{ field.label | translate }}
@@ -42,27 +42,26 @@
                 </ng-container>
             </div>
             <div class="mx-10 my-2 grid grid-cols-5 gap-4 place-items-stretch">
-                <div *ngFor="let item of this.tableData, let i=index" class="text-center">
-                    {{ item.Documents }}
+                <div *ngFor="let trainDocument of this.AiModel['trainDocuments']" class="text-center">
                     <div class="mt-4">
                         <mat-form-field>
                             <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.form" | translate }}</mat-label>
-                            <mat-select [formControl]="formsFormControl[item.id]"
-                                        (selectionChange)="onFormSelect($event, item.id)">
-                                <mat-option *ngFor="let option of forms" [value]="option.id">
-                                    {{ option.label }}
+                            <mat-select [(ngModel)]="trainDocument['form']">
+                                <mat-option *ngFor="let form of forms" [value]="form.id">
+                                    {{ form.label }}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <mat-form-field>
-                        <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.doctype" | translate }}</mat-label>
-                        <mat-select [formControl]="doctypesFormControl[item.id]">
-                            <mat-option *ngFor="let option of chosenDocs[i]" [value]="option.id">
-                                {{ option.label }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                    <button class="max-w-full text-lg text-left hover:text-green-400"
+                            *ngIf="trainDocument.form"
+                            (click)="openDoctypeTree(trainDocument);"
+                            matTooltip="{{ 'GLOBAL.edit' | translate }}">
+                        <div class="font-medium truncate">
+                            <i class="fa-solid fa-edit"></i>
+                            {{ trainDocument.doctype }}
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>
