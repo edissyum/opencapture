@@ -57,17 +57,17 @@
                 {{ 'ARTIFICIAL-INTELLIGENCE.choose_documents' | translate }}
             </h2>
             <mat-list class="mx-10 my-2 grid grid-cols-5 gap-4 place-items-stretch">
-                <div *ngFor="let item of this.docStatus, let i=index">
-                    <mat-checkbox [(ngModel)]="item.isSelected" (change)="checkSelectedBatch(i, item.doc);"
+                <div *ngFor="let trainFolder of this.trainFolders, let i=index">
+                    <mat-checkbox [(ngModel)]="trainFolder.isSelected" (change)="checkSelectedBatch(i, trainFolder.doc);"
                                   [ngModelOptions]="{standalone: true}"
                                   class="w-lg h-lg accent-green-400 checkBox_list cursor-pointer pr-4 pb-2">
-                        {{ item.doc }}
+                        {{ trainFolder.doc }}
                     </mat-checkbox>
                     <div>
-                        <mat-form-field *ngIf="item.isSelected">
+                        <mat-form-field *ngIf="trainFolder.isSelected">
                             <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.form" | translate }}</mat-label>
                             <mat-select [formControl]="formControl"
-                                        (selectionChange)="onFormSelect($event, i, item.doc)">
+                                        (selectionChange)="onFormSelect($event, i, trainFolder.doc)">
                                 <mat-option *ngFor="let option of forms" [value]="option.id">
                                     {{ option.label }}
                                 </mat-option>
@@ -78,18 +78,15 @@
                         </mat-form-field>
                     </div>
 
-                    <mat-form-field *ngIf="this.splitterOrVerifier === 'splitter' && displayDoctypes(formControl) && item.isSelected">
-                        <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.doctype" | translate }}</mat-label>
-                        <mat-select [formControl]="controls[i]"
-                                    (selectionChange)="changeOutputType($event, item.doc)">
-                            <mat-option *ngFor="let option of chosenDocs[i]" [value]="option.id">
-                                {{ option.label }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="controls[i].hasError('required')">
-                            {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
-                        </mat-error>
-                    </mat-form-field>
+                    <button class="max-w-full text-lg text-left hover:text-green-400"
+                            *ngIf="displayDoctypes(formControl) && trainFolder.isSelected"
+                            (click)="openDoctypeTree(trainFolder);"
+                            matTooltip="{{ 'GLOBAL.edit' | translate }}">
+                        <div class="font-medium truncate">
+                            <i class="fa-solid fa-edit"></i>
+                            {{ trainFolder.linked_doctype }}
+                        </div>
+                    </button>
                 </div>
             </mat-list>
         </div>

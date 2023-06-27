@@ -55,7 +55,7 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <mat-form-field *ngIf="splitterOrVerifier === 'splitter'">
+                    <mat-form-field>
                         <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.doctype" | translate }}</mat-label>
                         <mat-select [formControl]="doctypesFormControl[item.id]">
                             <mat-option *ngFor="let option of chosenDocs[i]" [value]="option.id">

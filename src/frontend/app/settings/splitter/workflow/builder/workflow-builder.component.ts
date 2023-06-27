@@ -63,7 +63,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
         input : [
             {
                 id: 'input_folder',
-                show: true,
                 label: this.translate.instant('WORKFLOW.input_folder'),
                 type: 'text',
                 control: new FormControl(),
@@ -72,7 +71,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             },
             {
                 id: 'customer_id',
-                show: true,
                 label: this.translate.instant('WORKFLOW.associated_customer'),
                 type: 'select',
                 control: new FormControl(),
@@ -89,13 +87,13 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             },
             {
                 id: 'apply_process',
-                show: true,
                 label: this.translate.instant('WORKFLOW.apply_process'),
                 type: 'boolean',
                 control: new FormControl()
             },
             {
                 id: 'splitter_method_id',
+                show: true,
                 label: this.translate.instant('WORKFLOW.splitter_method'),
                 type: 'select',
                 control: new FormControl(),
@@ -104,6 +102,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             },
             {
                 id: 'separate_by_document_number_value',
+                show: true,
                 label: this.translate.instant('WORKFLOW.separate_by_document_number_value'),
                 type: 'number',
                 control: new FormControl(2),
@@ -119,9 +118,9 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
         process: [
             {
                 id: 'use_interface',
+                show: true,
                 label: this.translate.instant('WORKFLOW.use_interface'),
                 type: 'boolean',
-                show: true,
                 control: new FormControl()
             },
             {
@@ -337,6 +336,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                             element.values.push(method);
                         }
                     });
+                    console.log(this.fields['input']);
                 });
             }),
             finalize(() => this.loading = false),

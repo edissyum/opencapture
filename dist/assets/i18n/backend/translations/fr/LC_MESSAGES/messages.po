@@ -1014,7 +1014,7 @@ msgstr "Document non trouvé"
 
 #: src/backend/controllers/verifier.py:687
 msgid "DOCUMENT_ID_NOT_FOUND"
-msgstr "Document %(id)s non trouvée"
+msgstr "Document %(id)s non trouvé"
 
 #: src/backend/controllers/workflow.py:58
 #: src/backend/controllers/workflow.py:67

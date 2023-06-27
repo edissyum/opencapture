@@ -44,7 +44,7 @@ def load_entities(args):
     """
     cursor = args['database'].conn.cursor()
     query = "UPDATE custom_fields SET settings = jsonb_set(settings, '{options}', '" + json.dumps(options) + "')" \
-                                                                                                             "WHERE label_short='entity' AND enabled='true' AND status='OK' AND module='splitter'"
+             "WHERE label_short='entity' AND enabled='true' AND status='OK' AND module='splitter'"
 
     cursor.execute(query)
     args['database'].conn.commit()

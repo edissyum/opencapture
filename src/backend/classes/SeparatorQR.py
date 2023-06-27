@@ -180,10 +180,10 @@ class SeparatorQR:
         if self.barcodes is None:
             return
 
-        for index in self.barcodes[0]:
+        for barcode in self.barcodes:
             self.pages.append({
-                "qr_code": index[0][0]['text'],
-                "num": index['attrib']['num']
+                "qr_code": barcode['text'],
+                "num": barcode['attrib']['num']
             })
 
     def parse_xml(self):
@@ -349,7 +349,7 @@ class SeparatorQR:
             file.render(file_path)
             with open(file_path, 'rb') as pdf_file:
                 encoded_file = f"data:application/pdf;base64, {base64.b64encode(pdf_file.read()).decode('utf-8')}"
-            pages = pdf2image.convert_from_path(file_path, dpi=300)
+            pages = pdf2image.convert_from_path(file_path, size=(None, 720))
 
             for page in pages:
                 buffered = BytesIO()
