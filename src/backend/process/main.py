@@ -22,7 +22,9 @@ import json
 import datetime
 import importlib
 import traceback
+from flask_babel import gettext
 from src.backend import verifier_exports
+from src.backend.scripting_functions import check_code
 from src.backend.import_classes import _PyTesseract, _Files
 from src.backend.import_controllers import artificial_intelligence, verifier, accounts
 from src.backend.functions import delete_documents, rotate_document, find_form_with_ia
@@ -33,6 +35,11 @@ from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindIn
 def launch_script(workflow_settings, docservers, step, log, file, database, args, config, datas=None):
     if 'script' in workflow_settings[step] and workflow_settings[step]['script']:
         script = workflow_settings[step]['script']
+        check_res, message = check_code(script, config['GLOBAL']['applicationpath'], docservers['DOCSERVERS_PATH'])
+        if not check_res:
+            log.error('[' + step.upper() + '_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
+                      '&nbsp;<strong>(' + message.strip() + ')</strong>')
+            return False
         rand = str(uuid.uuid4())
         tmp_file = docservers['TMP_PATH'] + '/' + step + '_scripting_' + rand + '.py'
 

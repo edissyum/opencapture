@@ -32,11 +32,12 @@ from flask_babel import gettext
 from zeep import Client, exceptions
 from src.backend import verifier_exports
 from src.backend.import_classes import _Files
+from src.backend.scripting_functions import check_code
 from src.backend.import_models import verifier, accounts
 from src.backend.main import launch, create_classes_from_custom_id
-from flask import current_app, Response, request, g as current_context
 from src.backend.import_controllers import auth, user, monitoring, history
 from src.backend.functions import retrieve_custom_from_url, delete_documents
+from flask import current_app, Response, request, g as current_context
 
 
 def handle_uploaded_file(files, workflow_id, supplier):
@@ -488,6 +489,11 @@ def launch_output_script(document_id, workflow_settings, outputs):
 
     if 'script' in workflow_settings['output'] and workflow_settings['output']['script']:
         script = workflow_settings['output']['script']
+        check_res, message = check_code(script, config['GLOBAL']['applicationpath'], docservers['DOCSERVERS_PATH'])
+        if not check_res:
+            log.error('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
+                      '&nbsp;<strong>(' + message.strip() + ')</strong>')
+            return False
         rand = str(uuid.uuid4())
         tmp_file = docservers['TMP_PATH'] + '/output_scripting_' + rand + '.py'
 
@@ -583,7 +589,7 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
     if file_type == 'full':
         path = docservers['VERIFIER_IMAGE_FULL']
         if year_and_month:
-            path = path + '/' + year_and_month + '/'
+            path = path + '/' + str(year_and_month) + '/'
     elif file_type == 'positions_masks':
         path = docservers['VERIFIER_POSITIONS_MASKS']
     elif file_type == 'referential_supplier':
@@ -595,7 +601,7 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
             if compress and mime_type == 'image/jpeg':
                 thumb_path = docservers['VERIFIER_THUMB']
                 if year_and_month:
-                    thumb_path = thumb_path + '/' + year_and_month + '/'
+                    thumb_path = thumb_path + '/' + str(year_and_month) + '/'
                 if os.path.isfile(thumb_path + '/' + filename):
                     with open(thumb_path + '/' + filename, 'rb') as file:
                         content = file.read()

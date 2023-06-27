@@ -15,9 +15,50 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
+import os
 import json
 from flask_babel import gettext
 from src.backend.main import launch, create_classes_from_custom_id
+
+
+def check_code(code, application_path, docserver_path):
+    for line in code.split('\n'):
+        if line:
+            if 'import subprocess' in line or 'from subprocess' in line.lower():
+                return False, line
+            if 'shutil.rmtree' in line or 'shutil.rmdir' in line or 'shutil.rmdirs' in line:
+                return False, line
+            if 'database.select' in line or 'database.update' in line or 'database.insert' in line:
+                return False, line
+            if 'os.rmtree' in line or 'os.rmdir' in line or 'os.rmdirs' in line or 'os.system()' in line:
+                return False, line
+
+            if 'os.remove' in line or 'shutil.move' in line:
+                current_dir = os.getcwd()
+                if 'os.remove' in line:
+                    path_to_delete = line.split('os.remove(')[1].split(')')[0].replace("'", '').replace('"', '')
+                    path_to_delete = path_to_delete.replace(' ', '').strip()
+                elif 'shutil.move' in line:
+                    path_to_delete = line.split('shutil.move(')[1].split(',')[1].replace(")", '').replace("'", '')
+                    path_to_delete = path_to_delete.replace('"', '').replace(' ', '').strip()
+                else:
+                    return True, ''
+
+                path_to_delete = os.path.dirname(path_to_delete)
+                try:
+                    os.chdir(path_to_delete)
+                except FileNotFoundError:
+                    return False, line
+                new_dir = os.getcwd() + '/'
+
+                if application_path not in new_dir and docserver_path not in new_dir:
+                    try:
+                        os.chdir(current_dir)
+                    except FileNotFoundError:
+                        return False, line
+                    return False, line
+                os.chdir(current_dir)
+    return True, ''
 
 
 def send_to_workflow(args):
