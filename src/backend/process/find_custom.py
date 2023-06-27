@@ -49,7 +49,7 @@ class FindCustom:
         self.custom_fields_to_find = custom_fields_to_find
 
     def check_format_and_clean(self, data, settings):
-        if settings['remove_special_char']:
+        if 'remove_special_char' in settings and settings['remove_special_char']:
             data_to_replace = r'[-()\"#\\/@;:<>{}\]\[`+=~|!?€$%£*]'
             if settings['format'] == 'date':
                 data_to_replace = r'[-()\"#\\@;:<>{}\]\[`+=~|!?€$%£*]'
@@ -152,18 +152,19 @@ class FindCustom:
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
                 regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
-                for _data in re.finditer(r"" + regex_settings['content'] + "",
-                                         line.content.upper(), flags=re.IGNORECASE):
-                    data = _data.group()
+                if 'content' in regex_settings and regex_settings['content'] != '':
+                    for _data in re.finditer(r"" + regex_settings['content'] + "",line.content.upper(),
+                                             flags=re.IGNORECASE):
+                        data = _data.group()
 
-                    if regex_settings['remove_keyword']:
-                        data = sanitize_keyword(_data.group(), regex_settings['content'])
+                        if regex_settings['remove_keyword']:
+                            data = sanitize_keyword(_data.group(), regex_settings['content'])
 
-                    data = self.check_format_and_clean(data, regex_settings)
-                    if data:
-                        self.log.info(self.custom_fields_regex['label'] + ' found : ' + data)
-                        position = line.position
-                        if cpt == 1:
-                            position = self.files.return_position_with_ratio(line, 'footer')
-                        return [data, position, self.nb_page]
+                        data = self.check_format_and_clean(data, regex_settings)
+                        if data:
+                            self.log.info(self.custom_fields_regex['label'] + ' found : ' + data)
+                            position = line.position
+                            if cpt == 1:
+                                position = self.files.return_position_with_ratio(line, 'footer')
+                            return [data, position, self.nb_page]
             cpt += 1

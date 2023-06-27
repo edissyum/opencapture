@@ -114,7 +114,6 @@ def duplicate_workflow(workflow_id):
             'label': gettext('COPY_OF') + ' ' + workflow_info['label'],
             'input': json.dumps(workflow_info['input']),
             'process': json.dumps(workflow_info['process']),
-            'separation': json.dumps(workflow_info['separation']),
             'output': json.dumps(workflow_info['output'])
         }
 
@@ -191,7 +190,6 @@ def create_workflow(data):
 
     data['input'] = json.dumps(data['input'])
     data['process'] = json.dumps(data['process'])
-    data['separation'] = json.dumps(data['separation'])
     data['output'] = json.dumps(data['output'])
 
     res, error = workflow.create_workflow({'columns': data})
@@ -230,8 +228,6 @@ def update_workflow(workflow_id, data):
             data['input'] = json.dumps(data['input'])
         if 'process' in data:
             data['process'] = json.dumps(data['process'])
-        if 'separation' in data:
-            data['separation'] = json.dumps(data['separation'])
         if 'output' in data:
             data['output'] = json.dumps(data['output'])
 
@@ -411,50 +407,64 @@ def delete_script_and_incron(args):
 
 
 def test_script_verifier(args):
-    if 'docservers' in current_context and 'config' in current_context \
-            and 'log' in current_context and 'database' in current_context:
-        log = current_context.log
-        config = current_context.config
-        database = current_context.database
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
-        config = _vars[1]
-        database = _vars[0]
-        docservers = _vars[9]
+    args['custom_id'] = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(args['custom_id'])
+    log = _vars[5]
+    config = _vars[1]
+    database = _vars[0]
+    docservers = _vars[9]
 
     pdf_url = 'https://open-capture.com/wp-content/uploads/2022/11/CALINDA_INV-001510.pdf'
+    pdf_path = './instance/upload/verifier/CALINDA_INV-001510.pdf'
     http = urllib3.PoolManager()
 
-    with http.request('GET', pdf_url, preload_content=False) as _r, open(
-            './instance/upload/verifier/CALINDA_INV-001510.pdf', 'wb') as out_file:
+    with http.request('GET', pdf_url, preload_content=False) as _r, open(pdf_path, 'wb') as out_file:
         shutil.copyfileobj(_r, out_file)
 
+    rand = str(uuid.uuid4())
+    tmp_file = docservers['TMP_PATH'] + args['step'] + '_scripting_' + rand + '.py'
     try:
-        rand = str(uuid.uuid4())
-        tmp_file = docservers['TMP_PATH'] + args['step'] + '_scripting_' + rand + '.py'
-        if os.path.isfile(tmp_file):
-            os.remove(tmp_file)
-        with open(tmp_file, 'w', encoding='UTF-8') as python_script:
-            python_script.write(args['codeContent'])
-
-        scripting = importlib.import_module('bin.data.tmp.' + args['step'] + '_scripting_' + rand, 'main')
-
-        if args['step'] == 'input':
-            args = {
-                'log': log,
-                'file': './instance/upload/verifier/CALINDA_INV-001510.pdf',
-                'database': database,
-                'opencapture_path': config['GLOBAL']['applicationpath']
-            }
-
-        result = StringIO()
-        sys.stdout = result
-        scripting.main(args)
-        result_string = result.getvalue()
-        os.remove(tmp_file)
+        result_string = launch_script(tmp_file, log, pdf_path, database, args, config)
     except Exception:
+        os.remove(tmp_file)
         return traceback.format_exc(), 400
     return result_string, 200
+
+
+def launch_script(tmp_file, log, file, database, args, config, datas=None):
+    if os.path.isfile(tmp_file):
+        os.remove(tmp_file)
+
+    with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+        python_script.write(args['codeContent'])
+
+    script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.').replace('.py', '')
+    scripting = importlib.import_module(script_name, 'main')
+
+    data = {
+        'log': log,
+        'file': file,
+        'custom_id': args['custom_id'],
+        'opencapture_path': config['GLOBAL']['applicationpath']
+    }
+
+    if args['step'] == 'input':
+        data['ip'] = '0.0.0.0'
+        data['database'] = database
+        data['user_info'] = 'Test script'
+    elif args['step'] in 'process' 'output':
+        if 'document_id' in args:
+            data['document_id'] = args['document_id']
+
+        if datas:
+            data['datas'] = datas
+
+        if args['step'] == 'output' and 'outputs' in args:
+            data['outputs'] = args['outputs']
+
+    result = StringIO()
+    sys.stdout = result
+    scripting.main(data)
+    result_string = result.getvalue()
+    os.remove(tmp_file)
+    return result_string

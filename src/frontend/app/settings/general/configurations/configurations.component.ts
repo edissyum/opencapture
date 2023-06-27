@@ -64,6 +64,7 @@ export class ConfigurationsComponent implements OnInit {
     loginTopMessage         : FormControl   = new FormControl();
     pageSize                : number        = 10;
     pageIndex               : number        = 0;
+    selectedIndex           : number        = 0;
     total                   : number        = 0;
     offset                  : number        = 0;
     units                   : any           = [
@@ -342,6 +343,10 @@ export class ConfigurationsComponent implements OnInit {
         } else {
             return array;
         }
+    }
+
+    onTabChanged(event: any) {
+        this.selectedIndex = event.index;
     }
 
     updateLoginBottomText() {

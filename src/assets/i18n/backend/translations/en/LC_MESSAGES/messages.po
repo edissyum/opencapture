@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2023-06-14 16:27+0200\n"
+"POT-Creation-Date: 2023-06-19 17:13+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -17,9 +17,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: custom/edissyum/src/backend/process_queue_verifier.py:238
+#: custom/edissyum/src/backend/process_queue_splitter.py:220
+#: custom/edissyum/src/backend/process_queue_verifier.py:233
 msgid "FILE_UPLOADED_WORKFLOW"
 msgstr "File uploaded successfully with workflow"
+
+#: src/backend/scripting_functions.py:31
+msgid "WORFKLOW_NOT_FOUND"
+msgstr "Workflow doesn't exists"
 
 #: src/backend/splitter_exports.py:95
 msgid "OUTPUT_NOT_FOUND"
@@ -848,10 +853,9 @@ msgstr "OpenADS connection error"
 msgid "GET_TOTALS_ERROR"
 msgstr "Error while retrievings totals"
 
-#: src/backend/controllers/splitter.py:778
-#, fuzzy
+#: src/backend/controllers/splitter.py:777
 msgid "GET_BATCH_OUTPUTS_ERROR"
-msgstr "Error while creating output"
+msgstr "Error while retrieving output"
 
 #: src/backend/controllers/status.py:31
 msgid "RETRIEVES_STATUS_ERROR"
@@ -1023,7 +1027,7 @@ msgid "FOLDER_NOT_ALLOWED_ERROR"
 msgstr "Capture path not allowed"
 
 #: src/backend/controllers/workflow.py:68
-#: src/backend/controllers/workflow.py:333
+#: src/backend/controllers/workflow.py:329
 msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
 msgstr "Cannot create folder because of permission issue"
 
@@ -1039,80 +1043,79 @@ msgstr "Error while retrieving workflow"
 msgid "GET_WORKFLOW_BY_WORKFLOW_ID_ERROR"
 msgstr "Error while retrieving workflow"
 
-#: src/backend/controllers/workflow.py:128
+#: src/backend/controllers/workflow.py:127
 msgid "DUPLICATE_WORKFLOW"
 msgstr "Workflow duplicated&nbsp;<strong>%(workflow)s</strong>"
 
-#: src/backend/controllers/workflow.py:133
-#: src/backend/controllers/workflow.py:139
+#: src/backend/controllers/workflow.py:132
+#: src/backend/controllers/workflow.py:138
 msgid "DUPLICATE_WORKFLOW_ERROR"
 msgstr "Error duplicating workflow"
 
-#: src/backend/controllers/workflow.py:164
-#: src/backend/controllers/workflow.py:176
-#: src/backend/controllers/workflow.py:187
-#: src/backend/controllers/workflow.py:212
+#: src/backend/controllers/workflow.py:163
+#: src/backend/controllers/workflow.py:175
+#: src/backend/controllers/workflow.py:186
+#: src/backend/controllers/workflow.py:210
 msgid "CREATE_WORKFLOW_ERROR"
 msgstr "Error while creating workflow"
 
-#: src/backend/controllers/workflow.py:165
-#: src/backend/controllers/workflow.py:222
+#: src/backend/controllers/workflow.py:164
+#: src/backend/controllers/workflow.py:220
 msgid "NOT_ALLOWED_INPUT_PATH"
 msgstr "The input path is not allowed"
 
-#: src/backend/controllers/workflow.py:177
+#: src/backend/controllers/workflow.py:176
 msgid "WORKFLOW_ID_ALREADY_EXISTS"
 msgstr "The label short already exists"
 
-#: src/backend/controllers/workflow.py:188
+#: src/backend/controllers/workflow.py:187
 msgid "INPUT_FOLDER_ALREADY_EXISTS"
 msgstr "The document capture path is already set in another workflow"
 
-#: src/backend/controllers/workflow.py:204
+#: src/backend/controllers/workflow.py:202
 msgid "CREATE_WORKFLOW"
 msgstr "Workflow created&nbsp;<strong>%(workflow)s</strong>"
 
-#: src/backend/controllers/workflow.py:221
-#: src/backend/controllers/workflow.py:251
-#: src/backend/controllers/workflow.py:257
+#: src/backend/controllers/workflow.py:219
+#: src/backend/controllers/workflow.py:247
+#: src/backend/controllers/workflow.py:253
 msgid "UPDATE_WORKFLOW_ERROR"
 msgstr "Error while trying to update workflow"
 
-#: src/backend/controllers/workflow.py:246
+#: src/backend/controllers/workflow.py:242
 msgid "UPDATE_WORKFLOW"
 msgstr "Workflow updated&nbsp;<strong>%(workflow)s</strong>"
 
-#: src/backend/controllers/workflow.py:274
+#: src/backend/controllers/workflow.py:270
 msgid "DELETE_WORKFLOW"
 msgstr "Workflow deleted&nbsp;<strong>%(workflow)s</strong>"
 
-#: src/backend/controllers/workflow.py:279
-#: src/backend/controllers/workflow.py:285
+#: src/backend/controllers/workflow.py:275
+#: src/backend/controllers/workflow.py:281
 msgid "DELETE_WORKFLOW_ERROR"
 msgstr "Error while deleting workflow"
 
-#: src/backend/controllers/workflow.py:332
-#: src/backend/controllers/workflow.py:354
+#: src/backend/controllers/workflow.py:328
+#: src/backend/controllers/workflow.py:350
 msgid "FS_WATCHER_CREATION_ERROR"
 msgstr "Error while creating fs watcher settings"
 
-#: src/backend/controllers/workflow.py:355
-#: src/backend/controllers/workflow.py:408
+#: src/backend/controllers/workflow.py:351
+#: src/backend/controllers/workflow.py:404
 msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
 msgstr "Fs watcher config doesnt exists"
 
-#: src/backend/controllers/workflow.py:360
+#: src/backend/controllers/workflow.py:356
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "Script sample doesn't exists"
 
-#: src/backend/controllers/workflow.py:366
+#: src/backend/controllers/workflow.py:362
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Script folder doesn't exists"
 
-#: src/backend/controllers/workflow.py:407
-#, fuzzy
+#: src/backend/controllers/workflow.py:403
 msgid "FS_WATCHER_DELETION_ERROR"
-msgstr "Error while creating fs watcher settings"
+msgstr "Error while deleting fs watcher settings"
 
 #: src/backend/models/accounts.py:105
 msgid "SUPPLIER_UPDATE_ERROR"

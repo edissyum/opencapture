@@ -101,6 +101,9 @@ def launch(args):
     database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(
         args['custom_id'], True)
 
+    if 'log' in args:
+        log = args['log']
+
     database.update({
         'table': ['monitoring'],
         'set': {
@@ -130,17 +133,17 @@ def launch(args):
 
     if 'workflow_id' in args and args['workflow_id']:
         workflow_settings = database.select({
-            'select': ['separation'],
+            'select': ['input'],
             'table': ['workflows'],
             'where': ['workflow_id = %s', 'module = %s'],
             'data': [args['workflow_id'], 'verifier']
         })
 
         if workflow_settings:
-            splitter_method = workflow_settings[0]['separation']['splitter_method_id']
-            remove_blank_pages = workflow_settings[0]['separation']['remove_blank_pages']
+            splitter_method = workflow_settings[0]['input']['splitter_method_id']
+            remove_blank_pages = workflow_settings[0]['input']['remove_blank_pages']
             if splitter_method == 'separate_by_document_number':
-                separate_every_x_page = workflow_settings[0]['separation']['separate_by_document_number_value']
+                separate_every_x_page = workflow_settings[0]['input']['separate_by_document_number_value']
 
     separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier', files, remove_blank_pages, docservers,
                                 splitter_method)
@@ -169,7 +172,6 @@ def launch(args):
             log.info('Separation ' + sep_style + ' enabled')
 
     database.connect()
-    process_err = False
     res = None
     list_of_ids = []
 
@@ -188,25 +190,18 @@ def launch(args):
                                   configurations,
                                   languages, mail_class, smtp)
                     list_of_ids.append(res)
-                    if not res:
-                        process_err = True
             elif splitter_method == 'separate_by_document_number':
                 list_of_files = separator_qr.split_document_every_x_pages(path, separate_every_x_page)
                 for file in list_of_files:
                     res = execute(args, file, log, config, files, ocr, regex, database, docservers, configurations,
                                   languages, mail_class, smtp)
                     list_of_ids.append(res)
-                    if not res:
-                        process_err = True
                 os.remove(path)
             else:
                 res = execute(args, path, log, config, files, ocr, regex, database, docservers, configurations,
                               languages, mail_class, smtp)
                 list_of_ids.append(res)
-                if not res:
-                    process_err = True
         except Exception:
-            process_err = True
             _e = str(traceback.format_exc())
             log.error(_e)
 

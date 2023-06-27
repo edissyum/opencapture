@@ -1,5 +1,5 @@
 # This file is part of Open-Capture.
-from gettext import gettext
+from flask_babel import gettext
 
 import requests
 # Open-Capture is free software: you can redistribute it and/or modify

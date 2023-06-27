@@ -146,7 +146,7 @@ def export_xml(data, log, regex, document_info, database):
             xml_file.write(xml_root)
             xml_file.close()
         # END Fill XML with document informations
-        return '', 200
+        return folder_out + '/' + filename, 200
     else:
         if log:
             log.error(gettext('XML_DESTINATION_FOLDER_DOESNT_EXISTS') + ' : ' + folder_out)
@@ -348,7 +348,7 @@ def export_facturx(data, log, regex, document_info):
 
         file = document_info['path'] + '/' + document_info['filename']
         facturx.generate_facturx_from_file(file, Et.tostring(root), output_pdf_file=folder_out + '/' + filename)
-        return '', 200
+        return folder_out + '/' + filename, 200
     else:
         if log:
             log.error(gettext('PDF_DESTINATION_FOLDER_DOESNT_EXISTS') + ' : ' + folder_out)
@@ -418,7 +418,7 @@ def export_pdf(data, log, regex, document_info, lang, compress_type, ocrise):
 
         if ocrise:
             ocrise_file(file, lang, log, folder_out, filename)
-        return '', 200
+        return folder_out + '/' + filename, 200
     else:
         if log:
             log.error(gettext('PDF_DESTINATION_FOLDER_DOESNT_EXISTS') + ' : ' + folder_out)
