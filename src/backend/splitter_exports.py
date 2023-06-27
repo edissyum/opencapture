@@ -110,7 +110,7 @@ def export_batch(batch_id, log, docservers, configurations, regex):
             batch = res_export_xml['result_batch']
 
         elif output['output_type_id'] == 'export_cmis':
-            res_export_cmis, status = handle_cmis_output(output, batch, log, docservers, configurations)
+            res_export_cmis, status = handle_cmis_output(output, batch, log, docservers, configurations, regex)
             if status != 200:
                 return res_export_cmis, status
 
