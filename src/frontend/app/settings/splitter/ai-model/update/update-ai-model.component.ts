@@ -42,7 +42,7 @@ export class UpdateSplitterAiModelComponent implements OnInit {
     forms               : any       = [];
     AiModel             : any       = {
         id             : 0,
-        trainDocuments : [],
+        trainFolders : [],
         fields         : [
             {
                 id: 'model_label',
@@ -88,7 +88,7 @@ export class UpdateSplitterAiModelComponent implements OnInit {
         await this.retrieveForms();
         this.http.get(environment['url'] + '/ws/ai/getById/' + this.AiModel.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.AiModel.trainDocuments = data.documents;
+                this.AiModel.trainFolders = data.documents;
                 this.setFormValue(this.AiModel.fields, 'model_label', data.model_label);
                 this.setFormValue(this.AiModel.fields, 'model_path', data.model_path);
                 this.setFormValue(this.AiModel.fields, 'min_proba', data.min_proba);
