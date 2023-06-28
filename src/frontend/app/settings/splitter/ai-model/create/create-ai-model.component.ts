@@ -109,19 +109,6 @@ export class CreateSplitterAiModelComponent implements OnInit {
         ).subscribe();
     }
 
-    getErrorMessage(field: any, form: any) {
-        let error: any;
-        form.forEach((element: any) => {
-            if (element.id === field) {
-                if (element.required) {
-                    error = this.translate.instant('AUTH.field_required');
-                }
-            }
-        });
-        return error;
-    }
-
-
     createModel() {
         let startTraining = true;
         let totalTrainFolders = 0;
@@ -136,22 +123,23 @@ export class CreateSplitterAiModelComponent implements OnInit {
         });
 
         if (this.isValidForm(this.AiModel.fields) && totalTrainFolders > 1) {
-            const doctypes = [];
-            const minProba = this.getValueFromForm(this.AiModel, 'min_proba');
-            const label = this.getValueFromForm(this.AiModel, 'model_label');
+            const selectedTrainFolders: any[] = [];
+            const minProba = this.getValueFromForm(this.AiModel.fields, 'min_proba');
+            const label = this.getValueFromForm(this.AiModel.fields, 'model_label');
             const modelName = label.toLowerCase().replace(/ /g, "_") + '.sav';
-            const matches = this.AiModel.trainDocuments.filter((a: { isSelected: boolean; }) => a.isSelected);
 
-            for (let i = 0; i < totalTrainFolders; i = i + 1) {
-                const fold = matches[i].doc;
-                const formId = matches[i].form;
-                const ocTarget = matches[i].doctype;
-                doctypes.push({
-                    form: formId,
-                    folder: fold,
-                    doctype: ocTarget
-                });
-            }
+            this.AiModel.trainFolders.forEach((trainFolders: any) => {
+                if (trainFolders.isSelected) {
+                    const folder = trainFolders.folder;
+                    const formId = trainFolders.form;
+                    const doctype = trainFolders.doctype;
+                    selectedTrainFolders.push({
+                        form: formId,
+                        folder: folder,
+                        doctype: doctype
+                    });
+                }
+            });
 
             for (const element of this.AiModel.trainFolders) {
                 const exists = Object.values(element).includes(modelName);
@@ -163,7 +151,7 @@ export class CreateSplitterAiModelComponent implements OnInit {
             }
             if (startTraining) {
                 this.http.post(environment['url'] + '/ws/ai/splitter/trainModel/' + modelName,
-                    {label: label, docs: doctypes, min_proba: minProba},
+                    {label: label, docs: selectedTrainFolders, min_proba: minProba},
                     {headers: this.authService.headers}).pipe(
                     catchError((err: any) => {
                         console.debug(err);
@@ -192,17 +180,6 @@ export class CreateSplitterAiModelComponent implements OnInit {
         return state;
     }
 
-    isValidForm2(form: any) {
-        let state = true;
-        form.forEach((element: any) => {
-            if ((element.status !== 'DISABLED' && element.status !== 'VALID') || element.value == null) {
-                state = false;
-            }
-            element.markAsTouched();
-        });
-        return state;
-    }
-
     getValueFromForm(form: any, fieldId: any) {
         let value = '';
         form.forEach((element: any) => {
@@ -225,10 +202,6 @@ export class CreateSplitterAiModelComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-    }
-
-    displayDoctypes(form: any) {
-        return !!form.value;
     }
 
     openDoctypeTree(trainFolder: any): void {
