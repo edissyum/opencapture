@@ -38,33 +38,35 @@ import {DocumentTypeComponent} from "../../../../splitter/document-type/document
 })
 
 export class CreateSplitterAiModelComponent implements OnInit {
-    loading             : boolean     = true;
-    doctypes            : any         = [];
-    trainFolders        : any         = [];
-    controls            : any         = [];
-    listModels          : any         = [];
-    forms               : any         = [];
-    chosenForm          : any         = [];
-    chosenDocs          : any         = [];
-    totalChecked        : number      = 0;
-    formControl         : FormControl = new FormControl('');
-    modelForm           : any[]       = [
-        {
-            id: 'model_label',
-            label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_name"),
-            placeholder: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_name_placeholder"),
-            type: 'text',
-            control: new FormControl(''),
-            required: true
-        },
-        {
-            id: 'min_proba',
-            label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
-            type: 'text',
-            control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
-            required: true
-        }
-    ];
+    loading             : boolean   = true;
+    forms               : any       = [];
+    AiModel             : any       = {
+        id             : 0,
+        trainFolders : [],
+        fields         : [
+            {
+                id: 'model_label',
+                label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_label"),
+                type: 'text',
+                control: new FormControl('', Validators.required),
+                required: true
+            },
+            {
+                id: 'model_path',
+                label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_path"),
+                type: 'text',
+                control: new FormControl('', Validators.pattern("[a-zA-Z0-9+._-éùà)(î]+\\.sav+")),
+                required: true
+            },
+            {
+                id: 'min_proba',
+                label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
+                type: 'number',
+                control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
+                required: true
+            }
+        ]
+    };
 
     constructor(
         public router: Router,
@@ -82,58 +84,24 @@ export class CreateSplitterAiModelComponent implements OnInit {
 
     ngOnInit() {
         this.serviceSettings.init();
-        this.retrieveModels();
         this.retrieveDoctypes();
-        this.retrieveOCDoctypes();
         this.retrieveForms();
     }
 
     retrieveDoctypes() {
         this.http.get(environment['url'] + '/ws/ai/splitter/getTrainDocuments', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.trainFolders = [];
-                for (const element of data) {
-                    this.trainFolders.push({
-                        doc: element,
+                for (const trainFolder of data) {
+                    this.AiModel.trainFolders.push({
+                        folder: trainFolder,
                         isSelected: false,
-                        linked_doctype: "",
-                        linked_form: ""
+                        doctype: "",
+                        form: ""
                     });
-                    this.controls.push(new FormControl(''));
                 }
+                console.log("this.AiModel.trainFolders : ");
+                console.log(this.AiModel.trainFolders);
             }),
-            catchError((err: any) => {
-                console.debug(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    checkSelectedBatch(cpt: number, current_doc: any) {
-        this.totalChecked = this.trainFolders.filter((a: { isSelected: boolean; }) => a.isSelected).length;
-        this.onFormSelect({value: this.forms[0].id}, cpt, current_doc);
-    }
-
-    retrieveOCDoctypes() {
-        this.doctypes = [];
-        this.http.get(environment['url'] + '/ws/ai/list/' + 'document', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                let newDoctype;
-                data.doctypes.forEach((doctype: any) => {
-                    newDoctype = {
-                        'id': doctype.id,
-                        'key': doctype.key,
-                        'type': doctype.type,
-                        'code': doctype.code,
-                        'label': doctype.label,
-                        'status': doctype.status,
-                        'formId': doctype.form_id,
-                        'isDefault': doctype.is_default
-                    };
-                    this.doctypes.push(newDoctype);
-                });
-            }),
-            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 return of(false);
@@ -153,39 +121,31 @@ export class CreateSplitterAiModelComponent implements OnInit {
         return error;
     }
 
-    changeOutputType(event: any, doc: string) {
-        const val = event.value;
-        const match = this.trainFolders.find((a: { doc: string; }) => a.doc === doc);
-        match.linked_doctype = val;
-        return true;
-    }
-
-    onFormSelect(event: any, index: number, doc: string) {
-        const val = event.value;
-        for (const element of this.forms) {
-            if (element.id === val) {
-                this.chosenForm[index] = element.id;
-                this.chosenDocs[index] = this.doctypes.filter((a: { formId: number;}) => a.formId === this.chosenForm[index]);
-            }
-        }
-        this.controls[index].value = this.chosenDocs[index][0].id;
-        const match = this.trainFolders.find((a: { doc: string; }) => a.doc === doc);
-        match.linked_doctype = this.chosenDocs[index][0].id;
-        match.linked_form = this.chosenForm[index];
-    }
 
     createModel() {
-        let start_training = true;
-        if (this.isValidForm(this.modelForm) && this.totalChecked > 1 && this.isValidForm2(this.controls)) {
+        let startTraining = true;
+        let totalTrainFolders = 0;
+
+        this.AiModel.trainFolders.forEach((trainFolders: any) => {
+            if (trainFolders.isSelected && trainFolders.doctype === "") {
+                startTraining = false;
+            }
+            else {
+                totalTrainFolders ++;
+            }
+        });
+
+        if (this.isValidForm(this.AiModel.fields) && totalTrainFolders > 1) {
             const doctypes = [];
-            const minProba = this.getValueFromForm(this.modelForm, 'min_proba');
-            const label = this.getValueFromForm(this.modelForm, 'model_label');
+            const minProba = this.getValueFromForm(this.AiModel, 'min_proba');
+            const label = this.getValueFromForm(this.AiModel, 'model_label');
             const modelName = label.toLowerCase().replace(/ /g, "_") + '.sav';
-            const matches = this.trainFolders.filter((a: { isSelected: boolean; }) => a.isSelected);
-            for (let i = 0; i < this.totalChecked; i = i + 1) {
+            const matches = this.AiModel.trainDocuments.filter((a: { isSelected: boolean; }) => a.isSelected);
+
+            for (let i = 0; i < totalTrainFolders; i = i + 1) {
                 const fold = matches[i].doc;
-                const formId = matches[i].linked_form;
-                const ocTarget = matches[i].linked_doctype;
+                const formId = matches[i].form;
+                const ocTarget = matches[i].doctype;
                 doctypes.push({
                     form: formId,
                     folder: fold,
@@ -193,15 +153,15 @@ export class CreateSplitterAiModelComponent implements OnInit {
                 });
             }
 
-            for (const element of this.listModels) {
+            for (const element of this.AiModel.trainFolders) {
                 const exists = Object.values(element).includes(modelName);
                 if (exists) {
                     this.notify.error(this.translate.instant('ARTIFICIAL-INTELLIGENCE.already_existing_model'));
-                    start_training = false;
+                    startTraining = false;
                     break;
                 }
             }
-            if (start_training) {
+            if (startTraining) {
                 this.http.post(environment['url'] + '/ws/ai/splitter/trainModel/' + modelName,
                     {label: label, docs: doctypes, min_proba: minProba},
                     {headers: this.authService.headers}).pipe(
@@ -215,7 +175,7 @@ export class CreateSplitterAiModelComponent implements OnInit {
                 this.router.navigate(['/settings/splitter/ai']).then();
             }
         } else {
-            if (this.totalChecked < 2) {
+            if (totalTrainFolders < 2) {
                 this.notify.error(this.translate.instant('ARTIFICIAL-INTELLIGENCE.not_enough_checked'));
             }
         }
@@ -253,25 +213,10 @@ export class CreateSplitterAiModelComponent implements OnInit {
         return value;
     }
 
-    retrieveModels() {
-        this.http.get(environment['url'] + '/ws/ai/splitter/list?limit=', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.listModels = data.models;
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
     retrieveForms() {
         this.http.get(environment['url'] + '/ws/forms/splitter/list', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                this.forms = forms.forms;
-               if (this.forms.length === 1) {
-                   this.formControl.setValue(this.forms[0].id);
-               }
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -292,16 +237,15 @@ export class CreateSplitterAiModelComponent implements OnInit {
             height  : '860px',
             data    : {
                 selectedDoctype: {
-                    key: trainFolder.linked_doctype  ? trainFolder.linked_doctype  : "",
+                    key: trainFolder.doctype  ? trainFolder.doctype  : "",
                     label: ""
                 },
-                formId: trainFolder.linked_form
+                formId: trainFolder.form
             }
         });
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result) {
-                trainFolder.linked_doctype_label = result.label;
-                trainFolder.linked_doctype   = result.key;
+                trainFolder.doctype   = result.key;
             }
         });
     }
