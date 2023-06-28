@@ -19,6 +19,9 @@
 export LD_LIBRARY_PATH=/usr/local/lib/
 export MAGICK_TMPDIR=/tmp/opencapture/
 export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
+if [[ "$tesseract_version" == "5."* ]]; then
+        export TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
+fi
 
 cd /var/www/html/opencapture/ || exit
 §§PYTHON_VENV§§
