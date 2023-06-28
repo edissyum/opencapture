@@ -127,7 +127,7 @@ def delete_model(data, model_id, module):
         return '', 200
 
 
-def update_model(data, model_id, module, model_name, fill_history=False):
+def update_model(data, model_id, module, fill_history=False):
     args = {
         'set': {},
         'model_id': model_id
@@ -135,6 +135,8 @@ def update_model(data, model_id, module, model_name, fill_history=False):
 
     if 'status' in data:
         args['set']['status'] = data['status']
+    if 'model_label' in data:
+        args['set']['model_label'] = data['model_label']
     if 'model_path' in data:
         args['set']['model_path'] = data['model_path']
     if 'min_proba' in data:
@@ -150,7 +152,7 @@ def update_model(data, model_id, module, model_name, fill_history=False):
                 'ip': request.remote_addr,
                 'submodule': 'update_ai_model',
                 'user_info': request.environ['user_info'],
-                'desc': gettext('UPDATE_AI_MODEL', model=model_name)
+                'desc': gettext('UPDATE_AI_MODEL', model=data['model_label'])
             })
         return '', 200
 
@@ -209,7 +211,7 @@ def launch_train(data, model_name, module):
         'min_proba': min_proba if min_proba is not None else "",
         'model_id': model_id
     }
-    update_model(args, model_id, model_name, module)
+    update_model(args, model_id, module)
     history.add_history({
         'module': module,
         'ip': request.remote_addr,
@@ -266,7 +268,7 @@ def launch_train_model(model_name, csv_file, model_id, module):
         'status': 'OK',
         'model_id': model_id
     }
-    update_model(args, model_id, model_name, module)
+    update_model(args, model_id, module)
 
 
 def save_model(model, filename):
@@ -333,7 +335,7 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id, module):
                     args = {
                         'status': str(round(total_files * percent, 1)) + " %"
                     }
-                    update_model(args, model_id, '', module)
+                    update_model(args, model_id, module)
 
     create_csv(csv_file)
     add_to_csv(csv_file, rows)

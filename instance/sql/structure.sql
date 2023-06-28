@@ -356,7 +356,7 @@ CREATE TABLE "ai_models" (
     "accuracy_score"    REAL,
     "min_proba"         INTEGER,
     "status"            VARCHAR(10)  DEFAULT 'OK',
-    "documents"         JSONB        DEFAULT '{}',
+    "documents"         JSONB        DEFAULT '[]',
     "module"            VARCHAR(10)
 );
 

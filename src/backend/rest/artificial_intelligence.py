@@ -89,10 +89,10 @@ def update_model(model_id, module):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/{module}/update/{model_id}'}), 403
 
     data = json.loads(request.data)
-    res = artificial_intelligence.rename_model(data['model_name'], model_id, module)
+    res = artificial_intelligence.rename_model(data['model_path'], model_id, module)
     if res[1] != 200:
         return make_response(jsonify(res[0])), res[1]
-    res = artificial_intelligence.update_model(data, model_id, data['model_name'], module, True)
+    res = artificial_intelligence.update_model(data, model_id, module, True)
     return make_response(jsonify(res)), 200
 
 
