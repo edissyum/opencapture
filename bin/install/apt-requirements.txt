@@ -6,6 +6,7 @@ pkg-config
 imagemagick
 python3-pip
 python3-venv
+python3-zbar
 poppler-utils
 libcairo2-dev
 tesseract-ocr
