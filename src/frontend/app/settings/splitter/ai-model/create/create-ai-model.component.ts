@@ -99,8 +99,6 @@ export class CreateSplitterAiModelComponent implements OnInit {
                         form: ""
                     });
                 }
-                console.log("this.AiModel.trainFolders : ");
-                console.log(this.AiModel.trainFolders);
             }),
             catchError((err: any) => {
                 console.debug(err);
