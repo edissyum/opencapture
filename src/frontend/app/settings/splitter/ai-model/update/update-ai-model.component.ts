@@ -13,22 +13,24 @@
  You should have received a copy of the GNU General Public License
  along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
- @dev : Tristan Coulange <tristan.coulange@free.fr> */
+ @dev : Tristan Coulange <tristan.coulange@free.fr>
+ @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
+import { lastValueFrom, of } from "rxjs";
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import {MatDialog} from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { environment } from "../../../../env";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
-import { environment } from "../../../../env";
-import { catchError, finalize, tap } from "rxjs/operators";
-import { lastValueFrom, of } from "rxjs";
-
+import {DocumentTypeComponent} from "../../../../splitter/document-type/document-type.component";
 @Component({
   selector: 'app-update-model',
   templateUrl: './update-ai-model.component.html',
@@ -37,37 +39,39 @@ import { lastValueFrom, of } from "rxjs";
 
 export class UpdateSplitterAiModelComponent implements OnInit {
     loading             : boolean   = true;
-    modelId             : number    = 0;
-    doc_types           : any       = [];
     forms               : any       = [];
-    formById            : any       = [];
-    doctypesFormControl : any       = [];
-    formsFormControl    : any       = [];
-    tableData           : any       = [];
-    chosenForm          : any       = [];
-    chosenDocs          : any       = [];
-    documents           : any       = [];
-    len                 : number    = 0;
-    modelForm           : any[]     = [
-        {
-            id: 'model_path',
-            label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_name"),
-            type: 'text',
-            control: new FormControl('', Validators.pattern("[a-zA-Z0-9+._-éùà)(î]+\\.sav+")),
-            required: true
-        },
-        {
-            id: 'min_proba',
-            label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
-            type: 'text',
-            control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
-            required: true
-        }
-    ];
+    AiModel             : any       = {
+        id             : 0,
+        trainDocuments : [],
+        fields         : [
+            {
+                id: 'model_label',
+                label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_label"),
+                type: 'text',
+                control: new FormControl('', Validators.required),
+                required: true
+            },
+            {
+                id: 'model_path',
+                label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_path"),
+                type: 'text',
+                control: new FormControl('', Validators.pattern("[a-zA-Z0-9+._-éùà)(î]+\\.sav+")),
+                required: true
+            },
+            {
+                id: 'min_proba',
+                label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
+                type: 'number',
+                control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
+                required: true
+            }
+        ]
+    };
 
     constructor(
         public router: Router,
         private http: HttpClient,
+        private dialog: MatDialog,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private authService: AuthService,
@@ -80,42 +84,14 @@ export class UpdateSplitterAiModelComponent implements OnInit {
 
     async ngOnInit() {
         this.serviceSettings.init();
-        this.modelId = this.route.snapshot.params['id'];
-        this.retrieveOCDoctypes();
+        this.AiModel.id = this.route.snapshot.params['id'];
         await this.retrieveForms();
-        this.http.get(environment['url'] + '/ws/ai/getById/' + this.modelId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/ai/getById/' + this.AiModel.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.documents = data.documents;
-                const selectedFormId : any = [];
-                this.len = this.documents.length;
-                for (let i = 0; i < this.len; i++) {
-                    for (const element of this.doc_types) {
-                        if (element.id === this.documents[i].doctype) {
-                            selectedFormId.push(element.formId);
-                            break;
-                        }
-                    }
-                    this.formById.push((this.forms.find((a: { id: number; }) => a.id === selectedFormId[i])).id);
-                    this.chosenDocs[i] = this.doc_types.filter((a: { formId: number; }) => a.formId === selectedFormId[i]);
-                    this.doctypesFormControl.push(new FormControl(this.documents[i].doctype, [Validators.required]));
-                    this.formsFormControl.push(new FormControl(this.formById[i], [Validators.required]));
-                    this.tableData.push({Documents: this.documents[i].folder, Doctypes: this.documents[i].doctype, Formulaires: this.formById[i], id: i});
-                }
-
-                for (const field in data) {
-                    if (data.hasOwnProperty(field)) {
-                        this.modelForm.forEach(element => {
-                            if (element.id === field) {
-                                element.control.setValue(data[field]);
-                                if (element.id === 'compress_type') {
-                                    if (data[field] === null || data[field] === undefined) {
-                                        element.control.setValue('');
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
+                this.AiModel.trainDocuments = data.documents;
+                this.setFormValue(this.AiModel.fields, 'model_label', data.model_label);
+                this.setFormValue(this.AiModel.fields, 'model_path', data.model_path);
+                this.setFormValue(this.AiModel.fields, 'min_proba', data.min_proba);
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -128,23 +104,18 @@ export class UpdateSplitterAiModelComponent implements OnInit {
     }
 
     updateModel() {
-        if (this.isValidForm(this.modelForm)) {
-            const modelName = this.getValueFromForm(this.modelForm, 'model_path');
-            const minProba = this.getValueFromForm(this.modelForm, 'min_proba');
-            const doctypes = [];
-            for (let i = 0; i < this.len; i++) {
-                const fold = this.documents[i].folder;
-                const formid = this.formsFormControl[i].value;
-                const oc_targets = this.doctypesFormControl[i].value;
-                doctypes.push({
-                    folder: fold,
-                    doctype: oc_targets,
-                    form: formid
-                });
-            }
-            if (this.modelId !== undefined) {
-                this.http.post(environment['url'] + '/ws/ai/splitter/update/' + this.modelId, {
-                    model_name: modelName, min_proba: minProba, doctypes: doctypes }, {headers: this.authService.headers}).pipe(
+        if (this.isValidForm(this.AiModel.fields)) {
+            const minProba = this.getValueFromForm(this.AiModel.fields, 'min_proba');
+            const modelPath = this.getValueFromForm(this.AiModel.fields, 'model_path');
+            const modelLabel = this.getValueFromForm(this.AiModel.fields, 'model_label');
+
+            if (this.AiModel.id !== undefined) {
+                this.http.post(environment['url'] + '/ws/ai/splitter/update/' + this.AiModel.id, {
+                        min_proba: minProba,
+                        model_label: modelLabel,
+                        model_path: modelPath,
+                        doctypes: this.AiModel.trainDocuments
+                    }, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.model_updated'));
                         this.router.navigate(['/settings/splitter/ai']).then();
@@ -180,30 +151,12 @@ export class UpdateSplitterAiModelComponent implements OnInit {
         return value;
     }
 
-    retrieveOCDoctypes() {
-        this.doc_types = [];
-        this.http.get(environment['url'] + '/ws/ai/list/document', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                let newDoctype;
-                data.doctypes.forEach((doctype: any) => {
-                    newDoctype = {
-                        'id': doctype.id,
-                        'key': doctype.key,
-                        'code': doctype.code,
-                        'label': doctype.label,
-                        'type': doctype.type,
-                        'status': doctype.status,
-                        'isDefault': doctype.is_default,
-                        'formId': doctype.form_id
-                    };
-                    this.doc_types.push(newDoctype);
-                });
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                return of(false);
-            })
-        ).subscribe();
+    setFormValue(form: any, fieldId: any, value: any) {
+        form.forEach((element: any) => {
+            if (fieldId === element.id) {
+                element.control.setValue(value);
+            }
+        });
     }
 
     async retrieveForms() {
@@ -221,14 +174,22 @@ export class UpdateSplitterAiModelComponent implements OnInit {
         return await lastValueFrom(retrieve).then();
     }
 
-    onFormSelect(event: any, index: number) {
-        const val = event.value;
-        for (const element of this.forms) {
-            if (element.id === val) {
-                this.chosenForm[index] = element.id;
-                this.chosenDocs[index] = this.doc_types.filter((a: { formId: number; }) => a.formId === this.chosenForm[index]);
+    openDoctypeTree(trainDocument: any): void {
+        const dialogRef = this.dialog.open(DocumentTypeComponent, {
+            width   : '800px',
+            height  : '860px',
+            data    : {
+                selectedDoctype: {
+                    key: trainDocument.doctype ? trainDocument.doctype  : "",
+                    label: ""
+                },
+                formId: trainDocument.form
             }
-        }
-        this.doctypesFormControl[index].value = this.chosenDocs[index][0].id;
+        });
+        dialogRef.afterClosed().subscribe((result: any) => {
+            if (result) {
+                trainDocument.doctype   = result.key;
+            }
+        });
     }
 }
