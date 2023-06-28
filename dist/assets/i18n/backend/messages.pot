@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-14 16:27+0200\n"
+"POT-Creation-Date: 2023-06-27 16:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: custom/edissyum/src/backend/process_queue_verifier.py:238
+#: custom/edissyum/src/backend/process_queue_splitter.py:220
+#: custom/edissyum/src/backend/process_queue_verifier.py:233
 msgid "FILE_UPLOADED_WORKFLOW"
+msgstr ""
+
+#: src/backend/scripting_functions.py:74
+msgid "WORFKLOW_NOT_FOUND"
 msgstr ""
 
 #: src/backend/splitter_exports.py:95
@@ -766,7 +771,7 @@ msgid "LOAD_METADATA_ERROR"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:170
-#: src/backend/controllers/verifier.py:122
+#: src/backend/controllers/verifier.py:125
 msgid "AT"
 msgstr ""
 
@@ -794,12 +799,12 @@ msgstr ""
 
 #: src/backend/controllers/splitter.py:275
 #: src/backend/controllers/splitter.py:296
-#: src/backend/controllers/verifier.py:696
+#: src/backend/controllers/verifier.py:764
 msgid "UPDATE_STATUS_ERROR"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:331
-#: src/backend/controllers/verifier.py:402
+#: src/backend/controllers/verifier.py:405
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr ""
 
@@ -816,8 +821,8 @@ msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:485
-#: src/backend/controllers/verifier.py:379
-#: src/backend/controllers/verifier.py:385
+#: src/backend/controllers/verifier.py:382
+#: src/backend/controllers/verifier.py:388
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr ""
 
@@ -837,12 +842,12 @@ msgid "OPENADS_CONNECTION_ERROR"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:678
-#: src/backend/controllers/verifier.py:675 src/backend/models/splitter.py:572
+#: src/backend/controllers/verifier.py:743 src/backend/models/splitter.py:572
 #: src/backend/models/verifier.py:194
 msgid "GET_TOTALS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:778
+#: src/backend/controllers/splitter.py:777
 msgid "GET_BATCH_OUTPUTS_ERROR"
 msgstr ""
 
@@ -941,65 +946,69 @@ msgstr ""
 msgid "UPDATE_FORMS_USER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:86 src/backend/models/splitter.py:219
+#: src/backend/controllers/verifier.py:89 src/backend/models/splitter.py:219
 #: src/backend/models/verifier.py:40
 msgid "GET_DOCUMENT_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:103 src/backend/models/verifier.py:64
+#: src/backend/controllers/verifier.py:106 src/backend/models/verifier.py:64
 msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:104
+#: src/backend/controllers/verifier.py:107
 msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR_MESSAGE"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:217
-#: src/backend/controllers/verifier.py:319
+#: src/backend/controllers/verifier.py:220
+#: src/backend/controllers/verifier.py:322
 msgid "UPDATE_DOCUMENT_POSITIONS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:240
-#: src/backend/controllers/verifier.py:337
+#: src/backend/controllers/verifier.py:243
+#: src/backend/controllers/verifier.py:340
 msgid "UPDATE_DOCUMENT_PAGES_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:263
-#: src/backend/controllers/verifier.py:281
+#: src/backend/controllers/verifier.py:266
+#: src/backend/controllers/verifier.py:284
 msgid "UPDATE_DOCUMENT_DATA_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:353
+#: src/backend/controllers/verifier.py:356
 msgid "DELETE_DOCUMENT_SUCCESS"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:358
-#: src/backend/controllers/verifier.py:364
+#: src/backend/controllers/verifier.py:361
+#: src/backend/controllers/verifier.py:367
 msgid "DELETE_DOCUMENT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:568
-#: src/backend/controllers/verifier.py:571
-#: src/backend/controllers/verifier.py:588
-#: src/backend/controllers/verifier.py:614
-#: src/backend/controllers/verifier.py:615
+#: src/backend/controllers/verifier.py:494 src/backend/process/main.py:40
+msgid "SCRIPT_CONTAINS_NOT_ALLOWED_CODE"
+msgstr ""
+
+#: src/backend/controllers/verifier.py:636
+#: src/backend/controllers/verifier.py:639
+#: src/backend/controllers/verifier.py:656
+#: src/backend/controllers/verifier.py:682
+#: src/backend/controllers/verifier.py:683
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:645
+#: src/backend/controllers/verifier.py:713
 msgid "VAT_NOT_VALID"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:652
-#: src/backend/controllers/verifier.py:653
+#: src/backend/controllers/verifier.py:720
+#: src/backend/controllers/verifier.py:721
 msgid "VAT_API_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:686
+#: src/backend/controllers/verifier.py:754
 msgid "DOCUMENT_NOT_FOUND"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:687
+#: src/backend/controllers/verifier.py:755
 msgid "DOCUMENT_ID_NOT_FOUND"
 msgstr ""
 
@@ -1014,7 +1023,7 @@ msgid "FOLDER_NOT_ALLOWED_ERROR"
 msgstr ""
 
 #: src/backend/controllers/workflow.py:68
-#: src/backend/controllers/workflow.py:333
+#: src/backend/controllers/workflow.py:329
 msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
 msgstr ""
 
@@ -1030,77 +1039,77 @@ msgstr ""
 msgid "GET_WORKFLOW_BY_WORKFLOW_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:128
+#: src/backend/controllers/workflow.py:127
 msgid "DUPLICATE_WORKFLOW"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:133
-#: src/backend/controllers/workflow.py:139
+#: src/backend/controllers/workflow.py:132
+#: src/backend/controllers/workflow.py:138
 msgid "DUPLICATE_WORKFLOW_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:164
-#: src/backend/controllers/workflow.py:176
-#: src/backend/controllers/workflow.py:187
-#: src/backend/controllers/workflow.py:212
+#: src/backend/controllers/workflow.py:163
+#: src/backend/controllers/workflow.py:175
+#: src/backend/controllers/workflow.py:186
+#: src/backend/controllers/workflow.py:210
 msgid "CREATE_WORKFLOW_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:165
-#: src/backend/controllers/workflow.py:222
+#: src/backend/controllers/workflow.py:164
+#: src/backend/controllers/workflow.py:220
 msgid "NOT_ALLOWED_INPUT_PATH"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:177
+#: src/backend/controllers/workflow.py:176
 msgid "WORKFLOW_ID_ALREADY_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:188
+#: src/backend/controllers/workflow.py:187
 msgid "INPUT_FOLDER_ALREADY_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:204
+#: src/backend/controllers/workflow.py:202
 msgid "CREATE_WORKFLOW"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:221
-#: src/backend/controllers/workflow.py:251
-#: src/backend/controllers/workflow.py:257
+#: src/backend/controllers/workflow.py:219
+#: src/backend/controllers/workflow.py:247
+#: src/backend/controllers/workflow.py:253
 msgid "UPDATE_WORKFLOW_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:246
+#: src/backend/controllers/workflow.py:242
 msgid "UPDATE_WORKFLOW"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:274
+#: src/backend/controllers/workflow.py:270
 msgid "DELETE_WORKFLOW"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:279
-#: src/backend/controllers/workflow.py:285
+#: src/backend/controllers/workflow.py:275
+#: src/backend/controllers/workflow.py:281
 msgid "DELETE_WORKFLOW_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:332
-#: src/backend/controllers/workflow.py:354
+#: src/backend/controllers/workflow.py:328
+#: src/backend/controllers/workflow.py:350
 msgid "FS_WATCHER_CREATION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:355
-#: src/backend/controllers/workflow.py:408
+#: src/backend/controllers/workflow.py:351
+#: src/backend/controllers/workflow.py:404
 msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:360
+#: src/backend/controllers/workflow.py:356
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:366
+#: src/backend/controllers/workflow.py:362
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:407
+#: src/backend/controllers/workflow.py:403
 msgid "FS_WATCHER_DELETION_ERROR"
 msgstr ""
 
@@ -1335,9 +1344,9 @@ msgstr ""
 #: src/backend/rest/artificial_intelligence.py:51
 #: src/backend/rest/artificial_intelligence.py:61
 #: src/backend/rest/artificial_intelligence.py:72
-#: src/backend/rest/artificial_intelligence.py:86
-#: src/backend/rest/artificial_intelligence.py:101
-#: src/backend/rest/artificial_intelligence.py:113 src/backend/rest/auth.py:91
+#: src/backend/rest/artificial_intelligence.py:89
+#: src/backend/rest/artificial_intelligence.py:104
+#: src/backend/rest/artificial_intelligence.py:116 src/backend/rest/auth.py:91
 #: src/backend/rest/auth.py:117 src/backend/rest/auth.py:127
 #: src/backend/rest/auth.py:147 src/backend/rest/auth.py:158
 #: src/backend/rest/auth.py:181 src/backend/rest/auth.py:192
@@ -1408,20 +1417,20 @@ msgstr ""
 #: src/backend/rest/verifier.py:154 src/backend/rest/verifier.py:166
 #: src/backend/rest/verifier.py:179 src/backend/rest/verifier.py:192
 #: src/backend/rest/verifier.py:205 src/backend/rest/verifier.py:218
-#: src/backend/rest/verifier.py:230 src/backend/rest/verifier.py:241
-#: src/backend/rest/verifier.py:260 src/backend/rest/verifier.py:279
-#: src/backend/rest/verifier.py:299 src/backend/rest/verifier.py:311
-#: src/backend/rest/verifier.py:323 src/backend/rest/verifier.py:346
-#: src/backend/rest/verifier.py:364 src/backend/rest/verifier.py:376
-#: src/backend/rest/verifier.py:387 src/backend/rest/verifier.py:400
-#: src/backend/rest/verifier.py:413 src/backend/rest/verifier.py:424
-#: src/backend/rest/verifier.py:437 src/backend/rest/verifier.py:448
-#: src/backend/rest/workflow.py:32 src/backend/rest/workflow.py:45
-#: src/backend/rest/workflow.py:58 src/backend/rest/workflow.py:71
-#: src/backend/rest/workflow.py:83 src/backend/rest/workflow.py:95
-#: src/backend/rest/workflow.py:107 src/backend/rest/workflow.py:119
-#: src/backend/rest/workflow.py:132 src/backend/rest/workflow.py:145
-#: src/backend/rest/workflow.py:156
+#: src/backend/rest/verifier.py:231 src/backend/rest/verifier.py:244
+#: src/backend/rest/verifier.py:255 src/backend/rest/verifier.py:274
+#: src/backend/rest/verifier.py:293 src/backend/rest/verifier.py:313
+#: src/backend/rest/verifier.py:325 src/backend/rest/verifier.py:337
+#: src/backend/rest/verifier.py:360 src/backend/rest/verifier.py:378
+#: src/backend/rest/verifier.py:390 src/backend/rest/verifier.py:401
+#: src/backend/rest/verifier.py:414 src/backend/rest/verifier.py:427
+#: src/backend/rest/verifier.py:438 src/backend/rest/verifier.py:451
+#: src/backend/rest/verifier.py:462 src/backend/rest/workflow.py:32
+#: src/backend/rest/workflow.py:45 src/backend/rest/workflow.py:58
+#: src/backend/rest/workflow.py:71 src/backend/rest/workflow.py:83
+#: src/backend/rest/workflow.py:95 src/backend/rest/workflow.py:107
+#: src/backend/rest/workflow.py:119 src/backend/rest/workflow.py:132
+#: src/backend/rest/workflow.py:145 src/backend/rest/workflow.py:156
 msgid "UNAUTHORIZED_ROUTE"
 msgstr ""
 
