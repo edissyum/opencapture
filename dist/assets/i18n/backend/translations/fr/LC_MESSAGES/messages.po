@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2023-06-14 16:27+0200\n"
+"POT-Creation-Date: 2023-06-27 16:43+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -17,9 +17,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: custom/edissyum/src/backend/process_queue_verifier.py:238
+#: custom/edissyum/src/backend/process_queue_splitter.py:220
+#: custom/edissyum/src/backend/process_queue_verifier.py:233
 msgid "FILE_UPLOADED_WORKFLOW"
 msgstr "Fichier téléversé avec le workflow"
+
+#: src/backend/scripting_functions.py:74
+msgid "WORFKLOW_NOT_FOUND"
+msgstr "Le workflow n'existe pas"
 
 #: src/backend/splitter_exports.py:95
 msgid "OUTPUT_NOT_FOUND"
@@ -775,7 +780,7 @@ msgid "LOAD_METADATA_ERROR"
 msgstr "Erreur du chargement des métadonnées"
 
 #: src/backend/controllers/splitter.py:170
-#: src/backend/controllers/verifier.py:122
+#: src/backend/controllers/verifier.py:125
 msgid "AT"
 msgstr "à"
 
@@ -803,12 +808,12 @@ msgstr "Suppression du lot n°<strong>%(batch_id)s</strong>"
 
 #: src/backend/controllers/splitter.py:275
 #: src/backend/controllers/splitter.py:296
-#: src/backend/controllers/verifier.py:696
+#: src/backend/controllers/verifier.py:764
 msgid "UPDATE_STATUS_ERROR"
 msgstr "Erreur lors de la mise à jour du statut"
 
 #: src/backend/controllers/splitter.py:331
-#: src/backend/controllers/verifier.py:402
+#: src/backend/controllers/verifier.py:405
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Erreur lors de la suppression du verrou"
 
@@ -825,8 +830,8 @@ msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
 #: src/backend/controllers/splitter.py:485
-#: src/backend/controllers/verifier.py:379
-#: src/backend/controllers/verifier.py:385
+#: src/backend/controllers/verifier.py:382
+#: src/backend/controllers/verifier.py:388
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
@@ -846,12 +851,12 @@ msgid "OPENADS_CONNECTION_ERROR"
 msgstr "Erreur lors de la connexion OpenADS"
 
 #: src/backend/controllers/splitter.py:678
-#: src/backend/controllers/verifier.py:675 src/backend/models/splitter.py:572
+#: src/backend/controllers/verifier.py:743 src/backend/models/splitter.py:572
 #: src/backend/models/verifier.py:194
 msgid "GET_TOTALS_ERROR"
 msgstr "Erreur lors de la récupération des totaux"
 
-#: src/backend/controllers/splitter.py:778
+#: src/backend/controllers/splitter.py:777
 msgid "GET_BATCH_OUTPUTS_ERROR"
 msgstr "Erreur lors de la récupération du workflow"
 
@@ -954,65 +959,69 @@ msgstr "Erreur lors de la mise à jour des comptes clients de l'utilisateur"
 msgid "UPDATE_FORMS_USER_ERROR"
 msgstr "Erreur lors de la mise à jour des formulaires de l'utilisateur"
 
-#: src/backend/controllers/verifier.py:86 src/backend/models/splitter.py:219
+#: src/backend/controllers/verifier.py:89 src/backend/models/splitter.py:219
 #: src/backend/models/verifier.py:40
 msgid "GET_DOCUMENT_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du document"
 
-#: src/backend/controllers/verifier.py:103 src/backend/models/verifier.py:64
+#: src/backend/controllers/verifier.py:106 src/backend/models/verifier.py:64
 msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR"
 msgstr "Erreur lors de la récupération du document par token"
 
-#: src/backend/controllers/verifier.py:104
+#: src/backend/controllers/verifier.py:107
 msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR_MESSAGE"
 msgstr "Aucun document trouvé avec ce token"
 
-#: src/backend/controllers/verifier.py:217
-#: src/backend/controllers/verifier.py:319
+#: src/backend/controllers/verifier.py:220
+#: src/backend/controllers/verifier.py:322
 msgid "UPDATE_DOCUMENT_POSITIONS_ERROR"
 msgstr "Erreur lors de la mise à jour des positions du document"
 
-#: src/backend/controllers/verifier.py:240
-#: src/backend/controllers/verifier.py:337
+#: src/backend/controllers/verifier.py:243
+#: src/backend/controllers/verifier.py:340
 msgid "UPDATE_DOCUMENT_PAGES_ERROR"
 msgstr "Erreur lors de la mise à jour des pages du document"
 
-#: src/backend/controllers/verifier.py:263
-#: src/backend/controllers/verifier.py:281
+#: src/backend/controllers/verifier.py:266
+#: src/backend/controllers/verifier.py:284
 msgid "UPDATE_DOCUMENT_DATA_ERROR"
 msgstr "Erreur lors de la mise à jour des données du document"
 
-#: src/backend/controllers/verifier.py:353
+#: src/backend/controllers/verifier.py:356
 msgid "DELETE_DOCUMENT_SUCCESS"
 msgstr "Suppression du document n°<strong>%(document_id)s</strong>"
 
-#: src/backend/controllers/verifier.py:358
-#: src/backend/controllers/verifier.py:364
+#: src/backend/controllers/verifier.py:361
+#: src/backend/controllers/verifier.py:367
 msgid "DELETE_DOCUMENT_ERROR"
 msgstr "Erreur lors de la suppression du document"
 
-#: src/backend/controllers/verifier.py:568
-#: src/backend/controllers/verifier.py:571
-#: src/backend/controllers/verifier.py:588
-#: src/backend/controllers/verifier.py:614
-#: src/backend/controllers/verifier.py:615
+#: src/backend/controllers/verifier.py:494 src/backend/process/main.py:40
+msgid "SCRIPT_CONTAINS_NOT_ALLOWED_CODE"
+msgstr "Le script contient du code non autorisé :"
+
+#: src/backend/controllers/verifier.py:636
+#: src/backend/controllers/verifier.py:639
+#: src/backend/controllers/verifier.py:656
+#: src/backend/controllers/verifier.py:682
+#: src/backend/controllers/verifier.py:683
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Erreur lors de la connexion à l'api de l'INSEE"
 
-#: src/backend/controllers/verifier.py:645
+#: src/backend/controllers/verifier.py:713
 msgid "VAT_NOT_VALID"
 msgstr "Numéro de TVA invalide"
 
-#: src/backend/controllers/verifier.py:652
-#: src/backend/controllers/verifier.py:653
+#: src/backend/controllers/verifier.py:720
+#: src/backend/controllers/verifier.py:721
 msgid "VAT_API_ERROR"
 msgstr "Impossible de joindre l'API de vérification du numéro de TVA"
 
-#: src/backend/controllers/verifier.py:686
+#: src/backend/controllers/verifier.py:754
 msgid "DOCUMENT_NOT_FOUND"
 msgstr "Document non trouvé"
 
-#: src/backend/controllers/verifier.py:687
+#: src/backend/controllers/verifier.py:755
 msgid "DOCUMENT_ID_NOT_FOUND"
 msgstr "Document %(id)s non trouvé"
 
@@ -1027,7 +1036,7 @@ msgid "FOLDER_NOT_ALLOWED_ERROR"
 msgstr "Le chemin de capture n'est pas autorisé"
 
 #: src/backend/controllers/workflow.py:68
-#: src/backend/controllers/workflow.py:333
+#: src/backend/controllers/workflow.py:329
 msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
 msgstr "Problème de permissions pour créer le dossier"
 
@@ -1043,77 +1052,77 @@ msgstr "Erreur lors de la récupération du workflow"
 msgid "GET_WORKFLOW_BY_WORKFLOW_ID_ERROR"
 msgstr "Erreur lors de la récupération du workflow"
 
-#: src/backend/controllers/workflow.py:128
+#: src/backend/controllers/workflow.py:127
 msgid "DUPLICATE_WORKFLOW"
 msgstr "Duplication du workflow&nbsp;<strong>%(workflow)s</strong>"
 
-#: src/backend/controllers/workflow.py:133
-#: src/backend/controllers/workflow.py:139
+#: src/backend/controllers/workflow.py:132
+#: src/backend/controllers/workflow.py:138
 msgid "DUPLICATE_WORKFLOW_ERROR"
 msgstr "Erreur lors de la duplication du workflow"
 
-#: src/backend/controllers/workflow.py:164
-#: src/backend/controllers/workflow.py:176
-#: src/backend/controllers/workflow.py:187
-#: src/backend/controllers/workflow.py:212
+#: src/backend/controllers/workflow.py:163
+#: src/backend/controllers/workflow.py:175
+#: src/backend/controllers/workflow.py:186
+#: src/backend/controllers/workflow.py:210
 msgid "CREATE_WORKFLOW_ERROR"
 msgstr "Erreur lors de la création du workflow"
 
-#: src/backend/controllers/workflow.py:165
-#: src/backend/controllers/workflow.py:222
+#: src/backend/controllers/workflow.py:164
+#: src/backend/controllers/workflow.py:220
 msgid "NOT_ALLOWED_INPUT_PATH"
 msgstr "Le chemin de capture de la chaîne entrante n'est pas autorisé"
 
-#: src/backend/controllers/workflow.py:177
+#: src/backend/controllers/workflow.py:176
 msgid "WORKFLOW_ID_ALREADY_EXISTS"
 msgstr "Le libellé technique du workflow existe déjà"
 
-#: src/backend/controllers/workflow.py:188
+#: src/backend/controllers/workflow.py:187
 msgid "INPUT_FOLDER_ALREADY_EXISTS"
 msgstr "Le chemin de capture est déjà paramétré dans une autre chaîne entrante"
 
-#: src/backend/controllers/workflow.py:204
+#: src/backend/controllers/workflow.py:202
 msgid "CREATE_WORKFLOW"
 msgstr "Création du workflow&nbsp;<strong>%(workflow)s</strong>"
 
-#: src/backend/controllers/workflow.py:221
-#: src/backend/controllers/workflow.py:251
-#: src/backend/controllers/workflow.py:257
+#: src/backend/controllers/workflow.py:219
+#: src/backend/controllers/workflow.py:247
+#: src/backend/controllers/workflow.py:253
 msgid "UPDATE_WORKFLOW_ERROR"
 msgstr "Erreur lors de la mise à jour du workflow"
 
-#: src/backend/controllers/workflow.py:246
+#: src/backend/controllers/workflow.py:242
 msgid "UPDATE_WORKFLOW"
 msgstr "Mise à jour du workflow&nbsp;<strong>%(workflow)s</strong>"
 
-#: src/backend/controllers/workflow.py:274
+#: src/backend/controllers/workflow.py:270
 msgid "DELETE_WORKFLOW"
 msgstr "Suppression du workflow&nbsp;<strong>%(workflow)s</strong>"
 
-#: src/backend/controllers/workflow.py:279
-#: src/backend/controllers/workflow.py:285
+#: src/backend/controllers/workflow.py:275
+#: src/backend/controllers/workflow.py:281
 msgid "DELETE_WORKFLOW_ERROR"
 msgstr "Erreur lors de la suppression du workflow"
 
-#: src/backend/controllers/workflow.py:332
-#: src/backend/controllers/workflow.py:354
+#: src/backend/controllers/workflow.py:328
+#: src/backend/controllers/workflow.py:350
 msgid "FS_WATCHER_CREATION_ERROR"
 msgstr "Erreur lors de la création des paramètres du fs watcher"
 
-#: src/backend/controllers/workflow.py:355
-#: src/backend/controllers/workflow.py:408
+#: src/backend/controllers/workflow.py:351
+#: src/backend/controllers/workflow.py:404
 msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
 msgstr "La configuration du fs watcher est introuvable"
 
-#: src/backend/controllers/workflow.py:360
+#: src/backend/controllers/workflow.py:356
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "Le script d'exemple n'existe pas"
 
-#: src/backend/controllers/workflow.py:366
+#: src/backend/controllers/workflow.py:362
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier des scripts n'existe pas"
 
-#: src/backend/controllers/workflow.py:407
+#: src/backend/controllers/workflow.py:403
 msgid "FS_WATCHER_DELETION_ERROR"
 msgstr "Erreur lors de la suppression de l'entrée du fs watcher"
 
@@ -1348,9 +1357,9 @@ msgstr "Erreur lors de la modification du workflow"
 #: src/backend/rest/artificial_intelligence.py:51
 #: src/backend/rest/artificial_intelligence.py:61
 #: src/backend/rest/artificial_intelligence.py:72
-#: src/backend/rest/artificial_intelligence.py:86
-#: src/backend/rest/artificial_intelligence.py:101
-#: src/backend/rest/artificial_intelligence.py:113 src/backend/rest/auth.py:91
+#: src/backend/rest/artificial_intelligence.py:89
+#: src/backend/rest/artificial_intelligence.py:104
+#: src/backend/rest/artificial_intelligence.py:116 src/backend/rest/auth.py:91
 #: src/backend/rest/auth.py:117 src/backend/rest/auth.py:127
 #: src/backend/rest/auth.py:147 src/backend/rest/auth.py:158
 #: src/backend/rest/auth.py:181 src/backend/rest/auth.py:192
@@ -1421,20 +1430,20 @@ msgstr "Erreur lors de la modification du workflow"
 #: src/backend/rest/verifier.py:154 src/backend/rest/verifier.py:166
 #: src/backend/rest/verifier.py:179 src/backend/rest/verifier.py:192
 #: src/backend/rest/verifier.py:205 src/backend/rest/verifier.py:218
-#: src/backend/rest/verifier.py:230 src/backend/rest/verifier.py:241
-#: src/backend/rest/verifier.py:260 src/backend/rest/verifier.py:279
-#: src/backend/rest/verifier.py:299 src/backend/rest/verifier.py:311
-#: src/backend/rest/verifier.py:323 src/backend/rest/verifier.py:346
-#: src/backend/rest/verifier.py:364 src/backend/rest/verifier.py:376
-#: src/backend/rest/verifier.py:387 src/backend/rest/verifier.py:400
-#: src/backend/rest/verifier.py:413 src/backend/rest/verifier.py:424
-#: src/backend/rest/verifier.py:437 src/backend/rest/verifier.py:448
-#: src/backend/rest/workflow.py:32 src/backend/rest/workflow.py:45
-#: src/backend/rest/workflow.py:58 src/backend/rest/workflow.py:71
-#: src/backend/rest/workflow.py:83 src/backend/rest/workflow.py:95
-#: src/backend/rest/workflow.py:107 src/backend/rest/workflow.py:119
-#: src/backend/rest/workflow.py:132 src/backend/rest/workflow.py:145
-#: src/backend/rest/workflow.py:156
+#: src/backend/rest/verifier.py:231 src/backend/rest/verifier.py:244
+#: src/backend/rest/verifier.py:255 src/backend/rest/verifier.py:274
+#: src/backend/rest/verifier.py:293 src/backend/rest/verifier.py:313
+#: src/backend/rest/verifier.py:325 src/backend/rest/verifier.py:337
+#: src/backend/rest/verifier.py:360 src/backend/rest/verifier.py:378
+#: src/backend/rest/verifier.py:390 src/backend/rest/verifier.py:401
+#: src/backend/rest/verifier.py:414 src/backend/rest/verifier.py:427
+#: src/backend/rest/verifier.py:438 src/backend/rest/verifier.py:451
+#: src/backend/rest/verifier.py:462 src/backend/rest/workflow.py:32
+#: src/backend/rest/workflow.py:45 src/backend/rest/workflow.py:58
+#: src/backend/rest/workflow.py:71 src/backend/rest/workflow.py:83
+#: src/backend/rest/workflow.py:95 src/backend/rest/workflow.py:107
+#: src/backend/rest/workflow.py:119 src/backend/rest/workflow.py:132
+#: src/backend/rest/workflow.py:145 src/backend/rest/workflow.py:156
 msgid "UNAUTHORIZED_ROUTE"
 msgstr "Vous n'êtes pas autorisé à accéder à cette route"
 
@@ -1471,3 +1480,4 @@ msgid "INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET"
 msgstr ""
 "L'utilisation de l'interface est désactivée dans le workflow ou l'URL "
 "unique n'est pas configurée correctement"
+
