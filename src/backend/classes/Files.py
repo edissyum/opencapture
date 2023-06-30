@@ -375,7 +375,7 @@ class Files:
                 os.remove('/tmp/cropped_' + rand + extension)
                 if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
                     os.remove('/tmp/cropped_' + rand + '_improved' + extension)
-                return res.group().replace('\x0c', '').strip()
+                return str(res.group()).replace('\x0c', '').strip()
             return False
 
         os.remove('/tmp/cropped_' + rand + extension)
