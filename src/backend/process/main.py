@@ -580,7 +580,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
         quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
-                                                     docservers, configurations, datas['form_id'])
+                                                     docservers, configurations, datas['form_id'], languages)
         datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages, quotation_number_class,
                                        datas, files, configurations)
 

@@ -32,7 +32,7 @@
                     </span>
                     <span class="text-center text-xl" *ngIf="this.processData['document_ids']">
                         <div>
-                            <span class="material-icons mr-3 relative top-1 font-light cursor-pointer text-gray-400"
+                            <span class="material-icons mr-3 relative top-1 font-light cursor-pointer text-gray-400" *ngIf="this.processData['document_ids'].length > 1"
                                   (click)="this.splitterCpt !== 0 ? this.splitterCpt = this.splitterCpt - 1 : this.splitterCpt = this.processData['document_ids'].length - 1">
                                 arrow_back
                             </span>
@@ -42,7 +42,7 @@
                             <a [routerLink]="'../../splitter/viewer/' + this.processData.time + '/' + this.processData['document_ids'][this.splitterCpt]" *ngIf="this.processData.module === 'splitter'">
                                 {{ this.processData['document_ids'][this.splitterCpt] }}
                             </a>
-                            <span class="material-icons ml-3 relative top-1 font-light cursor-pointer text-gray-400"
+                            <span class="material-icons ml-3 relative top-1 font-light cursor-pointer text-gray-400" *ngIf="this.processData['document_ids'].length > 1"
                                   (click)="this.splitterCpt < this.processData['document_ids'].length - 1 ? this.splitterCpt = this.splitterCpt + 1 : this.splitterCpt = 0">
                                 arrow_forward
                             </span>

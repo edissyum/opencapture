@@ -364,18 +364,18 @@ class Files:
                     for _r in _regex:
                         regex_dict[_r['regex_id']] = _r['content']
             for res in re.finditer(r"" + regex_dict['date'] + "", tmp_text):
-                date_class = FindDate('', self.log, regex_dict, self.configurations, self, ocr, '', '', '', '',
-                                      self.docservers, self.languages, None)
-                date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
+                date_class = FindDate(ocr, self.log, regex_dict, self.configurations, self, '', '', '', self.docservers,
+                                      '', '')
+                date, _ = date_class.format_date(res.group(), (('', ''), ('', '')), True, False)
                 if date:
-                    text = date[0]
+                    text = date
 
         if regex_name:
             for res in re.finditer(r"" + self.regex[regex_name], text):
                 os.remove('/tmp/cropped_' + rand + extension)
                 if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
                     os.remove('/tmp/cropped_' + rand + '_improved' + extension)
-                return res.group().replace('\x0c', '').strip()
+                return str(res.group()).replace('\x0c', '').strip()
             return False
 
         os.remove('/tmp/cropped_' + rand + extension)
