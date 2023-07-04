@@ -723,7 +723,7 @@ def merge_batches(parent_id, batches):
                     'batch_id': parent_id,
                     'doctype_key': doc['doctype_key'],
                     'data': json.dumps({'custom_fields': doc['data']}),
-                    'status': 'END',
+                    'status': 'NEW',
                     'split_index': parent_max_split_index + doc['split_index']
                 })
 
