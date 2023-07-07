@@ -34,7 +34,7 @@ import * as moment from "moment/moment";
     styleUrls: ['./monitoring-list.component.scss']
 })
 export class MonitoringListComponent implements OnInit, OnDestroy {
-    columnsToDisplay    : string[] = ['id', 'module', 'creation_date', 'end_date', 'filename', 'last_message', 'status'];
+    columnsToDisplay    : string[] = ['module', 'creation_date', 'end_date', 'filename', 'last_message', 'status'];
     loading             : boolean  = true;
     pageSize            : number   = 10;
     pageIndex           : number   = 0;
@@ -174,7 +174,6 @@ export class MonitoringListComponent implements OnInit, OnDestroy {
         this.processData = data.sort((a: any, b: any) => {
             const isAsc = sort.direction === 'asc';
             switch (sort.active) {
-                case 'id': return this.compare(a.id, b.id, isAsc);
                 case 'module': return this.compare(a.module, b.module, isAsc);
                 case 'creation_date': return this.compare(a.creation_date, b.creation_date, isAsc);
                 case 'end_date': return this.compare(a.end_date, b.end_date, isAsc);
