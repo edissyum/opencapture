@@ -1,17 +1,16 @@
-.mat-column-id {
-    flex: 0 0 5%;
-}
-
 .mat-column-end_date,
 .mat-column-creation_date {
-    flex: 0 0 10%;
+    flex: 0 0 170px;
 }
 
 .mat-column-module {
     flex: 0 0 7%;
 }
 
-.mat-column-status,
+.mat-column-status {
+    flex: 0 0 200px;
+}
+
 .mat-column-filename {
-    flex: 0 0 15%;
+    flex: 0 0 20%;
 }
