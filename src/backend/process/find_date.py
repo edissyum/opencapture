@@ -101,11 +101,11 @@ class FindDate:
                                       " days or in the future : " + date)
                         date = False
                 if timedelta.days < 0:
-                    self.log.info("Date is in the future " + date)
+                    self.log.info("Date is in the future " + str(date))
                     date = False
                 return date, position
             except (ValueError, IndexError) as _e:
-                self.log.info("Date wasn't in a good format : " + date)
+                self.log.info("Date wasn't in a good format : " + str(date))
                 return False
         else:
             return False
