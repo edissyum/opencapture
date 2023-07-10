@@ -18,10 +18,6 @@
 
 import os
 import re
-import sys
-
-import gc
-
 import cv2
 import json
 import time
