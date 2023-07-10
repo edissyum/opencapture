@@ -95,7 +95,7 @@
 		"train_a_model": "Entraîner un modèle",
 		"train_time": "Temps d'entraînement",
 		"training": "Entraînement du modèle en cours",
-		"training_done": "Apprentissage terminé",
+		"training_done": "Entraînement du modèle terminé",
 		"update_model": "Modifier le modèle"
 	},
 	"AUTH": {
