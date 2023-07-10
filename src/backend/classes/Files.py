@@ -102,12 +102,22 @@ class Files:
     def open_img(self, img):
         self.img = Image.open(img)
 
-    def save_img_with_pdf2image(self, pdf_name, output, page=None, docservers=False):
+    def save_img_with_pdf2image(self, pdf_name, output, page=None, docservers=False, chunk_size=10):
         try:
             output = os.path.splitext(output)[0]
             bck_output = os.path.splitext(output)[0]
             directory = os.path.dirname(output)
-            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
+            images = []
+            page_count = len(convert_from_path(pdf_name, first_page=0, last_page=1))
+            if page:
+                images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
+            else:
+                for i in range(0, page_count, chunk_size):
+                    start_page = i
+                    end_page = min(i + chunk_size, page_count)
+                    chunk_images = convert_from_path(pdf_name, first_page=start_page, last_page=end_page, dpi=300)
+                    images += chunk_images
+
             cpt = 1
             for i in range(len(images)):
                 if not page:
