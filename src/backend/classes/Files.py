@@ -129,7 +129,6 @@ class Files:
                         if docservers:
                             self.move_to_docservers_image(directory, output_path)
                         outputs_paths.append(output_path)
-                        print("cpt : " + str(cpt))
                         cpt = cpt + 1
                         del image
                     del chunk_images
