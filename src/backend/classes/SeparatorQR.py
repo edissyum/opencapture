@@ -26,6 +26,8 @@ import qrcode
 import pdf2image
 import subprocess
 from io import BytesIO
+
+from PIL import Image
 from fpdf import Template
 from pyzbar.pyzbar import decode
 
@@ -133,13 +135,19 @@ class SeparatorQR:
             end = end + int(page_per_doc)
         return array_of_files
 
-    def run(self, file):
+    def run(self, file, saved_pages=False):
+        """
+
+        :param file: file to separate
+        :param saved_pages: Images list if pages already saved
+        :return:
+        """
         self.log.info('Start page separation using QR CODE')
         self.pages = []
         try:
             pdf = pypdf.PdfReader(file)
             self.nb_pages = len(pdf.pages)
-            self.get_xml(file)
+            self.get_xml(file, saved_pages)
             if self.splitter_or_verifier == 'verifier':
                 if self.remove_blank_pages:
                     self.remove_blank_page(file)
@@ -153,13 +161,23 @@ class SeparatorQR:
             self.error = True
             self.log.error("INIT : " + str(e))
 
-    def get_xml(self, file):
+    def get_xml(self, file, saved_pages=False):
         """
         Retrieve the content of a C128 Code
 
         :param file: Path to pdf file
+        :param saved_pages: Images list if pages already saved
         """
-        pages = pdf2image.convert_from_path(file)
+        if saved_pages:
+            # Load pages from saved_pages paths
+            pages = []
+            for page in saved_pages:
+                img = Image.open(page)
+                pages.append(img)
+                img.close()
+        else:
+            pages = pdf2image.convert_from_path(file)
+
         barcodes = []
         cpt = 0
         for page in pages:
