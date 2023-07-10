@@ -31,14 +31,15 @@ class WorkflowsTest(unittest.TestCase):
     def create_workflow(self):
         payload = {
             'module': 'verifier',
-            'workflow_id': 'test_workflow',
             'label': 'Test Workflow',
+            'workflow_id': 'test_workflow',
             'input': {
-                'input_folder': f'/var/share/{CUSTOM_ID}/entrant/verifier/new_folder/',
+                'remove_blank_pages': False,
+                'splitter_method_id': 'no_sep',
+                'input_folder': f'/var/share/{CUSTOM_ID}/entrant/verifier/new_folder/'
             },
             'process': {},
-            'separation': {},
-            'output': {},
+            'output': {}
         }
 
         return self.app.post(f'/{CUSTOM_ID}/ws/workflows/verifier/create',
@@ -89,11 +90,14 @@ class WorkflowsTest(unittest.TestCase):
         payload = {
             "label": "Updated test workflow",
             "input": {
+
                 "ai_model_id": None,
                 "customer_id": None,
                 "facturx_only": False,
                 "apply_process": True,
-                "input_folder": f"/var/share/{CUSTOM_ID}/entrant/verifier/new_workflow_folder/",
+                "remove_blank_pages": False,
+                "splitter_method_id": "no_sep",
+                "input_folder": f"/var/share/{CUSTOM_ID}/entrant/verifier/new_workflow_folder/"
             }
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/workflows/verifier/update/1',

@@ -28,7 +28,7 @@ class ConfigTest(unittest.TestCase):
         self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
-        warnings.filterwarnings('ignore', message="unclosed .*OpenCapture.log.*", category=ResourceWarning)
+        warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
         warnings.filterwarnings('ignore', message="subprocess .* is still running", category=ResourceWarning)
 
     def test_successful_read_config(self):
@@ -45,7 +45,7 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(list, type(response.json['configurations']))
 
     def test_successful_get_configurations_search(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getConfigurations?search=loginMessage',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getConfigurations?search=invoiceSizeMin',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
@@ -61,13 +61,13 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(len(response.json['configurations']), 5)
 
     def test_successful_get_configuration_by_label(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getConfiguration/loginMessage',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getConfiguration/invoiceSizeMin',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
         self.assertEqual(list, type(response.json['configuration']))
         self.assertEqual(len(response.json['configuration']), 1)
-        self.assertEqual(response.json['configuration'][0]['label'], 'loginMessage')
+        self.assertEqual(response.json['configuration'][0]['label'], 'invoiceSizeMin')
 
     def test_successful_get_docservers_full(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/config/getDocservers',
@@ -150,16 +150,16 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(default_login_image.decode('utf-8'), custom_login_image.decode('utf-8'))
 
     def test_successful_update_configuration(self):
-        self.database.execute("SELECT id FROM configurations WHERE label = 'loginMessage'")
+        self.database.execute("SELECT id FROM configurations WHERE label = 'invoiceSizeMin'")
         configuration_id = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateConfiguration/' + str(configuration_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={"data": {"type": "string", "value": "New loginMessage",
-                                               "description": "Court message affiché sur l'écran d'accueil"}})
+                                json={"data": {"type": "int", "value": "8",
+                                               "description": "Taille minimale pour un numéro de facture"}})
         self.assertEqual(200, response.status_code)
-        self.database.execute("SELECT data #>> '{value}' as value FROM configurations WHERE label = 'loginMessage'")
+        self.database.execute("SELECT data #>> '{value}' as value FROM configurations WHERE label = 'invoiceSizeMin'")
         updated_configuration = self.database.fetchall()
-        self.assertEqual("New loginMessage", updated_configuration[0]['value'])
+        self.assertEqual("8", updated_configuration[0]['value'])
 
     def test_successful_update_docservers(self):
         self.database.execute("SELECT id, path, description, docserver_id FROM docservers WHERE docserver_id = "
