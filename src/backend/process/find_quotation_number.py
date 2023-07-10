@@ -123,7 +123,6 @@ class FindQuotationNumber:
                 for _quotation in re.finditer(r"" + self.regex['quotation_number'] + "", line.content.upper()):
                     quotation_number = self.sanitize_quotation_number(_quotation.group())
                     if len(quotation_number) >= int(self.configurations['devisSizeMin']):
-                        print(quotation_number)
                         self.log.info('Quotation number found : ' + quotation_number)
                         position = line.position
                         if cpt == 1:
