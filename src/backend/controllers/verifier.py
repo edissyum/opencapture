@@ -16,28 +16,31 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import sys
 import uuid
 import json
-
-import pandas as pd
 import zeep
 import base64
 import secrets
 import logging
 import datetime
 import requests
+import traceback
+import importlib
+import pandas as pd
 from flask_babel import gettext
 from zeep import Client, exceptions
 from src.backend import verifier_exports
 from src.backend.import_classes import _Files
+from src.backend.scripting_functions import check_code
 from src.backend.import_models import verifier, accounts
 from src.backend.main import launch, create_classes_from_custom_id
-from flask import current_app, Response, request, g as current_context
 from src.backend.import_controllers import auth, user, monitoring, history
 from src.backend.functions import retrieve_custom_from_url, delete_documents
+from flask import current_app, Response, request, g as current_context
 
 
-def handle_uploaded_file(files, workflow_id, supplier, user_id=None):
+def handle_uploaded_file(files, workflow_id, supplier):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER']
     tokens = []
@@ -469,6 +472,72 @@ def export_facturx(document_id, data):
         return verifier_exports.export_facturx(data['data'], log, regex, document_info)
 
 
+def launch_output_script(document_id, workflow_settings, outputs):
+    custom_id = retrieve_custom_from_url(request)
+    if 'config' in current_context and 'docservers' in current_context and 'log' in current_context \
+            and 'database' in current_context:
+        log = current_context.log
+        config = current_context.config
+        database = current_context.database
+        docservers = current_context.docservers
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+        config = _vars[1]
+        database = _vars[0]
+        docservers = _vars[9]
+
+    if 'script' in workflow_settings['output'] and workflow_settings['output']['script']:
+        script = workflow_settings['output']['script']
+        check_res, message = check_code(script, config['GLOBAL']['applicationpath'], docservers['DOCSERVERS_PATH'],
+                                        workflow_settings['input']['input_folder'])
+        if not check_res:
+            log.error('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
+                      '&nbsp;<strong>(' + message.strip() + ')</strong>')
+            return False
+        rand = str(uuid.uuid4())
+        tmp_file = docservers['TMP_PATH'] + '/output_scripting_' + rand + '.py'
+
+        try:
+            with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+                python_script.write(script)
+
+            if os.path.isfile(tmp_file):
+                script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.')\
+                    .replace('.py', '')
+                script_name = script_name.replace('..', '.')
+                scripting = importlib.import_module(script_name, 'main')
+                res = False
+
+                if document_id:
+                    document_info = database.select({
+                        'select': ['datas', 'filename', 'path'],
+                        'table': ['documents'],
+                        'where': ['id = %s'],
+                        'data': [document_id]
+                    })
+                    if document_info:
+                        datas = document_info[0]
+                        file = datas['path'] + '/' + datas['filename']
+                        data = {
+                            'log': log,
+                            'file': file,
+                            'outputs': outputs,
+                            'custom_id': custom_id,
+                            'datas': datas['datas'],
+                            'document_id': document_id,
+                            'opencapture_path': config['GLOBAL']['applicationpath']
+                        }
+
+                        res = scripting.main(data)
+                os.remove(tmp_file)
+                if not res:
+                    sys.exit(0)
+        except Exception as _e:
+            os.remove(tmp_file)
+            log.error('Error during output scripting : ' + str(traceback.format_exc()))
+
+
 def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
     if 'files' in current_context and 'ocr' in current_context and 'docservers' in current_context:
         files = current_context.files
@@ -521,7 +590,7 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
     if file_type == 'full':
         path = docservers['VERIFIER_IMAGE_FULL']
         if year_and_month:
-            path = path + '/' + year_and_month + '/'
+            path = path + '/' + str(year_and_month) + '/'
     elif file_type == 'positions_masks':
         path = docservers['VERIFIER_POSITIONS_MASKS']
     elif file_type == 'referential_supplier':
@@ -533,7 +602,7 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
             if compress and mime_type == 'image/jpeg':
                 thumb_path = docservers['VERIFIER_THUMB']
                 if year_and_month:
-                    thumb_path = thumb_path + '/' + year_and_month + '/'
+                    thumb_path = thumb_path + '/' + str(year_and_month) + '/'
                 if os.path.isfile(thumb_path + '/' + filename):
                     with open(thumb_path + '/' + filename, 'rb') as file:
                         content = file.read()

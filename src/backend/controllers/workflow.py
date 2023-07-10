@@ -21,14 +21,14 @@ import json
 import stat
 import shutil
 import uuid
-
 import urllib3
 import importlib
 import traceback
 from io import StringIO
 from flask_babel import gettext
-from flask import request, g as current_context
 from src.backend.import_classes import _Config
+from flask import request, g as current_context
+from src.backend.scripting_functions import check_code
 from src.backend.import_models import workflow, history
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
@@ -424,16 +424,24 @@ def test_script_verifier(args):
     rand = str(uuid.uuid4())
     tmp_file = docservers['TMP_PATH'] + args['step'] + '_scripting_' + rand + '.py'
     try:
-        result_string = launch_script(tmp_file, log, pdf_path, database, args, config)
+        result_string, code = launch_script(tmp_file, log, pdf_path, database, args, config, docservers)
     except Exception:
-        os.remove(tmp_file)
+        if os.path.isfile(tmp_file):
+            os.remove(tmp_file)
         return traceback.format_exc(), 400
-    return result_string, 200
+    return result_string, code
 
 
-def launch_script(tmp_file, log, file, database, args, config, datas=None):
+def launch_script(tmp_file, log, file, database, args, config, docservers, datas=None):
     if os.path.isfile(tmp_file):
         os.remove(tmp_file)
+
+    check_res, message = check_code(args['codeContent'], config['GLOBAL']['applicationpath'],
+                                    docservers['DOCSERVERS_PATH'], args['input_folder'])
+    if not check_res:
+        result_string = ('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
+                  '<br> &nbsp;<strong>(' + message.strip() + ')</strong>')
+        return result_string, 400
 
     with open(tmp_file, 'w', encoding='UTF-8') as python_script:
         python_script.write(args['codeContent'])
@@ -467,4 +475,4 @@ def launch_script(tmp_file, log, file, database, args, config, datas=None):
     scripting.main(data)
     result_string = result.getvalue()
     os.remove(tmp_file)
-    return result_string
+    return result_string, 200

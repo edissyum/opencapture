@@ -143,6 +143,11 @@ def update_model(data, model_id, module, fill_history=False):
         args['set']['min_proba'] = data['min_proba']
     if 'documents' in data:
         args['set']['documents'] = data['documents']
+    if 'train_time' in data:
+        args['set']['train_time'] = data['train_time']
+    if 'accuracy_score' in data:
+        args['set']['accuracy_score'] = data['accuracy_score']
+
     _, error = artificial_intelligence.update_models(args)
 
     if error is None:

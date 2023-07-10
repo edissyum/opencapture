@@ -22,7 +22,9 @@ import json
 import datetime
 import importlib
 import traceback
+from flask_babel import gettext
 from src.backend import verifier_exports
+from src.backend.scripting_functions import check_code
 from src.backend.import_classes import _PyTesseract, _Files
 from src.backend.import_controllers import artificial_intelligence, verifier, accounts
 from src.backend.functions import delete_documents, rotate_document, find_form_with_ia
@@ -33,6 +35,12 @@ from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindIn
 def launch_script(workflow_settings, docservers, step, log, file, database, args, config, datas=None):
     if 'script' in workflow_settings[step] and workflow_settings[step]['script']:
         script = workflow_settings[step]['script']
+        check_res, message = check_code(script, config['GLOBAL']['applicationpath'], docservers['DOCSERVERS_PATH'],
+                                        workflow_settings['input']['input_folder'])
+        if not check_res:
+            log.error('[' + step.upper() + '_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
+                      '&nbsp;<strong>(' + message.strip() + ')</strong>')
+            return False
         rand = str(uuid.uuid4())
         tmp_file = docservers['TMP_PATH'] + '/' + step + '_scripting_' + rand + '.py'
 
@@ -572,7 +580,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
         quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
-                                                     docservers, configurations, datas['form_id'])
+                                                     docservers, configurations, datas['form_id'], languages)
         datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages, quotation_number_class,
                                        datas, files, configurations)
 
@@ -709,12 +717,14 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 break
 
     if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
+        status = 'END'
         log.info('All the usefull informations are found. Execute outputs action and end process')
-        document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, 'END',
+        document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,
                              nb_pages, docservers, workflow_settings, log, regex, supplier_lang_different,
                              configurations['locale'], allow_auto)
     else:
-        document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, 'NEW',
+        status = 'NEW'
+        document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,
                              nb_pages, docservers, workflow_settings, log, regex, supplier_lang_different,
                              configurations['locale'], allow_auto)
 
@@ -734,7 +744,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     # Launch process scripting if present
     launch_script(workflow_settings, docservers, 'process', log, file, database, args, config, datas)
 
-    # Launch outputs scripting if present
-    launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
+    if (status == 'END') or (workflow_settings and (not workflow_settings['process']['use_interface'] or
+                                                    not workflow_settings['input']['apply_process'])):
+        # Launch outputs scripting if present
+        launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
 
     return document_id

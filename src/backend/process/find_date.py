@@ -42,7 +42,7 @@ class FindDate:
         self.configurations = configurations
         self.max_time_delta = configurations['timeDelta']
 
-    def format_date(self, date, position, convert=False):
+    def format_date(self, date, position, convert=False, enable_max_delta=True):
         if date:
             date = date.replace('1er', '01')  # Replace some possible inconvenient char
             date = date.replace(',', ' ')  # Replace some possible inconvenient char
@@ -95,17 +95,17 @@ class FindDate:
                 doc_date = datetime.strptime(date, regex['format_date'])
                 timedelta = today - doc_date
 
-                if int(self.max_time_delta) not in [-1, 0]:
+                if enable_max_delta and int(self.max_time_delta) not in [-1, 0]:
                     if timedelta.days > int(self.max_time_delta) or timedelta.days < 0:
                         self.log.info("Date is older than " + str(self.max_time_delta) +
                                       " days or in the future : " + date)
                         date = False
                 if timedelta.days < 0:
-                    self.log.info("Date is in the future " + date)
+                    self.log.info("Date is in the future " + str(date))
                     date = False
                 return date, position
             except (ValueError, IndexError) as _e:
-                self.log.info("Date wasn't in a good format : " + date)
+                self.log.info("Date wasn't in a good format : " + str(date))
                 return False
         else:
             return False
