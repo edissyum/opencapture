@@ -110,7 +110,7 @@ class Files:
             outputs_paths = []
             if page:
                 images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
-                output_path = output + '-001.jpg'
+                output_path = output + '.jpg'
                 images[0].save(output_path, 'JPEG')
                 outputs_paths.append(output_path)
             else:
@@ -129,6 +129,7 @@ class Files:
                         if docservers:
                             self.move_to_docservers_image(directory, output_path)
                         outputs_paths.append(output_path)
+                        print("cpt : " + str(cpt))
                         cpt = cpt + 1
                         del image
                     del chunk_images
