@@ -18,6 +18,10 @@
 
 import os
 import re
+import sys
+
+import gc
+
 import cv2
 import json
 import time
@@ -108,32 +112,45 @@ class Files:
             bck_output = os.path.splitext(output)[0]
             directory = os.path.dirname(output)
             images = []
-            page_count = len(convert_from_path(pdf_name, first_page=0, last_page=1))
             if page:
                 images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
             else:
+                pdf = pypdf.PdfReader(open(pdf_name, 'rb'))
+                page_count = len(pdf.pages)
+                cpt = 1
                 for i in range(0, page_count, chunk_size):
                     start_page = i
                     end_page = min(i + chunk_size, page_count)
                     chunk_images = convert_from_path(pdf_name, first_page=start_page, last_page=end_page, dpi=300)
-                    images += chunk_images
+                    for image in chunk_images:
+                        if not page:
+                            output = bck_output + '-' + str(cpt).zfill(3)
+                        image.save(output + '.jpg', 'JPEG')
+                        if docservers:
+                            self.move_to_docservers_image(directory, output + '.jpg')
+                        cpt = cpt + 1
+                        del image
+                    del chunk_images
 
-            cpt = 1
-            for i in range(len(images)):
-                if not page:
-                    output = bck_output + '-' + str(cpt).zfill(3)
-                images[i].save(output + '.jpg', 'JPEG')
-                if docservers:
-                    self.move_to_docservers_image(directory, output + '.jpg')
-                cpt = cpt + 1
         except Exception as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
 
-    def save_img_with_pdf2image_min(self, pdf_name, output, single_file=True, module='verifier'):
+    def save_img_with_pdf2image_min(self, pdf_name, output, single_file=True, module='verifier', chunk_size=10):
         try:
             output = os.path.splitext(output)[0]
             directory = os.path.dirname(output)
-            images = convert_from_path(pdf_name, single_file=single_file, size=(None, 720))
+            if single_file:
+                images = convert_from_path(pdf_name, single_file=single_file, size=(None, 720))
+            else:
+                images = []
+                pdf = pypdf.PdfReader(open(pdf_name, 'rb'))
+                page_count = len(pdf.pages)
+                for i in range(0, page_count, chunk_size):
+                    start_page = i
+                    end_page = min(i + chunk_size, page_count)
+                    chunk_images = convert_from_path(pdf_name, first_page=start_page, last_page=end_page, size=(None, 720))
+                    images += chunk_images
+
             if single_file:
                 images[0].save(output + '-001.jpg', 'JPEG')
                 if module == 'verifier':
