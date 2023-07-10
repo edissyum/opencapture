@@ -172,7 +172,9 @@ class SeparatorQR:
             # Load pages from saved_pages paths
             pages = []
             for page in saved_pages:
-                pages.append(Image.open(page))
+                img = Image.open(page)
+                pages.append(img)
+                img.close()
         else:
             pages = pdf2image.convert_from_path(file)
 
