@@ -15,7 +15,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
@@ -42,7 +42,7 @@ declare const $: any;
     providers: [DatePipe]
 })
 
-export class VerifierViewerComponent implements OnInit {
+export class VerifierViewerComponent implements OnInit, OnDestroy {
     imageDocument           : any;
     documentId              : any;
     document                : any;
@@ -323,6 +323,14 @@ export class VerifierViewerComponent implements OnInit {
                 map(option => option ? this._filter(option) : this.suppliers.slice())
             );
         }
+    }
+
+    @HostListener('window:beforeunload')
+    ngOnDestroy() {
+        this.updateDocument({
+            'locked': false,
+            'locked_by': null
+        });
     }
 
     loadDocument(documentId: any) {
@@ -868,26 +876,24 @@ export class VerifierViewerComponent implements OnInit {
         // Write the label of the input above the selection rectangle
         const page = this.getPage(this.lastId);
         if (this.ocrFromUser || (parseInt(String(page)) === this.currentPage || page === 0)) {
-            if ($('#select-area-label_' + cpt).length === 0) {
-                const outline = $('#select-areas-outline_' + cpt);
-                const backgroundArea = $('#select-areas-background-area_' + cpt);
+            if (document.getElementById('select-area-label_' + cpt) === null) {
+                const outline = document.getElementById('select-areas-outline_' + cpt);
+                const backgroundArea = document.getElementById("select-areas-background-area_" + cpt);
+                const deleteContainer = document.getElementById('select-areas-delete_' + cpt);
+                const resizeHandler = document.getElementsByClassName('select-areas-resize-handler_' + cpt)[0];
                 const labelContainer = $('#select-areas-label-container_' + cpt);
-                const deleteContainer = $('#select-areas-delete_' + cpt);
-                const resizeHandler = $('.select-areas-resize-handler_' + cpt);
                 labelContainer.append('<div id="select-area-label_' + cpt + '" class="input_' + this.lastId + ' select-none">' + this.lastLabel + '</div>');
-                backgroundArea.css('background-color', this.lastColor);
-                outline.addClass('outline_' + this.lastId);
-                backgroundArea.addClass('background_' + this.lastId);
-                resizeHandler.addClass('resize_' + this.lastId);
-                deleteContainer.addClass('delete_' + this.lastId);
-                backgroundArea.data('page', page);
-                labelContainer.data('page', page);
-                outline.data('page', page);
+
+                backgroundArea!.style.backgroundColor = this.lastColor;
+                outline!.classList.add('outline_' + this.lastId);
+                backgroundArea!.classList.add('background_' + this.lastId);
+                resizeHandler.classList.add('resize_' + this.lastId);
+                deleteContainer!.classList.add('delete_' + this.lastId);
                 if (this.document.status === 'END') {
-                    outline.addClass('pointer-events-none');
-                    backgroundArea.addClass('pointer-events-none');
-                    resizeHandler.addClass('pointer-events-none');
-                    deleteContainer.addClass('pointer-events-none');
+                    outline!.classList.add('pointer-events-none');
+                    backgroundArea!.classList.add("pointer-events-none");
+                    resizeHandler!.classList.add('pointer-events-none');
+                    deleteContainer!.classList.add('pointer-events-none');
                 }
             }
             // End write
