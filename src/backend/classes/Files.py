@@ -107,46 +107,72 @@ class Files:
             output = os.path.splitext(output)[0]
             bck_output = os.path.splitext(output)[0]
             directory = os.path.dirname(output)
-            images = []
-            page_count = len(convert_from_path(pdf_name, first_page=0, last_page=1))
+            outputs_paths = []
             if page:
                 images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
+                output_path = output + '-001.jpg'
+                images[0].save(output_path, 'JPEG')
+                outputs_paths.append(output_path)
             else:
+                cpt = 1
+                pdf = pypdf.PdfReader(open(pdf_name, 'rb'))
+                page_count = len(pdf.pages)
                 for i in range(0, page_count, chunk_size):
                     start_page = i
                     end_page = min(i + chunk_size, page_count)
                     chunk_images = convert_from_path(pdf_name, first_page=start_page, last_page=end_page, dpi=300)
-                    images += chunk_images
+                    for image in chunk_images:
+                        if not page:
+                            output = bck_output + '-' + str(cpt).zfill(3)
+                        output_path = output + '.jpg'
+                        image.save(output_path, 'JPEG')
+                        if docservers:
+                            self.move_to_docservers_image(directory, output_path)
+                        outputs_paths.append(output_path)
+                        cpt = cpt + 1
+                        del image
+                    del chunk_images
+            return outputs_paths
 
-            cpt = 1
-            for i in range(len(images)):
-                if not page:
-                    output = bck_output + '-' + str(cpt).zfill(3)
-                images[i].save(output + '.jpg', 'JPEG')
-                if docservers:
-                    self.move_to_docservers_image(directory, output + '.jpg')
-                cpt = cpt + 1
         except Exception as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
+            return False
 
-    def save_img_with_pdf2image_min(self, pdf_name, output, single_file=True, module='verifier'):
+    def save_img_with_pdf2image_min(self, pdf_name, output, single_file=True, module='verifier', chunk_size=10):
         try:
+            outputs_paths = []
             output = os.path.splitext(output)[0]
             directory = os.path.dirname(output)
-            images = convert_from_path(pdf_name, single_file=single_file, size=(None, 720))
             if single_file:
-                images[0].save(output + '-001.jpg', 'JPEG')
+                images = convert_from_path(pdf_name, single_file=single_file, size=(None, 720))
+                output_path = output + '-001.jpg'
+                images[0].save(output_path, 'JPEG')
                 if module == 'verifier':
-                    self.move_to_docservers_image(directory, output + '-001.jpg')
+                    self.move_to_docservers_image(directory, output_path)
+                outputs_paths.append(output_path)
             else:
                 cpt = 1
-                for i in range(len(images)):
-                    images[i].save(output + '-' + str(cpt).zfill(3) + '.jpg', 'JPEG')
-                    if module == 'verifier':
-                        self.move_to_docservers_image(directory, output + '-' + str(cpt).zfill(3) + '.jpg')
-                    cpt = cpt + 1
+                images = []
+                pdf = pypdf.PdfReader(open(pdf_name, 'rb'))
+                page_count = len(pdf.pages)
+                for i in range(0, page_count, chunk_size):
+                    start_page = i
+                    end_page = min(i + chunk_size, page_count)
+                    chunk_images = convert_from_path(pdf_name, first_page=start_page, last_page=end_page, size=(None, 720))
+                    for image in chunk_images:
+                        output_path = output + '-' + str(cpt).zfill(3) + '.jpg'
+                        image.save(output_path, 'JPEG')
+                        if module == 'verifier':
+                            self.move_to_docservers_image(directory, output_path)
+                        outputs_paths.append(output_path)
+                        cpt = cpt + 1
+                        del image
+                    del chunk_images
+            return outputs_paths
+
         except Exception as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
+            return False
 
     # Crop the file to get the header
     # 1/3 + 10% is the ratio we used
