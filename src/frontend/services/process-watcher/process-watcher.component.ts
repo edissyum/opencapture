@@ -51,7 +51,7 @@ export class ProcessWatcherComponent implements OnInit {
 
     ngOnInit(): void {
         this.minimizeDisplay = this.localStorageService.get('monitoring_minimize_display') === 'true';
-        interval(4000).subscribe(() => {
+        interval(5000).subscribe(() => {
             if (this.authorizedUrl.includes(this.router.url) && !this.getProcessRunning && !this.minimizeDisplay) {
                 this.getLastProcesses();
             }
