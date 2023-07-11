@@ -135,7 +135,7 @@ class SeparatorQR:
             end = end + int(page_per_doc)
         return array_of_files
 
-    def run(self, file, saved_pages=False):
+    def run(self, file, saved_pages=None):
         """
 
         :param file: file to separate
@@ -161,36 +161,44 @@ class SeparatorQR:
             self.error = True
             self.log.error("INIT : " + str(e))
 
-    def get_xml(self, file, saved_pages=False):
+    def get_xml(self, file, saved_pages=None):
         """
         Retrieve the content of a C128 Code
 
         :param file: Path to pdf file
         :param saved_pages: Images list if pages already saved
         """
-        if saved_pages:
-            # Load pages from saved_pages paths
-            pages = []
-            for page in saved_pages:
-                img = Image.open(page)
-                pages.append(img)
-                img.close()
-        else:
-            pages = pdf2image.convert_from_path(file)
-
         barcodes = []
         cpt = 0
-        for page in pages:
-            detected_barcode = decode(page)
-            if detected_barcode:
-                for barcode in detected_barcode:
-                    if barcode.type in ['CODE128', 'QRCODE']:
-                        barcodes.append({
-                            'type': barcode.type,
-                            'text': barcode.data.decode('utf-8'),
-                            'attrib': {'num': cpt}
-                        })
-            cpt += 1
+
+        if saved_pages:
+            for page in saved_pages:
+                img = Image.open(page)
+                detected_barcode = decode(img)
+                img.close()
+                if detected_barcode:
+                    for barcode in detected_barcode:
+                        if barcode.type in ['CODE128', 'QRCODE']:
+                            barcodes.append({
+                                'type': barcode.type,
+                                'text': barcode.data.decode('utf-8'),
+                                'attrib': {'num': cpt}
+                            })
+                cpt += 1
+        else:
+            pages = pdf2image.convert_from_path(file)
+            for page in pages:
+                detected_barcode = decode(page)
+
+                if detected_barcode:
+                    for barcode in detected_barcode:
+                        if barcode.type in ['CODE128', 'QRCODE']:
+                            barcodes.append({
+                                'type': barcode.type,
+                                'text': barcode.data.decode('utf-8'),
+                                'attrib': {'num': cpt}
+                            })
+                cpt += 1
         if barcodes:
             self.barcodes = barcodes
 
