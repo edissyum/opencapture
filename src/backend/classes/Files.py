@@ -115,8 +115,10 @@ class Files:
                 outputs_paths.append(output_path)
             else:
                 cpt = 1
-                pdf = pypdf.PdfReader(open(pdf_name, 'rb'))
-                page_count = len(pdf.pages)
+                with open(pdf_name, 'rb') as pdf:
+                    pdf_reader = pypdf.PdfReader(pdf)
+                    page_count = len(pdf_reader.pages)
+
                 for i in range(0, page_count, chunk_size):
                     start_page = i
                     end_page = min(i + chunk_size, page_count)
@@ -152,13 +154,15 @@ class Files:
                 outputs_paths.append(output_path)
             else:
                 cpt = 1
-                images = []
-                pdf = pypdf.PdfReader(open(pdf_name, 'rb'))
-                page_count = len(pdf.pages)
+                with open(pdf_name, 'rb') as pdf:
+                    pdf_reader = pypdf.PdfReader(pdf)
+                    page_count = len(pdf_reader.pages)
+
                 for i in range(0, page_count, chunk_size):
                     start_page = i
                     end_page = min(i + chunk_size, page_count)
-                    chunk_images = convert_from_path(pdf_name, first_page=start_page, last_page=end_page, size=(None, 720))
+                    chunk_images = convert_from_path(pdf_name, first_page=start_page, last_page=end_page,
+                                                     size=(None, 720))
                     for image in chunk_images:
                         output_path = output + '-' + str(cpt).zfill(3) + '.jpg'
                         image.save(output_path, 'JPEG')
@@ -190,8 +194,8 @@ class Files:
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, 0, images[i].width, int(images[i].height - self.height_ratio))
-                im = images[i].crop(crop_ratio)
-                im.save(output, 'JPEG')
+                _im = images[i].crop(crop_ratio)
+                _im.save(output, 'JPEG')
         except Exception as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
 
@@ -211,8 +215,8 @@ class Files:
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, self.height_ratio, images[i].width, images[i].height)
-                im = images[i].crop(crop_ratio)
-                im.save(output, 'JPEG')
+                _im = images[i].crop(crop_ratio)
+                _im.save(output, 'JPEG')
         except Exception as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
 
@@ -306,7 +310,7 @@ class Files:
                     try:
                         reader = pypdf.PdfReader(file)
                         _ = reader.pages[0]
-                    except:
+                    except Exception:
                         shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         return False
                     else:
@@ -366,9 +370,9 @@ class Files:
             text = text.replace('%', '').replace('€', '').replace('$', '').replace('£', '')
             text = text.strip()
             text = text.replace(' ', '.')
-            text = text.replace('\x0c', '')
             text = text.replace('\n', '')
             text = text.replace(',', '.')
+            text = text.replace('\x0c', '')
 
             splitted_number = text.split('.')
             if len(splitted_number) > 1:
