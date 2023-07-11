@@ -38,7 +38,7 @@ def process(args):
 
     batch_folder_path = f"{args['docservers']['SPLITTER_BATCHES']}/{args['batch_folder']}/"
     batch_thumbs_path = f"{args['docservers']['SPLITTER_THUMB']}/{args['batch_folder']}/"
-    args['files'].save_img_with_pdf2image(args['file'], batch_folder_path + "page")
+    saved_pages = args['files'].save_img_with_pdf2image(args['file'], batch_folder_path + "page")
     args['files'].save_img_with_pdf2image_min(args['file'], batch_thumbs_path + "page", single_file=False, module='splitter')
 
     list_files = args['files'].sorted_file(batch_folder_path, 'jpg')
@@ -53,7 +53,7 @@ def process(args):
                 blank_pages.append(cpt)
             cpt = cpt + 1
 
-    args['splitter'].separator_qr.run(args['file'])
+    args['splitter'].separator_qr.run(args['file'], saved_pages)
     split(args['splitter'], list_files)
     args['splitter'].get_result_documents(blank_pages)
     original_file = args['file']
