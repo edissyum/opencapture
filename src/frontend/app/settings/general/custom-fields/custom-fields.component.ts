@@ -208,6 +208,9 @@ export class CustomFieldsComponent implements OnInit {
             if (this.regexRemoveKeyWord.value) {
                 const regex = new RegExp(this.regexControl.value.substring(0, this.regexControl.value.length - 2), 'gi');
                 const tmp = this.regexTestControl.value.match(regex);
+                if (tmp === null) {
+                    return;
+                }
                 this.regexResult = this.regexResult.replace('<span class="text-white bg-green-400 p-1">', '');
                 this.regexResult = this.regexResult.replace('</span>', '');
                 const colored = '<span class="text-white bg-green-400 p-1">' + this.regexResult.replace(tmp, '') + '</span>';
