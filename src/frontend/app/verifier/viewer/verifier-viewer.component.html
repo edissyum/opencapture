@@ -35,13 +35,13 @@
 <span *ngIf="!this.fromToken || (this.processDone && this.fromToken && !this.processMultiDocument)">
     <div class="grid grid-cols-2 overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem)' : 'height: 100vh'">
         <div id="image" class="overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem); direction: rtl' : 'height: 100vh;direction: rtl'">
-            <div class="relative ml-4 z-50 text-xl text-left py-2">
+            <div class="fixed left-4 z-50 text-xl text-left py-2">
                 <ng-container *ngIf="!this.loading && this.document['nb_pages']> 1">
                     <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()"></i>
                     {{ 'VERIFIER.page' | translate }}
                     {{ currentPage }}
                     {{ 'VERIFIER.on' | translate }}
-                    {{ this.document.nb_pages }}
+                    {{ this.document['nb_pages'] }}
                     <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
                 </ng-container>
             </div>

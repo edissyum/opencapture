@@ -95,7 +95,7 @@
 		"train_a_model": "Entraîner un modèle",
 		"train_time": "Temps d'entraînement",
 		"training": "Entraînement du modèle en cours",
-		"training_done": "Apprentissage terminé",
+		"training_done": "Entraînement du modèle terminé",
 		"update_model": "Modifier le modèle"
 	},
 	"AUTH": {
@@ -326,7 +326,7 @@
 		"select": "Liste à choix",
 		"test_string": "Chaîne de charactères de test",
 		"text": "Chaîne de caractères",
-		"textarea": "Multi lignes"
+		"textarea": "Multiligne (textarea)"
 	},
 	"FORMS": {
 		"available_fields": "Champs disponibles",
@@ -724,7 +724,7 @@
 		"list_ai_model": "Liste des modèles d'IA",
 		"list_ai_model_splitter": "Liste des modèles d'IA",
 		"login_methods": "Méthodes d'authentification",
-		"mailcollect": "Paramètrage de MailCollect",
+		"mailcollect": "Paramétrage de MailCollect",
 		"monitoring": "Accès à l'écran de monitoring des processus",
 		"outputs_list": "Liste des chaînes sortantes",
 		"outputs_list_splitter": "Liste des chaînes sortantes",
@@ -816,7 +816,7 @@
 		"user_quota": "Quota d'utilisateurs",
 		"users_list": "Liste des utilisateurs",
 		"verifier": "Paramètres du Vérificateur",
-		"verifier_settings": "Paramètrages divers",
+		"verifier_settings": "Paramétrages divers",
 		"workflow_builder": "Création de workflow",
 		"workflow_update": "Modification du workflow"
 	},
@@ -930,7 +930,7 @@
 		"regex": "Expression régulière",
 		"select": "Liste de choix",
 		"text": "Chaine de caractères",
-		"textarea": "Multi lignes"
+		"textarea": "Multiligne (textarea)"
 	},
 	"UPLOAD": {
 		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
