@@ -169,11 +169,9 @@ class SeparatorQR:
         :param saved_pages: Images list if pages already saved
         """
         if saved_pages:
-            # Load pages from saved_pages paths
             pages = []
             for page in saved_pages:
-                img = Image.open(page)
-                pages.append(img)
+                pages.append(Image.open(page))
         else:
             pages = pdf2image.convert_from_path(file)
 
