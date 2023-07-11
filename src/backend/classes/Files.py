@@ -117,9 +117,9 @@ class Files:
                 cpt = 1
                 pdf = pypdf.PdfReader(open(pdf_name, 'rb'))
                 page_count = len(pdf.pages)
-                for i in range(0, page_count, chunk_size):
-                    start_page = i + 1
-                    end_page = min(i + chunk_size, page_count)
+                for chunk_idx in range(0, page_count, chunk_size):
+                    start_page = 0 if chunk_idx == 0 else chunk_idx + 1
+                    end_page = min(chunk_idx + chunk_size, page_count)
                     chunk_images = convert_from_path(pdf_name, first_page=start_page, last_page=end_page, dpi=300)
                     for image in chunk_images:
                         if not page:
@@ -155,9 +155,9 @@ class Files:
                 images = []
                 pdf = pypdf.PdfReader(open(pdf_name, 'rb'))
                 page_count = len(pdf.pages)
-                for i in range(0, page_count, chunk_size):
-                    start_page = i + 1
-                    end_page = min(i + chunk_size, page_count)
+                for chunk_idx in range(0, page_count, chunk_size):
+                    start_page = 0 if chunk_idx == 0 else chunk_idx + 1
+                    end_page = min(chunk_idx + chunk_size, page_count)
                     chunk_images = convert_from_path(pdf_name, first_page=start_page, last_page=end_page, size=(None, 720))
                     for image in chunk_images:
                         output_path = output + '-' + str(cpt).zfill(3) + '.jpg'
