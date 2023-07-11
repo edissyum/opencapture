@@ -415,6 +415,7 @@ def token_required(view):
                     'forms/fields/getByFormId',
                     'outputs/verifier/getById',
                     'getDefaultAccountingPlan',
+                    'workflows/verifier/getById',
                     'verifier/getThumbByDocumentId'
                 ]
 
