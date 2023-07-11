@@ -93,8 +93,8 @@
 		"status": "Status",
 		"test_model": "Test a model",
 		"train_a_model": "Train a model",
-		"train_time": "Train time",
-		"training": "Apprentissage en cours",
+		"train_time": "Training time",
+		"training": "Training in progress",
 		"training_done": "Training done",
 		"update_model": "Update model"
 	},
