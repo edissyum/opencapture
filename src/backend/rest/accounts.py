@@ -65,9 +65,10 @@ def get_address_by_id(address_id):
 @bp.route('accounts/suppliers/update/<int:supplier_id>', methods=['PUT'])
 @auth.token_required
 def update_supplier(supplier_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['update_supplier | access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/accounts/suppliers/update/{supplier_id}'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['update_supplier | access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/accounts/suppliers/update/{supplier_id}'}), 403
 
     data = request.json['args']
     res = accounts.update_supplier(supplier_id, data)
@@ -116,9 +117,10 @@ def update_address(address_id):
 @bp.route('accounts/addresses/updateBySupplierId/<int:suplier_id>', methods=['PUT'])
 @auth.token_required
 def update_address_by_supplier_id(suplier_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['update_supplier | access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/accounts/addresses/updateBySupplierId/{suplier_id}'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['update_supplier | access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/accounts/addresses/updateBySupplierId/{suplier_id}'}), 403
 
     data = request.json['args']
     res = accounts.update_address_by_supplier_id(suplier_id, data)
