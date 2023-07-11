@@ -32,7 +32,6 @@ import { PrivilegesService } from "../../../../services/privileges.service";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { remove } from "remove-accents";
-import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
     selector: 'app-custom-fields',
@@ -154,7 +153,6 @@ export class CustomFieldsComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private localeService: LocaleService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {
@@ -171,8 +169,8 @@ export class CustomFieldsComponent implements OnInit {
                         element.control.setValue(remove(value));
                     }
 
-                    if (value.match(/[!-\/=£`°\\|\]\[@\{\}]/g) !== null) {
-                        element.control.setValue(value.replace(/[!-\/=£`°\\|\]\[@\{\}]/g, ""));
+                    if (value.match(/[!-\/=£`°\\|\]\[@{}]/g) !== null) {
+                        element.control.setValue(value.replace(/[!-\/=£`°\\|\]\[@{}]/g, ""));
                     }
                 });
             }
