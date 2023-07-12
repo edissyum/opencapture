@@ -352,7 +352,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.updateDocument({
             'locked': false,
             'locked_by': null
-        });
+        }, false);
     }
 
     loadDocument(documentId: any) {
@@ -1181,14 +1181,16 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    updateDocument(data: any) {
+    updateDocument(data: any, showError: boolean = true) {
         if (this.documentId) {
             this.http.put(environment['url'] + '/ws/verifier/documents/' + this.documentId + '/update',
                 {'args': data},
                 {headers: this.authService.headers}).pipe(
                 catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
+                    if (showError) {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                    }
                     return of(false);
                 })
             ).subscribe();
