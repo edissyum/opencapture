@@ -157,7 +157,7 @@ class FindCustom:
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
                 regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
-                if 'content' in regex_settings and regex_settings['content'] != '':
+                if 'content' in regex_settings and regex_settings['content']:
                     for _data in re.finditer(r"" + regex_settings['content'] + "", line.content.upper(),
                                              flags=re.IGNORECASE):
                         data = _data.group()
