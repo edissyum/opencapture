@@ -15,7 +15,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { UserService } from "../../../services/user.service";
 import { SettingsService } from "../../../services/settings.service";
 import { PrivilegesService } from "../../../services/privileges.service";
@@ -25,15 +25,11 @@ import { PrivilegesService } from "../../../services/privileges.service";
     templateUrl: './error-500.component.html',
     styleUrls: ['./error-500.component.scss']
 })
-export class Error500Component implements OnInit {
+export class Error500Component {
 
     constructor(
         public userService: UserService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
-    ) { }
-
-    ngOnInit(): void {
-    }
-
+    ) {}
 }

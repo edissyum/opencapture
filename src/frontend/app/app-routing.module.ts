@@ -47,7 +47,7 @@ import { UpdateCustomerComponent } from "./accounts/customers/update/update-cust
 import { CreateCustomerComponent } from "./accounts/customers/create/create-customer.component";
 
 const routes: Routes = [
-    { path: '500', component: Error500Component },
+    { path: '500', component: Error500Component, data: { showMenu: false }},
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'home', component: HomeComponent, data: { title: 'GLOBAL.home' }, canActivate: [LoginRequiredService] },
     { path: 'login', component: LoginComponent, data: { title: 'GLOBAL.login', showMenu: false }, canActivate: [LoginRedirectService] },
