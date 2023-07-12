@@ -416,6 +416,8 @@ def token_required(view):
                     'outputs/verifier/getById',
                     'getDefaultAccountingPlan',
                     'accounts/suppliers/update',
+                    'accounts/addresses/create',
+                    'accounts/suppliers/create',
                     'workflows/verifier/getById',
                     'verifier/getThumbByDocumentId',
                     'accounts/addresses/updateBySupplierId'
