@@ -536,7 +536,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                    datas['form_id'], custom_fields_to_find, False).run_using_positions_mask()
         if custom_fields:
             for field in custom_fields:
-                datas.update({field: custom_fields[field][0]})
+                datas['datas'].update({field: custom_fields[field][0]})
                 if custom_fields[field][1]:
                     datas['positions'].update({field: files.reformat_positions(custom_fields[field][1])})
                 if custom_fields[field][2]:

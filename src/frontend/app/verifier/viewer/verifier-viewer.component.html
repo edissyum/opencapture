@@ -129,11 +129,11 @@
                                                     {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                                 </mat-label>
                                                 <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                                      class="absolute top-0.5 -right-2 cursor-pointer text-gray-600">
+                                                      class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
                                                     <i class="fa-solid fa-circle-plus"></i>
                                                 </span>
                                                 <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                                      class="absolute top-0.5 -right-2 cursor-pointer text-red-500 opacity-70">
+                                                      class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </span>
                                                 <input [id]="field.id" matInput type="text" [formControl]="field['control']" [required]="field['required']"
@@ -143,6 +143,8 @@
                                                 <mat-error *ngIf="field.control.errors">
                                                     {{ getErrorMessage(field.id, category['id']) }}
                                                 </mat-error>
+                                                <i *ngIf="showAutoLogo(field)" class="fa-solid fa-bolt text-gray-600 absolute top-2 -right-2"
+                                                   [matTooltip]="'VERIFIER.data_found_auto' | translate"></i>
                                             </mat-form-field>
                                         </ng-template>
                                     </ng-container>
@@ -152,13 +154,13 @@
                                                 {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                             </mat-label>
                                             <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2 cursor-pointer text-gray-600">
+                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
                                             <i class="fa-solid fa-circle-plus"></i>
-                                        </span>
+                                            </span>
                                             <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2 cursor-pointer text-red-500 opacity-70">
+                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
                                             <i class="fa-solid fa-trash"></i>
-                                        </span>
+                                            </span>
                                             <textarea [id]="field.id" matInput cdkTextareaAutosize
                                                       cdkAutosizeMinRows="1"
                                                       cdkAutosizeMaxRows="5"
@@ -176,11 +178,11 @@
                                                 {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                             </mat-label>
                                             <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2 cursor-pointer text-gray-600">
+                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
                                                 <i class="fa-solid fa-circle-plus"></i>
                                             </span>
                                             <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2 cursor-pointer text-red-500 opacity-70">
+                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
                                                 <i class="fa-solid fa-trash"></i>
                                             </span>
                                             <input [id]="field.id" matInput [matDatepicker]="picker" [formControl]="field['control']"
@@ -193,6 +195,8 @@
                                             <mat-error *ngIf="field.control.errors">
                                                 {{ getErrorMessage(field.id, category['id']) }}
                                             </mat-error>
+                                            <i *ngIf="showAutoLogo(field)" class="fa-solid fa-bolt text-xs text-gray-600 absolute top-0.5 -right-12"
+                                               [matTooltip]="'VERIFIER.data_found_auto' | translate"></i>
                                         </mat-form-field>
                                     </ng-container>
                                     <ng-container *ngIf="field.type === 'autocomplete'">
@@ -201,11 +205,11 @@
                                                 {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                             </mat-label>
                                             <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2 cursor-pointer text-gray-600">
+                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
                                             <i class="fa-solid fa-circle-plus"></i>
                                         </span>
                                             <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2 cursor-pointer text-red-500 opacity-70">
+                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
                                             <i class="fa-solid fa-trash"></i>
                                         </span>
                                             <input [id]="field.id" matInput type="text" [required]="field['required']"
@@ -235,19 +239,19 @@
                                                 {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                             </mat-label>
                                             <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2 cursor-pointer text-gray-600">
+                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
                                             <i class="fa-solid fa-circle-plus"></i>
                                         </span>
                                             <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2 cursor-pointer text-red-500 opacity-70">
+                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
                                             <i class="fa-solid fa-trash"></i>
                                         </span>
                                             <input matInput [id]="field.id" type="text" [required]="field['required']"
                                                    [formControl]="field['control']" [matAutocomplete]="accounting" [readonly]="this.document.status === 'END'">
-                                            <span *ngIf="accountingPlanEmpty" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
+                                            <span *ngIf="accountingPlanEmpty" class="absolute text-gray-600 top-0.5 -right-2.5 cursor-help"
                                                   [matTooltip]="'VERIFIER.accounting_plan_empty' | translate">
-                                            <i class="fa-solid fa-circle-question"></i>
-                                        </span>
+                                                <i class="fa-solid fa-circle-question"></i>
+                                            </span>
                                             <mat-autocomplete #accounting="matAutocomplete">
                                                 <mat-option *ngFor="let option of field.values | async" [value]="option.compte_lib" [id]="option.compte_num">
                                                     <span [innerHTML]="option.compte_num + ' - ' + option['compte_lib'] | highlight: toHighlightAccounting"></span>

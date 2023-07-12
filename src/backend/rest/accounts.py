@@ -65,9 +65,10 @@ def get_address_by_id(address_id):
 @bp.route('accounts/suppliers/update/<int:supplier_id>', methods=['PUT'])
 @auth.token_required
 def update_supplier(supplier_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['update_supplier | access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/accounts/suppliers/update/{supplier_id}'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['update_supplier | access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/accounts/suppliers/update/{supplier_id}'}), 403
 
     data = request.json['args']
     res = accounts.update_supplier(supplier_id, data)
@@ -116,9 +117,10 @@ def update_address(address_id):
 @bp.route('accounts/addresses/updateBySupplierId/<int:suplier_id>', methods=['PUT'])
 @auth.token_required
 def update_address_by_supplier_id(suplier_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['update_supplier | access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/accounts/addresses/updateBySupplierId/{suplier_id}'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['update_supplier | access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/accounts/addresses/updateBySupplierId/{suplier_id}'}), 403
 
     data = request.json['args']
     res = accounts.update_address_by_supplier_id(suplier_id, data)
@@ -128,9 +130,10 @@ def update_address_by_supplier_id(suplier_id):
 @bp.route('accounts/addresses/create', methods=['POST'])
 @auth.token_required
 def create_address():
-    if not privileges.has_privileges(request.environ['user_id'],
-                                     ['create_supplier | create_customer | access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/addresses/create'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'],
+                                         ['create_supplier | create_customer | access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/addresses/create'}), 403
 
     data = request.json['args']
     module = ''
@@ -149,8 +152,9 @@ def create_address():
 @bp.route('accounts/suppliers/create', methods=['POST'])
 @auth.token_required
 def create_supplier():
-    if not privileges.has_privileges(request.environ['user_id'], ['create_supplier | access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/suppliers/create'}), 403
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['create_supplier | access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/suppliers/create'}), 403
 
     data = request.json['args']
     res = accounts.create_supplier(data)
