@@ -1001,6 +1001,7 @@
 		"confirm_delete_all_documents": "Êtes-vous sûr de vouloir supprimer tous les documents de la page ?",
 		"confirm_delete_document": "Êtes-vous sûr de vouloir supprimer ce document ?",
 		"customer_changed_successfully": "Compte client changé avec succès",
+		"data_found_auto": "Donnée trouvée automatiquement",
 		"delete_document": "Supprimer le document",
 		"display": "Affichage",
 		"document_already_processed": "Votre document a déjà été traité et ne peux plus être modifié",

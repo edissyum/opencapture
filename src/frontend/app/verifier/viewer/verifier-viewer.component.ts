@@ -1931,4 +1931,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             }
         }
     }
+
+    showAutoLogo(field: any) {
+        return !!(this.document.positions[field.id] && !this.document.positions[field.id].ocr_from_user);
+    }
 }
