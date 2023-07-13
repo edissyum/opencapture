@@ -501,7 +501,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
-                    this.http.post(environment['url'] + '/ws/forms/updateFields/' + data.id, this.fields,
+                    this.http.post(environment['url'] + '/ws/forms/splitter/updateFields/' + data.id, this.fields,
                         {headers: this.authService.headers}).pipe(
                         catchError((err: any) => {
                             console.debug(err);

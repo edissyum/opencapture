@@ -1070,6 +1070,7 @@ export class FormBuilderComponent implements OnInit {
                         }),
                         catchError((err: any) => {
                             console.debug(err);
+                            this.updateFormLoading = false;
                             this.notify.handleErrors(err);
                             return of(false);
                         })
@@ -1078,6 +1079,7 @@ export class FormBuilderComponent implements OnInit {
                 finalize(() => this.updateFormLoading = false),
                 catchError((err: any) => {
                     console.debug(err);
+                    this.updateFormLoading = false;
                     this.notify.handleErrors(err);
                     return of(false);
                 })
@@ -1086,6 +1088,7 @@ export class FormBuilderComponent implements OnInit {
             if (!label && outputs.length === 0) this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
             else if (!label) this.notify.error(this.translate.instant('FORMS.label_mandatory'));
             else if (outputs.length === 0) this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
+            this.updateFormLoading = false;
         }
     }
 
@@ -1127,7 +1130,7 @@ export class FormBuilderComponent implements OnInit {
         this.outputForm.forEach((element: any) => {
             if (element.control.value) outputs.push(element.control.value);
         });
-        if (label) {
+        if (label !== '' && outputs.length >= 1) {
             this.http.post(environment['url'] + '/ws/forms/verifier/create', {
                     'args': {
                         'module'        : 'verifier',
@@ -1141,7 +1144,7 @@ export class FormBuilderComponent implements OnInit {
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
-                    this.http.post(environment['url'] + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/forms/verifier/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(
                         catchError((err: any) => {
                             console.debug(err);
                             this.notify.handleErrors(err);
@@ -1158,7 +1161,10 @@ export class FormBuilderComponent implements OnInit {
                 })
             ).subscribe();
         } else {
-            this.notify.error(this.translate.instant('FORMS.label_mandatory'));
+            if (!label && outputs.length === 0) this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
+            else if (!label) this.notify.error(this.translate.instant('FORMS.label_mandatory'));
+            else if (outputs.length === 0) this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
+            this.updateFormLoading = false;
         }
     }
 }
