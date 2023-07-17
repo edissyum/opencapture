@@ -106,7 +106,7 @@ def create_role(data):
     _columns = {
         'label': data['label'],
         'label_short': data['label_short'],
-        'assign_roles': json.dumps(data['assign_roles']),
+        'assign_roles': json.dumps(data['assign_roles'])
     }
 
     res, error = roles.create_role({'columns': _columns})

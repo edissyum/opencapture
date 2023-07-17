@@ -46,7 +46,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         },
         'default_form': {
             'control': new FormControl()
-        },
+        }
     };
     formSettings            : any       = {
         'metadata_method': {
@@ -54,7 +54,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         },
         'export_zip_file': {
             'control': new FormControl()
-        },
+        }
     };
     outputForm              : any       = [
         {

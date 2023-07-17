@@ -53,7 +53,7 @@ def process(args):
         'vat_number': args['regex']['vat_number'],
         'siret': args['regex']['siret'],
         'siren': args['regex']['siren'],
-        'iban': args['regex']['iban'],
+        'iban': args['regex']['iban']
     }
 
     # Remove blank pages

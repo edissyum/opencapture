@@ -35,7 +35,7 @@ def get_processes(args):
         'data': args['data'] if 'data' in args else [],
         'order_by': args['order_by'] if 'order_by' in args else [],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
-        'offset': str(args['offset']) if 'offset' in args else 0,
+        'offset': str(args['offset']) if 'offset' in args else 0
     })
     return _processes, error
 
@@ -56,7 +56,7 @@ def get_process_by_id(process_id, date_format):
         ],
         'table': ['monitoring'],
         'where': ['id = %s'],
-        'data': [process_id],
+        'data': [process_id]
     })
     return _process, error
 
@@ -77,7 +77,7 @@ def get_process_by_token(process_token, date_format):
         ],
         'table': ['monitoring'],
         'where': ['token = %s'],
-        'data': [process_token],
+        'data': [process_token]
     })
     return _process, error
 

@@ -153,7 +153,7 @@ def retrieve_batches(data):
         'time': data['time'] if 'time' in data else None,
         'status': data['status'] if 'status' in data else None,
         'search': data['search'] if 'search' in data else None,
-        'batch_id': data['batchId'] if 'batchId' in data else None,
+        'batch_id': data['batchId'] if 'batchId' in data else None
     }
 
     user_customers = user.get_customers_by_user_id(args['user_id'])
@@ -420,7 +420,7 @@ def create_document(args):
         'doctype_key': None,
         'batch_id': args['batchId'],
         'split_index': args['splitIndex'],
-        'display_order': args['displayOrder'],
+        'display_order': args['displayOrder']
     })
     if res:
         for update_data in args['updatedDocuments']:
@@ -452,7 +452,7 @@ def save_modifications(data):
     new_documents = []
     res = splitter.update_batch({
         'batch_id': data['batch_id'],
-        'batch_metadata': data['batch_metadata'],
+        'batch_metadata': data['batch_metadata']
     })[0]
     if not res:
         response = {

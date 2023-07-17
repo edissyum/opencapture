@@ -36,7 +36,7 @@ def retrieve_suppliers(args):
         'data': ['1'] if 'data' not in args else args['data'],
         'order_by': ['id ASC'] if 'order_by' not in args else args['order_by'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
-        'offset': str(args['offset']) if 'offset' in args else 0,
+        'offset': str(args['offset']) if 'offset' in args else 0
     })
 
     return suppliers
@@ -140,7 +140,7 @@ def create_address(args):
 
     supplier = database.insert({
         'table': 'addresses',
-        'columns': args['columns'],
+        'columns': args['columns']
     })
 
     if not supplier:
@@ -160,7 +160,7 @@ def create_supplier(args):
 
     supplier = database.insert({
         'table': 'accounts_supplier',
-        'columns': args['columns'],
+        'columns': args['columns']
     })
 
     if not supplier:
@@ -206,7 +206,7 @@ def retrieve_customers(args):
         'data': ['1'] if 'data' not in args else args['data'],
         'order_by': ['id ASC'] if 'order_by' not in args else args['order_by'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
-        'offset': str(args['offset']) if 'offset' in args else 0,
+        'offset': str(args['offset']) if 'offset' in args else 0
     })
 
     return customers
@@ -267,7 +267,7 @@ def get_default_accounting_plan():
     accounting_plan = database.select({
         'select': ['*'],
         'table': ['accounting_plan'],
-        'where': ['customer_id is NULL'],
+        'where': ['customer_id is NULL']
     })
     if not accounting_plan:
         error = gettext('GET_CUSTOMER_BY_ID_ERROR')
@@ -308,7 +308,7 @@ def create_customer(args):
 
     customer = database.insert({
         'table': 'accounts_customer',
-        'columns': args['columns'],
+        'columns': args['columns']
     })
 
     if not customer:

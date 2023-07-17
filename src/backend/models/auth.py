@@ -95,7 +95,7 @@ def verify_user_by_username(username):
         'select': ['id'],
         'table': ['users'],
         'where': ['username = %s'],
-        'data': [username],
+        'data': [username]
     })
     if not user_id:
         error = gettext('BAD_USERNAME')
@@ -117,7 +117,7 @@ def get_enabled_login_method():
     enabled_method_name = database.select({
         'select': ['method_name'],
         'table': ['login_methods'],
-        'where': ['enabled = true'],
+        'where': ['enabled = true']
     })
     return enabled_method_name, error
 
@@ -185,7 +185,7 @@ def retrieve_login_methods():
     error = None
     login_methods_name = database.select({
         'select': ['method_name', 'enabled'],
-        'table': ['login_methods'],
+        'table': ['login_methods']
     })
     return login_methods_name, error
 

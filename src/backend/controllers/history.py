@@ -80,7 +80,7 @@ def get_history(request_args):
 
 def get_history_submodules(submodule):
     args = {
-        'select': ['DISTINCT(history_submodule)'],
+        'select': ['DISTINCT(history_submodule)']
     }
 
     if 'module' in submodule and submodule['module']:
@@ -95,7 +95,7 @@ def get_history_submodules(submodule):
 
 def get_history_users():
     args = {
-        'select': ['DISTINCT(user_id)'],
+        'select': ['DISTINCT(user_id)']
     }
 
     _history, _ = history.get_history(args)

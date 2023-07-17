@@ -67,7 +67,7 @@ export class ListDoctypeComponent implements OnInit {
     selectedDoctype : any     = {
         label   : '',
         key     : '',
-        code    : '',
+        code    : ''
     };
     selectedFormId  : number | undefined;
     form!           : FormGroup;

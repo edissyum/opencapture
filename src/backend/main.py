@@ -67,7 +67,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
                 mail_global['smtpDestAdminMail'],
                 mail_global['smtpDelay'],
                 mail_global['smtpAuth'],
-                mail_global['smtpFromMail'],
+                mail_global['smtpFromMail']
             )
             log.smtp = smtp
 
@@ -78,14 +78,14 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
 
     _ds = database.select({
         'select': ['*'],
-        'table': ['docservers'],
+        'table': ['docservers']
     })
     for _d in _ds:
         docservers[_d['docserver_id']] = _d['path']
 
     _config = database.select({
         'select': ['*'],
-        'table': ['configurations'],
+        'table': ['configurations']
     })
 
     for _c in _config:
@@ -95,7 +95,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
         'select': ['regex_id', 'content'],
         'table': ['regex'],
         'where': ["lang in ('global', %s)"],
-        'data': [configurations['locale']],
+        'data': [configurations['locale']]
     })
 
     for _r in _regex:
@@ -103,7 +103,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
 
     _lang = database.select({
         'select': ['*'],
-        'table': ['languages'],
+        'table': ['languages']
     })
     for _l in _lang:
         languages[_l['language_id']] = {}

@@ -73,7 +73,7 @@ def create_process():
 
     data = request.json
     args = {
-        'columns': data,
+        'columns': data
     }
     res = mailcollect.create_process(args)
     return make_response(jsonify(res[0])), res[1]
