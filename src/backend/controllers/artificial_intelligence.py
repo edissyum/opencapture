@@ -414,7 +414,13 @@ def stemming(clean_text):
     return stem
 
 
-def launch_pred(model_id, list_files):
+def predict_from_file_content(model_id, files_content):
+    """
+    Predict on a list of files
+    :param files_content: list of files we want to predict on
+    :param model_id: id of the model we want to use
+    :return:
+    """
     if 'files' in current_context and 'docservers' in current_context:
         files = current_context.files
         docservers = current_context.docservers
@@ -424,22 +430,54 @@ def launch_pred(model_id, list_files):
         files = _vars[3]
         docservers = _vars[9]
 
-    for file in list_files:
-        _f = list_files[file]
+    file_path = ''
+    for file in files_content:
+        _f = files_content[file]
         file_to_save = files.normalize(_f.filename)
-        path = docservers.get('TMP_PATH') + file_to_save
-        _f.save(path)
-        ai_model = artificial_intelligence.get_model_by_id({'model_id': model_id})
-        if ai_model:
-            ai_model = ai_model[0]
-            model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model['model_path'] if ai_model[
-                                                                                                  'module'] == 'verifier' \
-                else docservers.get('SPLITTER_AI_MODEL_PATH') + ai_model['model_path']
-            if os.path.exists(model_name):
-                csv_file = docservers.get('VERIFIER_TRAIN_PATH_FILES') + '/data.csv' if ai_model['module'] == 'verifier' \
-                    else docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
-                store_one_file(path, csv_file)
-                return model_testing(model_name, csv_file)
+        file_path = docservers.get('TMP_PATH') + file_to_save
+        _f.save(file_path)
+
+    result, status = predict_from_file_path(model_id, file_path)
+    return result, status
+
+
+def predict_from_file_path(model_id, file_path):
+    """
+    Launch prediction on a file
+    :param file_path: path of the files we want to predict on
+    :param model_id:  id of the model we want to use
+    :return:
+    """
+    if 'files' in current_context and 'docservers' in current_context:
+        files = current_context.files
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        files = _vars[3]
+        docservers = _vars[9]
+
+    ai_model = artificial_intelligence.get_model_by_id({'model_id': model_id})
+    if ai_model:
+        ai_model = ai_model[0]
+        model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model['model_path']\
+            if ai_model['module'] == 'verifier'\
+            else docservers.get('SPLITTER_AI_MODEL_PATH') + ai_model['model_path']
+
+        if os.path.exists(model_name):
+            csv_file = docservers.get('VERIFIER_TRAIN_PATH_FILES') + '/data.csv'\
+                if ai_model['module'] == 'verifier'\
+                else docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
+            store_one_file(file_path, csv_file)
+            result, status = model_testing(model_name, csv_file)
+
+            if ai_model['module'] == 'splitter':
+                for document in ai_model['documents']:
+                    if document['folder'] == result[1]:
+                        result = document['doctype']
+                        break
+
+            return result, status
 
     response = {
         "errors": gettext('GET_IA_MODEL_BY_ID_ERROR'),

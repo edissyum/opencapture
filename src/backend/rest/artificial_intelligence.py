@@ -116,7 +116,7 @@ def test_model(module, model_name):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/testModel/{model_name}'}), 403
 
     files = request.files
-    res = artificial_intelligence.launch_pred(model_name, files)
+    res = artificial_intelligence.predict_from_file_content(model_name, files)
     return make_response(jsonify(res[0])), res[1]
 
 
