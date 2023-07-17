@@ -66,7 +66,7 @@ module.exports = {
                     600: '#A7A8AA'
                 }
             }
-        },
+        }
     },
-    plugins: [],
+    plugins: []
 };
