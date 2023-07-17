@@ -52,14 +52,14 @@
                              [class.w-full]="!action['showOnlyIfActive']">
                             <div class="border-b border-gray-400"
                                  *ngIf="(this.privilegesService.hasPrivilege(action['privilege']) || setting['privilege'] === '*') && (!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route'])))">
-                                <button [routerLink]="action['route']"
+                                <button [class.settings_admin_active]="this.router.url.includes(action['route'])"
                                         [class.text-green-400]="this.router.url.includes(action['route'])"
                                         [class.text-gray-800]="!this.router.url.includes(action['route'])"
-                                        [class.ml-0]="this.minimizeSideNav" [class.2xl:ml-4]="!this.minimizeSideNav"
+                                        [class.ml-0]="this.minimizeSideNav" [routerLink]="action['route']"
                                         [class.disable_link]="action['showOnlyIfActive']"
-                                        class="font-normal w-full h-10 pl-8 2xl:ml-4 text-xs flex gap-4 items-center text-center"
-                                        (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])">
-                                    <i class="w-4 text-sm rounded-full flex items-center justify-center 2xl:block {{ action['icon'] }}"
+                                        (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
+                                        class="font-normal w-full h-10 pl-8 text-xs flex gap-4 items-center text-center">
+                                    <i class="w-4 text-sm rounded-full flex items-center justify-center 2xl:block ml-4 {{ action['icon'] }}"
                                        [matTooltip]="action['label'] | translate" [matTooltipDisabled]="!this.minimizeSideNav"
                                        [matTooltipPosition]="'right'"></i>
                                     <p class="m-0 text-xs flex items-center justify-center" *ngIf="!this.minimizeSideNav">
