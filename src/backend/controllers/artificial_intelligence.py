@@ -88,7 +88,7 @@ def create_model(data):
         'type': data['type'],
         'status': data['status'],
         'module': data['module'],
-        'model_label': data['model_label'],
+        'model_label': data['model_label']
     }
 
     res, error = artificial_intelligence.create_model({'columns': _columns})
@@ -541,7 +541,7 @@ def rename_model(new_name, model_id, module):
 
     args = {
         'select': ['model_path'],
-        'where': ["id = " + str(model_id)],
+        'where': ["id = " + str(model_id)]
     }
     data = artificial_intelligence.get_models(args)
     old_name = [row["model_path"] for row in data][0]

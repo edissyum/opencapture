@@ -35,7 +35,7 @@ def get_outputs(args):
         'data': args['data'],
         'order_by': ["id ASC"],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
-        'offset': str(args['offset']) if 'offset' in args else 0,
+        'offset': str(args['offset']) if 'offset' in args else 0
     })
 
     return outputs
@@ -53,7 +53,7 @@ def get_outputs_types(args):
         'table': ["outputs_types"],
         'order_by': ["id ASC"],
         'where': args['where'],
-        'data': args['data'],
+        'data': args['data']
     })
 
     return outputs_types
@@ -138,7 +138,7 @@ def create_output(args):
 
     output = database.insert({
         'table': 'outputs',
-        'columns': args['columns'],
+        'columns': args['columns']
     })
 
     if not output:

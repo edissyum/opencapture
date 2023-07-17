@@ -401,7 +401,7 @@ def insert(args):
         'img_width': str(files.get_width(path)),
         'filename': os.path.basename(file),
         'full_jpg_filename': jpg_filename + '-001.jpg',
-        'facturx_level': args['facturx_level'].upper(),
+        'facturx_level': args['facturx_level'].upper()
     }
 
     if 'supplier_id' in args and args['supplier_id']:
@@ -571,7 +571,7 @@ def process(args):
         "invoice_number": retrieve_data(args['facturx_data']['facturation'], 'invoice_number'),
         "quotation_number": retrieve_data(args['facturx_data']['facturation'], 'order_number'),
         "document_date": retrieve_data(args['facturx_data']['facturation'], 'date', args['regex']),
-        "document_due_date": retrieve_data(args['facturx_data']['facturation'], 'due_date', args['regex']),
+        "document_due_date": retrieve_data(args['facturx_data']['facturation'], 'due_date', args['regex'])
     }
 
     cpt_taxes = 0

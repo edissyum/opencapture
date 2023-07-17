@@ -36,7 +36,7 @@ def retrieve_metadata(args):
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['metadata'],
         'where': ['type = %s', 'form_id = %s'],
-        'data': [args['type'], args['form_id']],
+        'data': [args['type'], args['form_id']]
     })
 
     return metadata, error
@@ -194,7 +194,7 @@ def count_batches(args):
         'select': ['count(*)'],
         'table': ['splitter_batches'],
         'where': ['*'] if 'where' not in args else args['where'],
-        'data': ['*'] if 'data' not in args else args['data'],
+        'data': ['*'] if 'data' not in args else args['data']
     }
 
     count = database.select(query_args)
@@ -237,7 +237,7 @@ def get_batch_documents(args):
         'table': ['splitter_documents'],
         'where': ['status = %s', 'batch_id = %s'],
         'data': ['NEW', args['batch_id']],
-        'order_by': ['display_order'],
+        'order_by': ['display_order']
     })
 
     if not pages:
@@ -259,7 +259,7 @@ def get_page_by_id(args):
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['splitter_pages'],
         'where': ['id = %s'],
-        'data': [args['id']],
+        'data': [args['id']]
     })
 
     if not pages:
@@ -304,7 +304,7 @@ def get_max_source_page(args):
         'select': ['MAX(source_page) as source_page'],
         'table': ['splitter_pages'],
         'where': ['status = %s', 'document_id = %s'],
-        'data': ['NEW', args['id']],
+        'data': ['NEW', args['id']]
     })
 
     if not pages:
@@ -349,7 +349,7 @@ def get_documents_max_split_index(args):
         'select': ['MAX(split_index) as split_index'],
         'table': ['splitter_documents'],
         'where': ['status = %s', 'batch_id = %s'],
-        'data': ['NEW', args['id']],
+        'data': ['NEW', args['id']]
     })
 
     if not pages:

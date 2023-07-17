@@ -40,7 +40,7 @@ def retrieve_configurations(args):
         'data': ['1'] if 'data' not in args else args['data'],
         'order_by': ['id ASC'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
-        'offset': str(args['offset']) if 'offset' in args else 0,
+        'offset': str(args['offset']) if 'offset' in args else 0
     })
     return configurations, error
 
@@ -60,7 +60,7 @@ def retrieve_docservers(args):
         'data': ['1'] if 'data' not in args else args['data'],
         'order_by': ['id ASC'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
-        'offset': str(args['offset']) if 'offset' in args else 0,
+        'offset': str(args['offset']) if 'offset' in args else 0
     })
 
     return configurations, error
@@ -81,7 +81,7 @@ def retrieve_regex(args):
         'data': ['1'] if 'data' not in args else args['data'],
         'order_by': ['id ASC'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
-        'offset': str(args['offset']) if 'offset' in args else 0,
+        'offset': str(args['offset']) if 'offset' in args else 0
     })
 
     return configurations, error

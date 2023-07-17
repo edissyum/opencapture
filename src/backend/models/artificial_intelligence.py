@@ -35,7 +35,7 @@ def get_models(args):
         'data': [] if "data" not in args else args["data"],
         'order_by': ["id ASC"],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
-        'offset': str(args['offset']) if 'offset' in args else 0,
+        'offset': str(args['offset']) if 'offset' in args else 0
     })
     return models
 
@@ -73,7 +73,7 @@ def create_model(args):
 
     model = database.insert({
         'table': 'ai_models',
-        'columns': args['columns'],
+        'columns': args['columns']
     })
 
     if not model:

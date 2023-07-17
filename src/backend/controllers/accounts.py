@@ -368,7 +368,7 @@ def create_supplier(data):
         'form_id': data['form_id'] if 'form_id' in data else None,
         'address_id': data['address_id'] if 'address_id' in data else None,
         'document_lang': data['document_lang'] if 'document_lang' in data else 'fra',
-        'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False,
+        'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False
     }
 
     supplier = None
@@ -506,7 +506,7 @@ def create_customer(data):
         'vat_number': data['vat_number'],
         'company_number': data['company_number'],
         'module': data['module'] if 'module' in data else 'verifier',
-        'address_id': data['address_id'] if 'address_id' in data else None,
+        'address_id': data['address_id'] if 'address_id' in data else None
     }
 
     customer = accounts.retrieve_customers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})

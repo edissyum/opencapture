@@ -35,7 +35,7 @@ def get_workflows(args):
         'data': [] if "data" not in args else args["data"],
         'order_by': ["id ASC"],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
-        'offset': str(args['offset']) if 'offset' in args else 0,
+        'offset': str(args['offset']) if 'offset' in args else 0
     })
 
     return _workflows
@@ -98,7 +98,7 @@ def create_workflow(args):
 
     _workflow = database.insert({
         'table': 'workflows',
-        'columns': args['columns'],
+        'columns': args['columns']
     })
 
     if not _workflow:

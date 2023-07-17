@@ -185,7 +185,7 @@ def handle_pdf_output(batch, output, log, docservers, configurations):
         'filename': output['parameters']['filename'],
         'separator': output['parameters']['separator'],
         'extension': output['parameters']['extension'],
-        'folder_out': output['parameters']['folder_out'],
+        'folder_out': output['parameters']['folder_out']
     }
     res_export_pdf, status = export_pdf_files(batch, parameters, log, docservers, configurations)
     if status != 200:
@@ -233,7 +233,7 @@ def handle_xml_output(batch, parameters, regex):
         'export_date': batch['export_date'],
         'metadata_file': metadata_file,
         'custom_fields': batch['data']['custom_fields'],
-        'pdf_output_compress_file': batch['pdf_output_compress_file'],
+        'pdf_output_compress_file': batch['pdf_output_compress_file']
     }
     export_ok, export_result = _Splitter.export_xml(batch['documents'], metadata, parameters, regex)
     if not export_ok:
@@ -259,7 +259,7 @@ def handle_cmis_output(output, batch, log, docservers, configurations, regex):
         'extension': 'pdf',
         'folder_out': docservers['TMP_PATH'],
         'separator': cmis_params['separator'],
-        'filename': cmis_params['pdf_filename'],
+        'filename': cmis_params['pdf_filename']
     }
     res_pdf_export = export_pdf_files(batch, parameters, log, docservers, configurations)
     pdf_paths = res_pdf_export['paths']
@@ -305,7 +305,7 @@ def handle_openads_output(output, batch, docservers, log, configurations):
 
     openads_folder = {
         'mask': openads_params['folder_id'],
-        'separator': '',
+        'separator': ''
     }
     openads_folder = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], openads_folder)
     openads_res = _openads.check_folder_by_id(openads_folder)
@@ -320,7 +320,7 @@ def handle_openads_output(output, batch, docservers, log, configurations):
         'extension': 'pdf',
         'folder_out': docservers['TMP_PATH'],
         'separator': openads_params['separator'],
-        'filename': openads_params['pdf_filename'],
+        'filename': openads_params['pdf_filename']
     }
     res_export_pdf, status = export_pdf_files(batch, parameters, log, docservers, configurations)
     if status != 200:
