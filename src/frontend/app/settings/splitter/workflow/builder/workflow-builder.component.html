@@ -111,7 +111,8 @@
                         </mat-form-field>
                         <mat-form-field *ngIf="field.type === 'select' && field.show">
                             <mat-label>{{ field.label | translate }}</mat-label>
-                            <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple">
+                            <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple"
+                                        (selectionChange)="field.id === 'form_id' ? updateOutputs($event.value) : ''">
                                 <mat-option *ngFor="let option of field.values" [value]="option.id">
                                     {{ option.label | translate }}
                                 </mat-option>

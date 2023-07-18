@@ -557,6 +557,10 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     resetForm() {
+        this.regexFormat.setValue('');
+        this.regexControl.setValue('');
+        this.regexRemoveKeyWord.setValue('');
+        this.regexRemoveSpecialChar.setValue('');
         this.addFieldInputs.forEach((field: any) => {
             field.control.setValue('');
             field.control.setErrors(null);

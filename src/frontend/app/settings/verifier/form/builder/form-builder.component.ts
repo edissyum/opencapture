@@ -910,18 +910,26 @@ export class FormBuilderComponent implements OnInit {
         if (label) {
             category.label = label;
             this.formLabels[category.id] = label;
-            this.http.put(environment['url'] + '/ws/forms/updateLabel/' + this.formId + '/' + category.id,
-                {label: category.label}, {headers: this.authService.headers}).pipe(
-                tap(()=> {
-                    this.notify.success(this.translate.instant('FORMS.label_updated_successfully'));
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe();
+            if (!this.creationMode) {
+                this.http.put(environment['url'] + '/ws/forms/updateLabel/' + this.formId + '/' + category.id,
+                    {label: category.label}, {headers: this.authService.headers}).pipe(
+                    tap(()=> {
+                        this.notify.success(this.translate.instant('FORMS.label_updated_successfully'));
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
         }
+    }
+
+    focusInput(category_id: any) {
+        setTimeout(() => {
+            document.getElementById(category_id)!.focus();
+        }, 200);
     }
 
     getCategoryLabel(category: any) {
@@ -1012,7 +1020,7 @@ export class FormBuilderComponent implements OnInit {
         if (value) {
             field.label = value;
         }
-        field.edit_name = false;
+        field['edit_name'] = false;
     }
 
     storeNewOrder(event: any, categoryId: any) {
@@ -1133,12 +1141,12 @@ export class FormBuilderComponent implements OnInit {
         if (label !== '' && outputs.length >= 1) {
             this.http.post(environment['url'] + '/ws/forms/verifier/create', {
                     'args': {
-                        'module'        : 'verifier',
-                        'label'         : label,
-                        'outputs'       : outputs,
-                        'default_form'  : isDefault,
-                        'settings'      : {
-                            "supplier_verif"                 : supplierVerif
+                        'module'       : 'verifier',
+                        'label'        : label,
+                        'outputs'      : outputs,
+                        'default_form' : isDefault,
+                        'settings'     : {
+                            "supplier_verif" : supplierVerif
                         }
                     }
                 }, {headers: this.authService.headers},
@@ -1153,6 +1161,16 @@ export class FormBuilderComponent implements OnInit {
                     ).subscribe();
                     this.notify.success(this.translate.instant('FORMS.created'));
                     this.router.navigateByUrl('settings/verifier/forms').then();
+                    Object.keys(this.formLabels).forEach((category: any) => {
+                        this.http.put(environment['url'] + '/ws/forms/updateLabel/' + data.id + '/' + category,
+                            {label: this.formLabels[category]}, {headers: this.authService.headers}).pipe(
+                            catchError((err: any) => {
+                                console.debug(err);
+                                this.notify.handleErrors(err);
+                                return of(false);
+                            })
+                        ).subscribe();
+                    });
                 }),
                 catchError((err: any) => {
                     console.debug(err);
