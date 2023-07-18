@@ -329,6 +329,8 @@
 		"textarea": "Multiligne (textarea)"
 	},
 	"FORMS": {
+		"allow_learning": "Activer l'apprentissage des positions",
+		"allow_learning_hint": "Si activé, l'utiliation de l'OCR ON FLY enregistrera les positions des champs sur le document au fournisseur de ce même document",
 		"available_fields": "Champs disponibles",
 		"batch_display": "Affichage des lots",
 		"change_form_enabled": "Autoriser le changement de formulaire",

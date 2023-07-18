@@ -96,6 +96,7 @@ if __name__ == '__main__':
                         'address_id': str(address_id),
                         'document_lang': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['doc_lang']]),
                         'duns': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['DUNS']]),
+                        'bic': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['BIC']]),
                     }
                 }
                 res = database.insert(args)
@@ -163,6 +164,7 @@ if __name__ == '__main__':
                             'address_id': address_id,
                             'document_lang': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['doc_lang']]),
                             'duns': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['DUNS']]),
+                            'bic': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['BIC']]),
                         },
                         'where': ['vat_number = %s'],
                         'data': [vat_number]

@@ -57,7 +57,7 @@ for custom_name in ${SECTIONS[@]}; do
 done
 
 ####################
-# Update supplier referencial to add DUNS
+# Update supplier referencial to add DUNS and BIC
 SECTIONS=$(crudini --get $opencapturePath/custom/custom.ini | sed 's/:.*//')
 for custom_name in ${SECTIONS[@]}; do
     cd $opencapturePath
@@ -66,12 +66,15 @@ for custom_name in ${SECTIONS[@]}; do
     if test -f "$json_file"; then
         JSON_VALUE=$(jq --arg DUNS DUNS '. + {DUNS: $DUNS}' $json_file)
         echo $JSON_VALUE > $json_file
-    fi
 
-    echo "########################################################################################################################################"
-    echo "   Please update manually your supplier referencial file and add a column named 'DUNS' at the end of the file, just after 'doc_lang'"
-    echo "########################################################################################################################################"
+        JSON_VALUE=$(jq --arg BIC BIC '. + {BIC: $BIC}' $json_file)
+        echo $JSON_VALUE > $json_file
+    fi
 done
+
+echo "########################################################################################################################################"
+echo "   Please update manually your supplier referencial file and add a column named 'DUNS' and 'BIC' between SIREN and IBAN columns"
+echo "########################################################################################################################################"
 
 ####################
 # Update custom config ini to add applicationPath
