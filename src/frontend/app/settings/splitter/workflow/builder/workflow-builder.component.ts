@@ -293,10 +293,12 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             tap((data: any) => {
                 this.fields['process'].forEach((element: any) => {
                     data.forms.forEach((form: any) => {
-                        this.form_outputs.push({
-                            'form_id': form.id,
-                            'outputs': form.outputs.map(Number)
-                        });
+                        if (this.form_outputs.filter((f: any) => f.form_id === form.id).length === 0) {
+                            this.form_outputs.push({
+                                'form_id': form.id,
+                                'outputs': form.outputs.map(Number)
+                            });
+                        }
                     });
                     if (element.id === 'form_id') {
                         element.values = data.forms;
@@ -520,6 +522,20 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             ).subscribe();
         } else {
             this.notify.error(this.translate.instant('WORKFLOW.workflow_id_and_name_required'));
+        }
+    }
+
+    updateOutputs(value: any) {
+        if (value) {
+            this.form_outputs.forEach((form: any) => {
+                if (form.form_id === value) {
+                    this.fields['output'].forEach((element: any) => {
+                        if (element.id === 'outputs_id') {
+                            element.control.setValue(form.outputs);
+                        }
+                    });
+                }
+            });
         }
     }
 }
