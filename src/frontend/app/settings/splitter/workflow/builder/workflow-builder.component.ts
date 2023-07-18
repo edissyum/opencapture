@@ -66,7 +66,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 label: this.translate.instant('WORKFLOW.input_folder'),
                 type: 'text',
                 control: new FormControl(),
-                placeholder: "/var/share/input",
+                placeholder: "/var/share/" + environment['customId'] + "/input",
                 required: true
             },
             {

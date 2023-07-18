@@ -244,7 +244,7 @@ export class UpdateRoleComponent implements OnInit {
     onSubmit() {
         if (this.isValidForm()) {
             const role: any = {
-                'assign_roles': this.assignRoles,
+                'assign_roles': this.assignRoles
             };
             this.roleForm.forEach(element => {
                 role[element.id] = element.control.value;
