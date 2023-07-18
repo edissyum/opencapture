@@ -63,7 +63,7 @@ args = vars(ap.parse_args())
 if not retrieve_config_from_custom_id(args['custom_id']):
     sys.exit('Custom config file couldn\'t be found')
 
-database, config, regex, files, ocr, log, _, spreadsheet, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
+database, config, regex, files, ocr, log, _, spreadsheet, smtp, docservers, configurations, languages, _ = create_classes_from_custom_id(args['custom_id'])
 
 processes = database.select({
     'select': ['*'],
