@@ -20,9 +20,8 @@ import json
 import glob
 import pypdf
 import shutil
-from pathlib import Path
-
 import ocrmypdf
+from pathlib import Path
 
 from .classes.Config import Config as _Config
 from .classes.ArtificialIntelligence import ArtificialIntelligence

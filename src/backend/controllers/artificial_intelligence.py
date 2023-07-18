@@ -14,19 +14,14 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Tristan Coulange <tristan.coulange@free.fr>
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import os
-import csv
 import json
 import time
-import pickle
-import numpy as np
 import pandas as pd
 from pathlib import Path
-from nltk import word_tokenize
 from flask_babel import gettext
-from nltk.corpus import stopwords
-from nltk.stem import SnowballStemmer
 from flask import request, g as current_context
 from src.backend.import_models import artificial_intelligence, history
 from src.backend import create_classes_from_custom_id, retrieve_custom_from_url
