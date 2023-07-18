@@ -174,7 +174,7 @@ def retrieve_documents(args):
         'where': args['where'],
         'data': args['data'],
         'table': args['table'],
-        'left_join': args['left_join'],
+        'left_join': args['left_join']
     })
     if total_documents not in [0, []]:
         documents_list = verifier.get_documents(args)
@@ -775,6 +775,6 @@ def get_unseen(user_id):
         'select': ['count(documents.id) as unseen'],
         'where': ["status = %s", "customer_id = ANY(%s)"],
         'data': ['NEW', user_customers[0]],
-        'table': ['documents'],
+        'table': ['documents']
     })[0]
     return total_unseen['unseen'], 200

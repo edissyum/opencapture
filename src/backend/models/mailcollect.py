@@ -40,7 +40,7 @@ def retrieve_processes(args):
         'data': ['1'] if 'data' not in args else args['data'],
         'order_by': ['id ASC'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
-        'offset': str(args['offset']) if 'offset' in args else 0,
+        'offset': str(args['offset']) if 'offset' in args else 0
     })
     return processes, error
 
@@ -60,7 +60,7 @@ def get_process_by_name(args):
         'table': ['mailcollect'],
         'where': ['name = %s'],
         'data': [args['process_name']],
-        'order_by': ['id ASC'],
+        'order_by': ['id ASC']
     })
     return process, error
 

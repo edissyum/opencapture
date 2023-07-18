@@ -43,7 +43,7 @@ def get_outputs(data):
 def get_outputs_types(module):
     args = {
         'where': ['module = %s'],
-        'data': [module],
+        'data': [module]
     }
     _outputs_types = outputs.get_outputs_types(args)
 
@@ -158,7 +158,7 @@ def create_output(data):
         'output_label': data['output_label'],
         'compress_type': data['compress_type'] if 'compress_type' in data else None,
         'ocrise': data['ocrise'] if 'ocrise' in data else False,
-        'module': data['module'],
+        'module': data['module']
     }
 
     res, error = outputs.create_output({'columns': _columns})

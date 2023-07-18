@@ -31,7 +31,7 @@ def get_privileges():
     error = None
     privileges = database.select({
         'select': ['*'],
-        'table': ['privileges'],
+        'table': ['privileges']
     })
 
     if not privileges:

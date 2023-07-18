@@ -20,7 +20,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
 import { catchError, map, startWith, tap } from "rxjs/operators";
-import { Observable, of } from "rxjs";
+import { interval, Observable, of } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
@@ -157,11 +157,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 this.loading = false;
                 this.processErrorIcon = 'fa-clock fa-fade text-gray-400';
                 this.processErrorMessage = marker('VERIFIER.waiting');
+                await this.reloadPageWaitingFinish(token);
                 return;
             } else if (res['status'] === 'running') {
                 this.loading = false;
                 this.processErrorIcon = 'fa-circle-notch fa-spin text-green-400';
                 this.processErrorMessage = marker('VERIFIER.processing');
+                await this.reloadPageWaitingFinish(token);
                 return;
             } else if (res['status'] === 'error' || res['error']) {
                 this.loading = false;
@@ -325,12 +327,32 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         }
     }
 
+    timeout(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async reloadPageWaitingFinish(token: any) {
+        interval(5000).subscribe(() => {
+            this.http.post(environment['url'] + '/ws/verifier/documents/getDocumentIdAndStatusByToken', {'token': token}).pipe(
+                tap((data: any) => {
+                    if (data['status'] === 'done') {
+                        window.location.reload();
+                    }
+                }),
+                catchError((err: any) => {
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        });
+    }
+
     @HostListener('window:beforeunload')
     ngOnDestroy() {
         this.updateDocument({
             'locked': false,
             'locked_by': null
-        });
+        }, false);
     }
 
     loadDocument(documentId: any) {
@@ -1159,16 +1181,20 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    updateDocument(data: any) {
-        this.http.put(environment['url'] + '/ws/verifier/documents/' + this.documentId + '/update',
-            {'args': data},
-            {headers: this.authService.headers}).pipe(
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+    updateDocument(data: any, showError: boolean = true) {
+        if (this.documentId) {
+            this.http.put(environment['url'] + '/ws/verifier/documents/' + this.documentId + '/update',
+                {'args': data},
+                {headers: this.authService.headers}).pipe(
+                catchError((err: any) => {
+                    if (showError) {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                    }
+                    return of(false);
+                })
+            ).subscribe();
+        }
     }
 
     getField(fieldId: any) {
@@ -1906,5 +1932,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
+    }
+
+    showAutoLogo(field: any) {
+        return !!(this.document.positions[field.id] && !this.document.positions[field.id].ocr_from_user);
     }
 }

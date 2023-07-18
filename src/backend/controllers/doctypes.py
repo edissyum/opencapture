@@ -183,7 +183,7 @@ def clone_form_doctypes(src_form_id, dest_form_id):
         'where': ['form_id = %s'],
         'data': [src_form_id],
         'order_by': ["SPLIT_PART(code, '.', 2)::INTEGER DESC"],
-        'limit': '1',
+        'limit': '1'
     }
 
     dest_last_code, error = doctypes.retrieve_doctypes(args)

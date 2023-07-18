@@ -57,6 +57,6 @@ def get_history(args):
         'data': args['data'] if 'data' in args else [],
         'order_by': args['order_by'] if 'order_by' in args else [],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
-        'offset': str(args['offset']) if 'offset' in args else 0,
+        'offset': str(args['offset']) if 'offset' in args else 0
     })
     return _history, error

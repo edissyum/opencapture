@@ -38,7 +38,7 @@ def get_forms(args):
         'data': ['1'] if 'data' not in args else args['data'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'order_by': ['id ASC'],
-        'offset': str(args['offset']) if 'offset' in args else 0,
+        'offset': str(args['offset']) if 'offset' in args else 0
     })
 
     if not forms:

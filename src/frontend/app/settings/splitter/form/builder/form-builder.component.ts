@@ -46,7 +46,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         },
         'default_form': {
             'control': new FormControl()
-        },
+        }
     };
     formSettings            : any       = {
         'metadata_method': {
@@ -54,7 +54,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         },
         'export_zip_file': {
             'control': new FormControl()
-        },
+        }
     };
     outputForm              : any       = [
         {
@@ -501,7 +501,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
-                    this.http.post(environment['url'] + '/ws/forms/updateFields/' + data.id, this.fields,
+                    this.http.post(environment['url'] + '/ws/forms/splitter/updateFields/' + data.id, this.fields,
                         {headers: this.authService.headers}).pipe(
                         catchError((err: any) => {
                             console.debug(err);

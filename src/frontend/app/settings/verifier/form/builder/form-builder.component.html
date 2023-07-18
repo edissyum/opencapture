@@ -58,65 +58,65 @@
             </div>
             <div class="form-container">
                 <ng-container *ngFor="let category of this.fieldCategories; let i = index">
-                    <span class="relative text-xl tracking-wider px-1.5 bg-white left-10 top-10">
-                        <span *ngIf="!category.edit">
+                    <span class="relative text-xl tracking-wider px-1.5 bg-white left-10 top-5">
+                        <span *ngIf="!category['edit']">
                             {{ getCategoryLabel(category) }}
-                            <span (click)="category.edit = !category.edit" *ngIf="category['id'] !== 'lines'">
+                            <span (click)="category.edit = !category['edit']; focusInput('label_' + category['id'])"
+                                  *ngIf="category['id'] !== 'lines'">
                                 <i class="fa-solid fa-edit cursor-pointer mx-1 text-green-400"></i>
                             </span>
                         </span>
-                        <span *ngIf="category.edit">
+                        <span *ngIf="category['edit']">
                             <input class="border border-gray-900 rounded px-1.5" #labelInput
-                                   [id]="category.id" matInput [value]="getCategoryLabel(category) | translate">
-                            <span (click)="updateLabel(category, labelInput.value)">
+                                   [id]="'label_' + category.id" matInput [value]="getCategoryLabel(category) | translate"
+                                   (focusout)="updateLabel(category, labelInput.value)">
+                            <span (click)="updateLabel(category, labelInput.value);">
                                 <i class="fa-solid fa-check cursor-pointer mx-1 text-green-400"></i>
                             </span>
                         </span>
                     </span>
-                    <div class="border-green-400 border rounded-lg pt-4 mx-6 my-7">
+                    <div class="border-green-400 border rounded-lg pt-4 mx-6 my-1">
                         <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" [id]="category['id']"
                              class="flex flex-wrap cursor-pointer w-full my-3 px-1" style="min-height: 50px;">
                             <div *ngFor="let field of this.fields[category['id']]; let index = index"
-                                 class="flex items-center overflow-hidden" [class]="field.class"
+                                 class="flex items-center overflow-hidden" [class]="field['class']"
                                  [ngSortGridItems]="fields[category['id']]" ngSortgridItem
                                  [ngSortGridGroup]="category['id']" (sorted)="storeNewOrder($event, category['id'])"
-                                 [class.-mt-4]="field.lineSelected">
+                                 [class.-mt-4]="field['field.lineSelected']">
                                 <mat-form-field class="right-0 form-builder mt-1 rounded-md"
-                                                [class.bg-opacity-30]="field.lineSelected"
-                                                [class.px-3]="!field.lineSelected" [class.px-6]="field.lineSelected"
-                                                [class.pb-0]="field.lineSelected" [class.pt-5]="field.lineSelected"
-                                                [ngClass]="{'w-full': !field.lineSelected, 'w-11/12': field.lineSelected}"
-                                                [class.bg-gray-900]="field.lineSelected"
+                                                [class.bg-opacity-30]="field['field.lineSelected']"
+                                                [class.px-3]="!field['field.lineSelected']" [class.px-6]="field['field.lineSelected']"
+                                                [class.pb-0]="field['field.lineSelected']" [class.pt-5]="field['field.lineSelected']"
+                                                [ngClass]="{'w-full': !field['field.lineSelected'], 'w-11/12': field['field.lineSelected']}"
+                                                [class.bg-gray-900]="field['field.lineSelected']"
                                                 (click)="selectForLine($event, this.fields[category['id']][index])">
                                     <i cdkDrag class="fa-solid fa-trash z-10 text-red-500"
-                                       *ngIf="!field.edit_name" (click)="deleteField(index, category['id'], field.unit)"
+                                       *ngIf="!field['edit_name']" (click)="deleteField(index, category['id'], field.unit)"
                                        [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
                                     <i cdkDrag class="fa-solid fa-edit z-10 ml-6 text-green-400"
-                                       *ngIf="!field.edit_name" (click)="field.edit_name = true"
+                                       *ngIf="!field['edit_name']" (click)="field['edit_name'] = true"
                                        [matTooltip]="this.translate.instant('FORMS.update_label')"></i>
                                     <span class="input-label relative -top-0.5 border-r-2 border-green-400 inline-block
                                                 overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12"
-                                          *ngIf="!field.edit_name">
+                                          *ngIf="!field['edit_name']">
                                         <span *ngIf="field.required" class="text-red-500 mr-2 relative top-0.5">*</span>
                                         <strong>{{ field.label | translate }}</strong>
                                         <span *ngIf="field.type !== 'select' && field.type !== 'textarea'"> ({{ 'FORMATS.' + field.format | translate }})</span>
                                         <span *ngIf="field.type === 'select'"> ({{ 'FORMATS.select' | translate }})</span>
                                         <span *ngIf="field.type === 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>
                                     </span>
-                                    <span class="flex w-full" *ngIf="field.edit_name">
-                                        <mat-form-field appearance="outline" class="w-full"
-                                                        style="margin-top: -8px">
+                                    <span class="flex w-full" *ngIf="field['edit_name']">
+                                        <mat-form-field appearance="outline" class="w-full" style="margin-top: -8px">
                                             <input matInput [value]="field.label | translate" class="relative top-1"
                                                    (keyup.enter)="updateValue($event, field)"
                                                    (focusout)="updateValue($event, field)">
                                         </mat-form-field>
-                                        <button matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button
-                                                class="top-1.5">
+                                        <button matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button class="top-1.5">
                                             <i class="fa-solid fa-check visible opacity-100 text-lg"></i>
                                         </button>
                                     </span>
                                     <input class="cursor-pointer" matInput type="text" readonly>
-                                    <div class="absolute top-0 -right-4 z-10" *ngIf="!field.edit_name">
+                                    <div class="absolute top-0 -right-4 z-10" *ngIf="!field['edit_name']">
                                         <button mat-button [matMenuTriggerFor]="menu" matTooltipPosition="above"
                                                 [matTooltip]="this.translate.instant('VERIFIER.field_settings')">
                                             <i class="fa-solid fa-ellipsis-vertical text-lg"></i>
@@ -130,33 +130,32 @@
                                             </button>
                                             <button mat-menu-item [matMenuTriggerFor]="size">
                                                 {{ "VERIFIER.size" | translate }} <small class="ml-2">
-                                                    {{ field.class_label }}
+                                                    {{ field['class_label'] }}
                                                 </small>
                                             </button>
                                             <button mat-menu-item [matMenuTriggerFor]="format" *ngIf="field.type !== 'select'">
                                                 {{ "VERIFIER.format" | translate }} <small class="ml-2">
-                                                    <i class="text-base text-green-400 {{ field.format_icon }}"></i>
+                                                    <i class="text-base text-green-400 {{ field['format_icon'] }}"></i>
                                                 </small>
                                             </button>
                                             <button mat-menu-item [matMenuTriggerFor]="display" *ngIf="field.type !== 'select'">
                                                 {{ "VERIFIER.display" | translate }} <small class="ml-2">
-                                                    <i class="text-base text-green-400 {{ field.display_icon }}"></i>
+                                                    <i class="text-base text-green-400 {{ field['display_icon'] }}"></i>
                                                 </small>
                                             </button>
                                             <button mat-menu-item [matMenuTriggerFor]="required">
                                                 {{ "VERIFIER.required" | translate }} <small class="ml-2">
-                                                    <i class="text-base text-green-400 {{ field.required_icon }}"></i>
+                                                    <i class="text-base text-green-400 {{ field['required_icon'] }}"></i>
                                                 </small>
                                             </button>
                                         </mat-menu>
                                         <mat-menu #size="matMenu">
-                                            <button mat-menu-item [id]="field.id"
-                                                    *ngFor="let _class of classList"
+                                            <button mat-menu-item [id]="field.id" *ngFor="let _class of classList"
                                                     (click)="changeClass(field.id, _class.id, _class.label, category['id'])">
-                                                <span [class.text-green-400]="_class.id === field.class">
+                                                <span [class.text-green-400]="_class.id === field['class']">
                                                     {{ _class.label | translate }}
                                                 </span>
-                                                <span *ngIf="_class.id === field.class">
+                                                <span *ngIf="_class.id === field['class']">
                                                     <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
                                                 </span>
                                             </button>
@@ -220,15 +219,14 @@
                     </div>
                 </ng-container>
             </div>
-            <div class="flex justify-center items-center mb-2">
+            <div class="flex justify-center items-center mb-2 mt-4">
                 <button mat-button class="w-56 valid_button"
                         (click)="createForm()" *ngIf="this.creationMode">
                         {{ "FORMS.create" | translate }}
                 </button>
-                <button mat-button class="min-w-56 valid_button"
-                        (click)="updateForm()" *ngIf="!this.creationMode">
-                        <span *ngIf="!this.updateFormLoading">{{ "FORMS.modify" | translate }}</span>
-                        <i *ngIf="this.updateFormLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                <button mat-button class="min-w-56 valid_button" (click)="updateForm()" *ngIf="!this.creationMode">
+                    <span *ngIf="!this.updateFormLoading">{{ "FORMS.modify" | translate }}</span>
+                    <i *ngIf="this.updateFormLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                 </button>
             </div>
             <div class="absolute overflow-y-auto overflow-x-hidden z-40 w-full md:inset-0 grid

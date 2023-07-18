@@ -88,7 +88,7 @@
             </mat-step>
             <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.process' | translate">
                 <div>
-                    <app-hint [message]="'WORKFLOW.process_hint' | translate"></app-hint>
+                    <app-hint [specificClass]="'w-3/5'" [message]="'WORKFLOW.process_hint' | translate"></app-hint>
                     <div class="mt-6 grid grid-cols-2 gap-6" [class.grid-cols-4]="this.useInterface">
                         <ng-container *ngFor="let field of this.fields['process']">
                             <div *ngIf="field.type === 'boolean' && field.show">
@@ -113,7 +113,8 @@
                             </mat-form-field>
                             <mat-form-field *ngIf="field.type === 'select' && field.show">
                                 <mat-label>{{ field.label | translate }}</mat-label>
-                                <mat-select [disabled]="!this.processAllowed" [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple">
+                                <mat-select [disabled]="!this.processAllowed" [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple"
+                                            (selectionChange)="field.id === 'form_id' ? updateOutputs($event.value) : ''">
                                     <mat-option *ngFor="let option of field.values" [value]="option.id">
                                         {{ option.label | translate }}
                                     </mat-option>

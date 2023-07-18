@@ -95,12 +95,12 @@ def update_form(form_id, module):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('forms/<string:module>/updateLabel/<int:form_id>/<string:category_id>', methods=['PUT'])
+@bp.route('forms/updateLabel/<int:form_id>/<string:category_id>', methods=['PUT'])
 @auth.token_required
-def update_form_label(module, form_id, category_id):
+def update_form_label(form_id, category_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_form']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/forms/{module}/updateLabel/{form_id}/{category_id}'}), 403
+                        'message': f'/forms/updateLabel/{form_id}/{category_id}'}), 403
 
     label = request.json['label']
     res = forms.update_form_label(form_id, category_id, label)

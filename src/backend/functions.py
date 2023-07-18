@@ -263,7 +263,7 @@ def find_form_with_ia(file, ai_model_id, database, docservers, files, ai, ocr, l
         'select': ['*'],
         'table': ['ai_models'],
         'where': ['id = %s', 'module = %s'],
-        'data': [ai_model_id, module],
+        'data': [ai_model_id, module]
     })
     if ai_model:
         if module == 'verifier':

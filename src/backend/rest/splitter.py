@@ -132,7 +132,7 @@ def change_form():
     data = json.loads(request.data)
     response, status = splitter.change_form({
         'form_id': data['formId'],
-        'batch_id': data['batchId'],
+        'batch_id': data['batchId']
     })
     return make_response(jsonify(response)), status
 

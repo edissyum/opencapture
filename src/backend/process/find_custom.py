@@ -94,7 +94,8 @@ class FindCustom:
                 for index in list_of_fields['positions']:
                     if 'custom_' in index:
                         index_id = int(index.replace('custom_', ''))
-                        if self.custom_fields_to_find is False or (self.custom_fields_to_find and index_id in self.custom_fields_to_find):
+                        if self.custom_fields_to_find is False or \
+                                (self.custom_fields_to_find and index_id in self.custom_fields_to_find):
                             _data = {
                                 'position': list_of_fields['positions'][index],
                                 'regex': list_of_fields['regex'][index] if index in list_of_fields['regex'] else '',
@@ -102,9 +103,12 @@ class FindCustom:
                                 'page': list_of_fields['pages'][index] if index in list_of_fields['pages'] else ''
                             }
 
-                            data, position = search_custom_positions(_data, self.ocr, self.files, self.regex, self.file, self.docservers)
-                            if not data and index in list_of_fields['regex'] and list_of_fields[index]['regex'] is not False:
-                                data_to_return[index] = [self.process(list_of_fields[index]), position, list_of_fields['pages'][index]]
+                            data, position = search_custom_positions(_data, self.ocr, self.files, self.regex, self.file,
+                                                                     self.docservers)
+                            if not data and index in list_of_fields['regex'] and \
+                                    list_of_fields[index]['regex'] is not False:
+                                data_to_return[index] = [self.process(list_of_fields[index]), position,
+                                                         list_of_fields['pages'][index]]
                                 if index in data_to_return and data_to_return[index][0]:
                                     data_to_return[index] = [data, position, list_of_fields['pages'][index]]
                             else:
@@ -134,7 +138,8 @@ class FindCustom:
                             })[0]
 
                             if position and position['custom_position'] not in [False, 'NULL', '', None]:
-                                data = {'position': position['custom_position'], 'regex': None, 'target': 'full', 'page': position['custom_page']}
+                                data = {'position': position['custom_position'], 'regex': None, 'target': 'full',
+                                        'page': position['custom_page']}
                                 text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
                                 try:
                                     position = json.loads(position)
@@ -152,8 +157,8 @@ class FindCustom:
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
                 regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
-                if 'content' in regex_settings and regex_settings['content'] != '':
-                    for _data in re.finditer(r"" + regex_settings['content'] + "",line.content.upper(),
+                if 'content' in regex_settings and regex_settings['content']:
+                    for _data in re.finditer(r"" + regex_settings['content'] + "", line.content.upper(),
                                              flags=re.IGNORECASE):
                         data = _data.group()
 

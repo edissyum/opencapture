@@ -47,7 +47,7 @@ def launch(args):
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'], True)
+    database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages, _ = create_classes_from_custom_id(args['custom_id'], True)
     database.update({
         'table': ['monitoring'],
         'set': {

@@ -1001,6 +1001,7 @@
 		"confirm_delete_all_documents": "Are you sure you want to delete all checked documents ?",
 		"confirm_delete_document": "Are you sure you want to delete this document ?",
 		"customer_changed_successfully": "Customer changed successfully",
+		"data_found_auto": "Data found automatically",
 		"delete_document": "Delete document",
 		"display": "Display",
 		"document_already_processed": "The document has already been processed and cannot be modified anymore",

@@ -415,8 +415,14 @@ def token_required(view):
                     'forms/fields/getByFormId',
                     'outputs/verifier/getById',
                     'getDefaultAccountingPlan',
-                    'verifier/getThumbByDocumentId'
+                    'accounts/suppliers/update',
+                    'accounts/addresses/create',
+                    'accounts/suppliers/create',
+                    'workflows/verifier/getById',
+                    'verifier/getThumbByDocumentId',
+                    'accounts/addresses/updateBySupplierId'
                 ]
+                request.environ['user_info'] = 'Token ' + gettext('FIRSTNAME') + ' (token_user)'
 
                 if process and process[0]['document_ids']:
                     for document_id in process[0]['document_ids']:
