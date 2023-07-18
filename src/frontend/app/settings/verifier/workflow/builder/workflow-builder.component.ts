@@ -93,7 +93,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 show: true,
                 label: this.translate.instant('WORKFLOW.apply_process'),
                 type: 'boolean',
-                control: new FormControl()
+                control: new FormControl(true)
             },
             {
                 id: 'facturx_only',

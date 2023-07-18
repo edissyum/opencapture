@@ -89,7 +89,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 id: 'apply_process',
                 label: this.translate.instant('WORKFLOW.apply_process'),
                 type: 'boolean',
-                control: new FormControl()
+                control: new FormControl(true)
             },
             {
                 id: 'splitter_method_id',
