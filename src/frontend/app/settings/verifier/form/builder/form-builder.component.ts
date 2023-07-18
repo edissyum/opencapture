@@ -57,6 +57,9 @@ export class FormBuilderComponent implements OnInit {
     formSettings            : any       = {
         'supplier_verif': {
             'control': new FormControl()
+        },
+        'allow_learning': {
+            'control': new FormControl(true)
         }
     };
     outputForm              : any       = [
@@ -1133,7 +1136,9 @@ export class FormBuilderComponent implements OnInit {
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
         let supplierVerif = this.formSettings.supplier_verif.control.value;
+        let allowLearning = this.formSettings.allow_learning.control.value;
         if (!supplierVerif) supplierVerif = false;
+        if (!allowLearning) allowLearning = false;
         const outputs: any[] = [];
         this.outputForm.forEach((element: any) => {
             if (element.control.value) outputs.push(element.control.value);
@@ -1146,7 +1151,8 @@ export class FormBuilderComponent implements OnInit {
                         'outputs'      : outputs,
                         'default_form' : isDefault,
                         'settings'     : {
-                            "supplier_verif" : supplierVerif
+                            "supplier_verif" : supplierVerif,
+                            "allow_learning" : allowLearning
                         }
                     }
                 }, {headers: this.authService.headers},
