@@ -40,7 +40,7 @@ if __name__ == '__main__':
     if not retrieve_config_from_custom_id(args.custom_id):
         sys.exit('Custom config file could not be found')
 
-    database, config, _, _, _, log, _, _, _, docservers, _, _ = create_classes_from_custom_id(args.custom_id)
+    database, config, _, _, _, log, _, _, _, docservers, _, _, _ = create_classes_from_custom_id(args.custom_id)
 
     if args.target_status is not None:
         target_status = args.target_status

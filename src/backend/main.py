@@ -19,7 +19,7 @@ import os
 import sys
 from flask import g as current_context
 from .functions import get_custom_array, retrieve_config_from_custom_id
-from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _Spreadsheet, _SMTP
+from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _Spreadsheet, _SMTP, _ArtificialIntelligence
 
 
 def create_classes_from_custom_id(custom_id, load_smtp=False):
@@ -118,6 +118,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
     filename = docservers['TMP_PATH']
     files = _Files(filename, log, docservers, configurations, regex, languages, database)
     ocr = _PyTesseract(configurations['locale'], log, config, docservers)
+    artificial_intelligence = _ArtificialIntelligence('', '', None, files, ocr, docservers, log)
 
     try:
         if 'ocr' not in current_context:
@@ -140,11 +141,13 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
             current_context.spreadsheet = spreadsheet
         if 'configurations' not in current_context:
             current_context.configurations = configurations
+        if 'artificial_intelligence' not in current_context:
+            current_context.artificial_intelligence = artificial_intelligence
     except RuntimeError:
         pass
 
     return database, config.cfg, regex, files, ocr, log, config_file, spreadsheet, smtp, docservers, configurations, \
-        languages
+        languages, artificial_intelligence
 
 
 def check_file(files, path, log, docservers):

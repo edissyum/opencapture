@@ -176,12 +176,14 @@ def launch_train(data, model_name, module):
     :param model_name: The name of model
     :return: N/A
     """
-    if 'docservers' in current_context:
+    if 'docservers' in current_context and 'log' in current_context:
+        log = current_context.log
         docservers = current_context.docservers
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
+        log = _vars[5]
 
     folders = []
     for element in data['docs']:
@@ -205,7 +207,7 @@ def launch_train(data, model_name, module):
     model_id = create_model(args)[0].get('id')
 
     add_train_text_to_csv(path, csv_file, folders, model_id, module)
-    print(f"--- ocr time: {(time.time() - start_time)} seconds ---")
+    log.info(f"--- ocr time: {(time.time() - start_time)} seconds ---")
 
     launch_train_model(model_name, csv_file, model_id, module)
     _t2 = round(time.time() - start_time, 0)
@@ -234,6 +236,14 @@ def launch_train_model(model_name, csv_file, model_id, module):
     :param csv_file: the csv that contains image read text
     :return: N/A
     """
+    if 'artificial_intelligence' in current_context and 'log' in current_context:
+        log = current_context.log
+        _artificial_intelligence = current_context.artificial_intelligence
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+        _artificial_intelligence = _vars[12]
 
     dataset = pd.read_csv(csv_file)
 
@@ -263,10 +273,11 @@ def launch_train_model(model_name, csv_file, model_id, module):
 
     # accuracy of the model, based on test results
     accuracy = metrics.accuracy_score(y_test, predicted)
-    print("Accuracy:", round(accuracy, 2))
+    log.info(f"Accuracy: {round(accuracy, 2)}")
 
     # saving model
-    save_model(model, model_name)
+    _artificial_intelligence.model_name = model_name
+    _artificial_intelligence.save_model(model)
 
     args = {
         'accuracy_score': int(round(accuracy * 100, 0)),
@@ -276,28 +287,22 @@ def launch_train_model(model_name, csv_file, model_id, module):
     update_model(args, model_id, module)
 
 
-def save_model(model, filename):
-    """
-    Save the model in a .sav file to re-use it later
-    :param model: the trained model we want to save
-    :param filename: the model path (.sav format)
-    :return: N/A
-    """
-
-    pickle.dump(model, open(filename, 'wb'))
-
-
 def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id, module):
-    if 'ocr' in current_context and 'files' in current_context and 'docservers' in current_context:
+    if 'ocr' in current_context and 'files' in current_context and 'docservers' in current_context \
+            and 'log' in current_context and 'artificial_intelligence' in current_context:
         ocr = current_context.ocr
+        log = current_context.log
         files = current_context.files
         docservers = current_context.docservers
+        _artificial_intelligence = current_context.artificial_intelligence
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         ocr = _vars[4]
+        log = _vars[5]
         files = _vars[3]
         docservers = _vars[9]
+        _artificial_intelligence = _vars[12]
 
     j = 0
     rows = []
@@ -330,88 +335,21 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id, module):
                     else:
                         filtered_image = files.adjust_image(file_path + "/" + dir_name + "/" + file_name)
                     text = ocr.text_builder(filtered_image).lower()
-                    clean_words = word_cleaning(text)
-                    text_stem = stemming(clean_words)
+                    clean_words = _artificial_intelligence.word_cleaning(text)
+                    text_stem = _artificial_intelligence.stemming(clean_words)
                     line = [file_name, text_stem, dir_name]
                     rows.append(line)
-                    print(file_name, ": done (" + str(i), "out of", str(fold_length) + "; folder",
-                          str(j) + "/" + str(len(chosen_files)) + ")")
+                    log.info(f"{file_name} : done ({str(i)} out of {str(fold_length)};"
+                             f" folder {str(j)} / {str(len(chosen_files))})")
 
                     args = {
                         'status': str(round(total_files * percent, 1)) + " %"
                     }
                     update_model(args, model_id, module)
 
-    create_csv(csv_file)
-    add_to_csv(csv_file, rows)
-
-
-def add_to_csv(csv_file, data_list):
-    """
-    Add list data to a csv file
-    :param csv_file: path of the csv file
-    :param data_list: list containing data we want to add to the csv
-    :return: N/A
-    """
-
-    with open(csv_file, 'a', encoding='UTF-8') as _f:
-        writer = csv.writer(_f)
-        for val in data_list:
-            writer.writerow(val)
-
-
-def create_csv(csv_file):
-    """
-    Create new csv file with defined header
-    :param csv_file: path of the csv file we want to create
-    :return: N/A
-    """
-
-    header = ['Filename', 'Text', 'Doctype']
-    with open(csv_file, 'w', encoding='UTF-8') as f:
-        writer = csv.writer(f)
-        writer.writerow(header)
-
-
-def word_cleaning(text):
-    """
-    Clean a text by removing punctuation, numbers and determiners
-    :param text: string text we want to clean
-    :return: list of clean words
-    """
-    words = word_tokenize(text, language='french')  # Creates a list with separated words one by one
-    words_no_punc = []
-    for word in words:
-        if word.isalpha():
-            words_no_punc.append(word)  # Keep only alpha characters
-
-        # Help to find if document is a French driver license by detecting 'D1FRA' pattern
-        for _w in ("d1fra", "dtdra", "difra", "d'fra"):
-            if _w in word:
-                words_no_punc.extend(["permis", "conduire"])
-
-        # Help to find if document is a French ID Card by detecting 'IDFRA' pattern
-        for _w in ("idfra", "1dfra"):
-            if _w in word:
-                words_no_punc.extend(["carte", "identité"])
-
-    stop_words = stopwords.words("french")  # Stopwords are determiners or much used verbs forms like "est"
-    clean_words = []
-    for word in words_no_punc:
-        if word not in stop_words:
-            clean_words.append(word)  # Keeping only words not in stopwords list
-    return clean_words
-
-
-def stemming(clean_text):
-    """
-    Take a list containing words and keep only the root of these words
-    :param clean_text: list of words
-    :return: list of stemmed words
-    """
-
-    stem = [SnowballStemmer("french").stem(word) for word in clean_text]
-    return stem
+    _artificial_intelligence.csv_file = csv_file
+    _artificial_intelligence.create_csv()
+    _artificial_intelligence.add_to_csv(rows)
 
 
 def predict_from_file_content(model_id, files_content):
@@ -421,24 +359,24 @@ def predict_from_file_content(model_id, files_content):
     :param model_id: id of the model we want to use
     :return:
     """
-    if 'files' in current_context and 'docservers' in current_context:
-        files = current_context.files
-        docservers = current_context.docservers
+    if 'artificial_intelligence' in current_context:
+        _artificial_intelligence = current_context.artificial_intelligence
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
-        files = _vars[3]
-        docservers = _vars[9]
+        _artificial_intelligence = _vars[12]
 
-    file_path = ''
-    for file in files_content:
-        _f = files_content[file]
-        file_to_save = files.normalize(_f.filename)
-        file_path = docservers.get('TMP_PATH') + file_to_save
-        _f.save(file_path)
+    _artificial_intelligence.model_id = model_id
+    ai_model = artificial_intelligence.get_model_by_id({'model_id': model_id})
+    if ai_model:
+        ai_model = ai_model[0]
+        return _artificial_intelligence.predict_from_file_content(files_content, ai_model)
 
-    result, status = predict_from_file_path(model_id, file_path)
-    return result, status
+    response = {
+        "errors": gettext('GET_IA_MODEL_BY_ID_ERROR'),
+        "message": gettext('IA_MODEL_DOESNT_EXISTS')
+    }
+    return response, 400
 
 
 def predict_from_file_path(model_id, file_path):
@@ -448,119 +386,23 @@ def predict_from_file_path(model_id, file_path):
     :param model_id:  id of the model we want to use
     :return:
     """
-    if 'files' in current_context and 'docservers' in current_context:
-        files = current_context.files
-        docservers = current_context.docservers
+    if 'artificial_intelligence' in current_context:
+        _artificial_intelligence = current_context.artificial_intelligence
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
-        files = _vars[3]
-        docservers = _vars[9]
+        _artificial_intelligence = _vars[12]
 
-    ai_model = artificial_intelligence.get_model_by_id({'model_id': model_id})
-    if ai_model:
-        ai_model = ai_model[0]
-        model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model['model_path']\
-            if ai_model['module'] == 'verifier'\
-            else docservers.get('SPLITTER_AI_MODEL_PATH') + ai_model['model_path']
-
-        if os.path.exists(model_name):
-            csv_file = docservers.get('VERIFIER_TRAIN_PATH_FILES') + '/data.csv'\
-                if ai_model['module'] == 'verifier'\
-                else docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
-            store_one_file(file_path, csv_file)
-            result, status = model_testing(model_name, csv_file)
-
-            if ai_model['module'] == 'splitter':
-                for document in ai_model['documents']:
-                    if document['folder'] == result[1]:
-                        result = document['doctype']
-                        break
-
-            return result, status
+    _artificial_intelligence.model_id = model_id
+    result, status = _artificial_intelligence.predict_from_file_path(file_path)
+    if status == 200:
+        return result, status
 
     response = {
         "errors": gettext('GET_IA_MODEL_BY_ID_ERROR'),
         "message": gettext('IA_MODEL_DOESNT_EXISTS')
     }
     return response, 400
-
-
-def model_testing(model, csv_file):
-    """
-    Use a saved model to predict document types
-    :param model: the model we want to use (.sav format)
-    :param csv_file: csv file containing test data
-    :return: N/A
-    """
-
-    dataset = pd.read_csv(csv_file)
-    x_test = dataset["Text"].values
-
-    with open(model, 'rb') as _f:
-        loaded_model = pickle.load(_f)
-
-    predicted = loaded_model.predict(x_test)
-    predicted_prob = loaded_model.predict_proba(x_test)
-
-    values = [dataset.loc[0, 'Filename'], predicted[0], round(np.max(predicted_prob[0] * 100), 0)]
-    return values, 200
-
-
-def store_one_file(file_path, csv_file):
-    """
-    Use ocr on a single file and store results in a csv file
-    :param file_path: path of the file we need to read
-    :param csv_file: path of csv file which will get the data
-    :return: N/A
-    """
-    if 'ocr' in current_context and 'files' in current_context and 'docservers' in current_context:
-        ocr = current_context.ocr
-        files = current_context.files
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        ocr = _vars[4]
-        files = _vars[3]
-        docservers = _vars[9]
-
-    rows = []
-
-    files.jpg_name = docservers.get('TMP_PATH') + Path(files.normalize(file_path)).stem + '.jpg'
-    files.pdf_to_jpg(file_path, 1, open_img=False)
-    if os.path.exists(files.jpg_name):
-        filtered_image = files.adjust_image(files.jpg_name)
-    else:
-        files.jpg_name = docservers.get('TMP_PATH') + Path(files.jpg_name).stem + '-1.jpg'
-        filtered_image = files.adjust_image(files.jpg_name)
-    text = ocr.text_builder(filtered_image).lower()
-    clean_words = word_cleaning(text)
-    text_stem = stemming(clean_words)
-    line = [os.path.basename(file_path), text_stem]
-    rows.append(line)
-
-    create_csv(csv_file)
-    add_to_csv(csv_file, rows)
-
-
-def store_one_file_from_script(file_path, csv_file, files, ocr, docservers, log):
-    rows = []
-    jpg_name = docservers.get('TMP_PATH') + Path(files.normalize(file_path)).stem + '.jpg'
-    files.save_img_with_pdf2image_static(file_path, jpg_name, log, 1)
-    if os.path.exists(jpg_name):
-        filtered_image = files.adjust_image(jpg_name)
-    else:
-        jpg_name = docservers.get('TMP_PATH') + Path(jpg_name).stem + '-1.jpg'
-        filtered_image = files.adjust_image(jpg_name)
-    text = ocr.text_builder(filtered_image).lower()
-    clean_words = word_cleaning(text)
-    text_stem = stemming(clean_words)
-    line = [os.path.basename(file_path), text_stem]
-    rows.append(line)
-
-    create_csv(csv_file)
-    add_to_csv(csv_file, rows)
 
 
 def rename_model(new_name, model_id, module):
