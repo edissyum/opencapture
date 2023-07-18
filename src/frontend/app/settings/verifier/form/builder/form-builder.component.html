@@ -59,16 +59,18 @@
             <div class="form-container">
                 <ng-container *ngFor="let category of this.fieldCategories; let i = index">
                     <span class="relative text-xl tracking-wider px-1.5 bg-white left-10 top-5">
-                        <span *ngIf="!category.edit">
+                        <span *ngIf="!category['edit']">
                             {{ getCategoryLabel(category) }}
-                            <span (click)="category.edit = !category.edit" *ngIf="category['id'] !== 'lines'">
+                            <span (click)="category.edit = !category['edit']; focusInput('label_' + category['id'])"
+                                  *ngIf="category['id'] !== 'lines'">
                                 <i class="fa-solid fa-edit cursor-pointer mx-1 text-green-400"></i>
                             </span>
                         </span>
-                        <span *ngIf="category.edit">
+                        <span *ngIf="category['edit']">
                             <input class="border border-gray-900 rounded px-1.5" #labelInput
-                                   [id]="category.id" matInput [value]="getCategoryLabel(category) | translate">
-                            <span (click)="updateLabel(category, labelInput.value)">
+                                   [id]="'label_' + category.id" matInput [value]="getCategoryLabel(category) | translate"
+                                   (focusout)="updateLabel(category, labelInput.value)">
+                            <span (click)="updateLabel(category, labelInput.value);">
                                 <i class="fa-solid fa-check cursor-pointer mx-1 text-green-400"></i>
                             </span>
                         </span>
@@ -77,22 +79,22 @@
                         <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" [id]="category['id']"
                              class="flex flex-wrap cursor-pointer w-full my-3 px-1" style="min-height: 50px;">
                             <div *ngFor="let field of this.fields[category['id']]; let index = index"
-                                 class="flex items-center overflow-hidden" [class]="field.class"
+                                 class="flex items-center overflow-hidden" [class]="field['class']"
                                  [ngSortGridItems]="fields[category['id']]" ngSortgridItem
                                  [ngSortGridGroup]="category['id']" (sorted)="storeNewOrder($event, category['id'])"
-                                 [class.-mt-4]="field.lineSelected">
+                                 [class.-mt-4]="field['field.lineSelected']">
                                 <mat-form-field class="right-0 form-builder mt-1 rounded-md"
-                                                [class.bg-opacity-30]="field.lineSelected"
-                                                [class.px-3]="!field.lineSelected" [class.px-6]="field.lineSelected"
-                                                [class.pb-0]="field.lineSelected" [class.pt-5]="field.lineSelected"
-                                                [ngClass]="{'w-full': !field.lineSelected, 'w-11/12': field.lineSelected}"
-                                                [class.bg-gray-900]="field.lineSelected"
+                                                [class.bg-opacity-30]="field['field.lineSelected']"
+                                                [class.px-3]="!field['field.lineSelected']" [class.px-6]="field['field.lineSelected']"
+                                                [class.pb-0]="field['field.lineSelected']" [class.pt-5]="field['field.lineSelected']"
+                                                [ngClass]="{'w-full': !field['field.lineSelected'], 'w-11/12': field['field.lineSelected']}"
+                                                [class.bg-gray-900]="field['field.lineSelected']"
                                                 (click)="selectForLine($event, this.fields[category['id']][index])">
                                     <i cdkDrag class="fa-solid fa-trash z-10 text-red-500"
-                                       *ngIf="!field.edit_name" (click)="deleteField(index, category['id'], field.unit)"
+                                       *ngIf="!field['edit_name']" (click)="deleteField(index, category['id'], field.unit)"
                                        [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
                                     <i cdkDrag class="fa-solid fa-edit z-10 ml-6 text-green-400"
-                                       *ngIf="!field.edit_name" (click)="field.edit_name = true"
+                                       *ngIf="!field['edit_name']" (click)="field['edit_name'] = true"
                                        [matTooltip]="this.translate.instant('FORMS.update_label')"></i>
                                     <span class="input-label relative -top-0.5 border-r-2 border-green-400 inline-block
                                                 overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12"

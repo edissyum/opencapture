@@ -115,7 +115,10 @@ export class AuthService {
         const tokenNames = this.getTokenName();
 
         const user = this.userService.getUser();
-        const user_info = user['lastname'] + ' ' + user['firstname'] + ' (' + user['username'] + ')';
+        let user_info = '';
+        if (user) {
+            user_info = user['lastname'] + ' ' + user['firstname'] + ' (' + user['username'] + ')';
+        }
 
         this.userService.setUser({});
         this.localStorage.remove('login_image_b64');
