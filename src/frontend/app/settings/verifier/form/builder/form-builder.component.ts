@@ -192,6 +192,21 @@ export class FormBuilderComponent implements OnInit {
                     display_icon:'fa-solid fa-file-alt'
                 },
                 {
+                    id: 'bic',
+                    label: marker('ACCOUNTS.bic'),
+                    unit: 'supplier',
+                    type: 'text',
+                    required: false,
+                    required_icon: 'far fa-star',
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'green',
+                    format: 'alphanum',
+                    format_icon:'fa-solid fa-hashtag',
+                    display: 'simple',
+                    display_icon:'fa-solid fa-file-alt'
+                },
+                {
                     id: 'email',
                     label: marker('FORMATS.email'),
                     unit: 'supplier',

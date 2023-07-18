@@ -93,6 +93,13 @@ export class CreateSupplierComponent implements OnInit {
             required: false
         },
         {
+            id: 'bic',
+            label: marker('ACCOUNTS.bic'),
+            type: 'text',
+            control: new FormControl(''),
+            required: false
+        },
+        {
             id: 'email',
             label: marker('FORMATS.email'),
             type: 'text',

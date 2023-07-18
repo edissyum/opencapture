@@ -110,7 +110,10 @@ UPDATE form_model_settings SET settings = jsonb_set(settings, '{unique_url}', '{
      "allow_supplier_autocomplete": true}') WHERE module = 'verifier';
 
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('duns', 'global', 'Numéro DUNS', '([0-9]{9})|([0-9]{2}-[0-9]{3}-[0-9]{4})');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('bic', 'global', 'Numéro BIC', '[A-Z0-9]{4}[A-Z]{2}[A-Z0-9]{2}(?:[A-Z0-9]{3})?');
+
 ALTER TABLE "accounts_supplier" ADD COLUMN "duns" VARCHAR(10);
+ALTER TABLE "accounts_supplier" ADD COLUMN "bic" VARCHAR(11);
 
 ALTER TABLE mailcollect RENAME COLUMN splitter_technical_input_id TO splitter_technical_workflow_id;
 

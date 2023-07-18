@@ -95,6 +95,13 @@ export class UpdateSupplierComponent implements OnInit {
             required: false
         },
         {
+            id: 'bic',
+            label: marker('ACCOUNTS.bic'),
+            type: 'text',
+            control: new FormControl(''),
+            required: false
+        },
+        {
             id: 'email',
             label: marker('FORMATS.email'),
             type: 'text',
@@ -185,7 +192,7 @@ export class UpdateSupplierComponent implements OnInit {
         }
         this.supplierId = this.route.snapshot.params['id'];
         this.supplierForm.forEach((element: any) => {
-            if (element.id === 'vat_number' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'duns') {
+            if (element.id === 'vat_number' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'duns' || element.id === 'bic') {
                 element.control.valueChanges.subscribe((value: any) => {
                     if (value && value.includes(' ')) {
                         element.control.setValue(value.replace(' ', ''));
