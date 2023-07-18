@@ -20,11 +20,11 @@ import json
 import glob
 import pypdf
 import shutil
+import ocrmypdf
 from pathlib import Path
 
-import ocrmypdf
-
 from .classes.Config import Config as _Config
+from .classes.ArtificialIntelligence import ArtificialIntelligence
 
 
 def delete_documents(docservers, path, filename, full_jpg_filename):
@@ -284,18 +284,26 @@ def find_form_with_ia(file, ai_model_id, database, docservers, files, ai, ocr, l
             return False
         min_proba = ai_model[0]['min_proba']
         if os.path.isfile(csv_file) and os.path.isfile(model_name):
-            (_, folder, prob), code = ai.model_testing(model_name, csv_file)
+            _artificial_intelligence = ArtificialIntelligence('', '', None, files, ocr, docservers, log)
+            _artificial_intelligence.csv_file = csv_file
+            (_, folder, prob), code = _artificial_intelligence.model_testing(model_name, csv_file)
+
             if code == 200:
                 if prob >= min_proba:
                     for doc in ai_model[0]['documents']:
                         if doc['folder'] == folder:
-                            form = database.select({
-                                'select': ['*'],
-                                'table': ['form_models'],
-                                'where': ['id = %s', 'module = %s'],
-                                'data': [doc['form'], module],
-                            })
-                            if form:
-                                log.info('[IA] Document detected as : ' + folder)
-                                return doc['form']
+                            if module == 'verifier':
+                                form = database.select({
+                                    'select': ['*'],
+                                    'table': ['form_models'],
+                                    'where': ['id = %s', 'module = %s'],
+                                    'data': [doc['form'], module],
+                                })
+                                if form:
+                                    log.info('[IA] Document detected as : ' + folder)
+                                    return doc['form']
+
+                            elif module == 'splitter':
+                                log.info('[IA] Document doctype detected : ' + doc['doctype'])
+                                return doc['doctype']
     return False

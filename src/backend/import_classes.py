@@ -98,3 +98,11 @@ if 'SMTP' or 'classes' not in custom_array['SMTP']['path']:
 elif 'classes' in custom_array['SMTP']['path']:
     _SMTP = getattr(__import__(custom_array['SMTP']['path'] + '.' + custom_array['SMTP']['module'],
                                       fromlist=[custom_array['SMTP']['module']]), custom_array['SMTP']['module'])
+
+if 'ArtificialIntelligence' or 'classes' not in custom_array['ArtificialIntelligence']['path']:
+    from .classes.ArtificialIntelligence import ArtificialIntelligence as _ArtificialIntelligence
+elif 'classes' in custom_array['ArtificialIntelligence']['path']:
+    _ArtificialIntelligence = getattr(__import__(custom_array['ArtificialIntelligence']['path'] + '.' +
+                                                 custom_array['ArtificialIntelligence']['module'],
+                                                 fromlist=[custom_array['ArtificialIntelligence']['module']]),
+                                      custom_array['ArtificialIntelligence']['module'])

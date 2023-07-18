@@ -32,7 +32,7 @@ if __name__ == '__main__':
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, _, _, _, log, _, spreadsheet, _, _, _, _ = create_classes_from_custom_id(args['custom_id'])
+    database, config, _, _, _, log, _, spreadsheet, _, _, _, _, _ = create_classes_from_custom_id(args['custom_id'])
 
     file = spreadsheet.referencialSuppplierSpreadsheet
     if args['file']:
