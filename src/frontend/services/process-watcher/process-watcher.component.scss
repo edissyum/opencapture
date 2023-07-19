@@ -1,11 +1,12 @@
-.current-task .mat-badge-content {
-  background: #97BF3D !important;
+.mat-badge-content {
   top: -6px !important;
   right: -6px !important;
 }
 
+.current-task .mat-badge-content {
+  background: #97BF3D !important;
+}
+
 .no-current-task .mat-badge-content {
   background: #9CA3AFFF !important;
-  top: -6px !important;
-  right: -6px !important;
 }
