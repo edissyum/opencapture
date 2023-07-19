@@ -68,7 +68,7 @@ class Log:
     def update_task_monitor(self, msg, status='running'):
         new_step = {
             "status": status,
-            "message": msg.replace("'", '"'),
+            "message": str(msg).replace("'", '"'),
             "date": time.strftime("%Y-%m-%d %H:%M:%S")
         }
 
