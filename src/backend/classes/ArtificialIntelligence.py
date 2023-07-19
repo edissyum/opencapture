@@ -28,12 +28,11 @@ from nltk.stem import SnowballStemmer
 
 
 class ArtificialIntelligence:
-    def __init__(self, csv_file, model_name, model_id, files, ocr, docservers, log):
+    def __init__(self, csv_file, model_name, files, ocr, docservers, log):
         self.log = log
         self.ocr = ocr
         self.files = files
         self.csv_file = csv_file
-        self.model_id = model_id
         self.model_name = model_name
         self.docservers = docservers
 
@@ -55,11 +54,12 @@ class ArtificialIntelligence:
         result, status = self.predict_from_file_path(file_path, ai_model)
         return result, status
 
-    def predict_from_file_path(self, file_path, ai_model):
+    def predict_from_file_path(self, file_path, ai_model, page=1):
         """
         Launch prediction on a file
         :param file_path: path of the files we want to predict on
         :param ai_model: AI model configuration
+        :param page: page number to predict on
         :return: prediction result
         """
         model_name = self.docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model['model_path'] \
@@ -71,7 +71,7 @@ class ArtificialIntelligence:
                 if ai_model['module'] == 'verifier' \
                 else self.docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
             self.csv_file = csv_file
-            self.store_one_file(file_path)
+            self.store_one_file(file_path, page)
             result, status = self.model_testing(model_name)
 
             if ai_model['module'] == 'splitter':
@@ -101,20 +101,21 @@ class ArtificialIntelligence:
         values = [dataset.loc[0, 'Filename'], predicted[0], round(np.max(predicted_prob[0] * 100), 0)]
         return values, 200
 
-    def store_one_file(self, file_path):
+    def store_one_file(self, file_path, page):
         """
         Use ocr on a single file and store results in a csv file
         :param file_path: path of the file we need to read
+        :param page: page number to predict on
         :return: N/A
         """
 
         rows = []
         self.files.jpg_name = self.docservers.get('TMP_PATH') + Path(self.files.normalize(file_path)).stem + '.jpg'
-        self.files.pdf_to_jpg(file_path, 1, open_img=False)
+        self.files.pdf_to_jpg(file_path, page, open_img=False)
         if os.path.exists(self.files.jpg_name):
             filtered_image = self.files.adjust_image(self.files.jpg_name)
         else:
-            self.files.jpg_name = self.docservers.get('TMP_PATH') + Path(self.files.jpg_name).stem + '-1.jpg'
+            self.files.jpg_name = f"{self.docservers.get('TMP_PATH')}{Path(self.files.jpg_name).stem}-{str(page)}.jpg"
             filtered_image = self.files.adjust_image(self.files.jpg_name)
         text = self.ocr.text_builder(filtered_image).lower()
         clean_words = self.word_cleaning(text)
