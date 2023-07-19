@@ -118,7 +118,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
     filename = docservers['TMP_PATH']
     files = _Files(filename, log, docservers, configurations, regex, languages, database)
     ocr = _PyTesseract(configurations['locale'], log, config, docservers)
-    artificial_intelligence = _ArtificialIntelligence('', '', None, files, ocr, docservers, log)
+    artificial_intelligence = _ArtificialIntelligence('', '', files, ocr, docservers, log)
 
     try:
         if 'ocr' not in current_context:
