@@ -329,6 +329,8 @@
 		"textarea": "Textarea"
 	},
 	"FORMS": {
+		"allow_learning": "Allow positions learning",
+		"allow_learning_hint": "If enabled, the use of OCR ON FLY will save the positions of the fields on the document to the supplier of this same document",
 		"available_fields": "Fields available",
 		"batch_display": "Batch display",
 		"change_form_enabled": "Allow to change form",
