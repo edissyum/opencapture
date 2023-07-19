@@ -23,8 +23,10 @@ import json
 import traceback
 from kuyruk import Kuyruk
 from flask_babel import gettext
+
+from src.backend.import_models import artificial_intelligence
 from src.backend.functions import retrieve_config_from_custom_id
-from src.backend.import_classes import _Files, _Splitter, _SeparatorQR, _Log
+from src.backend.import_classes import _Files, _Splitter, _SeparatorQR, _Log, _ArtificialIntelligence
 from src.backend.main import timer, check_file, create_classes_from_custom_id
 
 kuyruk = Kuyruk()
@@ -47,7 +49,9 @@ def launch(args):
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages, _ = create_classes_from_custom_id(args['custom_id'], True)
+    database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages,\
+        _artificial_intelligence = create_classes_from_custom_id(args['custom_id'], True)
+
     database.update({
         'table': ['monitoring'],
         'set': {
@@ -76,11 +80,12 @@ def launch(args):
     files = _Files('', log, docservers, configurations, regex, languages, database)
 
     ocrise = False
+    ai_model = None
     splitter_method_id = ''
     remove_blank_pages = False
 
     workflow_settings = database.select({
-        'select': ['input', 'process', 'output'],
+        'select': ['input, separation, process, output'],
         'table': ['workflows'],
         'where': ['workflow_id = %s', 'module = %s'],
         'data': [args['workflow_id'], 'splitter']
@@ -98,6 +103,12 @@ def launch(args):
             })
             if outputs:
                 outputs = outputs[0]['outputs']
+
+            if workflow_settings[0]['input']['ai_model_id']:
+                ai_model = artificial_intelligence.get_model_by_id({
+                    'model_id': workflow_settings[0]['input']['ai_model_id']
+                })
+
         else:
             outputs = database.select({
                 'select': ['output'],
@@ -109,8 +120,8 @@ def launch(args):
                 outputs = outputs[0]['output']['outputs_id']
 
         args['customer_id'] = workflow_settings[0]['input']['customer_id']
-        splitter_method_id = workflow_settings[0]['input']['splitter_method_id']
-        remove_blank_pages = workflow_settings[0]['input']['remove_blank_pages']
+        splitter_method_id = workflow_settings[0]['separation']['splitter_method_id']
+        remove_blank_pages = workflow_settings[0]['separation']['remove_blank_pages']
         for output_id in outputs:
             outputs_settings = database.select({
                 'select': ['ocrise'],
@@ -162,15 +173,17 @@ def launch(args):
                                         "configurations": configurations,
                                         "workflow_id": args['workflow_id'],
                                         "customer_id": args['customer_id'],
+                                        "artificial_intelligence": _artificial_intelligence
                                     }
                                     split_res = split_method(split_args)
                                     created_batches = split_res['batches_id']
+                                    log.info(f"Batches created : {','.join(str(batch) for batch in created_batches)}")
                 else:
                     process_err = True
                     log.error("The workflow_id doesn't exists in database")
             else:
                 process_err = True
-    except Exception:
+    except Exception as _e:
         process_err = True
         _e = str(traceback.format_exc())
         log.error(_e)

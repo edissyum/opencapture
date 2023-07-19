@@ -122,7 +122,7 @@ class Splitter:
 
         return default_values
 
-    def create_batches(self, batch_folder, file, workflow_id, user_id, original_filename):
+    def create_batches(self, batch_folder, file, workflow_id, user_id, original_filename, artificial_intelligence):
         batches_id = []
         for _, batch in enumerate(self.result_batches):
             workflow_settings = self.db.select({
@@ -141,7 +141,7 @@ class Splitter:
             }
             form_id = None
             if workflow_settings[0]['process']['use_interface'] and \
-                       'form_id' in workflow_settings[0]['process'] and workflow_settings[0]['process']['form_id']:
+                    'form_id' in workflow_settings[0]['process'] and workflow_settings[0]['process']['form_id']:
                 form_id = workflow_settings[0]['process']['form_id']
                 default_values = self.get_default_values(form_id, user_id)
 
@@ -177,10 +177,25 @@ class Splitter:
                         }
                     }
                     """
-                        Open-Capture separator
+                        Doctype from Open-Capture separator, AI or default value
                     """
                     if page['doctype_value']:
                         args['columns']['doctype_key'] = page['doctype_value']
+
+                    elif workflow_settings[0]['input']['ai_model_id']:
+                        model_id = workflow_settings[0]['input']['ai_model_id']
+                        ai_model = self.db.select({
+                            'select': ['id', 'min_proba', 'model_path', 'documents', 'module'],
+                            'table': ['ai_models'],
+                            'where': ['id = %s'],
+                            'data': [model_id]
+                        })
+                        if ai_model:
+                            result, status = artificial_intelligence.predict_from_file_path(
+                                file, ai_model[0], page=int(page['source_page']))
+                            if result[2] >= ai_model[0]['min_proba']:
+                                args['columns']['doctype_key'] = page['doctype_value'] = result[3]
+
                     else:
                         default_doctype = self.db.select({
                             'select': ['*'],
@@ -190,6 +205,7 @@ class Splitter:
                         })
                         if default_doctype:
                             args['columns']['doctype_key'] = default_doctype[0]['key']
+
                     if page['metadata_1'] or page['metadata_2'] or page['metadata_3']:
                         custom_fields = self.db.select({
                             'select': ['*'],
