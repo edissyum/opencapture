@@ -49,7 +49,7 @@ def launch(args):
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages, \
+    database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages,\
         _artificial_intelligence = create_classes_from_custom_id(args['custom_id'], True)
 
     database.update({
@@ -120,9 +120,8 @@ def launch(args):
                 outputs = outputs[0]['output']['outputs_id']
 
         args['customer_id'] = workflow_settings[0]['input']['customer_id']
-        splitter_method_id = workflow_settings[0]['input']['splitter_method_id']
-        remove_blank_pages = workflow_settings[0]['input']['remove_blank_pages']
-
+        splitter_method_id = workflow_settings[0]['separation']['splitter_method_id']
+        remove_blank_pages = workflow_settings[0]['separation']['remove_blank_pages']
         for output_id in outputs:
             outputs_settings = database.select({
                 'select': ['ocrise'],
@@ -184,7 +183,7 @@ def launch(args):
                     log.error("The workflow_id doesn't exists in database")
             else:
                 process_err = True
-    except Exception as _e:
+    except Exception:
         process_err = True
         _e = str(traceback.format_exc())
         log.error(_e)
