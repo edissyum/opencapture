@@ -49,10 +49,9 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
                 python_script.write(script)
 
             if os.path.isfile(tmp_file):
-                script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.')\
-                    .replace('.py', '')
-                script_name = script_name.replace('..', '.')
-                scripting = importlib.import_module(script_name, 'main')
+                script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.')
+                script_name = script_name.replace('..', '.').replace('custom.', '').replace('.py', '')
+                scripting = importlib.import_module(script_name, 'custom')
 
                 data = {
                     'log': log,
@@ -75,13 +74,10 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
                     if step == 'output' and 'outputs' in args:
                         data['outputs'] = args['outputs']
 
-                res = scripting.main(data)
-                os.remove(tmp_file)
-                if not res:
-                    sys.exit(0)
-        except Exception as _e:
-            os.remove(tmp_file)
-            log.error('Error during' + step + 'scripting : ' + str(traceback.format_exc()))
+                scripting.main(data)
+        except Exception:
+            log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
+        os.remove(tmp_file)
 
 
 def execute_outputs(output_info, log, regex, document_data, database, current_lang):
@@ -445,6 +441,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                         'siren': supplier_args['siren'],
                                         'siret': supplier_args['siret'],
                                         'duns': '',
+                                        'bic': '',
                                         'name': supplier_args['name'],
                                         'city': address_args['city'] if address_args else None,
                                         'country': '',
@@ -486,6 +483,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 'siret': supplier[2]['siret'],
                 'siren': supplier[2]['siren'],
                 'duns': supplier[2]['duns'],
+                'bic': supplier[2]['bic'],
                 'address1': supplier[2]['address1'],
                 'address2': supplier[2]['address2'],
                 'postal_code': supplier[2]['postal_code'],
@@ -748,5 +746,4 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                                     not workflow_settings['input']['apply_process'])):
         # Launch outputs scripting if present
         launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
-
     return document_id

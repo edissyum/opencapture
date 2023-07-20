@@ -581,7 +581,8 @@ INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verif
         "validate_document": true,
         "allow_supplier_autocomplete": true
     },
-    "supplier_verif": false
+    "supplier_verif": false,
+    "allow_learning": true
 }');
 INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (2, 'splitter', '{
     "metadata_method": "",

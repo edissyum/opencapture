@@ -970,8 +970,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                 this.updateFormValue(inputId, data.result);
                                 const res = this.saveData(data.result, this.lastId, true);
                                 if (res) {
-                                    this.savePosition(newPosition);
-                                    this.savePages(this.currentPage).then();
+                                    const allowLearning = this.formSettings.settings.allow_learning;
+                                    if (allowLearning == true || allowLearning == undefined) {
+                                        this.savePosition(newPosition);
+                                        this.savePages(this.currentPage).then();
+                                    }
                                 }
                             }
                         }),

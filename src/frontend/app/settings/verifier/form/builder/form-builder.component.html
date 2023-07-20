@@ -22,20 +22,30 @@
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!loading" class="overflow-x-hidden overflow-y-auto h-full-overflow">
             <div class="grid grid-cols-3 gap-4 mt-6 ml-6 mr-6">
-                <mat-form-field class="h-0">
+                <mat-form-field class="">
                     <mat-label>{{ "FORMS.label" | translate }}</mat-label>
-                    <input matInput [formControl]="this.form['label'].control" required>
+                    <input matInput [formControl]="this.form['label']['control']" required>
                 </mat-form-field>
                 <div class="flex justify-center mt-4">
-                    <mat-slide-toggle [formControl]="this.form['default_form'].control">
+                    <mat-slide-toggle [formControl]="this.form['default_form']['control']">
                         {{ "FORMS.is_default" | translate }}
                     </mat-slide-toggle>
                 </div>
-                <div class="flex justify-center flex-col mt-4">
-                    <mat-slide-toggle [formControl]="this.formSettings['supplier_verif'].control">
+                <div class="flex justify-center mt-4">
+                    <mat-slide-toggle [formControl]="this.formSettings['supplier_verif']['control']">
                         {{ "FORMS.supplier_verif" | translate }}
+                        <span class="text-gray-600 cursor-help relative" [matTooltip]="'FORMS.supplier_verif_hint' | translate">
+                            <i class="fa-solid fa-circle-question text-md"></i>
+                        </span>
                     </mat-slide-toggle>
-                    <mat-hint class="text-gray-600 mt-4">{{ "FORMS.supplier_verif_hint" | translate }}</mat-hint>
+                </div>
+                <div class="flex justify-center mt-4">
+                    <mat-slide-toggle [formControl]="this.formSettings['allow_learning']['control']">
+                        {{ "FORMS.allow_learning" | translate }}
+                        <span class="text-gray-600 cursor-help relative" [matTooltip]="'FORMS.allow_learning_hint' | translate">
+                            <i class="fa-solid fa-circle-question text-md"></i>
+                        </span>
+                    </mat-slide-toggle>
                 </div>
                 <mat-form-field *ngFor="let field of this.outputForm; let cpt = index">
                     <mat-label>{{ "HEADER.choose_output" | translate }}</mat-label>
@@ -58,7 +68,7 @@
             </div>
             <div class="form-container">
                 <ng-container *ngFor="let category of this.fieldCategories; let i = index">
-                    <span class="relative text-xl tracking-wider px-1.5 bg-white left-10 top-5">
+                    <span class="relative text-xl tracking-wider px-1.5 bg-white left-10" style="top: 1.125rem">
                         <span *ngIf="!category['edit']">
                             {{ getCategoryLabel(category) }}
                             <span (click)="category.edit = !category['edit']; focusInput('label_' + category['id'])"

@@ -4,7 +4,6 @@
     "SIRET"               : "SIRET",
     "SIREN"               : "SIREN",
     "IBAN"                : "IBAN",
-    "DUNS"                : "DUNS",
     "EMAIL"               : "EMAIL",
     "address1"            : "Adresse 1",
     "address2"            : "Adresse 2",
@@ -13,5 +12,7 @@
     "addressCountry"      : "PAYS",
     "positions_mask_id"   : "MASQUE DE POSITIONNEMENT",
     "get_only_raw_footer" : "CONTROLE DE COHERENCE",
-    "doc_lang"            : "LANGUE DES DOCUMENTS"
+    "doc_lang"            : "LANGUE DES DOCUMENTS",
+    "DUNS"                : "DUNS",
+    "BIC"                 : "BIC"
 }

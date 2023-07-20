@@ -298,19 +298,19 @@ if [ $pythonVenv = 'true' ]; then
     echo "Python packages installation using virtual environment....."
     python3 -m venv "/home/$user/python-venv/opencapture"
     echo "source /home/$user/python-venv/opencapture/bin/activate" >> "/home/$user/.bashrc"
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install -r "$defaultPath/bin/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r "$defaultPath/bin/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     "/home/$user/python-venv/opencapture/bin/python3" -c "import nltk
 nltk.download('stopwords', download_dir='/home/$user/nltk_data/')
 nltk.download('punkt', download_dir='/home/$user/nltk_data/')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 else
     echo "Python packages installation....."
-    python3 -m pip install --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    python3 -m pip install --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    python3 -m pip install --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    python3 -m pip install -r pip-requirements.txt >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r pip-requirements.txt >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     python3 -c "import nltk
 nltk.download('stopwords', download_dir='/home/$user/nltk_data/')
 nltk.download('punkt', download_dir='/home/$user/nltk_data/')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -609,10 +609,11 @@ echo "$secret" > $customPath/config/secret_key
 
 ####################
 # Create default verifier workflow script (based on default workflow created in data_fr.sql)
+cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/"
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh"
+
 touch $defaultPath/custom/$customId/bin/data/log/OpenCapture.log
 if ! test -f "$defaultScriptFile"; then
-    mkdir -p "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/"
     cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh $defaultScriptFile
     sed -i "s#§§SCRIPT_NAME§§#default_workflow#g" $defaultScriptFile
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
@@ -623,7 +624,6 @@ fi
 
 ocrOnlyFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh"
 if ! test -f "$ocrOnlyFile"; then
-    mkdir -p "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/"
     cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh $ocrOnlyFile
     sed -i "s#§§SCRIPT_NAME§§#ocr_only#g" $ocrOnlyFile
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $ocrOnlyFile
@@ -634,10 +634,9 @@ fi
 
 ####################
 # Create default splitter workflow script (based on default workflow created in data_fr.sql)
+cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/"
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_workflows.sh"
 if ! test -f "$defaultScriptFile"; then
-    mkdir -p "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/"
-    cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/"
     cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh $defaultScriptFile
     sed -i "s#§§SCRIPT_NAME§§#default_workflow#g" $defaultScriptFile
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile

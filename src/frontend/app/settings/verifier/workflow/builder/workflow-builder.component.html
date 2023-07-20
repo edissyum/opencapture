@@ -40,8 +40,8 @@
                                 <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2">
                                     <span class="justify-center">{{ field.label | translate }}</span>
                                     <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="field.hint | translate">
-                                    <i class="fa-solid fa-circle-question text-md"></i>
-                                </span>
+                                        <i class="fa-solid fa-circle-question text-md"></i>
+                                    </span>
                                 </mat-slide-toggle>
                             </div>
                         </ng-container>
@@ -108,8 +108,8 @@
                                 <input matInput [formControl]="field['control']" [required]="field['required']"
                                        [type]="field.type" [placeholder]="field.placeholder">
                                 <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
-                                <i class="fa-solid fa-circle-question text-md"></i>
-                            </span>
+                                    <i class="fa-solid fa-circle-question text-md"></i>
+                                </span>
                             </mat-form-field>
                             <mat-form-field *ngIf="field.type === 'select' && field.show">
                                 <mat-label>{{ field.label | translate }}</mat-label>
@@ -120,8 +120,8 @@
                                     </mat-option>
                                 </mat-select>
                                 <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
-                                <i class="fa-solid fa-circle-question text-md"></i>
-                            </span>
+                                    <i class="fa-solid fa-circle-question text-md"></i>
+                                </span>
                             </mat-form-field>
                         </ng-container>
                     </div>

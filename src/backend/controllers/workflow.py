@@ -440,14 +440,15 @@ def launch_script(tmp_file, log, file, database, args, config, docservers, datas
                                     docservers['DOCSERVERS_PATH'], args['input_folder'])
     if not check_res:
         result_string = ('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
-                  '<br> &nbsp;<strong>(' + message.strip() + ')</strong>')
+                         '<br> &nbsp;<strong>(' + message.strip() + ')</strong>')
         return result_string, 400
 
     with open(tmp_file, 'w', encoding='UTF-8') as python_script:
         python_script.write(args['codeContent'])
 
     script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.').replace('.py', '')
-    scripting = importlib.import_module(script_name, 'main')
+    script_name = script_name.replace('custom.', '')
+    scripting = importlib.import_module(script_name, 'custom')
 
     data = {
         'log': log,
