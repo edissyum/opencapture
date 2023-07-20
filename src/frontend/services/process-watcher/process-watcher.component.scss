@@ -1,12 +1,12 @@
 .mat-badge-content {
-  top: -6px !important;
-  right: -6px !important;
+    @apply -top-1.5 #{!important};
+    @apply -right-1.5 #{!important};
 }
 
 .current-task .mat-badge-content {
-  background: #97BF3D !important;
+    @apply bg-green-400 #{!important};
 }
 
 .no-current-task .mat-badge-content {
-  background: #9CA3AFFF !important;
+    @apply bg-gray-400 #{!important};
 }
