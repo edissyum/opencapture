@@ -96,6 +96,9 @@ def send_to_workflow(args):
         'task_id_monitor': args['log'].task_id_monitor
     })
 
+    if os.path.isfile(args['file']):
+        os.remove(args['file'])
+
 
 def update_document_data(args):
     database = create_classes_from_custom_id(args['custom_id'], True)[0]
