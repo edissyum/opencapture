@@ -84,11 +84,11 @@ def send_to_workflow(args):
 
     launch({
         'ip': args['ip'],
-        'log': args['log'],
         'file': args['file'],
         'user_info': args['user_info'],
         'custom_id': args['custom_id'],
         'workflow_id': args['workflow_id'],
+        'current_step': args['log'].current_step,
         'task_id_monitor': args['log'].task_id_monitor
     })
 

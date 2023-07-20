@@ -75,13 +75,10 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
                     if step == 'output' and 'outputs' in args:
                         data['outputs'] = args['outputs']
 
-                res = scripting.main(data)
-                os.remove(tmp_file)
-                if not res:
-                    sys.exit(0)
-        except Exception as _e:
-            os.remove(tmp_file)
+                scripting.main(data)
+        except Exception:
             log.error('Error during' + step + 'scripting : ' + str(traceback.format_exc()))
+        os.remove(tmp_file)
 
 
 def execute_outputs(output_info, log, regex, document_data, database, current_lang):
@@ -750,5 +747,4 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                                     not workflow_settings['input']['apply_process'])):
         # Launch outputs scripting if present
         launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
-
     return document_id
