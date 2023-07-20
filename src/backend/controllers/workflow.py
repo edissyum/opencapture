@@ -447,7 +447,8 @@ def launch_script(tmp_file, log, file, database, args, config, docservers, datas
         python_script.write(args['codeContent'])
 
     script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.').replace('.py', '')
-    scripting = importlib.import_module(script_name, 'main')
+    script_name = script_name.replace('custom.', '')
+    scripting = importlib.import_module(script_name, 'custom')
 
     data = {
         'log': log,

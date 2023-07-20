@@ -49,10 +49,9 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
                 python_script.write(script)
 
             if os.path.isfile(tmp_file):
-                script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.')\
-                    .replace('.py', '')
-                script_name = script_name.replace('..', '.')
-                scripting = importlib.import_module(script_name, 'main')
+                script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.')
+                script_name = script_name.replace('..', '.').replace('custom.', '').replace('.py', '')
+                scripting = importlib.import_module(script_name, 'custom')
 
                 data = {
                     'log': log,
@@ -77,7 +76,7 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
 
                 scripting.main(data)
         except Exception:
-            log.error('Error during' + step + 'scripting : ' + str(traceback.format_exc()))
+            log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
         os.remove(tmp_file)
 
 
