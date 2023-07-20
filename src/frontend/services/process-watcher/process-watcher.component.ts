@@ -127,7 +127,7 @@ export class ProcessWatcherComponent implements OnInit {
         }
     }
 
-    CountCurrentProcess() {
+    countCurrentProcess() {
         let count = 0;
         for (const process of this.processes) {
             if (process.status === 'wait' || process.status === 'running') {
