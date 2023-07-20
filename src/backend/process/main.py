@@ -37,47 +37,57 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
         script = workflow_settings[step]['script']
         check_res, message = check_code(script, config['GLOBAL']['applicationpath'], docservers['DOCSERVERS_PATH'],
                                         workflow_settings['input']['input_folder'])
+
+        change_workflow = False
         if not check_res:
             log.error('[' + step.upper() + '_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
                       '&nbsp;<strong>(' + message.strip() + ')</strong>')
             return False
+        else:
+            change_workflow = 'send_to_workflow({' in script
+
         rand = str(uuid.uuid4())
         tmp_file = docservers['TMP_PATH'] + '/' + step + '_scripting_' + rand + '.py'
 
-        try:
-            with open(tmp_file, 'w', encoding='UTF-8') as python_script:
-                python_script.write(script)
+        # try:
+        with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+            python_script.write(script)
 
-            if os.path.isfile(tmp_file):
-                script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.')
-                script_name = script_name.replace('..', '.').replace('custom.', '').replace('.py', '')
+        if os.path.isfile(tmp_file):
+            script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.')
+            script_name = script_name.replace('..', '.').replace('.py', '')
+            try:
+                scripting = importlib.import_module(script_name, 'custom')
+            except ModuleNotFoundError:
+                script_name = script_name.replace('custom', '')
                 scripting = importlib.import_module(script_name, 'custom')
 
-                data = {
-                    'log': log,
-                    'file': file,
-                    'custom_id': args['custom_id'],
-                    'opencapture_path': config['GLOBAL']['applicationpath']
-                }
+            data = {
+                'log': log,
+                'file': file,
+                'custom_id': args['custom_id'],
+                'opencapture_path': config['GLOBAL']['applicationpath']
+            }
 
-                if step == 'input':
-                    data['ip'] = args['ip']
-                    data['database'] = database
-                    data['user_info'] = args['user_info']
-                elif step in 'process' 'output':
-                    if 'document_id' in args:
-                        data['document_id'] = args['document_id']
+            if step == 'input':
+                data['ip'] = args['ip']
+                data['database'] = database
+                data['user_info'] = args['user_info']
+            elif step in 'process' 'output':
+                if 'document_id' in args:
+                    data['document_id'] = args['document_id']
 
-                    if datas:
-                        data['datas'] = datas
+                if datas:
+                    data['datas'] = datas
 
-                    if step == 'output' and 'outputs' in args:
-                        data['outputs'] = args['outputs']
+                if step == 'output' and 'outputs' in args:
+                    data['outputs'] = args['outputs']
 
-                scripting.main(data)
-        except Exception:
-            log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
-        os.remove(tmp_file)
+            scripting.main(data)
+            return change_workflow
+        # except Exception:
+        #     log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
+        # os.remove(tmp_file)
 
 
 def execute_outputs(output_info, log, regex, document_data, database, current_lang):
@@ -294,7 +304,7 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
 
 
 def process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages):
-    log.info('Processing file : ' + file)
+    log.info('Processing file using workflow&nbsp;<strong>' + args['workflow_id'] + '</strong> : ' + file)
     datas = {
         'datas': {},
         'positions': {},
@@ -332,6 +342,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     system_fields_to_find = []
     custom_fields_to_find = []
 
+    change_workflow = False
     if workflow_settings:
         if workflow_settings['input']['apply_process']:
             for field in workflow_settings['process']['system_fields']:
@@ -351,399 +362,402 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 datas.update({'form_id': res})
 
         # Launch input scripting if present
-        launch_script(workflow_settings, docservers, 'input', log, file, database, args, config)
+        change_workflow = launch_script(workflow_settings, docservers, 'input', log, file, database, args, config)
 
-    supplier = None
-    supplier_lang_different = False
+    if not change_workflow:
+        supplier = None
+        supplier_lang_different = False
 
-    if 'supplier' in args and args['supplier']:
-        if 'column' in args['supplier'] and args['supplier']['column']:
-            if 'value' in args['supplier'] and args['supplier']['value']:
-                column = args['supplier']['column']
-                value = args['supplier']['value']
+        if 'supplier' in args and args['supplier']:
+            if 'column' in args['supplier'] and args['supplier']['column']:
+                if 'value' in args['supplier'] and args['supplier']['value']:
+                    column = args['supplier']['column']
+                    value = args['supplier']['value']
 
-                find_supplier = database.select({
-                    'select': ['accounts_supplier.id as supplier_id', '*'],
-                    'table': ['accounts_supplier', 'addresses'],
-                    'left_join': ['accounts_supplier.address_id = addresses.id'],
-                    'where': [column + ' = %s', 'accounts_supplier.status <> %s'],
-                    'data': [value, 'DEL']
-                })
+                    find_supplier = database.select({
+                        'select': ['accounts_supplier.id as supplier_id', '*'],
+                        'table': ['accounts_supplier', 'addresses'],
+                        'left_join': ['accounts_supplier.address_id = addresses.id'],
+                        'where': [column + ' = %s', 'accounts_supplier.status <> %s'],
+                        'data': [value, 'DEL']
+                    })
 
-                if find_supplier:
-                    supplier = [find_supplier[0]['vat_number'], (('', ''), ('', '')), find_supplier[0], False, column]
-                    log.info('Supplier found using given informations in upload : ' + supplier[2]['name'] + ' using ' +
-                             column.upper() + ' : ' + value)
-                else:
-                    if column in ['siret', 'siren', 'vat_number']:
-                        token_insee, _ = verifier.get_token_insee()
-                        if token_insee or column == 'vat_number':
-                            status = 400
-                            address_args = {}
-                            supplier_args = {}
-                            if column == 'vat_number':
-                                res, status = verifier.verify_vat_number(value, full=True)
-                                if status == 200:
-                                    address = res['address'].split('\n')
-                                    postal_code = address[1].split(' ')[0]
-                                    city = address[1].split(' ')[1]
-                                    address_args = {
-                                        'address1': address[0],
-                                        'postal_code': postal_code,
-                                        'city': city
-                                    }
-                                    supplier_args = {
-                                        'name': res['name'],
-                                        'siren': value[4:13],
-                                        'siret': '',
-                                        'vat_number': value,
-                                    }
-                            if column == 'siren':
-                                res, status = verifier.verify_siren(token_insee, value, full=True)
-                                if status == 200:
-                                    if res['uniteLegale'] and len(res['uniteLegale']['periodesUniteLegale']) >= 1:
-                                        vat_number_key = (12 + (3 * (int(value) % 97)) % 97) % 97
-                                        supplier_args = {
-                                            'name': res['uniteLegale']['periodesUniteLegale'][0]['denominationUniteLegale'],
-                                            'siret': '',
-                                            'siren': value,
-                                            'vat_number': 'FR' + str(vat_number_key) + value
+                    if find_supplier:
+                        supplier = [find_supplier[0]['vat_number'], (('', ''), ('', '')), find_supplier[0], False, column]
+                        log.info('Supplier found using given informations in upload : ' + supplier[2]['name'] + ' using ' +
+                                 column.upper() + ' : ' + value)
+                    else:
+                        if column in ['siret', 'siren', 'vat_number']:
+                            token_insee, _ = verifier.get_token_insee()
+                            if token_insee or column == 'vat_number':
+                                status = 400
+                                address_args = {}
+                                supplier_args = {}
+                                if column == 'vat_number':
+                                    res, status = verifier.verify_vat_number(value, full=True)
+                                    if status == 200:
+                                        address = res['address'].split('\n')
+                                        postal_code = address[1].split(' ')[0]
+                                        city = address[1].split(' ')[1]
+                                        address_args = {
+                                            'address1': address[0],
+                                            'postal_code': postal_code,
+                                            'city': city
                                         }
-                            if column == 'siret':
-                                res, status = verifier.verify_siret(token_insee, value, full=True)
+                                        supplier_args = {
+                                            'name': res['name'],
+                                            'siren': value[4:13],
+                                            'siret': '',
+                                            'vat_number': value,
+                                        }
+                                if column == 'siren':
+                                    res, status = verifier.verify_siren(token_insee, value, full=True)
+                                    if status == 200:
+                                        if res['uniteLegale'] and len(res['uniteLegale']['periodesUniteLegale']) >= 1:
+                                            vat_number_key = (12 + (3 * (int(value) % 97)) % 97) % 97
+                                            supplier_args = {
+                                                'name': res['uniteLegale']['periodesUniteLegale'][0]['denominationUniteLegale'],
+                                                'siret': '',
+                                                'siren': value,
+                                                'vat_number': 'FR' + str(vat_number_key) + value
+                                            }
+                                if column == 'siret':
+                                    res, status = verifier.verify_siret(token_insee, value, full=True)
+                                    if status == 200:
+                                        insee = res['etablissement']
+                                        address_args = {
+                                            'address1': str(insee['adresseEtablissement']['numeroVoieEtablissement']) + ' ' +
+                                                        str(insee['adresseEtablissement']['typeVoieEtablissement']) + ' ' +
+                                                        str(insee['adresseEtablissement']['libelleVoieEtablissement']),
+                                            'postal_code': insee['adresseEtablissement']['codePostalEtablissement'],
+                                            'city': insee['adresseEtablissement']['libelleCommuneEtablissement']
+                                        }
+                                        vat_number_key = (12 + (3 * (int(insee['siren']) % 97)) % 97) % 97
+                                        supplier_args = {
+                                            'name': insee['uniteLegale']['denominationUniteLegale'],
+                                            'siret': insee['siret'],
+                                            'siren': insee['siren'],
+                                            'vat_number': 'FR' + str(vat_number_key) + insee['siren']
+                                        }
+
                                 if status == 200:
-                                    insee = res['etablissement']
-                                    address_args = {
-                                        'address1': str(insee['adresseEtablissement']['numeroVoieEtablissement']) + ' ' +
-                                                    str(insee['adresseEtablissement']['typeVoieEtablissement']) + ' ' +
-                                                    str(insee['adresseEtablissement']['libelleVoieEtablissement']),
-                                        'postal_code': insee['adresseEtablissement']['codePostalEtablissement'],
-                                        'city': insee['adresseEtablissement']['libelleCommuneEtablissement']
-                                    }
-                                    vat_number_key = (12 + (3 * (int(insee['siren']) % 97)) % 97) % 97
-                                    supplier_args = {
-                                        'name': insee['uniteLegale']['denominationUniteLegale'],
-                                        'siret': insee['siret'],
-                                        'siren': insee['siren'],
-                                        'vat_number': 'FR' + str(vat_number_key) + insee['siren']
-                                    }
+                                    if address_args:
+                                        address_id, status = accounts.create_address(address_args)
+                                        supplier_args['address_id'] = address_id['id']
 
-                            if status == 200:
-                                if address_args:
-                                    address_id, status = accounts.create_address(address_args)
-                                    supplier_args['address_id'] = address_id['id']
+                                    res, status = accounts.create_supplier(supplier_args)
+                                    if status == 200:
+                                        data = {
+                                            'supplier_id': res['id'],
+                                            'vat_number': supplier_args['vat_number'],
+                                            'siren': supplier_args['siren'],
+                                            'siret': supplier_args['siret'],
+                                            'duns': '',
+                                            'bic': '',
+                                            'name': supplier_args['name'],
+                                            'city': address_args['city'] if address_args else None,
+                                            'country': '',
+                                            'postal_code': address_args['postal_code'] if address_args else None,
+                                            'address1': address_args['address1'] if address_args else None,
+                                            'address2': '',
+                                            'get_only_raw_footer': False,
+                                            'skip_auto_validate': False,
+                                            'document_lang': ''
+                                        }
+                                        supplier = [data['vat_number'], (('', ''), ('', '')), data, False, column]
+                                        log.info('Supplier created using INSEE database : ' + supplier[2]['name'] + ' with '
+                                                 + column.upper() + ' : ' + value)
 
-                                res, status = accounts.create_supplier(supplier_args)
-                                if status == 200:
-                                    data = {
-                                        'supplier_id': res['id'],
-                                        'vat_number': supplier_args['vat_number'],
-                                        'siren': supplier_args['siren'],
-                                        'siret': supplier_args['siret'],
-                                        'duns': '',
-                                        'bic': '',
-                                        'name': supplier_args['name'],
-                                        'city': address_args['city'] if address_args else None,
-                                        'country': '',
-                                        'postal_code': address_args['postal_code'] if address_args else None,
-                                        'address1': address_args['address1'] if address_args else None,
-                                        'address2': '',
-                                        'get_only_raw_footer': False,
-                                        'skip_auto_validate': False,
-                                        'document_lang': ''
-                                    }
-                                    supplier = [data['vat_number'], (('', ''), ('', '')), data, False, column]
-                                    log.info('Supplier created using INSEE database : ' + supplier[2]['name'] + ' with '
-                                             + column.upper() + ' : ' + value)
+        if 'name' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+            # Find supplier in document if not send using upload rest
+            if not supplier or not supplier[0] or not supplier[2]:
+                supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
 
-    if 'name' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-        # Find supplier in document if not send using upload rest
-        if not supplier or not supplier[0] or not supplier[2]:
-            supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
+                i = 0
+                tmp_nb_pages = nb_pages
+                while not supplier:
+                    tmp_nb_pages = tmp_nb_pages - 1
+                    if 'verifierMaxPageSearch' in configurations and int(configurations['verifierMaxPageSearch']) > 0:
+                        if i == int(configurations['verifierMaxPageSearch']) or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+                            break
+                    else:
+                        if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+                            break
 
-            i = 0
-            tmp_nb_pages = nb_pages
-            while not supplier:
-                tmp_nb_pages = tmp_nb_pages - 1
-                if 'verifierMaxPageSearch' in configurations and int(configurations['verifierMaxPageSearch']) > 0:
-                    if i == int(configurations['verifierMaxPageSearch']) or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
-                        break
-                else:
-                    if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
-                        break
+                    convert(file, files, ocr, tmp_nb_pages, True)
+                    supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
+                    i += 1
 
-                convert(file, files, ocr, tmp_nb_pages, True)
-                supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
-                i += 1
-
-        if supplier and supplier[2]:
-            datas['datas'].update({
-                'name': supplier[2]['name'],
-                'vat_number': supplier[2]['vat_number'],
-                'siret': supplier[2]['siret'],
-                'siren': supplier[2]['siren'],
-                'duns': supplier[2]['duns'],
-                'bic': supplier[2]['bic'],
-                'address1': supplier[2]['address1'],
-                'address2': supplier[2]['address2'],
-                'postal_code': supplier[2]['postal_code'],
-                'city': supplier[2]['city'],
-                'country': supplier[2]['country'],
-            })
-            if supplier[1]:
-                datas['positions'].update({
-                    supplier[4]: files.reformat_positions(supplier[1])
+            if supplier and supplier[2]:
+                datas['datas'].update({
+                    'name': supplier[2]['name'],
+                    'vat_number': supplier[2]['vat_number'],
+                    'siret': supplier[2]['siret'],
+                    'siren': supplier[2]['siren'],
+                    'duns': supplier[2]['duns'],
+                    'bic': supplier[2]['bic'],
+                    'address1': supplier[2]['address1'],
+                    'address2': supplier[2]['address2'],
+                    'postal_code': supplier[2]['postal_code'],
+                    'city': supplier[2]['city'],
+                    'country': supplier[2]['country'],
                 })
-            if supplier[3]:
-                datas['pages'].update({
-                    supplier[4]: supplier[3]
-                })
+                if supplier[1]:
+                    datas['positions'].update({
+                        supplier[4]: files.reformat_positions(supplier[1])
+                    })
+                if supplier[3]:
+                    datas['pages'].update({
+                        supplier[4]: supplier[3]
+                    })
 
-            if 'document_lang' in supplier[2] and supplier[2]['document_lang'] and \
-                    configurations['locale'] != supplier[2]['document_lang']:
-                supplier_lang_different = True
-                regex = {}
-                _regex = database.select({
-                    'select': ['regex_id', 'content'],
-                    'table': ['regex'],
-                    'where': ['lang = %s'],
-                    'data': [supplier[2]['document_lang']]
-                })
+                if 'document_lang' in supplier[2] and supplier[2]['document_lang'] and \
+                        configurations['locale'] != supplier[2]['document_lang']:
+                    supplier_lang_different = True
+                    regex = {}
+                    _regex = database.select({
+                        'select': ['regex_id', 'content'],
+                        'table': ['regex'],
+                        'where': ['lang = %s'],
+                        'data': [supplier[2]['document_lang']]
+                    })
 
-                for _r in _regex:
-                    regex[_r['regex_id']] = _r['content']
-                ocr = _PyTesseract(supplier[2]['document_lang'], log, config, docservers)
-                convert(file, files, ocr, nb_pages)
+                    for _r in _regex:
+                        regex[_r['regex_id']] = _r['content']
+                    ocr = _PyTesseract(supplier[2]['document_lang'], log, config, docservers)
+                    convert(file, files, ocr, nb_pages)
 
-    if workflow_settings:
-        if 'override_supplier_form' in workflow_settings['process'] and \
-                workflow_settings['process']['override_supplier_form'] or \
-                not supplier or ('form_id' not in supplier[2] or not supplier[2]['form_id']):
-            if not form_id_found_with_ai:
-                datas.update({'form_id': workflow_settings['process']['form_id']})
-        elif ('override_supplier_form' not in workflow_settings['process'] or
-              not workflow_settings['process']['override_supplier_form']) and supplier and supplier[2]['form_id']:
-            datas.update({'form_id': supplier[2]['form_id']})
+        if workflow_settings:
+            if 'override_supplier_form' in workflow_settings['process'] and \
+                    workflow_settings['process']['override_supplier_form'] or \
+                    not supplier or ('form_id' not in supplier[2] or not supplier[2]['form_id']):
+                if not form_id_found_with_ai:
+                    datas.update({'form_id': workflow_settings['process']['form_id']})
+            elif ('override_supplier_form' not in workflow_settings['process'] or
+                  not workflow_settings['process']['override_supplier_form']) and supplier and supplier[2]['form_id']:
+                datas.update({'form_id': supplier[2]['form_id']})
 
-    if 'form_id' not in datas or not datas['form_id']:
-        datas.update({'form_id': 0})
+        if 'form_id' not in datas or not datas['form_id']:
+            datas.update({'form_id': 0})
 
-    # Find custom informations using mask
-    if custom_fields_to_find or not workflow_settings['input']['apply_process']:
-        custom_fields = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
-                                   datas['form_id'], custom_fields_to_find, False).run_using_positions_mask()
-        if custom_fields:
-            for field in custom_fields:
-                datas['datas'].update({field: custom_fields[field][0]})
-                if custom_fields[field][1]:
-                    datas['positions'].update({field: files.reformat_positions(custom_fields[field][1])})
-                if custom_fields[field][2]:
-                    datas['pages'].update({field: custom_fields[field][2]})
+        # Find custom informations using mask
+        if custom_fields_to_find or not workflow_settings['input']['apply_process']:
+            custom_fields = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
+                                       datas['form_id'], custom_fields_to_find, False).run_using_positions_mask()
+            if custom_fields:
+                for field in custom_fields:
+                    datas['datas'].update({field: custom_fields[field][0]})
+                    if custom_fields[field][1]:
+                        datas['positions'].update({field: files.reformat_positions(custom_fields[field][1])})
+                    if custom_fields[field][2]:
+                        datas['pages'].update({field: custom_fields[field][2]})
 
-    text_by_pages = [None] * nb_pages
+        text_by_pages = [None] * nb_pages
 
-    custom_fields_regex = database.select({
-        'select': ['id', 'label', "settings #>> '{regex}'as regex_settings"],
-        'table': ['custom_fields'],
-        'where': ['module = %s', "settings #>> '{regex}' is not null", "enabled = %s"],
-        'data': ['verifier', True]
-    })
+        custom_fields_regex = database.select({
+            'select': ['id', 'label', "settings #>> '{regex}'as regex_settings"],
+            'table': ['custom_fields'],
+            'where': ['module = %s', "settings #>> '{regex}' is not null", "enabled = %s"],
+            'data': ['verifier', True]
+        })
 
-    for custom_field in custom_fields_regex:
-        if (not custom_fields_to_find or custom_field['id'] in custom_fields_to_find) \
-                or not workflow_settings['input']['apply_process']:
-            custom_field_class = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
-                                            datas['form_id'], custom_fields_to_find, custom_field)
-            custom_field = 'custom_' + str(custom_field['id'])
-            datas = found_data_recursively(custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
+        for custom_field in custom_fields_regex:
+            if (not custom_fields_to_find or custom_field['id'] in custom_fields_to_find) \
+                    or not workflow_settings['input']['apply_process']:
+                custom_field_class = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
+                                                datas['form_id'], custom_fields_to_find, custom_field)
+                custom_field = 'custom_' + str(custom_field['id'])
+                datas = found_data_recursively(custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
+                                               datas, files, configurations)
+
+        if 'invoice_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+            invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file, docservers,
+                                                     configurations, languages, datas['form_id'])
+            datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages, invoice_number_class,
                                            datas, files, configurations)
 
-    if 'invoice_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-        invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file, docservers,
-                                                 configurations, languages, datas['form_id'])
-        datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages, invoice_number_class,
-                                       datas, files, configurations)
-
-    if 'document_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-        date_class = FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers, languages,
-                              datas['form_id'])
-        datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class, datas, files,
-                                       configurations)
-
-    if 'document_due_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-        due_date_class = FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
-                                     languages, datas['form_id'])
-        datas = found_data_recursively('document_due_date', ocr, file, nb_pages, text_by_pages, due_date_class,
-                                       datas, files, configurations)
-
-    if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-        quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
-                                                     docservers, configurations, datas['form_id'], languages)
-        datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages, quotation_number_class,
-                                       datas, files, configurations)
-
-    if 'delivery_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-        delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file, docservers,
-                                                   configurations, datas['form_id'])
-        datas = found_data_recursively('delivery_number', ocr, file, nb_pages, text_by_pages, delivery_number_class,
-                                       datas, files, configurations)
-
-    footer = None
-    if 'footer' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-        footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers,
+        if 'document_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+            date_class = FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers, languages,
                                   datas['form_id'])
-        if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
-            footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
-                                         docservers, datas['form_id'])
+            datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class, datas, files,
+                                           configurations)
 
-        footer = footer_class.run()
-        if not footer and nb_pages > 1:
-            footer_class.target = 'full'
-            footer_class.text = ocr.last_text
-            footer_class.nb_pages = nb_pages
-            footer_class.is_last_page = True
-            footer_class.rerun = False
-            footer_class.rerun_as_text = False
+        if 'document_due_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+            due_date_class = FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
+                                         languages, datas['form_id'])
+            datas = found_data_recursively('document_due_date', ocr, file, nb_pages, text_by_pages, due_date_class,
+                                           datas, files, configurations)
+
+        if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+            quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
+                                                         docservers, configurations, datas['form_id'], languages)
+            datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages, quotation_number_class,
+                                           datas, files, configurations)
+
+        if 'delivery_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+            delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file, docservers,
+                                                       configurations, datas['form_id'])
+            datas = found_data_recursively('delivery_number', ocr, file, nb_pages, text_by_pages, delivery_number_class,
+                                           datas, files, configurations)
+
+        footer = None
+        if 'footer' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+            footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers,
+                                      datas['form_id'])
+            if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
+                footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
+                                             docservers, datas['form_id'])
+
             footer = footer_class.run()
-            if footer:
-                if len(footer) == 4:
-                    footer[3] = nb_pages
-                else:
-                    footer.append(nb_pages)
-            i = 0
-            tmp_nb_pages = nb_pages
-            while not footer:
-                tmp_nb_pages = tmp_nb_pages - 1
-                if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
-                    break
-                convert(file, files, ocr, tmp_nb_pages, True)
-                _file = files.custom_file_name
-                image = files.open_image_return(_file)
-                text = ocr.line_box_builder(image)
-
-                footer_class.text = text
+            if not footer and nb_pages > 1:
                 footer_class.target = 'full'
-                footer_class.nb_pages = tmp_nb_pages
+                footer_class.text = ocr.last_text
+                footer_class.nb_pages = nb_pages
+                footer_class.is_last_page = True
+                footer_class.rerun = False
+                footer_class.rerun_as_text = False
                 footer = footer_class.run()
-                if not footer:
-                    improved_image = files.improve_image_detection(_file)
-                    image = files.open_image_return(improved_image)
+                if footer:
+                    if len(footer) == 4:
+                        footer[3] = nb_pages
+                    else:
+                        footer.append(nb_pages)
+                i = 0
+                tmp_nb_pages = nb_pages
+                while not footer:
+                    tmp_nb_pages = tmp_nb_pages - 1
+                    if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
+                        break
+                    convert(file, files, ocr, tmp_nb_pages, True)
+                    _file = files.custom_file_name
+                    image = files.open_image_return(_file)
                     text = ocr.line_box_builder(image)
+
                     footer_class.text = text
+                    footer_class.target = 'full'
+                    footer_class.nb_pages = tmp_nb_pages
                     footer = footer_class.run()
-                i += 1
+                    if not footer:
+                        improved_image = files.improve_image_detection(_file)
+                        image = files.open_image_return(improved_image)
+                        text = ocr.line_box_builder(image)
+                        footer_class.text = text
+                        footer = footer_class.run()
+                    i += 1
 
-        if footer:
-            if footer[0]:
-                datas['datas'].update({'no_rate_amount': footer[0][0]})
-                datas['datas'].update({'total_ht': footer[0][0]})
-                if len(footer[0]) > 1:
-                    datas['positions'].update({'no_rate_amount': files.reformat_positions(footer[0][1])})
-                    datas['positions'].update({'total_ht': files.reformat_positions(footer[0][1])})
-                    if 'page' in footer[0][1]:
-                        try:
-                            datas['pages'].update({'no_rate_amount': footer[0][1]['page']})
-                            datas['pages'].update({'total_ht': footer[0][1]['page']})
-                        except (TypeError, json.decoder.JSONDecodeError):
-                            if footer[3]:
-                                datas['pages'].update({'no_rate_amount': footer[3]})
-                                datas['pages'].update({'total_ht': footer[3]})
-                    elif footer[3]:
-                        datas['pages'].update({'no_rate_amount': footer[3]})
-                        datas['pages'].update({'total_ht': footer[3]})
-                datas['datas'].update({'taxes_count': 1})
-                datas['datas'].update({'lines_count': 0})
-            if footer[1]:
-                datas['datas'].update({'total_ttc': footer[1][0]})
-                if len(footer[1]) > 1:
-                    datas['positions'].update({'total_ttc': files.reformat_positions(footer[1][1])})
-                    if 'page' in footer[1][1]:
-                        try:
-                            datas['pages'].update({'total_ttc': footer[1][1]['page']})
-                        except (TypeError, json.decoder.JSONDecodeError):
-                            if footer[3]:
-                                datas['pages'].update({'total_ttc': footer[3]})
-                    elif footer[3]:
-                        datas['pages'].update({'total_ttc': footer[3]})
-            if footer[2]:
-                datas['datas'].update({'vat_rate': footer[2][0]})
-                if len(footer[2]) > 1:
-                    datas['positions'].update({'vat_rate': files.reformat_positions(footer[2][1])})
-                    if 'page' in footer[2][1]:
-                        try:
-                            datas['pages'].update({'vat_rate': footer[2][1]['page']})
-                        except (TypeError, json.decoder.JSONDecodeError):
-                            if footer[3]:
-                                datas['pages'].update({'vat_rate': footer[3]})
-                    elif footer[3]:
-                        datas['pages'].update({'vat_rate': footer[3]})
-            if footer[4]:
-                datas['datas'].update({'vat_amount': footer[4][0]})
-                datas['datas'].update({'total_vat': footer[4][0]})
-                if len(footer[4]) > 1:
-                    datas['positions'].update({'vat_amount': files.reformat_positions(footer[4][1])})
-                    datas['positions'].update({'total_vat': files.reformat_positions(footer[4][1])})
-                    if 'page' in footer[4][1]:
-                        try:
-                            datas['pages'].update({'vat_amount': footer[4][1]['page']})
-                            datas['pages'].update({'total_vat': footer[4][1]['page']})
-                        except (TypeError, json.decoder.JSONDecodeError):
-                            if footer[3]:
-                                datas['pages'].update({'vat_amount': footer[3]})
-                                datas['pages'].update({'total_vat': footer[3]})
-                    elif footer[3]:
-                        datas['pages'].update({'vat_amount': footer[3]})
-                        datas['pages'].update({'total_vat': footer[3]})
+            if footer:
+                if footer[0]:
+                    datas['datas'].update({'no_rate_amount': footer[0][0]})
+                    datas['datas'].update({'total_ht': footer[0][0]})
+                    if len(footer[0]) > 1:
+                        datas['positions'].update({'no_rate_amount': files.reformat_positions(footer[0][1])})
+                        datas['positions'].update({'total_ht': files.reformat_positions(footer[0][1])})
+                        if 'page' in footer[0][1]:
+                            try:
+                                datas['pages'].update({'no_rate_amount': footer[0][1]['page']})
+                                datas['pages'].update({'total_ht': footer[0][1]['page']})
+                            except (TypeError, json.decoder.JSONDecodeError):
+                                if footer[3]:
+                                    datas['pages'].update({'no_rate_amount': footer[3]})
+                                    datas['pages'].update({'total_ht': footer[3]})
+                        elif footer[3]:
+                            datas['pages'].update({'no_rate_amount': footer[3]})
+                            datas['pages'].update({'total_ht': footer[3]})
+                    datas['datas'].update({'taxes_count': 1})
+                    datas['datas'].update({'lines_count': 0})
+                if footer[1]:
+                    datas['datas'].update({'total_ttc': footer[1][0]})
+                    if len(footer[1]) > 1:
+                        datas['positions'].update({'total_ttc': files.reformat_positions(footer[1][1])})
+                        if 'page' in footer[1][1]:
+                            try:
+                                datas['pages'].update({'total_ttc': footer[1][1]['page']})
+                            except (TypeError, json.decoder.JSONDecodeError):
+                                if footer[3]:
+                                    datas['pages'].update({'total_ttc': footer[3]})
+                        elif footer[3]:
+                            datas['pages'].update({'total_ttc': footer[3]})
+                if footer[2]:
+                    datas['datas'].update({'vat_rate': footer[2][0]})
+                    if len(footer[2]) > 1:
+                        datas['positions'].update({'vat_rate': files.reformat_positions(footer[2][1])})
+                        if 'page' in footer[2][1]:
+                            try:
+                                datas['pages'].update({'vat_rate': footer[2][1]['page']})
+                            except (TypeError, json.decoder.JSONDecodeError):
+                                if footer[3]:
+                                    datas['pages'].update({'vat_rate': footer[3]})
+                        elif footer[3]:
+                            datas['pages'].update({'vat_rate': footer[3]})
+                if footer[4]:
+                    datas['datas'].update({'vat_amount': footer[4][0]})
+                    datas['datas'].update({'total_vat': footer[4][0]})
+                    if len(footer[4]) > 1:
+                        datas['positions'].update({'vat_amount': files.reformat_positions(footer[4][1])})
+                        datas['positions'].update({'total_vat': files.reformat_positions(footer[4][1])})
+                        if 'page' in footer[4][1]:
+                            try:
+                                datas['pages'].update({'vat_amount': footer[4][1]['page']})
+                                datas['pages'].update({'total_vat': footer[4][1]['page']})
+                            except (TypeError, json.decoder.JSONDecodeError):
+                                if footer[3]:
+                                    datas['pages'].update({'vat_amount': footer[3]})
+                                    datas['pages'].update({'total_vat': footer[3]})
+                        elif footer[3]:
+                            datas['pages'].update({'vat_amount': footer[3]})
+                            datas['pages'].update({'total_vat': footer[3]})
 
-    full_jpg_filename = str(uuid.uuid4())
-    file = files.move_to_docservers(docservers, file)
+        full_jpg_filename = str(uuid.uuid4())
+        file = files.move_to_docservers(docservers, file)
 
-    # Convert all the pages to JPG (used to full web interface)
-    files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename, docservers=True)
-    files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
+        # Convert all the pages to JPG (used to full web interface)
+        files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename, docservers=True)
+        files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
 
-    allow_auto = False
-    if workflow_settings and workflow_settings['input']['apply_process']:
-        if workflow_settings['process']['use_interface'] and workflow_settings['process']['allow_automatic_validation']:
-            allow_auto = True
-            for field in workflow_settings['process']['system_fields']:
-                if field == 'footer' and footer:
-                    continue
-                if field in datas and datas[field]:
-                    continue
-                allow_auto = False
-                break
+        allow_auto = False
+        if workflow_settings and workflow_settings['input']['apply_process']:
+            if workflow_settings['process']['use_interface'] and workflow_settings['process']['allow_automatic_validation']:
+                allow_auto = True
+                for field in workflow_settings['process']['system_fields']:
+                    if field == 'footer' and footer:
+                        continue
+                    if field in datas and datas[field]:
+                        continue
+                    allow_auto = False
+                    break
 
-    if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
-        status = 'END'
-        log.info('All the usefull informations are found. Execute outputs action and end process')
-        document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,
-                             nb_pages, docservers, workflow_settings, log, regex, supplier_lang_different,
-                             configurations['locale'], allow_auto)
+        if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
+            status = 'END'
+            log.info('All the usefull informations are found. Execute outputs action and end process')
+            document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,
+                                 nb_pages, docservers, workflow_settings, log, regex, supplier_lang_different,
+                                 configurations['locale'], allow_auto)
+        else:
+            status = 'NEW'
+            document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,
+                                 nb_pages, docservers, workflow_settings, log, regex, supplier_lang_different,
+                                 configurations['locale'], allow_auto)
+
+            if supplier and supplier[2]['skip_auto_validate'] == 'True':
+                log.info('Skip automatic validation for this supplier this time')
+                database.update({
+                    'table': ['accounts_suppliers'],
+                    'set': {
+                        'skip_auto_validate': 'False'
+                    },
+                    'where': ['vat_number = %s', 'status <> %s'],
+                    'data': [supplier[2]['vat_number'], 'DEL']
+                })
+
+        args['document_id'] = document_id
+
+        # Launch process scripting if present
+        launch_script(workflow_settings, docservers, 'process', log, file, database, args, config, datas)
+
+        if (status == 'END') or (workflow_settings and (not workflow_settings['process']['use_interface'] or
+                                                        not workflow_settings['input']['apply_process'])):
+            # Launch outputs scripting if present
+            launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
+        return document_id
     else:
-        status = 'NEW'
-        document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,
-                             nb_pages, docservers, workflow_settings, log, regex, supplier_lang_different,
-                             configurations['locale'], allow_auto)
-
-        if supplier and supplier[2]['skip_auto_validate'] == 'True':
-            log.info('Skip automatic validation for this supplier this time')
-            database.update({
-                'table': ['accounts_suppliers'],
-                'set': {
-                    'skip_auto_validate': 'False'
-                },
-                'where': ['vat_number = %s', 'status <> %s'],
-                'data': [supplier[2]['vat_number'], 'DEL']
-            })
-
-    args['document_id'] = document_id
-
-    # Launch process scripting if present
-    launch_script(workflow_settings, docservers, 'process', log, file, database, args, config, datas)
-
-    if (status == 'END') or (workflow_settings and (not workflow_settings['process']['use_interface'] or
-                                                    not workflow_settings['input']['apply_process'])):
-        # Launch outputs scripting if present
-        launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
-    return document_id
+        return None
