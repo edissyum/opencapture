@@ -28,7 +28,8 @@ import { NotificationService } from "../notifications/notifications.service";
 
 @Component({
     selector: 'app-process-watcher',
-    templateUrl: './process-watcher.component.html'
+    templateUrl: './process-watcher.component.html',
+    styleUrls: ['./process-watcher.component.scss']
 })
 
 export class ProcessWatcherComponent implements OnInit {
@@ -52,7 +53,7 @@ export class ProcessWatcherComponent implements OnInit {
     ngOnInit(): void {
         this.minimizeDisplay = this.localStorageService.get('monitoring_minimize_display') === 'true';
         interval(5000).subscribe(() => {
-            if (this.authorizedUrl.includes(this.router.url) && !this.getProcessRunning && !this.minimizeDisplay) {
+            if (this.authorizedUrl.includes(this.router.url) && !this.getProcessRunning) {
                 this.getLastProcesses();
             }
         });
@@ -124,5 +125,15 @@ export class ProcessWatcherComponent implements OnInit {
                 }
             });
         }
+    }
+
+    CountCurrentProcess() {
+        let count = 0;
+        for (const process of this.processes) {
+            if (process.status === 'wait' || process.status === 'running') {
+                count++;
+            }
+        }
+        return count;
     }
 }
