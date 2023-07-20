@@ -101,8 +101,8 @@ def launch(args):
     database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages, _ = create_classes_from_custom_id(
         args['custom_id'], True)
 
-    if 'log' in args:
-        log = args['log']
+    if 'current_step' in args:
+        log.current_step = args['current_step']
 
     database.update({
         'table': ['monitoring'],
