@@ -503,12 +503,13 @@ def launch_output_script(document_id, workflow_settings, outputs):
                 python_script.write(script)
 
             if os.path.isfile(tmp_file):
-                script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.')
-                script_name = script_name.replace('..', '.').replace('.py', '')
+                script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.').replace('.py', '')
+                script_name = script_name.replace('..', '.')
                 try:
-                    scripting = importlib.import_module(script_name, 'custom')
+                    tmp_script_name = script_name.replace('custom.', '')
+                    scripting = importlib.import_module(tmp_script_name, 'custom')
+                    script_name = tmp_script_name
                 except ModuleNotFoundError:
-                    script_name = script_name.replace('custom', '')
                     scripting = importlib.import_module(script_name, 'custom')
                 res = False
 

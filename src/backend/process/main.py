@@ -54,12 +54,13 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
             python_script.write(script)
 
         if os.path.isfile(tmp_file):
-            script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.')
-            script_name = script_name.replace('..', '.').replace('.py', '')
+            script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.').replace('.py', '')
+            script_name = script_name.replace('..', '.')
             try:
-                scripting = importlib.import_module(script_name, 'custom')
+                tmp_script_name = script_name.replace('custom.', '')
+                scripting = importlib.import_module(tmp_script_name, 'custom')
+                script_name = tmp_script_name
             except ModuleNotFoundError:
-                script_name = script_name.replace('custom', '')
                 scripting = importlib.import_module(script_name, 'custom')
 
             data = {
@@ -307,8 +308,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     log.info('Processing file using workflow&nbsp;<strong>' + args['workflow_id'] + '</strong> : ' + file)
     datas = {
         'datas': {},
-        'positions': {},
-        'pages': {}
+        'pages': {},
+        'positions': {}
     }
     nb_pages = files.get_pages(docservers, file)
     splitted_file = os.path.basename(file).split('_')
