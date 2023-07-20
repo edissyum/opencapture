@@ -447,8 +447,12 @@ def launch_script(tmp_file, log, file, database, args, config, docservers, datas
         python_script.write(args['codeContent'])
 
     script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.').replace('.py', '')
-    script_name = script_name.replace('custom.', '')
-    scripting = importlib.import_module(script_name, 'custom')
+    script_name = script_name.replace('..', '.')
+    try:
+        scripting = importlib.import_module(script_name, 'custom')
+    except ModuleNotFoundError:
+        script_name = script_name.replace('custom', '')
+        scripting = importlib.import_module(script_name, 'custom')
 
     data = {
         'log': log,

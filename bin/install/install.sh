@@ -225,7 +225,7 @@ if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     echo ""
     echo "#######################################################################################################################"
     echo ""
-    echo "Create database user...."
+    echo "Create database user....."
 
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -235,7 +235,7 @@ else
     echo ""
     echo "#######################################################################################################################"
     echo ""
-    echo "Create database user...."
+    echo "Create database user....."
 
     su postgres -c "psql -c 'CREATE ROLE $databaseUsername'" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'">>$INFOLOG_PATH 2>>$ERRORLOG_PATH

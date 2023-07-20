@@ -171,9 +171,20 @@ def launch(args):
 
             log.info('Separation ' + sep_style + ' enabled')
 
-    database.connect()
     res = None
     list_of_ids = []
+    database.connect()
+
+    database.insert({
+        'table': 'history',
+        'columns': {
+            'history_module': 'verifier',
+            'user_info': args['user_info'],
+            'history_submodule': 'upload_file',
+            'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>',
+            'user_ip': args['ip']
+        }
+    })
 
     if 'file' in args and args['file'] is not None:
         path = args['file']
@@ -222,16 +233,5 @@ def launch(args):
         },
         'where': ['id = %s'],
         'data': [args['task_id_monitor']]
-    })
-
-    database.insert({
-        'table': 'history',
-        'columns': {
-            'history_module': 'verifier',
-            'user_info': args['user_info'],
-            'history_submodule': 'upload_file',
-            'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>',
-            'user_ip': args['ip']
-        }
     })
     database.conn.close()
