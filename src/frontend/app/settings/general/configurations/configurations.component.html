@@ -132,9 +132,15 @@
                         </div>
                         <div class="text-center mt-8">
                             <button class="valid_button" type="submit" mat-button (click)="generateAuthToken()"
-                                    [disabled]="this.privilegesService.hasPrivilege('generate_auth_token')">
+                                    [disabled]="!this.privilegesService.hasPrivilege('generate_auth_token')"
+                                    [class.gray_button]="!this.privilegesService.hasPrivilege('generate_auth_token')"
+                                    [class.valid_button]="this.privilegesService.hasPrivilege('generate_auth_token')">
                                 {{ 'CONFIGURATIONS.generate_token' | translate }}
                             </button>
+                            <div *ngIf="!this.privilegesService.hasPrivilege('generate_auth_token')"
+                                 class="mt-4 text-gray-900">
+                                {{ 'CONFIGURATIONS.no_privilege_generate_token' | translate }}
+                            </div>
                             <div class="mt-8 text-gray-900" *ngIf="this.token">
                                 {{ this.token }}
                                 <i class="ml-4 fa-solid fa-copy text-2xl cursor-pointer"

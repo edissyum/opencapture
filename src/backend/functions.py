@@ -33,7 +33,9 @@ def rest_validator(data, required_fields):
 
     data = json.loads(data.decode('utf-8'))
     for field in required_fields:
-        if field['id'] not in data or not data[field['id']] or not isinstance(data[field['id']], field['type']):
+        if field['mandatory'] and (field['id'] not in data or not data[field['id']]):
+            return False
+        if not isinstance(data[field['id']], field['type']):
             return False
     return True
 
