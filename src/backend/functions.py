@@ -27,6 +27,19 @@ from .classes.Config import Config as _Config
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 
 
+def rest_validator(data, required_fields):
+    if not data or not data.decode('utf-8'):
+        return False
+
+    data = json.loads(data.decode('utf-8'))
+    for field in required_fields:
+        if field['mandatory'] and (field['id'] not in data or not data[field['id']]):
+            return False
+        if not isinstance(data[field['id']], field['type']):
+            return False
+    return True
+
+
 def delete_documents(docservers, path, filename, full_jpg_filename):
     pdf_file = path + '/' + filename
     thumb_filename = docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename.replace('%03d.jpg', '001.jpg')
