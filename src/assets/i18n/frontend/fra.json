@@ -13,6 +13,7 @@
 		"thanks_to_developers": "Merci aux developpeurs de ces solutions"
 	},
 	"ACCOUNTS": {
+		"bic": "Numéro BIC",
 		"choose_workflow_upload": "Choix du workflow",
 		"company_number": "Numéro de société",
 		"confirm_delete_customer": "Êtes vous sûr de vouloir supprimer le compte client <strong>{{ customer }}</strong> ?",
@@ -720,6 +721,7 @@
 		"forms_list": "Liste des formulaires",
 		"forms_list_splitter": "Liste des formulaires",
 		"general": "Privilèges globaux",
+		"generate_auth_token": "Générer un token d'authentification",
 		"history": "Historique",
 		"import_suppliers": "Importer les tiers",
 		"list": "Liste des privilèges",

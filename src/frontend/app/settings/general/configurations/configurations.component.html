@@ -131,7 +131,8 @@
                             </mat-form-field>
                         </div>
                         <div class="text-center mt-8">
-                            <button class="valid_button" type="submit" mat-button (click)="generateAuthToken()">
+                            <button class="valid_button" type="submit" mat-button (click)="generateAuthToken()"
+                                    [disabled]="this.privilegesService.hasPrivilege('generate_auth_token')">
                                 {{ 'CONFIGURATIONS.generate_token' | translate }}
                             </button>
                             <div class="mt-8 text-gray-900" *ngIf="this.token">

@@ -722,7 +722,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (62, 'update_workflow'
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (63, 'workflows_list_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (64, 'add_workflow_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (65, 'update_workflow_splitter', 'splitter');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 66;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (66, 'generate_auth_token', 'general');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 67;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

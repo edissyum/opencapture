@@ -13,6 +13,7 @@
 		"thanks_to_developers": "Thanks to the developers of this solutions"
 	},
 	"ACCOUNTS": {
+		"bic": "BIC number",
 		"choose_workflow_upload": "Choose a workflow",
 		"company_number": "Company number",
 		"confirm_delete_customer": "Are you sure you want to delete the customer account <strong>{{ customer }}</strong> ?",
@@ -720,6 +721,7 @@
 		"forms_list": "Forms list",
 		"forms_list_splitter": "Forms list",
 		"general": "Global privileges",
+		"generate_auth_token": "Generate token auth",
 		"history": "History",
 		"import_suppliers": "Import suppliers",
 		"list": "Privileges list",

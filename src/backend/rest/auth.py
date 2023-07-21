@@ -18,8 +18,9 @@
 
 import json
 from flask_babel import gettext
-from flask import Blueprint, request, make_response, jsonify
+from src.backend.functions import rest_validator
 from src.backend.import_controllers import auth, privileges
+from flask import Blueprint, request, make_response, jsonify
 
 bp = Blueprint('auth', __name__, url_prefix='/ws/')
 
@@ -87,8 +88,18 @@ def check_token():
 @bp.route('auth/generateAuthToken', methods=['POST'])
 @auth.token_required
 def generate_auth_token():
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations', 'generate_auth_token']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/generateAuthToken'}), 403
+
+    check = rest_validator(request.data, [
+        {'id': 'username', 'type': str},
+        {'id': 'expiration', 'type': int}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": gettext('NO_DATA_OR_DATA_MISSING')
+        }, 400)
 
     data = json.loads(request.data)
     res = auth.generate_token(data['username'], data['expiration'])
