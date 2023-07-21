@@ -9,7 +9,6 @@
             <mat-card-title class="m-5">
                 {{ 'GLOBAL.login' | translate }}
             </mat-card-title>
-
             <mat-card-content>
                 <form [formGroup]="this.loginForm" (ngSubmit)="onSubmit()">
                     <mat-form-field class="block">
@@ -34,11 +33,6 @@
                             </span>
                         </mat-hint>
                     </mat-form-field>
-                    <div class="text-right mb-5 text-gray-900" *ngIf="this.enableLoginMethodName === 'default'">
-                        <a routerLink="/forgotPassword">
-                            {{ 'AUTH.forgot_password' | translate }}
-                        </a>
-                    </div>
                     <button id="login" mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled"
                             class="w-full mb-4 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
                                transition duration-300" type="submit" style="max-width: 250px;">
@@ -47,6 +41,11 @@
                         </span>
                         <i *ngIf="this.processLogin || this.isConnectionBtnDisabled" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                     </button>
+                    <div class="text-right text-gray-900" *ngIf="this.enableLoginMethodName === 'default'">
+                        <a routerLink="/forgotPassword">
+                            {{ 'AUTH.forgot_password' | translate }}
+                        </a>
+                    </div>
                 </form>
             </mat-card-content>
         </mat-card>
