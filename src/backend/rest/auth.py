@@ -92,8 +92,9 @@ def generate_auth_token():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/generateAuthToken'}), 403
 
     check = rest_validator(request.data, [
-        {'id': 'username', 'type': str},
-        {'id': 'expiration', 'type': int}
+        {'id': 'username', 'type': str, 'mandatory': True},
+        {'id': 'expiration', 'type': int, 'mandatory': True},
+        {'id': 'token', 'type': str, 'mandatory': False}
     ])
     if not check:
         return make_response({
@@ -102,6 +103,10 @@ def generate_auth_token():
         }, 400)
 
     data = json.loads(request.data)
+    if 'token' in data:
+        _, code = auth.check_token(data['token'])
+        if code == 200:
+            return make_response({'token': data['token']}, 200)
     res = auth.generate_token(data['username'], data['expiration'])
     return make_response({'token': res[0]}, res[1])
 
