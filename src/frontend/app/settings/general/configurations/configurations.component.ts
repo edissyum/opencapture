@@ -353,36 +353,44 @@ export class ConfigurationsComponent implements OnInit {
         const data: any = {
             'value': this.loginBottomMessage.value
         };
-        this.http.put(environment['url'] + '/ws/config/updateConfiguration/loginBottomMessage', {'args': data},
-            {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.notify.success(this.translate.instant('CONFIGURATIONS.login_bottom_message_updated'));
-            }),
-            finalize(() => this.updating = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+        if (this.privilegesService.hasPrivilege('update_login_bottom_message')) {
+            this.http.put(environment['url'] + '/ws/config/updateConfiguration/loginBottomMessage', {'args': data},
+                {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.notify.success(this.translate.instant('CONFIGURATIONS.login_bottom_message_updated'));
+                }),
+                finalize(() => this.updating = false),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        } else {
+            this.notify.error(this.translate.instant('ERROR.no_privilege_update_bottom_login'));
+        }
     }
 
     updateLoginTopText() {
         const data: any = {
             'value': this.loginTopMessage.value
         };
-        this.http.put(environment['url'] + '/ws/config/updateConfiguration/loginTopMessage', {'args': data},
-            {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.notify.success(this.translate.instant('CONFIGURATIONS.login_top_message_updated'));
-            }),
-            finalize(() => this.updating = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+        if (this.privilegesService.hasPrivilege('update_login_top_message')) {
+            this.http.put(environment['url'] + '/ws/config/updateConfiguration/loginTopMessage', {'args': data},
+                {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.notify.success(this.translate.instant('CONFIGURATIONS.login_top_message_updated'));
+                }),
+                finalize(() => this.updating = false),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        } else {
+            this.notify.error(this.translate.instant('ERROR.no_privilege_update_top_login'));
+        }
     }
 
     setSelectedUser(event: any) {
