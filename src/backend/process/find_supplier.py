@@ -64,19 +64,24 @@ class FindSupplier:
 
     def search_suplier(self, column, data):
         if data:
+            where = ["TRIM(REPLACE(" + column + ", ' ', '')) = %s", 'accounts_supplier.status NOT IN (%s)']
+            _data = [data, 'DEL']
             if column.lower() in ['siret', 'siren']:
                 if not validate_luhn(data):
                     return False
             elif column.lower() == 'iban':
                 if not validate_iban(data):
                     return False
+            if column.lower() == 'bic':
+                where = ["TRIM(REPLACE(" + column + ", ' ', '')) = %s OR TRIM(REPLACE(" + column + ", ' ', '')) = %s", 'accounts_supplier.status NOT IN (%s)']
+                _data = [data, data[:-3], 'DEL']
 
             args = {
                 'select': ['accounts_supplier.id as supplier_id', '*'],
                 'table': ['accounts_supplier', 'addresses'],
                 'left_join': ['accounts_supplier.address_id = addresses.id'],
-                'where': ["TRIM(REPLACE(" + column + ", ' ', '')) = %s", 'accounts_supplier.status NOT IN (%s)'],
-                'data': [data, 'DEL']
+                'where': where,
+                'data': _data
             }
             existing_supplier = self.database.select(args)
             if existing_supplier:
@@ -100,7 +105,7 @@ class FindSupplier:
                 if corrected_line:
                     content = corrected_line
 
-                if column != 'email':
+                if column not in ['bic', 'email']:
                     corrected_line = re.sub(pattern, item, content)
                 else:
                     corrected_line = content
