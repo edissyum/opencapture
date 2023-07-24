@@ -66,6 +66,19 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
     @apply hover:bg-transparent #{!important};
 }
 
+
+.invalid_button {
+    @apply p-6 #{!important};
+    @apply mr-4 #{!important};
+    @apply border #{!important};
+    @apply min-w-56 #{!important};
+    @apply text-white #{!important};
+    @apply bg-gray-600 #{!important};
+    @apply border-solid #{!important};
+    @apply duration-300 #{!important};
+    @apply border-gray-600 #{!important};
+}
+
 /*** Image area select ***/
 
 .select-areas-overlay {

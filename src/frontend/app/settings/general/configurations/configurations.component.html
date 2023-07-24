@@ -75,8 +75,12 @@
                                         color_map: this.colorsMap
                                     }">
                                 </editor>
-                                <div class="flex justify-center m-6">
-                                    <button class="p-6 valid_button" type="submit" mat-button (click)="updateLoginTopText()">
+                                <div class="flex justify-center m-6"
+                                     [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('update_login_top_message')">
+                                    <button class="p-6" type="submit" mat-button (click)="updateLoginTopText()"
+                                            [disabled]="!this.privilegesService.hasPrivilege('update_login_top_message')"
+                                            [class.valid_button]="this.privilegesService.hasPrivilege('update_login_top_message')"
+                                            [class.invalid_button]="!this.privilegesService.hasPrivilege('update_login_top_message')">
                                         {{ 'CONFIGURATIONS.save_login_text' | translate }}
                                     </button>
                                 </div>
@@ -97,8 +101,12 @@
                                         color_map: this.colorsMap
                                     }">
                                 </editor>
-                                <div class="flex justify-center m-6">
-                                    <button class="p-6 valid_button" type="submit" mat-button (click)="updateLoginBottomText()">
+                                <div class="flex justify-center m-6"
+                                     [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('update_login_bottom_message')">
+                                    <button class="p-6" type="submit" mat-button (click)="updateLoginBottomText()"
+                                            [disabled]="!this.privilegesService.hasPrivilege('update_login_bottom_message')"
+                                            [class.valid_button]="this.privilegesService.hasPrivilege('update_login_bottom_message')"
+                                            [class.invalid_button]="!this.privilegesService.hasPrivilege('update_login_bottom_message')">
                                         {{ 'CONFIGURATIONS.save_login_text' | translate }}
                                     </button>
                                 </div>
@@ -130,17 +138,14 @@
                                 </mat-autocomplete>
                             </mat-form-field>
                         </div>
-                        <div class="text-center mt-8">
+                        <div class="text-center mt-8"
+                             [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('generate_auth_token')">
                             <button class="valid_button" type="submit" mat-button (click)="generateAuthToken()"
                                     [disabled]="!this.privilegesService.hasPrivilege('generate_auth_token')"
-                                    [class.gray_button]="!this.privilegesService.hasPrivilege('generate_auth_token')"
+                                    [class.invalid_button]="!this.privilegesService.hasPrivilege('generate_auth_token')"
                                     [class.valid_button]="this.privilegesService.hasPrivilege('generate_auth_token')">
                                 {{ 'CONFIGURATIONS.generate_token' | translate }}
                             </button>
-                            <div *ngIf="!this.privilegesService.hasPrivilege('generate_auth_token')"
-                                 class="mt-4 text-gray-900">
-                                {{ 'CONFIGURATIONS.no_privilege_generate_token' | translate }}
-                            </div>
                             <div class="mt-8 text-gray-900" *ngIf="this.token">
                                 {{ this.token }}
                                 <i class="ml-4 fa-solid fa-copy text-2xl cursor-pointer"
