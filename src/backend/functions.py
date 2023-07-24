@@ -31,12 +31,20 @@ def rest_validator(data, required_fields):
     if not data or not data.decode('utf-8'):
         return False
 
-    data = json.loads(data.decode('utf-8'))
+    try:
+        data = json.loads(data.decode('utf-8'))
+    except json.decoder.JSONDecodeError:
+        return False
+
     for field in required_fields:
-        if field['mandatory'] and (field['id'] not in data or not data[field['id']]):
-            return False
-        if not isinstance(data[field['id']], field['type']):
-            return False
+        if field['mandatory']:
+            if field['id'] not in data or not data[field['id']]:
+                return False
+            if not isinstance(data[field['id']], field['type']):
+                return False
+        else:
+            if field['id'] in data and not isinstance(data[field['id']], field['type']):
+                return False
     return True
 
 
