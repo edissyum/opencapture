@@ -65,7 +65,7 @@ if __name__ == '__main__':
         list_existing_supplier = database.select(args)
         # Insert into database all the supplier not existing into the database
         for vat_number in spreadsheet.referencialSupplierData:
-            if not any(str(vat_number[:20]) == value['vat_number'] for value in list_existing_supplier):
+            if not any(str(vat_number)[:20] == value['vat_number'] for value in list_existing_supplier):
                 args = {
                     'table': 'addresses',
                     'columns': {
@@ -86,7 +86,7 @@ if __name__ == '__main__':
                 args = {
                     'table': 'accounts_supplier',
                     'columns': {
-                        'vat_number': str(vat_number[:20]),
+                        'vat_number': str(vat_number)[:20],
                         'name': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]),
                         'siren': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIREN']]),
                         'siret': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
@@ -122,7 +122,7 @@ if __name__ == '__main__':
                         'select': ['id', 'address_id'],
                         'table': ['accounts_supplier'],
                         'where': ['vat_number = %s'],
-                        'data': [str(vat_number[:20])]
+                        'data': [str(vat_number)[:20]]
                     })[0]
 
                     GET_ONLY_RAW_FOOTER = True
@@ -167,7 +167,7 @@ if __name__ == '__main__':
                             'bic': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['BIC']]),
                         },
                         'where': ['vat_number = %s'],
-                        'data': [vat_number]
+                        'data': [str(vat_number)]
                     }
                     res = database.update(args)
 

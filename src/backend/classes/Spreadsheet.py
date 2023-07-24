@@ -122,6 +122,7 @@ class Spreadsheet:
 
     def read_ods_sheet(self, referencial_spreadsheet):
         content_sheet = get_data(referencial_spreadsheet)
+
         if 'Fournisseur' in content_sheet:
             content_sheet = content_sheet['Fournisseur']
         content_sheet = pd.DataFrame(content_sheet, columns=[

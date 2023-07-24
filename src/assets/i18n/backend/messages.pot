@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-07-21 14:28+0200\n"
+"POT-Creation-Date: 2023-07-24 14:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,9 +21,20 @@ msgstr ""
 #: custom/dev/src/backend/process_queue_verifier.py:233
 #: custom/edissyum/src/backend/process_queue_splitter.py:220
 #: custom/edissyum/src/backend/process_queue_verifier.py:233
+#: custom/opencapture_test_hellyum_com/src/backend/process_queue_splitter.py:212
+#: custom/opencapture_test_hellyum_com/src/backend/process_queue_verifier.py:184
 #: custom/test/src/backend/process_queue_splitter.py:212
 #: custom/test/src/backend/process_queue_verifier.py:184
 msgid "FILE_UPLOADED_WORKFLOW"
+msgstr ""
+
+#: src/backend/functions.py:32 src/backend/functions.py:42
+#: src/backend/functions.py:44 src/backend/functions.py:47
+msgid "NO_DATA_OR_DATA_MISSING"
+msgstr ""
+
+#: src/backend/functions.py:37
+msgid "JSON_ERROR"
 msgstr ""
 
 #: src/backend/scripting_functions.py:84
@@ -210,7 +221,7 @@ msgstr ""
 msgid "DELETE_SUPPLIER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:618
+#: src/backend/controllers/accounts.py:614
 msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
 msgstr ""
 
@@ -276,7 +287,7 @@ msgstr ""
 #: src/backend/controllers/auth.py:296 src/backend/controllers/auth.py:349
 #: src/backend/controllers/auth.py:469 src/backend/controllers/auth.py:480
 #: src/backend/controllers/auth.py:490 src/backend/controllers/auth.py:517
-#: src/backend/rest/auth.py:69
+#: src/backend/rest/auth.py:70
 msgid "LOGIN_ERROR"
 msgstr ""
 
@@ -365,7 +376,7 @@ msgid "LDAP_SYNCHRO_ERROR"
 msgstr ""
 
 #: src/backend/controllers/auth.py:779 src/backend/controllers/auth.py:785
-#: src/backend/controllers/auth.py:864 src/backend/rest/auth.py:142
+#: src/backend/controllers/auth.py:864 src/backend/rest/auth.py:152
 msgid "INFOS_LDAP_NOT_COMPLETE"
 msgstr ""
 
@@ -374,7 +385,7 @@ msgstr ""
 msgid "BAD_CONNECTION_LDAP_INFOS"
 msgstr ""
 
-#: src/backend/controllers/auth.py:862 src/backend/rest/auth.py:143
+#: src/backend/controllers/auth.py:862 src/backend/rest/auth.py:153
 msgid "NOT_COMPLETE_CONNECTION_INFOS"
 msgstr ""
 
@@ -1140,7 +1151,7 @@ msgid "IA_MODEL_UPDATE_ERROR"
 msgstr ""
 
 #: src/backend/models/auth.py:43 src/backend/models/auth.py:101
-#: src/backend/models/user.py:43 src/backend/rest/auth.py:70
+#: src/backend/models/user.py:43 src/backend/rest/auth.py:71
 msgid "BAD_USERNAME"
 msgstr ""
 
@@ -1360,10 +1371,10 @@ msgstr ""
 #: src/backend/rest/artificial_intelligence.py:72
 #: src/backend/rest/artificial_intelligence.py:90
 #: src/backend/rest/artificial_intelligence.py:105
-#: src/backend/rest/artificial_intelligence.py:117 src/backend/rest/auth.py:91
-#: src/backend/rest/auth.py:123 src/backend/rest/auth.py:133
-#: src/backend/rest/auth.py:153 src/backend/rest/auth.py:164
-#: src/backend/rest/auth.py:187 src/backend/rest/auth.py:198
+#: src/backend/rest/artificial_intelligence.py:117 src/backend/rest/auth.py:92
+#: src/backend/rest/auth.py:133 src/backend/rest/auth.py:143
+#: src/backend/rest/auth.py:163 src/backend/rest/auth.py:174
+#: src/backend/rest/auth.py:197 src/backend/rest/auth.py:208
 #: src/backend/rest/config.py:31 src/backend/rest/config.py:41
 #: src/backend/rest/config.py:51 src/backend/rest/config.py:61
 #: src/backend/rest/config.py:72 src/backend/rest/config.py:82
@@ -1448,19 +1459,15 @@ msgstr ""
 msgid "UNAUTHORIZED_ROUTE"
 msgstr ""
 
-#: src/backend/rest/auth.py:45 src/backend/rest/auth.py:74
+#: src/backend/rest/auth.py:46 src/backend/rest/auth.py:75
 msgid "PGSQL_ERROR"
 msgstr ""
 
-#: src/backend/rest/auth.py:95
+#: src/backend/rest/auth.py:101
 msgid "BAD_REQUEST"
 msgstr ""
 
-#: src/backend/rest/auth.py:96
-msgid "NO_DATA_OR_DATA_MISSING"
-msgstr ""
-
-#: src/backend/rest/auth.py:169
+#: src/backend/rest/auth.py:179
 msgid "REQUEST_MODIFS_ERROR"
 msgstr ""
 
