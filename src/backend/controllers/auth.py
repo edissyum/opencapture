@@ -447,7 +447,7 @@ def token_required(view):
             request.environ['user_id'] = user_info[0]['id']
             request.environ['user_info'] = user_info[0]['lastname'] + ' ' + user_info[0]['firstname'] + ' (' + user_info[0]['username'] + ')'
         else:
-            return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('VALID_TOKEN_MANDATORY')}), 500
+            return jsonify({"errors": gettext("AUTH_ERROR"), "message": gettext('VALID_TOKEN_OR_USER_WS_MANDATORY')}), 500
         return view(**kwargs)
     return wrapped_view
 

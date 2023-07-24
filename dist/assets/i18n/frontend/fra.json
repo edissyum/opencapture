@@ -13,6 +13,7 @@
 		"thanks_to_developers": "Merci aux developpeurs de ces solutions"
 	},
 	"ACCOUNTS": {
+		"bic": "Numéro BIC",
 		"choose_workflow_upload": "Choix du workflow",
 		"company_number": "Numéro de société",
 		"confirm_delete_customer": "Êtes vous sûr de vouloir supprimer le compte client <strong>{{ customer }}</strong> ?",
@@ -158,6 +159,7 @@
 		"login_bottom_message_updated": "Message en bas de la page de connexion modifié avec succès",
 		"login_image_changed": "Image de la page de connexion modifié avec succès",
 		"login_top_message_updated": "Message en haut de la page de connexion modifié avec succès",
+		"no_privilege_generate_token": "Vous n'avez pas les privilèges pour générer un token d'authentification",
 		"password_min_length": "Taille minimale",
 		"password_rules": "Règles de sécurité des mots de passe",
 		"password_rules_updated": "Règles de sécurité des mots de passe mise à jour avec succès",
@@ -288,7 +290,7 @@
 		"document_date_month": "Mois du document",
 		"document_date_year": "Année du document",
 		"document_due_date": "Date d'échéance",
-		"facturation": "Facturation",
+		"facturation": "Traitement",
 		"footer": "Pied de page",
 		"invoice_number": "Numéro de facture",
 		"lines": "Lignes de détails",
@@ -720,6 +722,7 @@
 		"forms_list": "Liste des formulaires",
 		"forms_list_splitter": "Liste des formulaires",
 		"general": "Privilèges globaux",
+		"generate_auth_token": "Générer un token d'authentification",
 		"history": "Historique",
 		"import_suppliers": "Importer les tiers",
 		"list": "Liste des privilèges",

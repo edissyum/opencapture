@@ -22,9 +22,30 @@ import pypdf
 import shutil
 import ocrmypdf
 from pathlib import Path
-
+from flask_babel import gettext
 from .classes.Config import Config as _Config
 from .classes.ArtificialIntelligence import ArtificialIntelligence
+
+
+def rest_validator(data, required_fields):
+    if not data or not data.decode('utf-8'):
+        return False, gettext('NO_DATA_OR_DATA_MISSING')
+
+    try:
+        data = json.loads(data.decode('utf-8'))
+    except json.decoder.JSONDecodeError:
+        return False, gettext('JSON_ERROR')
+
+    for field in required_fields:
+        if field['mandatory']:
+            if field['id'] not in data or not data[field['id']]:
+                return False, gettext('NO_DATA_OR_DATA_MISSING')
+            if not isinstance(data[field['id']], field['type']):
+                return False, gettext('NO_DATA_OR_DATA_MISSING')
+        else:
+            if field['id'] in data and not isinstance(data[field['id']], field['type']):
+                return False, gettext('NO_DATA_OR_DATA_MISSING')
+    return True, ''
 
 
 def delete_documents(docservers, path, filename, full_jpg_filename):
@@ -115,6 +136,18 @@ def retrieve_config_from_custom_id(custom_id):
     elif not found_custom and custom_id:
         res = False
     return res
+
+
+def retrieve_custom_path(custom_id):
+    custom_directory = str(Path(__file__).parents[2]) + '/custom/'
+    custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
+    path = None
+    if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
+        customs_config = _Config(custom_ini_file)
+        for custom_name, custom_param in customs_config.cfg.items():
+            if custom_id == custom_name:
+                path = custom_param['path']
+    return path
 
 
 def get_custom_array(custom_id=False):

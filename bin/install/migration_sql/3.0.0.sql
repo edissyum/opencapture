@@ -44,6 +44,7 @@ UPDATE "privileges" set label = 'verifier_settings' WHERE label = 'verifier_disp
 INSERT INTO "privileges" ("label", "parent") VALUES ('add_workflow', 'verifier');
 INSERT INTO "privileges" ("label", "parent") VALUES ('workflows_list', 'verifier');
 INSERT INTO "privileges" ("label", "parent") VALUES ('update_workflow', 'verifier');
+INSERT INTO "privileges" ("label", "parent") VALUES ('generate_auth_token', 'general');
 INSERT INTO "privileges" ("label", "parent") VALUES ('access_config', 'administration');
 INSERT INTO "privileges" ("label", "parent") VALUES ('add_workflow_splitter', 'splitter');
 INSERT INTO "privileges" ("label", "parent") VALUES ('workflows_list_splitter', 'splitter');

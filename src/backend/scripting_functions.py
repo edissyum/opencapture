@@ -17,6 +17,8 @@
 
 import os
 import json
+import shutil
+
 from flask_babel import gettext
 from src.backend.main import launch, create_classes_from_custom_id
 
@@ -82,15 +84,20 @@ def send_to_workflow(args):
         args['log'].error(gettext('WORFKLOW_NOT_FOUND'))
         return False
 
+    new_file_name = args['file'].replace('.pdf', '_copy.pdf')
+    shutil.copy(args['file'], new_file_name)
     launch({
         'ip': args['ip'],
-        'file': args['file'],
+        'file': new_file_name,
         'user_info': args['user_info'],
         'custom_id': args['custom_id'],
         'workflow_id': args['workflow_id'],
         'current_step': args['log'].current_step,
         'task_id_monitor': args['log'].task_id_monitor
     })
+
+    if os.path.isfile(args['file']):
+        os.remove(args['file'])
 
 
 def update_document_data(args):

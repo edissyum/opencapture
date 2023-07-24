@@ -146,7 +146,8 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.update_workflow'),
         marker('PRIVILEGES.workflows_list_splitter'),
         marker('PRIVILEGES.add_workflow_splitter'),
-        marker('PRIVILEGES.update_workflow_splitter')
+        marker('PRIVILEGES.update_workflow_splitter'),
+        marker('PRIVILEGES.generate_auth_token')
     ];
     // End translation
     constructor(

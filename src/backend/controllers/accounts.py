@@ -22,9 +22,9 @@ import subprocess
 from flask_babel import gettext
 from src.backend.import_classes import _Files
 from src.backend.import_models import accounts, history
-from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
+from src.backend.functions import retrieve_custom_from_url, retrieve_custom_path
 
 
 def retrieve_suppliers(_args):
@@ -601,15 +601,11 @@ def delete_supplier(supplier_id):
 
 def import_suppliers(file):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
 
     filename = _Files.save_uploaded_file(file, current_app.config['UPLOAD_FOLDER'])
-    cmd = 'bash ' + docservers['PROJECT_PATH'] + '/custom/' + custom_id + '/bin/scripts/load_referencial.sh ' + filename
+    custom_path = retrieve_custom_path(custom_id)
 
+    cmd = 'bash ' + custom_path + '/bin/scripts/load_referencial.sh ' + filename
     with subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as res:
         _, err = res.communicate()
 
@@ -619,7 +615,6 @@ def import_suppliers(file):
             "message": err.decode('utf-8')
         }
         return response, 400
-
     try:
         os.remove(filename)
     except FileNotFoundError:
