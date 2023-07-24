@@ -138,6 +138,18 @@ def retrieve_config_from_custom_id(custom_id):
     return res
 
 
+def retrieve_custom_path(custom_id):
+    custom_directory = str(Path(__file__).parents[2]) + '/custom/'
+    custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
+    path = None
+    if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
+        customs_config = _Config(custom_ini_file)
+        for custom_name, custom_param in customs_config.cfg.items():
+            if custom_id == custom_name:
+                path = custom_param['path']
+    return path
+
+
 def get_custom_array(custom_id=False):
     if not custom_id:
         custom_id = get_custom_id()

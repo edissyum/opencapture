@@ -47,6 +47,7 @@ class Middleware:
         else:
             domain_name = 'localhost'
         local_regex = re.compile(r'^(127.0.(0|1).1|10(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){3}|((172\.(1[6-9]|2[0-9]|3[01]))|192\.168)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){2})$')
+
         if 'mod_wsgi.path_info' in environ and domain_name != 'localhost' and not local_regex.match(domain_name) and is_custom_exists(domain_name):
             environ['mod_wsgi.path_info'] = environ['mod_wsgi.path_info'].replace('/backend_oc/', '/' + domain_name + '/backend_oc/')
             environ['SCRIPT_NAME'] = domain_name
