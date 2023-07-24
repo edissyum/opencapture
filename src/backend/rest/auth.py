@@ -91,7 +91,7 @@ def generate_auth_token():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations', 'generate_auth_token']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/generateAuthToken'}), 403
 
-    check = rest_validator(request.data, [
+    check, message = rest_validator(request.data, [
         {'id': 'username', 'type': str, 'mandatory': True},
         {'id': 'expiration', 'type': int, 'mandatory': True},
         {'id': 'token', 'type': str, 'mandatory': False}
@@ -99,7 +99,7 @@ def generate_auth_token():
     if not check:
         return make_response({
             "errors": gettext('BAD_REQUEST'),
-            "message": gettext('NO_DATA_OR_DATA_MISSING')
+            "message": message
         }, 400)
 
     data = json.loads(request.data)

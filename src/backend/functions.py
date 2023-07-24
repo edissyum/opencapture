@@ -22,30 +22,30 @@ import pypdf
 import shutil
 import ocrmypdf
 from pathlib import Path
-
+from flask_babel import gettext
 from .classes.Config import Config as _Config
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 
 
 def rest_validator(data, required_fields):
     if not data or not data.decode('utf-8'):
-        return False
+        return False, gettext('NO_DATA_OR_DATA_MISSING')
 
     try:
         data = json.loads(data.decode('utf-8'))
     except json.decoder.JSONDecodeError:
-        return False
+        return False, gettext('JSON_ERROR')
 
     for field in required_fields:
         if field['mandatory']:
             if field['id'] not in data or not data[field['id']]:
-                return False
+                return False, gettext('NO_DATA_OR_DATA_MISSING')
             if not isinstance(data[field['id']], field['type']):
-                return False
+                return False, gettext('NO_DATA_OR_DATA_MISSING')
         else:
             if field['id'] in data and not isinstance(data[field['id']], field['type']):
-                return False
-    return True
+                return False, gettext('NO_DATA_OR_DATA_MISSING')
+    return True, ''
 
 
 def delete_documents(docservers, path, filename, full_jpg_filename):
