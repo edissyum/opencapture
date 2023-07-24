@@ -32,6 +32,7 @@ def process(args):
     - batch_folder: batch folder path
     - configurations: configuration values
     - ocrise: bool, launch OCR on file or not
+    - artificial_intelligence: ArtificialIntelligence object
     :return: N/A
     """
     args['log'].info('Processing file for separation : ' + args['file'])
@@ -61,7 +62,8 @@ def process(args):
     if args['ocrise']:
         args['files'].ocrise_pdf(file, args['configurations']['locale'], args['log'])
 
-    process_res = args['splitter'].create_batches(args['batch_folder'], file, args['workflow_id'], args['user_id'], original_file)
+    process_res = args['splitter'].create_batches(args['batch_folder'], file, args['workflow_id'], args['user_id'],
+                                                  original_file, args['artificial_intelligence'])
     return process_res
 
 
