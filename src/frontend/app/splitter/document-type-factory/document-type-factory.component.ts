@@ -33,6 +33,7 @@ import { PrivilegesService } from "../../../services/privileges.service";
 import { LocalStorageService } from "../../../services/local-storage.service";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
+import {ExportDialogComponent} from "../../../services/export-dialog/export-dialog.component";
 
 @Injectable()
 export class ChecklistDatabase {
@@ -380,5 +381,23 @@ export class DocumentTypeFactoryComponent implements OnInit {
     cleanSearchText() {
         this.searchText = '';
         this.filterChanged();
+    }
+
+    export_doctypes() {
+        const dialogRef = this.dialog.open(ExportDialogComponent, {
+            data: {
+                title : this.translate.instant('DOCTYPE.export')
+            },
+            width: "600px"
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+            }
+        });
+    }
+
+    import_doctypes() {
+
     }
 }

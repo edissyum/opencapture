@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<hr class="border-green-400 -mt-4 w-11/12 m-auto">
+<mat-dialog-content class="mat-typography">
+    <mat-form-field class="float-right w-60 mr-8">
+        <mat-label>{{ 'DATA-EXPORT.extension' | translate }}</mat-label>
+        <mat-select [value]="config.extension">
+            <div *ngFor="let extension of extensions">
+                <mat-option [value]="extension.id">
+                    <span>{{ extension.label | translate }}</span>
+                </mat-option>
+            </div>
+        </mat-select>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-content class="mat-typography">
+    <mat-form-field class="float-right w-60 mr-8">
+        <mat-label>{{ 'DATA-EXPORT.delimiter' | translate }}</mat-label>
+        <mat-select [value]="config.extension">
+            <div *ngFor="let delimiter of delimiters">
+                <mat-option [value]="delimiter.id">
+                    <span>{{ delimiter.label | translate }}</span>
+                </mat-option>
+            </div>
+        </mat-select>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions class="flex justify-end pb-4 pr-4">
+</mat-dialog-actions>

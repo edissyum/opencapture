@@ -28,10 +28,13 @@ import { CustomSnackbarComponent, NotificationService } from './notifications/no
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { CodeEditorComponent } from './code-editor/code-editor.component';
 import { CodeEditorModule } from "@ngstack/code-editor";
+import { ExportDialogComponent } from './export-dialog/export-dialog.component';
+import { ImportDialogComponent } from './import-dialog/import-dialog.component';
+import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
-    imports: [AppMaterialModule, CommonModule, TranslateModule, DragDropModule, CodeEditorModule],
-    declarations: [CustomSnackbarComponent, ConfirmDialogComponent, ProcessWatcherComponent, CodeEditorComponent],
+    imports: [AppMaterialModule, CommonModule, TranslateModule, DragDropModule, CodeEditorModule, ReactiveFormsModule],
+    declarations: [CustomSnackbarComponent, ConfirmDialogComponent, ProcessWatcherComponent, CodeEditorComponent, ExportDialogComponent, ImportDialogComponent],
     exports: [ProcessWatcherComponent],
     providers: [NotificationService, LastUrlService, HintServiceComponent, ErrorServiceComponent]
 })

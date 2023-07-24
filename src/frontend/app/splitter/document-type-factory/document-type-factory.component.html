@@ -1,4 +1,4 @@
-<div class="search-input w-full mx-4 mt-4">
+<div class="w-full mx-4 mt-4">
     <mat-form-field class="w-60">
         <mat-label>{{ 'SPLITTER.search_folder' | translate }}</mat-label>
         <input matInput [(ngModel)]="searchText" (input)="filterChanged()">
@@ -15,7 +15,7 @@
             [matTooltip]="'DOCTYPE.maximize_tree' | translate">
         <i class="fa-solid fa-maximize text-lg"></i>
     </button>
-    <mat-form-field *ngIf="!settings.hasOwnProperty('formId')" class="absolute right-4 w-60">
+    <mat-form-field *ngIf="!settings.hasOwnProperty('formId')" class="float-right w-60 mr-8">
         <mat-label>{{ 'FORMS.choose_form' | translate }}</mat-label>
         <mat-select id='folder' [formControl]="selectFormControl">
             <div *ngFor="let form of forms">
@@ -28,6 +28,16 @@
             </div>
         </mat-select>
     </mat-form-field>
+    <button class="text-gray-400 mr-4 my-4 hover:text-green-400 hover:cursor-pointer float-right"
+            (click)="export_doctypes()"
+            [matTooltip]="'DOCTYPE.export' | translate">
+        <i class="fa-solid fa-file-export fa-2x"></i>
+    </button>
+    <button class="text-gray-400 my-4 mr-4 hover:text-green-400 hover:cursor-pointer float-right"
+            (click)="import_doctypes()"
+            [matTooltip]="'DOCTYPE.import' | translate">
+        <i class="fa-solid fa-file-import fa-2x"></i>
+    </button>
 </div>
 <mat-card class="overflow-auto mx-4" style="height: calc(100% - 11rem) !important">
     <div *ngIf="this.treeDataObj.loading">
