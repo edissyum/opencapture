@@ -53,7 +53,7 @@ class Log:
         if self.database and self.task_id_monitor:
             self.update_task_monitor(msg)
         self.current_step += 1
-        self.logger.info(msg.replace("<strong>", '').replace("</strong>", ''))
+        self.logger.info(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
     def error(self, msg, send_notif=True):
         self.process_in_error = True
@@ -63,7 +63,7 @@ class Log:
         if self.database and self.task_id_monitor:
             self.update_task_monitor(str(msg), 'error')
         self.current_step += 1
-        self.logger.error(msg.replace("<strong>", '').replace("</strong>", ''))
+        self.logger.error(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
     def update_task_monitor(self, msg, status='running'):
         new_step = {

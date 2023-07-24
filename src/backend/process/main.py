@@ -306,7 +306,7 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
 
 def process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages):
     filename = os.path.basename(file)
-    log.info('Processing file using workflow&nbsp;<strong>' + args['workflow_id'] + '</strong> : ' + filename)
+    log.info('Processing file using workflow&nbsp;<strong>' + args['workflow_id'] + '</strong>&nbsp;: ' + filename)
     datas = {
         'datas': {},
         'pages': {},
