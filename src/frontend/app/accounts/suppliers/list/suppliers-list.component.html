@@ -1,5 +1,5 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav-content class="bg-white">
+    <mat-sidenav-content class="bg-white overflow-x-hidden">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
@@ -30,70 +30,72 @@
             </div>
         </div>
         <hr class="border-green-400">
-        <mat-table matSort [dataSource]="suppliers" (matSortChange)="sortData($event)" class="w-full table">
-            <ng-container matColumnDef="id">
-                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'HEADER.id' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{ element.id }}</mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="name">
-                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.supplier_name' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{ element.name }}</mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="email">
-                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'FORMATS.email' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{ element.email }}</mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="vat_number">
-                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.vat_number' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{ element.vat_number }}</mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="siret">
-                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.siret' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{ element.siret }}</mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="siren">
-                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.siren' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{ element.siren }}</mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="iban">
-                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.iban' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{ element.iban }}</mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="form_label">
-                <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.form' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{ element.form_label }}</mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="actions">
-                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                    <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.name)"
-                            matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="fa-solid fa-trash text-lg"></i>
-                    </button>
-                    <button (click)="$event.stopPropagation();deletePositionsConfirmDialog(element.id, element.name)"
-                            matTooltip="{{ 'GLOBAL.delete_supplier_positions' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="fa-solid fa-circle-xmark text-lg"></i>
-                    </button>
-                    <button (click)="$event.stopPropagation();skipAutoValidateConfirmDialog(element.id, element.name)"
-                            matTooltip="{{ 'GLOBAL.skip_auto_validate' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="fa-solid fa-forward text-lg"></i>
-                    </button>
-                </mat-cell>
-            </ng-container>
-            <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                     routerLink="/accounts/suppliers/update/{{ row.id }}"
-                     class="cursor-pointer hover:shadow-md transition-colors duration-300 z-20"></mat-row>
-        </mat-table>
-        <mat-paginator showFirstLastButtons
-                       [length]="this.total"
-                       [pageSize]="pageSize"
-                       [pageIndex]="pageIndex"
-                       [pageSizeOptions]="[5, 10, 15, 20, 50]"
-                       (page)="onPageChange($event)">
-        </mat-paginator>
+        <div class="overflow-x-hidden overflow-y-auto h-full-overflow">
+            <mat-table matSort [dataSource]="suppliers" (matSortChange)="sortData($event)" class="w-full table">
+                <ng-container matColumnDef="id">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'HEADER.id' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.id }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.supplier_name' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.name }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="email">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'FORMATS.email' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.email }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="vat_number">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.vat_number' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.vat_number }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="siret">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.siret' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.siret }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="siren">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.siren' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.siren }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="iban">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.iban' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.iban }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="form_label">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef>{{ 'ACCOUNTS.form' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.form_label }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.name)"
+                                matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
+                                class="inline-block align-text-top">
+                            <i class="fa-solid fa-trash text-lg"></i>
+                        </button>
+                        <button (click)="$event.stopPropagation();deletePositionsConfirmDialog(element.id, element.name)"
+                                matTooltip="{{ 'GLOBAL.delete_supplier_positions' | translate }}" mat-icon-button
+                                class="inline-block align-text-top">
+                            <i class="fa-solid fa-circle-xmark text-lg"></i>
+                        </button>
+                        <button (click)="$event.stopPropagation();skipAutoValidateConfirmDialog(element.id, element.name)"
+                                matTooltip="{{ 'GLOBAL.skip_auto_validate' | translate }}" mat-icon-button
+                                class="inline-block align-text-top">
+                            <i class="fa-solid fa-forward text-lg"></i>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnsToDisplay;"
+                         routerLink="/accounts/suppliers/update/{{ row.id }}"
+                         class="cursor-pointer hover:shadow-md transition-colors duration-300 z-20"></mat-row>
+            </mat-table>
+            <mat-paginator showFirstLastButtons
+                           [length]="this.total"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+        </div>
     </mat-sidenav-content>
 </mat-sidenav-container>
