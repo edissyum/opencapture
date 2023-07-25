@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<hr class="border-green-400 -mt-4 m-auto" style="width: calc(100% - 3em)">
+<mat-dialog-content class="mat-typography">
+    <mat-form-field class="float-left w-60 mr-8">
+        <mat-label>{{ 'DATA-EXPORT.extension' | translate }}</mat-label>
+        <mat-select [value]="config.extension">
+            <div *ngFor="let extension of extensions">
+                <mat-option [value]="extension.id">
+                    <span>{{ extension.label | translate }}</span>
+                </mat-option>
+            </div>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field class="float-right w-60 mr-8">
+        <mat-label>{{ 'DATA-EXPORT.delimiter' | translate }}</mat-label>
+        <mat-select [value]="config.delimiter">
+            <div *ngFor="let delimiter of delimiters">
+                <mat-option [value]="delimiter.id">
+                    <span>{{ delimiter.label | translate }}</span>
+                </mat-option>
+            </div>
+        </mat-select>
+    </mat-form-field>
+    <mat-expansion-panel class="w-full" [expanded]="true">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ 'DATA-EXPORT.export_columns' | translate }}
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="grid grid-cols-2 gap-4 place-content-center mx-8">
+            <div class="list-container">
+                <h2>{{ 'DATA-EXPORT.available_columns' | translate }}</h2>
+                <div
+                    cdkDropList
+                    #selectedColumnsList="cdkDropList"
+                    [cdkDropListData]="config.availableColumns"
+                    [cdkDropListConnectedTo]="[availableColumnsList]"
+                    class="drag-list"
+                    (cdkDropListDropped)="drop($event)">
+                    <div class="drag-item" *ngFor="let availableColumn of config.availableColumns" cdkDrag>{{availableColumn.label}}</div>
+                </div>
+            </div>
+            <div class="list-container">
+                <h2>{{ 'DATA-EXPORT.selected_columns' | translate }}</h2>
+                <div
+                    cdkDropList
+                    #availableColumnsList="cdkDropList"
+                    [cdkDropListData]="config.selectedColumns"
+                    [cdkDropListConnectedTo]="[selectedColumnsList]"
+                    class="drag-list"
+                    (cdkDropListDropped)="drop($event)">
+                    <div class="drag-item" *ngFor="let selectedColumn of config.selectedColumns" cdkDrag>{{selectedColumn.label}}</div>
+                </div>
+            </div>
+        </div>
+    </mat-expansion-panel>
+</mat-dialog-content>
+<mat-dialog-actions class="flex justify-center pb-4 pr-4">
+    <button mat-button [mat-dialog-close]="">{{ 'DATA-EXPORT.cancel' | translate }}</button>
+    <button mat-button [mat-dialog-close]="this.config" class="text-green-400">{{ 'DATA-EXPORT.export' | translate }}</button>
+</mat-dialog-actions>
