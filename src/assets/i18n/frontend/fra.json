@@ -237,11 +237,13 @@
 		"doctype_added": "Type de document ajouté",
 		"doctype_edited": "Type de document modifié",
 		"doctypes_clone_success": "Types de documents clônés avec succès",
+		"doctypes_export_success": "Les types de documents ont été exportés avec succès",
 		"download_separator": "Télécharger le(s) séparateur(s)",
 		"edit_doctype": "Modifier un type de document",
 		"export": "Exporter les types de documents",
 		"folder": "Chemise",
 		"folder_added": "Chemise ajouté",
+		"form_identifier": "identifiant du formulaire",
 		"generate_folder_separators": "Générer tous les séparateurs de la chemise",
 		"generating_separator": "Génération du séparateur...",
 		"import": "Importer les types de documents",
@@ -251,7 +253,8 @@
 		"no_doctype_to_show": "Aucun type de document à afficher",
 		"no_master": "(Ajouter dans la racine)",
 		"previous_page": "Page précédente",
-		"separator_choice ": "Choix de séparateur"
+		"separator_choice ": "Choix de séparateur",
+		"type": "Type (Chemise ou document)"
 	},
 	"DOCUMENTS": {
 		"data_deleted": "Champ supprimé",

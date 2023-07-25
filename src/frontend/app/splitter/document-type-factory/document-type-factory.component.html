@@ -28,16 +28,17 @@
             </div>
         </mat-select>
     </mat-form-field>
-    <button class="text-gray-400 mr-4 my-4 hover:text-green-400 hover:cursor-pointer float-right"
-            (click)="export_doctypes()"
-            [matTooltip]="'DOCTYPE.export' | translate">
-        <i class="fa-solid fa-file-export fa-2x"></i>
-    </button>
-    <button class="text-gray-400 my-4 mr-4 hover:text-green-400 hover:cursor-pointer float-right"
-            (click)="import_doctypes()"
-            [matTooltip]="'DOCTYPE.import' | translate">
-        <i class="fa-solid fa-file-import fa-2x"></i>
-    </button>
+    <div class="mr-4 my-4 float-right">
+        <button class="text-gray-400 hover:text-green-400 hover:cursor-pointer mx-2"
+                [matTooltip]="'DOCTYPE.import' | translate">
+            <i class="fa-solid fa-file-import fa-2x"></i>
+        </button>
+        <button class="text-gray-400 hover:text-green-400 hover:cursor-pointer mx-2"
+                (click)="export_doctypes()"
+                [matTooltip]="'DOCTYPE.export' | translate">
+            <i class="fa-solid fa-file-export fa-2x"></i>
+        </button>
+    </div>
 </div>
 <mat-card class="overflow-auto mx-4" style="height: calc(100% - 11rem) !important">
     <div *ngIf="this.treeDataObj.loading">

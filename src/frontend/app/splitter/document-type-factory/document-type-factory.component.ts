@@ -390,20 +390,29 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 label: this.translate.instant('HEADER.label')
             },
             {
-                id: 'folder',
-                label: this.translate.instant('DOCTYPE.folder')
+                id: 'type',
+                label: this.translate.instant('DOCTYPE.type')
             },
             {
                 id: 'key',
                 label: this.translate.instant('HEADER.id')
+            },
+            {
+                id: 'form_id',
+                label: this.translate.instant('DOCTYPE.form_identifier')
             }
         ];
         const availableColumns: any [] = [
+            {
+                id: 'status',
+                label: this.translate.instant('HEADER.status')
+            },
             {
                 id: 'isDefault',
                 label: this.translate.instant('DOCTYPE.default_doctype')
             }
         ];
+
         const dialogRef = this.dialog.open(ExportDialogComponent, {
             data: {
                 selectedColumns: selectedColumns,
@@ -412,7 +421,6 @@ export class DocumentTypeFactoryComponent implements OnInit {
             },
             width: "900px"
         });
-
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 const args = {
@@ -424,8 +432,11 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 this.http.post(environment['url'] + '/ws/doctypes/export', {'args': args}, {headers: this.authService.headers},
                 ).pipe(
                     tap((data: any) => {
+                        const csvContent = atob(data.encoded_csv);
+                        const blob = new Blob([csvContent], {type: "data:application/octet-stream;base64"});
+                        const url  = window.URL.createObjectURL(blob);
                         const link = document.createElement("a");
-                        link.href = data.encoded_csv;
+                        link.href = url;
                         link.download = `doctypes.${result.extension}`;
                         link.click();
                         this.notify.success(this.translate.instant('DOCTYPE.doctypes_export_success'));
@@ -438,8 +449,5 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 ).subscribe();
             }
         });
-    }
-
-    import_doctypes() {
     }
 }
