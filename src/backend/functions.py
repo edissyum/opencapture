@@ -57,7 +57,7 @@ def rest_validator(data, required_fields):
                         int(data[field['id']])
                         return True, ''
                     except TypeError:
-                        return False, gettext('NO_DATA_OR_DATA_MISSINGa')
+                        return False, gettext('NO_DATA_OR_DATA_MISSING')
                 return False, gettext('NO_DATA_OR_DATA_MISSING')
     return True, ''
 
