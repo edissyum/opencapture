@@ -384,11 +384,33 @@ export class DocumentTypeFactoryComponent implements OnInit {
     }
 
     export_doctypes() {
+        const selectedColumns: any [] = [
+            {
+                id: 'label',
+                label: this.translate.instant('HEADER.label')
+            },
+            {
+                id: 'folder',
+                label: this.translate.instant('DOCTYPE.folder')
+            },
+            {
+                id: 'key',
+                label: this.translate.instant('HEADER.id')
+            }
+        ];
+        const availableColumns: any [] = [
+            {
+                id: 'isDefault',
+                label: this.translate.instant('DOCTYPE.default_doctype')
+            }
+        ];
         const dialogRef = this.dialog.open(ExportDialogComponent, {
             data: {
+                selectedColumns: selectedColumns,
+                availableColumns: availableColumns,
                 title : this.translate.instant('DOCTYPE.export')
             },
-            width: "600px"
+            width: "900px"
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -398,6 +420,5 @@ export class DocumentTypeFactoryComponent implements OnInit {
     }
 
     import_doctypes() {
-
     }
 }

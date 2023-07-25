@@ -203,6 +203,15 @@
 		"unallowed_fields": "Unallowed technical label",
 		"update": "Update custom field"
 	},
+	"DATA-EXPORT": {
+		"available_columns": "Available columns",
+		"cancel": "Cancel",
+		"delimiter": "Delimiter",
+		"export": "Export",
+		"export_columns": "Export columns",
+		"extension": "Extension",
+		"selected_columns": "Selected columns"
+	},
 	"DISABLED": {
 		"disabled": "Disabled",
 		"not_disabled": "Not disabled"

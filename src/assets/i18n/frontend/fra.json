@@ -203,6 +203,15 @@
 		"unallowed_fields": "Libellé technique du champ non autorisé (champ système Open-Capture)",
 		"update": "Modifier le champ personnalisé"
 	},
+	"DATA-EXPORT": {
+		"available_columns": "Champs disponibles",
+		"cancel": "Annuler",
+		"delimiter": "Délimiteur",
+		"export": "Exporter",
+		"export_columns": "Champs à exporter",
+		"extension": "Extension",
+		"selected_columns": "Champs sélectionnés"
+	},
 	"DISABLED": {
 		"disabled": "Désactiver",
 		"not_disabled": "Activer"
