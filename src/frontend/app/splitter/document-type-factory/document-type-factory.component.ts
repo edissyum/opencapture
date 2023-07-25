@@ -415,7 +415,27 @@ export class DocumentTypeFactoryComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                console.log(result);
+                const args = {
+                    'formId': this.selectFormControl.value,
+                    'columns': result.selectedColumns,
+                    'delimiter': result.delimiter,
+                    'extension': result.extension
+                };
+                this.http.post(environment['url'] + '/ws/doctypes/export', {'args': args}, {headers: this.authService.headers},
+                ).pipe(
+                    tap((data: any) => {
+                        const link = document.createElement("a");
+                        link.href = data.encoded_csv;
+                        link.download = `doctypes.${result.extension}`;
+                        link.click();
+                        this.notify.success(this.translate.instant('DOCTYPE.doctypes_export_success'));
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }
         });
     }
