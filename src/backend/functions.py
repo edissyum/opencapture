@@ -28,11 +28,14 @@ from .classes.ArtificialIntelligence import ArtificialIntelligence
 
 
 def rest_validator(data, required_fields):
-    if not data or not data.decode('utf-8'):
+    if not data:
         return False, gettext('NO_DATA_OR_DATA_MISSING')
 
     try:
-        data = json.loads(data.decode('utf-8'))
+        if isinstance(data, bytes):
+            data = json.loads(data.decode('utf-8'))
+        if isinstance(data, str):
+            data = json.loads(data)
     except json.decoder.JSONDecodeError:
         return False, gettext('JSON_ERROR')
 

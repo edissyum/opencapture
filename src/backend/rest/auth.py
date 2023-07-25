@@ -27,6 +27,19 @@ bp = Blueprint('auth', __name__, url_prefix='/ws/')
 
 @bp.route('auth/login', methods=['POST'])
 def login():
+    check, message = rest_validator(request.json, [
+        {'id': 'lang', 'type': str, 'mandatory': True},
+        {'id': 'token', 'type': str, 'mandatory': False},
+        {'id': 'username', 'type': str, 'mandatory': False},
+        {'id': 'password', 'type': str, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     login_method = auth.get_enabled_login_method()
     enabled_login_method_name = login_method[0]['login_method_name'] if login_method[0]['login_method_name'] else [{'method_name': 'default'}]
     res = auth.check_connection()
@@ -80,6 +93,15 @@ def login():
 
 @bp.route('auth/checkToken', methods=['POST'])
 def check_token():
+    check, message = rest_validator(request.json, [
+        {'id': 'token', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     data = request.json
     res = auth.check_token(data['token'])
     return make_response(res[0], res[1])
@@ -91,7 +113,7 @@ def generate_auth_token():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations', 'generate_auth_token']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/generateAuthToken'}), 403
 
-    check, message = rest_validator(request.data, [
+    check, message = rest_validator(request.json, [
         {'id': 'username', 'type': str, 'mandatory': True},
         {'id': 'expiration', 'type': int, 'mandatory': True},
         {'id': 'token', 'type': str, 'mandatory': False}
@@ -102,7 +124,7 @@ def generate_auth_token():
             "message": message
         }, 400)
 
-    data = json.loads(request.data)
+    data = request.json
     if 'token' in data:
         _, code = auth.check_token(data['token'])
         if code == 200:
@@ -113,6 +135,15 @@ def generate_auth_token():
 
 @bp.route('auth/logout', methods=['GET'])
 def logout():
+    check, message = rest_validator(request.args, [
+        {'id': 'user_info', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     user_info = ''
     if request.args.get('user_info'):
         user_info = request.args.get('user_info')
@@ -142,7 +173,7 @@ def check_connection_ldap_server():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/retrieveLdapConfigurations'}), 403
 
-    server_ldap_data = json.loads(request.data.decode("utf8"))
+    server_ldap_data = request.json
     if not server_ldap_data:
         pass
     if server_ldap_data:
@@ -162,7 +193,7 @@ def ldap_synchronization_users():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/ldapSynchronization'}), 403
 
-    ldap_synchronization_data = json.loads(request.data.decode("utf8"))
+    ldap_synchronization_data = request.json
     res = auth.synchronization_ldap_users(ldap_synchronization_data)
     return make_response(res[0], res[1])
 
@@ -196,8 +227,16 @@ def disable_login_method():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/disableLoginMethodName'}), 403
 
-    login_method_name = json.loads(request.data.decode("utf8"))
-    res = auth.disable_login_method(login_method_name['method_name'])
+    check, message = rest_validator(request.json, [
+        {'id': 'method_name', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = auth.disable_login_method(request.json['method_name'])
     return make_response(res[0], res[1])
 
 
@@ -207,6 +246,14 @@ def enable_login_method():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/enableLoginMethodName'}), 403
 
-    login_method_name = json.loads(request.data.decode("utf8"))
-    res = auth.enable_login_method(login_method_name['method_name'])
+    check, message = rest_validator(request.json, [
+        {'id': 'method_name', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = auth.enable_login_method(request.json['method_name'])
     return make_response(res[0], res[1])
