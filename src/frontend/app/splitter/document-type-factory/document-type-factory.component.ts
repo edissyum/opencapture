@@ -33,6 +33,7 @@ import { PrivilegesService } from "../../../services/privileges.service";
 import { LocalStorageService } from "../../../services/local-storage.service";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
+import {ExportDialogComponent} from "../../../services/export-dialog/export-dialog.component";
 
 @Injectable()
 export class ChecklistDatabase {
@@ -380,5 +381,73 @@ export class DocumentTypeFactoryComponent implements OnInit {
     cleanSearchText() {
         this.searchText = '';
         this.filterChanged();
+    }
+
+    export_doctypes() {
+        const selectedColumns: any [] = [
+            {
+                id: 'label',
+                label: this.translate.instant('HEADER.label')
+            },
+            {
+                id: 'type',
+                label: this.translate.instant('DOCTYPE.type')
+            },
+            {
+                id: 'key',
+                label: this.translate.instant('HEADER.id')
+            },
+            {
+                id: 'form_id',
+                label: this.translate.instant('DOCTYPE.form_identifier')
+            }
+        ];
+        const availableColumns: any [] = [
+            {
+                id: 'status',
+                label: this.translate.instant('HEADER.status')
+            },
+            {
+                id: 'isDefault',
+                label: this.translate.instant('DOCTYPE.default_doctype')
+            }
+        ];
+
+        const dialogRef = this.dialog.open(ExportDialogComponent, {
+            data: {
+                selectedColumns: selectedColumns,
+                availableColumns: availableColumns,
+                title : this.translate.instant('DOCTYPE.export')
+            },
+            width: "900px"
+        });
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                const args = {
+                    'formId': this.selectFormControl.value,
+                    'columns': result.selectedColumns,
+                    'delimiter': result.delimiter,
+                    'extension': result.extension
+                };
+                this.http.post(environment['url'] + '/ws/doctypes/export', {'args': args}, {headers: this.authService.headers},
+                ).pipe(
+                    tap((data: any) => {
+                        const csvContent = atob(data.encoded_csv);
+                        const blob = new Blob([csvContent], {type: "data:application/octet-stream;base64"});
+                        const url  = window.URL.createObjectURL(blob);
+                        const link = document.createElement("a");
+                        link.href = url;
+                        link.download = `doctypes.${result.extension}`;
+                        link.click();
+                        this.notify.success(this.translate.instant('DOCTYPE.doctypes_export_success'));
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+        });
     }
 }
