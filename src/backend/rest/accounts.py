@@ -19,8 +19,8 @@ import os
 import base64
 import mimetypes
 from flask_babel import gettext
-from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from src.backend.functions import retrieve_custom_from_url, rest_validator
 from src.backend.import_controllers import auth, accounts, verifier, privileges
 from flask import Blueprint, request, make_response, jsonify, g as current_context
 
@@ -33,6 +33,17 @@ def suppliers_list():
     if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/suppliers/list'}), 403
+
+    check, message = rest_validator(request.args, [
+        {'id': 'order', 'type': str, 'mandatory': False},
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
     res = accounts.retrieve_suppliers(request.args)
     return make_response(res[0], res[1])
@@ -70,6 +81,30 @@ def update_supplier(supplier_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/accounts/suppliers/update/{supplier_id}'}), 403
 
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'bic', 'type': str, 'mandatory': False},
+        {'id': 'name', 'type': str, 'mandatory': False},
+        {'id': 'duns', 'type': str, 'mandatory': False},
+        {'id': 'iban', 'type': str, 'mandatory': False},
+        {'id': 'siret', 'type': str, 'mandatory': False},
+        {'id': 'siren', 'type': str, 'mandatory': False},
+        {'id': 'email', 'type': str, 'mandatory': False},
+        {'id': 'pages', 'type': dict, 'mandatory': False},
+        {'id': 'form_id', 'type': int, 'mandatory': False},
+        {'id': 'vat_number', 'type': str, 'mandatory': False},
+        {'id': 'address_id', 'type': int, 'mandatory': False},
+        {'id': 'positions', 'type': dict, 'mandatory': False},
+        {'id': 'document_lang', 'type': str, 'mandatory': False},
+        {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
+        {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     data = request.json['args']
     res = accounts.update_supplier(supplier_id, data)
     return make_response(jsonify(res[0])), res[1]
@@ -83,6 +118,15 @@ def update_position(supplier_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/accounts/suppliers/{supplier_id}/updatePosition'}), 403
 
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'form_id', 'type': int, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     data = request.json['args']
     res = accounts.update_position_by_supplier_id(supplier_id, data)
     return make_response(res[0], res[1])
@@ -95,6 +139,15 @@ def update_page(supplier_id):
         if not privileges.has_privileges(request.environ['user_id'], ['update_supplier | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/accounts/suppliers/{supplier_id}/updatePage'}), 403
+
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'form_id', 'type': int, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
     data = request.json['args']
     res = accounts.update_page_by_supplier_id(supplier_id, data)

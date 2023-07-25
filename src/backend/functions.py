@@ -28,7 +28,12 @@ from .classes.ArtificialIntelligence import ArtificialIntelligence
 
 
 def rest_validator(data, required_fields):
-    if not data:
+    mandatory_number = 0
+    for field in required_fields:
+        if field['mandatory']:
+            mandatory_number += 1
+
+    if not data and mandatory_number > 1:
         return False, gettext('NO_DATA_OR_DATA_MISSING')
 
     try:
@@ -46,7 +51,13 @@ def rest_validator(data, required_fields):
             if not isinstance(data[field['id']], field['type']):
                 return False, gettext('NO_DATA_OR_DATA_MISSING')
         else:
-            if field['id'] in data and not isinstance(data[field['id']], field['type']):
+            if field['id'] in data and data[field['id']] and not isinstance(data[field['id']], field['type']):
+                if field['type'] == int:
+                    try:
+                        int(data[field['id']])
+                        return True, ''
+                    except TypeError:
+                        return False, gettext('NO_DATA_OR_DATA_MISSINGa')
                 return False, gettext('NO_DATA_OR_DATA_MISSING')
     return True, ''
 
