@@ -75,10 +75,10 @@ export class ProcessWatcherComponent implements OnInit {
             this.http.get(environment['url'] + '/ws/monitoring/' + splitterOrVerifier + '/lasts',
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
-                    if (this.displayedProcessData !== data.processses) {
+                    if (this.displayedProcessData !== data['processses']) {
                         this.processes = [];
                         let cpt = 1;
-                        for (const process of data.processses) {
+                        for (const process of data['processses']) {
                             process.error_message = '';
                             if (process.error) {
                                 Object.keys(process.steps).forEach((step: any) => {
@@ -92,8 +92,8 @@ export class ProcessWatcherComponent implements OnInit {
                                 'type'          : process.type,
                                 'fileName'      : process.filename,
                                 'module'        : process.module,
-                                'beginTime'     : process.creation_date_formated,
-                                'endTime'       : process.end_date_formated,
+                                'beginTime'     : process['creation_date_formated'],
+                                'endTime'       : process['end_date_formated'],
                                 'error'         : process.error,
                                 'errorMessage'  : process.error_message,
                                 'status'        : process.status ? process.status : 'in_progress',
