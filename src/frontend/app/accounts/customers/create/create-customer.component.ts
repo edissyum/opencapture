@@ -18,9 +18,8 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { FormBuilder, FormControl } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { MatDialog } from "@angular/material/dialog";
+import { FormControl } from "@angular/forms";
+import { Router } from "@angular/router";
 import { UserService } from "../../../../services/user.service";
 import { AuthService } from "../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -96,7 +95,7 @@ export class CreateCustomerComponent implements OnInit {
             label: marker('ADDRESSES.address_1'),
             type: 'text',
             control: new FormControl(),
-            required: false
+            required: true
         },
         {
             id: 'address2',
@@ -110,14 +109,14 @@ export class CreateCustomerComponent implements OnInit {
             label: marker('ADDRESSES.postal_code'),
             type: 'text',
             control: new FormControl(),
-            required: false
+            required: true
         },
         {
             id: 'city',
             label: marker('ADDRESSES.city'),
             type: 'text',
             control: new FormControl(),
-            required: false
+            required: true
         },
         {
             id: 'country',
@@ -138,10 +137,7 @@ export class CreateCustomerComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
-        private dialog: MatDialog,
-        private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,

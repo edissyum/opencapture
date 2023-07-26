@@ -102,7 +102,8 @@ def get_total_documents(args):
         'table': ['documents'] if 'table' not in args else args['table'],
         'left_join': [] if 'left_join' not in args else args['left_join'],
         'where': ['1 = %s'] if 'where' not in args else args['where'],
-        'data': ['1'] if 'data' not in args else args['data']
+        'data': ['1'] if 'data' not in args else args['data'],
+        'group_by': [] if 'group_by' not in args else args['group_by']
     })
     return total
 

@@ -35,9 +35,9 @@ from src.backend.import_classes import _Files
 from src.backend.scripting_functions import check_code
 from src.backend.import_models import verifier, accounts
 from src.backend.main import launch, create_classes_from_custom_id
+from flask import current_app, Response, request, g as current_context
 from src.backend.import_controllers import auth, user, monitoring, history
 from src.backend.functions import retrieve_custom_from_url, delete_documents
-from flask import current_app, Response, request, g as current_context
 
 
 def handle_uploaded_file(files, workflow_id, supplier):
@@ -782,3 +782,39 @@ def get_unseen(user_id):
         'table': ['documents']
     })[0]
     return total_unseen['unseen'], 200
+
+
+def get_customers_count(user_id, status, time):
+    user_customers = user.get_customers_by_user_id(user_id)
+    user_customers[0].append(0)
+    where_time = []
+    if time in ['today', 'yesterday']:
+        where_time.append(
+            "to_char(register_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + time + "', 'YYYY-MM-DD')")
+    else:
+        where_time.append("to_char(register_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
+
+    customers_count = verifier.get_total_documents({
+        'select': ['customer_id', 'count(documents.id) as total'],
+        'where': ["status = %s", "customer_id = ANY(%s)", where_time[0]],
+        'data': [status, user_customers[0]],
+        'group_by': ['customer_id']
+    })
+    for customer in customers_count:
+        customer_info, error = accounts.get_customer_by_id({'customer_id': customer['customer_id']})
+        customer_suppliers = {}
+        for document_type in ['purchase', 'sale']:
+            customer_suppliers[document_type] = verifier.get_total_documents({
+                'select': ['supplier_id', 'count(documents.id) as total'],
+                'where': ["status = %s", "customer_id = %s", "purchase_or_sale = %s", where_time[0]],
+                'data': [status, customer['customer_id'], document_type],
+                'group_by': ['supplier_id']
+            })
+            for supplier in customer_suppliers[document_type]:
+                supplier_info, error_supplier = accounts.get_supplier_by_id({'supplier_id': supplier['supplier_id']})
+                if error_supplier is None:
+                    supplier['name'] = supplier_info['name']
+        customer['suppliers'] = customer_suppliers
+        if error is None:
+            customer['name'] = customer_info['name']
+    return customers_count, 200

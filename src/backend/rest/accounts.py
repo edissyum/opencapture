@@ -45,7 +45,7 @@ def suppliers_list():
             "message": message
         }, 400)
 
-    res = accounts.retrieve_suppliers(request.args)
+    res = accounts.get_suppliers(request.args)
     return make_response(res[0], res[1])
 
 

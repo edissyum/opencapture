@@ -331,9 +331,9 @@ def find_form_with_ia(file, ai_model_id, database, docservers, files, ai, ocr, l
             return False
         min_proba = ai_model[0]['min_proba']
         if os.path.isfile(csv_file) and os.path.isfile(model_name):
-            _artificial_intelligence = ArtificialIntelligence('', '', None, files, ocr, docservers, log)
+            _artificial_intelligence = ArtificialIntelligence('', '', None, ocr, docservers, log)
             _artificial_intelligence.csv_file = csv_file
-            (_, folder, prob), code = _artificial_intelligence.model_testing(model_name, csv_file)
+            (_, folder, prob), code = _artificial_intelligence.model_testing(model_name)
 
             if code == 200:
                 if prob >= min_proba:

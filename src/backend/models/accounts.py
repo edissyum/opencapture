@@ -21,7 +21,7 @@ from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
-def retrieve_suppliers(args):
+def get_suppliers(args):
     if 'database' in current_context:
         database = current_context.database
     else:

@@ -468,3 +468,13 @@ def update_status():
     }
     res = verifier.update_status(args)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('verifier/customersCount/<int:user_id>/<string:status>/<string:time>', methods=['GET'])
+@auth.token_required
+def get_customers_count(user_id, status, time):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/customerCount'}), 403
+
+    res = verifier.get_customers_count(user_id, status, time)
+    return make_response(jsonify(res[0])), res[1]
