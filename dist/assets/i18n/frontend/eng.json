@@ -202,6 +202,15 @@
 		"unallowed_fields": "Unallowed technical label",
 		"update": "Update custom field"
 	},
+	"DATA-EXPORT": {
+		"available_columns": "Available columns",
+		"cancel": "Cancel",
+		"delimiter": "Delimiter",
+		"export": "Export",
+		"export_columns": "Export columns",
+		"extension": "Extension",
+		"selected_columns": "Selected columns"
+	},
 	"DISABLED": {
 		"disabled": "Disabled",
 		"not_disabled": "Not disabled"
@@ -227,19 +236,24 @@
 		"doctype_added": "Folder added",
 		"doctype_edited": "Document types edited",
 		"doctypes_clone_success": "Documents types cloned with success",
+		"doctypes_export_success": "Documents types exported with success",
 		"download_separator": "Download separator(s)",
 		"edit_doctype": "Edit a document type",
+		"export": "Export",
 		"folder": "Folder",
 		"folder_added": "Folder added",
+		"form_identifier": "Form identifier",
 		"generate_folder_separators": "Generate all folder separators",
 		"generating_separator": "Generating separator",
+		"import": "Import",
 		"maximize_tree": "Maximise tree",
 		"minimize_tree": "Minimize tree",
 		"next_page": "Next page",
 		"no_doctype_to_show": "No document type to show",
 		"no_master": "(No master folder)",
 		"previous_page": "Previous page",
-		"separator_choice ": "Separator choice"
+		"separator_choice ": "Separator choice",
+		"type": "Type (folder or doctype)"
 	},
 	"DOCUMENTS": {
 		"data_deleted": "Data deleted",
