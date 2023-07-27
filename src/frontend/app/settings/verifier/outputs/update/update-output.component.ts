@@ -23,7 +23,7 @@ import { NotificationService } from "../../../../../services/notifications/notif
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { FormBuilder, FormControl } from "@angular/forms";
+import { FormControl } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
@@ -124,7 +124,7 @@ export class UpdateOutputComponent implements OnInit {
                 {
                     'id': false,
                     'label': marker('OUTPUT.ocr_disabled')
-                },
+                }
             ],
             required: false
         }
@@ -222,7 +222,6 @@ export class UpdateOutputComponent implements OnInit {
         private http: HttpClient,
         private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
@@ -299,7 +298,7 @@ export class UpdateOutputComponent implements OnInit {
                             this.outputsTypesForm[_output.output_type_id] = {
                                 'auth' : [],
                                 'links' : [],
-                                'parameters' : [],
+                                'parameters' : []
                             };
                             for (const category in this.outputsTypesForm[_output.output_type_id]) {
                                 if (_output.data.options[category]) {
@@ -317,7 +316,7 @@ export class UpdateOutputComponent implements OnInit {
                                             required: option.required,
                                             isJson: option.isJson,
                                             hint: option.hint,
-                                            webservice: option.webservice,
+                                            webservice: option.webservice
                                         });
                                     }
                                 } else {
