@@ -31,7 +31,7 @@
 		"customers_list": "Liste des comptes clients",
 		"duns": "Numéro DUNS",
 		"email_format_error": "Mauvais format d'email",
-		"export_suppliers": "Exporter les tiers",
+		"export_suppliers": "Exporter les comptes tiers",
 		"form": "Nom du formulaire",
 		"get_only_raw_footer": "Contrôle de cohérence du pied de page",
 		"iban": "Numéro d'IBAN",
