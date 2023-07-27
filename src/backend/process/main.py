@@ -190,8 +190,8 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
     elif workflow_settings and (
             not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
         if 'output' in workflow_settings and workflow_settings['output']:
-            insert_document = False
             args['outputs'] = []
+            document_data['status'] = 'NO_INTERFACE'
             for output_id in workflow_settings['output']['outputs_id']:
                 output_info = database.select({
                     'select': ['output_type_id', 'data', 'compress_type', 'ocrise'],

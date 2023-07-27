@@ -49,7 +49,7 @@
                         </div>
                         <div class="mt-2 grid grid-cols-3 gap-6">
                             <ng-container *ngFor="let field of this.fields['input']">
-                                <mat-form-field *ngIf="(field.type === 'text' || field.type === 'number') && field.show">
+                                <mat-form-field *ngIf="(field.type === 'text' || field.type === 'number')">
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [formControl]="field['control']" [required]="field['required']" [type]="field.type" [placeholder]="field.placeholder">
                                     <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
@@ -96,8 +96,8 @@
                                     <mat-slide-toggle [disabled]="!field.show" [formControl]="field['control']" class="relative top-4 mb-10 col-span-2" (change)="field.id === 'use_interface' ? setUseInterface($event.checked) : field.id === 'form_id' ? setUsedOutputs(): ''">
                                         <span class="justify-center">{{ field.label | translate }}</span>
                                         <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="field.hint | translate">
-                                        <i class="fa-solid fa-circle-question text-md"></i>
-                                    </span>
+                                            <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
                                     </mat-slide-toggle>
                                 </div>
                             </ng-container>

@@ -122,33 +122,35 @@ class FindCustom:
                     'table': ['accounts_supplier'],
                     'where': ['vat_number = %s', 'status <> %s'],
                     'data': [self.supplier[0], 'DEL']
-                })[0]
+                })
 
-                if custom_with_position and custom_with_position['positions']:
-                    for field in custom_with_position['positions']:
-                        if 'custom_' in field:
-                            position = self.database.select({
-                                'select': [
-                                    "positions -> '" + str(self.form_id) + "' -> '" + field + "' as custom_position",
-                                    "pages -> '" + str(self.form_id) + "' -> '" + field + "' as custom_page"
-                                ],
-                                'table': ['accounts_supplier'],
-                                'where': ['vat_number = %s', 'status <> %s'],
-                                'data': [self.supplier[0], 'DEL']
-                            })[0]
+                if custom_with_position:
+                    custom_with_position = custom_with_position[0]
+                    if custom_with_position['positions']:
+                        for field in custom_with_position['positions']:
+                            if 'custom_' in field:
+                                position = self.database.select({
+                                    'select': [
+                                        "positions -> '" + str(self.form_id) + "' -> '" + field + "' as custom_position",
+                                        "pages -> '" + str(self.form_id) + "' -> '" + field + "' as custom_page"
+                                    ],
+                                    'table': ['accounts_supplier'],
+                                    'where': ['vat_number = %s', 'status <> %s'],
+                                    'data': [self.supplier[0], 'DEL']
+                                })[0]
 
-                            if position and position['custom_position'] not in [False, 'NULL', '', None]:
-                                data = {'position': position['custom_position'], 'regex': None, 'target': 'full',
-                                        'page': position['custom_page']}
-                                text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
-                                try:
-                                    position = json.loads(position)
-                                except TypeError:
-                                    pass
+                                if position and position['custom_position'] not in [False, 'NULL', '', None]:
+                                    data = {'position': position['custom_position'], 'regex': None, 'target': 'full',
+                                            'page': position['custom_page']}
+                                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                                    try:
+                                        position = json.loads(position)
+                                    except TypeError:
+                                        pass
 
-                                if text is not False and text:
-                                    self.log.info(field + ' found with position : ' + str(text))
-                                    data_to_return[field] = [text, position, data['page']]
+                                    if text is not False and text:
+                                        self.log.info(field + ' found with position : ' + str(text))
+                                        data_to_return[field] = [text, position, data['page']]
         return data_to_return
 
     # Run using regex

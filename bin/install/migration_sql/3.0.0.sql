@@ -178,3 +178,4 @@ INSERT INTO "configurations" ("label", "data", display) VALUES ('loginBottomMess
 DROP TABLE IF EXISTS "tasks_watcher";
 
 ALTER TABLE roles RENAME COLUMN sub_roles to assign_roles;
+ALTER TABLE documents DROP COLUMN IF EXISTS "purchase_or_sale";
