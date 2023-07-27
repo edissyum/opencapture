@@ -108,7 +108,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 show: true,
                 label: this.translate.instant('WORKFLOW.splitter_method'),
                 type: 'select',
-                control: new FormControl(),
+                control: new FormControl('no_sep'),
                 required: true,
                 values: [
                     {
@@ -607,7 +607,7 @@ export class WorkflowBuilderComponent implements OnInit {
 
         this.fields['process'].forEach((element: any) => {
             if (element.id === 'form_id' || element.id === 'allow_automatic_validation' || element.id === 'override_supplier_form') {
-                element.show = this.useInterface;
+                 //element.show = this.useInterface;
                 if (element.type !== 'boolean') {
                     element.required = this.useInterface;
                 }

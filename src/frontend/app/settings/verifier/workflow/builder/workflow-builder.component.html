@@ -49,7 +49,7 @@
                         </div>
                         <div class="mt-2 grid grid-cols-3 gap-6">
                             <ng-container *ngFor="let field of this.fields['input']">
-                                <mat-form-field *ngIf="(field.type === 'text' || field.type === 'number') && field.show">
+                                <mat-form-field *ngIf="(field.type === 'text' || field.type === 'number')">
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [formControl]="field['control']" [required]="field['required']" [type]="field.type" [placeholder]="field.placeholder">
                                     <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
