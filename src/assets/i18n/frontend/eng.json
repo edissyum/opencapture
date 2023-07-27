@@ -957,8 +957,6 @@
 		"no_file": "No file to upload",
 		"placeholder": "Drag and drop or click to upload PDF file(s)",
 		"please_select_workflow": "Please select a workflow",
-		"purchase_invoice": "Purchase invoice",
-		"sale_invoice": "Sale invoice",
 		"upload_file": "Upload file(s)",
 		"upload_success": "File upload successfully"
 	},

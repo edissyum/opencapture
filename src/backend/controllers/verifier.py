@@ -33,7 +33,7 @@ from zeep import Client, exceptions
 from src.backend import verifier_exports
 from src.backend.import_classes import _Files
 from src.backend.scripting_functions import check_code
-from src.backend.import_models import verifier, accounts
+from src.backend.import_models import verifier, accounts, forms
 from src.backend.main import launch, create_classes_from_custom_id
 from flask import current_app, Response, request, g as current_context
 from src.backend.import_controllers import auth, user, monitoring, history
@@ -164,10 +164,6 @@ def retrieve_documents(args):
             args['where'].append('supplier_id is NULL')
         else:
             args['where'].append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
-
-    if 'purchaseOrSale' in args and args['purchaseOrSale']:
-        args['where'].append('purchase_or_sale = %s')
-        args['data'].append(args['purchaseOrSale'])
 
     total_documents = verifier.get_total_documents({
         'select': ['count(documents.id) as total'],
@@ -802,15 +798,22 @@ def get_customers_count(user_id, status, time):
     })
     for customer in customers_count:
         customer_info, error = accounts.get_customer_by_id({'customer_id': customer['customer_id']})
+        _forms = verifier.get_total_documents({
+            'select': ['form_id', 'count(documents.id) as total'],
+            'where': ["status = %s", "customer_id = ANY(%s)", where_time[0]],
+            'data': [status, user_customers[0]],
+            'group_by': ['form_id']
+        })
         customer_suppliers = {}
-        for document_type in ['purchase', 'sale']:
-            customer_suppliers[document_type] = verifier.get_total_documents({
+        for form in _forms:
+            form_label = forms.get_form_by_id({'form_id': form['form_id']})[0]['label']
+            customer_suppliers[form_label] = verifier.get_total_documents({
                 'select': ['supplier_id', 'count(documents.id) as total'],
-                'where': ["status = %s", "customer_id = %s", "purchase_or_sale = %s", where_time[0]],
-                'data': [status, customer['customer_id'], document_type],
+                'where': ["status = %s", "customer_id = %s", "form_id = %s", where_time[0]],
+                'data': [status, customer['customer_id'], form['form_id']],
                 'group_by': ['supplier_id']
             })
-            for supplier in customer_suppliers[document_type]:
+            for supplier in customer_suppliers[form_label]:
                 supplier_info, error_supplier = accounts.get_supplier_by_id({'supplier_id': supplier['supplier_id']})
                 if error_supplier is None:
                     supplier['name'] = supplier_info['name']

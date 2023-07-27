@@ -217,7 +217,7 @@ class FindSupplier:
         supplier = self.process(self.regex['bic'], text_as_string, 'bic')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Supplier found : ' + supplier[0]['name'] + ' using BIC : ' + supplier[0]['duns'])
+            self.log.info('Supplier found : ' + supplier[0]['name'] + ' using BIC : ' + supplier[0]['bic'])
             line = supplier[1]
             if text_as_string:
                 position = (('', ''), ('', ''))
