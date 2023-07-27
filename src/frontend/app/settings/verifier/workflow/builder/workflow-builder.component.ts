@@ -611,16 +611,20 @@ export class WorkflowBuilderComponent implements OnInit {
         }
 
         this.fields['process'].forEach((element: any) => {
-            if (element.id === 'form_id' || element.id === 'allow_automatic_validation' || element.id === 'override_supplier_form') {
-                 element.show = this.useInterface;
-                if (element.type !== 'boolean') {
-                    element.required = this.useInterface;
-                }
-            }
             if (this.processAllowed) {
                 element.control.enable();
             } else {
                 element.control.disable();
+            }
+
+            if (element.id === 'form_id' || element.id === 'allow_automatic_validation' || element.id === 'override_supplier_form') {
+                element.show = this.useInterface;
+                if (!this.useInterface) {
+                    element.control.disable(false);
+                }
+                if (element.type !== 'boolean') {
+                    element.required = this.useInterface;
+                }
             }
         });
         this.setUsedOutputs();
