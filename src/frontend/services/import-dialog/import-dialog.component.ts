@@ -19,11 +19,14 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { FormControl } from "@angular/forms";
 import { FileValidators } from "ngx-file-drag-drop";
-import { HttpHeaders } from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import { AuthService } from "../auth.service";
 import { NotificationService } from "../notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import {environment} from "../../app/env";
+import {catchError, tap} from "rxjs/operators";
+import {of} from "rxjs";
 
 @Component({
   selector: 'app-import-dialog',
@@ -42,6 +45,7 @@ export class ImportDialogComponent {
       private authService: AuthService,
       public translate: TranslateService,
       private notify: NotificationService,
+      private http: HttpClient,
       @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.data.fileControl = new FormControl(
@@ -54,7 +58,8 @@ export class ImportDialogComponent {
   }
 
   checkFile(data: any): void {
-    this.error = false;
+      console.log("data: ", data);
+      this.error = false;
     if (data && data.length !== 0) {
       for (let i = 0; i < data.length; i++) {
         const fileName = data[i].name;
@@ -65,6 +70,34 @@ export class ImportDialogComponent {
           return;
         }
       }
+      this.preview_csv(data[0]);
     }
+  }
+
+  preview_csv(file: any): void {
+      const formData: FormData = new FormData();
+      formData.append(file['name'], file);
+      formData.set('columns', this.data.selectedColumns);
+      this.http.post(environment['url'] + '/ws/doctypes/csv/preview', formData, {headers: this.authService.headers}).pipe(
+          tap((data: any) => {
+            data.rows.forEach((row: any) => {
+                const data_rows: any    = [];
+                let cpt : number        = 0;
+                row.forEach((col: any) => {
+                    data_rows[this.data.selectedColumns[cpt]] = col;
+                    cpt++;
+                });
+                console.log(data_rows);
+                this.data.rows.push(data_rows);
+              cpt++;
+            });
+            this.loading = false;
+            console.log(this.data.rows);
+          }),
+          catchError((err: any) => {
+              this.notify.handleErrors(err);
+              return of(false);
+          })
+        ).subscribe();
   }
 }
