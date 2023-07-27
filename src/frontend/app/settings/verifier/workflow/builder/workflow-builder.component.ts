@@ -443,6 +443,11 @@ export class WorkflowBuilderComponent implements OnInit {
                 this.fields['output'].forEach((element: any) => {
                     if (element.id === 'outputs_id') {
                         element.values = data.outputs;
+                        element.values.unshift({
+                            "id": 0,
+                            "output_label": this.translate.instant("WORKFLOW.no_output"),
+                            "output_type_id": "no_output"
+                        });
                         element.values.forEach((elem: any) => {
                             elem.label = elem.output_label;
                         });
@@ -607,7 +612,7 @@ export class WorkflowBuilderComponent implements OnInit {
 
         this.fields['process'].forEach((element: any) => {
             if (element.id === 'form_id' || element.id === 'allow_automatic_validation' || element.id === 'override_supplier_form') {
-                 //element.show = this.useInterface;
+                 element.show = this.useInterface;
                 if (element.type !== 'boolean') {
                     element.required = this.useInterface;
                 }

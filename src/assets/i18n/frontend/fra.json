@@ -957,8 +957,6 @@
 		"no_file": "Aucun fichier à téléverser",
 		"placeholder": "Cliquez pour choisir un ou plusieurs documents PDF ou faites glisser vos documents",
 		"please_select_workflow": "Choisissez un workflow avant de procéder au téléversement",
-		"purchase_invoice": "Facture d'achat",
-		"sale_invoice": "Facture de vente",
 		"upload_file": "Téléverser le(s) fichier(s)",
 		"upload_success": "Fichier(s) téléversé(s) avec succès"
 	},
@@ -1102,6 +1100,7 @@
 		"load_default_code": "Aucun script associé à ce workflow. Chargement du script d'exemple par défaut",
 		"next": "Suivant",
 		"no_ai_model_associated": "Aucun modèle d'IA associé",
+		"no_output": "Pas de chaîne sortante associée",
 		"no_rotation": "Aucune rotation",
 		"no_separation": "Pas de séparation",
 		"output": "Sortie",

@@ -1100,6 +1100,7 @@
 		"load_default_code": "No script associated to this workflow. Loading default script",
 		"next": "Next",
 		"no_ai_model_associated": "No AI model associated",
+		"no_output": "No output associated",
 		"no_rotation": "No rotation",
 		"no_separation": "No separation",
 		"output": "Output",
