@@ -41,7 +41,6 @@ interface AccountsNode {
     id: number
     parent_id: any
     supplier_id: any
-    purchase_or_sale: any
     count: number
     display: boolean
     children: any
@@ -53,7 +52,6 @@ interface FlatNode {
     id: number
     parent_id: any
     supplier_id: any
-    purchase_or_sale: any
     display: boolean
     count: number
     level: number
@@ -106,7 +104,6 @@ export class VerifierListComponent implements OnInit {
     documents               : any []            = [];
     allowedCustomers        : any []            = [];
     allowedSuppliers        : any []            = [];
-    purchaseOrSale          : string            = '';
     search                  : string            = '';
     TREE_DATA               : AccountsNode[]    = [];
     expanded                : boolean           = false;
@@ -122,7 +119,6 @@ export class VerifierListComponent implements OnInit {
         supplier_id: node.supplier_id,
         id: node.id,
         parent_id: node.parent_id,
-        purchase_or_sale: node.purchase_or_sale,
         display: node.display,
         count: node.count,
         level: level,
@@ -240,7 +236,6 @@ export class VerifierListComponent implements OnInit {
             id: 0,
             parent_id: '',
             supplier_id: '',
-            purchase_or_sale: '',
             display: true,
             count: 0,
             children: []
@@ -256,35 +251,27 @@ export class VerifierListComponent implements OnInit {
                         id: customer_count.customer_id,
                         parent_id: '',
                         supplier_id: '',
-                        purchase_or_sale: '',
                         display: true,
                         count: customer_count.total,
-                        children: [
-                            {name: this.translate.instant('UPLOAD.sale_invoice'), id: 0, display: true, count: 0, children: []},
-                            {name: this.translate.instant('UPLOAD.purchase_invoice'), id: 1, display: true, count: 0, children: []}
-                        ]
+                        children: []
                     };
-
-                    customer_count['suppliers']['sale']!.forEach((supplier: any) => {
-                        node['children'][0]['count'] += supplier.total;
-                        node['children'][0]['children'].push({
-                            name: supplier.name ? supplier.name : this.translate.instant('ACCOUNTS.supplier_unknow'),
-                            supplier_id: supplier.supplier_id,
-                            parent_id: customer_count.customer_id,
-                            purchase_or_sale: 'sale',
-                            count: supplier.total,
-                            display: true
+                    Object.keys(customer_count['suppliers']).forEach((key: any, index: number) => {
+                        node['children'].push({
+                            name: key,
+                            id: index,
+                            display: true,
+                            count: 0,
+                            children: []
                         });
-                    });
-                    customer_count['suppliers']['purchase'].forEach((supplier: any) => {
-                        node['children'][1]['count'] += supplier.total;
-                        node['children'][1]['children'].push({
-                            name: supplier.name ? supplier.name : this.translate.instant('ACCOUNTS.supplier_unknow'),
-                            supplier_id: supplier.supplier_id,
-                            parent_id: customer_count.customer_id,
-                            purchase_or_sale: 'purchase',
-                            count: supplier.total,
-                            display: true
+                        customer_count['suppliers'][key].forEach((supplier: any) => {
+                            node['children'][index]['count'] += supplier.total;
+                            node['children'][index]['children'].push({
+                                name: supplier.name ? supplier.name : this.translate.instant('ACCOUNTS.supplier_unknow'),
+                                supplier_id: supplier.supplier_id,
+                                parent_id: customer_count.customer_id,
+                                count: supplier.total,
+                                display: true
+                            });
                         });
                     });
                     this.TREE_DATA.push(node);
@@ -329,7 +316,7 @@ export class VerifierListComponent implements OnInit {
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'limit': this.pageSize,
                 'allowedSuppliers': this.allowedSuppliers, 'form_id': this.currentForm, 'time': this.currentTime,
-                'offset': this.offset, 'search': this.search, 'purchaseOrSale': this.purchaseOrSale
+                'offset': this.offset, 'search': this.search
             },
             {headers: this.authService.headers}
         ).pipe(
@@ -475,14 +462,12 @@ export class VerifierListComponent implements OnInit {
     loadDocumentPerCustomer(node: any) {
         const parentId = node.parent_id;
         const supplierId = node.supplier_id;
-        const purchaseOrSale = node.purchase_or_sale;
         this.TREE_DATA.forEach((element: any) => {
             if (element.id === parentId) {
                 const customerId = element.id;
                 this.customerFilterEnabled = true;
                 this.allowedCustomers = [customerId];
                 this.allowedSuppliers = [supplierId];
-                this.purchaseOrSale = purchaseOrSale;
                 this.resetPaginator();
                 this.loadDocuments().then();
             }
@@ -493,7 +478,6 @@ export class VerifierListComponent implements OnInit {
         this.search = '';
         this.loading = true;
         this.currentForm = '';
-        this.purchaseOrSale = '';
         this.loadingCustomers = true;
         this.allowedCustomers = [];
         this.allowedSuppliers = [];
