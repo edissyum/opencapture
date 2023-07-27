@@ -290,11 +290,6 @@ export class WorkflowBuilderComponent implements OnInit {
             }
         ]
     };
-    stepDefaultCode  : any           = {
-        'input' : marker("WORKFLOW.step_input_verifier"),
-        'process' : marker("WORKFLOW.step_process_verifier"),
-        'output' : marker("WORKFLOW.step_output_verifier")
-    };
 
     constructor(
         private router: Router,
@@ -527,18 +522,12 @@ export class WorkflowBuilderComponent implements OnInit {
     }
 
     openCodeEditor(step: string) {
-        let codeContent = this.translate.instant(this.stepDefaultCode[step]);
-        let defaultCode = true;
+        let codeContent = '';
         this.fields[step].forEach((element: any) => {
             if (element.id === 'script' && element.control.value) {
                 codeContent = element.control.value;
-                defaultCode = false;
             }
         });
-
-        if (defaultCode) {
-            this.notify.success(this.translate.instant('WORKFLOW.load_default_code'));
-        }
 
         const dialogRef = this.dialog.open(CodeEditorComponent, {
             data: {
