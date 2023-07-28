@@ -17,6 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask_babel import gettext
+from src.backend.functions import rest_validator
 from flask import Blueprint, request, make_response, jsonify
 from src.backend.import_controllers import auth, outputs, privileges
 
@@ -129,10 +130,20 @@ def get_allowed_path(module):
 
 @bp.route('outputs/<string:module>/verifyFolderOut', methods=['POST'])
 @auth.token_required
-def verify_input_folder(module):
+def verify_folder_out(module):
     list_priv = ['settings', 'update_output'] if module == 'verifier' else ['update_output_splitter']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/outputs/{module}/verifyFolderOut'}), 403
+
+    check, message = rest_validator(request.json, [
+        {'id': 'folder_out', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
     res = outputs.verify_folder_out(request.json)
     return make_response(jsonify(res[0])), res[1]

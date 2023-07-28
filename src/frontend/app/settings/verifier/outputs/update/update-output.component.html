@@ -20,7 +20,7 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div class="overflow-x-hidden overflow-y-auto h-full-overflow">
+        <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100vh - 6rem) !important">
             <div *ngIf="!loading" class="flex justify-center items-center">
                 <form class="grid grid-cols-2 gap-12 w-full m-10 text-center">
                     <ng-container *ngFor="let field of outputForm">
