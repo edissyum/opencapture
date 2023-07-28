@@ -292,3 +292,32 @@ def csv_preview(files):
             "message": str(e)
         }
         return response, 500
+
+
+def import_from_csv(args):
+    try:
+        for file in args['files']:
+            _f = args['files'][file]
+            stream = codecs.iterdecode(_f.stream, 'utf-8')
+            for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel)):
+                if args['skip_header'] and cpt == 0:
+                    continue
+
+                doctype = {
+                    'key': row[args['selected_columns'].index('key')],
+                    'label': row[args['selected_columns'].index('label')],
+                    'type': row[args['selected_columns'].index('type')],
+                    'code': row[args['selected_columns'].index('code')],
+                    'form_id': row[args['selected_columns'].index('form_id')],
+                    'is_default': False
+                }
+                _, _ = doctypes.add_doctype(doctype)
+
+        return {'OK': True}, 200
+
+    except Exception as e:
+        response = {
+            "errors": gettext("DOCTYPE_ERROR"),
+            "message": str(e)
+        }
+        return response, 500
