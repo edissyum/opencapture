@@ -94,6 +94,21 @@ def csv_preview():
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('doctypes/csv/import', methods=['POST'])
+@auth.token_required
+def import_from_csv():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'document_type_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
+    args = {
+        'files': request.files,
+        'skip_header': request.form['skipHeader'],
+        'selected_columns': request.form['selectedColumns'].split(','),
+    }
+
+    res = doctypes.import_from_csv(args)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('doctypes/export', methods=['POST'])
 @auth.token_required
 def export_doctypes():
