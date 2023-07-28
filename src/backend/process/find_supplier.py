@@ -112,27 +112,27 @@ class FindSupplier:
 
             if column == 'email':
                 corrected_line_tmp = corrected_line.split(':')[1] if len(corrected_line.split(':')) >= 2 else corrected_line
-                for _data in re.finditer(r"" + regex + "", corrected_line_tmp.replace(' ', '').replace(',', '').replace('(', '').replace(')', '')):
+                for _data in re.finditer(r"" + regex, corrected_line_tmp.replace(' ', '').replace(',', '').replace('(', '').replace(')', '')):
                     supplier = self.search_suplier(column, _data.group().replace(' ', ''))
                     if supplier:
                         return supplier, line
 
-                for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace(',', '').replace('(', '').replace(')', '')):
+                for _data in re.finditer(r"" + regex, corrected_line.replace(' ', '').replace(',', '').replace('(', '').replace(')', '')):
                     supplier = self.search_suplier(column, _data.group().replace(' ', ''))
                     if supplier:
                         return supplier, line
 
-            for _data in re.finditer(r"" + regex + "", corrected_line.replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
+            for _data in re.finditer(r"" + regex, corrected_line.replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
                 supplier = self.search_suplier(column, _data.group().replace(' ', ''))
                 if supplier:
                     return supplier, line
 
-            for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
+            for _data in re.finditer(r"" + regex, corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
                 supplier = self.search_suplier(column, _data.group())
                 if supplier:
                     return supplier, line
 
-            for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '')):
+            for _data in re.finditer(r"" + regex, corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '')):
                 supplier = self.search_suplier(column, _data.group())
                 if supplier:
                     return supplier, line
