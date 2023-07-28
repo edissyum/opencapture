@@ -22,7 +22,7 @@
                     class="mr-4"
                     (click)="dataConfig.toggle()"
                     [checked]="this.data.skipHeader"
-                    (change)="deleteHeaderChange($event);">
+                    (change)="skipHeaderChange($event);">
                 {{ 'DATA-IMPORT.skip_header' | translate }}
             </mat-slide-toggle>
         </mat-expansion-panel-header>

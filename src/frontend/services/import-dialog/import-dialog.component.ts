@@ -103,7 +103,7 @@ export class ImportDialogComponent {
         ).subscribe();
   }
 
-    deleteHeaderChange($event: MatSlideToggleChange) {
+    skipHeaderChange($event: MatSlideToggleChange) {
         this.data.skipHeader = $event.checked;
         if (this.data.skipHeader) {
             this.header = this.data.rows[0];

@@ -245,23 +245,8 @@ def export_doctypes_csv(args):
         csv_writer.writerow(columns)
         for doctype in _doctypes:
             for column in args['columns']:
-                colum_id = column['id']
-                if colum_id == 'code':
-                    values.append(doctype['code'])
-                elif colum_id == 'label':
-                    values.append(doctype['label'])
-                elif colum_id == 'key':
-                    values.append(doctype['key'])
-                elif colum_id == 'type':
-                    values.append(doctype['type'])
-                elif colum_id == 'is_default':
-                    values.append(doctype['is_default'])
-                elif colum_id == 'status':
-                    values.append(doctype['status'])
-                elif colum_id == 'form_id':
-                    values.append(doctype['form_id'])
-                elif colum_id == 'folder':
-                    values.append(doctype['folder'])
+                if column['id'] in doctype:
+                    values.append(doctype[column['id']])
 
             csv_writer.writerow(values)
             values = []
