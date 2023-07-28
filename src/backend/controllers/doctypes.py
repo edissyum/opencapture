@@ -1,10 +1,8 @@
 # This file is part of Open-Capture.
-
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -16,10 +14,15 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
+import csv
+import base64
+import codecs
+from io import StringIO
+
 from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.import_models import doctypes
-from src.backend.import_classes import _SeparatorQR
+from src.backend.import_classes import _SeparatorQR, _Files
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
@@ -210,3 +213,95 @@ def clone_form_doctypes(src_form_id, dest_form_id):
         doctypes.add_doctype(args)
 
     return {'OK': True}, 200
+
+
+def export_doctypes_csv(args):
+    delimiter = ','
+    columns = []
+    values = []
+
+    if args['delimiter'] == 'TAB':
+        delimiter = '\t'
+    elif args['delimiter'] == 'SEMICOLON':
+        delimiter = ';'
+
+    _doctypes, error = doctypes.retrieve_doctypes({
+        'where': ['form_id = %s', 'status <> %s'],
+        'data': [args['formId'], 'DEL']
+    })
+    if error:
+        response = {
+            "errors": gettext("DOCTYPE_ERROR"),
+            "message": gettext(error)
+        }
+        return response, 500
+
+    try:
+        csv_file = StringIO()
+        csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+
+        for column in args['columns']:
+            columns.append(column['label'])
+        csv_writer.writerow(columns)
+        for doctype in _doctypes:
+            for column in args['columns']:
+                colum_id = column['id']
+                if colum_id == 'code':
+                    values.append(doctype['code'])
+                elif colum_id == 'label':
+                    values.append(doctype['label'])
+                elif colum_id == 'key':
+                    values.append(doctype['key'])
+                elif colum_id == 'type':
+                    values.append(doctype['type'])
+                elif colum_id == 'is_default':
+                    values.append(doctype['is_default'])
+                elif colum_id == 'status':
+                    values.append(doctype['status'])
+                elif colum_id == 'form_id':
+                    values.append(doctype['form_id'])
+                elif colum_id == 'folder':
+                    values.append(doctype['folder'])
+
+            csv_writer.writerow(values)
+            values = []
+
+        csv_file.seek(0)
+        b64 = base64.b64encode(csv_file.getvalue().encode())
+        response = {
+            'encoded_csv': b64.decode()
+        }
+        return response, 200
+
+    except Exception as e:
+        response = {
+            "errors": gettext("DOCTYPE_ERROR"),
+            "message": str(e)
+        }
+        return response, 500
+
+    return True, 200
+
+
+def csv_preview(files):
+    try:
+        for file in files:
+            rows = []
+            _f = files[file]
+            stream = codecs.iterdecode(_f.stream, 'utf-8')
+            for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel)):
+                if row:
+                    rows.append(row)
+                if cpt > 10:
+                    break
+        response = {
+            'rows': rows
+        }
+        return response, 200
+
+    except Exception as e:
+        response = {
+            "errors": gettext("DOCTYPE_ERROR"),
+            "message": str(e)
+        }
+        return response, 500

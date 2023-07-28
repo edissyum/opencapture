@@ -81,3 +81,25 @@ def clone_form_doctypes(src_form_id, dest_form_id):
 
     res = doctypes.clone_form_doctypes(src_form_id, dest_form_id)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('doctypes/csv/preview', methods=['POST'])
+@auth.token_required
+def csv_preview():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'document_type_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
+
+    files = request.files
+    res = doctypes.csv_preview(files)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('doctypes/export', methods=['POST'])
+@auth.token_required
+def export_doctypes():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'document_type_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
+
+    data = json.loads(request.data)
+    res = doctypes.export_doctypes_csv(data['args'])
+    return make_response(jsonify(res[0])), res[1]

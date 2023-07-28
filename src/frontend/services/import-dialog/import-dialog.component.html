@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ data.title }}</h2>
+<h2 mat-dialog-title>{{ this.data.title }}</h2>
 <hr class="border-green-400 -mt-4 m-auto" style="width: calc(100% - 3em)">
 <mat-dialog-content>
     <ngx-file-drag-drop
@@ -13,20 +13,33 @@
             [class]="'max-w-3xl h-56 mt-2 mb-5'"
             (valueChanged)="checkFile($event)">
     </ngx-file-drag-drop>
-    <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel [expanded]="true" #dataConfig>
         <mat-expansion-panel-header>
             <mat-panel-title>
                 {{ 'DATA-IMPORT.columns_config' | translate }}
             </mat-panel-title>
+            <mat-slide-toggle
+                    class="mr-4"
+                    (click)="dataConfig.toggle()"
+                    [checked]="this.data.skipHeader"
+                    (change)="deleteHeaderChange($event);">
+                {{ 'DATA-IMPORT.skip_header' | translate }}
+            </mat-slide-toggle>
         </mat-expansion-panel-header>
         <div class="overflow-x-auto">
-            <table mat-table [dataSource]="data.rows" class="overflow-x-auto">
-                <ng-container *ngFor="let column of data.availableColumns; let index = index" matColumnDef="{{ column }}">
+            <div *ngIf="this.data.rows.length === 0" class="m-16 text-center">
+                <i class="fas fa-circle-notch fa-spin fa-3x my-4" *ngIf="this.loading"></i>
+                <span class="text-gray-400" *ngIf="!this.loading && this.data.rows.length === 0">
+                     {{ 'DATA-IMPORT.no_rows' | translate }}
+                </span>
+            </div>
+            <table mat-table *ngIf="this.data.rows.length !== 0" [dataSource]="this.data.rows" class="overflow-x-auto">
+                <ng-container *ngFor="let column of this.data.availableColumns; let index = index" matColumnDef="{{ column }}">
                     <th mat-header-cell *matHeaderCellDef>
                         <mat-form-field class="w-40 pt-2">
                             <mat-label>{{ 'DATA-IMPORT.column' | translate }} {{ index + 1 }}</mat-label>
-                            <mat-select [value]="data.selectedColumns[index]">
-                                <div *ngFor="let column of data.availableColumns; ">
+                            <mat-select [value]="this.data.selectedColumns[index]">
+                                <div *ngFor="let column of this.data.availableColumns; ">
                                     <mat-option [value]="column">
                                         <span>{{ column }}</span>
                                     </mat-option>
@@ -36,12 +49,9 @@
                     </th>
                     <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
                 </ng-container>
-                <tr mat-header-row *matHeaderRowDef="data.availableColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: data.availableColumns;"></tr>
+                <tr mat-header-row *matHeaderRowDef="this.data.selectedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: this.data.selectedColumns;"></tr>
             </table>
-            <div *ngIf="data.rows.length === 0" class="m-16 text-center text-gray-400">
-                {{ 'DATA-IMPORT.no_rows' | translate }}
-            </div>
         </div>
     </mat-expansion-panel>
 </mat-dialog-content>

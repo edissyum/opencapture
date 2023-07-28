@@ -15,7 +15,7 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import { Component, Inject } from '@angular/core';
+import {Component, Inject, ViewChild} from '@angular/core';
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { FormControl } from "@angular/forms";
 import { FileValidators } from "ngx-file-drag-drop";
@@ -27,6 +27,8 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 import {environment} from "../../app/env";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {MatSlideToggleChange} from "@angular/material/slide-toggle";
+import {MatTable} from "@angular/material/table";
 
 @Component({
   selector: 'app-import-dialog',
@@ -37,9 +39,11 @@ export class ImportDialogComponent {
   headers                     : HttpHeaders   = this.authService.headers;
   loading                     : boolean       = false;
   error                       : boolean       = false;
+  header                      : string[]       = [];
   markers: any = {
     placeholder: marker('DATA-IMPORT.placeholder')
   };
+  @ViewChild(MatTable) previewTable!: MatTable<any>;
 
   constructor(
       private authService: AuthService,
@@ -58,7 +62,6 @@ export class ImportDialogComponent {
   }
 
   checkFile(data: any): void {
-      console.log("data: ", data);
       this.error = false;
     if (data && data.length !== 0) {
       for (let i = 0; i < data.length; i++) {
@@ -70,29 +73,28 @@ export class ImportDialogComponent {
           return;
         }
       }
-      this.preview_csv(data[0]);
+      this.loadCsvPreview(data[0]);
     }
   }
 
-  preview_csv(file: any): void {
+  loadCsvPreview(file: any): void {
+      this.loading = true;
+      this.data.rows = [];
       const formData: FormData = new FormData();
       formData.append(file['name'], file);
       formData.set('columns', this.data.selectedColumns);
       this.http.post(environment['url'] + '/ws/doctypes/csv/preview', formData, {headers: this.authService.headers}).pipe(
           tap((data: any) => {
             data.rows.forEach((row: any) => {
-                const data_rows: any    = [];
+                const data_rows: any    = {};
                 let cpt : number        = 0;
                 row.forEach((col: any) => {
                     data_rows[this.data.selectedColumns[cpt]] = col;
                     cpt++;
                 });
-                console.log(data_rows);
                 this.data.rows.push(data_rows);
-              cpt++;
             });
             this.loading = false;
-            console.log(this.data.rows);
           }),
           catchError((err: any) => {
               this.notify.handleErrors(err);
@@ -100,4 +102,17 @@ export class ImportDialogComponent {
           })
         ).subscribe();
   }
+
+    deleteHeaderChange($event: MatSlideToggleChange) {
+        this.data.skipHeader = $event.checked;
+        if (this.data.skipHeader) {
+            this.header = this.data.rows[0];
+            this.data.rows.shift();
+        }
+        else {
+            this.data.rows.unshift(this.header);
+            this.data.rows[0] = this.header;
+        }
+        this.previewTable.renderRows();
+    }
 }

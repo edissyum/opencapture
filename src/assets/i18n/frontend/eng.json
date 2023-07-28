@@ -218,7 +218,8 @@
 		"columns_config": "Columns configuration",
 		"import": "Import",
 		"no_rows": "No rows to display",
-		"placeholder": "Drag and drop your file here <strong></strong> or click to select a file"
+		"placeholder": "Drag and drop your file here <strong></strong> or click to select a file",
+		"skip_header": "Skip first line"
 	},
 	"DISABLED": {
 		"disabled": "Disabled",

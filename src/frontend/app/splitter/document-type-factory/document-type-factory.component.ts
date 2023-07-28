@@ -453,11 +453,12 @@ export class DocumentTypeFactoryComponent implements OnInit {
     }
 
     import_doctypes() {
-        const columns = ['label', 'type', 'key', 'formId', 'status'];
+        const columns = ['label', 'type', 'key', 'code', 'form_id', 'status', 'parent'];
         const dialogRef = this.dialog.open(ImportDialogComponent, {
             data: {
                 rows: [],
                 extension: 'CSV',
+                skipHeader: false,
                 title : this.translate.instant('DOCTYPE.import'),
                 availableColumns : columns,
                 selectedColumns : columns

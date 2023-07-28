@@ -218,7 +218,8 @@
 		"columns_config": "Configuration des champs",
 		"import": "Importer",
 		"no_rows": "Aucune ligne à afficher",
-		"placeholder": "Déposez un fichier ici ({{ extension }}) ou cliquez pour sélectionner un fichier"
+		"placeholder": "Déposez un fichier ici ({{ extension }}) ou cliquez pour sélectionner un fichier",
+		"skip_header": "Sauter la première ligne"
 	},
 	"DISABLED": {
 		"disabled": "Désactiver",
