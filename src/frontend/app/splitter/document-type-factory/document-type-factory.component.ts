@@ -453,7 +453,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     }
 
     import_doctypes() {
-        const columns = ['label', 'type', 'key', 'code', 'form_id', 'status', 'parent'];
+        const columns = [ 'key', 'label', 'type', 'code', 'form_id'];
         const dialogRef = this.dialog.open(ImportDialogComponent, {
             data: {
                 rows: [],
@@ -468,7 +468,6 @@ export class DocumentTypeFactoryComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 const formData: FormData = new FormData();
-
                 for (let i = 0; i < result.fileControl.value!.length; i++) {
                     if (result.fileControl.status === 'VALID') {
                         formData.append(result.fileControl.value![i]['name'], result.fileControl.value![i]);
@@ -477,9 +476,10 @@ export class DocumentTypeFactoryComponent implements OnInit {
                         return;
                     }
                 }
-                formData.set('columns', result.selectedColumns);
+                formData.set('selectedColumns', result.selectedColumns);
+                formData.set('skipHeader', result.skipHeader);
 
-                this.http.post(environment['url'] + '/ws/doctypes/import', formData, {headers: this.authService.headers},
+                this.http.post(environment['url'] + '/ws/doctypes/csv/import', formData, {headers: this.authService.headers},
                 ).pipe(
                     tap(() => {
                         this.treeDataObj.retrieveDocTypes(this.selectFormControl.value);

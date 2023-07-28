@@ -24,7 +24,7 @@ from io import StringIO
 from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.import_models import doctypes
-from src.backend.import_classes import _SeparatorQR, _Files
+from src.backend.import_classes import _SeparatorQR
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
@@ -285,6 +285,35 @@ def csv_preview(files):
             'rows': rows
         }
         return response, 200
+
+    except Exception as e:
+        response = {
+            "errors": gettext("DOCTYPE_ERROR"),
+            "message": str(e)
+        }
+        return response, 500
+
+
+def import_from_csv(args):
+    try:
+        for file in args['files']:
+            _f = args['files'][file]
+            stream = codecs.iterdecode(_f.stream, 'utf-8')
+            for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel)):
+                if args['skip_header'] and cpt == 0:
+                    continue
+
+                doctype = {
+                    'key': row[args['selected_columns'].index('key')],
+                    'label': row[args['selected_columns'].index('label')],
+                    'type': row[args['selected_columns'].index('type')],
+                    'code': row[args['selected_columns'].index('code')],
+                    'form_id': row[args['selected_columns'].index('form_id')],
+                    'is_default': False
+                }
+                _, _ = doctypes.add_doctype(doctype)
+
+        return {'OK': True}, 200
 
     except Exception as e:
         response = {
