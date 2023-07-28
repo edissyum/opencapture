@@ -24,7 +24,7 @@ from io import StringIO
 from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.import_models import doctypes
-from src.backend.import_classes import _SeparatorQR, _Files
+from src.backend.import_classes import _SeparatorQR
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
