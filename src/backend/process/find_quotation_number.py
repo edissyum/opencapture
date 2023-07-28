@@ -45,7 +45,7 @@ class FindQuotationNumber:
     def sanitize_quotation_number(self, data):
         quotation_res = data
         # If the regex return a date, remove it
-        for _date in re.finditer(r"" + self.regex['date'] + "", data):
+        for _date in re.finditer(r"" + self.regex['date'], data):
             if _date.group():
                 replace_date = True
                 try:
@@ -77,12 +77,12 @@ class FindQuotationNumber:
                     quotation_res = data.replace(_date.group(), '')
 
         # Delete if mail
-        for _mail in re.finditer(r"" + self.regex['email'] + "", quotation_res.lower()):
-            for _order in re.finditer(r"" + self.regex['email'] + "", _mail.group().lower()):
+        for _mail in re.finditer(r"" + self.regex['email'], quotation_res.lower()):
+            for _order in re.finditer(r"" + self.regex['email'], _mail.group().lower()):
                 return ''
 
         # Delete the quotation keyword
-        tmp_quotation_number = re.sub(r"" + self.regex['quotation_number'][:-2] + "", '', quotation_res)
+        tmp_quotation_number = re.sub(r"" + self.regex['quotation_number'][:-2], '', quotation_res)
         quotation_number = tmp_quotation_number.lstrip().split(' ')[0]
 
         return quotation_number
@@ -120,7 +120,7 @@ class FindQuotationNumber:
         cpt = 0
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
-                for _quotation in re.finditer(r"" + self.regex['quotation_number'] + "", line.content.upper()):
+                for _quotation in re.finditer(r"" + self.regex['quotation_number'], line.content.upper()):
                     quotation_number = self.sanitize_quotation_number(_quotation.group())
                     if len(quotation_number) >= int(self.configurations['devisSizeMin']):
                         self.log.info('Quotation number found : ' + quotation_number)

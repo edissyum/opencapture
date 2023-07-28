@@ -113,8 +113,8 @@ class FindDueDate:
     def process(self, line, position):
         regex = self.regex['due_date'] + self.regex['date']
         line = re.sub(r",", '', line)
-        for _date in re.finditer(r"" + regex + "", line):
-            for res in re.finditer(r"" + self.regex['date'] + "", line):
+        for _date in re.finditer(r"" + regex, line):
+            for res in re.finditer(r"" + self.regex['date'], line):
                 date = self.format_date(res.group(), position, True)
                 if date and date[0]:
                     self.log.info('Due date found : ' + str(date[0]))

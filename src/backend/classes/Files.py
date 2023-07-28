@@ -406,7 +406,8 @@ class Files:
                     regex_dict = {}
                     for _r in _regex:
                         regex_dict[_r['regex_id']] = _r['content']
-            for res in re.finditer(r"" + regex_dict['date'] + "", tmp_text):
+
+            for res in re.finditer(r"" + regex_dict['date'], tmp_text):
                 date_class = FindDate(ocr, self.log, regex_dict, self.configurations, self, '', '', '', self.docservers,
                                       '', '')
                 date, _ = date_class.format_date(res.group(), (('', ''), ('', '')), True, False)
