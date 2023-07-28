@@ -647,6 +647,7 @@
 		"enable_ocr": "PDF OCR",
 		"file_index": "File index",
 		"filename": "File name",
+		"folder_out_ok": "The out folder exists and is writable",
 		"format": "File format",
 		"json_input_erorr": "The field <strong>{{ field }}</strong> have to be JSON with double quotes",
 		"links": "Links",
@@ -670,6 +671,7 @@
 		"random": "Random",
 		"remove": "Remove output",
 		"test_connection": "Test connection",
+		"test_folder_out": "Verify if folder out exists and is writable",
 		"update": "Update output",
 		"validate_by_firstname": "Validate by - firstname",
 		"validate_by_lastname": "Validate by - lastname"

@@ -647,6 +647,7 @@
 		"enable_ocr": "Océrisation du PDF",
 		"file_index": "Indice de fichier",
 		"filename": "Nom de fichier",
+		"folder_out_ok": "Le chemin d'accès au dossier de sortie est correct et est accessible",
 		"format": "Format de fichier",
 		"json_input_erorr": "Le champ <strong>{{field}}</strong> doit être au format JSON avec des doubles quotes",
 		"links": "Liaisons",
@@ -670,6 +671,7 @@
 		"random": "Chaîne aléatoire",
 		"remove": "Supprimer une chaîne sortante",
 		"test_connection": "Tester la connexion",
+		"test_folder_out": "Vérifier si le dossier de sortie existe et est accessible",
 		"update": "Modifier la chaîne sortante",
 		"validate_by_firstname": "Prénom du validateur",
 		"validate_by_lastname": "Nom du validateur"

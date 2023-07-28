@@ -60,6 +60,7 @@ export class UpdateOutputComponent implements OnInit {
     originalOutputType      : any;
     outputsTypes            : any[]         = [];
     outputsTypesForm        : any[]         = [];
+    oldFolder               : string        = '';
     toHighlight             : string        = '';
     allowedPath             : string        = '';
     outputForm              : any[]         = [
@@ -701,6 +702,25 @@ export class UpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth)) {
             const functionName = this.testConnectionMapping[this.selectedOutputType];
             eval("this." + functionName);
+        }
+    }
+
+    checkFolder(field: any, fromUser = false) {
+        if (fromUser || (field && field.control.value && field.control.value !== this.oldFolder)) {
+            this.http.post(environment['url'] + '/ws/outputs/verifier/verifyFolderOut',
+                {'folder_out': field.control.value}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    field.control.setErrors();
+                    this.notify.success(this.translate.instant('OUTPUT.folder_out_ok'));
+                    this.oldFolder = field.control.value;
+                }),
+                catchError((err: any) => {
+                    field.control.setErrors({'folder_not_found': true});
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
         }
     }
 }

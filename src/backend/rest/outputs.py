@@ -125,3 +125,14 @@ def get_allowed_path(module):
 
     res = outputs.get_allowed_path()
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('outputs/<string:module>/verifyFolderOut', methods=['POST'])
+@auth.token_required
+def verify_input_folder(module):
+    list_priv = ['settings', 'update_output'] if module == 'verifier' else ['update_output_splitter']
+    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/outputs/{module}/verifyFolderOut'}), 403
+
+    res = outputs.verify_folder_out(request.json)
+    return make_response(jsonify(res[0])), res[1]
