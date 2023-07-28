@@ -211,6 +211,15 @@
 		"extension": "Extension",
 		"selected_columns": "Champs sélectionnés"
 	},
+	"DATA-IMPORT": {
+		"cancel": "Annuler",
+		"column": "Champ",
+		"columns_config": "Configuration des champs",
+		"import": "Importer",
+		"no_rows": "Aucune ligne à afficher",
+		"placeholder": "Déposez un fichier ici ({{ extension }}) ou cliquez pour sélectionner un fichier",
+		"skip_header": "Sauter la première ligne"
+	},
 	"DISABLED": {
 		"disabled": "Désactiver",
 		"not_disabled": "Activer"
@@ -237,6 +246,7 @@
 		"doctype_edited": "Type de document modifié",
 		"doctypes_clone_success": "Types de documents clônés avec succès",
 		"doctypes_export_success": "Les types de documents ont été exportés avec succès",
+		"doctypes_import_success": "Les types de documents ont été importés avec succès",
 		"download_separator": "Télécharger le(s) séparateur(s)",
 		"edit_doctype": "Modifier un type de document",
 		"export": "Exporter les types de documents",
