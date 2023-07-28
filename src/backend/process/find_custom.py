@@ -21,8 +21,8 @@ from src.backend.functions import search_custom_positions
 
 
 def sanitize_keyword(data, regex):
-    tmp_invoice_number = re.sub(r"" + regex[:-2] + "", '', data, flags=re.IGNORECASE)
-    data = tmp_invoice_number.lstrip()
+    tmp_data = re.sub(r"" + regex[:-2], '', data, flags=re.IGNORECASE)
+    data = tmp_data.lstrip()
     return data
 
 
@@ -61,7 +61,7 @@ class FindCustom:
             match = re.match(r"^[0-9]+([,.][0-9]+)?$", data)
 
         if settings['format'] == 'date':
-            match = re.match(r"" + self.regex['date'] + "", data)
+            match = re.match(r"" + self.regex['date'], data)
 
         if match is None:
             return False
@@ -77,7 +77,7 @@ class FindCustom:
             else:
                 line = line.upper()
 
-            for res in re.finditer(r"" + data['regex'] + "", line):
+            for res in re.finditer(r"" + data['regex'], line, re.IGNORECASE):
                 return res.group()
 
     def run_using_positions_mask(self):
@@ -153,14 +153,13 @@ class FindCustom:
                                         data_to_return[field] = [text, position, data['page']]
         return data_to_return
 
-    # Run using regex
     def run(self):
         cpt = 0
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
                 regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
                 if 'content' in regex_settings and regex_settings['content']:
-                    for _data in re.finditer(r"" + regex_settings['content'] + "", line.content.upper(),
+                    for _data in re.finditer(r"" + regex_settings['content'], line.content.upper(),
                                              flags=re.IGNORECASE):
                         data = _data.group()
 
