@@ -77,28 +77,37 @@ if __name__ == '__main__':
                     }
                 }
 
+                for key in args['columns']:
+                    if args['columns'][key] == 'nan':
+                        args['columns'][key] = None
+
                 address_id = database.insert(args)
                 GET_ONLY_RAW_FOOTER = True
                 if spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']] and \
-                        spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']].lower() == 'true':
+                        (spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']] or
+                        spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']].lower() == 'true'):
                     GET_ONLY_RAW_FOOTER = False
 
+                _vat = spreadsheet.referencialSupplierData[vat_number][0]
                 args = {
                     'table': 'accounts_supplier',
                     'columns': {
                         'vat_number': str(vat_number)[:20],
-                        'name': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]),
-                        'siren': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIREN']]),
-                        'siret': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
-                        'iban': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['IBAN']]),
-                        'email': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['EMAIL']]),
+                        'name': str(_vat[spreadsheet.referencialSupplierArray['name']]),
+                        'siren': str(_vat[spreadsheet.referencialSupplierArray['SIREN']]),
+                        'siret': str(_vat[spreadsheet.referencialSupplierArray['SIRET']]),
+                        'iban': str(_vat[spreadsheet.referencialSupplierArray['IBAN']]),
+                        'email': str(_vat[spreadsheet.referencialSupplierArray['EMAIL']]),
                         'get_only_raw_footer': GET_ONLY_RAW_FOOTER,
                         'address_id': str(address_id),
-                        'document_lang': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['doc_lang']]),
-                        'duns': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['DUNS']]),
-                        'bic': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['BIC']]),
+                        'document_lang': str(_vat[spreadsheet.referencialSupplierArray['doc_lang']]),
+                        'duns': str(_vat[spreadsheet.referencialSupplierArray['DUNS']]),
+                        'bic': str(_vat[spreadsheet.referencialSupplierArray['BIC']])
                     }
                 }
+                for key in args['columns']:
+                    if args['columns'][key] == 'nan':
+                        args['columns'][key] = None
                 res = database.insert(args)
 
                 if res:
@@ -126,7 +135,9 @@ if __name__ == '__main__':
                     })[0]
 
                     GET_ONLY_RAW_FOOTER = True
-                    if spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']].lower() == 'true':
+                    if spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']] and \
+                            (spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']] or
+                             spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']].lower() == 'true'):
                         GET_ONLY_RAW_FOOTER = False
 
                     args = {
@@ -141,6 +152,10 @@ if __name__ == '__main__':
                         'where': ['id = %s'],
                         'data': [current_supplier['address_id'] if current_supplier['address_id'] else 0]
                     }
+                    for key in args['set']:
+                        if args['set'][key] == 'nan':
+                            args['set'][key] = None
+
                     if current_supplier['address_id']:
                         database.update(args)
                         address_id = current_supplier['address_id']
@@ -169,6 +184,9 @@ if __name__ == '__main__':
                         'where': ['vat_number = %s'],
                         'data': [str(vat_number)]
                     }
+                    for key in args['set']:
+                        if args['set'][key] == 'nan':
+                            args['set'][key] = None
                     res = database.update(args)
 
                     if str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['positions_mask_id']]):
