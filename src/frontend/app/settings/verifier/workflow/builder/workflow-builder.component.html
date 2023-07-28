@@ -41,8 +41,8 @@
                                     <mat-slide-toggle [formControl]="field['control']" class="relative top-4 mb-10 col-span-2">
                                         <span class="justify-center">{{ field.label | translate }}</span>
                                         <span *ngIf="field.hint" class="absolute text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="field.hint | translate">
-                                        <i class="fa-solid fa-circle-question text-md"></i>
-                                    </span>
+                                            <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
                                     </mat-slide-toggle>
                                 </div>
                             </ng-container>
@@ -53,8 +53,8 @@
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [formControl]="field['control']" [required]="field['required']" [type]="field.type" [placeholder]="field.placeholder">
                                     <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
-                                    <i class="fa-solid fa-circle-question text-md"></i>
-                                </span>
+                                        <i class="fa-solid fa-circle-question text-md"></i>
+                                    </span>
                                     <button mat-icon-button matSuffix *ngIf="field.id === 'input_folder'"
                                             (click)="checkFolder(field, true)" [matTooltip]="'WORKFLOW.test_input_folder' | translate">
                                         <i class="fa-solid fa-check text-green-400"></i>

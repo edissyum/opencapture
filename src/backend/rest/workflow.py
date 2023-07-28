@@ -32,8 +32,7 @@ def verify_input_folder(module):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/workflows/{module}/verifyInputFolder'}), 403
 
-    data = json.loads(request.data)
-    res = workflow.verify_input_folder(data)
+    res = workflow.verify_input_folder(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
