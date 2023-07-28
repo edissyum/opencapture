@@ -34,6 +34,7 @@ import { LocalStorageService } from "../../../services/local-storage.service";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import {ExportDialogComponent} from "../../../services/export-dialog/export-dialog.component";
+import {ImportDialogComponent} from "../../../services/import-dialog/import-dialog.component";
 
 @Injectable()
 export class ChecklistDatabase {
@@ -440,6 +441,49 @@ export class DocumentTypeFactoryComponent implements OnInit {
                         link.download = `doctypes.${result.extension}`;
                         link.click();
                         this.notify.success(this.translate.instant('DOCTYPE.doctypes_export_success'));
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+        });
+    }
+
+    import_doctypes() {
+        const columns = ['label', 'type', 'key', 'code', 'form_id', 'status', 'parent'];
+        const dialogRef = this.dialog.open(ImportDialogComponent, {
+            data: {
+                rows: [],
+                extension: 'CSV',
+                skipHeader: false,
+                title : this.translate.instant('DOCTYPE.import'),
+                availableColumns : columns,
+                selectedColumns : columns
+            },
+            width: "900px"
+        });
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                const formData: FormData = new FormData();
+
+                for (let i = 0; i < result.fileControl.value!.length; i++) {
+                    if (result.fileControl.status === 'VALID') {
+                        formData.append(result.fileControl.value![i]['name'], result.fileControl.value![i]);
+                    } else {
+                        this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
+                        return;
+                    }
+                }
+                formData.set('columns', result.selectedColumns);
+
+                this.http.post(environment['url'] + '/ws/doctypes/import', formData, {headers: this.authService.headers},
+                ).pipe(
+                    tap(() => {
+                        this.treeDataObj.retrieveDocTypes(this.selectFormControl.value);
+                        this.notify.success(this.translate.instant('DOCTYPE.doctypes_import_success'));
                     }),
                     catchError((err: any) => {
                         console.debug(err);

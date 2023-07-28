@@ -211,6 +211,15 @@
 		"extension": "Extension",
 		"selected_columns": "Selected columns"
 	},
+	"DATA-IMPORT": {
+		"cancel": "Cancel",
+		"column": "Column",
+		"columns_config": "Columns configuration",
+		"import": "Import",
+		"no_rows": "No rows to display",
+		"placeholder": "Drag and drop your file here <strong></strong> or click to select a file",
+		"skip_header": "Skip first line"
+	},
 	"DISABLED": {
 		"disabled": "Disabled",
 		"not_disabled": "Not disabled"
@@ -237,6 +246,7 @@
 		"doctype_edited": "Document types edited",
 		"doctypes_clone_success": "Documents types cloned with success",
 		"doctypes_export_success": "Documents types exported with success",
+		"doctypes_import_success": "Documents types imported with success",
 		"download_separator": "Download separator(s)",
 		"edit_doctype": "Edit a document type",
 		"export": "Export",
