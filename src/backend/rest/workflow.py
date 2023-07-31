@@ -15,8 +15,8 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import json
 from flask_babel import gettext
+from src.backend.functions import rest_validator
 from flask import Blueprint, request, make_response, jsonify
 from src.backend.import_controllers import auth, workflow, privileges
 
@@ -155,6 +155,16 @@ def test_script(module):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_workflow | update_workflow']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/workflows/{module}testScript'}), 403
 
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'codeContent', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     if module == 'verifier':
         res = workflow.test_script_verifier(request.json['args'])
+
     return make_response(jsonify(res[0])), res[1]
