@@ -1134,7 +1134,7 @@
 		"test_input_folder": "Verify if input folder exists and is writable",
 		"test_script": "Test script",
 		"test_script_error": "Error while testing script<br>--------------<br>{{ return }}",
-		"test_script_success": "Script executed successfully<br>--------------<br>{{ return }}",
+		"test_script_success": "Script executed successfully",
 		"update": "Update workflow",
 		"use_interface": "Validate using interface",
 		"workflow_created": "Workflow created successfully",
