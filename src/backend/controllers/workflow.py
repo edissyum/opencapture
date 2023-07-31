@@ -19,13 +19,11 @@ import os
 import sys
 import json
 import stat
-import shutil
-import uuid
-import urllib3
 import importlib
 import traceback
 from io import StringIO
 from flask_babel import gettext
+from pyflakes.scripts import pyflakes
 from src.backend.import_classes import _Config
 from flask import request, g as current_context
 from src.backend.scripting_functions import check_code
@@ -407,29 +405,19 @@ def delete_script_and_incron(args):
 
 
 def test_script_verifier(args):
-    args['custom_id'] = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(args['custom_id'])
-    log = _vars[5]
-    config = _vars[1]
-    database = _vars[0]
-    docservers = _vars[9]
-
-    pdf_url = 'https://open-capture.com/wp-content/uploads/2022/11/CALINDA_INV-001510.pdf'
-    pdf_path = './instance/upload/verifier/CALINDA_INV-001510.pdf'
-    http = urllib3.PoolManager()
-
-    with http.request('GET', pdf_url, preload_content=False) as _r, open(pdf_path, 'wb') as out_file:
-        shutil.copyfileobj(_r, out_file)
-
-    rand = str(uuid.uuid4())
-    tmp_file = docservers['TMP_PATH'] + args['step'] + '_scripting_' + rand + '.py'
     try:
-        result_string, code = launch_script(tmp_file, log, pdf_path, database, args, config, docservers)
+        result = StringIO()
+        sys.stdout = result
+        pyflakes.check(args['codeContent'], '')
+        result_string = result.getvalue()
+        splitted_result = result_string.split(':')
+        if len(splitted_result) >= 3:
+            result_string = '<strong>' + gettext('LINE') + ' ' + splitted_result[1] + ' ' + \
+                            gettext('COLUMN') + ' ' + splitted_result[2] + '</strong> : ' + splitted_result[3]
+            return result_string, 400
     except Exception:
-        if os.path.isfile(tmp_file):
-            os.remove(tmp_file)
         return traceback.format_exc(), 400
-    return result_string, code
+    return result_string, 200
 
 
 def launch_script(tmp_file, log, file, database, args, config, docservers, datas=None):
