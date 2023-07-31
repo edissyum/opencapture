@@ -46,10 +46,10 @@ export class SuppliersListComponent implements OnInit {
     allSuppliers     : any         = [];
     suppliers        : any         = [];
     pageSize         : number      = 10;
+    search           : string      = '';
     pageIndex        : number      = 0;
     total            : number      = 0;
     offset           : number      = 0;
-    search           : string      = '';
 
     constructor(
         public router: Router,
