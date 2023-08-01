@@ -25,7 +25,6 @@ import { FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { STEPPER_GLOBAL_OPTIONS } from "@angular/cdk/stepper";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { AuthService } from "../../../../../services/auth.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { CodeEditorComponent } from "../../../../../services/code-editor/code-editor.component";
