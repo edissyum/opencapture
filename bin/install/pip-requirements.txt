@@ -22,7 +22,7 @@ ocrmypdf==14.3.0
 xlsxwriter==3.1.2
 pdf2image==1.16.3
 gitpython==3.1.32
-imap-tools==1.1.0
+imap-tools==1.2.0
 flask_cors==4.0.0
 fs-watcher==1.0.11
 Flask-Babel==3.1.0
