@@ -384,7 +384,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         this.filterChanged();
     }
 
-    export_doctypes() {
+    exportDoctypes() {
         const selectedColumns: any [] = [
             {
                 id: 'label',
@@ -452,7 +452,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         });
     }
 
-    import_doctypes() {
+    importDoctypes() {
         const columns = [ 'key', 'label', 'type', 'code', 'form_id'];
         const dialogRef = this.dialog.open(ImportDialogComponent, {
             data: {
