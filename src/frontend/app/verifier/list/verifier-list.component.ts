@@ -156,7 +156,7 @@ export class VerifierListComponent implements OnInit {
             this.authService.generateHeaders();
         }
 
-        if (!this.userService.user) {
+        if (!this.userService.user.id) {
             this.userService.user = this.userService.getUserFromLocal();
         }
 
@@ -167,7 +167,6 @@ export class VerifierListComponent implements OnInit {
         marker('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.documents_settings'); // Needed to get the translation in the JSON file
         this.localStorageService.save('splitter_or_verifier', 'verifier');
-        this.removeLockByUserId(this.userService.user.username);
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
             if (this.localStorageService.get('documentsPageIndex'))
@@ -181,7 +180,7 @@ export class VerifierListComponent implements OnInit {
             this.localStorageService.remove('documentsPageIndex');
             this.localStorageService.remove('documentsTimeIndex');
         }
-
+        this.removeLockByUserId();
         this.http.get(environment['url'] + '/ws/status/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
@@ -219,8 +218,8 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    removeLockByUserId(userId: any) {
-        this.http.put(environment['url'] + '/ws/verifier/documents/removeLockByUserId/' + userId, {}, {headers: this.authService.headers}).pipe(
+    removeLockByUserId() {
+        this.http.put(environment['url'] + '/ws/verifier/documents/removeLockByUserId/' + this.userService.user.username, {}, {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
