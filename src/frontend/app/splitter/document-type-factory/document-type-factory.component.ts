@@ -401,6 +401,10 @@ export class DocumentTypeFactoryComponent implements OnInit {
             {
                 id: 'form_id',
                 label: this.translate.instant('DOCTYPE.form_identifier')
+            },
+            {
+                id: 'code',
+                label: this.translate.instant('DOCTYPE.code')
             }
         ];
         const availableColumns: any [] = [

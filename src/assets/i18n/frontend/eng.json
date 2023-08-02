@@ -239,6 +239,7 @@
 		"add_folder": "Add a folder",
 		"clean_search_text": "Delete search text",
 		"clone_doctypes": "Clone documents types",
+		"code": "Arborescence code",
 		"confirm_delete": "Are you sure you want to delete the document type <strong>{{ doctypeLabel }}</strong> ?",
 		"confirm_doctypes_clone": "Please confirm documents types clone",
 		"default_doctype": "Default document type",
