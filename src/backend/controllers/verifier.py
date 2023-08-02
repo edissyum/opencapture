@@ -806,13 +806,13 @@ def get_customers_count(user_id, status, time):
         })
         customer_suppliers = {}
         for form in _forms:
-            form_label, error = forms.get_form_by_id({'form_id': form['form_id']})
+            form_info, error = forms.get_form_by_id({'form_id': form['form_id']})
             if error is not None:
                 form_label = gettext('NO_FORM')
                 where = ["status = %s", "customer_id = %s", "form_id is NULL", where_time[0]]
                 data = [status, customer['customer_id']]
             else:
-                form_label = form_label['label']
+                form_label = form_info['label']
                 where = ["status = %s", "customer_id = %s", "form_id = %s", where_time[0]]
                 data = [status, customer['customer_id'], form['form_id']]
 
@@ -827,6 +827,7 @@ def get_customers_count(user_id, status, time):
                 supplier_info, error_supplier = accounts.get_supplier_by_id({'supplier_id': supplier['supplier_id']})
                 if error_supplier is None:
                     supplier['name'] = supplier_info['name']
+                supplier['form_id'] = form['form_id']
         customer['suppliers'] = customer_suppliers
         if error is None:
             if customer['customer_id'] != 0:

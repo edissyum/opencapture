@@ -33,7 +33,6 @@ import { UserService } from "../../../services/user.service";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { DomSanitizer } from "@angular/platform-browser";
-import { ConfigService } from "../../../services/config.service";
 import { FormControl } from "@angular/forms";
 
 interface AccountsNode {
@@ -41,6 +40,7 @@ interface AccountsNode {
     id: number
     parent_id: any
     supplier_id: any
+    form_id: any
     count: number
     display: boolean
     children: any
@@ -52,6 +52,7 @@ interface FlatNode {
     id: number
     parent_id: any
     supplier_id: any
+    form_id: any
     display: boolean
     count: number
     level: number
@@ -106,11 +107,11 @@ export class VerifierListComponent implements OnInit {
     allowedSuppliers        : any []            = [];
     search                  : string            = '';
     TREE_DATA               : AccountsNode[]    = [];
+    totalChecked            : number            = 0;
     expanded                : boolean           = false;
     documentToDeleteSelected : boolean          = false;
-    totalChecked            : number            = 0;
     customerFilterEmpty     : boolean           = false;
-    customerFilter        = new FormControl('');
+    customerFilter         = new FormControl('');
     customerFilterEnabled   : boolean           = false;
 
     private _transformer = (node: AccountsNode, level: number) => ({
@@ -119,6 +120,7 @@ export class VerifierListComponent implements OnInit {
         supplier_id: node.supplier_id,
         id: node.id,
         parent_id: node.parent_id,
+        form_id: node.form_id,
         display: node.display,
         count: node.count,
         level: level,
@@ -141,7 +143,6 @@ export class VerifierListComponent implements OnInit {
         private userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private configService: ConfigService,
         private routerExtService: LastUrlService,
         private localStorageService: LocalStorageService
     ) {}
@@ -235,6 +236,7 @@ export class VerifierListComponent implements OnInit {
             id: 0,
             parent_id: '',
             supplier_id: '',
+            form_id: '',
             display: true,
             count: 0,
             children: []
@@ -268,6 +270,7 @@ export class VerifierListComponent implements OnInit {
                                 name: supplier.name ? supplier.name : this.translate.instant('ACCOUNTS.supplier_unknow'),
                                 supplier_id: supplier.supplier_id,
                                 parent_id: customer_count.customer_id,
+                                form_id: supplier.form_id ? supplier.form_id : 'no_form',
                                 count: supplier.total,
                                 display: true
                             });
@@ -459,6 +462,7 @@ export class VerifierListComponent implements OnInit {
     }
 
     loadDocumentPerCustomer(node: any) {
+        const formId = node.form_id;
         const parentId = node.parent_id;
         const supplierId = node.supplier_id;
         this.TREE_DATA.forEach((element: any) => {
@@ -467,6 +471,7 @@ export class VerifierListComponent implements OnInit {
                 this.customerFilterEnabled = true;
                 this.allowedCustomers = [customerId];
                 this.allowedSuppliers = [supplierId];
+                this.currentForm = formId;
                 this.resetPaginator();
                 this.loadDocuments().then();
             }
@@ -477,9 +482,9 @@ export class VerifierListComponent implements OnInit {
         this.search = '';
         this.loading = true;
         this.currentForm = '';
-        this.loadingCustomers = true;
         this.allowedCustomers = [];
         this.allowedSuppliers = [];
+        this.loadingCustomers = true;
         this.customerFilterEnabled = false;
         this.loadCustomers();
         this.resetPaginator();

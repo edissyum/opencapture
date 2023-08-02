@@ -58,8 +58,7 @@
                         {{ this.treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
                     </mat-icon>
                 </button>
-                <span class="select-none" [class.pointer-events-none]="node.count === 0"
-                      [class.hidden]="node.count === 0 && node.id === 0">
+                <span class="select-none" [class.pointer-events-none]="node.count === 0" [class.hidden]="node.count === 0 && node.id === 0">
                     {{ node.name }}
                 </span>
                 <span *ngIf="!this.treeControl.isExpanded(node)" [class.hidden]="node.count === 0 && node.id === 0"
@@ -67,12 +66,11 @@
                     {{ node.count }}
                 </span>
             </mat-tree-node>
-            <mat-tree-node [class.hidden]="node.count === 0" style="min-height: 24px"
+            <mat-tree-node [class.hidden]="node.count === 0" style="min-height: 24px" matTreeNodeToggle
                            class="child pl-6 cursor-pointer hover:bg-black hover:bg-opacity-10"
-                           *matTreeNodeDef="let node;when: isLevelOne;" matTreeNodeToggle>
+                           *matTreeNodeDef="let node;when: isLevelOne;">
                 <button mat-icon-button>
-                    <i [class.fa-folder-open]="this.treeControl.isExpanded(node)"
-                       class="text-gray-600 fa-solid fa-folder text-lg relative -top-0.5"></i>
+                    <i [class.fa-folder-open]="this.treeControl.isExpanded(node)" class="text-gray-600 fa-solid fa-folder text-lg relative -top-0.5"></i>
                 </button>
                 <span class="pl-2 font-normal select-none">{{ node.name }}</span>
                 <span *ngIf="!this.treeControl.isExpanded(node)" class="float-right ml-auto select-none mr-12 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
