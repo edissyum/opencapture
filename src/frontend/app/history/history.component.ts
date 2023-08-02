@@ -116,7 +116,7 @@ export class HistoryComponent implements OnInit {
             this.authService.generateHeaders();
         }
 
-        if (!this.userService.user) {
+        if (!this.userService.user.id) {
             this.userService.user = this.userService.getUserFromLocal();
         }
 

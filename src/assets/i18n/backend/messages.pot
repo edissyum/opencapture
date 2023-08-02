@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-07-31 15:40+0200\n"
+"POT-Creation-Date: 2023-08-02 10:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,14 +17,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: custom/dev/src/backend/process_queue_splitter.py:212
-#: custom/dev/src/backend/process_queue_verifier.py:184
-#: custom/dev_bis/src/backend/process_queue_splitter.py:212
-#: custom/dev_bis/src/backend/process_queue_verifier.py:184
-#: custom/edissyum/src/backend/process_queue_splitter.py:212
-#: custom/edissyum/src/backend/process_queue_verifier.py:184
+#: custom/edissyum/src/backend/process_queue_verifier.py:238
 #: custom/test/src/backend/process_queue_splitter.py:212
-#: custom/test/src/backend/process_queue_verifier.py:184
+#: custom/test/src/backend/process_queue_verifier.py:233
 msgid "FILE_UPLOADED_WORKFLOW"
 msgstr ""
 
@@ -1035,7 +1030,7 @@ msgid "DELETE_DOCUMENT_ERROR"
 msgstr ""
 
 #: src/backend/controllers/verifier.py:491
-#: src/backend/controllers/workflow.py:431 src/backend/process/main.py:42
+#: src/backend/controllers/workflow.py:430 src/backend/process/main.py:42
 msgid "SCRIPT_CONTAINS_NOT_ALLOWED_CODE"
 msgstr ""
 
@@ -1062,6 +1057,10 @@ msgstr ""
 
 #: src/backend/controllers/verifier.py:756
 msgid "DOCUMENT_ID_NOT_FOUND"
+msgstr ""
+
+#: src/backend/controllers/verifier.py:811
+msgid "NO_FORM"
 msgstr ""
 
 #: src/backend/controllers/workflow.py:56
@@ -1152,11 +1151,11 @@ msgstr ""
 msgid "FS_WATCHER_DELETION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:416
+#: src/backend/controllers/workflow.py:415
 msgid "LINE"
 msgstr ""
 
-#: src/backend/controllers/workflow.py:417
+#: src/backend/controllers/workflow.py:416
 msgid "COLUMN"
 msgstr ""
 
@@ -1489,7 +1488,7 @@ msgstr ""
 #: src/backend/rest/auth.py:39 src/backend/rest/auth.py:101
 #: src/backend/rest/auth.py:123 src/backend/rest/auth.py:143
 #: src/backend/rest/auth.py:235 src/backend/rest/auth.py:254
-#: src/backend/rest/outputs.py:144
+#: src/backend/rest/outputs.py:144 src/backend/rest/workflow.py:163
 msgid "BAD_REQUEST"
 msgstr ""
 

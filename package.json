@@ -24,7 +24,7 @@
         "ngx-toastr": "^17.0.2",
         "remove-accents": "^0.4.4",
         "svg-country-flags": "^1.2.10",
-        "tinymce": "^6.6.0"
+        "tinymce": "^6.6.1"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^16.1.6",
