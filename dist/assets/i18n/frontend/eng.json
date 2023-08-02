@@ -159,7 +159,6 @@
 		"login_bottom_message_updated": "Login bottom message updated successfully",
 		"login_image_changed": "Login image changed successfully",
 		"login_top_message_updated": "Login top message updated successfully",
-		"no_privilege_generate_token": "You don't have the privilege to generate a token",
 		"password_min_length": "Password minimum length",
 		"password_rules": "Password rules",
 		"password_rules_updated": "Password rules updated successfully",
@@ -203,6 +202,15 @@
 		"unallowed_fields": "Unallowed technical label",
 		"update": "Update custom field"
 	},
+	"DATA-EXPORT": {
+		"available_columns": "Available columns",
+		"cancel": "Cancel",
+		"delimiter": "Delimiter",
+		"export": "Export",
+		"export_columns": "Export columns",
+		"extension": "Extension",
+		"selected_columns": "Selected columns"
+	},
 	"DISABLED": {
 		"disabled": "Disabled",
 		"not_disabled": "Not disabled"
@@ -228,19 +236,24 @@
 		"doctype_added": "Folder added",
 		"doctype_edited": "Document types edited",
 		"doctypes_clone_success": "Documents types cloned with success",
+		"doctypes_export_success": "Documents types exported with success",
 		"download_separator": "Download separator(s)",
 		"edit_doctype": "Edit a document type",
+		"export": "Export",
 		"folder": "Folder",
 		"folder_added": "Folder added",
+		"form_identifier": "Form identifier",
 		"generate_folder_separators": "Generate all folder separators",
 		"generating_separator": "Generating separator",
+		"import": "Import",
 		"maximize_tree": "Maximise tree",
 		"minimize_tree": "Minimize tree",
 		"next_page": "Next page",
 		"no_doctype_to_show": "No document type to show",
 		"no_master": "(No master folder)",
 		"previous_page": "Previous page",
-		"separator_choice ": "Separator choice"
+		"separator_choice ": "Separator choice",
+		"type": "Type (folder or doctype)"
 	},
 	"DOCUMENTS": {
 		"data_deleted": "Data deleted",
@@ -272,6 +285,8 @@
 		"json_pattern": "The field is not JSON formatted",
 		"jwt_error": "Authentification by token error",
 		"missing_secret_key": "Secret key missing for this instance",
+		"no_privilege_update_bottom_login": "You don't have the privilege to update the bottom login text",
+		"no_privilege_update_top_login": "You don't have the privilege to update the top login text",
 		"number_float_pattern": "The value is not well formatted : float",
 		"number_int_pattern": "The value is not well formatted : integer",
 		"permission_problem": "Error while uploading file, check permissions",

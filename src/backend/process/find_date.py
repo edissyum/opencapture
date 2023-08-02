@@ -111,7 +111,7 @@ class FindDate:
             return False
 
     def process(self, line, position):
-        for _date in re.finditer(r"" + self.regex['date'] + "", line):
+        for _date in re.finditer(r"" + self.regex['date'], line):
             date = self.format_date(_date.group(), position, True)
             if date and date[0]:
                 self.date = date[0]

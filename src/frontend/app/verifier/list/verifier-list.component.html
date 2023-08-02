@@ -41,10 +41,8 @@
                 </span>
             </div>
         </div>
-        <mat-tree *ngIf="!this.loadingCustomers && this.dataSource.data.length !== 0" [dataSource]="this.dataSource"
-                  [treeControl]="this.treeControl">
-            <mat-tree-node style="min-height: 24px" class="pl-12 cursor-pointer hover:bg-black hover:bg-opacity-20"
-                           *matTreeNodeDef="let node; when:isLevelTwo;" (click)="loadDocumentPerCustomer(node)">
+        <mat-tree *ngIf="!this.loadingCustomers" [dataSource]="this.dataSource" [treeControl]="this.treeControl">
+            <mat-tree-node style="min-height: 24px" class="pl-12 cursor-pointer hover:bg-black hover:bg-opacity-20" *matTreeNodeDef="let node; when:isLevelTwo;" (click)="loadDocumentPerCustomer(node)">
                 <button mat-icon-button disabled>
                     <i class="text-green-400 ml-4 text-base fa-solid fa-user pb-0.5"></i>
                 </button>

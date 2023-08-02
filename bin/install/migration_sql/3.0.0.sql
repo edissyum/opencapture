@@ -44,11 +44,13 @@ UPDATE "privileges" set label = 'verifier_settings' WHERE label = 'verifier_disp
 INSERT INTO "privileges" ("label", "parent") VALUES ('add_workflow', 'verifier');
 INSERT INTO "privileges" ("label", "parent") VALUES ('workflows_list', 'verifier');
 INSERT INTO "privileges" ("label", "parent") VALUES ('update_workflow', 'verifier');
-INSERT INTO "privileges" ("label", "parent") VALUES ('generate_auth_token', 'general');
 INSERT INTO "privileges" ("label", "parent") VALUES ('access_config', 'administration');
 INSERT INTO "privileges" ("label", "parent") VALUES ('add_workflow_splitter', 'splitter');
 INSERT INTO "privileges" ("label", "parent") VALUES ('workflows_list_splitter', 'splitter');
 INSERT INTO "privileges" ("label", "parent") VALUES ('update_workflow_splitter', 'splitter');
+INSERT INTO "privileges" ("label", "parent") VALUES ('generate_auth_token', 'administration');
+INSERT INTO "privileges" ("label", "parent") VALUES ('update_login_top_message', 'administration');
+INSERT INTO "privileges" ("label", "parent") VALUES ('update_login_bottom_message', 'administration');
 
 DELETE FROM "privileges" WHERE "label" = 'add_input';
 DELETE FROM "privileges" WHERE "label" = 'inputs_list';
@@ -176,3 +178,4 @@ INSERT INTO "configurations" ("label", "data", display) VALUES ('loginBottomMess
 DROP TABLE IF EXISTS "tasks_watcher";
 
 ALTER TABLE roles RENAME COLUMN sub_roles to assign_roles;
+ALTER TABLE documents DROP COLUMN IF EXISTS "purchase_or_sale";

@@ -2,7 +2,7 @@
     <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
-    <mat-sidenav-content class="bg-white">
+    <mat-sidenav-content class="bg-white overflow-hidden">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
@@ -21,73 +21,75 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div *ngIf="!this.loading">
-            <mat-table [dataSource]="modelsList" matSort (matSortChange)="sortData($event)" class="w-full">
-                <ng-container matColumnDef="id">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.id' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="model_label">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.model_label' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.model_label }} </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="train_time">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.train_time' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.train_time }} </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="accuracy_score">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.accuracy' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.accuracy_score }} </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="documents">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.doctypes' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.documents }} </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="min_proba">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.min_proba' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.min_proba }} </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="status">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.status' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        <span class="col-span-1 text-right">
-                            <i *ngIf="element.status === 'training'" class="fas fa-circle-notch fa-spin fa-lg my-4"
-                               matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.training' | translate }}"></i>
-                            <i *ngIf="element.status === 'error'" class="fas fa-triangle-exclamation fa-lg my-4 text-amber-500 cursor-pointer"
-                               matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.error' | translate }}"></i>
-                            <i *ngIf="element.status === 'OK'" class="fa-solid fa-check fa-lg my-4"
-                               matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.training_done' | translate }}"></i>
-                        </span>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="actions">
-                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        <button [disabled]="element.status !== 'OK'" (click)="$event.stopPropagation(); sidenav2.open(); this.selectRow(element)"
-                                matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.test_model' | translate }}" mat-icon-button
-                                class="inline-block align-text-top">
-                            <i class="fa-solid fa-vial"></i>
-                        </button>
-                        <button mat-icon-button
-                                (click)="$event.stopPropagation(); deleteConfirmDialog(element.id, element.model_label)"
-                                matTooltip="{{ 'GLOBAL.delete' | translate }}"
-                                class="inline-block align-text-top">
-                            <i class="fa-solid fa-trash text-lg"></i>
-                        </button>
-                    </mat-cell>
-                </ng-container>
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;" routerLink="/settings/splitter/ai/update/{{ row.id }}"
-                         class="cursor-pointer hover:shadow-md transition-colors duration-300">
-                </mat-row>
-            </mat-table>
-            <mat-paginator showFirstLastButtons
-                           [length]="total"
-                           [pageSize]="pageSize"
-                           [pageIndex]="pageIndex"
-                           [pageSizeOptions]="[5, 10, 15, 20, 50]"
-                           (page)="onPageChange($event)">
-            </mat-paginator>
+        <div class="overflow-x-hidden h-full-overflow">
+            <div *ngIf="!this.loading">
+                <mat-table [dataSource]="modelsList" matSort (matSortChange)="sortData($event)" class="w-full">
+                    <ng-container matColumnDef="id">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.id' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="model_label">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.model_label' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ element.model_label }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="train_time">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.train_time' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ element.train_time }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="accuracy_score">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.accuracy' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ element.accuracy_score }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="documents">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.doctypes' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ element.documents }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="min_proba">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.min_proba' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ element.min_proba }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.status' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <span class="col-span-1 text-right">
+                                <i *ngIf="element.status === 'training'" class="fas fa-circle-notch fa-spin fa-lg my-4"
+                                   matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.training' | translate }}"></i>
+                                <i *ngIf="element.status === 'error'" class="fas fa-triangle-exclamation fa-lg my-4 text-amber-500 cursor-pointer"
+                                   matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.error' | translate }}"></i>
+                                <i *ngIf="element.status === 'OK'" class="fa-solid fa-check fa-lg my-4"
+                                   matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.training_done' | translate }}"></i>
+                            </span>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="actions">
+                        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <button [disabled]="element.status !== 'OK'" (click)="$event.stopPropagation(); sidenav2.open(); this.selectRow(element)"
+                                    matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.test_model' | translate }}" mat-icon-button
+                                    class="inline-block align-text-top">
+                                <i class="fa-solid fa-vial"></i>
+                            </button>
+                            <button mat-icon-button
+                                    (click)="$event.stopPropagation(); deleteConfirmDialog(element.id, element.model_label)"
+                                    matTooltip="{{ 'GLOBAL.delete' | translate }}"
+                                    class="inline-block align-text-top">
+                                <i class="fa-solid fa-trash text-lg"></i>
+                            </button>
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;" routerLink="/settings/splitter/ai/update/{{ row.id }}"
+                             class="cursor-pointer hover:shadow-md transition-colors duration-300">
+                    </mat-row>
+                </mat-table>
+                <mat-paginator showFirstLastButtons
+                               [length]="total"
+                               [pageSize]="pageSize"
+                               [pageIndex]="pageIndex"
+                               [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                               (page)="onPageChange($event)">
+                </mat-paginator>
+            </div>
         </div>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">

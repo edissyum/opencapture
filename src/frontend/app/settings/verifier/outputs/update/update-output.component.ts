@@ -23,7 +23,7 @@ import { NotificationService } from "../../../../../services/notifications/notif
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { FormBuilder, FormControl } from "@angular/forms";
+import { FormControl } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
@@ -60,6 +60,7 @@ export class UpdateOutputComponent implements OnInit {
     originalOutputType      : any;
     outputsTypes            : any[]         = [];
     outputsTypesForm        : any[]         = [];
+    oldFolder               : string        = '';
     toHighlight             : string        = '';
     allowedPath             : string        = '';
     outputForm              : any[]         = [
@@ -124,7 +125,7 @@ export class UpdateOutputComponent implements OnInit {
                 {
                     'id': false,
                     'label': marker('OUTPUT.ocr_disabled')
-                },
+                }
             ],
             required: false
         }
@@ -222,7 +223,6 @@ export class UpdateOutputComponent implements OnInit {
         private http: HttpClient,
         private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
@@ -299,7 +299,7 @@ export class UpdateOutputComponent implements OnInit {
                             this.outputsTypesForm[_output.output_type_id] = {
                                 'auth' : [],
                                 'links' : [],
-                                'parameters' : [],
+                                'parameters' : []
                             };
                             for (const category in this.outputsTypesForm[_output.output_type_id]) {
                                 if (_output.data.options[category]) {
@@ -317,7 +317,7 @@ export class UpdateOutputComponent implements OnInit {
                                             required: option.required,
                                             isJson: option.isJson,
                                             hint: option.hint,
-                                            webservice: option.webservice,
+                                            webservice: option.webservice
                                         });
                                     }
                                 } else {
@@ -702,6 +702,25 @@ export class UpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth)) {
             const functionName = this.testConnectionMapping[this.selectedOutputType];
             eval("this." + functionName);
+        }
+    }
+
+    checkFolder(field: any, fromUser = false) {
+        if (fromUser || (field && field.control.value && field.control.value !== this.oldFolder)) {
+            this.http.post(environment['url'] + '/ws/outputs/verifier/verifyFolderOut',
+                {'folder_out': field.control.value}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    field.control.setErrors();
+                    this.notify.success(this.translate.instant('OUTPUT.folder_out_ok'));
+                    this.oldFolder = field.control.value;
+                }),
+                catchError((err: any) => {
+                    field.control.setErrors({'folder_not_found': true});
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
         }
     }
 }

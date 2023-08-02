@@ -33,7 +33,8 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'form-builder',
-    templateUrl: './form-builder.component.html'
+    templateUrl: './form-builder.component.html',
+    styleUrls: ['./form-builder.component.scss']
 })
 export class FormBuilderComponent implements OnInit {
     loading                 : boolean   = true;

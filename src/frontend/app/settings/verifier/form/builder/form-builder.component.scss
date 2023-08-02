@@ -1,0 +1,14 @@
+::ng-deep .edit_input {
+    & .mat-mdc-text-field-wrapper {
+        @apply top-1.5;
+        & .mat-mdc-form-field-flex {
+            @apply h-2;
+            & .mat-mdc-form-field-infix {
+                @apply pt-1 #{!important};
+                & input {
+                    @apply h-auto #{!important};
+                }
+            }
+        }
+    }
+}

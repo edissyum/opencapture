@@ -81,9 +81,9 @@ export class CodeEditorComponent implements OnInit {
             }
         }, {headers: this.authService.headers},
         ).pipe(
-            tap((data: any) => {
+            tap(() => {
                 this.testing = false;
-                this.notify.success(this.translate.instant('WORKFLOW.test_script_success', {return: data.replace(/[\n\r]/g, '<br>')}));
+                this.notify.success(this.translate.instant('WORKFLOW.test_script_success'));
             }),
             catchError((err: any) => {
                 this.testing = false;

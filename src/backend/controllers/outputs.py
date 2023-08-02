@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
+import os
 import json
 from flask_babel import gettext
 from flask import request, g as current_context
@@ -252,3 +253,31 @@ def get_allowed_path():
         response = {'allowedPath': ''}
 
     return response, 200
+
+
+def verify_folder_out(args):
+    if 'folder_out' in args and args['folder_out']:
+        if not is_path_allowed(args['folder_out']):
+            response = {
+                "errors": gettext('OUTPUT_FOLDER_CREATION_ERROR'),
+                "message": gettext('FOLDER_NOT_ALLOWED_ERROR')
+            }
+            return response, 400
+        elif not os.path.exists(args['folder_out']):
+            try:
+                os.mkdir(args['folder_out'], mode=0o777)
+            except (PermissionError, FileNotFoundError, TypeError):
+                response = {
+                    "errors": gettext('OUTPUT_FOLDER_CREATION_ERROR'),
+                    "message": gettext('CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR')
+                }
+                return response, 400
+        else:
+            if not os.access(args['folder_out'], os.W_OK):
+                response = {
+                    "errors": gettext('OUTPUT_FOLDER_CREATION_ERROR'),
+                    "message": gettext('CAN_NOT_ACCESS_FOLDER_PERMISSION_ERROR')
+                }
+                return response, 400
+        return '', 200
+    return '', 400

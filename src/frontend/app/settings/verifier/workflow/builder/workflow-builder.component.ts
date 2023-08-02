@@ -25,7 +25,6 @@ import { FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { STEPPER_GLOBAL_OPTIONS } from "@angular/cdk/stepper";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { AuthService } from "../../../../../services/auth.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { CodeEditorComponent } from "../../../../../services/code-editor/code-editor.component";
@@ -108,7 +107,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 show: true,
                 label: this.translate.instant('WORKFLOW.splitter_method'),
                 type: 'select',
-                control: new FormControl(),
+                control: new FormControl('no_sep'),
                 required: true,
                 values: [
                     {
@@ -290,11 +289,6 @@ export class WorkflowBuilderComponent implements OnInit {
             }
         ]
     };
-    stepDefaultCode  : any           = {
-        'input' : marker("WORKFLOW.step_input_verifier"),
-        'process' : marker("WORKFLOW.step_process_verifier"),
-        'output' : marker("WORKFLOW.step_output_verifier")
-    };
 
     constructor(
         private router: Router,
@@ -443,6 +437,11 @@ export class WorkflowBuilderComponent implements OnInit {
                 this.fields['output'].forEach((element: any) => {
                     if (element.id === 'outputs_id') {
                         element.values = data.outputs;
+                        element.values.unshift({
+                            "id": 0,
+                            "output_label": this.translate.instant("WORKFLOW.no_output"),
+                            "output_type_id": "no_output"
+                        });
                         element.values.forEach((elem: any) => {
                             elem.label = elem.output_label;
                         });
@@ -522,18 +521,12 @@ export class WorkflowBuilderComponent implements OnInit {
     }
 
     openCodeEditor(step: string) {
-        let codeContent = this.translate.instant(this.stepDefaultCode[step]);
-        let defaultCode = true;
+        let codeContent = '';
         this.fields[step].forEach((element: any) => {
             if (element.id === 'script' && element.control.value) {
                 codeContent = element.control.value;
-                defaultCode = false;
             }
         });
-
-        if (defaultCode) {
-            this.notify.success(this.translate.instant('WORKFLOW.load_default_code'));
-        }
 
         const dialogRef = this.dialog.open(CodeEditorComponent, {
             data: {
@@ -606,16 +599,20 @@ export class WorkflowBuilderComponent implements OnInit {
         }
 
         this.fields['process'].forEach((element: any) => {
-            if (element.id === 'form_id' || element.id === 'allow_automatic_validation' || element.id === 'override_supplier_form') {
-                element.show = this.useInterface;
-                if (element.type !== 'boolean') {
-                    element.required = this.useInterface;
-                }
-            }
             if (this.processAllowed) {
                 element.control.enable();
             } else {
                 element.control.disable();
+            }
+
+            if (element.id === 'form_id' || element.id === 'allow_automatic_validation' || element.id === 'override_supplier_form') {
+                element.show = this.useInterface;
+                if (!this.useInterface) {
+                    element.control.disable(false);
+                }
+                if (element.type !== 'boolean') {
+                    element.required = this.useInterface;
+                }
             }
         });
         this.setUsedOutputs();

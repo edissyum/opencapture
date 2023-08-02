@@ -112,27 +112,27 @@ class FindSupplier:
 
             if column == 'email':
                 corrected_line_tmp = corrected_line.split(':')[1] if len(corrected_line.split(':')) >= 2 else corrected_line
-                for _data in re.finditer(r"" + regex + "", corrected_line_tmp.replace(' ', '').replace(',', '').replace('(', '').replace(')', '')):
+                for _data in re.finditer(r"" + regex, corrected_line_tmp.replace(' ', '').replace(',', '').replace('(', '').replace(')', '')):
                     supplier = self.search_suplier(column, _data.group().replace(' ', ''))
                     if supplier:
                         return supplier, line
 
-                for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace(',', '').replace('(', '').replace(')', '')):
+                for _data in re.finditer(r"" + regex, corrected_line.replace(' ', '').replace(',', '').replace('(', '').replace(')', '')):
                     supplier = self.search_suplier(column, _data.group().replace(' ', ''))
                     if supplier:
                         return supplier, line
 
-            for _data in re.finditer(r"" + regex + "", corrected_line.replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
+            for _data in re.finditer(r"" + regex, corrected_line.replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
                 supplier = self.search_suplier(column, _data.group().replace(' ', ''))
                 if supplier:
                     return supplier, line
 
-            for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
+            for _data in re.finditer(r"" + regex, corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
                 supplier = self.search_suplier(column, _data.group())
                 if supplier:
                     return supplier, line
 
-            for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '')):
+            for _data in re.finditer(r"" + regex, corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '')):
                 supplier = self.search_suplier(column, _data.group())
                 if supplier:
                     return supplier, line
@@ -145,7 +145,7 @@ class FindSupplier:
         supplier = self.process(self.regex['vat_number'], text_as_string, 'vat_number')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Supplier found : ' + supplier[0]['name'] + ' using VAT Number : ' + supplier[0]['vat_number'])
+            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using VAT Number : ' + supplier[0]['vat_number'])
             line = supplier[1]
             if text_as_string:
                 position = (('', ''), ('', ''))
@@ -157,7 +157,7 @@ class FindSupplier:
         supplier = self.process(self.regex['siret'], text_as_string, 'siret')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Supplier found : ' + supplier[0]['name'] + ' using SIRET : ' + supplier[0]['siret'])
+            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using SIRET : ' + supplier[0]['siret'])
             line = supplier[1]
             if text_as_string:
                 position = (('', ''), ('', ''))
@@ -169,7 +169,7 @@ class FindSupplier:
         supplier = self.process(self.regex['siren'], text_as_string, 'siren')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Supplier found : ' + supplier[0]['name'] + ' using SIREN : ' + supplier[0]['siren'])
+            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using SIREN : ' + supplier[0]['siren'])
             line = supplier[1]
             if text_as_string:
                 position = (('', ''), ('', ''))
@@ -181,7 +181,7 @@ class FindSupplier:
         supplier = self.process(self.regex['iban'], text_as_string, 'iban')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Supplier found : ' + supplier[0]['name'] + ' using IBAN : ' + supplier[0]['iban'])
+            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using IBAN : ' + supplier[0]['iban'])
             line = supplier[1]
             if text_as_string:
                 position = (('', ''), ('', ''))
@@ -193,7 +193,7 @@ class FindSupplier:
         supplier = self.process(self.regex['email'], text_as_string, 'email')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Supplier found : ' + supplier[0]['name'] + ' using EMAIL : ' + supplier[0]['email'])
+            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using EMAIL : ' + supplier[0]['email'])
             line = supplier[1]
             if text_as_string:
                 position = (('', ''), ('', ''))
@@ -205,7 +205,7 @@ class FindSupplier:
         supplier = self.process(self.regex['duns'], text_as_string, 'duns')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Supplier found : ' + supplier[0]['name'] + ' using DUNS : ' + supplier[0]['duns'])
+            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using DUNS : ' + supplier[0]['duns'])
             line = supplier[1]
             if text_as_string:
                 position = (('', ''), ('', ''))
@@ -217,7 +217,7 @@ class FindSupplier:
         supplier = self.process(self.regex['bic'], text_as_string, 'bic')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Supplier found : ' + supplier[0]['name'] + ' using BIC : ' + supplier[0]['duns'])
+            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using BIC : ' + supplier[0]['bic'])
             line = supplier[1]
             if text_as_string:
                 position = (('', ''), ('', ''))
@@ -321,5 +321,5 @@ class FindSupplier:
             self.current_page = self.nb_pages
             return self.run(retry=True, regenerate_ocr=True, target='footer')
 
-        self.log.info('No supplier found...')
+        self.log.info('No third-party account found...')
         return False

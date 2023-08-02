@@ -27,7 +27,7 @@ from flask import current_app, request, g as current_context
 from src.backend.functions import retrieve_custom_from_url, retrieve_custom_path
 
 
-def retrieve_suppliers(_args):
+def get_suppliers(_args):
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'where': ['status <> %s'],
@@ -46,7 +46,7 @@ def retrieve_suppliers(_args):
             "LOWER(siren) LIKE '%%" + _args['search'].lower() + "%%' OR "
             "LOWER(vat_number) LIKE '%%" + _args['search'].lower() + "%%')"
         )
-    suppliers = accounts.retrieve_suppliers(args)
+    suppliers = accounts.get_suppliers(args)
     response = {
         "suppliers": suppliers
     }
@@ -376,7 +376,7 @@ def create_supplier(data):
 
     supplier = None
     if 'vat_number' in data:
-        supplier = accounts.retrieve_suppliers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
+        supplier = accounts.get_suppliers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
 
     if not supplier:
         res, error = accounts.create_supplier({'columns': _columns})

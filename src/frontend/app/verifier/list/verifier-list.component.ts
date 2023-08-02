@@ -41,7 +41,6 @@ interface AccountsNode {
     id: number
     parent_id: any
     supplier_id: any
-    purchase_or_sale: any
     count: number
     display: boolean
     children: any
@@ -53,7 +52,6 @@ interface FlatNode {
     id: number
     parent_id: any
     supplier_id: any
-    purchase_or_sale: any
     display: boolean
     count: number
     level: number
@@ -100,16 +98,16 @@ export class VerifierListComponent implements OnInit {
     pageSizeOptions         : any []            = [4, 8, 12, 16, 24, 48];
     total                   : number            = 0;
     totals                  : any               = {};
+    customersList           : any               = {};
     offset                  : number            = 0;
     selectedTab             : number            = 0;
     documents               : any []            = [];
     allowedCustomers        : any []            = [];
     allowedSuppliers        : any []            = [];
-    purchaseOrSale          : string            = '';
     search                  : string            = '';
     TREE_DATA               : AccountsNode[]    = [];
     expanded                : boolean           = false;
-    documentToDeleteSelected : boolean           = false;
+    documentToDeleteSelected : boolean          = false;
     totalChecked            : number            = 0;
     customerFilterEmpty     : boolean           = false;
     customerFilter        = new FormControl('');
@@ -121,7 +119,6 @@ export class VerifierListComponent implements OnInit {
         supplier_id: node.supplier_id,
         id: node.id,
         parent_id: node.parent_id,
-        purchase_or_sale: node.purchase_or_sale,
         display: node.display,
         count: node.count,
         level: level,
@@ -234,49 +231,56 @@ export class VerifierListComponent implements OnInit {
 
     loadCustomers() {
         this.TREE_DATA = [];
-        this.http.get(environment['url'] + '/ws/accounts/customers/list/verifier', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                const customers = data.customers;
-                this.TREE_DATA.push({
-                    name: this.translate.instant('ACCOUNTS.customer_not_specified'),
-                    id: 0,
-                    parent_id: '',
-                    supplier_id: '',
-                    purchase_or_sale: '',
-                    display: true,
-                    count: 0,
-                    children: []
-                });
-                this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
-                this.http.get(environment['url'] + '/ws/users/getCustomersByUserId/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
-                    tap((data_customers_by_id: any) => {
-                        customers.forEach((customer: any) => {
-                            data_customers_by_id.forEach((customer_id: any) => {
-                                if (customer_id === customer.id) {
-                                    this.allowedCustomers.push(customer.id);
-                                    this.TREE_DATA.push({
-                                        name: customer.name,
-                                        id: customer.id,
-                                        parent_id: '',
-                                        supplier_id: '',
-                                        purchase_or_sale: '',
-                                        display: true,
-                                        count: 0,
-                                        children: [],
-                                    });
-                                }
+        this.TREE_DATA.push({
+            name: this.translate.instant('ACCOUNTS.customer_not_specified'),
+            id: 0,
+            parent_id: '',
+            supplier_id: '',
+            display: true,
+            count: 0,
+            children: []
+        });
+        this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
+        this.http.get(environment['url'] + '/ws/verifier/customersCount/' + this.userService.user.id + '/' + this.currentStatus + '/' + this.currentTime, {headers: this.authService.headers}).pipe(
+            tap((customers_count: any) => {
+                this.customersList = customers_count;
+                this.customersList.forEach((customer_count: any) => {
+                    this.allowedCustomers.push(customer_count.customer_id);
+                    const node : any = {
+                        name: customer_count.name ? customer_count.name : this.translate.instant('ACCOUNTS.customer_not_specified'),
+                        id: customer_count.customer_id,
+                        parent_id: '',
+                        supplier_id: '',
+                        display: true,
+                        count: customer_count.total,
+                        children: []
+                    };
+                    Object.keys(customer_count['suppliers']).forEach((key: any, index: number) => {
+                        node['children'].push({
+                            name: key,
+                            id: index,
+                            display: true,
+                            count: 0,
+                            children: []
+                        });
+                        customer_count['suppliers'][key].forEach((supplier: any) => {
+                            node['children'][index]['count'] += supplier.total;
+                            node['children'][index]['children'].push({
+                                name: supplier.name ? supplier.name : this.translate.instant('ACCOUNTS.supplier_unknow'),
+                                supplier_id: supplier.supplier_id,
+                                parent_id: customer_count.customer_id,
+                                count: supplier.total,
+                                display: true
                             });
                         });
-                        this.loadDocuments().then();
-                    }),
-                    finalize(() => this.loadingCustomers = false),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
+                    });
+                    this.TREE_DATA.push(node);
+                });
+                this.dataSource.data = this.TREE_DATA;
+                this.filterCustomers();
+                this.loadDocuments().then();
             }),
+            finalize(() => this.loadingCustomers = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -312,7 +316,7 @@ export class VerifierListComponent implements OnInit {
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'limit': this.pageSize,
                 'allowedSuppliers': this.allowedSuppliers, 'form_id': this.currentForm, 'time': this.currentTime,
-                'offset': this.offset, 'search': this.search, 'purchaseOrSale': this.purchaseOrSale
+                'offset': this.offset, 'search': this.search
             },
             {headers: this.authService.headers}
         ).pipe(
@@ -327,7 +331,7 @@ export class VerifierListComponent implements OnInit {
                     this.documents = data.documents;
                     this.documents.forEach((document: any) => {
                         if (document.document_id) {
-                            document.datas.document_id = document.document_id;
+                            document['datas'].document_id = document.document_id;
                         }
                         if (!document.thumb.includes('data:image/jpeg;base64')) {
                             document.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + document.thumb);
@@ -371,8 +375,8 @@ export class VerifierListComponent implements OnInit {
                         document.display = {'subtitles': []};
                         document_display_tmp.forEach((subtitle: any) => {
                             let subtitle_data = '';
-                            if (document.datas.hasOwnProperty(subtitle.id)) {
-                                subtitle_data = document.datas[subtitle.id];
+                            if (document['datas'].hasOwnProperty(subtitle.id)) {
+                                subtitle_data = document['datas'][subtitle.id];
                             } else if (document.hasOwnProperty(subtitle.id)) {
                                 subtitle_data = document[subtitle.id];
                             }
@@ -385,70 +389,6 @@ export class VerifierListComponent implements OnInit {
                         });
                     });
                 }
-
-                /*
-                * Starting from here, we fill the customers tree
-                */
-                const customersPurchaseToKeep : any = [];
-                const customersSaleToKeep : any = [];
-                this.allowedCustomers.forEach((customer: any) => {
-                    this.documents.forEach((document:any) => {
-                        if (document.purchase_or_sale === 'purchase' && !customersPurchaseToKeep.includes(customer)) {
-                            customersPurchaseToKeep.push(customer);
-                        }
-                        if (document.purchase_or_sale === 'sale' && !customersSaleToKeep.includes(customer)) {
-                            customersSaleToKeep.push(customer);
-                        }
-                    });
-                });
-
-                /*
-                * RESET the TREE DATA before re populate it
-                */
-                this.TREE_DATA.forEach((_data: any, index: number) => {
-                    this.TREE_DATA[index].display = true;
-                    this.TREE_DATA[index].count = 0;
-                    this.TREE_DATA[index].children = [];
-                });
-
-                this.TREE_DATA.forEach((_data: any, index: number) => {
-                    customersSaleToKeep.forEach((customer1: any) => {
-                        if (_data.id === customer1) {
-                            let childExists = false;
-                            this.TREE_DATA[index].children.forEach((child: any) => {
-                                if (child.id === 0) {
-                                    childExists = true;
-                                }
-                            });
-                            if (!childExists) {
-                                this.TREE_DATA[index].children.push(
-                                    {name: this.translate.instant('UPLOAD.sale_invoice'), id: 0, display: true, count: 0, children: []},
-                                );
-                                this.createChildren('sale', 0, index);
-                            }
-                        }
-                    });
-                    customersPurchaseToKeep.forEach((customer2: any) => {
-                        if (_data.id === customer2) {
-                            if (this.TREE_DATA[index]) {
-                                let childExists = false;
-                                this.TREE_DATA[index].children.forEach((child: any) => {
-                                    if (child.id === 1) {
-                                        childExists = true;
-                                    }
-                                });
-                                if (!childExists) {
-                                    this.TREE_DATA[index].children.push(
-                                        {name: this.translate.instant('UPLOAD.purchase_invoice'), id: 1, display: true, count: 0, children: []},
-                                    );
-                                    this.createChildren('purchase', 1, index);
-                                }
-                            }
-                        }
-                    });
-                });
-                this.dataSource.data = this.TREE_DATA;
-                this.filterCustomers();
             }),
             finalize(() => {
                 this.loading = false;
@@ -460,28 +400,6 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-    }
-
-    fillChildren(parentId: any, parent: any, childName: any, supplierName: any, supplierId: any, id: any, purchaseOrSale: any) {
-        let childNameExists = false;
-        parent.forEach((child: any) => {
-            if (child.name === supplierName ) {
-                childNameExists = true;
-                child.count = child.count + 1;
-            }
-        });
-
-        if (!childNameExists) {
-            parent.push({
-                name: supplierName,
-                supplier_id: supplierId,
-                id: id,
-                parent_id: parentId,
-                purchase_or_sale: purchaseOrSale,
-                count: 1,
-                display: true
-            });
-        }
     }
 
     resetSearchCustomer() {
@@ -541,35 +459,15 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    createChildren(purchaseOrSale: any, id: any, index: any) {
-        this.TREE_DATA[index].children.forEach((child: any) => {
-            if (child.id === id) {
-                this.documents.forEach((document: any) => {
-                    if (this.TREE_DATA[index].id === document.customer_id && document.purchase_or_sale === purchaseOrSale) {
-                        if (document.supplier_id) {
-                            this.fillChildren(this.TREE_DATA[index].id, child.children, document.supplier_name, document.supplier_name, document.supplier_id, document.document_id, purchaseOrSale);
-                        } else {
-                            this.fillChildren(this.TREE_DATA[index].id, child.children, document.supplier_name, this.translate.instant('ACCOUNTS.supplier_unknow'), document.supplier_id, document.document_id, purchaseOrSale);
-                        }
-                        child.count = child.count + 1;
-                        this.TREE_DATA[index].count = this.TREE_DATA[index].count + 1;
-                    }
-                });
-            }
-        });
-    }
-
     loadDocumentPerCustomer(node: any) {
         const parentId = node.parent_id;
         const supplierId = node.supplier_id;
-        const purchaseOrSale = node.purchase_or_sale;
         this.TREE_DATA.forEach((element: any) => {
             if (element.id === parentId) {
                 const customerId = element.id;
                 this.customerFilterEnabled = true;
                 this.allowedCustomers = [customerId];
                 this.allowedSuppliers = [supplierId];
-                this.purchaseOrSale = purchaseOrSale;
                 this.resetPaginator();
                 this.loadDocuments().then();
             }
@@ -580,7 +478,6 @@ export class VerifierListComponent implements OnInit {
         this.search = '';
         this.loading = true;
         this.currentForm = '';
-        this.purchaseOrSale = '';
         this.loadingCustomers = true;
         this.allowedCustomers = [];
         this.allowedSuppliers = [];
@@ -688,12 +585,14 @@ export class VerifierListComponent implements OnInit {
     changeStatus(event: any) {
         this.currentStatus = event.value;
         this.resetPaginator();
+        this.loadCustomers();
         this.loadDocuments().then();
     }
 
     changeForm(event: any) {
         this.currentForm = event.value;
         this.resetPaginator();
+        this.loadCustomers();
         this.loadDocuments().then();
     }
 
@@ -703,6 +602,7 @@ export class VerifierListComponent implements OnInit {
         this.localStorageService.save('documentsTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
         this.resetPaginator();
+        this.loadCustomers();
         this.loadDocuments().then();
     }
 

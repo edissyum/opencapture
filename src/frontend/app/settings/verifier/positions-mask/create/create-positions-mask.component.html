@@ -2,7 +2,7 @@
     <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
-    <mat-sidenav-content class="bg-white">
+    <mat-sidenav-content class="bg-white overflow-hidden">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
@@ -16,38 +16,40 @@
             <div class="settings_search"></div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div *ngIf="!loading" class="overflow-auto">
-            <div class="grid grid-cols-3 gap-8 mt-6 ml-6 mr-6">
-                <mat-form-field>
-                    <mat-label>{{ "POSITIONS-MASKS.label" | translate }}</mat-label>
-                    <input matInput [formControl]="this.form['label'].control" required>
-                </mat-form-field>
-                <mat-form-field class="right-0 w-full">
-                    <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                        {{ "POSITIONS-MASKS.supplier_name_associated" | translate }}
-                    </mat-label>
-                    <input matInput type="text" [required]="true"
-                           [formControl]="this.form['supplier_id'].control" [matAutocomplete]="auto">
-                    <mat-autocomplete #auto="matAutocomplete">
-                        <mat-option *ngFor="let option of this.filteredOptions | async" [value]="option.name" [id]="option.id">
-                            <span [innerHTML]="option.name | highlight: toHighlight"></span>
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
-                <mat-form-field class="block">
-                    <mat-label>
-                        {{ "POSITIONS-MASKS.form_associated" | translate }}
-                    </mat-label>
-                    <mat-select [formControl]="this.form['form_id'].control" [required]="true">
-                        <mat-option *ngFor="let option of this.forms" [value]="option['id']">{{ option['label'] }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+        <div class="overflow-x-hidden h-full-overflow">
+            <div *ngIf="!loading" class="overflow-auto">
+                <div class="grid grid-cols-3 gap-8 mt-6 ml-6 mr-6">
+                    <mat-form-field>
+                        <mat-label>{{ "POSITIONS-MASKS.label" | translate }}</mat-label>
+                        <input matInput [formControl]="this.form['label']['control']" required>
+                    </mat-form-field>
+                    <mat-form-field class="right-0 w-full">
+                        <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                            {{ "POSITIONS-MASKS.supplier_name_associated" | translate }}
+                        </mat-label>
+                        <input matInput type="text" [required]="true"
+                               [formControl]="this.form['supplier_id']['control']" [matAutocomplete]="auto">
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let option of this.filteredOptions | async" [value]="option.name" [id]="option.id">
+                                <span [innerHTML]="option.name | highlight: toHighlight"></span>
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <mat-form-field class="block">
+                        <mat-label>
+                            {{ "POSITIONS-MASKS.form_associated" | translate }}
+                        </mat-label>
+                        <mat-select [formControl]="this.form['form_id']['control']" [required]="true">
+                            <mat-option *ngFor="let option of this.forms" [value]="option['id']">{{ option['label'] }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
             </div>
-        </div>
-        <div class="flex justify-center items-center mb-2">
-            <button (click)="createPositionsMask()" mat-button class="valid_button">
-                <span class="block">{{ "POSITIONS-MASKS.create" | translate }}</span>
-            </button>
+            <div class="flex justify-center items-center mb-2">
+                <button (click)="createPositionsMask()" mat-button class="valid_button">
+                    <span class="block">{{ "POSITIONS-MASKS.create" | translate }}</span>
+                </button>
+            </div>
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

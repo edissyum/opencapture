@@ -159,7 +159,6 @@
 		"login_bottom_message_updated": "Message en bas de la page de connexion modifié avec succès",
 		"login_image_changed": "Image de la page de connexion modifié avec succès",
 		"login_top_message_updated": "Message en haut de la page de connexion modifié avec succès",
-		"no_privilege_generate_token": "Vous n'avez pas les privilèges pour générer un token d'authentification",
 		"password_min_length": "Taille minimale",
 		"password_rules": "Règles de sécurité des mots de passe",
 		"password_rules_updated": "Règles de sécurité des mots de passe mise à jour avec succès",
@@ -203,6 +202,15 @@
 		"unallowed_fields": "Libellé technique du champ non autorisé (champ système Open-Capture)",
 		"update": "Modifier le champ personnalisé"
 	},
+	"DATA-EXPORT": {
+		"available_columns": "Champs disponibles",
+		"cancel": "Annuler",
+		"delimiter": "Délimiteur",
+		"export": "Exporter",
+		"export_columns": "Champs à exporter",
+		"extension": "Extension",
+		"selected_columns": "Champs sélectionnés"
+	},
 	"DISABLED": {
 		"disabled": "Désactiver",
 		"not_disabled": "Activer"
@@ -228,19 +236,24 @@
 		"doctype_added": "Type de document ajouté",
 		"doctype_edited": "Type de document modifié",
 		"doctypes_clone_success": "Types de documents clônés avec succès",
+		"doctypes_export_success": "Les types de documents ont été exportés avec succès",
 		"download_separator": "Télécharger le(s) séparateur(s)",
 		"edit_doctype": "Modifier un type de document",
+		"export": "Exporter les types de documents",
 		"folder": "Chemise",
 		"folder_added": "Chemise ajouté",
+		"form_identifier": "identifiant du formulaire",
 		"generate_folder_separators": "Générer tous les séparateurs de la chemise",
 		"generating_separator": "Génération du séparateur...",
+		"import": "Importer les types de documents",
 		"maximize_tree": "Maximiser l'affichage",
 		"minimize_tree": "Minimiser l'affichage",
 		"next_page": "Page suivante",
 		"no_doctype_to_show": "Aucun type de document à afficher",
 		"no_master": "(Ajouter dans la racine)",
 		"previous_page": "Page précédente",
-		"separator_choice ": "Choix de séparateur"
+		"separator_choice ": "Choix de séparateur",
+		"type": "Type (Chemise ou document)"
 	},
 	"DOCUMENTS": {
 		"data_deleted": "Champ supprimé",
@@ -272,6 +285,8 @@
 		"json_pattern": "Le champ n'est pas au format JSON",
 		"jwt_error": "Erreur lors de l'authentification par token",
 		"missing_secret_key": "La clé secrète est manquante pour cette instance",
+		"no_privilege_update_bottom_login": "Vous n'avez pas les privilèges pour mettre à jour le message en bas de la page de connexion",
+		"no_privilege_update_top_login": "Vous n'avez pas les privilèges pour mettre à jour le message en haut de la page de connexion",
 		"number_float_pattern": "La valeur n'est pas au format attendu : nombre flottant",
 		"number_int_pattern": "La valeur n'est pas au format attendu : nombre entier",
 		"permission_problem": "Erreur lors de l'upload du fichier, vérifiez les permissions",

@@ -116,12 +116,11 @@
                                         <span *ngIf="field.type === 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>
                                     </span>
                                     <span class="flex w-full" *ngIf="field['edit_name']">
-                                        <mat-form-field appearance="outline" class="w-full" style="margin-top: -8px">
-                                            <input matInput [value]="field.label | translate" class="relative top-1"
-                                                   (keyup.enter)="updateValue($event, field)"
-                                                   (focusout)="updateValue($event, field)">
+                                        <mat-form-field appearance="outline" class="edit_input w-full -mt-3.5">
+                                            <input matInput [value]="field.label | translate" class="relative top-1 h-2"
+                                                   (keyup.enter)="updateValue($event, field)" (focusout)="updateValue($event, field)">
                                         </mat-form-field>
-                                        <button matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button class="top-1.5">
+                                        <button matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button class="-top-3.5">
                                             <i class="fa-solid fa-check visible opacity-100 text-lg"></i>
                                         </button>
                                     </span>

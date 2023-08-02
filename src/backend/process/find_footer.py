@@ -61,16 +61,16 @@ class FindFooter:
             else:
                 content = line.content
 
-            for res in re.finditer(r"" + regex + "", content.upper().replace(' ', '')):
+            for res in re.finditer(r"" + regex, content.upper().replace(' ', '')):
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
 
                 if regex == self.regex['vat_amount']:
-                    data = re.sub(r"" + self.regex['vat_amount'][:-2] + "", '', data)  # Delete the vat amount keyword
+                    data = re.sub(r"" + self.regex['vat_amount'][:-2], '', data)  # Delete the vat amount keyword
 
                 if regex != self.regex['vat_rate']:
-                    data = re.sub(r"" + self.regex['vat_rate'] + "", '', data)
+                    data = re.sub(r"" + self.regex['vat_rate'], '', data)
 
                 tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''

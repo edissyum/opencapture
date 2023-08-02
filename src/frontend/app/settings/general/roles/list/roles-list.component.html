@@ -2,7 +2,7 @@
     <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
-    <mat-sidenav-content class="bg-white">
+    <mat-sidenav-content class="bg-white overflow-hidden">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
@@ -16,60 +16,62 @@
             <div class="settings_search"></div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <mat-table matSort [dataSource]="roles" (matSortChange)="sortData($event)" class="w-full">
-            <ng-container matColumnDef="id">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="label_short">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.label_short' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.label_short }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="label">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.label' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.label }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="status">
-                <mat-header-cell *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                    <span *ngIf="element.enabled"> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.active' | translate }}</span>
-                    <span *ngIf="!element.enabled"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.inactive' | translate }}</span>
-                </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="actions">
-                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                    <button *ngIf="element.enabled"
-                            (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.label)"
-                            matTooltip="{{ 'ROLE.disable' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="fa-solid fa-pause text-lg"></i>
-                    </button>
-                    <button *ngIf="!element.enabled"
-                            (click)="$event.stopPropagation();enableConfirmDialog(element.id, element.label)"
-                            matTooltip="{{ 'ROLE.enable' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="fa-solid fa-play text-lg"></i>
-                    </button>
-                    <button mat-icon-button
-                            (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.label)"
-                            matTooltip="{{ 'GLOBAL.delete' | translate }}"
-                            class="inline-block align-text-top">
-                        <i class="fa-solid fa-trash text-lg"></i>
-                    </button>
-                </mat-cell>
-            </ng-container>
-            <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                     routerLink="/settings/general/roles/update/{{ row.id }}"
-                     class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
-        </mat-table>
-        <mat-paginator showFirstLastButtons
-                       [length]="this.total"
-                       [pageSize]="pageSize"
-                       [pageIndex]="pageIndex"
-                       [pageSizeOptions]="[5, 10, 15, 20, 50]"
-                       (page)="onPageChange($event)">
-        </mat-paginator>
+        <div class="overflow-x-hidden h-full-overflow">
+            <mat-table matSort [dataSource]="roles" (matSortChange)="sortData($event)" class="w-full">
+                <ng-container matColumnDef="id">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="label_short">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.label_short' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.label_short }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="label">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.label' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.label }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span *ngIf="element.enabled"> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.active' | translate }}</span>
+                        <span *ngIf="!element.enabled"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.inactive' | translate }}</span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <button *ngIf="element.enabled"
+                                (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.label)"
+                                matTooltip="{{ 'ROLE.disable' | translate }}" mat-icon-button
+                                class="inline-block align-text-top">
+                            <i class="fa-solid fa-pause text-lg"></i>
+                        </button>
+                        <button *ngIf="!element.enabled"
+                                (click)="$event.stopPropagation();enableConfirmDialog(element.id, element.label)"
+                                matTooltip="{{ 'ROLE.enable' | translate }}" mat-icon-button
+                                class="inline-block align-text-top">
+                            <i class="fa-solid fa-play text-lg"></i>
+                        </button>
+                        <button mat-icon-button
+                                (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.label)"
+                                matTooltip="{{ 'GLOBAL.delete' | translate }}"
+                                class="inline-block align-text-top">
+                            <i class="fa-solid fa-trash text-lg"></i>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnsToDisplay;"
+                         routerLink="/settings/general/roles/update/{{ row.id }}"
+                         class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
+            </mat-table>
+            <mat-paginator showFirstLastButtons
+                           [length]="this.total"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+        </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

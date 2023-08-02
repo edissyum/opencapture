@@ -2,7 +2,7 @@
     <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
-    <mat-sidenav-content class="bg-white">
+    <mat-sidenav-content class="bg-white overflow-hidden">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
@@ -20,41 +20,43 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div class="flex justify-center items-center align-middle">
-            <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
-                <ng-container *ngFor="let field of userFields">
-                    <mat-form-field class="block" *ngIf="field.type !== 'select'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field['control']" [required]="field['required']"
-                               [type]="field.type === 'password' && showPassword ? 'text' : field.type"
-                               [placeholder]="field.label | translate">
-                        <mat-error class="text-red-400" [innerHTML]="getErrorMessage(field.id)" *ngIf="field.control.invalid"></mat-error>
-                        <mat-icon *ngIf="field.id === 'password'" matSuffix (click)="showPassword = !showPassword;"
-                                  class="text-green-400 relative cursor-pointer -top-0.5 text-base">
-                            <i class="fa fa-1x" [class.fa-eye-slash]="!showPassword" [class.fa-eye]="showPassword"></i>
-                        </mat-icon>
-                        <mat-icon *ngIf="field.id === 'password_check'" matSuffix
-                                  (click)="showPassword = !showPassword;"
-                                  class="text-green-400 relative cursor-pointer -top-0.5 text-base">
-                            <i class="fa fa-1x" [class.fa-eye-slash]="!showPassword" [class.fa-eye]="showPassword"></i>
-                        </mat-icon>
-                    </mat-form-field>
-                    <mat-form-field class="block" *ngIf="field.type === 'select'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [formControl]="field['control']" [(value)]="field.control.value" [required]="field['required']">
-                            <mat-option *ngFor="let option of field.values" [value]="option['id']">
-                                {{ option['label'] | translate }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
-                    </mat-form-field>
-                </ng-container>
-                <div class="button col-span-3">
-                    <button class="valid_button" type="submit" mat-button>
-                        {{ 'USER.create_user' | translate }}
-                    </button>
-                </div>
-            </form>
+        <div class="overflow-x-hidden h-full-overflow">
+            <div class="flex justify-center items-center align-middle">
+                <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
+                    <ng-container *ngFor="let field of userFields">
+                        <mat-form-field class="block" *ngIf="field.type !== 'select'">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <input matInput [formControl]="field['control']" [required]="field['required']"
+                                   [type]="field.type === 'password' && showPassword ? 'text' : field.type"
+                                   [placeholder]="field.label | translate">
+                            <mat-error class="text-red-400" [innerHTML]="getErrorMessage(field.id)" *ngIf="field.control.invalid"></mat-error>
+                            <mat-icon *ngIf="field.id === 'password'" matSuffix (click)="showPassword = !showPassword;"
+                                      class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                                <i class="fa fa-1x" [class.fa-eye-slash]="!showPassword" [class.fa-eye]="showPassword"></i>
+                            </mat-icon>
+                            <mat-icon *ngIf="field.id === 'password_check'" matSuffix
+                                      (click)="showPassword = !showPassword;"
+                                      class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                                <i class="fa fa-1x" [class.fa-eye-slash]="!showPassword" [class.fa-eye]="showPassword"></i>
+                            </mat-icon>
+                        </mat-form-field>
+                        <mat-form-field class="block" *ngIf="field.type === 'select'">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <mat-select [formControl]="field['control']" [(value)]="field.control.value" [required]="field['required']">
+                                <mat-option *ngFor="let option of field.values" [value]="option['id']">
+                                    {{ option['label'] | translate }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                        </mat-form-field>
+                    </ng-container>
+                    <div class="button col-span-3">
+                        <button class="valid_button" type="submit" mat-button>
+                            {{ 'USER.create_user' | translate }}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="customers w-1/4 flex flex-col h-full border-r border-green-400">
