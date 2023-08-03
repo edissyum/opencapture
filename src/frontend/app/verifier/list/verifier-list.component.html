@@ -117,7 +117,7 @@
                                 <mat-select [(value)]="this.currentForm" (selectionChange)="changeForm($event)" [disabled]="this.loading">
                                     <mat-option *ngFor="let option of this.forms" [value]="option['id']">
                                         {{ option['label'] | translate }}
-                                        <span style="font-size: 12px;" class="text-green-400 ml-3 font-bold">{{ option['total'] }}</span>
+                                        <span *ngIf="this.currentForm !== option['id']" style="font-size: 12px;" class="text-green-400 ml-3 font-bold">{{ option['total'] }}</span>
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>

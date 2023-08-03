@@ -330,11 +330,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         })
         if workflow_settings:
             workflow_settings = workflow_settings[0]
-            if workflow_settings['input']['apply_process'] and workflow_settings['process']['rotation']:
-                if workflow_settings['process']['rotation'] != 'no_rotation':
-                    rotate_document(file, workflow_settings['process']['rotation'])
-                    log.info('Document rotated by ' + str(workflow_settings['process']['rotation']) +
-                             '° based on workflow settings')
+            if workflow_settings['input']['rotation'] and workflow_settings['input']['rotation'] != 'no_rotation':
+                rotate_document(file, workflow_settings['input']['rotation'])
+                log.info('Document rotated by ' + str(workflow_settings['input']['rotation']) +
+                         '° based on workflow settings')
 
     # Convert files to JPG
     convert(file, files, ocr, nb_pages)

@@ -137,6 +137,33 @@ export class WorkflowBuilderComponent implements OnInit {
                 required: false
             },
             {
+                id: 'rotation',
+                multiple: false,
+                label: this.translate.instant('WORKFLOW.rotation'),
+                type: 'select',
+                control: new FormControl('no_rotation'),
+                required: true,
+                show: true,
+                values: [
+                    {
+                        'id': 'no_rotation',
+                        'label': this.translate.instant('WORKFLOW.no_rotation')
+                    },
+                    {
+                        'id': 90,
+                        'label': this.translate.instant('WORKFLOW.rotate_90')
+                    },
+                    {
+                        'id': 180,
+                        'label': this.translate.instant('WORKFLOW.rotate_180')
+                    },
+                    {
+                        'id': 270,
+                        'label': this.translate.instant('WORKFLOW.rotate_270')
+                    }
+                ]
+            },
+            {
                 id: 'remove_blank_pages',
                 label: this.translate.instant('WORKFLOW.remove_blank_pages'),
                 type: 'boolean',

@@ -231,16 +231,6 @@ export class VerifierListComponent implements OnInit {
 
     loadCustomers() {
         this.TREE_DATA = [];
-        this.TREE_DATA.push({
-            name: this.translate.instant('ACCOUNTS.customer_not_specified'),
-            id: 0,
-            parent_id: '',
-            supplier_id: '',
-            form_id: '',
-            display: true,
-            count: 0,
-            children: []
-        });
         this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
         this.http.get(environment['url'] + '/ws/verifier/customersCount/' + this.userService.user.id + '/' + this.currentStatus + '/' + this.currentTime, {headers: this.authService.headers}).pipe(
             tap((customers_count: any) => {
