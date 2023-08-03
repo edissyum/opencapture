@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS "unaccent";
+
 CREATE TABLE "users" (
     "id"                SERIAL      UNIQUE PRIMARY KEY,
     "username"          VARCHAR(50) UNIQUE NOT NULL,

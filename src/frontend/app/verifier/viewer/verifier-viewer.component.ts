@@ -20,7 +20,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
 import { catchError, map, startWith, tap } from "rxjs/operators";
-import { interval, Observable, of } from "rxjs";
+import { interval, of } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
@@ -52,6 +52,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     loading                 : boolean     = true;
     supplierExists          : boolean     = true;
     deleteDataOnChangeForm  : boolean     = true;
+    allowAutocomplete       : boolean     = false;
     processMultiDocument    : boolean     = false;
     isOCRRunning            : boolean     = false;
     processDone             : boolean     = false;
@@ -126,8 +127,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         char                            : '^[A-Za-z\\s]*$',
         email                           : '^([A-Za-z0-9]+[\\.\\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\\.[A-Z|a-z]{2,})+$'
     };
-    supplierNamecontrol     : FormControl =  new FormControl();
-    filteredOptions         : Observable<any> | any;
+    supplierNamecontrol     : FormControl = new FormControl();
 
     constructor(
         private router: Router,
@@ -250,7 +250,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
         this.formList = await this.getAllForm();
         this.formList = this.formList.forms;
-        this.suppliers = await this.retrieveSuppliers();
+        this.suppliers = await this.retrieveSuppliers('', 1000);
         this.suppliers = this.suppliers.suppliers;
 
         let supplierFormFound = false;
@@ -320,10 +320,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         triggerEvent.hide();
 
         if (this.formSettings.settings.unique_url && this.formSettings.settings.unique_url.allow_supplier_autocomplete) {
-            this.filteredOptions = this.supplierNamecontrol.valueChanges.pipe(
-                startWith(''),
-                map(option => option ? this._filter(option) : this.suppliers.slice())
-            );
+            this.allowAutocomplete = true;
         }
     }
 
@@ -595,8 +592,12 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         return page;
     }
 
-    async retrieveSuppliers(): Promise<any> {
-        return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC', {headers: this.authService.headers}).toPromise();
+    async retrieveSuppliers(name: string = '', limit: number = 0): Promise<any> {
+        if (limit == 0) {
+            return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC&name=' + name, {headers: this.authService.headers}).toPromise();
+        } else {
+            return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC&limit=' + limit, {headers: this.authService.headers}).toPromise();
+        }
     }
 
     async getDocument(): Promise<any> {
@@ -937,14 +938,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 this.isOCRRunning = true;
                 let lang = this.localeService.currentLang;
                 if (Object.keys(this.currentSupplier).length !== 0) {
-                    lang = this.currentSupplier.document_lang;
+                    lang = this.currentSupplier['document_lang'];
                 }
                 this.http.post(environment['url'] + '/ws/verifier/ocrOnFly',
                     {
                         selection: this.getSelectionByCpt(selection, cpt),
                         fileName: this.currentFilename, lang: lang,
                         thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height},
-                        registerDate: this.document.register_date
+                        registerDate: this.document['register_date']
                     }, {headers: this.authService.headers})
                     .pipe(
                         tap((data: any) => {
@@ -1480,7 +1481,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             'email': supplier.email,
                             'vat_number': supplier.vat_number
                         };
-                        this.getOnlyRawFooter = supplier.get_only_raw_footer;
+                        this.getOnlyRawFooter = supplier['get_only_raw_footer'];
                         for (const column in supplierData) {
                             this.updateFormValue(column, supplierData[column]);
                         }
@@ -1939,5 +1940,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
     showAutoLogo(field: any) {
         return !!(this.document.positions[field.id] && !this.document.positions[field.id].ocr_from_user);
+    }
+
+    async filterSupplier(value: any) {
+        if (value.length < 3) {
+            return;
+        }
+        this.suppliers = await this.retrieveSuppliers(value);
+        this.suppliers = this.suppliers.suppliers;
     }
 }
