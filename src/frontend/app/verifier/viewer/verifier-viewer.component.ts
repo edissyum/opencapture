@@ -20,7 +20,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
 import { catchError, map, startWith, tap } from "rxjs/operators";
-import { interval, Observable, of } from "rxjs";
+import { interval, of } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
