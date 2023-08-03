@@ -902,7 +902,7 @@
 		"merge": "Fusionner",
 		"merge_error_form_not_match": "Erreur lors de la fusion, les formulaires associés diffèrent",
 		"merge_success": "Fusion des lots effectué avec succès",
-		"min_3_letter": "Au moins 3 letters",
+		"min_3_letter": "Au moins 3 lettres",
 		"moveToAnotherDoc": "Déplacer vers un autre document",
 		"move_selected_to": "Déplacer la sélection vers",
 		"no_batch_found": "Aucun lot à afficher",

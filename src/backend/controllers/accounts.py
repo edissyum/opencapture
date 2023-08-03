@@ -46,6 +46,11 @@ def get_suppliers(_args):
             "LOWER(siren) LIKE '%%" + _args['search'].lower() + "%%' OR "
             "LOWER(vat_number) LIKE '%%" + _args['search'].lower() + "%%')"
         )
+
+    if 'name' in _args and _args['name']:
+        args['offset'] = ''
+        args['where'].append("LOWER(unaccent(name)) LIKE unaccent('" + _args['name'].lower() + "%%')")
+
     suppliers = accounts.get_suppliers(args)
     response = {
         "suppliers": suppliers
