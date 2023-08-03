@@ -40,7 +40,7 @@ def get_suppliers(_args):
     if 'search' in _args and _args['search']:
         args['offset'] = ''
         args['where'].append(
-            "(LOWER(name) LIKE '%%" + _args['search'].lower() + "%%' OR "
+            "(LOWER(unaccent(name)) LIKE unaccent('%%" + _args['search'].lower() + "%%') OR "
             "LOWER(siret) LIKE '%%" + _args['search'].lower() + "%%' OR "
             "LOWER(email) LIKE '%%" + _args['search'].lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + _args['search'].lower() + "%%' OR "
@@ -424,7 +424,7 @@ def retrieve_customers(data, module):
     if 'search' in data and data['search']:
         args['offset'] = ''
         args['where'].append(
-            "(LOWER(name) LIKE '%%" + data['search'].lower() + "%%' OR "
+            "(LOWER(unaccent(name)) LIKE unaccent('%%" + data['search'].lower() + "%%') OR "
             "LOWER(siret) LIKE '%%" + data['search'].lower() + "%%' OR "
             "LOWER(company_number) LIKE '%%" + data['search'].lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + data['search'].lower() + "%%' OR "
