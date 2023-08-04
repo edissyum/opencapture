@@ -57,7 +57,7 @@
         "@types/d3-scale": "^4.0.3",
         "@types/d3-selection": "^3.0.5",
         "@types/d3-shape": "^3.1.1",
-        "@types/node": "^20.4.6",
+        "@types/node": "^20.4.7",
         "@typescript-eslint/eslint-plugin": "6.2.1",
         "@typescript-eslint/parser": "6.2.1",
         "autoprefixer": "^10.4.14",

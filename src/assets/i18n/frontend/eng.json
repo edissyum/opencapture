@@ -37,6 +37,7 @@
 		"iban": "IBAN",
 		"import_suppliers": "Import third-party account",
 		"only_one_email": "Only one email is accepted",
+		"pattern_error": "Pattern error",
 		"positions_deleted": "Third-party account positions deleted",
 		"search_customer": "Search customer",
 		"search_supplier": "Search third-party account",

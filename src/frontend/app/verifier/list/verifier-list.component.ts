@@ -237,7 +237,7 @@ export class VerifierListComponent implements OnInit {
                 this.customersList = data.customers;
                 this.customersList.unshift({
                     "id": 0,
-                    "name": this.translate.instant('ACCOUNTS.customer_not_specified'),
+                    "name": this.translate.instant('ACCOUNTS.customer_not_specified')
                 });
             }),
             catchError((err: any) => {

@@ -21,7 +21,7 @@
                 </ng-container>
             </div>
             <div class="flex justify-center items-center align-middle">
-                <form (ngSubmit)="onSubmit()" class="grid grid-cols-7 gap-2 w-full m-10 text-center">
+                <form (ngSubmit)="onSubmit()" class="grid grid-cols-4 gap-2 gap-y-5 w-full m-10 text-center">
                     <ng-container *ngFor="let field of supplierForm">
                         <mat-form-field class="block" *ngIf="field.type === 'text'">
                             <mat-label>{{ field.label | translate }}</mat-label>
