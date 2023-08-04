@@ -27,8 +27,7 @@
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessageSupplier(field.id) }}</mat-error>
-                            <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
-                                  [matTooltip]="field.hint | translate">
+                            <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
                                 <i class="fa-solid fa-circle-question text-md"></i>
                             </span>
                         </mat-form-field>
