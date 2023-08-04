@@ -44,8 +44,8 @@
 		"siret": "SIRET number",
 		"skip_validated_success": "The next automatic validation will be cancel for this third-party account",
 		"supplier": "Third-party account",
-		"supplier_created": "Third-party account created successfully",
 		"supplier_deleted": "Third-party account deleted successfully",
+		"supplier_created": "Third-party account created successfully",
 		"supplier_name": "Third-party account name",
 		"supplier_unknow": "Unknow third-party account",
 		"supplier_updated": "Third-party account updated successfully",
@@ -215,6 +215,7 @@
 		"cancel": "Cancel",
 		"column": "Column",
 		"columns_config": "Columns configuration",
+		"extension_unauthorized": "Extension { extension } not allowed",
 		"import": "Import",
 		"no_rows": "No rows to display",
 		"placeholder": "Drag and drop your file here <strong></strong> or click to select a file",
@@ -264,7 +265,8 @@
 		"no_master": "(No master folder)",
 		"previous_page": "Previous page",
 		"separator_choice ": "Separator choice",
-		"type": "Type (folder or doctype)"
+		"type": "Type (folder or doctype)",
+		"users_import_success": "Users imported with success"
 	},
 	"DOCUMENTS": {
 		"data_deleted": "Data deleted",
@@ -994,10 +996,12 @@
 		"email": "Email address",
 		"enable": "Enable user",
 		"enabled": "Number of active users",
+		"export": "Export users",
 		"firstname": "Firstname",
 		"forgot_password_email_sent": "Email to reset your password has been sent successfully",
 		"form_splitter_only": "Setting used in Splitter module only for now",
 		"form_updated": "User forms updated successfully",
+		"import": "Import users",
 		"lastname": "Lastname",
 		"mode": "Connection mode",
 		"modify": "Modify",
@@ -1017,6 +1021,7 @@
 		"update": "Update user",
 		"updated": "User udpated successfully",
 		"user_deleted": "User deleted successfully",
+		"user_export_success": "Users exported successfully",
 		"username": "Username",
 		"webservice": "Webservice"
 	},
