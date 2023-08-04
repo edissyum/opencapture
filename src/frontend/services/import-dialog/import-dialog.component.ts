@@ -36,10 +36,10 @@ import {MatTable} from "@angular/material/table";
   styleUrls: ['./import-dialog.component.scss']
 })
 export class ImportDialogComponent {
-  headers                     : HttpHeaders   = this.authService.headers;
-  loading                     : boolean       = false;
-  error                       : boolean       = false;
-  header                      : string[]       = [];
+  headers                     : HttpHeaders = this.authService.headers;
+  loading                     : boolean     = false;
+  error                       : boolean     = false;
+  header                      : string[]    = [];
   markers: any = {
     placeholder: marker('DATA-IMPORT.placeholder')
   };
