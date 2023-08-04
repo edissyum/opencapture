@@ -63,42 +63,42 @@ export class UpdateSupplierComponent implements OnInit {
             id: 'vat_number',
             label: marker('ACCOUNTS.vat_number'),
             type: 'text',
-            control: new FormControl(),
+            control: new FormControl('', Validators.pattern('^(EU|SI|HU|D(K|E)|PL|CHE|(F|H)R|B(E|G)(0)?)[0-9A-Za-z]{2}[0-9]{6,9}$')),
             required: true
         },
         {
             id: 'siret',
             label: marker('ACCOUNTS.siret'),
             type: 'text',
-            control: new FormControl(''),
+            control: new FormControl('', Validators.pattern('^[0-9]{14}$')),
             required: false
         },
         {
             id: 'siren',
             label: marker('ACCOUNTS.siren'),
             type: 'text',
-            control: new FormControl(''),
+            control: new FormControl('', Validators.pattern('^[0-9]{9}$')),
             required: false
         },
         {
             id: 'iban',
             label: marker('ACCOUNTS.iban'),
             type: 'text',
-            control: new FormControl(''),
+            control: new FormControl('', Validators.pattern('^[A-Za-z]{2}(?:[ ]?[0-9]){18,25}$')),
             required: false
         },
         {
             id: 'duns',
             label: marker('ACCOUNTS.duns'),
             type: 'text',
-            control: new FormControl(''),
+            control: new FormControl('', Validators.pattern('^([0-9]{9})|([0-9]{2}-[0-9]{3}-[0-9]{4})$')),
             required: false
         },
         {
             id: 'bic',
             label: marker('ACCOUNTS.bic'),
             type: 'text',
-            control: new FormControl(''),
+            control: new FormControl('', Validators.pattern('^[a-zA-Z0-9]{4}[A-Z]{2}[a-zA-Z0-9]{2}(?:[a-zA-Z0-9]{3})?$')),
             required: false
         },
         {
@@ -392,8 +392,13 @@ export class UpdateSupplierComponent implements OnInit {
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }
-                if (element.control.errors && element.control.errors.email) {
-                    error = this.translate.instant('ACCOUNTS.email_format_error');
+                if (element.control.errors) {
+                     if (element.control.errors.email) {
+                         error = this.translate.instant('ACCOUNTS.email_format_error');
+                     }
+                     else if (element.control.errors.pattern) {
+                         error = this.translate.instant('ACCOUNTS.pattern_error');
+                     }
                 }
             }
         });

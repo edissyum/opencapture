@@ -37,6 +37,7 @@
 		"iban": "Numéro d'IBAN",
 		"import_suppliers": "Importer les tiers",
 		"only_one_email": "Une seule adresse e-mail est acceptée",
+		"pattern_error": "Le format du champ est incorrect",
 		"positions_deleted": "Positions du tiers supprimées",
 		"search_customer": "Recherche de client",
 		"search_supplier": "Recherche de tiers",

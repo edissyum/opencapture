@@ -232,10 +232,23 @@ export class VerifierListComponent implements OnInit {
     loadCustomers() {
         this.TREE_DATA = [];
         this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
+        this.http.get(environment['url'] + '/ws/accounts/customers/list/verifier', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.customersList = data.customers;
+                this.customersList.unshift({
+                    "id": 0,
+                    "name": this.translate.instant('ACCOUNTS.customer_not_specified')
+                });
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.http.get(environment['url'] + '/ws/verifier/customersCount/' + this.userService.user.id + '/' + this.currentStatus + '/' + this.currentTime, {headers: this.authService.headers}).pipe(
             tap((customers_count: any) => {
-                this.customersList = customers_count;
-                this.customersList.forEach((customer_count: any) => {
+                customers_count.forEach((customer_count: any) => {
                     this.allowedCustomers.push(customer_count.customer_id);
                     const node : any = {
                         name: customer_count.name ? customer_count.name : this.translate.instant('ACCOUNTS.customer_not_specified'),
