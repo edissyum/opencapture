@@ -111,7 +111,6 @@ export class ImportDialogComponent {
         }
         else {
             this.data.rows.unshift(this.header);
-            this.data.rows[0] = this.header;
         }
         this.previewTable.renderRows();
     }
