@@ -115,4 +115,8 @@ export class ImportDialogComponent {
         }
         this.previewTable.renderRows();
     }
+
+    changeSelectedColumns(newColumn: string, index: number) {
+        this.data.selectedColumns[index] = newColumn;
+    }
 }

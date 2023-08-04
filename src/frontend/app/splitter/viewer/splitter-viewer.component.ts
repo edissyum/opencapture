@@ -889,18 +889,19 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             width   : '800px',
             height  : '860px',
             data    : {
-                selectedDoctype: {
-                    key: document.doctypeKey  ? document.doctypeKey  : "",
-                    label: document.doctypeLabel  ? document.doctypeLabel  : ""
-                },
-                formId: this.currentBatch.formId
+                allowImportExport : false,
+                formId            : this.currentBatch.formId,
+                selectedDoctype   : {
+                    key     : document.doctypeKey  ? document.doctypeKey  : "",
+                    label   : document.doctypeLabel  ? document.doctypeLabel  : ""
+                }
             }
         });
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result) {
-                document.doctypeLabel = result.label;
-                document.doctypeKey   = result.key;
-                this.hasUnsavedChanges = true;
+                document.doctypeLabel   = result.label;
+                document.doctypeKey     = result.key;
+                this.hasUnsavedChanges  = true;
             }
         });
     }

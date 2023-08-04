@@ -6,7 +6,7 @@
         class="h-80"
         [selectedDoctypeInput]="data.selectedDoctype"
         (selectedDoctypeOutput)="getOutPut($event)"
-        [settings]="{canFolderBeSelected: false, formId: data.formId}">
+        [settings]="{'canFolderBeSelected': false, 'formId': data.formId, 'allowImportExport': data.allowImportExport}">
     </app-document-type-factory>
     <div class="text-gray-400 mt-1 mx-4">
         <i class="fa-solid fa-circle-info"></i>

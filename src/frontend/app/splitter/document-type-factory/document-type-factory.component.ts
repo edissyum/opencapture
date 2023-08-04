@@ -212,6 +212,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         'id': undefined
     };
     @Input() settings: any               = {
+        'allowImportExport': false,
         'canFolderBeSelected': false,
         'formId': undefined
     };
@@ -457,20 +458,21 @@ export class DocumentTypeFactoryComponent implements OnInit {
     }
 
     importDoctypes() {
-        const columns = [ 'key', 'label', 'type', 'code', 'form_id'];
         const dialogRef = this.dialog.open(ImportDialogComponent, {
             data: {
                 rows: [],
                 extension: 'CSV',
                 skipHeader: false,
                 title : this.translate.instant('DOCTYPE.import'),
-                availableColumns : columns,
-                selectedColumns : columns
+                availableColumns : [ 'key', 'label', 'type', 'code', 'form_id'],
+                selectedColumns : [ 'key', 'label', 'type', 'code', 'form_id']
             },
             width: "900px"
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
+                console.log("result");
+                console.log(result);
                 const formData: FormData = new FormData();
                 for (let i = 0; i < result.fileControl.value!.length; i++) {
                     if (result.fileControl.status === 'VALID') {
