@@ -175,7 +175,7 @@
                                         </button>
                                     </mat-menu>
                                     <mat-menu #customers="matMenu">
-                                        <button mat-menu-item *ngFor="let customer of this.dataSource.data"
+                                        <button mat-menu-item *ngFor="let customer of this.customersList"
                                                 (click)="changeCustomer(customer.id, document.document_id)">
                                             <span [class.text-green-400]="customer.id === document.customer_id">
                                                 {{ customer.name | translate }}
