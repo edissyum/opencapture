@@ -69,7 +69,7 @@ export class ImportDialogComponent {
         const fileExtension = fileName.split('.').pop();
         if (fileExtension.toLowerCase() !== 'csv') {
           this.error = true;
-          this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized', {count: data.length}));
+          this.notify.handleErrors(this.translate.instant('DATA-IMPORT.extension_unauthorized', {count: data.length}));
           return;
         }
       }
