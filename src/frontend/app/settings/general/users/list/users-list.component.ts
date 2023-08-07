@@ -329,12 +329,8 @@ export class UsersListComponent implements OnInit {
                 label: this.translate.instant('USER.firstname')
             },
             {
-                id: 'mail',
+                id: 'email',
                 label: this.translate.instant('FORMATS.email')
-            },
-            {
-                id: 'customer_name',
-                label: this.translate.instant('ACCOUNTS.customer_name')
             }
         ];
         const availableColumns: any [] = [];
@@ -357,14 +353,14 @@ export class UsersListComponent implements OnInit {
                 this.http.post(environment['url'] + '/ws/users/export', {'args': args}, {headers: this.authService.headers},
                 ).pipe(
                     tap((data: any) => {
-                        const csvContent = atob(data.encoded_csv);
+                        const csvContent = atob(data.encoded_file);
                         const blob = new Blob([csvContent], {type: "data:application/octet-stream;base64"});
                         const url  = window.URL.createObjectURL(blob);
                         const link = document.createElement("a");
                         link.href = url;
-                        link.download = `doctypes.${result.extension}`;
+                        link.download = `users.${result.extension}`;
                         link.click();
-                        this.notify.success(this.translate.instant('USER.user_export_success'));
+                        this.notify.success(this.translate.instant('USER.users_export_success'));
                     }),
                     catchError((err: any) => {
                         console.debug(err);

@@ -1001,7 +1001,7 @@
 		"forgot_password_email_sent": "L'email de réinitialisation de mot de passe a été envoyé avec succès",
 		"form_splitter_only": "Paramètre utile seulement pour le module Splitter actuellement",
 		"form_updated": "Liste des formulaires de l'utilisateur mis à jour",
-		"import": "Im",
+		"import": "Importer des utilisateurs",
 		"lastname": "Nom de famille",
 		"mode": "Mode de connexion",
 		"modify": "Modifier",
@@ -1021,8 +1021,8 @@
 		"update": "Modifier l'utilisateur",
 		"updated": "Utilisateur mis à jour",
 		"user_deleted": "Utilisateur supprimé",
-		"user_export_success": "Liste des utilisateurs exportée avec succès",
 		"username": "Nom d'utilisateur",
+		"users_export_success": "Liste des utilisateurs exportée avec succès",
 		"webservice": "Webservice"
 	},
 	"VERIFIER": {

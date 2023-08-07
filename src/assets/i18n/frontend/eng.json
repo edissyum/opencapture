@@ -44,8 +44,8 @@
 		"siret": "SIRET number",
 		"skip_validated_success": "The next automatic validation will be cancel for this third-party account",
 		"supplier": "Third-party account",
-		"supplier_deleted": "Third-party account deleted successfully",
 		"supplier_created": "Third-party account created successfully",
+		"supplier_deleted": "Third-party account deleted successfully",
 		"supplier_name": "Third-party account name",
 		"supplier_unknow": "Unknow third-party account",
 		"supplier_updated": "Third-party account updated successfully",
@@ -257,7 +257,7 @@
 		"form_identifier": "Form identifier",
 		"generate_folder_separators": "Generate all folder separators",
 		"generating_separator": "Generating separator",
-		"import": "Import",
+		"import": "Import document types",
 		"maximize_tree": "Maximise tree",
 		"minimize_tree": "Minimize tree",
 		"next_page": "Next page",
@@ -1021,8 +1021,8 @@
 		"update": "Update user",
 		"updated": "User udpated successfully",
 		"user_deleted": "User deleted successfully",
-		"user_export_success": "Users exported successfully",
 		"username": "Username",
+		"users_export_success": "Users exported successfully",
 		"webservice": "Webservice"
 	},
 	"VERIFIER": {
