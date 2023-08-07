@@ -116,5 +116,5 @@ def export_doctypes():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
 
     data = json.loads(request.data)
-    res = doctypes.export_doctypes_csv(data['args'])
+    res = doctypes.export_doctypes(data['args'])
     return make_response(jsonify(res[0])), res[1]

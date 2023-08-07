@@ -14,6 +14,7 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask_babel import gettext
 from flask import Blueprint, request, make_response, jsonify
@@ -177,4 +178,30 @@ def update_forms_by_user_id(user_id):
 
     forms = request.json['forms']
     res = user.update_forms_by_user_id(user_id, forms)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('users/csv/import', methods=['POST'])
+@auth.token_required
+def import_users():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_user', 'update_user']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/users/csv/import'}), 403
+    args = {
+        'files': request.files,
+        'skip_header': request.form['skipHeader'] == 'true',
+        'selected_columns': request.form['selectedColumns'].split(','),
+    }
+
+    res = user.import_users(args)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('users/export', methods=['POST'])
+@auth.token_required
+def export_users():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'users_list']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/users/export'}), 403
+
+    data = request.json
+    res = user.export_users(data['args'])
     return make_response(jsonify(res[0])), res[1]

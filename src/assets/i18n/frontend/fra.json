@@ -216,6 +216,7 @@
 		"cancel": "Annuler",
 		"column": "Champ",
 		"columns_config": "Configuration des champs",
+		"extension_unauthorized": "Uniquement les fichiers {{ extensions }} sont autorisés",
 		"import": "Importer",
 		"no_rows": "Aucune ligne à afficher",
 		"placeholder": "Déposez un fichier ici ({{ extension }}) ou cliquez pour sélectionner un fichier",
@@ -240,6 +241,7 @@
 		"add_folder": "Ajouter un type une chemise",
 		"clean_search_text": "Supprimer le texte de recherche",
 		"clone_doctypes": "Cloner les types de documents",
+		"code": "Code d'arboréscence",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le type de document <strong>{{ doctypeLabel }}</strong> ?",
 		"confirm_doctypes_clone": "Veuillez confirmer le clone de types de documents",
 		"default_doctype": "Type de document par défaut",
@@ -264,7 +266,8 @@
 		"no_master": "(Ajouter dans la racine)",
 		"previous_page": "Page précédente",
 		"separator_choice ": "Choix de séparateur",
-		"type": "Type (Chemise ou document)"
+		"type": "Type (Chemise ou document)",
+		"users_import_success": "Les utilisateurs ont été importés avec succès"
 	},
 	"DOCUMENTS": {
 		"data_deleted": "Champ supprimé",
@@ -994,10 +997,12 @@
 		"email": "Adresse email",
 		"enable": "Activer l'utilisateur",
 		"enabled": "Nombre d'utilisateur actifs",
+		"export": "Exporter la liste des utilisateurs",
 		"firstname": "Prénom",
 		"forgot_password_email_sent": "L'email de réinitialisation de mot de passe a été envoyé avec succès",
 		"form_splitter_only": "Paramètre utile seulement pour le module Splitter actuellement",
 		"form_updated": "Liste des formulaires de l'utilisateur mis à jour",
+		"import": "Importer des utilisateurs",
 		"lastname": "Nom de famille",
 		"mode": "Mode de connexion",
 		"modify": "Modifier",
@@ -1018,6 +1023,7 @@
 		"updated": "Utilisateur mis à jour",
 		"user_deleted": "Utilisateur supprimé",
 		"username": "Nom d'utilisateur",
+		"users_export_success": "Liste des utilisateurs exportée avec succès",
 		"webservice": "Webservice"
 	},
 	"VERIFIER": {

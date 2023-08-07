@@ -19,7 +19,7 @@
         </div>
         <hr class="border-green-400 relative z-50">
         <app-document-type-factory [ngClass]="{'pointer-events-none opacity-50': loadingSeparator}"
-                                   [settings]="{'canFolderBeSelected': false, 'showFoldersSeparatorBtn': true}"
+                                   [settings]="{'canFolderBeSelected': false, 'showFoldersSeparatorBtn': true, 'allowImportExport': false}"
                                    (selectedDoctypeOutput)="getOutPut($event)">
         </app-document-type-factory>
     </mat-sidenav-content>

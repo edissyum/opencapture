@@ -212,6 +212,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         'id': undefined
     };
     @Input() settings: any               = {
+        'allowImportExport': false,
         'canFolderBeSelected': false,
         'formId': undefined
     };
@@ -401,6 +402,10 @@ export class DocumentTypeFactoryComponent implements OnInit {
             {
                 id: 'form_id',
                 label: this.translate.instant('DOCTYPE.form_identifier')
+            },
+            {
+                id: 'code',
+                label: this.translate.instant('DOCTYPE.code')
             }
         ];
         const availableColumns: any [] = [
@@ -433,7 +438,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 this.http.post(environment['url'] + '/ws/doctypes/export', {'args': args}, {headers: this.authService.headers},
                 ).pipe(
                     tap((data: any) => {
-                        const csvContent = atob(data.encoded_csv);
+                        const csvContent = atob(data.encoded_file);
                         const blob = new Blob([csvContent], {type: "data:application/octet-stream;base64"});
                         const url  = window.URL.createObjectURL(blob);
                         const link = document.createElement("a");
@@ -453,20 +458,22 @@ export class DocumentTypeFactoryComponent implements OnInit {
     }
 
     importDoctypes() {
-        const columns = [ 'key', 'label', 'type', 'code', 'form_id'];
         const dialogRef = this.dialog.open(ImportDialogComponent, {
             data: {
                 rows: [],
                 extension: 'CSV',
                 skipHeader: false,
+                allowColumnsSelection : true,
                 title : this.translate.instant('DOCTYPE.import'),
-                availableColumns : columns,
-                selectedColumns : columns
+                availableColumns : [ 'key', 'label', 'type', 'code', 'form_id'],
+                selectedColumns : [ 'key', 'label', 'type', 'code', 'form_id']
             },
             width: "900px"
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
+                console.log("result");
+                console.log(result);
                 const formData: FormData = new FormData();
                 for (let i = 0; i < result.fileControl.value!.length; i++) {
                     if (result.fileControl.status === 'VALID') {

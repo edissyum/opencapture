@@ -217,7 +217,7 @@ def clone_form_doctypes(src_form_id, dest_form_id):
     return {'OK': True}, 200
 
 
-def export_doctypes_csv(args):
+def export_doctypes(args):
     delimiter = ','
     columns = []
     values = []
@@ -256,7 +256,7 @@ def export_doctypes_csv(args):
         csv_file.seek(0)
         b64 = base64.b64encode(csv_file.getvalue().encode())
         response = {
-            'encoded_csv': b64.decode()
+            'encoded_file': b64.decode()
         }
         return response, 200
 
@@ -309,7 +309,7 @@ def import_from_csv(args):
                     'type': row[args['selected_columns'].index('type')],
                     'code': row[args['selected_columns'].index('code')],
                     'form_id': row[args['selected_columns'].index('form_id')],
-                    'is_default': False
+                    'is_default': False,
                 }
                 _, _ = doctypes.add_doctype(doctype)
 

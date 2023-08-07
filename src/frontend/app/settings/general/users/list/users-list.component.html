@@ -13,6 +13,18 @@
                 </button>
             </div>
             <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="m-8 absolute right-64">
+                <button class="hover:text-green-400 hover:cursor-pointer mx-2"
+                        (click)="importUsers()"
+                        [matTooltip]="'USER.import' | translate">
+                    <i class="fa-solid fa-file-import fa-2x"></i>
+                </button>
+                <button class="hover:text-green-400 hover:cursor-pointer mx-2"
+                        (click)="exportUsers()"
+                        [matTooltip]="'USER.export' | translate">
+                    <i class="fa-solid fa-file-export fa-2x"></i>
+                </button>
+            </div>
             <div class="settings_search">
                 <mat-form-field appearance="outline">
                     <mat-label>{{ 'USER.search_user' | translate }}</mat-label>

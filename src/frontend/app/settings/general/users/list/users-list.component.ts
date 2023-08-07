@@ -13,7 +13,9 @@
  You should have received a copy of the GNU General Public License
  along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
- @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+ @dev : Oussama Brich <oussama.brich@edissyum.com>
+ */
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -34,6 +36,8 @@ import { Sort } from "@angular/material/sort";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import {ExportDialogComponent} from "../../../../../services/export-dialog/export-dialog.component";
+import {ImportDialogComponent} from "../../../../../services/import-dialog/import-dialog.component";
 
 @Component({
     selector: 'app-users-list',
@@ -310,5 +314,106 @@ export class UsersListComponent implements OnInit {
 
     compare(a: number | string, b: number | string, isAsc: boolean) {
         return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    }
+
+    exportUsers() {
+        const selectedColumns: any [] = [
+            {
+                id: 'username',
+                label: this.translate.instant('USER.username')
+            },
+            {
+                id: 'lastname',
+                label: this.translate.instant('USER.lastname')
+            },
+            {
+                id: 'firstname',
+                label: this.translate.instant('USER.firstname')
+            },
+            {
+                id: 'email',
+                label: this.translate.instant('FORMATS.email')
+            }
+        ];
+        const availableColumns: any [] = [];
+
+        const dialogRef = this.dialog.open(ExportDialogComponent, {
+            data: {
+                selectedColumns: selectedColumns,
+                availableColumns: availableColumns,
+                title : this.translate.instant('USER.export')
+            },
+            width: "900px"
+        });
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                const args = {
+                    'columns': result.selectedColumns,
+                    'delimiter': result.delimiter,
+                    'extension': result.extension
+                };
+                this.http.post(environment['url'] + '/ws/users/export', {'args': args}, {headers: this.authService.headers},
+                ).pipe(
+                    tap((data: any) => {
+                        const csvContent = atob(data.encoded_file);
+                        const blob = new Blob([csvContent], {type: "data:application/octet-stream;base64"});
+                        const url  = window.URL.createObjectURL(blob);
+                        const link = document.createElement("a");
+                        link.href = url;
+                        link.download = `users.${result.extension}`;
+                        link.click();
+                        this.notify.success(this.translate.instant('USER.users_export_success'));
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+        });
+    }
+
+    importUsers() {
+        const dialogRef = this.dialog.open(ImportDialogComponent, {
+            data: {
+                rows: [],
+                extension: 'CSV',
+                skipHeader: false,
+                allowColumnsSelection : false,
+                title : this.translate.instant('USER.import'),
+                availableColumns : [ 'username', 'lastname', 'firstname', 'mail'],
+                selectedColumns : [ 'username', 'lastname', 'firstname', 'mail']
+            },
+            width: "900px"
+        });
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                const formData: FormData = new FormData();
+                for (let i = 0; i < result.fileControl.value!.length; i++) {
+                    if (result.fileControl.status === 'VALID') {
+                        formData.append(result.fileControl.value![i]['name'], result.fileControl.value![i]);
+                    } else {
+                        this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
+                        return;
+                    }
+                }
+
+                formData.set('selectedColumns', result.selectedColumns);
+                formData.set('skipHeader', result.skipHeader);
+
+                this.http.post(environment['url'] + '/ws/users/csv/import', formData, {headers: this.authService.headers},
+                ).pipe(
+                    tap(() => {
+                        this.notify.success(this.translate.instant('DOCTYPE.users_import_success'));
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+        });
     }
 }

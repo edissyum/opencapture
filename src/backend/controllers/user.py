@@ -14,6 +14,12 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
+
+import csv
+import base64
+import subprocess
+from io import StringIO
 
 from flask_babel import gettext
 from flask import request, g as current_context
@@ -478,3 +484,72 @@ def update_forms_by_user_id(user_id, forms):
             "message": gettext(error)
         }
         return response, 400
+
+
+def export_users(args):
+    delimiter = ','
+    columns = []
+    values = []
+
+    if args['delimiter'] == 'TAB':
+        delimiter = '\t'
+    elif args['delimiter'] == 'SEMICOLON':
+        delimiter = ';'
+
+    users, _ = user.get_users_full({})
+
+    try:
+        csv_file = StringIO()
+        csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+
+        for column in args['columns']:
+            columns.append(column['label'])
+        csv_writer.writerow(columns)
+        for _user in users:
+            for column in args['columns']:
+                if column['id'] in _user:
+                    values.append(_user[column['id']])
+
+            csv_writer.writerow(values)
+            values = []
+
+        csv_file.seek(0)
+        b64 = base64.b64encode(csv_file.getvalue().encode())
+        response = {
+            'encoded_file': b64.decode()
+        }
+        return response, 200
+
+    except Exception as e:
+        response = {
+            "errors": gettext("USER_EXPORT_ERROR"),
+            "message": str(e)
+        }
+        return response, 500
+
+
+def import_users(args):
+    custom_id = retrieve_custom_from_url(request)
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
+    try:
+        tmp_file = f"{docservers['TMP_PATH']}/users.csv"
+        for file in args['files']:
+            _f = args['files'][file]
+            _f.save(tmp_file)
+
+            shell_cmd = f"{docservers['PROJECT_PATH']}/custom/{custom_id}/bin/scripts/load_users.sh {tmp_file}"
+            subprocess.run(shell_cmd, shell=True)
+
+        return {'OK': True}, 200
+
+    except Exception as e:
+        response = {
+            "errors": gettext("DOCTYPE_ERROR"),
+            "message": str(e)
+        }
+        return response, 500

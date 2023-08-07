@@ -36,10 +36,10 @@ import {MatTable} from "@angular/material/table";
   styleUrls: ['./import-dialog.component.scss']
 })
 export class ImportDialogComponent {
-  headers                     : HttpHeaders   = this.authService.headers;
-  loading                     : boolean       = false;
-  error                       : boolean       = false;
-  header                      : string[]       = [];
+  headers                     : HttpHeaders = this.authService.headers;
+  loading                     : boolean     = false;
+  error                       : boolean     = false;
+  header                      : string[]    = [];
   markers: any = {
     placeholder: marker('DATA-IMPORT.placeholder')
   };
@@ -69,7 +69,7 @@ export class ImportDialogComponent {
         const fileExtension = fileName.split('.').pop();
         if (fileExtension.toLowerCase() !== 'csv') {
           this.error = true;
-          this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized', {count: data.length}));
+          this.notify.handleErrors(this.translate.instant('DATA-IMPORT.extension_unauthorized', {count: data.length}));
           return;
         }
       }
@@ -111,8 +111,11 @@ export class ImportDialogComponent {
         }
         else {
             this.data.rows.unshift(this.header);
-            this.data.rows[0] = this.header;
         }
         this.previewTable.renderRows();
+    }
+
+    changeSelectedColumns(newColumn: string, index: number) {
+        this.data.selectedColumns[index] = newColumn;
     }
 }
