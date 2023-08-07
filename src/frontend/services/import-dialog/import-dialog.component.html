@@ -38,7 +38,9 @@
                     <th mat-header-cell *matHeaderCellDef>
                         <mat-form-field class="w-40 pt-2">
                             <mat-label>{{ 'DATA-IMPORT.column' | translate }} {{ index + 1 }}</mat-label>
-                            <mat-select (selectionChange)="changeSelectedColumns($event.value, index)">
+                            <mat-select (selectionChange)="changeSelectedColumns($event.value, index)"
+                                        [(value)]="this.data.availableColumns[index]"
+                                        [disabled]="!this.data.allowColumnsSelection">
                                 <div *ngFor="let availableColumn of this.data.availableColumns; ">
                                     <mat-option [value]="availableColumn">
                                         <span>{{ availableColumn }}</span>

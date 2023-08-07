@@ -188,11 +188,11 @@ def import_users():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/users/csv/import'}), 403
     args = {
         'files': request.files,
-        'skip_header': request.form['skipHeader'],
+        'skip_header': request.form['skipHeader'] == 'true',
         'selected_columns': request.form['selectedColumns'].split(','),
     }
 
-    res = user.import_from_csv(args)
+    res = user.import_users(args)
     return make_response(jsonify(res[0])), res[1]
 
 

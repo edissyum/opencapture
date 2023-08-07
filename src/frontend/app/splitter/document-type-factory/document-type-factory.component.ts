@@ -463,6 +463,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 rows: [],
                 extension: 'CSV',
                 skipHeader: false,
+                allowColumnsSelection : true,
                 title : this.translate.instant('DOCTYPE.import'),
                 availableColumns : [ 'key', 'label', 'type', 'code', 'form_id'],
                 selectedColumns : [ 'key', 'label', 'type', 'code', 'form_id']

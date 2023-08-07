@@ -380,6 +380,7 @@ export class UsersListComponent implements OnInit {
                 rows: [],
                 extension: 'CSV',
                 skipHeader: false,
+                allowColumnsSelection : false,
                 title : this.translate.instant('USER.import'),
                 availableColumns : [ 'username', 'lastname', 'firstname', 'mail'],
                 selectedColumns : [ 'username', 'lastname', 'firstname', 'mail']
