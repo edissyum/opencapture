@@ -438,7 +438,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 this.http.post(environment['url'] + '/ws/doctypes/export', {'args': args}, {headers: this.authService.headers},
                 ).pipe(
                     tap((data: any) => {
-                        const csvContent = atob(data.encoded_csv);
+                        const csvContent = atob(data.encoded_file);
                         const blob = new Blob([csvContent], {type: "data:application/octet-stream;base64"});
                         const url  = window.URL.createObjectURL(blob);
                         const link = document.createElement("a");
