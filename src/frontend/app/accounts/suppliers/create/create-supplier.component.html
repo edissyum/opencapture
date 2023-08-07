@@ -45,10 +45,8 @@
                             <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessageAddress(field.id) }}</mat-error>
                         </mat-form-field>
-                        <mat-select-country class="w-full" *ngIf="field.type === 'country'"
-                                            [label]="field.label | translate"
-                                            [value]="defaultValue"
-                                            (onCountrySelected)="onCountrySelected($event)">
+                        <mat-select-country class="w-full" *ngIf="field.type === 'country'" [value]="defaultValue"
+                                            [label]="field.label | translate" (onCountrySelected)="onCountrySelected($event)">
                         </mat-select-country>
                     </ng-container>
                     <div class="button col-span-7">

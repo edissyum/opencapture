@@ -120,6 +120,9 @@
                                             <mat-autocomplete #auto="matAutocomplete" [id]="field.id" (optionSelected)='getSupplierInfo($event.option.id, true)'>
                                                 <mat-option *ngFor="let option of this.suppliers" [value]="option.name" [id]="option.id">
                                                     <span [innerHTML]="option.name | highlight: toHighlight"></span>
+                                                    <span style="font-size: 12px;" class="text-green-400 ml-3">
+                                                        {{ option['vat_number'] }}
+                                                    </span>
                                                 </mat-option>
                                             </mat-autocomplete>
                                         </mat-form-field>
