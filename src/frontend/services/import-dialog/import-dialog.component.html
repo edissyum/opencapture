@@ -34,23 +34,25 @@
                 </span>
             </div>
             <table mat-table *ngIf="this.data.rows.length !== 0" [dataSource]="this.data.rows" class="overflow-x-auto">
-                <ng-container *ngFor="let column of this.data.availableColumns; let index = index" matColumnDef="{{ column }}">
+                <ng-container *ngFor="let availableColumn of this.data.availableColumns; let index = index" matColumnDef="{{ availableColumn }}">
                     <th mat-header-cell *matHeaderCellDef>
                         <mat-form-field class="w-40 pt-2">
                             <mat-label>{{ 'DATA-IMPORT.column' | translate }} {{ index + 1 }}</mat-label>
-                            <mat-select [value]="this.data.selectedColumns[index]">
-                                <div *ngFor="let column of this.data.availableColumns; ">
-                                    <mat-option [value]="column">
-                                        <span>{{ column }}</span>
+                            <mat-select (selectionChange)="changeSelectedColumns($event.value, index)"
+                                        [(value)]="this.data.availableColumns[index]"
+                                        [disabled]="!this.data.allowColumnsSelection">
+                                <div *ngFor="let availableColumn of this.data.availableColumns; ">
+                                    <mat-option [value]="availableColumn">
+                                        <span>{{ availableColumn }}</span>
                                     </mat-option>
                                 </div>
                             </mat-select>
                         </mat-form-field>
                     </th>
-                    <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+                    <td mat-cell *matCellDef="let element"> {{ element[availableColumn] }} </td>
                 </ng-container>
-                <tr mat-header-row *matHeaderRowDef="this.data.selectedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: this.data.selectedColumns;"></tr>
+                <tr mat-header-row *matHeaderRowDef="this.data.availableColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: this.data.availableColumns;"></tr>
             </table>
         </div>
     </mat-expansion-panel>

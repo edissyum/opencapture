@@ -28,7 +28,8 @@
             </div>
         </mat-select>
     </mat-form-field>
-    <div class="mr-4 my-4 float-right">
+    <div class="mr-4 my-4 float-right"
+         *ngIf="!this.settings.hasOwnProperty('allowImportExport') || this.settings.allowImportExport">
         <button class="text-gray-400 hover:text-green-400 hover:cursor-pointer mx-2"
                 (click)="importDoctypes()"
                 [matTooltip]="'DOCTYPE.import' | translate">
