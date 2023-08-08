@@ -28,11 +28,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Load users from CSV file into database.')
     parser.add_argument("-f", '--file', help='CSV file')
     parser.add_argument("-c", '--custom-id', help='Custom id')
+    parser.add_argument("-s", '--skip-header', help='Skip header row', action='store_true')
+    parser.set_defaults(skip_header=False)
     args = parser.parse_args()
 
     if args.custom_id is None:
         sys.exit("Please provide custom id. "
-                 "\n ex : python3 load_users.py --file users.csv --custom-id edissyum")
+                 "\n ex : python3 load_users.py --file users.csv --custom-id edissyum --skip-header")
 
     if not retrieve_config_from_custom_id(args.custom_id):
         sys.exit('Custom config file couldn\'t be found')
@@ -44,12 +46,11 @@ if __name__ == '__main__':
         exit(1)
 
     with open(args.file, 'r') as f:
-        # Create a reader object
         reader = csv.reader(f)
 
-        # Skip the header row
-        next(reader)
-        # Iterate over the remaining rows
+        if args.skip_header:
+            next(reader)
+
         for row in reader:
             log.info("User: " + row[0])
             user = {
@@ -58,11 +59,9 @@ if __name__ == '__main__':
                 'firstname': row[2],
                 'password': 'NOT_SET',
                 'email': row[3],
-                'customer_name': row[4],
                 'customer_id': None,
-                'role': int(row[6]) if type(row[6]) == int else 3,
+                'role': row[4] if type(row[4]) == int else 3,
             }
-
             users_res = database.select({
                 'select': ['id'],
                 'table': ['users'],
@@ -70,7 +69,7 @@ if __name__ == '__main__':
                 'data': [user['username']]
             })
             if users_res:
-                log.info(f"User {user['username']} already exists.")
+                log.info(f"User {user['username']} already exists, Skipping.")
                 continue
 
             user_id = database.insert({
@@ -84,29 +83,33 @@ if __name__ == '__main__':
                     'email': user['email']
                 }
             })
-            user_customers = database.select({
-                'select': ['id'],
-                'table': ['accounts_customer'],
-                'where': ['name = %s'],
-                'data': [user['customer_name']]
-            })
-            if user_customers:
-                user['customer_id'] = user_customers[0]['id']
-            else:
-                log.info(f"Customer {user['customer_name']} not found. creating customer {user['username']}.")
-                user['customer_id'] = user['customer_id'] = database.insert({
-                    'table': 'accounts_customer',
-                    'columns': {
-                        'name': user['customer_name'],
-                        'module': 'splitter'
-                    }
-                })
 
+            if len(row) > 5:
+                user['customer_name'] = row[5]
+                user_customers = database.select({
+                    'select': ['id'],
+                    'table': ['accounts_customer'],
+                    'where': ['name = %s'],
+                    'data': [user['customer_name']]
+                })
+                if user_customers:
+                    user['customer_id'] = user_customers[0]['id']
+                else:
+                    log.info(f"Customer {user['customer_name']} not found. creating customer {user['username']}.")
+                    user['customer_id'] = database.insert({
+                        'table': 'accounts_customer',
+                        'columns': {
+                            'name': user['customer_name'],
+                            'module': 'splitter'
+                        }
+                    })
+
+            _user_customers = [user['customer_id']] if user['customer_id'] else []
             database.insert({
                 'table': 'users_customers',
                 'columns': {
                     'user_id': user_id,
-                    'customers_id': json.dumps({"data": str([user['customer_id']])})
+                    'customers_id': json.dumps({"data": str(_user_customers)})
                 }
             })
 

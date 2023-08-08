@@ -333,6 +333,10 @@ export class UsersListComponent implements OnInit {
             {
                 id: 'email',
                 label: this.translate.instant('FORMATS.email')
+            },
+            {
+                id: 'role',
+                label: this.translate.instant('HEADER.role')
             }
         ];
         const availableColumns: any [] = [];
