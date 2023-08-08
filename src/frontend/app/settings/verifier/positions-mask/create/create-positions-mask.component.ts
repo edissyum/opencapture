@@ -66,7 +66,6 @@ export class CreatePositionsMaskComponent implements OnInit {
         this.serviceSettings.init();
         this.suppliers = await this.retrieveSuppliers('', 1000);
         this.suppliers = this.suppliers.suppliers;
-        console.log(this.suppliers)
         this.forms = await this.retrieveForms();
         this.forms = this.forms.forms;
         this.loading = false;

@@ -472,8 +472,6 @@ export class DocumentTypeFactoryComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                console.log("result");
-                console.log(result);
                 const formData: FormData = new FormData();
                 for (let i = 0; i < result.fileControl.value!.length; i++) {
                     if (result.fileControl.status === 'VALID') {
