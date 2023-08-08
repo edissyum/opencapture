@@ -379,6 +379,7 @@ export class UsersListComponent implements OnInit {
     }
 
     importUsers() {
+        const columns = ['username', 'lastname', 'firstname', 'mail', 'role', 'customer_name'];
         const dialogRef = this.dialog.open(ImportDialogComponent, {
             data: {
                 rows: [],
@@ -386,8 +387,8 @@ export class UsersListComponent implements OnInit {
                 skipHeader: false,
                 allowColumnsSelection : false,
                 title : this.translate.instant('USER.import'),
-                availableColumns : [ 'username', 'lastname', 'firstname', 'mail'],
-                selectedColumns : [ 'username', 'lastname', 'firstname', 'mail']
+                availableColumns : columns,
+                selectedColumns : columns
             },
             width: "900px"
         });
