@@ -304,13 +304,13 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
                 elif 'lastname' in data[0]:
                     _res['datas'].update({'lastname': data[0]['lastname']})
             if data[1]:
-                if 'firstname' in data[0] and 'lastname' in data[0]:
-                    _res['positions'].update({'firstname': data[1]})
-                    _res['positions'].update({'lastname': data[1]})
+                if 'firstname' in data[1] and 'lastname' in data[1]:
+                    _res['positions'].update({'firstname': data[1]['firstname']})
+                    _res['positions'].update({'lastname': data[1]['lastname']})
                 elif 'firstname' in data[0]:
-                    _res['positions'].update({'firstname': data[1]})
+                    _res['positions'].update({'firstname': data[1]['firstname']})
                 elif 'lastname' in data[0]:
-                    _res['positions'].update({'lastname': data[1]})
+                    _res['positions'].update({'lastname': data[1]['lastname']})
             if data[2]:
                 if 'firstname' in data[0] and 'lastname' in data[0]:
                     _res['pages'].update({'firstname': data[2]})
@@ -596,10 +596,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                                datas, files, configurations)
 
         if 'firstname_lastname' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            name_class = FindName(ocr, log, docservers)
+            name_class = FindName(ocr, log, docservers, supplier, files, database, regex, datas['form_id'], file)
             datas = found_data_recursively('firstname_lastname', ocr, file, nb_pages, text_by_pages,
                                            name_class, datas, files, configurations)
-            print(datas)
         if 'invoice_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
                                                      docservers, configurations, languages, datas['form_id'])

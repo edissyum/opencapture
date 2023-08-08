@@ -26,8 +26,8 @@ import { NotificationService } from "../../../../../services/notifications/notif
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { environment } from "../../../../env";
-import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
-import { Observable, of } from "rxjs";
+import { catchError, tap } from "rxjs/operators";
+import { of } from "rxjs";
 
 @Component({
     selector: 'create-positions-mask',
@@ -37,7 +37,6 @@ import { Observable, of } from "rxjs";
 export class CreatePositionsMaskComponent implements OnInit {
     loading             : boolean   = true;
     suppliers           : any       = [];
-    filteredOptions     : Observable<any> | undefined;
     forms               : any       = [];
     form                : any       = {
         'label': {
@@ -63,34 +62,26 @@ export class CreatePositionsMaskComponent implements OnInit {
         public privilegesService: PrivilegesService
     ) {}
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise <void> {
         this.serviceSettings.init();
-        this.http.get(environment['url'] + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.suppliers = this.sortArrayAlphab(data.suppliers);
-                this.filteredOptions = this.form['supplier_id'].control.valueChanges
-                    .pipe(
-                        startWith(''),
-                        map(option => option ? this._filter(option) : this.suppliers.slice())
-                    );
-                this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
-                    tap((data: any) => {
-                        this.forms = data.forms;
-                    }),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
-            }),
-            finalize(() => this.loading = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+        this.suppliers = await this.retrieveSuppliers('', 1000);
+        this.suppliers = this.suppliers.suppliers;
+        console.log(this.suppliers)
+        this.forms = await this.retrieveForms();
+        this.forms = this.forms.forms;
+        this.loading = false;
+    }
+
+    async retrieveForms(): Promise<any> {
+        return await this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).toPromise();
+    }
+
+    async retrieveSuppliers(name: string = '', limit: number = 0): Promise<any> {
+        if (limit == 0) {
+            return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC&name=' + name, {headers: this.authService.headers}).toPromise();
+        } else {
+            return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC&limit=' + limit, {headers: this.authService.headers}).toPromise();
+        }
     }
 
     isValidForm(form: any) {
@@ -147,21 +138,17 @@ export class CreatePositionsMaskComponent implements OnInit {
         return error;
     }
 
-    sortArrayAlphab(array: any) {
-        return array.sort((a: any, b: any) => {
-            const x = a.name.toUpperCase(),
-                y = b.name.toUpperCase();
-            return x === y ? 0 : x > y ? 1 : -1;
-        });
-    }
-
-    private _filter(value: any) {
-        if (typeof value === 'string') {
-            this.toHighlight = value;
-            const filterValue = value.toLowerCase();
-            return this.suppliers.filter((option: any) => option.name.toLowerCase().indexOf(filterValue) !== -1);
-        } else {
-            return this.suppliers;
+    async filterSupplier(value: any) {
+        if (!value) {
+            this.suppliers = await this.retrieveSuppliers('', 1000);
+            this.suppliers = this.suppliers.suppliers;
+            return;
+        } else if (value.length < 3) {
+            return;
         }
+
+        this.toHighlight = value;
+        this.suppliers = await this.retrieveSuppliers(value);
+        this.suppliers = this.suppliers.suppliers;
     }
 }

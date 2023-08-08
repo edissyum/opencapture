@@ -173,6 +173,7 @@ class FindFooterRaw:
                     self.nb_pages = data['page']
                     try:
                         position = json.loads(position)
+                        del position['ocr_from_user']
                     except (TypeError, json.decoder.JSONDecodeError):
                         return False
                     return [result, position, data['page']]

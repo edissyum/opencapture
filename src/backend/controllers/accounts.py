@@ -304,24 +304,26 @@ def update_address_by_supplier_id(supplier_id, data):
     address_info, error = accounts.get_supplier_by_id({'select': ['address_id'], 'supplier_id': supplier_id})
 
     if error is None:
-        _set = {
-            'address1': data['address1'],
-            'address2': data['address2'],
-            'postal_code': data['postal_code'],
-            'city': data['city'],
-            'country': data['country']
-        }
-
-        _, error = accounts.update_address({'set': _set, 'address_id': address_info['address_id']})
-
-        if error is None:
-            return '', 200
-        else:
-            response = {
-                "errors": gettext('UPDATE_ADDRESS_ERROR'),
-                "message": gettext(error)
+        if 'address1' in data and 'address2' in data and 'postal_code' in data and 'city' in data and 'country' in data:
+            _set = {
+                'address1': data['address1'],
+                'address2': data['address2'],
+                'postal_code': data['postal_code'],
+                'city': data['city'],
+                'country': data['country']
             }
-            return response, 400
+
+            _, error = accounts.update_address({'set': _set, 'address_id': address_info['address_id']})
+
+            if error is None:
+                return '', 200
+            else:
+                response = {
+                    "errors": gettext('UPDATE_ADDRESS_ERROR'),
+                    "message": gettext(error)
+                }
+                return response, 400
+        return '', 200
     else:
         response = {
             "errors": gettext('UPDATE_ADDRESS_ERROR'),
