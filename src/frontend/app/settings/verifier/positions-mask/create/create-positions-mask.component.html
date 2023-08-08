@@ -27,10 +27,10 @@
                         <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                             {{ "POSITIONS-MASKS.supplier_name_associated" | translate }}
                         </mat-label>
-                        <input matInput type="text" [required]="true"
+                        <input matInput type="text" [required]="true" ngModel (ngModelChange)="filterSupplier($event)"
                                [formControl]="this.form['supplier_id']['control']" [matAutocomplete]="auto">
                         <mat-autocomplete #auto="matAutocomplete">
-                            <mat-option *ngFor="let option of this.filteredOptions | async" [value]="option.name" [id]="option.id">
+                            <mat-option *ngFor="let option of this.suppliers" [value]="option.name" [id]="option.id">
                                 <span [innerHTML]="option.name | highlight: toHighlight"></span>
                             </mat-option>
                         </mat-autocomplete>

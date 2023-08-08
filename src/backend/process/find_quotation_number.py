@@ -110,6 +110,7 @@ class FindQuotationNumber:
 
                     try:
                         position = json.loads(position)
+                        del position['ocr_from_user']
                     except TypeError:
                         pass
 

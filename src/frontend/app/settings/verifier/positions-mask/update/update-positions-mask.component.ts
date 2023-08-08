@@ -25,7 +25,7 @@ import { NotificationService } from "../../../../../services/notifications/notif
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { FormControl } from "@angular/forms";
-import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
+import { catchError, finalize, tap } from "rxjs/operators";
 import { Observable, of } from "rxjs";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { FileValidators } from "ngx-file-drag-drop";
@@ -52,7 +52,6 @@ export class UpdatePositionsMaskComponent implements OnInit {
     documentImageNbPages     : any;
     currentPage             : number    = 1;
     suppliers               : any       = [];
-    filteredOptions         : Observable<any> | undefined;
     forms                   : any       = [];
     form                    : any       = {
         'label': {
@@ -112,6 +111,22 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     regex: ''
                 },
                 {
+                    id: 'firstname',
+                    label: marker('FACTURATION.firstname'),
+                    unit: 'facturation',
+                    type: 'text',
+                    color: 'orange',
+                    regex: ''
+                },
+                {
+                    id: 'lastname',
+                    label: marker('FACTURATION.lastname'),
+                    unit: 'facturation',
+                    type: 'text',
+                    color: 'orange',
+                    regex: ''
+                },
+                {
                     id: 'vat_rate',
                     label: marker('FACTURATION.vat_rate'),
                     unit: 'facturation',
@@ -158,7 +173,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     type: 'text',
                     color: 'lime',
                     regex: ''
-                },
+                }
             ]
         },
         {
@@ -230,7 +245,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             const thumbB64 : any = await this.getThumb(this.positionsMask.filename);
             this.documentImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + thumbB64.file);
         }
-        this.suppliers = await this.retrieveSuppliers();
+        this.suppliers = await this.retrieveSuppliers('', 1000);
         this.suppliers = this.suppliers.suppliers;
         if (this.imageDocument) {
             this.ratio = this.documentImageWidth / this.imageDocument.width();
@@ -242,11 +257,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         }
         this.form['label'].control.setValue(this.positionsMask.label);
         this.form['form_id'].control.setValue(this.positionsMask.form_id);
-        this.filteredOptions = this.form['supplier_id'].control.valueChanges
-            .pipe(
-                startWith(''),
-                map(option => option ? this._filter(option) : this.suppliers.slice())
-            );
+
         this.suppliers.forEach((element: any ) => {
             if (element.id === this.positionsMask.supplier_id) {
                 this.form['supplier_id'].control.setValue(element.name);
@@ -294,22 +305,16 @@ export class UpdatePositionsMaskComponent implements OnInit {
         triggerEvent.hide();
     }
 
-    private _filter(value: any) {
-        if (typeof value === 'string') {
-            this.toHighlight = value;
-            const filterValue = value.toLowerCase();
-            return this.suppliers.filter((option: any) => option.name.toLowerCase().indexOf(filterValue) !== -1);
-        } else {
-            return this.suppliers;
-        }
-    }
-
     async getPositionMask(): Promise<any> {
         return await this.http.get(environment['url'] + '/ws/positions_masks/getById/' + this.positionMaskId, {headers: this.authService.headers}).toPromise();
     }
 
-    async retrieveSuppliers(): Promise<any> {
-        return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC', {headers: this.authService.headers}).toPromise();
+    async retrieveSuppliers(name: string = '', limit: number = 0): Promise<any> {
+        if (limit == 0) {
+            return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC&name=' + name, {headers: this.authService.headers}).toPromise();
+        } else {
+            return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC&limit=' + limit, {headers: this.authService.headers}).toPromise();
+        }
     }
 
     drawPositions() {
@@ -398,8 +403,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 }),
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err);
-                    this.router.navigate(['/settings/verifier/positions-mask']).then();
+                    this.notify.handleErrors(err, '/settings/verifier/positions-mask');
                     return of(false);
                 })
             ).subscribe();
@@ -429,7 +433,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                             setTimeout(() => {
                                 this.ratio = this.documentImageWidth / this.imageDocument.width();
                             }, 500);
-                            this.documentImageNbPages = data.nb_pages;
+                            this.documentImageNbPages = data['nb_pages'];
                             this.fileControl.setValue([]);
                             this.ocr({
                                 'target' : {
@@ -475,8 +479,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             }),
             catchError((err: any) => {
                 console.debug(err);
-                this.notify.handleErrors(err);
-                this.router.navigate(['/settings/verifier/outputs']).then();
+                this.notify.handleErrors(err, '/settings/verifier/positions-mask');
                 return of(false);
             })
         ).subscribe();
@@ -748,5 +751,14 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 'filename': filename
             }
         }, {headers: this.authService.headers}).toPromise();
+    }
+
+    async filterSupplier(value: any) {
+        if (value.length < 3) {
+            return;
+        }
+        this.toHighlight = value;
+        this.suppliers = await this.retrieveSuppliers(value);
+        this.suppliers = this.suppliers.suppliers;
     }
 }

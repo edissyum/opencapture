@@ -503,22 +503,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         return this.imgSrc;
     }
 
-    private _filter(value: any): string[] {
-        this.toHighlight = value;
-        const filterValue = value.toLowerCase();
-        const _return = this.suppliers.filter((supplier: any) => supplier.name.toLowerCase().indexOf(filterValue) !== -1);
-        this.supplierExists = _return.length !== 0;
-        if (!this.supplierExists) {
-            this.form['supplier'].forEach((element: any) => {
-                if (element.id !== 'name') {
-                    element.control.setValue('');
-                    element.control.setErrors(null);
-                }
-            });
-        }
-        return _return;
-    }
-
     private _filter_data(value: any, data: any): string[] {
         this.toHighlight = value;
         const filterValue = value.toLowerCase();
@@ -1943,9 +1927,15 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     async filterSupplier(value: any) {
-        if (value.length < 3) {
+        if (!value) {
+            this.suppliers = await this.retrieveSuppliers('', 1000);
+            this.suppliers = this.suppliers.suppliers;
+            return;
+        } else if (value.length < 3) {
             return;
         }
+
+        this.toHighlight = value;
         this.suppliers = await this.retrieveSuppliers(value);
         this.suppliers = this.suppliers.suppliers;
     }
