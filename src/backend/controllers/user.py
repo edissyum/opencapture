@@ -500,7 +500,7 @@ def export_users(args):
 
     try:
         csv_file = StringIO()
-        csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+        csv_writer = csv.writer(csv_file, delimiter=delimiter, quotechar='"', quoting=csv.QUOTE_ALL)
 
         for column in args['columns']:
             columns.append(column['label'])
