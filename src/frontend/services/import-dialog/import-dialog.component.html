@@ -20,6 +20,7 @@
             </mat-panel-title>
             <mat-slide-toggle
                     class="mr-4"
+                    [disabled]="this.data.rows.length === 0"
                     (click)="dataConfig.toggle()"
                     [checked]="this.data.skipHeader"
                     (change)="skipHeaderChange($event);">
