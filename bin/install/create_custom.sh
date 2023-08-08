@@ -397,6 +397,7 @@ sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
 sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
 sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $defaultScriptFile
+sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" $defaultScriptFile
 
 ocrOnlyFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh"
 cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh $ocrOnlyFile
@@ -405,6 +406,7 @@ sed -i "s#§§OC_PATH§§#$defaultPath#g" $ocrOnlyFile
 sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $ocrOnlyFile
 sed -i 's#"§§ARGUMENTS§§"#-workflow_id ocr_only#g' $ocrOnlyFile
 sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $ocrOnlyFile
+sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" $defaultScriptFile
 
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_workflows.sh"
 cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh $defaultScriptFile
@@ -413,6 +415,7 @@ sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
 sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
 sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $defaultScriptFile
+sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" $defaultScriptFile
 
 ####################
 # Fill the watcher.ini

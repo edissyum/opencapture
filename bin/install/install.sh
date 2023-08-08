@@ -622,6 +622,7 @@ if ! test -f "$defaultScriptFile"; then
     sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
     sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
     sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $defaultScriptFile
+    sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" $defaultScriptFile
 fi
 
 ocrOnlyFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh"
@@ -632,6 +633,7 @@ if ! test -f "$ocrOnlyFile"; then
     sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $ocrOnlyFile
     sed -i 's#"§§ARGUMENTS§§"#-workflow_id ocr_only#g' $ocrOnlyFile
     sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $ocrOnlyFile
+    sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" $defaultScriptFile
 fi
 
 ####################
@@ -644,6 +646,7 @@ if ! test -f "$defaultScriptFile"; then
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
     sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
     sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
+    sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" $defaultScriptFile
     sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $defaultScriptFile
 fi
 
