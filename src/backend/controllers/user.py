@@ -496,7 +496,9 @@ def export_users(args):
     elif args['delimiter'] == 'SEMICOLON':
         delimiter = ';'
 
-    users, _ = user.get_users_full({})
+    users, _ = user.get_users_full({
+        'select': ['username', 'firstname', 'lastname', 'email', 'role']
+    })
 
     try:
         csv_file = StringIO()
