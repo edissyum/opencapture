@@ -496,11 +496,13 @@ def export_users(args):
     elif args['delimiter'] == 'SEMICOLON':
         delimiter = ';'
 
-    users, _ = user.get_users_full({})
+    users, _ = user.get_users_full({
+        'select': ['username', 'firstname', 'lastname', 'email', 'role']
+    })
 
     try:
         csv_file = StringIO()
-        csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+        csv_writer = csv.writer(csv_file, delimiter=delimiter, quotechar='"', quoting=csv.QUOTE_ALL)
 
         for column in args['columns']:
             columns.append(column['label'])
@@ -543,6 +545,8 @@ def import_users(args):
             _f.save(tmp_file)
 
             shell_cmd = f"{docservers['PROJECT_PATH']}/custom/{custom_id}/bin/scripts/load_users.sh {tmp_file}"
+            if args['skip_header']:
+                shell_cmd += " --skip-header"
             subprocess.run(shell_cmd, shell=True)
 
         return {'OK': True}, 200

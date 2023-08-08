@@ -17,4 +17,10 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 CSV_FILE="$1"
-§§PYTHON_VENV§§ /var/www/html/opencapture/load_users.py -c §§CUSTOM_ID§§ -f "$CSV_FILE"
+SKIP_HEADER="$2"
+
+if [ -z "$SKIP_HEADER" ]; then
+    §§PYTHON_VENV§§ /var/www/html/opencapture/load_users.py -c §§CUSTOM_ID§§ -f "$CSV_FILE"
+else
+    §§PYTHON_VENV§§ /var/www/html/opencapture/load_users.py -c §§CUSTOM_ID§§ -f "$CSV_FILE" "$SKIP_HEADER"
+fi
