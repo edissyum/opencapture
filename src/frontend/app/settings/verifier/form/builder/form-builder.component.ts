@@ -450,6 +450,36 @@ export class FormBuilderComponent implements OnInit {
                     display_icon:'fa-solid fa-file-alt'
                 },
                 {
+                    id: 'firstname',
+                    label: marker('FACTURATION.firstname'),
+                    unit: 'facturation',
+                    type: 'text',
+                    required: false,
+                    required_icon: 'far fa-star',
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'orange',
+                    format: 'alphanum_extended',
+                    format_icon: 'fa-solid fa-calendar-day',
+                    display: 'simple',
+                    display_icon:'fa-solid fa-file-alt'
+                },
+                {
+                    id: 'lastname',
+                    label: marker('FACTURATION.lastname'),
+                    unit: 'facturation',
+                    type: 'text',
+                    required: false,
+                    required_icon: 'far fa-star',
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'orange',
+                    format: 'alphanum_extended',
+                    format_icon: 'fa-solid fa-calendar-day',
+                    display: 'simple',
+                    display_icon:'fa-solid fa-file-alt'
+                },
+                {
                     id: 'vat_rate',
                     label: marker('FACTURATION.vat_rate'),
                     unit: 'facturation',

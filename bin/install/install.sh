@@ -614,9 +614,12 @@ echo "$secret" > $customPath/config/secret_key
 cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/"
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh"
 
+customDefaultScriptSamplePath="$defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh"
+sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" $customDefaultScriptSamplePath
+
 touch $defaultPath/custom/$customId/bin/data/log/OpenCapture.log
 if ! test -f "$defaultScriptFile"; then
-    cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh $defaultScriptFile
+    cp $customDefaultScriptSamplePath $defaultScriptFile
     sed -i "s#§§SCRIPT_NAME§§#default_workflow#g" $defaultScriptFile
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
     sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
@@ -626,7 +629,7 @@ fi
 
 ocrOnlyFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh"
 if ! test -f "$ocrOnlyFile"; then
-    cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh $ocrOnlyFile
+    cp $customDefaultScriptSamplePath $ocrOnlyFile
     sed -i "s#§§SCRIPT_NAME§§#ocr_only#g" $ocrOnlyFile
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $ocrOnlyFile
     sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $ocrOnlyFile
@@ -638,8 +641,11 @@ fi
 # Create default splitter workflow script (based on default workflow created in data_fr.sql)
 cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/"
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_workflows.sh"
+
+customDefaultScriptSamplePath="$defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh"
+sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" $customDefaultScriptSamplePath
 if ! test -f "$defaultScriptFile"; then
-    cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh $defaultScriptFile
+    cp $customDefaultScriptSamplePath $defaultScriptFile
     sed -i "s#§§SCRIPT_NAME§§#default_workflow#g" $defaultScriptFile
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
     sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/bin/data/log/OpenCapture.log#g" $defaultScriptFile
@@ -649,6 +655,8 @@ fi
 
 ####################
 # Create default MAIL script
+sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/bin/scripts/launch_MAIL.sh.default"
+
 cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§OC_PATH§§#$defaultPath#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
