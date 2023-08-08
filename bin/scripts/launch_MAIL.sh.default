@@ -27,6 +27,8 @@ OCPath="§§OC_PATH§§"
 logFile="§§LOG_PATH§§"
 PID=/tmp/securite-$script-$$.pid
 
+§§PYTHON_VENV§§
+
 if ! test -e $PID;
 then
   touch $PID
