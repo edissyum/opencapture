@@ -545,6 +545,8 @@ def import_users(args):
             _f.save(tmp_file)
 
             shell_cmd = f"{docservers['PROJECT_PATH']}/custom/{custom_id}/bin/scripts/load_users.sh {tmp_file}"
+            if args['skip_header']:
+                shell_cmd += " --skip-header"
             subprocess.run(shell_cmd, shell=True)
 
         return {'OK': True}, 200
