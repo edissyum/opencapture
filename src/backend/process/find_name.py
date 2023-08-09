@@ -139,11 +139,15 @@ class FindName:
                 name = name.strip()
                 for line in self.text:
                     if name.lower() in line.content.lower():
-                        civivity = re.findall(r"(Monsieur|MR|M\.|Mme|Mlle|Mle|Madame|Mademoiselle)",
-                                              line.content, flags=re.IGNORECASE)
+                        fixed_line = line.content.replace(':', '')
+                        fixed_line = re.sub(r"(MR,)", 'MR.', fixed_line, flags=re.IGNORECASE)
+                        fixed_line = re.sub(r"(M,)", 'M.', fixed_line, flags=re.IGNORECASE)
+
+                        civivity = re.findall(r"(Monsieur|MR|M\.|Mme|Mlle|Mle|Madame|Mademoiselle)", fixed_line,
+                                              flags=re.IGNORECASE)
                         if civivity:
                             cpt = 0
-                            splitted_line = list(filter(None, line.content.split(' ')))
+                            splitted_line = list(filter(None, fixed_line.split(' ')))
                             for word in splitted_line:
                                 firstname = lastname = None
                                 match_civility = re.match(r"(Monsieur|MR|M\.|Mme|Mlle|Mle|Madame|Mademoiselle)",
