@@ -32,12 +32,11 @@ defaultPath=/var/www/html/opencapture
 
 apt-get install -y crudini > /dev/null
 
-while getopts "c:t:p:" arguments
+while getopts "c:t:" arguments
 do
     case "${arguments}" in
         c) customId=${OPTARG};;
         t) installationType=${OPTARG};;
-        p) pythonVenv=${OPTARG};;
         *) customId=""
             installationType=""
             pythonVenv=""
@@ -65,43 +64,12 @@ if [ -z "$customId" ]; then
     exit 2
 fi
 
-if [ -z "$pythonVenv" ]; then
-    echo "###############################################################################################"
-    echo "                      Python Venv is mandatory using the -p argument"
-    echo "                          Possible values are 'true' or 'false'"
-    echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd -p true"
-    echo "###############################################################################################"
-    exit 3
-fi
-
 if [ "$customId" == 'custom' ]; then
     echo "##############################################################################################"
     echo "                     Please do not create a custom called 'custom'"
     echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis -t systemd -p true      "
     echo "##############################################################################################"
     exit 4
-fi
-
-if [ "$pythonVenv" != 'true' ] && [ "$pythonVenv" != 'false' ]; then
-    echo "##############################################################################################"
-    echo "               Possible values for -p argument are 'true' or 'false'"
-    echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis -t systemd -p true"
-    echo "##############################################################################################"
-    exit 5
-fi
-
-if [ "$pythonVenv" == 'true' ] && [ ! -f "/home/$user/python-venv/opencapture/bin/python3" ]; then
-    echo "#######################################################################################"
-    echo "            The default Python Virtual environment path doesn't exist"
-    echo "  Do you want to exit update ? If no, the script will use default Python installation"
-    echo "#######################################################################################"
-    printf "Enter your choice [%s] : " "yes/${bold}no${normal}"
-    read -r choice
-    if [ "$choice" = "yes" ]; then
-        exit
-    else
-        pythonVenv='false'
-    fi
 fi
 
 if [ "$installationType" == '' ] || { [ "$installationType" != 'systemd' ] && [ "$installationType" != 'supervisor' ]; }; then
@@ -353,19 +321,11 @@ sed -i "s#§§DATABASE_USER§§#$databaseUsername#g" "$defaultPath/custom/$custo
 sed -i "s#§§DATABASE_PASSWORD§§#$databasePassword#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/bin/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
-if [ $pythonVenv = 'true' ]; then
-    sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
-    sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
-    sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
-    sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
-    sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
-else
-    sed -i "s#§§PYTHON_VENV§§##g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
-    sed -i "s#§§PYTHON_VENV§§##g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
-    sed -i "s#§§PYTHON_VENV§§#python3#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
-    sed -i "s#§§PYTHON_VENV§§#python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
-    sed -i "s#§§PYTHON_VENV§§#python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
-fi
+sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
+sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
+sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
+sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
+sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 
 confFile="$defaultPath/custom/$customId/config/config.ini"
 crudini --set "$confFile" DATABASE postgresHost "$hostname"

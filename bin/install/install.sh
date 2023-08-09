@@ -340,11 +340,9 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 touch /etc/apache2/sites-available/opencapture.conf
 
 wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$nbThreads processes=$nbProcesses"
-if [ $pythonVenv = 'true' ]; then
-    sitePackageLocation=$(/home/$user/python-venv/opencapture/bin/python3 -c 'import site; print(site.getsitepackages()[0])')
-    if [ $sitePackageLocation ]; then
-        wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$nbThreads processes=$nbProcesses python-path=$sitePackageLocation"
-    fi
+sitePackageLocation=$(/home/$user/python-venv/opencapture/bin/python3 -c 'import site; print(site.getsitepackages()[0])')
+if [ $sitePackageLocation ]; then
+    wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$nbThreads processes=$nbProcesses python-path=$sitePackageLocation"
 fi
 
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
@@ -419,19 +417,11 @@ sed -i "s#§§DATABASE_USER§§#$databaseUsername#g" "$defaultPath/custom/$custo
 sed -i "s#§§DATABASE_PASSWORD§§#$databasePassword#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/bin/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 
-if [ $pythonVenv = 'true' ]; then
-    sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
-    sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
-    sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
-    sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
-    sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
-else
-    sed -i "s#§§PYTHON_VENV§§##g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
-    sed -i "s#§§PYTHON_VENV§§##g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
-    sed -i "s#§§PYTHON_VENV§§#python3#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
-    sed -i "s#§§PYTHON_VENV§§#python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
-    sed -i "s#§§PYTHON_VENV§§#python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
-fi
+sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
+sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
+sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
+sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
+sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 
 ####################
 # Create the service systemd or supervisor
