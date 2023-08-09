@@ -71,27 +71,15 @@ apt-get -y update >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 apt-get install -y php >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 xargs -a apt-requirements.txt apt-get install -y >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
-if [ $pythonVenv = 'true' ]; then
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip uninstall -y pyocr >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r "pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    "/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade -r "pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    "/home/$user/python-venv/opencapture/bin/python3" -c "import nltk
+"/home/$user/python-venv/opencapture/bin/python3" -m pip uninstall -y pyocr >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+"/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+"/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+"/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+"/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r "pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+"/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade -r "pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+"/home/$user/python-venv/opencapture/bin/python3" -c "import nltk
 nltk.download('stopwords')
 nltk.download('punkt')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-else
-    python3 -m pip uninstall -y pyocr >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r pip-requirements.txt >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade -r pip-requirements.txt >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    python3 -c "import nltk
-nltk.download('stopwords')
-nltk.download('punkt')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-fi
 
 cd $OpenCapturePath || exit 2
 find . -name ".gitkeep" -delete
