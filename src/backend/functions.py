@@ -286,12 +286,12 @@ def recursive_delete(folder, log, docservers):
             try:
                 os.remove(folder_name + '/' + file)
             except FileNotFoundError as err:
-                log.error('Unable to delete ' + folder_name + '/' + file + ' on temp folder : ' + str(err), False)
+                log.error('Unable to delete tmp folder ' + folder_name + '/' + file + ' : ' + str(err), False)
 
         try:
             os.rmdir(folder_name)
         except FileNotFoundError as err:
-            log.error('Unable to delete temp folder : ' + folder_name + ' : ' + str(err), False)
+            log.error('Unable to delete tmp folder ' + folder_name + ' : ' + str(err), False)
 
 
 def generate_searchable_pdf(pdf, tmp_filename, lang, log):
