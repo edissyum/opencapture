@@ -142,6 +142,9 @@ class FindName:
                         fixed_line = line.content.replace(':', '')
                         fixed_line = re.sub(r"(MR,)", 'MR.', fixed_line, flags=re.IGNORECASE)
                         fixed_line = re.sub(r"(M,)", 'M.', fixed_line, flags=re.IGNORECASE)
+                        fixed_line = re.sub(r"(MME,)", 'MME.', fixed_line, flags=re.IGNORECASE)
+                        fixed_line = re.sub(r"(MLE,)", 'MLE.', fixed_line, flags=re.IGNORECASE)
+                        fixed_line = re.sub(r"(MLLE,)", 'MLLE.', fixed_line, flags=re.IGNORECASE)
 
                         civivity = re.findall(r"(Monsieur|MR|M\.|Mme|Mlle|Mle|Madame|Mademoiselle)", fixed_line,
                                               flags=re.IGNORECASE)
