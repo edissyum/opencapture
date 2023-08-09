@@ -17,6 +17,7 @@
 
 import re
 import json
+from thefuzz import fuzz
 from src.backend.import_classes import _Files
 from src.backend.functions import search_by_positions, search_custom_positions
 
@@ -138,22 +139,23 @@ class FindName:
                 name = name.strip()
                 for line in self.text:
                     if name.lower() in line.content.lower():
-                        civivity = re.findall(r"(Monsieur|MR|M\.|Mme|Mlle|Mle|Madame|Mademoiselle)", line.content,
-                                              flags=re.IGNORECASE)
+                        civivity = re.findall(r"(Monsieur|MR|M\.|Mme|Mlle|Mle|Madame|Mademoiselle)",
+                                              line.content, flags=re.IGNORECASE)
                         if civivity:
                             cpt = 0
-                            splitted_line = line.content.split(' ')
+                            splitted_line = list(filter(None, line.content.split(' ')))
                             for word in splitted_line:
                                 firstname = lastname = None
-                                if re.match(r"(Monsieur|MR|M\.|Mme|Mlle|Mle|Madame|Mademoiselle)", word,
-                                            flags=re.IGNORECASE):
-                                    if splitted_line[cpt + 1].lower() == name.lower():
-                                        firstname = splitted_line[cpt + 1].capitalize()
-                                        lastname = splitted_line[cpt + 2].capitalize()
-                                    elif splitted_line[cpt + 2].lower() == name.lower():
-                                        firstname = splitted_line[cpt + 2].capitalize()
-                                        lastname = splitted_line[cpt + 1].capitalize()
-
+                                match_civility = re.match(r"(Monsieur|MR|M\.|Mme|Mlle|Mle|Madame|Mademoiselle)",
+                                                          word, flags=re.IGNORECASE)
+                                if match_civility:
+                                    if len(splitted_line) > cpt + 2:
+                                        if fuzz.ratio(splitted_line[cpt + 1].lower(), name.lower()) >= 85:
+                                            firstname = splitted_line[cpt + 1].capitalize()
+                                            lastname = splitted_line[cpt + 2].capitalize()
+                                        elif fuzz.ratio(splitted_line[cpt + 2].lower(), name.lower()) >= 85:
+                                            firstname = splitted_line[cpt + 2].capitalize()
+                                            lastname = splitted_line[cpt + 1].capitalize()
                                 if firstname and lastname:
                                     self.log.info('Firstname and lastname found : ' + firstname + ' ' + lastname)
                                     return [
