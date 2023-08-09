@@ -32,12 +32,11 @@ defaultPath=/var/www/html/opencapture
 
 apt-get install -y crudini > /dev/null
 
-while getopts "c:t:p:" arguments
+while getopts "c:t:" arguments
 do
     case "${arguments}" in
         c) customId=${OPTARG};;
         t) installationType=${OPTARG};;
-        p) pythonVenv=${OPTARG};;
         *) customId=""
             installationType=""
             pythonVenv=""
