@@ -77,6 +77,14 @@ export class VariousSettingsVerifierComponent implements OnInit {
             'label': marker('VERIFIER.register_date')
         },
         {
+            "id": 'firstname',
+            'label': marker('FACTURATION.firstname')
+        },
+        {
+            "id": 'lastname',
+            'label': marker('FACTURATION.lastname')
+        },
+        {
             "id": 'delivery_number',
             'label': 'FACTURATION.delivery_number'
         },
