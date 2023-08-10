@@ -28,7 +28,7 @@ def find_without_civility(splitted_line, name):
         if fuzz.ratio(splitted_line[0].lower(), name.lower()) >= 85:
             firstname = splitted_line[0].title()
             lastname = splitted_line[1].title()
-            if lastname.lower() in ['de', 'el'] and len(splitted_line == 3):
+            if lastname.lower() in ['de', 'el'] and len(splitted_line) == 3:
                 lastname += ' ' + splitted_line[2].title()
             if lastname.isnumeric() or firstname.isnumeric() or len(lastname) < 3 or len(firstname) < 3:
                 lastname = None
