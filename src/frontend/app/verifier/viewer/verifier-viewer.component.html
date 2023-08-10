@@ -103,7 +103,7 @@
                         </span>
                         <div class="relative border-green-400 border rounded-lg -top-3.5">
                             <div id="{{ category['id'] }}" class="flex flex-wrap w-full mt-6" style="min-height: 50px;">
-                                <div *ngFor="let field of this.form[category['id']];" class="flex items-center p-2" [class]="field.class">
+                                <div *ngFor="let field of this.form[category['id']];" class="flex items-center p-2" [class]="field['class']">
                                     <ng-container *ngIf="field.type === 'text' || (field.type === 'regex' && field.format !== 'date')">
                                         <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'"
                                                         (click)="updateFilteredOption($event, field.control)"
@@ -112,14 +112,17 @@
                                                 {{ field.label | translate }}
                                             </mat-label>
                                             <input [id]="field.id" matInput type="text" [required]="field['required']" [readonly]="this.document.status === 'END'"
-                                                   [formControl]="field['control']" [pattern]="field.pattern" [matAutocomplete]="auto">
+                                                   [formControl]="field['control']" [pattern]="field['pattern']" [matAutocomplete]="auto"
+                                                   (ngModelChange)="filterSupplier($event)">
                                             <mat-error *ngIf="field.control.errors">
                                                 {{ getErrorMessage(field.id, category['id']) }}
                                             </mat-error>
-                                            <mat-autocomplete #auto="matAutocomplete" [id]="field.id"
-                                                              (optionSelected)='getSupplierInfo($event.option.id, true)'>
-                                                <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name" [id]="option.id">
+                                            <mat-autocomplete #auto="matAutocomplete" [id]="field.id" (optionSelected)='getSupplierInfo($event.option.id, true)'>
+                                                <mat-option *ngFor="let option of this.suppliers" [value]="option.name" [id]="option.id">
                                                     <span [innerHTML]="option.name | highlight: toHighlight"></span>
+                                                    <span style="font-size: 12px;" class="text-green-400 ml-3">
+                                                        {{ option['vat_number'] }}
+                                                    </span>
                                                 </mat-option>
                                             </mat-autocomplete>
                                         </mat-form-field>
@@ -218,15 +221,15 @@
                                                    (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"
                                                    [matAutocomplete]="data" [readonly]="this.document.status === 'END'">
                                             <mat-autocomplete #data="matAutocomplete">
-                                            <span *ngIf="field.autocomplete_values">
-                                                <mat-option *ngFor="let option of field.autocomplete_values | async" [value]="option.data"
-                                                            (onSelectionChange)="setAutocompleteDefaultValue($event)" [id]="option.res_id">
-                                                    <span [innerHTML]="option.data | highlight: toHighlight"></span>
-                                                    <span style="font-size: 12px;" class="text-green-400 ml-3">
-                                                        {{ option.alt_identifier }}
-                                                    </span>
-                                                </mat-option>
-                                            </span>
+                                                <span *ngIf="field.autocomplete_values">
+                                                    <mat-option *ngFor="let option of field.autocomplete_values | async" [value]="option.data"
+                                                                (onSelectionChange)="setAutocompleteDefaultValue($event)" [id]="option.res_id">
+                                                        <span [innerHTML]="option.data | highlight: toHighlight"></span>
+                                                        <span style="font-size: 12px;" class="text-green-400 ml-3">
+                                                            {{ option.alt_identifier }}
+                                                        </span>
+                                                    </mat-option>
+                                                </span>
                                                 <mat-option *ngIf="!field.autocomplete_values">
                                                     <span [innerHTML]="'VERIFIER.no_autocomplete_data' | translate"></span>
                                                 </mat-option>

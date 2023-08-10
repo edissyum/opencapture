@@ -100,6 +100,7 @@ export class LoginRequiredService implements CanActivate {
                 }
             }
         }
+
         if (!token) {
             this.translate.get('AUTH.not_connected').subscribe((translated: string) => {
                 const currentUrl = this.routerExtService.getCurrentUrl();

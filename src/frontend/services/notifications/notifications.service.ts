@@ -33,6 +33,8 @@ export class CustomSnackbarComponent {
 
 @Injectable()
 export class NotificationService {
+    oldErrorMessage = '';
+
     constructor(
         private router: Router,
         private toastr: ToastrService,
@@ -46,6 +48,11 @@ export class NotificationService {
     }
 
     error(message: string) {
+        if (this.oldErrorMessage.includes('Signature has expired') && message.includes('Signature has expired') ||
+            this.oldErrorMessage.includes(this.translate.instant('AUTH.not_connected')) && message.includes('Signature has expired')) {
+            return;
+        }
+        this.oldErrorMessage = message;
         const duration = this.getMessageDuration(message, 4000);
         this.toastr.error(message, '', {timeOut: duration, enableHtml: true});
     }

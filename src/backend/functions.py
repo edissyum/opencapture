@@ -276,16 +276,22 @@ def search(position, regex, files, ocr, target_file):
         return [data.replace('\n', ' '), json.dumps(position)]
 
 
-def recursive_delete(folder, log):
-    for file in os.listdir(folder):
+def recursive_delete(folder, log, docservers):
+    folder_name = os.path.basename(folder)
+    exported_pdf_folder = docservers['SEPARATOR_OUTPUT_PDF'] + folder_name
+    exported_pdfa_folder = docservers['SEPARATOR_OUTPUT_PDFA'] + folder_name
+
+    for folder_name in [folder, exported_pdf_folder, exported_pdfa_folder]:
+        for file in os.listdir(folder_name):
+            try:
+                os.remove(folder_name + '/' + file)
+            except FileNotFoundError as err:
+                log.error('Unable to delete tmp folder ' + folder_name + '/' + file + ' : ' + str(err), False)
+
         try:
-            os.remove(folder + '/' + file)
+            os.rmdir(folder_name)
         except FileNotFoundError as err:
-            log.error('Unable to delete ' + folder + '/' + file + ' on temp folder : ' + str(err), False)
-    try:
-        os.rmdir(folder)
-    except FileNotFoundError as err:
-        log.error('Unable to delete ' + folder + ' on temp folder : ' + str(err), False)
+            log.error('Unable to delete tmp folder ' + folder_name + ' : ' + str(err), False)
 
 
 def generate_searchable_pdf(pdf, tmp_filename, lang, log):

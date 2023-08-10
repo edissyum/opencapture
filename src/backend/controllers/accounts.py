@@ -40,12 +40,17 @@ def get_suppliers(_args):
     if 'search' in _args and _args['search']:
         args['offset'] = ''
         args['where'].append(
-            "(LOWER(name) LIKE '%%" + _args['search'].lower() + "%%' OR "
+            "(LOWER(unaccent(name)) LIKE unaccent('%%" + _args['search'].lower() + "%%') OR "
             "LOWER(siret) LIKE '%%" + _args['search'].lower() + "%%' OR "
             "LOWER(email) LIKE '%%" + _args['search'].lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + _args['search'].lower() + "%%' OR "
             "LOWER(vat_number) LIKE '%%" + _args['search'].lower() + "%%')"
         )
+
+    if 'name' in _args and _args['name']:
+        args['offset'] = ''
+        args['where'].append("LOWER(unaccent(name)) LIKE unaccent('" + _args['name'].lower() + "%%')")
+
     suppliers = accounts.get_suppliers(args)
     response = {
         "suppliers": suppliers
@@ -299,24 +304,26 @@ def update_address_by_supplier_id(supplier_id, data):
     address_info, error = accounts.get_supplier_by_id({'select': ['address_id'], 'supplier_id': supplier_id})
 
     if error is None:
-        _set = {
-            'address1': data['address1'],
-            'address2': data['address2'],
-            'postal_code': data['postal_code'],
-            'city': data['city'],
-            'country': data['country']
-        }
-
-        _, error = accounts.update_address({'set': _set, 'address_id': address_info['address_id']})
-
-        if error is None:
-            return '', 200
-        else:
-            response = {
-                "errors": gettext('UPDATE_ADDRESS_ERROR'),
-                "message": gettext(error)
+        if 'address1' in data and 'address2' in data and 'postal_code' in data and 'city' in data and 'country' in data:
+            _set = {
+                'address1': data['address1'],
+                'address2': data['address2'],
+                'postal_code': data['postal_code'],
+                'city': data['city'],
+                'country': data['country']
             }
-            return response, 400
+
+            _, error = accounts.update_address({'set': _set, 'address_id': address_info['address_id']})
+
+            if error is None:
+                return '', 200
+            else:
+                response = {
+                    "errors": gettext('UPDATE_ADDRESS_ERROR'),
+                    "message": gettext(error)
+                }
+                return response, 400
+        return '', 200
     else:
         response = {
             "errors": gettext('UPDATE_ADDRESS_ERROR'),
@@ -419,7 +426,7 @@ def retrieve_customers(data, module):
     if 'search' in data and data['search']:
         args['offset'] = ''
         args['where'].append(
-            "(LOWER(name) LIKE '%%" + data['search'].lower() + "%%' OR "
+            "(LOWER(unaccent(name)) LIKE unaccent('%%" + data['search'].lower() + "%%') OR "
             "LOWER(siret) LIKE '%%" + data['search'].lower() + "%%' OR "
             "LOWER(company_number) LIKE '%%" + data['search'].lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + data['search'].lower() + "%%' OR "

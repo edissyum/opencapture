@@ -216,7 +216,7 @@ def launch(args):
             _e = str(traceback.format_exc())
             log.error(_e)
 
-    recursive_delete(tmp_folder, log)
+    recursive_delete(tmp_folder, log, docservers)
 
     end = time.time()
     _timer = timer(start, end)

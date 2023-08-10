@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
-import sys
 import uuid
 import json
 import datetime
@@ -29,7 +28,7 @@ from src.backend.import_classes import _PyTesseract, _Files
 from src.backend.import_controllers import artificial_intelligence, verifier, accounts
 from src.backend.functions import delete_documents, rotate_document, find_form_with_ia
 from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
-    FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
+    FindDeliveryNumber, FindFooterRaw, FindQuotationNumber, FindName
 
 
 def launch_script(workflow_settings, docservers, step, log, file, database, args, config, datas=None):
@@ -295,11 +294,37 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
         i += 1
 
     if data:
-        _res['datas'].update({data_name: data[0]})
-        if data[1]:
-            _res['positions'].update({data_name: files.reformat_positions(data[1])})
-        if data[2]:
-            _res['pages'].update({data_name: data[2]})
+        if data_name == 'firstname_lastname':
+            if data[0]:
+                if 'firstname' in data[0] and 'lastname' in data[0]:
+                    _res['datas'].update({'firstname': data[0]['firstname']})
+                    _res['datas'].update({'lastname': data[0]['lastname']})
+                elif 'firstname' in data[0]:
+                    _res['datas'].update({'firstname': data[0]['firstname']})
+                elif 'lastname' in data[0]:
+                    _res['datas'].update({'lastname': data[0]['lastname']})
+            if data[1]:
+                if 'firstname' in data[1] and 'lastname' in data[1]:
+                    _res['positions'].update({'firstname': data[1]['firstname']})
+                    _res['positions'].update({'lastname': data[1]['lastname']})
+                elif 'firstname' in data[0]:
+                    _res['positions'].update({'firstname': data[1]['firstname']})
+                elif 'lastname' in data[0]:
+                    _res['positions'].update({'lastname': data[1]['lastname']})
+            if data[2]:
+                if 'firstname' in data[0] and 'lastname' in data[0]:
+                    _res['pages'].update({'firstname': data[2]})
+                    _res['pages'].update({'lastname': data[2]})
+                elif 'firstname' in data[0]:
+                    _res['pages'].update({'firstname': data[2]})
+                elif 'lastname' in data[0]:
+                    _res['pages'].update({'lastname': data[2]})
+        else:
+            _res['datas'].update({data_name: data[0]})
+            if data[1]:
+                _res['positions'].update({data_name: files.reformat_positions(data[1])})
+            if data[2]:
+                _res['pages'].update({data_name: data[2]})
     return _res
 
 
@@ -330,11 +355,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         })
         if workflow_settings:
             workflow_settings = workflow_settings[0]
-            if workflow_settings['input']['apply_process'] and workflow_settings['process']['rotation']:
-                if workflow_settings['process']['rotation'] != 'no_rotation':
-                    rotate_document(file, workflow_settings['process']['rotation'])
-                    log.info('Document rotated by ' + str(workflow_settings['process']['rotation']) +
-                             '° based on workflow settings')
+            if workflow_settings['input']['rotation'] and workflow_settings['input']['rotation'] != 'no_rotation':
+                rotate_document(file, workflow_settings['input']['rotation'])
+                log.info('Document rotated by ' + str(workflow_settings['input']['rotation']) +
+                         '° based on workflow settings')
 
     # Convert files to JPG
     convert(file, files, ocr, nb_pages)
@@ -571,29 +595,33 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 datas = found_data_recursively(custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
                                                datas, files, configurations)
 
+        if 'firstname_lastname' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+            name_class = FindName(ocr, log, docservers, supplier, files, database, regex, datas['form_id'], file)
+            datas = found_data_recursively('firstname_lastname', ocr, file, nb_pages, text_by_pages,
+                                           name_class, datas, files, configurations)
         if 'invoice_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file, docservers,
-                                                     configurations, languages, datas['form_id'])
-            datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages, invoice_number_class,
-                                           datas, files, configurations)
+            invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
+                                                     docservers, configurations, languages, datas['form_id'])
+            datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages,
+                                           invoice_number_class, datas, files, configurations)
 
         if 'document_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            date_class = FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers, languages,
-                                  datas['form_id'])
-            datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class, datas, files,
-                                           configurations)
+            date_class = FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
+                                  languages, datas['form_id'])
+            datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class,
+                                           datas, files, configurations)
 
         if 'document_due_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             due_date_class = FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                          languages, datas['form_id'])
-            datas = found_data_recursively('document_due_date', ocr, file, nb_pages, text_by_pages, due_date_class,
-                                           datas, files, configurations)
+            datas = found_data_recursively('document_due_date', ocr, file, nb_pages, text_by_pages,
+                                           due_date_class, datas, files, configurations)
 
         if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
                                                          docservers, configurations, datas['form_id'], languages)
-            datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages, quotation_number_class,
-                                           datas, files, configurations)
+            datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages,
+                                           quotation_number_class, datas, files, configurations)
 
         if 'delivery_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file, docservers,

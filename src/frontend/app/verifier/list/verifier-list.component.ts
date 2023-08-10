@@ -33,7 +33,6 @@ import { UserService } from "../../../services/user.service";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { DomSanitizer } from "@angular/platform-browser";
-import { ConfigService } from "../../../services/config.service";
 import { FormControl } from "@angular/forms";
 
 interface AccountsNode {
@@ -41,6 +40,7 @@ interface AccountsNode {
     id: number
     parent_id: any
     supplier_id: any
+    form_id: any
     count: number
     display: boolean
     children: any
@@ -52,6 +52,7 @@ interface FlatNode {
     id: number
     parent_id: any
     supplier_id: any
+    form_id: any
     display: boolean
     count: number
     level: number
@@ -106,11 +107,11 @@ export class VerifierListComponent implements OnInit {
     allowedSuppliers        : any []            = [];
     search                  : string            = '';
     TREE_DATA               : AccountsNode[]    = [];
+    totalChecked            : number            = 0;
     expanded                : boolean           = false;
     documentToDeleteSelected : boolean          = false;
-    totalChecked            : number            = 0;
     customerFilterEmpty     : boolean           = false;
-    customerFilter        = new FormControl('');
+    customerFilter         = new FormControl('');
     customerFilterEnabled   : boolean           = false;
 
     private _transformer = (node: AccountsNode, level: number) => ({
@@ -119,6 +120,7 @@ export class VerifierListComponent implements OnInit {
         supplier_id: node.supplier_id,
         id: node.id,
         parent_id: node.parent_id,
+        form_id: node.form_id,
         display: node.display,
         count: node.count,
         level: level,
@@ -141,7 +143,6 @@ export class VerifierListComponent implements OnInit {
         private userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private configService: ConfigService,
         private routerExtService: LastUrlService,
         private localStorageService: LocalStorageService
     ) {}
@@ -156,7 +157,7 @@ export class VerifierListComponent implements OnInit {
             this.authService.generateHeaders();
         }
 
-        if (!this.userService.user) {
+        if (!this.userService.user.id) {
             this.userService.user = this.userService.getUserFromLocal();
         }
 
@@ -167,7 +168,6 @@ export class VerifierListComponent implements OnInit {
         marker('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.documents_settings'); // Needed to get the translation in the JSON file
         this.localStorageService.save('splitter_or_verifier', 'verifier');
-        this.removeLockByUserId(this.userService.user.username);
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
             if (this.localStorageService.get('documentsPageIndex'))
@@ -181,7 +181,7 @@ export class VerifierListComponent implements OnInit {
             this.localStorageService.remove('documentsPageIndex');
             this.localStorageService.remove('documentsTimeIndex');
         }
-
+        this.removeLockByUserId();
         this.http.get(environment['url'] + '/ws/status/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
@@ -219,8 +219,8 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    removeLockByUserId(userId: any) {
-        this.http.put(environment['url'] + '/ws/verifier/documents/removeLockByUserId/' + userId, {}, {headers: this.authService.headers}).pipe(
+    removeLockByUserId() {
+        this.http.put(environment['url'] + '/ws/verifier/documents/removeLockByUserId/' + this.userService.user.username, {}, {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -231,20 +231,24 @@ export class VerifierListComponent implements OnInit {
 
     loadCustomers() {
         this.TREE_DATA = [];
-        this.TREE_DATA.push({
-            name: this.translate.instant('ACCOUNTS.customer_not_specified'),
-            id: 0,
-            parent_id: '',
-            supplier_id: '',
-            display: true,
-            count: 0,
-            children: []
-        });
         this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
+        this.http.get(environment['url'] + '/ws/accounts/customers/list/verifier', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.customersList = data.customers;
+                this.customersList.unshift({
+                    "id": 0,
+                    "name": this.translate.instant('ACCOUNTS.customer_not_specified')
+                });
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.http.get(environment['url'] + '/ws/verifier/customersCount/' + this.userService.user.id + '/' + this.currentStatus + '/' + this.currentTime, {headers: this.authService.headers}).pipe(
             tap((customers_count: any) => {
-                this.customersList = customers_count;
-                this.customersList.forEach((customer_count: any) => {
+                customers_count.forEach((customer_count: any) => {
                     this.allowedCustomers.push(customer_count.customer_id);
                     const node : any = {
                         name: customer_count.name ? customer_count.name : this.translate.instant('ACCOUNTS.customer_not_specified'),
@@ -269,6 +273,7 @@ export class VerifierListComponent implements OnInit {
                                 name: supplier.name ? supplier.name : this.translate.instant('ACCOUNTS.supplier_unknow'),
                                 supplier_id: supplier.supplier_id,
                                 parent_id: customer_count.customer_id,
+                                form_id: supplier.form_id ? supplier.form_id : 'no_form',
                                 count: supplier.total,
                                 display: true
                             });
@@ -460,6 +465,7 @@ export class VerifierListComponent implements OnInit {
     }
 
     loadDocumentPerCustomer(node: any) {
+        const formId = node.form_id;
         const parentId = node.parent_id;
         const supplierId = node.supplier_id;
         this.TREE_DATA.forEach((element: any) => {
@@ -468,6 +474,7 @@ export class VerifierListComponent implements OnInit {
                 this.customerFilterEnabled = true;
                 this.allowedCustomers = [customerId];
                 this.allowedSuppliers = [supplierId];
+                this.currentForm = formId;
                 this.resetPaginator();
                 this.loadDocuments().then();
             }
@@ -478,9 +485,9 @@ export class VerifierListComponent implements OnInit {
         this.search = '';
         this.loading = true;
         this.currentForm = '';
-        this.loadingCustomers = true;
         this.allowedCustomers = [];
         this.allowedSuppliers = [];
+        this.loadingCustomers = true;
         this.customerFilterEnabled = false;
         this.loadCustomers();
         this.resetPaginator();

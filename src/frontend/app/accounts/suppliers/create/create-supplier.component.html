@@ -21,14 +21,13 @@
                 </ng-container>
             </div>
             <div class="flex justify-center items-center align-middle">
-                <form (ngSubmit)="onSubmit()" class="grid grid-cols-7 gap-2 w-full m-10 text-center">
+                <form (ngSubmit)="onSubmit()" class="grid grid-cols-4 gap-2 gap-y-5 w-full m-10 text-center">
                     <ng-container *ngFor="let field of supplierForm">
                         <mat-form-field class="block" *ngIf="field.type === 'text'">
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessageSupplier(field.id) }}</mat-error>
-                            <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
-                                  [matTooltip]="field.hint | translate">
+                            <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
                                 <i class="fa-solid fa-circle-question text-md"></i>
                             </span>
                         </mat-form-field>
@@ -46,10 +45,8 @@
                             <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessageAddress(field.id) }}</mat-error>
                         </mat-form-field>
-                        <mat-select-country class="w-full" *ngIf="field.type === 'country'"
-                                            [label]="field.label | translate"
-                                            [value]="defaultValue"
-                                            (onCountrySelected)="onCountrySelected($event)">
+                        <mat-select-country class="w-full" *ngIf="field.type === 'country'" [value]="defaultValue"
+                                            [label]="field.label | translate" (onCountrySelected)="onCountrySelected($event)">
                         </mat-select-country>
                     </ng-container>
                     <div class="button col-span-7">
