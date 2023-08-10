@@ -25,6 +25,10 @@
     }
 }
 
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline .mdc-notched-outline__notch {
+    @apply border-r-0 #{!important};
+}
+
 .mat-step-header:hover,
 .mat-step-header.cdk-program-focused {
     @apply bg-transparent #{!important};

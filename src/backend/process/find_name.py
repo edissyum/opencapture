@@ -96,7 +96,8 @@ class FindName:
                     if text != '':
                         firstname = text
                         firstname_position = position
-                        del firstname_position['ocr_from_user']
+                        if 'ocr_from_user' in firstname_position:
+                            del firstname_position['ocr_from_user']
 
                 position = self.database.select({
                     'select': [
@@ -121,7 +122,8 @@ class FindName:
                     if text != '':
                         lastname = text
                         lastname_position = position
-                        del lastname_position['ocr_from_user']
+                        if 'ocr_from_user' in lastname_position:
+                            del lastname_position['ocr_from_user']
 
                 if firstname and lastname:
                     return [
