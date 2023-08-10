@@ -148,23 +148,22 @@ class FindName:
                         fixed_line = re.sub(r"(MLE,)", 'MLE.', fixed_line, flags=re.IGNORECASE)
                         fixed_line = re.sub(r"(MLLE,)", 'MLLE.', fixed_line, flags=re.IGNORECASE)
 
-                        civivity = re.findall(r"(Monsieur|MR|M\.|Mme|Mlle|Mle|Madame|Mademoiselle)", fixed_line,
-                                              flags=re.IGNORECASE)
+                        civility_regex = "(Monsieur|MR|M|M\\.|Mme|Mlle|Mle|Madame|Mademoiselle)"
+                        civivity = re.findall(civility_regex, fixed_line, flags=re.IGNORECASE)
                         if civivity:
                             cpt = 0
                             splitted_line = list(filter(None, fixed_line.split(' ')))
                             for word in splitted_line:
                                 firstname = lastname = None
-                                match_civility = re.match(r"(Monsieur|MR|M\.|Mme|Mlle|Mle|Madame|Mademoiselle)",
-                                                          word, flags=re.IGNORECASE)
+                                match_civility = re.match(r"^" + civility_regex + "$", word, flags=re.IGNORECASE)
                                 if match_civility:
                                     if len(splitted_line) > cpt + 2:
                                         if fuzz.ratio(splitted_line[cpt + 1].lower(), name.lower()) >= 85:
-                                            firstname = splitted_line[cpt + 1].capitalize()
-                                            lastname = splitted_line[cpt + 2].capitalize()
+                                            firstname = splitted_line[cpt + 1].title()
+                                            lastname = splitted_line[cpt + 2].title()
                                         elif fuzz.ratio(splitted_line[cpt + 2].lower(), name.lower()) >= 85:
-                                            firstname = splitted_line[cpt + 2].capitalize()
-                                            lastname = splitted_line[cpt + 1].capitalize()
+                                            firstname = splitted_line[cpt + 2].title()
+                                            lastname = splitted_line[cpt + 1].title()
                                 if firstname and lastname:
                                     self.log.info('Firstname and lastname found : ' + firstname + ' ' + lastname)
                                     return [
