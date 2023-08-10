@@ -10,74 +10,77 @@
                [matTooltip]="!this.expanded ? this.translate.instant('VERIFIER.expand_all') : this.translate.instant('VERIFIER.collapse_all')"></i>
         </h3>
         <mat-divider></mat-divider>
-        <div class="pb-6">
-            <mat-form-field class="px-4 pt-4 -mb-6 w-full" appearance="outline" [class.pointer-events-none]="this.loadingCustomers || this.dataSource.data.length === 0">
-                <mat-label>
-                    {{ 'VERIFIER.search_customer' | translate }}
-                </mat-label>
-                <input matInput type="text" [formControl]="this.customerFilter" (keyup)="filterCustomers()" autocomplete="off"
-                       [readonly]="this.loadingCustomers || this.dataSource.data.length === 0">
-                <button matSuffix class="text-gray-900 cursor-pointer" (click)="resetSearchCustomer()" *ngIf="this.customerFilter.value">
-                    <i class="fa-solid fa-sync-alt text-xl relative mr-4"
-                       [matTooltip]="'VERIFIER.reset_customers_search' | translate"></i>
-                </button>
-            </mat-form-field>
-        </div>
-        <div *ngIf="this.loadingCustomers || this.dataSource.data.length === 0" class="flex text-gray-400 object-contain" style="height: calc(100% - 10rem)">
-            <div class="m-auto text-center">
-                <i class="fa-solid fa-users fa-4x fa-beat-fade w-full mb-2"></i>
-                <span class="w-full">
-                    {{ 'VERIFIER.loading_customers' | translate }}
-                </span>
+        <div class="overflow-hidden">
+            <div class="pb-6">
+                <mat-form-field class="px-4 pt-4 -mb-6 w-full" appearance="outline" [class.pointer-events-none]="this.loadingCustomers || this.dataSource.data.length === 0">
+                    <mat-label>
+                        {{ 'VERIFIER.search_customer' | translate }}
+                    </mat-label>
+                    <input matInput type="text" [formControl]="this.customerFilter" (keyup)="filterCustomers()" autocomplete="off"
+                           [readonly]="this.loadingCustomers || this.dataSource.data.length === 0">
+                    <button matSuffix class="text-gray-900 cursor-pointer" (click)="resetSearchCustomer()" *ngIf="this.customerFilter.value">
+                        <i class="fa-solid fa-sync-alt text-xl relative mr-4"
+                           [matTooltip]="'VERIFIER.reset_customers_search' | translate"></i>
+                    </button>
+                </mat-form-field>
             </div>
-        </div>
-        <div *ngIf="this.customerFilter.value && !this.loadingCustomers && this.customerFilterEmpty"
-             class="flex text-gray-400 object-contain" style="height: calc(100% - 10rem)">
-            <div class="m-auto text-center">
-                <i class="fa-solid fa-ban fa-4x fa-beat-fade w-full mb-2"></i>
-                <span class="w-full">
+            <div *ngIf="this.loadingCustomers || this.dataSource.data.length === 0" class="loading_customers">
+                <div class="m-auto text-center">
+                    <i class="fa-solid fa-users fa-4x fa-beat-fade w-full mb-2"></i>
+                    <span class="w-full">
+                        {{ 'VERIFIER.loading_customers' | translate }}
+                    </span>
+                </div>
+            </div>
+            <div *ngIf="this.customerFilter.value && !this.loadingCustomers && this.customerFilterEmpty"
+                 class="flex text-gray-400 object-contain" style="height: calc(100% - 10rem)">
+                <div class="m-auto text-center">
+                    <i class="fa-solid fa-ban fa-4x fa-beat-fade w-full mb-2"></i>
+                    <span class="w-full">
                     {{ 'VERIFIER.no_customers_filter' | translate }}
                 </span>
+                </div>
             </div>
+            <mat-tree *ngIf="!this.loadingCustomers" [dataSource]="this.dataSource" [treeControl]="this.treeControl"
+                      class="overflow-x-hidden" style="height: calc(100vh - 14rem)">
+                <mat-tree-node style="min-height: 24px" class="pl-12 cursor-pointer hover:bg-black hover:bg-opacity-20" *matTreeNodeDef="let node; when:isLevelTwo;" (click)="loadDocumentPerCustomer(node)">
+                    <button mat-icon-button disabled>
+                        <i class="text-green-400 ml-4 text-base fa-solid fa-user pb-0.5"></i>
+                    </button>
+                    <span class="pl-2 font-normal select-none">{{ node.name }}</span>
+                    <span class="float-right ml-auto select-none mr-6 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
+                        {{ node.count }}
+                    </span>
+                </mat-tree-node>
+                <mat-tree-node style="min-height: 24px" class="parent cursor-pointer hover:bg-black hover:bg-opacity-10"
+                               *matTreeNodeDef="let node; when: hasChild; when:isNotLevelOne" matTreeNodeToggle
+                               [class.hidden]="!node.display || (node.count === 0 && node.id === 0)">
+                    <button mat-icon-button [class.hidden]="node.count === 0 && node.id === 0">
+                        <mat-icon class="mat-icon-rtl-mirror text-gray-900">
+                            {{ this.treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+                        </mat-icon>
+                    </button>
+                    <span class="select-none" [class.pointer-events-none]="node.count === 0" [class.hidden]="node.count === 0 && node.id === 0">
+                        {{ node.name }}
+                    </span>
+                    <span *ngIf="!this.treeControl.isExpanded(node)" [class.hidden]="node.count === 0 && node.id === 0"
+                          class="float-right ml-auto select-none mr-4 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
+                        {{ node.count }}
+                    </span>
+                </mat-tree-node>
+                <mat-tree-node [class.hidden]="node.count === 0" style="min-height: 24px" matTreeNodeToggle
+                               class="child pl-6 cursor-pointer hover:bg-black hover:bg-opacity-10"
+                               *matTreeNodeDef="let node;when: isLevelOne;">
+                    <button mat-icon-button>
+                        <i [class.fa-folder-open]="this.treeControl.isExpanded(node)" class="text-gray-600 fa-solid fa-folder text-lg relative -top-0.5"></i>
+                    </button>
+                    <span class="pl-2 font-normal select-none">{{ node.name }}</span>
+                    <span *ngIf="!this.treeControl.isExpanded(node)" class="float-right ml-auto select-none mr-12 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
+                        {{ node.count }}
+                    </span>
+                </mat-tree-node>
+            </mat-tree>
         </div>
-        <mat-tree *ngIf="!this.loadingCustomers" [dataSource]="this.dataSource" [treeControl]="this.treeControl">
-            <mat-tree-node style="min-height: 24px" class="pl-12 cursor-pointer hover:bg-black hover:bg-opacity-20" *matTreeNodeDef="let node; when:isLevelTwo;" (click)="loadDocumentPerCustomer(node)">
-                <button mat-icon-button disabled>
-                    <i class="text-green-400 ml-4 text-base fa-solid fa-user pb-0.5"></i>
-                </button>
-                <span class="pl-2 font-normal select-none">{{ node.name }}</span>
-                <span class="float-right ml-auto select-none mr-6 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
-                    {{ node.count }}
-                </span>
-            </mat-tree-node>
-            <mat-tree-node style="min-height: 24px" class="parent cursor-pointer hover:bg-black hover:bg-opacity-10"
-                           *matTreeNodeDef="let node; when: hasChild; when:isNotLevelOne" matTreeNodeToggle
-                           [class.hidden]="!node.display || (node.count === 0 && node.id === 0)">
-                <button mat-icon-button [class.hidden]="node.count === 0 && node.id === 0">
-                    <mat-icon class="mat-icon-rtl-mirror text-gray-900">
-                        {{ this.treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-                    </mat-icon>
-                </button>
-                <span class="select-none" [class.pointer-events-none]="node.count === 0" [class.hidden]="node.count === 0 && node.id === 0">
-                    {{ node.name }}
-                </span>
-                <span *ngIf="!this.treeControl.isExpanded(node)" [class.hidden]="node.count === 0 && node.id === 0"
-                      class="float-right ml-auto select-none mr-4 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
-                    {{ node.count }}
-                </span>
-            </mat-tree-node>
-            <mat-tree-node [class.hidden]="node.count === 0" style="min-height: 24px" matTreeNodeToggle
-                           class="child pl-6 cursor-pointer hover:bg-black hover:bg-opacity-10"
-                           *matTreeNodeDef="let node;when: isLevelOne;">
-                <button mat-icon-button>
-                    <i [class.fa-folder-open]="this.treeControl.isExpanded(node)" class="text-gray-600 fa-solid fa-folder text-lg relative -top-0.5"></i>
-                </button>
-                <span class="pl-2 font-normal select-none">{{ node.name }}</span>
-                <span *ngIf="!this.treeControl.isExpanded(node)" class="float-right ml-auto select-none mr-12 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
-                    {{ node.count }}
-                </span>
-            </mat-tree-node>
-        </mat-tree>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
         <button mat-icon-button (click)="sidenav.toggle();"

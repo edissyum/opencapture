@@ -50,9 +50,9 @@ class FindCustom:
 
     def check_format_and_clean(self, data, settings):
         if 'remove_special_char' in settings and settings['remove_special_char']:
-            data_to_replace = r'[-()\"#\\/@;:<>{}\]\[`+=~|!?€$%£*]'
+            data_to_replace = r'[-()\"#\\/@;:<>{}\]\[`+=~|!?€$%£*©™]'
             if settings['format'] == 'date':
-                data_to_replace = r'[-()\"#\\@;:<>{}\]\[`+=~|!?€$%£*]'
+                data_to_replace = r'[-()\"#\\@;:<>{}\]\[`+=~|!?€$%£*©™]'
             data = re.sub(data_to_replace, '', data)
 
         match = True
