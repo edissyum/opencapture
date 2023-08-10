@@ -399,7 +399,7 @@ export class UsersListComponent implements OnInit {
                     if (result.fileControl.status === 'VALID') {
                         formData.append(result.fileControl.value![i]['name'], result.fileControl.value![i]);
                     } else {
-                        this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
+                        this.notify.handleErrors(this.translate.instant('DATA-IMPORT.extension_unauthorized', {"extension": 'CSV'}));
                         return;
                     }
                 }
