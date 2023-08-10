@@ -88,8 +88,9 @@ export class ChecklistDatabase {
                             'label'     : doctype.label,
                             'type'      : doctype.type,
                             'status'    : doctype.status,
+                            'formId'    : doctype.form_id,
                             'isDefault' : doctype.is_default,
-                            'formId'    : doctype.form_id
+                            'padding'   : doctype.code.split('.').length - 2
                         };
                         this.doctypeData.push(newDoctype);
                     }
@@ -139,6 +140,7 @@ export class ChecklistDatabase {
                 node.label      = o.label;
                 node.code       = o.code;
                 node.type       = o.type;
+                node.padding    = o.padding;
                 node.isDefault  = o.isDefault;
                 const children  = obj.filter(so => (so.code as string).startsWith(level + '.'));
                 if (children && children.length > 0) {
@@ -178,23 +180,25 @@ export class ChecklistDatabase {
 export class TreeItemNode {
     id!         : number;
     key!        : string;
-    label!      : string;
-    children!   : TreeItemNode[];
     code!       : string;
     type!       : string;
+    label!      : string;
+    padding!    : number;
     isDefault!  : boolean;
+    children!   : TreeItemNode[];
 }
 
 /** Flat item node with expandable and level information */
 export class TreeItemFlatNode {
     id!         : number;
-    label!      : string;
     key!        : string;
-    level!      : number;
     type!       : string;
+    code!       : string;
+    label!      : string;
+    level!      : number;
+    padding!    : number;
     isDefault!  : boolean;
     expandable! : boolean;
-    code!       : string;
 }
 
 @Component({
@@ -312,6 +316,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         flatNode.type       = node.type;
         flatNode.code       = node.code;
         flatNode.key        = node.key;
+        flatNode.padding    = node.padding;
         flatNode.isDefault  = node.isDefault;
         flatNode.expandable = (node.type === 'folder');
         this.flatNodeMap.set(flatNode, node);

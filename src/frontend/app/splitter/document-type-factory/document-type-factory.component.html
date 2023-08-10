@@ -50,7 +50,7 @@
         {{ 'DOCTYPE.no_doctype_to_show' | translate }}
     </div>
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="m-2">
-        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding="1">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding="{{ node.padding }}">
             <button class="whitespace-nowrap p-1 rounded hover:text-slate-100 hover:bg-green-400 font-normal"
                     (click)="selectNode(node, false)"
                     (dblclick)="selectNode(node, true)"
@@ -60,7 +60,7 @@
                     <span>{{ node.label }}</span>
             </button>
         </mat-tree-node>
-        <mat-tree-node *matTreeNodeDef="let node;when: hasChild">
+        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding="{{ node.padding }}">
             <button matTreeNodeToggle class="p-1 rounded font-normal hover:bg-green-400 hover:text-slate-100"
                     [ngClass]="selectedDoctypeInput.key === node.key ? 'bg-green-400 text-slate-100' : ''"
                     [attr.aria-label]="'Toggle ' + node.label"
