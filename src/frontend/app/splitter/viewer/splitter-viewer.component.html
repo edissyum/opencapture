@@ -190,7 +190,7 @@
                         <i class="fa-solid fa-file-arrow-down fa-2x" *ngIf="!downloadLoading"></i>
                         <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="downloadLoading"></i>
                     </button>
-                    <button mat-button (click)="loadReferential(true); $event.stopPropagation();"
+                    <button mat-button (click)="loadReferential(true, true); $event.stopPropagation();"
                             class="float-right mb-2"
                             matTooltip="{{ 'SPLITTER.load_referential' | translate }}">
                         <i class="fa-solid fa-sync fa-2x"></i>
