@@ -24,7 +24,7 @@ from src.backend.functions import search_by_positions, search_custom_positions
 
 def find_without_civility(splitted_line, name):
     firstname = lastname = None
-    if 2 <= len(splitted_line) <= 3:
+    if len(name) >= 4 and 2 <= len(splitted_line) <= 3:
         if fuzz.ratio(splitted_line[0].lower(), name.lower()) >= 85:
             firstname = splitted_line[0].title()
             lastname = splitted_line[1].title()
@@ -195,7 +195,7 @@ class FindName:
                         fixed_line = re.sub(r"(MLE,)", 'MLE.', fixed_line, flags=re.IGNORECASE)
                         fixed_line = re.sub(r"(MLLE,)", 'MLLE.', fixed_line, flags=re.IGNORECASE)
 
-                        civility_regex = r"(Monsieur|MR|M|M\\.|Mme|Mlle|Mle|Madame|Mademoiselle|MR(/|-)MME|MME(/|-)MR)"
+                        civility_regex = (r"(DOCTEUR|MONSIEUR|MR|M\.|MME|MLLE|MLE|MADAME|MADEMOISELLE|MR(/|-)MME|MME(/|-)MR|M)")
                         civility = re.findall(civility_regex, fixed_line, flags=re.IGNORECASE)
                         splitted_line = list(filter(None, fixed_line.split(' ')))
 
