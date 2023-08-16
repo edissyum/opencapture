@@ -22,6 +22,8 @@ import cv2
 import json
 import time
 import uuid
+
+import imutils
 import pypdf
 import string
 import random
@@ -32,6 +34,7 @@ import numpy as np
 from PIL import Image
 from zipfile import ZipFile
 from pdf2image import convert_from_path
+from pytesseract import pytesseract, Output
 from werkzeug.utils import secure_filename
 from src.backend.functions import get_custom_array, generate_searchable_pdf
 
@@ -438,10 +441,15 @@ class Files:
         improved_img = filename[0] + '_improved' + filename[1]
         if not os.path.isfile(improved_img):
             src = cv2.imread(img)
+            rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
+            results = pytesseract.image_to_osd(rgb, output_type=Output.DICT)
+            if results['orientation'] != 0 and results['rotate'] != 0:
+                src = imutils.rotate_bound(rgb, angle=results["rotate"])
+
             gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
             _, black_and_white = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
-            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(black_and_white, None, None, None, 8,
-                                                                                 cv2.CV_32S)
+            nlabels, labels, stats, _ = cv2.connectedComponentsWithStats(black_and_white, None, None,
+                                                                         None, 8, cv2.CV_32S)
 
             # get CC_STAT_AREA component
             sizes = stats[1:, -1]

@@ -13,6 +13,7 @@ pyzbar==0.1.9
 qrcode==7.4.2
 kuyruk==9.4.1
 pillow==10.0.0
+imutils==0.5.4
 thefuzz==0.19.0
 psycopg2==2.9.7
 werkzeug==2.3.7
