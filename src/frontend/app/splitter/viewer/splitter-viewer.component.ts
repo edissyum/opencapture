@@ -534,7 +534,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     getPlaceholderFromSearchMask(mask: string, label: string) {
-        return mask ? mask.replace('#label', label) : '';
+        return mask ? mask.replace('#label', label) : label;
     }
 
     changeInputMode($event: any) {
