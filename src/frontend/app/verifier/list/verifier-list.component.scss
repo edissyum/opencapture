@@ -4,6 +4,14 @@
     @apply font-bold;
 }
 
+.loading_customers {
+    top: 50%;
+    left: 50%;
+    @apply absolute;
+    @apply text-gray-400;
+    transform: translate(-50%, -50%);
+}
+
 ::ng-deep .list > mat-card {
     @apply flex;
     @apply flex-col;
@@ -18,30 +26,9 @@
         @apply duration-500;
     }
 
-    & .mat-mdc-card-header .mat-mdc-card-title > span:first-child {
-        @apply relative;
-
-        &:after {
-            @apply absolute;
-            content: "";
-            @apply w-0;
-            @apply h-0.5;
-            @apply bg-green-400;
-            @apply left-1/2;
-            @apply -bottom-0.5;
-            @apply transition-all;
-            @apply duration-500;
-        }
-    }
-
     &:hover {
         & .mat-mdc-card-image {
             transform: scale(1.05);
-        }
-
-        & .mat-mdc-card-header > .mat-mdc-card-header-text > .mat-mdc-card-title > span:first-child:after {
-            width: 100%;
-            left: 0;
         }
 
         & mat-card-actions {

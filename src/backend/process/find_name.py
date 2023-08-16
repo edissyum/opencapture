@@ -22,6 +22,26 @@ from src.backend.import_classes import _Files
 from src.backend.functions import search_by_positions, search_custom_positions
 
 
+def find_without_civility(splitted_line, name):
+    firstname = lastname = None
+    if len(name) >= 4 and 2 <= len(splitted_line) <= 3:
+        if fuzz.ratio(splitted_line[0].lower(), name.lower()) >= 85:
+            firstname = splitted_line[0].title()
+            lastname = splitted_line[1].title()
+            if lastname.lower() in ['de', 'el'] and len(splitted_line) == 3:
+                lastname += ' ' + splitted_line[2].title()
+            if lastname.isnumeric() or firstname.isnumeric() or len(lastname) < 3 or len(firstname) < 3:
+                lastname = None
+                firstname = None
+        elif fuzz.ratio(splitted_line[1].lower(), name.lower()) >= 85:
+            firstname = splitted_line[1].title()
+            lastname = splitted_line[0].title()
+            if lastname.isnumeric() or firstname.isnumeric() or len(lastname) < 3 or len(firstname) < 3:
+                lastname = None
+                firstname = None
+    return {'firstname': firstname, 'lastname': lastname}
+
+
 class FindName:
     def __init__(self, ocr, log, docservers, supplier, files, database, regex, form_id, file):
         self.ocr = ocr
@@ -39,6 +59,33 @@ class FindName:
         self.docservers = docservers
         self.footer_text = ocr.footer_text
         self.header_text = ocr.header_text
+
+    def return_results(self, firstname, lastname, line):
+        if firstname and lastname:
+            self.log.info('Firstname and lastname found : ' + firstname + ' ' + lastname)
+            return [
+                {'firstname': firstname, 'lastname': lastname},
+                {
+                    'firstname': _Files.reformat_positions(line.position),
+                    'lastname': _Files.reformat_positions(line.position)
+                },
+                self.nb_page
+            ]
+        elif firstname:
+            self.log.info('Firstname found : ' + firstname)
+            return [
+                {'firstname': firstname},
+                {'firstname': _Files.reformat_positions(line.position)},
+                self.nb_page
+            ]
+        elif lastname:
+            self.log.info('Lastname found : ' + lastname)
+            return [
+                {'lastname': lastname},
+                {'lastname': _Files.reformat_positions(line.position)},
+                self.nb_page
+            ]
+        return False
 
     def run(self):
         if self.supplier:
@@ -96,7 +143,8 @@ class FindName:
                     if text != '':
                         firstname = text
                         firstname_position = position
-                        del firstname_position['ocr_from_user']
+                        if 'ocr_from_user' in firstname_position:
+                            del firstname_position['ocr_from_user']
 
                 position = self.database.select({
                     'select': [
@@ -121,7 +169,8 @@ class FindName:
                     if text != '':
                         lastname = text
                         lastname_position = position
-                        del lastname_position['ocr_from_user']
+                        if 'ocr_from_user' in lastname_position:
+                            del lastname_position['ocr_from_user']
 
                 if firstname and lastname:
                     return [
@@ -139,52 +188,45 @@ class FindName:
                 name = name.strip()
                 for line in self.text:
                     if name.lower() in line.content.lower():
-                        fixed_line = line.content.replace(':', '')
+                        fixed_line = line.content.replace(':', '').replace('/', ' ').replace('!', '').replace('?', '')
                         fixed_line = re.sub(r"(MR,)", 'MR.', fixed_line, flags=re.IGNORECASE)
                         fixed_line = re.sub(r"(M,)", 'M.', fixed_line, flags=re.IGNORECASE)
                         fixed_line = re.sub(r"(MME,)", 'MME.', fixed_line, flags=re.IGNORECASE)
                         fixed_line = re.sub(r"(MLE,)", 'MLE.', fixed_line, flags=re.IGNORECASE)
                         fixed_line = re.sub(r"(MLLE,)", 'MLLE.', fixed_line, flags=re.IGNORECASE)
 
-                        civivity = re.findall(r"(Monsieur|MR|M\.|Mme|Mlle|Mle|Madame|Mademoiselle)", fixed_line,
-                                              flags=re.IGNORECASE)
-                        if civivity:
+                        civility_regex = (r"(DOCTEUR|MONSIEUR|MR|M\.|MME|MLLE|MLE|MADAME|MADEMOISELLE|MR(/|-)MME|MME(/|-)MR|M)")
+                        civility = re.findall(civility_regex, fixed_line, flags=re.IGNORECASE)
+                        splitted_line = list(filter(None, fixed_line.split(' ')))
+
+                        if civility:
                             cpt = 0
-                            splitted_line = list(filter(None, fixed_line.split(' ')))
                             for word in splitted_line:
                                 firstname = lastname = None
-                                match_civility = re.match(r"(Monsieur|MR|M\.|Mme|Mlle|Mle|Madame|Mademoiselle)",
-                                                          word, flags=re.IGNORECASE)
+                                match_civility = re.match(r"^" + civility_regex + "$", word, flags=re.IGNORECASE)
                                 if match_civility:
                                     if len(splitted_line) > cpt + 2:
                                         if fuzz.ratio(splitted_line[cpt + 1].lower(), name.lower()) >= 85:
-                                            firstname = splitted_line[cpt + 1].capitalize()
-                                            lastname = splitted_line[cpt + 2].capitalize()
+                                            firstname = splitted_line[cpt + 1].title()
+                                            lastname = splitted_line[cpt + 2].title()
+                                            if lastname.lower() in ['de', 'el'] and len(splitted_line) >= cpt + 3:
+                                                lastname += ' ' + splitted_line[cpt + 3].title()
                                         elif fuzz.ratio(splitted_line[cpt + 2].lower(), name.lower()) >= 85:
-                                            firstname = splitted_line[cpt + 2].capitalize()
-                                            lastname = splitted_line[cpt + 1].capitalize()
-                                if firstname and lastname:
-                                    self.log.info('Firstname and lastname found : ' + firstname + ' ' + lastname)
-                                    return [
-                                        {'firstname': firstname, 'lastname': lastname},
-                                        {
-                                            'firstname': _Files.reformat_positions(line.position),
-                                            'lastname': _Files.reformat_positions(line.position)
-                                        },
-                                        self.nb_page
-                                    ]
-                                elif firstname:
-                                    self.log.info('Firstname found : ' + firstname)
-                                    return [
-                                        {'firstname': firstname},
-                                        {'firstname': _Files.reformat_positions(line.position)},
-                                        self.nb_page
-                                    ]
-                                elif lastname:
-                                    self.log.info('Lastname found : ' + lastname)
-                                    return [
-                                        {'lastname': lastname},
-                                        {'firstname': _Files.reformat_positions(line.position)},
-                                        self.nb_page
-                                    ]
+                                            firstname = splitted_line[cpt + 2].title()
+                                            lastname = splitted_line[cpt + 1].title()
+                                    res = self.return_results(firstname, lastname, line)
+                                    if res:
+                                        return res
+                                else:
+                                    res = find_without_civility(splitted_line, name)
+                                    if res['firstname'] and res['lastname']:
+                                        res = self.return_results(firstname, lastname, line)
+                                        if res:
+                                            return res
                                 cpt += 1
+                        else:
+                            res = find_without_civility(splitted_line, name)
+                            if res['firstname'] and res['lastname']:
+                                res = self.return_results(res['firstname'], res['lastname'], line)
+                                if res:
+                                    return res
