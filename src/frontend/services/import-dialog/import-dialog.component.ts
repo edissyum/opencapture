@@ -62,7 +62,7 @@ export class ImportDialogComponent {
   }
 
   checkFile(files: any): void {
-      this.error = false;
+    this.error = false;
     if (files && files.length !== 0) {
       for (let i = 0; i < files.length; i++) {
         const fileName = files[i].name;
