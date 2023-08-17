@@ -26,6 +26,7 @@ import pypdf
 import string
 import random
 import shutil
+import imutils
 import datetime
 import subprocess
 import numpy as np
@@ -33,6 +34,7 @@ from PIL import Image
 from zipfile import ZipFile
 from pdf2image import convert_from_path
 from werkzeug.utils import secure_filename
+from pytesseract import pytesseract, Output
 from src.backend.functions import get_custom_array, generate_searchable_pdf
 
 custom_array = get_custom_array()
@@ -48,9 +50,10 @@ class Files:
     def __init__(self, img_name, log, docservers, configurations, regex, languages, database):
         self.log = log
         self.img = None
-        self.database = database
         self.regex = regex
         self.height_ratio = ''
+        self.img_name = img_name
+        self.database = database
         self.languages = languages
         self.docservers = docservers
         self.configurations = configurations
@@ -102,7 +105,7 @@ class Files:
     def open_img(self, img):
         self.img = Image.open(img)
 
-    def save_img_with_pdf2image(self, pdf_name, output, page=None, docservers=False, chunk_size=10):
+    def save_img_with_pdf2image(self, pdf_name, output, page=None, docservers=False, chunk_size=10, rotate=False):
         try:
             output = os.path.splitext(output)[0]
             bck_output = os.path.splitext(output)[0]
@@ -115,7 +118,6 @@ class Files:
                 outputs_paths.append(output_path)
             else:
                 cpt = 1
-
                 with open(pdf_name, 'rb') as pdf:
                     pdf_reader = pypdf.PdfReader(pdf)
                     page_count = len(pdf_reader.pages)
@@ -130,6 +132,16 @@ class Files:
                         output_path = output + '.jpg'
                         image.save(output_path, 'JPEG')
                         if docservers:
+                            if rotate:
+                                try:
+                                    src = cv2.imread(output_path)
+                                    rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
+                                    results = pytesseract.image_to_osd(rgb, output_type=Output.DICT)
+                                    if results['orientation'] != 0 and results['rotate'] != 0:
+                                        src = imutils.rotate_bound(rgb, angle=results["rotate"])
+                                        cv2.imwrite(output_path, src)
+                                except pytesseract.TesseractError:
+                                    pass
                             self.move_to_docservers_image(directory, output_path)
                         outputs_paths.append(output_path)
                         cpt = cpt + 1
@@ -141,7 +153,8 @@ class Files:
             self.log.error('Error during pdf2image conversion : ' + str(error))
             return False
 
-    def save_img_with_pdf2image_min(self, pdf_name, output, single_file=True, module='verifier', chunk_size=10):
+    def save_img_with_pdf2image_min(self, pdf_name, output, single_file=True, module='verifier', chunk_size=10,
+                                    rotate=False):
         try:
             outputs_paths = []
             output = os.path.splitext(output)[0]
@@ -151,12 +164,20 @@ class Files:
                 output_path = output + '-001.jpg'
                 images[0].save(output_path, 'JPEG')
                 if module == 'verifier':
+                    if rotate:
+                        try:
+                            src = cv2.imread(output_path)
+                            rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
+                            results = pytesseract.image_to_osd(rgb, output_type=Output.DICT)
+                            if results['orientation'] != 0 and results['rotate'] != 0:
+                                src = imutils.rotate_bound(rgb, angle=-results["rotate"])
+                                cv2.imwrite(output_path, src)
+                        except pytesseract.TesseractError:
+                            pass
                     self.move_to_docservers_image(directory, output_path)
                 outputs_paths.append(output_path)
             else:
                 cpt = 1
-
-                images = []
                 with open(pdf_name, 'rb') as pdf:
                     pdf_reader = pypdf.PdfReader(pdf)
                     page_count = len(pdf_reader.pages)
@@ -164,7 +185,8 @@ class Files:
                 for chunk_idx in range(0, page_count, chunk_size):
                     start_page = 0 if chunk_idx == 0 else chunk_idx + 1
                     end_page = min(chunk_idx + chunk_size, page_count)
-                    chunk_images = convert_from_path(pdf_name, first_page=start_page, last_page=end_page, size=(None, 720))
+                    chunk_images = convert_from_path(pdf_name, first_page=start_page, last_page=end_page,
+                                                     size=(None, 720))
 
                     for image in chunk_images:
                         output_path = output + '-' + str(cpt).zfill(3) + '.jpg'
@@ -438,10 +460,18 @@ class Files:
         improved_img = filename[0] + '_improved' + filename[1]
         if not os.path.isfile(improved_img):
             src = cv2.imread(img)
+            rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
+            try:
+                results = pytesseract.image_to_osd(rgb, output_type=Output.DICT)
+                if results['orientation'] != 0 and results['rotate'] != 0:
+                    src = imutils.rotate_bound(rgb, angle=results["rotate"])
+            except pytesseract.TesseractError:
+                pass
+
             gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
             _, black_and_white = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
-            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(black_and_white, None, None, None, 8,
-                                                                                 cv2.CV_32S)
+            nlabels, labels, stats, _ = cv2.connectedComponentsWithStats(black_and_white, None, None,
+                                                                         None, 8, cv2.CV_32S)
 
             # get CC_STAT_AREA component
             sizes = stats[1:, -1]

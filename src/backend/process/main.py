@@ -83,10 +83,11 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
                         data['outputs'] = args['outputs']
 
                 res = scripting.main(data)
+                os.remove(tmp_file)
                 return change_workflow and res != 'DISABLED'
         except Exception:
-            log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
-        os.remove(tmp_file)
+            log.error('Error during ' + step + ' scripting :s' + str(traceback.format_exc()))
+            os.remove(tmp_file)
 
 
 def execute_outputs(output_info, log, regex, document_data, database, current_lang):
@@ -249,10 +250,27 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
 def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_class, _res, files, configurations):
     data = data_class.run()
     if not data:
-        improved_image = files.improve_image_detection(files.jpg_name, remove_lines=False)
+        improved_image = files.img_name + '_improved.jpg'
+        improved_header_image = files.img_name + '_header_improved.jpg'
+        improved_footer_image = files.img_name + '_footer_improved.jpg'
+
+        if not os.path.isfile(improved_image):
+            improved_image = files.improve_image_detection(files.jpg_name, remove_lines=False)
+        if not os.path.isfile(improved_header_image):
+            improved_header_image = files.improve_image_detection(files.jpg_name_header, remove_lines=False)
+        if not os.path.isfile(improved_footer_image):
+            improved_footer_image = files.improve_image_detection(files.jpg_name_header, remove_lines=False)
+
         image = files.open_image_return(improved_image)
         text = ocr.line_box_builder(image)
         data_class.text = text
+        image = files.open_image_return(improved_header_image)
+        text = ocr.line_box_builder(image)
+        data_class.header_text = text
+        image = files.open_image_return(improved_footer_image)
+        text = ocr.line_box_builder(image)
+        data_class.footer_text = text
+
         data = data_class.run()
         if not data:
             data_class.text = ocr.last_text
@@ -631,8 +649,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         footer = None
         if 'footer' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers,
-                                      datas['form_id'])
+            footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
+                                      docservers, datas['form_id'])
             if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
                 footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
                                              docservers, datas['form_id'])
@@ -740,8 +758,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         file = files.move_to_docservers(docservers, file)
 
         # Convert all the pages to JPG (used to full web interface)
-        files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename, docservers=True)
-        files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
+        files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename,
+                                      docservers=True, rotate=True)
+        files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename, rotate=True)
 
         allow_auto = False
         if workflow_settings and workflow_settings['input']['apply_process']:
