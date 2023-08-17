@@ -208,7 +208,7 @@ class FindName:
                             fixed_line = re.sub(r"(MLLE,)", 'MLLE.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(,)", '', fixed_line, flags=re.IGNORECASE)
 
-                            civility_regex = (r"(DOCTEUR|MONSIEUR|MR|M\.|MME|MLLE|MLE|MADAME|MADEMOISELLE|MR(/|-)MME|MME(/|-)MR|M)")
+                            civility_regex = r"(DOCTEUR|MONSIEUR|MR|M\.|MME|MLLE|MLE|MADAME|MADEMOISELLE|MR(/|-)MME|MME(/|-)MR|M)"
                             civility = re.findall(civility_regex, fixed_line, flags=re.IGNORECASE)
                             splitted_line = list(filter(None, fixed_line.split(' ')))
 
