@@ -15,8 +15,9 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import json
 import re
+import os
+import json
 import operator
 from src.backend.functions import search_by_positions, search_custom_positions
 
@@ -285,20 +286,28 @@ class FindFooterRaw:
             if not self.rerun:
                 self.rerun = True
                 if self.is_last_page:
-                    improved_image = self.files.improve_image_detection(self.files.jpg_name_last_footer)
+                    improved_footer_image = self.files.img_name + '_last_footer_improved.jpg'
+                    if not os.path.isfile(improved_footer_image):
+                        improved_footer_image = self.files.improve_image_detection(self.files.jpg_name_last_footer)
                 else:
-                    improved_image = self.files.improve_image_detection(self.files.jpg_name_footer)
-                self.files.open_img(improved_image)
+                    improved_footer_image = self.files.img_name + '_footer_improved.jpg'
+                    if not os.path.isfile(improved_footer_image):
+                        improved_footer_image = self.files.improve_image_detection(self.files.jpg_name_footer)
+                self.files.open_img(improved_footer_image)
                 self.text = self.ocr.line_box_builder(self.files.img)
                 return self.run()
 
             if self.rerun and not self.rerun_as_text:
                 self.rerun_as_text = True
                 if self.is_last_page:
-                    improved_image = self.files.improve_image_detection(self.files.jpg_name_last_footer)
+                    improved_footer_image = self.files.img_name + '_last_footer_improved.jpg'
+                    if not os.path.isfile(improved_footer_image):
+                        improved_footer_image = self.files.improve_image_detection(self.files.jpg_name_last_footer)
                 else:
-                    improved_image = self.files.improve_image_detection(self.files.jpg_name_footer)
-                self.files.open_img(improved_image)
+                    improved_footer_image = self.files.img_name + '_footer_improved.jpg'
+                    if not os.path.isfile(improved_footer_image):
+                        improved_footer_image = self.files.improve_image_detection(self.files.jpg_name_footer)
+                self.files.open_img(improved_footer_image)
                 self.text = self.ocr.text_builder(self.files.img)
                 return self.run(text_as_string=True)
             total_ht = self.return_max(self.total_ht)
