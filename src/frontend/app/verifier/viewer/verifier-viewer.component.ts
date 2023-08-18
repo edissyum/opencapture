@@ -119,11 +119,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         other         : []
     };
     pattern                 : any         = {
-        alphanum                        : '^[(\\-)?0-9a-zA-Z\\s\']*$',
-        alphanum_extended               : '^[(\\-)?0-9a-zA-Z-/#,\\.\'\\s]*$',
-        alphanum_extended_with_accent   : '^[(\\-)?0-9a-zA-Z\\u00C0-\\u017F-/#,\'\\.\\s]*$',
-        number_int                      : '^[(\\-)?0-9]*$',
-        number_float                    : '^[(\\-)?0-9]*([.][0-9]*)*$',
+        alphanum                        : '^[\\-?0-9a-zA-Z\\s\']*$',
+        alphanum_extended               : '^[\\-?0-9a-zA-Z\\\/#,\\.\'\\s]*$',
+        alphanum_extended_with_accent   : '^[\\-?0-9a-zA-Z\\u00C0-\\u017F\\\/#,\'\\.\\s]*$',
+        number_int                      : '^[\\-?0-9]*$',
+        number_float                    : '^[\\-?0-9]*([.][0-9]*)*$',
         char                            : '^[A-Za-z\\s]*$',
         email                           : '^([A-Za-z0-9]+[\\.\\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\\.[A-Z|a-z]{2,})+$'
     };
@@ -1462,6 +1462,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             'siret': supplier.siret,
                             'siren': supplier.siren,
                             'iban': supplier.iban,
+                            'bic': supplier.bic,
                             'email': supplier.email,
                             'vat_number': supplier.vat_number
                         };

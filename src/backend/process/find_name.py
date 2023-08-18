@@ -28,7 +28,7 @@ def find_without_civility(splitted_line, name):
         if fuzz.ratio(splitted_line[0].lower(), name.lower()) >= 85:
             firstname = splitted_line[0].title()
             lastname = splitted_line[1].title()
-            if lastname.lower() in ['de', 'el', 'da'] and len(splitted_line) == 3:
+            if lastname.lower() in ['de', 'el', 'da', 'le'] and len(splitted_line) == 3:
                 lastname += ' ' + splitted_line[2].title()
             if lastname.isnumeric() or firstname.isnumeric() or len(lastname) < 3 or len(firstname) < 3:
                 lastname = None
@@ -64,6 +64,7 @@ class FindName:
         position = self.files.reformat_positions(line.position)
         if is_footer:
             position = self.files.return_position_with_ratio(line, 'footer')
+            position = self.files.reformat_positions(position)
 
         if firstname and lastname:
             if lastname.isnumeric() or firstname.isnumeric() or len(lastname) < 3 or len(firstname) < 3:
@@ -193,11 +194,11 @@ class FindName:
                     ]
 
         names_referential = self.docservers['REFERENTIALS_PATH'] + 'LISTE_PRENOMS.csv'
-        with open(names_referential, 'r', encoding='UTF-8') as _f:
-            for name in _f.readlines():
-                name = name.strip()
-                text_cpt = 0
-                for text in [self.text, self.header_text, self.footer_text]:
+        text_cpt = 0
+        for text in [self.text, self.header_text, self.footer_text]:
+            with open(names_referential, 'r', encoding='UTF-8') as _f:
+                for name in _f.readlines():
+                    name = name.strip()
                     for line in text:
                         if name.lower() in line.content.lower():
                             fixed_line = re.sub(r"(:|/|!|\?|“|\"|')", '', line.content, flags=re.IGNORECASE)
@@ -222,13 +223,14 @@ class FindName:
                                             if fuzz.ratio(splitted_line[cpt + 1].lower(), name.lower()) >= 85:
                                                 firstname = splitted_line[cpt + 1].title()
                                                 lastname = splitted_line[cpt + 2].title()
-                                                if lastname.lower() in ['de', 'el', 'da'] and len(splitted_line) >= cpt + 3:
+                                                if lastname.lower() in ['de', 'el', 'da', 'le'] and len(splitted_line) >= cpt + 3:
                                                     lastname += ' ' + splitted_line[cpt + 3].title()
                                             elif fuzz.ratio(splitted_line[cpt + 2].lower(), name.lower()) >= 85:
                                                 firstname = splitted_line[cpt + 2].title()
                                                 lastname = splitted_line[cpt + 1].title()
                                         res = self.return_results(firstname, lastname, line, text_cpt == 2, name)
                                         if res:
+                                            print('1', text_cpt, splitted_line, name)
                                             return res
                                     else:
                                         res = find_without_civility(splitted_line, name)
@@ -236,6 +238,7 @@ class FindName:
                                             res = self.return_results(res['firstname'], res['lastname'], line,
                                                                       text_cpt == 2)
                                             if res:
+                                                print('2', text_cpt, splitted_line, name)
                                                 return res
                                     cpt += 1
                             else:
@@ -243,5 +246,6 @@ class FindName:
                                 if res['firstname'] and res['lastname']:
                                     res = self.return_results(res['firstname'], res['lastname'], line, text_cpt == 2)
                                     if res:
+                                        print('3', text_cpt, line.content, name)
                                         return res
-                    text_cpt += 1
+            text_cpt += 1

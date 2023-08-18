@@ -53,8 +53,9 @@
             <div *ngIf="this.formSettings.settings['unique_url']['change_form']">
                 <div class="relative float-left top-5">
                     <i class="fa-solid fa-eye cursor-pointer text-green-400 text-lg" (click)="hideVisuals()"
-                       [class.fa-eye-slash]="this.visualIsHide"
-                       [matTooltip]="'VERIFIER.hide_visuals' | translate"></i>
+                       *ngIf="!this.visualIsHide" [matTooltip]="'VERIFIER.hide_visuals' | translate"></i>
+                    <i class="fa-solid fa-eye-slash cursor-pointer text-green-400 text-lg" (click)="hideVisuals()"
+                       *ngIf="this.visualIsHide" [matTooltip]="'VERIFIER.show_visuals' | translate"></i>
                 </div>
                 <div class="relative z-20 float-right" style="width: 96%">
                     <mat-accordion>
