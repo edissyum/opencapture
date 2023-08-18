@@ -45,6 +45,7 @@ def get_suppliers(_args):
             "LOWER(siret) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(email) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + search.lower() + "%%' OR "
+            "LOWER(bic) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(vat_number) LIKE '%%" + search.lower() + "%%')"
         )
 
