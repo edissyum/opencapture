@@ -1462,6 +1462,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             'siret': supplier.siret,
                             'siren': supplier.siren,
                             'iban': supplier.iban,
+                            'bic': supplier.bic,
                             'email': supplier.email,
                             'vat_number': supplier.vat_number
                         };
