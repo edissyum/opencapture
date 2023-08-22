@@ -513,6 +513,7 @@
 		"user_ip": "IP Address"
 	},
 	"HOME": {
+		"no_authorized_module": "",
 		"splitter": "Open-Capture Splitter",
 		"verifier": "Open-Capture Verifier"
 	},

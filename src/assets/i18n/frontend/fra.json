@@ -513,6 +513,7 @@
 		"user_ip": "Adresse IP"
 	},
 	"HOME": {
+		"no_authorized_module": "Aucun module n'est autorisé pour votre profil",
 		"splitter": "Open-Capture Splitter",
 		"verifier": "Open-Capture Vérificateur"
 	},

@@ -80,7 +80,7 @@ export class UploadComponent implements OnInit {
                 tap((data: any) => {
                     if (data.configuration.length === 1) {
                         this.localStorageService.save('splitter_or_verifier', data.configuration[0].data.value);
-                        this.getWorkflows(data.configuration[0].data.value)
+                        this.getWorkflows(data.configuration[0].data.value);
                     }
                 }),
                 catchError((err: any) => {

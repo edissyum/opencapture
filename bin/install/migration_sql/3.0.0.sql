@@ -181,3 +181,4 @@ DROP TABLE IF EXISTS "tasks_watcher";
 
 ALTER TABLE roles RENAME COLUMN sub_roles to assign_roles;
 ALTER TABLE documents DROP COLUMN IF EXISTS "purchase_or_sale";
+ALTER TABLE "roles" ADD COLUMN IF NOT EXISTS "default_route" VARCHAR(255);

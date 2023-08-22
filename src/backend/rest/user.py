@@ -205,3 +205,10 @@ def export_users():
     data = request.json
     res = user.export_users(data['args'])
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('users/getDefaultRoute/<int:user_id>', methods=['GET'])
+@auth.token_required
+def get_default_route(user_id):
+    res = user.get_default_route(user_id)
+    return make_response(jsonify(res[0])), res[1]
