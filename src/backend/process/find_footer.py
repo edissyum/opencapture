@@ -359,8 +359,8 @@ class FindFooter:
         if self.test_amount(total_ht, total_ttc, vat_rate, vat_amount) is not False:
             # First args is amount, second is position
             total_ht = self.return_max(self.total_ht)
-            total_ttc = self.return_max(self.total_ttc)
             vat_rate = self.return_max(self.vat_rate)
+            total_ttc = self.return_max(self.total_ttc)
             vat_amount = self.return_max(self.vat_amount)
 
             if total_ht is False and (total_ttc and total_ttc[0]) and (vat_rate and vat_rate[0]):
