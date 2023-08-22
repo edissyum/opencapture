@@ -99,9 +99,6 @@ class FindName:
         return False
 
     def run(self):
-        for t in self.text:
-            print(t.content)
-
         if self.supplier:
             firstname = lastname = None
             firstname_position = lastname_position = None
@@ -273,6 +270,4 @@ class FindName:
                             res = self.return_results(firstname, lastname, line, text_cpt == 2)
                             if res:
                                 return res
-
-                    # print(splitted_line)
             text_cpt += 1

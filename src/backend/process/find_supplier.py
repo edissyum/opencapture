@@ -258,7 +258,7 @@ class FindSupplier:
             self.text = self.ocr.line_box_builder(image)
             return self.run(retry=True, regenerate_ocr=True, target='footer')
 
-        # If NO supplier identification are found in the header (default behavior),
+        # If no supplier identification are found in the header (default behavior),
         # First apply image correction
         if not retry and not self.found_first:
             self.log.info('No supplier informations found in the header, improve image and retry...')
@@ -269,7 +269,7 @@ class FindSupplier:
 
         # If, even with improved image, nothing was found, check the footer
         if retry and not self.found_second and self.found_third:
-            self.log.info('No supplier informations found with improved image, try with footer...')
+            self.log.info('No supplier informations found with improved header, try with footer...')
             self.text = self.ocr.footer_text
             return self.run(retry=True, target='footer')
 
