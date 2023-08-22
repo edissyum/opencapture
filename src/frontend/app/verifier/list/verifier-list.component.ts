@@ -389,7 +389,7 @@ export class VerifierListComponent implements OnInit {
                             document.display.subtitles.push({
                                 'id': subtitle.id,
                                 'label': subtitle.label,
-                                'data': subtitle_data
+                                'data': subtitle_data ? subtitle_data : ''
                             });
                         });
                     });
