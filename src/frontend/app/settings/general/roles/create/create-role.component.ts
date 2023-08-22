@@ -56,6 +56,19 @@ export class CreateRoleComponent implements OnInit {
             control: new FormControl(),
             required: true,
             maxLength: 10
+        },
+        {
+            id: 'default_route',
+            label: this.translate.instant('HEADER.label_short'),
+            type: 'list',
+            options: [
+                {value: '/home', label: this.translate.instant('GLOBAL.home')},
+                {value: '/upload', label: this.translate.instant('GLOBAL.upload')},
+                {value: '/splitter/list', label: this.translate.instant('HEADER.splitter_list')},
+                {value: '/verifier/list', label: this.translate.instant('HEADER.verifier_list')}
+            ],
+            control: new FormControl(),
+            required: false
         }
     ];
 
