@@ -39,17 +39,20 @@ def get_suppliers(_args):
 
     if 'search' in _args and _args['search']:
         args['offset'] = ''
+        search = _args['search'].replace("'", "''")
         args['where'].append(
-            "(LOWER(unaccent(name)) LIKE unaccent('%%" + _args['search'].lower() + "%%') OR "
-            "LOWER(siret) LIKE '%%" + _args['search'].lower() + "%%' OR "
-            "LOWER(email) LIKE '%%" + _args['search'].lower() + "%%' OR "
-            "LOWER(siren) LIKE '%%" + _args['search'].lower() + "%%' OR "
-            "LOWER(vat_number) LIKE '%%" + _args['search'].lower() + "%%')"
+            "(LOWER(unaccent(name)) LIKE unaccent('%%" + search.lower() + "%%') OR "
+            "LOWER(siret) LIKE '%%" + search.lower() + "%%' OR "
+            "LOWER(email) LIKE '%%" + search.lower() + "%%' OR "
+            "LOWER(siren) LIKE '%%" + search.lower() + "%%' OR "
+            "LOWER(bic) LIKE '%%" + search.lower() + "%%' OR "
+            "LOWER(vat_number) LIKE '%%" + search.lower() + "%%')"
         )
 
     if 'name' in _args and _args['name']:
         args['offset'] = ''
-        args['where'].append("LOWER(unaccent(name)) LIKE unaccent('" + _args['name'].lower() + "%%')")
+        name = _args['name'].replace("'", "''")
+        args['where'].append("LOWER(unaccent(name)) LIKE unaccent('" + name.lower() + "%%')")
 
     suppliers = accounts.get_suppliers(args)
     response = {

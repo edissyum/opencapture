@@ -15,7 +15,7 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { LocalStorageService } from "../local-storage.service";
 import { environment } from "../../app/env";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -32,13 +32,14 @@ import { NotificationService } from "../notifications/notifications.service";
     styleUrls: ['./process-watcher.component.scss']
 })
 
-export class ProcessWatcherComponent implements OnInit {
+export class ProcessWatcherComponent implements OnInit, OnDestroy {
     minimizeDisplay     : boolean = false;
     isFirstCallDone     : boolean = false;
     getProcessRunning   : boolean = false;
     processes           : any[]   = [];
     displayedProcessData: any[]   = [];
     authorizedUrl       : any[]   = ['/verifier/list', '/splitter/list', '/upload'];
+    interval            : any;
 
     constructor(
         public router: Router,
@@ -52,11 +53,15 @@ export class ProcessWatcherComponent implements OnInit {
 
     ngOnInit(): void {
         this.minimizeDisplay = this.localStorageService.get('monitoring_minimize_display') === 'true';
-        interval(5000).subscribe(() => {
+        this.interval = interval(5000).subscribe(() => {
             if (this.authorizedUrl.includes(this.router.url) && !this.getProcessRunning) {
                 this.getLastProcesses();
             }
         });
+    }
+
+    ngOnDestroy(): void {
+        clearInterval(this.interval);
     }
 
     changeDisplayMode(minimizeDisplay: boolean) {

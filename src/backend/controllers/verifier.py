@@ -145,6 +145,7 @@ def retrieve_documents(args):
             args['data'].append(args['form_id'])
 
     if 'search' in args and args['search']:
+        args['select'].append("documents.form_id as form_id")
         args['table'].append('accounts_supplier')
         args['left_join'].append('documents.supplier_id = accounts_supplier.id')
         args['group_by'].append('accounts_supplier.id')
