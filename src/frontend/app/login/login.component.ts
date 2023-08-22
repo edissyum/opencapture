@@ -39,6 +39,7 @@ import { NotificationService } from "../../services/notifications/notifications.
 export class LoginComponent implements OnInit {
     loginForm               : any;
     enableLoginMethodName   : any;
+    defaultRoute            : string    = '/home';
     loginImage              : SafeUrl   = '';
     loginTopMessage         : SafeHtml  = '';
     loginBottomMessage      : SafeHtml  = '';
@@ -162,11 +163,24 @@ export class LoginComponent implements OnInit {
                             });
                             this.authService.cleanCachedUrl();
                         } else {
-                            this.router.navigate(['/home']).then(() => {
-                                if (data.body.admin_password_alert) {
-                                    this.notify.error(this.translate.instant('ERROR.admin_password_alert'));
-                                }
-                            });
+                            this.http.get(environment['url'] + '/ws/users/getDefaultRoute/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
+                                tap((data: any) => {
+                                    if (data.route) {
+                                        this.defaultRoute = data.route;
+                                    }
+                                    this.router.navigate([this.defaultRoute]).then(() => {
+                                        if (data.body.admin_password_alert) {
+                                            this.notify.error(this.translate.instant('ERROR.admin_password_alert'));
+                                        }
+                                    });
+                                }),
+                                catchError((err: any) => {
+                                    console.debug(err);
+                                    this.notify.handleErrors(err);
+                                    return of(false);
+                                })
+                            ).subscribe();
+
                         }
                     });
                 }),

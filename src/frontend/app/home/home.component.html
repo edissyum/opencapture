@@ -27,4 +27,11 @@
             {{ 'HOME.verifier' | translate }}
         </mat-card-subtitle>
     </mat-card>
+    <mat-card *ngIf="!this.privilegesService.hasPrivilege('access_verifier') && !this.privilegesService.hasPrivilege('access_splitter')"
+              class="text-center w-full 2xl:w-1/5 lg:w-1/3 sm:w-1/2 shadow-lg">
+        <i class="fa-solid fa-ban fa-8x m-4 text-gray-400"></i>
+        <mat-card-subtitle class="mb-5">
+            {{ 'HOME.no_authorized_module' | translate }}
+        </mat-card-subtitle>
+    </mat-card>
 </div>

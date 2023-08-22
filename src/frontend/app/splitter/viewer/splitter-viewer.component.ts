@@ -534,7 +534,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     getPlaceholderFromSearchMask(mask: string, label: string) {
-        return mask ? mask.replace('#label', label) : '';
+        return mask ? mask.replace('#label', label) : label;
     }
 
     changeInputMode($event: any) {
@@ -567,7 +567,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.http.get(environment['url'] + `/ws/splitter/metadataMethods/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.metadataMethods[0].callOnSplitterView) {
-                    this.loadReferential(false);
+                    this.loadReferential(false, false);
                 }
             }),
             catchError((err: any) => {
@@ -609,8 +609,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    loadReferential(refreshAfterLoad: boolean): void {
-        if (this.hasUnsavedChanges) {
+    loadReferential(refreshAfterLoad: boolean, showUnsavedConfirm: boolean): void {
+        if (this.hasUnsavedChanges && showUnsavedConfirm) {
             const dialogRef = this.dialog.open(ConfirmDialogComponent, {
                 data:{
                     confirmTitle       : this.translate.instant('GLOBAL.confirm'),
