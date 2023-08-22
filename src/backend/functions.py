@@ -227,8 +227,17 @@ def search_custom_positions(data, ocr, files, regex, file, docservers):
                 else:
                     target_file = files.jpg_name_last
             else:
-                files.pdf_to_jpg(file, int(data['page']) - 1, False, False, False, False, True)
-                target_file = files.custom_file_name
+                custom_file_ok = False
+                for i in range(1, int(data['page']) + 1):
+                    files.pdf_to_jpg(file, int(data['page']) - i, False, False, False, False, True)
+                    target_file = files.custom_file_name
+                    if os.path.isfile(target_file):
+                        custom_file_ok = True
+                        break
+
+                if not custom_file_ok:
+                    return ['', (('', ''), ('', ''))]
+
         if data['regex']:
             data['regex'] = regex[data['regex']]
 

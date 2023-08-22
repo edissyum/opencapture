@@ -25,7 +25,7 @@ from src.backend.functions import search_by_positions, search_custom_positions
 def find_without_civility(splitted_line, name):
     firstname = lastname = None
     if len(name) >= 4 and 2 <= len(splitted_line) <= 3:
-        if fuzz.ratio(splitted_line[0].lower(), name.lower()) >= 85:
+        if fuzz.ratio(splitted_line[0].lower(), name.lower()) >= 80:
             firstname = splitted_line[0].title()
             lastname = splitted_line[1].title()
             if lastname.lower() in ['de', 'el', 'da', 'le'] and len(splitted_line) == 3:
@@ -33,7 +33,7 @@ def find_without_civility(splitted_line, name):
             if lastname.isnumeric() or firstname.isnumeric() or len(lastname) < 3 or len(firstname) < 3:
                 lastname = None
                 firstname = None
-        elif fuzz.ratio(splitted_line[1].lower(), name.lower()) >= 85:
+        elif fuzz.ratio(splitted_line[1].lower(), name.lower()) >= 80:
             firstname = splitted_line[1].title()
             lastname = splitted_line[0].title()
             if lastname.isnumeric() or firstname.isnumeric() or len(lastname) < 3 or len(firstname) < 3:
@@ -201,7 +201,7 @@ class FindName:
                     name = name.strip()
                     for line in text:
                         if name.lower() in line.content.lower():
-                            fixed_line = re.sub(r"(:|/|!|\?|“|\"|')", '', line.content, flags=re.IGNORECASE)
+                            fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;)", '', line.content, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(M,)", 'M.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MR,)", 'MR.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MME,)", 'MME.', fixed_line, flags=re.IGNORECASE)
@@ -220,17 +220,22 @@ class FindName:
                                     match_civility = re.match(r"^" + civility_regex + "$", word, flags=re.IGNORECASE)
                                     if match_civility:
                                         if len(splitted_line) > cpt + 2:
-                                            if fuzz.ratio(splitted_line[cpt + 1].lower(), name.lower()) >= 85:
+                                            if fuzz.ratio(splitted_line[cpt + 1].lower(), name.lower()) >= 80:
                                                 firstname = splitted_line[cpt + 1].title()
                                                 lastname = splitted_line[cpt + 2].title()
                                                 if lastname.lower() in ['de', 'el', 'da', 'le'] and len(splitted_line) >= cpt + 3:
                                                     lastname += ' ' + splitted_line[cpt + 3].title()
-                                            elif fuzz.ratio(splitted_line[cpt + 2].lower(), name.lower()) >= 85:
-                                                firstname = splitted_line[cpt + 2].title()
+                                            elif fuzz.ratio(splitted_line[cpt + 2].lower(), name.lower()) >= 80 or \
+                                                    (len(splitted_line) > cpt + 3  and splitted_line[cpt + 3].lower()):
                                                 lastname = splitted_line[cpt + 1].title()
+                                                if lastname.lower() in ['de', 'el', 'da', 'le'] and len(splitted_line) >= cpt + 3:
+                                                    lastname += ' ' + splitted_line[cpt + 2].title()
+                                                    firstname = splitted_line[cpt + 3].title()
+                                                else:
+                                                    firstname = splitted_line[cpt + 2].title()
+
                                         res = self.return_results(firstname, lastname, line, text_cpt == 2, name)
                                         if res:
-                                            print('1', text_cpt, splitted_line, name)
                                             return res
                                     else:
                                         res = find_without_civility(splitted_line, name)
@@ -238,7 +243,6 @@ class FindName:
                                             res = self.return_results(res['firstname'], res['lastname'], line,
                                                                       text_cpt == 2)
                                             if res:
-                                                print('2', text_cpt, splitted_line, name)
                                                 return res
                                     cpt += 1
                             else:
@@ -246,6 +250,24 @@ class FindName:
                                 if res['firstname'] and res['lastname']:
                                     res = self.return_results(res['firstname'], res['lastname'], line, text_cpt == 2)
                                     if res:
-                                        print('3', text_cpt, line.content, name)
                                         return res
+            for line in text:
+                fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;)", '', line.content, flags=re.IGNORECASE)
+                society_regex = r"(E(\.)?(A|U)(\.)?R(\.)?L|S(\.)?A(\.)?R(\.)?L|S(\.)?A(\.)?S)"
+                society = re.findall(society_regex, fixed_line, flags=re.IGNORECASE)
+                if society:
+                    fixed_line = re.sub(r'INTITUL(E|É)\s*DU\s*COMPTE', '', fixed_line, flags=re.IGNORECASE)
+                    splitted_line = list(filter(None, fixed_line.split(' ')))
+                    for word in splitted_line:
+                        match_society = re.match(r"^" + society_regex + "$", word, flags=re.IGNORECASE)
+                        if match_society:
+                            lastname = word
+                            firstname = ''
+                            for word_bis in splitted_line:
+                                if word_bis != lastname:
+                                    firstname += word_bis + ' '
+                            firstname = firstname.strip()
+                            res = self.return_results(firstname, lastname, line, text_cpt == 2)
+                            if res:
+                                return res
             text_cpt += 1
