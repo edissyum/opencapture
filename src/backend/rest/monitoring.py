@@ -35,8 +35,7 @@ def get_processes():
 @bp.route('monitoring/<string:module>/lasts', methods=['GET'])
 @auth.token_required
 def get_last_task(module):
-    list_priv = ['access_verifier'] if module == 'verifier' else ['access_splitter']
-    if not privileges.has_privileges(request.environ['user_id'], list_priv):
+    if not privileges.has_privileges(request.environ['user_id'], ['monitoring']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/monitoring/{module}/lasts'}), 403
 
     processes = monitoring.get_processes(module, get_last_processes=True)

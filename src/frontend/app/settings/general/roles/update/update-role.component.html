@@ -23,17 +23,26 @@
             <div class="flex justify-center items-center">
                 <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
                     <ng-container *ngFor="let field of roleForm">
-                    <span *ngIf="field.type === 'text'" [class.cursor-not-allowed]="field.id === 'label_short'">
-                        <mat-form-field [class.pointer-events-none]="field.id === 'label_short'" class="w-full">
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']"
-                                   [readonly]="field.id === 'label_short'" [class.text-gray-400]="field.id === 'label_short'">
-                            <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
-                        </mat-form-field>
-                    </span>
+                        <span *ngIf="field.type === 'text'" [class.cursor-not-allowed]="field.id === 'label_short'">
+                            <mat-form-field [class.pointer-events-none]="field.id === 'label_short'" class="w-full">
+                                <mat-label>{{ field.label | translate }}</mat-label>
+                                <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']"
+                                       [readonly]="field.id === 'label_short'" [class.text-gray-400]="field.id === 'label_short'">
+                                <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                            </mat-form-field>
+                        </span>
                         <mat-slide-toggle class="mt-4" *ngIf="field.type === 'checkbox'" [formControl]="field['control']">
                             {{ field.label | translate }}
                         </mat-slide-toggle>
+                        <mat-form-field *ngIf="field.type === 'list'">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <mat-select [value]="field.control.value" [formControl]="field['control']" [required]="field['required']">
+                                <mat-option *ngFor="let option of field.options" [value]="option.value">
+                                    {{ option.label }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                        </mat-form-field>
                     </ng-container>
                 </form>
             </div>

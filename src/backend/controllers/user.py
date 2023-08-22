@@ -26,7 +26,7 @@ from flask import request, g as current_context
 from src.backend.import_controllers import auth
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from src.backend.import_models import user, accounts, forms, history
+from src.backend.import_models import user, accounts, forms, history, roles
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -557,3 +557,19 @@ def import_users(args):
             "message": str(e)
         }
         return response, 500
+
+
+def get_default_route(user_id):
+    user_info, error = user.get_user_by_id({'user_id': user_id})
+    if error is None:
+        role_info, _ = roles.get_role_by_id({'role_id': user_info['role']})
+        response = {
+            'route': role_info['default_route'] if role_info else ''
+        }
+        return response, 200
+    else:
+        response = {
+            "errors": gettext('GET_DEFAULT_ROUTE_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400

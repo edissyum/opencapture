@@ -488,9 +488,11 @@
 		"output_type": "Output type",
 		"path": "Path",
 		"role": "Role",
+		"splitter_list": "Splitter list",
 		"status": "Status ",
 		"type": "Type",
-		"value": "Value"
+		"value": "Value",
+		"verifier_list": "Verifier list",
 	},
 	"HISTORY-DESC": {
 		"change_batch_form": "The selected form for batch <strong>{{ batch_id }}</strong> has been changed to form <strong>{{ form_id }}</strong>",
@@ -513,6 +515,7 @@
 		"user_ip": "IP Address"
 	},
 	"HOME": {
+		"no_authorized_module": "No authorized module",
 		"splitter": "Open-Capture Splitter",
 		"verifier": "Open-Capture Verifier"
 	},

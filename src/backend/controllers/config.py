@@ -201,6 +201,8 @@ def update_configuration_by_id(args, configuration_id):
             data['data']['type'] = args['type']
         if 'description' in args and args['description']:
             data['data']['description'] = args['description']
+        if 'options' in args and args['options']:
+            data['data']['options'] = args['options']
 
         config.update_configuration_by_id(data)
         history.add_history({

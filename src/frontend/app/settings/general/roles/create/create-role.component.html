@@ -25,6 +25,15 @@
                             <input matInput  [maxLength]="field.maxLength" [value]="field.control.value" [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                         </mat-form-field>
+                        <mat-form-field *ngIf="field.type === 'list'">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <mat-select [value]="field.control.value" [formControl]="field['control']" [required]="field['required']">
+                                <mat-option *ngFor="let option of field.options" [value]="option.value">
+                                    {{ option.label }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                        </mat-form-field>
                     </ng-container>
                 </form>
             </div>

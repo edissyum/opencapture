@@ -61,19 +61,19 @@ export class ImportDialogComponent {
     );
   }
 
-  checkFile(data: any): void {
-      this.error = false;
-    if (data && data.length !== 0) {
-      for (let i = 0; i < data.length; i++) {
-        const fileName = data[i].name;
+  checkFile(files: any): void {
+    this.error = false;
+    if (files && files.length !== 0) {
+      for (let i = 0; i < files.length; i++) {
+        const fileName = files[i].name;
         const fileExtension = fileName.split('.').pop();
         if (fileExtension.toLowerCase() !== 'csv') {
           this.error = true;
-          this.notify.handleErrors(this.translate.instant('DATA-IMPORT.extension_unauthorized', {count: data.length}));
+          this.notify.handleErrors(this.translate.instant('DATA-IMPORT.extension_unauthorized', {'extension': this.data['extension']}));
           return;
         }
       }
-      this.loadCsvPreview(data[0]);
+      this.loadCsvPreview(files[0]);
     }
   }
 

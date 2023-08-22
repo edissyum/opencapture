@@ -68,13 +68,13 @@ def get_roles(args):
 
 def update_role(role_id, data):
     _, error = roles.get_role_by_id({'role_id': role_id})
-
     if error is None:
         _set = {
             'label': data['label'],
             'enabled': data['enabled'],
             'label_short': data['label_short'],
-            'assign_roles': json.dumps(data['assign_roles'])
+            'default_route': data['default_route'],
+            'assign_roles': json.dumps(data['assign_roles']),
         }
 
         _, error = roles.update_role({'set': _set, 'role_id': role_id})
@@ -106,6 +106,7 @@ def create_role(data):
     _columns = {
         'label': data['label'],
         'label_short': data['label_short'],
+        'default_route': data['default_route'],
         'assign_roles': json.dumps(data['assign_roles'])
     }
 

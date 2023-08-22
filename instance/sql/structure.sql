@@ -119,13 +119,15 @@ CREATE TABLE "addresses" (
 );
 
 CREATE TABLE "roles" (
-    "id"           SERIAL        UNIQUE PRIMARY KEY,
-    "label_short"  VARCHAR(10),
-    "label"        VARCHAR(255),
-    "status"       VARCHAR(3)    DEFAULT 'OK',
-    "editable"     BOOLEAN       DEFAULT True,
-    "enabled"      BOOLEAN       DEFAULT True,
-    "assign_roles" JSONB         DEFAULT '[]'
+    "id"            SERIAL        UNIQUE PRIMARY KEY,
+    "label_short"   VARCHAR(10),
+    "label"         VARCHAR(255),
+    "status"        VARCHAR(3)    DEFAULT 'OK',
+    "editable"      BOOLEAN       DEFAULT True,
+    "enabled"       BOOLEAN       DEFAULT True,
+    "assign_roles"  JSONB         DEFAULT '[]',
+    "default_route" VARCHAR(255)
+
 );
 
 CREATE TABLE "roles_privileges" (

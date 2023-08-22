@@ -488,9 +488,11 @@
 		"output_type": "Type de chaîne sortante",
 		"path": "Chemin",
 		"role": "Rôle",
+		"splitter_list": "Lots (Splitter)",
 		"status": "Statut",
 		"type": "Type de donnée",
-		"value": "Valeur"
+		"value": "Valeur",
+		"verifier_list": "Lots (Verifier)"
 	},
 	"HISTORY-DESC": {
 		"change_batch_form": "Le formulaire sélectionné pour lot le <strong>{{ batch_id }}</strong> a été changé vers le formulaire <strong>{{ form_id }}</strong>",
@@ -513,6 +515,7 @@
 		"user_ip": "Adresse IP"
 	},
 	"HOME": {
+		"no_authorized_module": "Aucun module n'est autorisé pour votre profil",
 		"splitter": "Open-Capture Splitter",
 		"verifier": "Open-Capture Vérificateur"
 	},
