@@ -52,6 +52,7 @@ class FindName:
         self.regex = regex
         self.text = ocr.text
         self.names_list = []
+        self.improved = False
         self.form_id = form_id
         self.supplier = supplier
         self.database = database
@@ -201,7 +202,7 @@ class FindName:
                     name = name.strip()
                     for line in text:
                         if name.lower() in line.content.lower():
-                            fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;)", '', line.content, flags=re.IGNORECASE)
+                            fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;|@)", '', line.content, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(M,)", 'M.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MR,)", 'MR.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MME,)", 'MME.', fixed_line, flags=re.IGNORECASE)
@@ -251,23 +252,24 @@ class FindName:
                                     res = self.return_results(res['firstname'], res['lastname'], line, text_cpt == 2)
                                     if res:
                                         return res
-            for line in text:
-                fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;)", '', line.content, flags=re.IGNORECASE)
-                society_regex = r"(E(\.)?(A|U)(\.)?R(\.)?L|S(\.)?A(\.)?R(\.)?L|S(\.)?A(\.)?S)"
-                society = re.findall(society_regex, fixed_line, flags=re.IGNORECASE)
-                if society:
-                    fixed_line = re.sub(r'INTITUL(E|É)\s*DU\s*COMPTE', '', fixed_line, flags=re.IGNORECASE)
-                    splitted_line = list(filter(None, fixed_line.split(' ')))
-                    for word in splitted_line:
-                        match_society = re.match(r"^" + society_regex + "$", word, flags=re.IGNORECASE)
-                        if match_society:
-                            lastname = word
-                            firstname = ''
-                            for word_bis in splitted_line:
-                                if word_bis != lastname:
-                                    firstname += word_bis + ' '
-                            firstname = firstname.strip()
-                            res = self.return_results(firstname, lastname, line, text_cpt == 2)
-                            if res:
-                                return res
-            text_cpt += 1
+            if self.improved:
+                for line in text:
+                    fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;|@)", '', line.content, flags=re.IGNORECASE)
+                    society_regex = r"(E(\.)?(A|U)(\.)?R(\.)?L|S(\.)?A(\.)?R(\.)?L|S(\.)?A(\.)?S)"
+                    society = re.findall(society_regex, fixed_line, flags=re.IGNORECASE)
+                    if society:
+                        fixed_line = re.sub(r'INTITUL(E|É)\s*DU\s*COMPTE', '', fixed_line, flags=re.IGNORECASE)
+                        splitted_line = list(filter(None, fixed_line.split(' ')))
+                        for word in splitted_line:
+                            match_society = re.match(r"^" + society_regex + "$", word, flags=re.IGNORECASE)
+                            if match_society:
+                                lastname = word
+                                firstname = ''
+                                for word_bis in splitted_line:
+                                    if word_bis != lastname:
+                                        firstname += word_bis + ' '
+                                firstname = firstname.strip()
+                                res = self.return_results(firstname, lastname, line, text_cpt == 2)
+                                if res:
+                                    return res
+                text_cpt += 1

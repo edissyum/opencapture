@@ -270,6 +270,8 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
         image = files.open_image_return(improved_footer_image)
         text = ocr.line_box_builder(image)
         data_class.footer_text = text
+        if data_name == 'firstname_lastname':
+            data_class.improved = True
 
         data = data_class.run()
         if not data:
