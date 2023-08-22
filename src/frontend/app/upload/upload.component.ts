@@ -75,6 +75,26 @@ export class UploadComponent implements OnInit {
         }
 
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
+        if (!splitterOrVerifier) {
+            this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/defaultModule', {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    if (data.configuration.length === 1) {
+                        this.localStorageService.save('splitter_or_verifier', data.configuration[0].data.value);
+                        this.getWorkflows(data.configuration[0].data.value)
+                    }
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        } else {
+            this.getWorkflows(splitterOrVerifier);
+        }
+    }
+
+    getWorkflows(splitterOrVerifier: string): void {
         this.http.get(environment['url'] + '/ws/workflows/' + splitterOrVerifier + '/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.workflows = data.workflows;
@@ -82,7 +102,7 @@ export class UploadComponent implements OnInit {
                     this.selectedWorkflow = data.workflows[0].id;
                     this.selectedWorkflowTechnicalId = data.workflows[0].workflow_id;
                 }
-             }),
+            }),
             finalize(() => {this.loading = false;}),
             catchError((err: any) => {
                 console.debug(err);

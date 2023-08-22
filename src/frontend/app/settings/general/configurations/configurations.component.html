@@ -304,6 +304,14 @@
                                             <input matInput [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
                                                    class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
                                         </mat-form-field>
+                                        <mat-form-field appearance="outline" class="w-full" *ngIf="element.data.type === 'list'">
+                                            <mat-select class="relative -top-3" [(ngModel)]="element.data.value"
+                                                        (selectionChange)="updateValue($event, element.id)">
+                                                <mat-option *ngFor="let option of element.data.options" [value]="option">
+                                                    {{ option }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
                                     </ng-template>
                                 </mat-cell>
                             </ng-container>

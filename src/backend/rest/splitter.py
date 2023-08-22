@@ -26,7 +26,7 @@ bp = Blueprint('splitter', __name__, url_prefix='/ws/')
 @bp.route('splitter/upload', methods=['POST'])
 @auth.token_required
 def upload():
-    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter', 'upload']):
+    if not privileges.has_privileges(request.environ['user_id'], ['upload']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/upload'}), 403
 
     workflow_id = None
