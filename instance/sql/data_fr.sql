@@ -63,6 +63,7 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('passwordRules
     },
     "description": ""
 }', false);
+INSERT INTO "configurations" ("label", "data", "display") VALUES ('defaultModule', '{"type": "list", "value": "splitter", "options": ["splitter", "verifier"], "description": "Module sélectionné par défaut"}', true);
 
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture', '/var/www/html/opencapture/');
