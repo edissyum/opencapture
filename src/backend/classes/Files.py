@@ -693,10 +693,10 @@ class Files:
 
     @staticmethod
     def compress_files(files, output_path, remove_compressed_files=False):
-        with ZipFile(output_path, 'w') as zipObj:
+        with ZipFile(output_path, 'w') as zip_obj:
             for file in files:
                 if os.path.exists(file['filepath']):
-                    zipObj.write(file['filepath'], file['filename'] if file['filename'] else None)
+                    zip_obj.write(file['filepath'], file['filename'] if file['filename'] else None)
                     if remove_compressed_files:
                         os.remove(file['filepath'])
 
