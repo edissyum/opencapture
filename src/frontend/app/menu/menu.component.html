@@ -34,17 +34,14 @@
                         </button>
                         <button mat-flat-button [routerLink]="'/' + this.getSplitterOrVerifier()"
                                 *ngIf="location.path() !== '/home' && this.getSplitterOrVerifier()" [routerLinkActive]="'bg-gray-900 text-green-400'"
-                                [disabled]="!privilegesService.hasPrivilege('access_splitter') || !privilegesService.hasPrivilege('access_verifier')"
-                                [class.cursor-not-allowed]="!privilegesService.hasPrivilege('access_splitter') || !privilegesService.hasPrivilege('access_verifier')"
-                                [class.hover:bg-gray-50&0]="privilegesService.hasPrivilege('access_splitter') || !privilegesService.hasPrivilege('access_verifier')"
-                                [class.hover:text-white]="privilegesService.hasPrivilege('access_splitter') || !privilegesService.hasPrivilege('access_verifier')"
+                                [disabled]="!privilegesService.hasPrivilege('access_splitter') && !privilegesService.hasPrivilege('access_verifier')"
+                                [class.cursor-not-allowed]="!privilegesService.hasPrivilege('access_splitter') && !privilegesService.hasPrivilege('access_verifier')"
                                 [class.text-gray-500]="!location.path().includes('/' + this.getSplitterOrVerifier()) || location.path().includes('/settings')"
                                 [class.bg-transparent]="!location.path().includes('/' + this.getSplitterOrVerifier()) || location.path().includes('/settings')"
                                 class="hover:bg-gray-500 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.batches' | translate }}
                         </button>
                         <button mat-flat-button routerLink="/upload" [routerLinkActive]="'bg-gray-900 text-green-400'"
-                                *ngIf="location.path() !== '/home'"
                                 [disabled]="!privilegesService.hasPrivilege('upload')"
                                 [class.cursor-not-allowed]="!privilegesService.hasPrivilege('upload')"
                                 [class.hover:bg-gray-500]="privilegesService.hasPrivilege('upload')"

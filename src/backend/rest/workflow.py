@@ -52,7 +52,7 @@ def create_workflow(module):
 @bp.route('workflows/<string:module>/list', methods=['GET'])
 @auth.token_required
 def get_workflows(module):
-    list_priv = ['settings', 'workflows_list'] if module == 'verifier' else ['settings', 'workflows_list_splitter']
+    list_priv = ['settings', 'workflows_list'] if module == 'verifier' else ['workflows_list_splitter']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/workflows/{module}/list'}), 403
 
@@ -71,8 +71,8 @@ def get_workflow_by_id(workflow_id, module):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/workflows/{module}/getById/{workflow_id}'}), 403
 
-    _form = workflow.get_workflow_by_id(workflow_id)
-    return make_response(jsonify(_form[0])), _form[1]
+    _workflow = workflow.get_workflow_by_id(workflow_id)
+    return make_response(jsonify(_workflow[0])), _workflow[1]
 
 
 @bp.route('workflows/<string:module>/getByWorkflowId/<string:workflow_id>', methods=['GET'])
@@ -83,8 +83,8 @@ def get_workflow_by_workflow_id(workflow_id, module):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/workflows/{module}/getByWorkflowId/{workflow_id}'}), 403
 
-    _form = workflow.get_workflow_by_workflow_id(workflow_id)
-    return make_response(jsonify(_form[0])), _form[1]
+    _workflow = workflow.get_workflow_by_workflow_id(workflow_id)
+    return make_response(jsonify(_workflow[0])), _workflow[1]
 
 
 @bp.route('workflows/<string:module>/duplicate/<int:workflow_id>', methods=['POST'])
