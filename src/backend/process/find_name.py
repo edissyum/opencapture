@@ -206,11 +206,12 @@ class FindName:
                             fixed_line = re.sub(r"(M,)", 'M.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MR,)", 'MR.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MME,)", 'MME.', fixed_line, flags=re.IGNORECASE)
+                            fixed_line = re.sub(r"(MMF,)", 'MMF.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MLE,)", 'MLE.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MLLE,)", 'MLLE.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(,)", '', fixed_line, flags=re.IGNORECASE)
 
-                            civility_regex = r"(DOCTEUR|MONSIEUR|MR|M\.|MME|MLLE|MLE|MADAME|MADEMOISELLE|MR(/|-)MME|MME(/|-)MR|M)"
+                            civility_regex = r"(DOCTEUR|MONSIEUR|MR|M\.|MM(E|F)|MLLE|MLE|MADAME|MADEMOISELLE|MR(/|-)MM(E|F)|MM(E|F)(/|-)MR|M)"
                             civility = re.findall(civility_regex, fixed_line, flags=re.IGNORECASE)
                             splitted_line = list(filter(None, fixed_line.split(' ')))
 
