@@ -53,7 +53,7 @@ export class ProcessWatcherComponent implements OnInit {
     ngOnInit(): void {
         setInterval(() => {
             this.minimizeDisplay = this.authService.getToken('minimizeDisplay') === 'true';
-        }, 1000);
+        }, 500);
 
         interval(5000).subscribe(() => {
             if (this.authorizedUrl.includes(this.router.url) && !this.getProcessRunning) {
