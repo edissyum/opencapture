@@ -32,7 +32,11 @@ import subprocess
 import numpy as np
 from PIL import Image
 from zipfile import ZipFile
+
+from deskew import determine_skew
 from pdf2image import convert_from_path
+from skimage.color import rgb2gray
+from skimage.transform import rotate
 from werkzeug.utils import secure_filename
 from pytesseract import pytesseract, Output
 from src.backend.functions import get_custom_array, generate_searchable_pdf
@@ -105,7 +109,7 @@ class Files:
     def open_img(self, img):
         self.img = Image.open(img)
 
-    def save_img_with_pdf2image(self, pdf_name, output, page=None, docservers=False, chunk_size=10, rotate=False):
+    def save_img_with_pdf2image(self, pdf_name, output, page=None, docservers=False, chunk_size=10, rotate_img=False):
         try:
             output = os.path.splitext(output)[0]
             bck_output = os.path.splitext(output)[0]
@@ -132,7 +136,7 @@ class Files:
                         output_path = output + '.jpg'
                         image.save(output_path, 'JPEG')
                         if docservers:
-                            if rotate:
+                            if rotate_img:
                                 try:
                                     src = cv2.imread(output_path)
                                     rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
@@ -140,6 +144,11 @@ class Files:
                                     if results['orientation'] != 0 and results['rotate'] != 0:
                                         src = imutils.rotate_bound(rgb, angle=results["rotate"])
                                         cv2.imwrite(output_path, src)
+                                    else:
+                                        grayscale = rgb2gray(rgb)
+                                        angle = determine_skew(grayscale)
+                                        rotated = rotate(src, angle, resize=True) * 255
+                                        cv2.imwrite(output_path, rotated.astype(np.uint8))
                                 except pytesseract.TesseractError:
                                     pass
                             self.move_to_docservers_image(directory, output_path)
@@ -154,7 +163,7 @@ class Files:
             return False
 
     def save_img_with_pdf2image_min(self, pdf_name, output, single_file=True, module='verifier', chunk_size=10,
-                                    rotate=False):
+                                    rotate_img=False):
         try:
             outputs_paths = []
             output = os.path.splitext(output)[0]
@@ -164,7 +173,7 @@ class Files:
                 output_path = output + '-001.jpg'
                 images[0].save(output_path, 'JPEG')
                 if module == 'verifier':
-                    if rotate:
+                    if rotate_img:
                         try:
                             src = cv2.imread(output_path)
                             rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
@@ -172,6 +181,11 @@ class Files:
                             if results['orientation'] != 0 and results['rotate'] != 0:
                                 src = imutils.rotate_bound(rgb, angle=-results["rotate"])
                                 cv2.imwrite(output_path, src)
+                            else:
+                                grayscale = rgb2gray(rgb)
+                                angle = determine_skew(grayscale)
+                                rotated = rotate(src, angle, resize=True) * 255
+                                cv2.imwrite(output_path, rotated.astype(np.uint8))
                         except pytesseract.TesseractError:
                             pass
                     self.move_to_docservers_image(directory, output_path)
@@ -200,7 +214,7 @@ class Files:
             return outputs_paths
 
         except Exception as error:
-            self.log.error('Error during pdf2image conversion : ' + str(error))
+            self.log.error('bError during pdf2image conversion : ' + str(error))
             return False
 
     # Crop the file to get the header
@@ -465,6 +479,11 @@ class Files:
                 results = pytesseract.image_to_osd(rgb, output_type=Output.DICT)
                 if results['orientation'] != 0 and results['rotate'] != 0:
                     src = imutils.rotate_bound(rgb, angle=results["rotate"])
+                else:
+                    grayscale = rgb2gray(rgb)
+                    angle = determine_skew(grayscale)
+                    rotated = rotate(src, angle, resize=True) * 255
+                    src = rotated.astype(np.uint8)
             except pytesseract.TesseractError:
                 pass
 
