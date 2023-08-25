@@ -37,27 +37,17 @@ export class AuthService {
         private userService: UserService,
         private localStorage: LocalStorageService
     ) {
-        if (!this.getToken()) {
+        if (!this.getToken('tokenJwt')) {
             this.headersExists = false;
         }
-        this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken());
+        this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken('tokenJwt'));
     }
 
     generateHeaders() {
-        if (this.getToken()) {
+        if (this.getToken('tokenJwt')) {
             this.headersExists = true;
         }
-        this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken());
-    }
-
-    setCachedUrl(url: string) {
-        const tokenNames = this.getTokenName();
-        this.localStorage.save(tokenNames['cachedUrlName'], url);
-    }
-
-    getCachedUrl() {
-        const tokenNames = this.getTokenName();
-        return this.localStorage.get(tokenNames['cachedUrlName']);
+        this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken('tokenJwt'));
     }
 
     cleanCachedUrl() {
@@ -65,14 +55,9 @@ export class AuthService {
         return this.localStorage.remove(tokenNames['cachedUrlName']);
     }
 
-    setTokenConfig(config: any) {
-        const tokenNames = this.getTokenName();
-        this.localStorage.save(tokenNames['configName'], config);
-    }
-
-    getTokenConfig() {
-        const tokenNames = this.getTokenName();
-        return this.localStorage.get(tokenNames['configName']);
+    setToken(name: any, config: any) {
+        const tokenNames: any = this.getTokenName();
+        this.localStorage.save(tokenNames[name], config);
     }
 
     getTokenName() {
@@ -80,23 +65,27 @@ export class AuthService {
         let userDataName = 'OpenCaptureUserData';
         let cachedUrlName = 'OpenCaptureCachedUrl';
         let configName = 'OpenCaptureConfig';
+        let minimizeDisplay = 'OpenCaptureMinimizeDisplay';
+
         if (environment['customId']) {
             tokenName += '_' + environment['customId'];
             userDataName += '_' + environment['customId'];
             cachedUrlName += '_' + environment['customId'];
             configName += '_' + environment['customId'];
+            minimizeDisplay += '_' + environment['customId'];
         } else if (environment['fqdn']) {
             tokenName += '_' + environment['fqdn'];
             userDataName += '_' + environment['fqdn'];
             cachedUrlName += '_' + environment['fqdn'];
             configName += '_' + environment['fqdn'];
+            minimizeDisplay += '_' + environment['fqdn'];
         }
-
         return {
             'tokenJwt': tokenName,
             'configName': configName,
             'userData': userDataName,
-            'cachedUrlName': cachedUrlName
+            'cachedUrlName': cachedUrlName,
+            'minimizeDisplay': minimizeDisplay
         };
     }
 
@@ -104,16 +93,16 @@ export class AuthService {
         const tokenNames = this.getTokenName();
         this.localStorage.save(tokenNames['tokenJwt'], token);
         this.localStorage.save(tokenNames['userData'], user_token);
+        this.localStorage.save(tokenNames['minimizeDisplay'], 'true');
     }
 
-    getToken() {
-        const tokenNames = this.getTokenName();
-        return this.localStorage.get(tokenNames['tokenJwt']);
+    getToken(name: any) {
+        const tokenNames: any = this.getTokenName();
+        return this.localStorage.get(tokenNames[name]);
     }
 
     logout() {
         const tokenNames = this.getTokenName();
-
         const user = this.userService.getUser();
         let user_info = '';
         if (user) {
@@ -121,13 +110,13 @@ export class AuthService {
         }
 
         this.userService.setUser({});
-        this.localStorage.remove('login_image_b64');
+        this.localStorage.remove('loginImageB64');
         this.localStorage.remove('selectedSettings');
         this.localStorage.remove(tokenNames['tokenJwt']);
         this.localStorage.remove(tokenNames['userData']);
         this.localStorage.remove('splitter_or_verifier');
         this.localStorage.remove('selectedParentSettings');
-        this.localStorage.remove('monitoring_minimize_display');
+        this.localStorage.remove(tokenNames['minimizeDisplay']);
         this.http.get(environment['url'] + '/ws/auth/logout?user_info=' + user_info).pipe(
             catchError((err: any) => {
                 console.debug(err);

@@ -30,7 +30,7 @@ export class LoginRedirectService {
     ) {}
 
     canActivate(): boolean {
-        if (this.authService.getToken()) {
+        if (this.authService.getToken('tokenJwt')) {
             this.router.navigateByUrl('/home').then();
             return false;
         }

@@ -17,7 +17,6 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 import { of } from "rxjs";
 import { environment } from  "./env";
-import { Location } from '@angular/common';
 import { HttpClient } from "@angular/common/http";
 import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../services/locale.service";
@@ -30,16 +29,15 @@ import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angu
 
 @Component({
     selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
+    templateUrl: './app.component.html'
 })
 
 export class AppComponent implements OnInit, AfterContentChecked {
-    title       : string = 'Open-Capture';
-    image       : SafeUrl = '';
     imageMobile : string = '';
+    image       : SafeUrl = '';
     loading     : boolean = true;
     showMenu    : boolean = true;
+    title       : string = 'Open-Capture';
 
     constructor(
         private router: Router,
@@ -94,11 +92,11 @@ export class AppComponent implements OnInit, AfterContentChecked {
             this.imageMobile = data[2];
             const splitterOrVerifier = data[3];
             if (!splitterOrVerifier) {
-                const b64Content = this.localStorageService.get('login_image_b64');
+                const b64Content = this.localStorageService.get('loginImageB64');
                 if (!b64Content) {
                     this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                         tap((data: any) => {
-                            this.localStorageService.save('login_image_b64', data);
+                            this.localStorageService.save('loginImageB64', data);
                             this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
                         }),
                         catchError((err: any) => {

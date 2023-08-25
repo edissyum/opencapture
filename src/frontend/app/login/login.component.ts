@@ -33,8 +33,7 @@ import { NotificationService } from "../../services/notifications/notifications.
 
 @Component({
     selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+    templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
     loginForm               : any;
@@ -74,7 +73,7 @@ export class LoginComponent implements OnInit {
 
         this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
             tap((data: any) => {
-                this.localStorageService.save('login_image_b64', data);
+                this.localStorageService.save('loginImageB64', data);
                 this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
             }),
             catchError((err: any) => {
@@ -149,15 +148,15 @@ export class LoginComponent implements OnInit {
                 },
             ).pipe(
                 tap((data: any) => {
+                    const passwordAlert = data.body['admin_password_alert'];
                     this.userService.setUser(data.body.user);
                     this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())));
-                    this.localStorageService.save('monitoring_minimize_display', 'true');
                     this.authService.generateHeaders();
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {
-                        if (this.authService.getCachedUrl()) {
-                            this.router.navigate([this.authService.getCachedUrl()]).then(() => {
-                                if (data.body.admin_password_alert) {
+                        if (this.authService.getToken('cachedUrlName')) {
+                            this.router.navigate([this.authService.getToken('cachedUrlName')]).then(() => {
+                                if (passwordAlert) {
                                     this.notify.error(this.translate.instant('ERROR.admin_password_alert'));
                                 }
                             });
@@ -169,7 +168,7 @@ export class LoginComponent implements OnInit {
                                         this.defaultRoute = data.route;
                                     }
                                     this.router.navigate([this.defaultRoute]).then(() => {
-                                        if (data.body.admin_password_alert) {
+                                        if (passwordAlert) {
                                             this.notify.error(this.translate.instant('ERROR.admin_password_alert'));
                                         }
                                     });

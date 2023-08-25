@@ -84,11 +84,11 @@ export class ResetPasswordComponent implements OnInit {
                 this.authService.logout();
             });
         }
-        const b64Content = this.localStorageService.get('login_image_b64');
+        const b64Content = this.localStorageService.get('loginImageB64');
         if (!b64Content) {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                 tap((data: any) => {
-                    this.localStorageService.save('login_image_b64', data);
+                    this.localStorageService.save('loginImageB64', data);
                     this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
                 }),
                 finalize(() => { this.loading = false; }),

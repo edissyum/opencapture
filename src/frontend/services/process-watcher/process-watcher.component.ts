@@ -33,7 +33,7 @@ import { NotificationService } from "../notifications/notifications.service";
 })
 
 export class ProcessWatcherComponent implements OnInit {
-    minimizeDisplay     : boolean = false;
+    minimizeDisplay     : boolean = true;
     isFirstCallDone     : boolean = false;
     getProcessRunning   : boolean = false;
     processes           : any[]   = [];
@@ -51,7 +51,10 @@ export class ProcessWatcherComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.minimizeDisplay = this.localStorageService.get('monitoring_minimize_display') === 'true';
+        setInterval(() => {
+            this.minimizeDisplay = this.authService.getToken('minimizeDisplay') === 'true';
+        }, 1000);
+
         interval(5000).subscribe(() => {
             if (this.authorizedUrl.includes(this.router.url) && !this.getProcessRunning) {
                 this.getLastProcesses();
@@ -64,7 +67,7 @@ export class ProcessWatcherComponent implements OnInit {
         if (!this.minimizeDisplay) {
             this.getLastProcesses();
         }
-        this.localStorageService.save('monitoring_minimize_display', minimizeDisplay ? 'true' : 'false');
+        this.authService.setToken('minimizeDisplay', minimizeDisplay ? 'true' : 'false');
     }
 
     getLastProcesses() {
