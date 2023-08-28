@@ -53,7 +53,6 @@ export class HomeComponent implements OnInit {
         }
 
         this.setValue('');
-        this.localStorageService.save('monitoring_minimize_display', 'true');
         const splitter = this.privilegesService.hasPrivilege('access_splitter');
         const verifier = this.privilegesService.hasPrivilege('access_verifier');
         const lastUrl = this.routerExtService.getPreviousUrl();
@@ -89,7 +88,7 @@ export class HomeComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
-        const token = this.authService.getToken();
+        const token = this.authService.getToken('tokenJwt');
         if (token) {
             this.http.post(environment['url'] + '/ws/auth/checkToken', {'token': token}).pipe(
                 catchError((err: any) => {

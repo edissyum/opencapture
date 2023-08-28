@@ -55,10 +55,10 @@ export class ConfigService {
     }
 
     setConfig(config: any) {
-        this.authService.setTokenConfig(btoa(JSON.stringify(config)));
+        this.authService.setToken('configName', btoa(JSON.stringify(config)));
     }
 
     getConfig() {
-        return JSON.parse(atob(this.authService.getTokenConfig() as string));
+        return JSON.parse(atob(this.authService.getToken('configName') as string));
     }
 }

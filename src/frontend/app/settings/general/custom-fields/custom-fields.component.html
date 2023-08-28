@@ -96,13 +96,7 @@
                                            <i class="fa-solid fa-circle-question text-md"></i>
                                         </span>
                                     </mat-slide-toggle>
-                                    <mat-slide-toggle [formControl]="regexRemoveSpecialChar" class="mb-8 flex justify-center">
-                                        <span class="justify-center">{{ 'CUSTOM-FIELDS.regex_remove_special_char' | translate }}</span>
-                                        <span class="relative text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="'CUSTOM-FIELDS.regex_remove_special_char_hint' | translate">
-                                           <i class="fa-solid fa-circle-question text-md"></i>
-                                        </span>
-                                    </mat-slide-toggle>
-                                    <mat-form-field class="w-1/3">
+                                    <mat-form-field class="w-1/2">
                                         <mat-label>{{ 'CUSTOM-FIELDS.regex_format' | translate }}</mat-label>
                                         <mat-select [formControl]="regexFormat" (selectionChange)="checkRegex()">
                                             <mat-option *ngFor="let opt of formats" [value]="opt.id">
@@ -110,6 +104,17 @@
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
+                                </div>
+                                <div class="flex flex-row gap-10 justify-center">
+                                    <mat-slide-toggle [formControl]="regexRemoveSpecialChar" class="mb-8 flex justify-center">
+                                        <span class="justify-center">{{ 'CUSTOM-FIELDS.regex_remove_special_char' | translate }}</span>
+                                        <span class="relative text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="'CUSTOM-FIELDS.regex_remove_special_char_hint' | translate">
+                                           <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
+                                    </mat-slide-toggle>
+                                    <mat-slide-toggle [formControl]="regexRemoveSpaces" class="mb-8 flex justify-center">
+                                        <span class="justify-center">{{ 'CUSTOM-FIELDS.regex_remove_spaces' | translate }}</span>
+                                    </mat-slide-toggle>
                                 </div>
                                 <div class="-mt-4 mb-4">
                                     <app-hint [specificClass]="'w-1/2'" *ngIf="regexRemoveKeyWord.value"

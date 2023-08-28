@@ -168,6 +168,8 @@ class FindCustom:
 
                         data = self.check_format_and_clean(data, regex_settings)
                         if data:
+                            if 'remove_spaces' in regex_settings and regex_settings['remove_spaces']:
+                                data = re.sub(r"\s*", '', data)
                             self.log.info(self.custom_fields_regex['label'] + ' found : ' + data)
                             position = line.position
                             if cpt == 1:

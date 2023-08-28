@@ -69,7 +69,6 @@ export class LoginRequiredService implements CanActivate {
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {
                         if (route) {
-                            this.localStorage.save('monitoring_minimize_display', 'true');
                             this.router.navigate([route]).then();
                         }
                     });
@@ -87,7 +86,7 @@ export class LoginRequiredService implements CanActivate {
     }
 
     canActivate(): boolean {
-        const token = this.authService.getToken();
+        const token = this.authService.getToken('tokenJwt');
         let route = '';
         if (!token) {
             const params = new URLSearchParams(window.location.href);
@@ -108,7 +107,7 @@ export class LoginRequiredService implements CanActivate {
                     return true;
                 }
                 if (currentUrl !== '/logout' && currentUrl !== '/login' && currentUrl !== '/500') {
-                    this.authService.setCachedUrl(currentUrl.replace(/^\//g, ''));
+                    this.authService.setToken('cachedUrlName', currentUrl.replace(/^\//g, ''));
                 }
                 this.notify.error(translated);
                 this.authService.logout();
