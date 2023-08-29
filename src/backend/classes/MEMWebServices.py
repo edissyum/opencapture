@@ -29,8 +29,8 @@ class MEMWebServices:
         self.log = log
         self.timeout = 10
         self.auth = HTTPBasicAuth(user, pwd)
-        self.status = self.check_connection()
         self.base_url = re.sub("^/|/$", "", host)
+        self.status = self.check_connection()
 
     def check_connection(self):
         try:
