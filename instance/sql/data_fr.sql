@@ -586,7 +586,7 @@ INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verif
     "allow_learning": true
 }');
 INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (2, 'splitter', '{
-    "metadata_method": "",
+    "metadata_method": "metadata_default",
     "export_zip_file": ""
 }');
 ALTER SEQUENCE "form_model_settings_id_seq" RESTART WITH 3;
@@ -631,7 +631,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (2, 2, '{"lin
 
 -- CRÉATION DU FORMULAIRE SPLITTER PAR DÉFAUT
 INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "settings") VALUES (3, 'Formulaire par défaut', true, '{5}', 'splitter', '{
-    "metadata_method": "",
+    "metadata_method": "metadata_default",
     "export_zip_file": ""
 }');
 INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (3, 3, '{"batch_metadata": [], "document_metadata": []}');
