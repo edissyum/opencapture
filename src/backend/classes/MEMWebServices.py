@@ -187,7 +187,7 @@ class MEMWebServices:
                 'id': args['destUser']
             }]
 
-        res = requests.post(self.base_url + 'resources', auth=self.auth, data=json.dumps(data),
+        res = requests.post(self.base_url + '/resources', auth=self.auth, data=json.dumps(data),
                             headers={'Connection': 'close', 'Content-Type': 'application/json'}, timeout=self.timeout)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') InsertIntoMEMError : ' + str(res.text))
