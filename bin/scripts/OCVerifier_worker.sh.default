@@ -22,7 +22,12 @@ export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
 
 tesseract_version=$(tesseract --version | grep 'tesseract' | cut -d' ' -f2)
 if [[ "$tesseract_version" == "5."* ]]; then
-        export TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
+    export TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
+elif [[ "$tesseract_version" == "4."* ]]; then
+    export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
+else
+    echo "Tesseract version not supported"
+    exit 1
 fi
 
 cd /var/www/html/opencapture/ || exit

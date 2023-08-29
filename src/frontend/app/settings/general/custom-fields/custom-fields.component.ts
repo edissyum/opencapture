@@ -50,6 +50,7 @@ export class CustomFieldsComponent implements OnInit {
     regexControl            : FormControl   = new FormControl();
     regexTestControl        : FormControl   = new FormControl();
     regexRemoveSpecialChar  : FormControl   = new FormControl();
+    regexRemoveSpaces       : FormControl   = new FormControl();
     regexRemoveKeyWord      : FormControl   = new FormControl();
     regexFormat             : FormControl   = new FormControl();
     formats                 : any[]         = [
@@ -354,6 +355,7 @@ export class CustomFieldsComponent implements OnInit {
                 'format': this.regexFormat.value,
                 'content': this.regexControl.value,
                 'test': this.regexTestControl.value,
+                'remove_spaces': this.regexRemoveSpaces.value,
                 'remove_keyword': this.regexRemoveKeyWord.value,
                 'remove_special_char': this.regexRemoveSpecialChar.value
             };
@@ -510,6 +512,7 @@ export class CustomFieldsComponent implements OnInit {
                 'format': this.regexFormat.value,
                 'content': this.regexControl.value,
                 'test': this.regexTestControl.value,
+                'remove_spaces': this.regexRemoveSpaces.value,
                 'remove_keyword': this.regexRemoveKeyWord.value,
                 'remove_special_char': this.regexRemoveSpecialChar.value
             };
@@ -550,6 +553,7 @@ export class CustomFieldsComponent implements OnInit {
             if (customField.settings.regex) {
                 this.regexFormat.setValue(customField.settings.regex.format);
                 this.regexControl.setValue(customField.settings.regex.content);
+                this.regexRemoveSpaces.setValue(customField.settings.regex.remove_spaces);
                 this.regexRemoveKeyWord.setValue(customField.settings.regex.remove_keyword);
                 this.regexRemoveSpecialChar.setValue(customField.settings.regex.remove_special_char);
             }
@@ -559,6 +563,7 @@ export class CustomFieldsComponent implements OnInit {
     resetForm() {
         this.regexFormat.setValue('');
         this.regexControl.setValue('');
+        this.regexRemoveSpaces.setValue('');
         this.regexRemoveKeyWord.setValue('');
         this.regexRemoveSpecialChar.setValue('');
         this.addFieldInputs.forEach((field: any) => {

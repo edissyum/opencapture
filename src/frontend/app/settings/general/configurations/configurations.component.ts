@@ -286,7 +286,7 @@ export class ConfigurationsComponent implements OnInit {
             })
         ).subscribe();
 
-        const b64Content = this.localStorageService.get('login_image_b64');
+        const b64Content = this.localStorageService.get('loginImageB64');
         if (!b64Content) {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                 tap((data: any) => {
@@ -534,7 +534,7 @@ export class ConfigurationsComponent implements OnInit {
                 ).pipe(
                     tap(() => {
                         this.loginImage = this.sanitizer.bypassSecurityTrustUrl(args['image_content']);
-                        this.localStorageService.save('login_image_b64', args['image_content'].replace('data:image/png;base64,', ''));
+                        this.localStorageService.save('loginImageB64', args['image_content'].replace('data:image/png;base64,', ''));
                         const currentUrl = this.router.url;
                         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
                             this.router.navigate([currentUrl]).then();

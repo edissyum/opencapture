@@ -255,21 +255,21 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
         improved_footer_image = files.img_name + '_footer_improved.jpg'
 
         if not os.path.isfile(improved_image):
-            improved_image = files.improve_image_detection(files.jpg_name, remove_lines=False)
+            improved_image = files.improve_image_detection(files.jpg_name, remove_lines=True)
         if not os.path.isfile(improved_header_image):
             improved_header_image = files.improve_image_detection(files.jpg_name_header, remove_lines=False)
         if not os.path.isfile(improved_footer_image):
             improved_footer_image = files.improve_image_detection(files.jpg_name_header, remove_lines=False)
 
         image = files.open_image_return(improved_image)
-        text = ocr.line_box_builder(image)
-        data_class.text = text
+        data_class.text = ocr.line_box_builder(image)
+
         image = files.open_image_return(improved_header_image)
-        text = ocr.line_box_builder(image)
-        data_class.header_text = text
+        data_class.header_text = ocr.line_box_builder(image)
+
         image = files.open_image_return(improved_footer_image)
-        text = ocr.line_box_builder(image)
-        data_class.footer_text = text
+        data_class.footer_text = ocr.line_box_builder(image)
+
         if data_name == 'firstname_lastname':
             data_class.improved = True
 
@@ -428,7 +428,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     })
 
                     if find_supplier:
-                        supplier = [find_supplier[0]['vat_number'], (('', ''), ('', '')), find_supplier[0], False, column]
+                        supplier = [find_supplier[0]['vat_number'], (('', ''), ('', '')), find_supplier[0], False,
+                                    column]
                         log.info('Supplier found using given informations in upload : ' + supplier[2]['name'] +
                                  ' using ' + column.upper() + ' : ' + value)
                     else:
@@ -761,8 +762,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         # Convert all the pages to JPG (used to full web interface)
         files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename,
-                                      docservers=True, rotate=True)
-        files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename, rotate=True)
+                                      docservers=True, rotate_img=True)
+        files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename, rotate_img=True)
 
         allow_auto = False
         if workflow_settings and workflow_settings['input']['apply_process']:
