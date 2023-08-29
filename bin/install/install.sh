@@ -197,7 +197,7 @@ fi
 echo ""
 echo "Postgres installation....."
 apt-get update >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-apt-get install -y postgresql >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+apt-get install -y postgresql python3-venv >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
