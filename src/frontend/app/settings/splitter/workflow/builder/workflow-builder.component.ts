@@ -63,6 +63,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
         input : [
             {
                 id: 'input_folder',
+                show: true,
                 label: this.translate.instant('WORKFLOW.input_folder'),
                 type: 'text',
                 control: new FormControl(),
@@ -71,6 +72,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             },
             {
                 id: 'customer_id',
+                show: true,
                 label: this.translate.instant('WORKFLOW.associated_customer'),
                 type: 'select',
                 control: new FormControl(),
@@ -95,6 +97,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             },
             {
                 id: 'apply_process',
+                show: true,
                 label: this.translate.instant('WORKFLOW.apply_process'),
                 type: 'boolean',
                 control: new FormControl(true)
@@ -118,6 +121,7 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             },
             {
                 id: 'remove_blank_pages',
+                show: true,
                 label: this.translate.instant('WORKFLOW.remove_blank_pages'),
                 type: 'boolean',
                 control: new FormControl()
