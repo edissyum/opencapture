@@ -194,6 +194,7 @@
 		"regex_remove_keyword": "Remove keyword from regex",
 		"regex_remove_keyword_explanation": "For this option to be taken into account, the keyword must be present in the regular expression and the regular expression must end with <strong>.*</strong><br>Example: <strong>INVOICE\\s*NUMBER\\s*:\\s*.*</strong>\n",
 		"regex_remove_keyword_hint": "If enabled, the keyword will be removed from the regex result to keep only the data",
+		"regex_remove_spaces": "Remove spaces from regex result",
 		"regex_remove_special_char": "Remove special characters from regex result",
 		"regex_remove_special_char_hint": "Example : -()\"#@;:<>{}][`+=~|!?€$%£*",
 		"regex_results": "Regex results",
@@ -488,9 +489,11 @@
 		"output_type": "Output type",
 		"path": "Path",
 		"role": "Role",
+		"splitter_list": "Splitter list",
 		"status": "Status ",
 		"type": "Type",
-		"value": "Value"
+		"value": "Value",
+		"verifier_list": "Verifier list"
 	},
 	"HISTORY-DESC": {
 		"change_batch_form": "The selected form for batch <strong>{{ batch_id }}</strong> has been changed to form <strong>{{ form_id }}</strong>",
@@ -513,6 +516,7 @@
 		"user_ip": "IP Address"
 	},
 	"HOME": {
+		"no_authorized_module": "No authorized module",
 		"splitter": "Open-Capture Splitter",
 		"verifier": "Open-Capture Verifier"
 	},

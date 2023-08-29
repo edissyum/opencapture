@@ -428,7 +428,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     })
 
                     if find_supplier:
-                        supplier = [find_supplier[0]['vat_number'], (('', ''), ('', '')), find_supplier[0], False, column]
+                        supplier = [find_supplier[0]['vat_number'], (('', ''), ('', '')), find_supplier[0], False,
+                                    column]
                         log.info('Supplier found using given informations in upload : ' + supplier[2]['name'] +
                                  ' using ' + column.upper() + ' : ' + value)
                     else:
