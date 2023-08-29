@@ -15,10 +15,11 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import re
 import json
 import base64
-from datetime import datetime
 import requests
+from datetime import datetime
 from flask_babel import gettext
 from requests.auth import HTTPBasicAuth
 
@@ -27,9 +28,9 @@ class MEMWebServices:
     def __init__(self, host, user, pwd, log):
         self.log = log
         self.timeout = 10
-        self.base_url = host + '/'
         self.auth = HTTPBasicAuth(user, pwd)
         self.status = self.check_connection()
+        self.base_url = re.sub("^/|/$", "", host)
 
     def check_connection(self):
         try:
