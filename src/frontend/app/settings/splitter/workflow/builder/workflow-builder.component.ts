@@ -88,14 +88,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 hint: this.translate.instant('WORKFLOW.ai_model_id_hint')
             },
             {
-                id: 'customer_id',
-                show: true,
-                label: this.translate.instant('WORKFLOW.associated_customer'),
-                type: 'select',
-                control: new FormControl(),
-                required: false
-            },
-            {
                 id: 'apply_process',
                 show: true,
                 label: this.translate.instant('WORKFLOW.apply_process'),
