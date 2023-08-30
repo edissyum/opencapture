@@ -198,8 +198,7 @@ def launch(args):
 
                 for file in os.listdir(path):
                     res = execute(args, path + file, log, config, files, ocr, regex, database, docservers,
-                                  configurations,
-                                  languages, mail_class, smtp)
+                                  configurations, languages, mail_class, smtp)
                     list_of_ids.append(res)
             elif splitter_method == 'separate_by_document_number':
                 list_of_files = separator_qr.split_document_every_x_pages(path, separate_every_x_page)

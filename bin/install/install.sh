@@ -23,7 +23,7 @@ fi
 
 bold=$(tput bold)
 normal=$(tput sgr0)
-defaultPath=/var/www/html/opencapture/
+defaultPath="/var/www/html/opencapture/"
 imageMagickPolicyFile=/etc/ImageMagick-6/policy.xml
 docserverDefaultPath="/var/docservers/opencapture/"
 user=$(who am i | awk '{print $1}')
@@ -31,37 +31,80 @@ group=www-data
 INFOLOG_PATH=install_info.log
 ERRORLOG_PATH=install_error.log
 
-if [ -z "$user" ]; then
+####################
+# Handle parameters
+parameters="user custom_id supervisor_process path wsgi_threads wsgi_process supervisor_systemd hostname port username password"
+opts=$(getopt \
+  --longoptions "$(printf "%s:," "$parameters")" \
+  --name "$(basename "$0")" --options "" -- "$@"
+)
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --user)
+            user=$2
+            shift 2;;
+        --custom_id)
+            customId=$2
+            shift 2;;
+        --supervisor_process)
+            nbProcess=$2
+            shift 2;;
+        --path)
+            defaultPath=$2
+            shift 2;;
+        --wsgi_threads)
+            wsgiThreads=$2
+            shift 2;;
+        --wsgi_process)
+            wsgiProcess=$2
+            shift 2;;
+        --supervisor_systemd)
+            supervisorOrSystemd=$2
+            shift 2;;
+        --hostname)
+            hostname=$2
+            shift 2;;
+        --port)
+            port=$2
+            shift 2;;
+        --username)
+            databaseUsername=$2
+            shift 2;;
+        --password)
+            databasePassword=$2
+            shift 2;;
+    *)
+        customId=""
+        break;;
+    esac
+done
+
+if [ -z $user ]; then
     printf "The user variable is empty. Please fill it with your desired user : "
     read -r user
-    if [ -z "$user" ]; then
+    if [ -z $user ]; then
         echo 'User remain empty, exiting...'
         exit
     fi
 fi
 
-####################
-# Check if custom name is set and doesn't exists already
-while getopts "c:" parameters
-do
-    case "${parameters}" in
-        c) customId=${OPTARG};;
-        *) customId=""
-    esac
-done
+if [ ! -z $supervisorOrSystemd ]; then
+    if [ $supervisorOrSystemd != "supervisor" ] && [ $supervisorOrSystemd != "systemd" ]; then
+        echo "-s parameter need to be supervisor or systemd"
+        exit
+    fi
+
+    if [ -z $nbProcessSupervisor ]; then
+        $nbProcessSupervisor = 3
+    fi
+fi
 
 ####################
 # Replace dot with _ in custom_id to avoid python error
 oldCustomId=$customId
 customId=${customId//[\.\-]/_}
 customId=$(echo "$customId" | tr "[:upper:]" "[:lower:]")
-
-if [[ "$customId" =~ [[:upper:]] ]]; then
-    echo "##########################################################################"
-    echo "             Custom id could'nt include uppercase characters              "
-    echo "##########################################################################"
-    exit 1
-fi
 
 if [ -z "$customId" ]; then
     echo "##########################################################################"
@@ -88,66 +131,71 @@ fi
 
 ####################
 # User choice
-echo ""
-echo "Do you want to use supervisor (1) or systemd (2) ? (default : 2) "
-echo "If you plan to handle a lot of files and need a reduced time of process, use supervisor"
-echo "WARNING : A lot of Tesseract processes will run in parallel and it can be very resource intensive"
-printf "Enter your choice [1/%s] : " "${bold}2${normal}"
-read -r choice
-
-if [[ "$choice" == "" || ("$choice" != 1 && "$choice" != 2) ]]; then
-    finalChoice=2
-else
-    finalChoice="$choice"
-fi
-
-if [ "$finalChoice" == 1 ]; then
-    echo 'You choose supervisor, how many processes you want to be run simultaneously ? (default : 3)'
-    printf "Enter your choice [%s] : " "${bold}3${normal}"
+if [ -z $supervisorOrSystemd ]; then
+    echo ""
+    echo "Do you want to use supervisor (1) or systemd (2) ? (default : 2) "
+    echo "If you plan to handle a lot of files and need a reduced time of process, use supervisor"
+    echo "WARNING : A lot of Tesseract processes will run in parallel and it can be very resource intensive"
+    printf "Enter your choice [1/%s] : " "${bold}2${normal}"
     read -r choice
-    if [ "$choice" == "" ]; then
-        nbProcessSupervisor=3
-    elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
-        echo 'The input is not an integer, default value selected (3)'
-        nbProcessSupervisor=3
+
+    if [[ "$choice" == "" || ("$choice" != 1 && "$choice" != 2) ]]; then
+        finalChoice=2
     else
-        nbProcessSupervisor="$choice"
+        finalChoice="$choice"
+    fi
+
+    if [ "$finalChoice" == 1 ]; then
+        echo 'You choose supervisor, how many processes you want to be run simultaneously ? (default : 3)'
+        printf "Enter your choice [%s] : " "${bold}3${normal}"
+        read -r choice
+        if [ "$choice" == "" ]; then
+            nbProcessSupervisor=3
+        elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+            echo 'The input is not an integer, default value selected (3)'
+            nbProcessSupervisor=3
+        else
+            nbProcessSupervisor="$choice"
+        fi
     fi
 fi
 
-echo ""
-echo "########################################################################################################################"
-echo "      _______                                                                                             _______ "
-echo "     / /| |\ \                   The two following questions are for advanced users                      / /| |\ \ "
-echo "    / / | | \ \          If you don't know what you're doing, skip it and keep default values           / / | | \ \ "
-echo "   / /  | |  \ \     Higher values can overload your server if it doesn't have enough performances     / /  | |  \ \ "
-echo "  / /   |_|   \ \          Example for a 16 vCPU / 8Go RAM server : 5 threads and 2 processes         / /   |_|   \ \ "
-echo " /_/    (_)    \_\                                                                                   /_/    (_)    \_\ "
-echo ""
-echo "########################################################################################################################"
-echo ""
-echo 'How many WSGI threads ? (default : 5)'
-printf "Enter your choice [%s] : " "${bold}5${normal}"
-read -r choice
-if [ "$choice" == "" ]; then
-    nbThreads=5
-elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
-    echo 'The input is not an integer, default value selected (5)'
-    nbThreads=5
-else
-    nbThreads="$choice"
-fi
 
-echo 'How many WSGI processes ? (default : 1)'
-printf "Enter your choice [%s] : " "${bold}1${normal}"
-read -r choice
-if [ "$choice" == "" ]; then
-    nbProcesses=1
-elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
-    echo 'The input is not an integer, default value selected (1)'
-    nbProcesses=1
-else
-    nbProcesses="$choice"
+if [ -z wsgiThreads ] && [ -z $wsgiProcess ]; then
+    echo ""
+    echo "########################################################################################################################"
+    echo "      _______                                                                                             _______ "
+    echo "     / /| |\ \                   The two following questions are for advanced users                      / /| |\ \ "
+    echo "    / / | | \ \          If you don't know what you're doing, skip it and keep default values           / / | | \ \ "
+    echo "   / /  | |  \ \     Higher values can overload your server if it doesn't have enough performances     / /  | |  \ \ "
+    echo "  / /   |_|   \ \          Example for a 16 vCPU / 8Go RAM server : 5 threads and 2 processes         / /   |_|   \ \ "
+    echo " /_/    (_)    \_\                                                                                   /_/    (_)    \_\ "
+    echo ""
+    echo "########################################################################################################################"
+    echo ""
+    echo 'How many WSGI threads ? (default : 5)'
+    printf "Enter your choice [%s] : " "${bold}5${normal}"
+    read -r choice
+    if [ "$choice" == "" ]; then
+        wsgiThreads=5
+    elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+        echo 'The input is not an integer, default value selected (5)'
+        wsgiThreads=5
+    else
+        wsgiThreads="$choice"
+    fi
+
+    echo 'How many WSGI processes ? (default : 1)'
+    printf "Enter your choice [%s] : " "${bold}1${normal}"
+    read -r choice
+    if [ "$choice" == "" ]; then
+        wsgiProcess=1
+    elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+        echo 'The input is not an integer, default value selected (1)'
+        wsgiProcess=1
+    else
+        wsgiProcess="$choice"
+    fi
 fi
 
 echo ""
@@ -156,44 +204,45 @@ echo ""
 
 ####################
 # Retrieve database informations
-echo "Type database informations (hostname, port, username and password)."
-echo "It will be used to update path to use the custom's one"
-printf "Hostname [%s] : " "${bold}localhost${normal}"
-read -r choice
+if [ -z $hostname ] && [ -z $port ] && [ -z $databaseUsername ] && [-z $databasePassword]; then
+    echo "Type database informations (hostname, port, username and password)."
+    echo "It will be used to update path to use the custom's one"
+    printf "Hostname [%s] : " "${bold}localhost${normal}"
+    read -r choice
 
-if [[ "$choice" == "" ]]; then
-    hostname="localhost"
-else
-    hostname="$choice"
+    if [[ "$choice" == "" ]]; then
+        hostname="localhost"
+    else
+        hostname="$choice"
+    fi
+
+    printf "Port [%s] : " "${bold}5432${normal}"
+    read -r choice
+
+    if [[ "$choice" == "" ]]; then
+        port=5432
+    else
+        port="$choice"
+    fi
+
+    printf "Username [%s] : " "${bold}$customId${normal}"
+    read -r choice
+
+    if [[ "$choice" == "" ]]; then
+        databaseUsername="$customId"
+    else
+        databaseUsername="$choice"
+    fi
+
+    printf "Password [%s] : " "${bold}$customId${normal}"
+    read -r choice
+
+    if [[ "$choice" == "" ]]; then
+        databasePassword="$customId"
+    else
+        databasePassword="$choice"
+    fi
 fi
-
-printf "Port [%s] : " "${bold}5432${normal}"
-read -r choice
-
-if [[ "$choice" == "" ]]; then
-    port=5432
-else
-    port="$choice"
-fi
-
-printf "Username [%s] : " "${bold}$customId${normal}"
-read -r choice
-
-if [[ "$choice" == "" ]]; then
-    databaseUsername="$customId"
-else
-    databaseUsername="$choice"
-fi
-
-printf "Password [%s] : " "${bold}$customId${normal}"
-read -r choice
-
-if [[ "$choice" == "" ]]; then
-    databasePassword="$customId"
-else
-    databasePassword="$choice"
-fi
-
 echo ""
 echo "Postgres installation....."
 apt-get update >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -340,10 +389,10 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 # Create the Apache service for backend
 touch /etc/apache2/sites-available/opencapture.conf
 
-wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$nbThreads processes=$nbProcesses"
+wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$wsgiThreads processes=$wsgiProcess"
 sitePackageLocation=$(/home/$user/python-venv/opencapture/bin/python3 -c 'import site; print(site.getsitepackages()[0])')
 if [ $sitePackageLocation ]; then
-    wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$nbThreads processes=$nbProcesses python-path=$sitePackageLocation"
+    wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$wsgiThreads processes=$wsgiProcess python-path=$sitePackageLocation"
 fi
 
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
@@ -427,7 +476,7 @@ sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/act
 
 ####################
 # Create the service systemd or supervisor
-if [ "$finalChoice" == 2 ]; then
+if [ "$finalChoice" == 2 || $supervisorOrSystemd == 'systemd' ]; then
     touch "/etc/systemd/system/OCVerifier-worker_$customId.service"
     su -c "cat > /etc/systemd/system/OCVerifier-worker_$customId.service << EOF
 [Unit]
