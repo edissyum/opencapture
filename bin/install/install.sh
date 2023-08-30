@@ -243,6 +243,7 @@ if [ -z $hostname ] && [ -z $port ] && [ -z $databaseUsername ] && [-z $database
         databasePassword="$choice"
     fi
 fi
+
 echo ""
 echo "Postgres installation....."
 apt-get update >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
