@@ -95,8 +95,8 @@ if [ ! -z $supervisorOrSystemd ]; then
         exit
     fi
 
-    if [ -z $nbProcessSupervisor ]; then
-        $nbProcessSupervisor = 3
+    if [ $supervisorOrSystemd == "supervisor" ] && [ -z $nbProcessSupervisor ]; then
+        $nbProcessSupervisor=3
     fi
 fi
 
