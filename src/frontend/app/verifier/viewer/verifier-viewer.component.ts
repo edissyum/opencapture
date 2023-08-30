@@ -409,14 +409,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
                     this.form.facturation.forEach((element: any) => {
                        if (element.id === data['autocompleteField']) {
-                           this.http.post(environment['url'] + 'getDocumentsWithContact/ws/mem/', data, {headers: this.authService.headers},
+                           this.http.post(environment['url'] + '/ws/mem/getDocumentsWithContact', data, {headers: this.authService.headers},
                            ).pipe(
                                tap((_return: any) => {
                                    element.type = 'autocomplete';
                                    if (_return && _return.count > 0) {
                                        element.autocomplete_values = element.control.valueChanges.pipe(
                                            startWith(''),
-                                           map(option => option ? this._filter_data(option, _return.resources) : _return.resources.slice())
+                                           map(option => option ? this._filter_data(option, _return['resources']) : _return['resources'].slice())
                                        );
                                    }
                                }),
