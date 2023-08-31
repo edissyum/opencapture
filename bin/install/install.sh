@@ -477,7 +477,7 @@ sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/act
 
 ####################
 # Create the service systemd or supervisor
-if [ "$finalChoice" == 2 || $supervisorOrSystemd == 'systemd' ]; then
+if [ "$finalChoice" == 2 ] || [ $supervisorOrSystemd == 'systemd' ]; then
     touch "/etc/systemd/system/OCVerifier-worker_$customId.service"
     su -c "cat > /etc/systemd/system/OCVerifier-worker_$customId.service << EOF
 [Unit]
