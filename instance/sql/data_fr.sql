@@ -497,6 +497,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
         "label": "Séparateur",
         "required": "true",
         "placeholder": "_"
+      },
+      {
+        "id": "xml_template",
+        "hint": "Format XML avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut, pour boucler entre les documents ajoutez la section  <!-- %END-DOCUMENT-LOOP -->...<!-- %END-DOCUMENT-LOOP -->",
+        "type": "textarea",
+        "label": "Contenu de fichier XML ",
+        "required": "true ",
+        "placeholder": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
       }
     ]
   }
