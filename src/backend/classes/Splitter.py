@@ -358,6 +358,7 @@ class Splitter:
         xml_as_string = xml_as_string.replace('#user_lastname', user_lastname)
         xml_as_string = xml_as_string.replace('#user_firstname', user_firstname)
         xml_as_string = xml_as_string.replace('#documents_count', str(len(documents)))
+        xml_as_string = xml_as_string.replace('#metadata_file', metadata['metadata_file'])
         xml_as_string = xml_as_string.replace('#random', str(random.randint(0, 99999)).zfill(5))
         xml_as_string = xml_as_string.replace('#pdf_output_compress_file', metadata['pdf_output_compress_file'])
 
