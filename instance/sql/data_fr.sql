@@ -497,6 +497,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
         "label": "Séparateur",
         "required": "true",
         "placeholder": "_"
+      },
+      {
+        "id": "xml_template",
+        "hint": "Format XML avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut, pour boucler entre les documents ajoutez la section  <!-- %END-DOCUMENT-LOOP -->...<!-- %END-DOCUMENT-LOOP -->",
+        "type": "textarea",
+        "label": "Contenu de fichier XML ",
+        "required": "true ",
+        "placeholder": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
       }
     ]
   }
@@ -558,7 +566,7 @@ ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 9;
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (5, 'export_pdf', 'Export vers Vérificateur', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/entrant/verifier/"}, {"id": "filename", "type": "textarea", "value": "PDF#doctype#date#random"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "pdf"}, {"id": "zip_filename", "type": "text", "value": ""}]}}', 'splitter');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (6, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "XML#date"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "xml"}]}}', 'splitter');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (7, 'export_cmis', 'Export Alfresco par défaut', '{"options": {"auth": [{"id": "cmis_ws", "type": "text", "value": ""}, {"id": "folder", "type": "text", "value": ""}, {"id": "login", "type": "text", "value": ""}, {"id": "password", "type": "password", "value": ""}], "parameters": [{"id": "pdf_filename", "type": "textarea", "value": "#doctype#date"}, {"id": "xml_filename", "type": "textarea", "value": "#random#date"}, {"id": "separator", "type": "textarea", "value": "_"}]}}', 'splitter');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (7, 'export_cmis', 'Export Alfresco par défaut', '{"options": {"auth": [{"id": "cmis_ws", "type": "text", "value": ""}, {"id": "folder", "type": "text", "value": ""}, {"id": "login", "type": "text", "value": ""}, {"id": "password", "type": "password", "value": ""}], "parameters": [{"id": "pdf_filename", "type": "textarea", "value": "#doctype#date"}, {"id": "xml_filename", "type": "textarea", "value": "#random#date"}, {"id": "separator", "type": "textarea", "value": "_"}, ]}}', 'splitter');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (8, 'export_openads', 'Export OpenADS', '{"options": {"auth": [{"id": "openads_api", "type": "text", "value": " https://example.fr/openads"}, {"id": "login", "type": "text", "value": "opencapture"}, {"id": "password", "type": "password", "value": "opencapture"}], "parameters": [{"id": "pdf_filename", "type": "text", "value": "#dotype#id"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "folder_id", "type": "text", "value": ""}]}}', 'splitter');
 ALTER SEQUENCE "outputs_id_seq" RESTART WITH 9;
 
