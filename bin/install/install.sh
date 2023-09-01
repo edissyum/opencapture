@@ -34,10 +34,7 @@ ERRORLOG_PATH=install_error.log
 ####################
 # Handle parameters
 parameters="user custom_id supervisor_process path wsgi_threads wsgi_process supervisor_systemd hostname port username password"
-opts=$(getopt \
-  --longoptions "$(printf "%s:," "$parameters")" \
-  --name "$(basename "$0")" --options "" -- "$@"
-)
+opts=$(getopt --longoptions "$(printf "%s:," "$parameters")" --name "$(basename "$0")" --options "" -- "$@")
 
 while [ $# -gt 0 ]; do
     case "$1" in
