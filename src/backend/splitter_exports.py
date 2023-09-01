@@ -259,28 +259,29 @@ def handle_cmis_output(output, batch, log, docservers, configurations, regex):
         'extension': 'pdf',
         'folder_out': docservers['TMP_PATH'],
         'separator': cmis_params['separator'],
-        'filename': cmis_params['pdf_filename']
+        'filename': cmis_params['pdf_filename'],
+        'compress_type': output['compress_type']
     }
-    res_pdf_export = export_pdf_files(batch, parameters, log, docservers, configurations)
-    pdf_paths = res_pdf_export['paths']
-    for file_path in pdf_paths:
-        cmis_res = cmis.create_document(file_path, 'application/pdf')
+    res_pdf_export, _ = export_pdf_files(batch, parameters, log, docservers, configurations)
+
+    for document in res_pdf_export['result_batch']['documents']:
+        cmis_res = cmis.create_document(document['export_path'], 'application/pdf')
         if not cmis_res[0]:
-            log.error(f'File not sent : {file_path}')
-            log.error(f'CMIS Response : {str(cmis_res)}')
+            log.error(f"File not sent : {document['export_path']}")
+            log.error(f"CMIS Response : {str(cmis_res)}")
             response = {
                 "errors": gettext('EXPORT_PDF_ERROR'),
                 "message": cmis_res[1]
             }
             return response, 500
 
-        # Export XML for Alfresco
         if cmis_params['xml_filename']:
             parameters = {
                 'extension': 'xml',
                 'folder_out': docservers['TMP_PATH'],
                 'separator': cmis_params['separator'],
                 'filename': cmis_params['xml_filename'],
+                'xml_template': cmis_params['xml_template'],
                 'doc_loop_regex': regex['splitter_doc_loop'],
                 'condition_regex': regex['splitter_condition'],
                 'empty_line_regex': regex['splitter_empty_line'],
@@ -296,6 +297,7 @@ def handle_cmis_output(output, batch, log, docservers, configurations, regex):
                     "message": cmis_res[1]
                 }
                 return response, 500
+        return {'result_batch': batch}, 200
 
 
 def handle_openads_output(output, batch, docservers, log, configurations):
@@ -334,6 +336,8 @@ def handle_openads_output(output, batch, docservers, log, configurations):
             "message": openads_res['error']
         }
         return response, 500
+
+    return {'result_batch': batch}, 200
 
 
 def compress_outputs_result(batch, exported_files, export_zip_file):
