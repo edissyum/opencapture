@@ -1,0 +1,98 @@
+name: Open-Capture deployment
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+    deploy-application:
+        name: recuperation de l'application
+        runs-on: self-hosted
+        defaults:
+        run:
+            working-directory: /
+        steps:
+            - name: Checkout source code
+                uses: actions/checkout@v2
+
+            - name: Creation de repertoires
+                run: |
+                    sudo mkdir -p /var/www/html/opencapture/
+                    sudo chmod -R 775 /var/www/html/opencapture/
+                    sudo chown -R $(whoami):$(whoami) /var/www/html/opencapture/
+
+            - name: Récupération du dernier tag
+                run: |
+                    sudo apt install -y git crudini
+                    git clone -b dev_v3 https://github.com/edissyum/opencapture/ /var/www/html/opencapture/
+                continue-on-error: true
+
+    deploy-frontend:
+        name: frontend deployment
+        runs-on: self-hosted
+        needs: [deploy-application]
+        defaults:
+            run:
+                working-directory: /
+        steps:
+            - name: Checkout source code
+                uses: actions/checkout@v2
+
+            - name: Use Node.js
+                uses: actions/setup-node@v2
+                with:
+                    node-version: 18
+
+            - name: Install Node and npm
+                run: |
+                    sudo apt install nodejs npm -y
+                    continue-on-error: true
+
+            - name: Install dependencies
+                run: |
+                    cd /var/www/html/opencapture/src/frontend/
+                    npm run reload-packages
+
+            - name: Build
+                run: |
+                    cd /var/www/html/opencapture/src/frontend/
+                    npm run build-prod
+
+    deploy-backend:
+        name: backend deployment
+        runs-on: self-hosted
+        needs: [deploy-application]
+        defaults:
+            run:
+                working-directory: /
+
+        steps:
+            - name: Checkout source code
+                uses: actions/checkout@v2
+
+            - name: Lancement de l'installation
+                run: |
+                cd var/www/html/opencapture/bin/install/
+                chmod u+x install.sh
+                sed -i 's/$(tput bold)/""/gI' install.sh
+                sed -i 's/$(tput sgr0)/""/gI' install.sh
+                sudo ./install.sh --custom_id test --user $(whoami) --path /var/www/html/opencapture/ --wsgi_process 1 --wsgi_threads 5 --supervisor_systemd systemd --hostname $HOST_NAME --port $PORT --username $USER_NAME --password $USER_PASSWORD
+            env:
+                HOST_NAME: ${{ vars.HOST_NAME }}
+                PORT: ${{ vars.PORT }}
+                USER_NAME: ${{ vars.USER_NAME }}
+                USER_PASSWORD: ${{ vars.USER_PASSWORD }}
+            continue-on-error: true
+
+            - name: Status des services
+                run: |
+                    sudo systemctl status OCSplitter-worker_test.service
+                    sudo systemctl status OCVerifier-worker_test.service
+                    sudo systemctl start postgresql
+                    sudo systemctl status postgresql
+            continue-on-error: true
+
+            - name: Lancement du test
+                run: |
+                    source /home/$(whoami)/python-venv/opencapture/bin/activate
+                    cd /var/www/html/opencapture/
+                    python3 -m unittest discover src/backend/tests/
