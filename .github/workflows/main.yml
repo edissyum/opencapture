@@ -36,27 +36,27 @@ jobs:
 
     steps:
         - name: Checkout source code
-            uses: actions/checkout@v2
+          uses: actions/checkout@v2
 
         - name: Use Node.js
-            uses: actions/setup-node@v2
-            with:
+          uses: actions/setup-node@v2
+          with:
                 node-version: 18
 
         - name: Install Node and npm
-            run: |
-                sudo apt install nodejs npm -y
-                continue-on-error: true
+          run: |
+              sudo apt install nodejs npm -y
+              continue-on-error: true
 
         - name: Install dependencies
-            run: |
-                cd /var/www/html/opencapture/src/frontend/
-                npm run reload-packages
+          run: |
+              cd /var/www/html/opencapture/src/frontend/
+              npm run reload-packages
 
         - name: Build
-            run: |
-                cd /var/www/html/opencapture/src/frontend/
-                npm run build-prod
+          run: |
+              cd /var/www/html/opencapture/src/frontend/
+              npm run build-prod
 
     deploy-backend:
         name: backend deployment
