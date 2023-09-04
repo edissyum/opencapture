@@ -201,7 +201,7 @@ echo ""
 
 ####################
 # Retrieve database informations
-if [ -z $hostname ] && [ -z $port ] && [ -z $databaseUsername ] && [-z $databasePassword]; then
+if [ -z $hostname ] && [ -z $port ] && [ -z $databaseUsername ] && [ -z $databasePassword ]; then
     echo "Type database informations (hostname, port, username and password)."
     echo "It will be used to update path to use the custom's one"
     printf "Hostname [%s] : " "${bold}localhost${normal}"
