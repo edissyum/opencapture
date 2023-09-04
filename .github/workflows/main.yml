@@ -12,10 +12,10 @@ jobs:
             working-directory: /
         steps:
             - name: Checkout source code
-            uses: actions/checkout@v2
+              uses: actions/checkout@v2
 
             - name: Directories creation
-                run: |
+              run: |
                     sudo mkdir -p /var/www/html/opencapture/
                     sudo chmod -R 775 /var/www/html/opencapture/
                     sudo chown -R $(whoami):$(whoami) /var/www/html/opencapture/
