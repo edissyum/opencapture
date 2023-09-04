@@ -52,6 +52,7 @@ def load_referential(args):
                 external_id = '-'.join([str(referential['numero_dossier']), str(demand['numero_demande'])])
                 referential['numero_demande'] = demand['numero_demande'] if 'numero_demande' in demand else ''
                 referential['type_demande'] = demand['type_demande'] if 'type_demande' in demand else ''
+                update_date = datetime.now().strptime('%Y-%m-%d %H:%M:%S')
 
                 metadata = args['database'].select({
                     'select': ['*'],
@@ -74,7 +75,7 @@ def load_referential(args):
                     args['database'].update({
                         'table': ['metadata'],
                         'set': {
-                            'last_edit': datetime.now(),
+                            'last_edit': update_date,
                             'data': json.dumps(referential),
                         },
                         'where': ['external_id = %s', 'type = %s'],
@@ -86,7 +87,7 @@ def load_referential(args):
                 args['database'].update({
                     'table': ['metadata'],
                     'set': {
-                        'last_edit': datetime.now(),
+                        'last_edit': update_date,
                         'type': 'referential-archive',
                     },
                     'where': ['external_id = %s', 'type = %s'],
