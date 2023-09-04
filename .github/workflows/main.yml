@@ -4,73 +4,77 @@ on:
     branches: [ master ]
 
 jobs:
-    deploy-application:
-        name: Retrieve application
-        runs-on: self-hosted
-        defaults:
-        run:
-            working-directory: /
+
+  deploy-application:
+    name: Retrieve application
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: /
+
     steps:
+
       - name: Checkout source code
         uses: actions/checkout@v2
 
       - name: Directory creation
         run: |
-            sudo mkdir -p /var/www/html/opencapture/
-            sudo chmod -R 775 /var/www/html/opencapture/
-            sudo chown -R $(whoami):$(whoami) /var/www/html/opencapture/
+          sudo mkdir -p /var/www/html/opencapture/
+          sudo chmod -R 775 /var/www/html/opencapture/
+          sudo chown -R $(whoami):$(whoami) /var/www/html/opencapture/
 
       - name: Retrieve the latest tag
         run: |
-            sudo apt install -y git crudini
-            git clone -b dev_v3 https://github.com/edissyum/opencapture/ /var/www/html/opencapture/
+          sudo apt install -y git crudini
+          git clone -b dev_v3 https://github.com/edissyum/opencapture/ /var/www/html/opencapture/
         continue-on-error: true
 
-    deploy-frontend:
-        name: frontend deployment
-        runs-on: self-hosted
-        needs: [deploy-application]
-        defaults:
-            run:
-                working-directory: /
+  deploy-frontend:
+    name: frontend deployment
+    runs-on: self-hosted
+    needs: [deploy-application]
+    defaults:
+      run:
+        working-directory: /
 
     steps:
-        - name: Checkout source code
-          uses: actions/checkout@v2
-
-        - name: Use Node.js
-          uses: actions/setup-node@v2
-          with:
-                node-version: 18
-
-        - name: Install Node and npm
-          run: |
-              sudo apt install nodejs npm -y
-              continue-on-error: true
-
-        - name: Install dependencies
-          run: |
-              cd /var/www/html/opencapture/src/frontend/
-              npm run reload-packages
-
-        - name: Build
-          run: |
-              cd /var/www/html/opencapture/src/frontend/
-              npm run build-prod
-
-    deploy-backend:
-        name: backend deployment
-        runs-on: self-hosted
-        needs: [deploy-application]
-        defaults:
-            run:
-                working-directory: /
-
-steps:
       - name: Checkout source code
         uses: actions/checkout@v2
 
-      - name: Launch the installation
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+
+      - name: Install Node and npm
+        run: |
+          sudo apt install nodejs npm -y
+        continue-on-error: true
+
+      - name: Install dependencies
+        run: |
+          cd /var/www/html/opencapture/src/frontend/
+          npm run reload-packages
+
+      - name: Build
+        run: |
+          cd /var/www/html/opencapture/src/frontend/
+          npm run build-prod
+
+  deploy-backend:
+    name: backend deployment
+    runs-on: self-hosted
+    needs: [deploy-application]
+    defaults:
+      run:
+        working-directory: /
+
+    steps:
+
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Launch installation
         run: |
           cd var/www/html/opencapture/bin/install/
           chmod u+x install.sh
@@ -84,7 +88,7 @@ steps:
           USER_PASSWORD: ${{ vars.USER_PASSWORD }}
         continue-on-error: true
 
-      - name: Services status
+      - name: Service status
         run: |
           sudo systemctl status OCSplitter-worker_test.service
           sudo systemctl status OCVerifier-worker_test.service
