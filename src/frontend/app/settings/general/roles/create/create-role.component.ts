@@ -17,8 +17,8 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, FormControl } from "@angular/forms";
+import { Router } from "@angular/router";
+import { FormControl } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -59,7 +59,7 @@ export class CreateRoleComponent implements OnInit {
         },
         {
             id: 'default_route',
-            label: this.translate.instant('HEADER.label_short'),
+            label: this.translate.instant('ROLE.default_route'),
             type: 'list',
             options: [
                 {value: '/home', label: this.translate.instant('GLOBAL.home')},
@@ -73,12 +73,10 @@ export class CreateRoleComponent implements OnInit {
     ];
 
     constructor(
-        private http: HttpClient,
         public router: Router,
-        private route: ActivatedRoute,
-        private formBuilder: FormBuilder,
-        private authService: AuthService,
+        private http: HttpClient,
         public userService: UserService,
+        private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
