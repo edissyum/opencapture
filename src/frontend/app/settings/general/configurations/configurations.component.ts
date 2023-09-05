@@ -576,6 +576,9 @@ export class ConfigurationsComponent implements OnInit {
                         case 'bool':
                             element.data.label_type = marker('CONFIGURATIONS.bool');
                             break;
+                        case 'list':
+                            element.data.label_type = marker('CONFIGURATIONS.list');
+                            break;
                         default:
                             break;
                     }
