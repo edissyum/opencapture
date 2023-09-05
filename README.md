@@ -1,6 +1,6 @@
 ![Logo Open-Capture](https://open-capture.com/wp-content/uploads/2022/12/0_Open-Capture.png)
 
-# Open-Capture ![](https://img.shields.io/github/package-json/v/edissyum/opencapture?color=97BF3D&label=Latest%20version) ![](https://img.shields.io/badge/Angular_version-16.x-blue)
+# Open-Capture ![](https://img.shields.io/github/package-json/v/edissyum/opencapture?color=97BF3D&label=Latest%20version) ![](https://img.shields.io/badge/Angular_version-16.x-blue) [![Deployement OpenCapture](https://github.com/edissyum/opencapture/actions/workflows/main.yml/badge.svg)](https://github.com/edissyum/opencapture/actions/workflows/main.yml)
 
 <pre>
 Link to the full documentation : <a href="https://kutt.it/DocumentationV2">https://kutt.it/DocumentationV2</a>
