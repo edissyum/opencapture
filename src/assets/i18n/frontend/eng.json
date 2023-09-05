@@ -157,6 +157,7 @@
 		"generate_token": "Generate authentification token",
 		"global": "Global",
 		"int": "Integer",
+		"list": "Liste à choix",
 		"login_bottom_message_updated": "Login bottom message updated successfully",
 		"login_image_changed": "Login image changed successfully",
 		"login_top_message_updated": "Login top message updated successfully",
