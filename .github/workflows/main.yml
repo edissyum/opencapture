@@ -19,13 +19,6 @@ jobs:
 
       - name: Directory creation
         run: |
-          sudo rm -rf /var/www/html/opencapture/
-          sudo rm -rf /var/docservers/
-          sudo rm /etc/apache2/sites-available/opencapture.conf
-          sudo rm /etc/systemd/system/OCVerifier-worker_test.conf
-          sudo rm /etc/systemd/system/OCSplitter-worker_test.conf
-          sudo systemctl daemon-reload
-          sudo systemctl restart apache2
           sudo mkdir -p /var/www/html/opencapture/
           sudo chmod -R 775 /var/www/html/opencapture/
           sudo chown -R $(whoami):$(whoami) /var/www/html/opencapture/
@@ -109,3 +102,10 @@ jobs:
           cd /var/www/html/opencapture/
           python3 -m unittest discover src/backend/tests/
           sudo su postgres -c "psql -c 'drop database opencapture_test'"
+          sudo rm -rf /var/www/html/opencapture/
+          sudo rm -rf /var/docservers/
+          sudo rm -f /etc/apache2/sites-available/opencapture.conf
+          sudo rm -f /etc/systemd/system/OCVerifier-worker_test.conf
+          sudo rm -f /etc/systemd/system/OCSplitter-worker_test.conf
+          sudo systemctl daemon-reload
+          sudo systemctl restart apache2
