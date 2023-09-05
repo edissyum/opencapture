@@ -158,7 +158,7 @@ if [ -z $supervisorOrSystemd ]; then
 fi
 
 
-if [ -z wsgiThreads ] && [ -z $wsgiProcess ]; then
+if [ -z $wsgiThreads ] && [ -z $wsgiProcess ]; then
     echo ""
     echo "########################################################################################################################"
     echo "      _______                                                                                             _______ "
