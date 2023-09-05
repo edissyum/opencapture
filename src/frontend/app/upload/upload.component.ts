@@ -139,14 +139,12 @@ export class UploadComponent implements OnInit {
     uploadFile(): void {
         this.sending = true;
         const formData: FormData = new FormData();
-        let numberOFFiles = 0;
         if (this.fileControl.value!.length === 0) {
             this.notify.handleErrors(this.translate.instant('UPLOAD.no_file'));
             return;
         }
 
         for (let i = 0; i < this.fileControl.value!.length; i++) {
-            numberOFFiles++;
             if (this.fileControl.status === 'VALID') {
                 formData.append(this.fileControl.value![i]['name'], this.fileControl.value![i]);
             } else {
