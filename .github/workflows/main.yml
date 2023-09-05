@@ -108,3 +108,4 @@ jobs:
           source /home/$(whoami)/python-venv/opencapture/bin/activate
           cd /var/www/html/opencapture/
           python3 -m unittest discover src/backend/tests/
+          sudo su postgres -c "psql -c 'drop database opencapture_test'"
