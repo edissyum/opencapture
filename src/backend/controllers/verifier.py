@@ -60,7 +60,7 @@ def handle_uploaded_file(files, workflow_id, supplier):
             'status': 'wait',
             'module': 'verifier',
             'source': 'interface',
-            'filename': os.path.basename(filename),
+            'filename': os.path.basename(_f.filename),
             'token': token,
             'workflow_id': workflow_id if workflow_id else None,
         })
