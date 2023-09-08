@@ -339,8 +339,8 @@ def create_address(data):
     _columns = {
         'address1': data['address1'],
         'address2': data['address2'] if 'address2' in data else None,
-        'postal_code': data['postal_code'],
-        'city': data['city'],
+        'postal_code': data['postal_code'] if 'postal_code' in data else None,
+        'city': data['city'] if 'city' in data else None,
         'country': data['country'] if 'country' in data else None
     }
 

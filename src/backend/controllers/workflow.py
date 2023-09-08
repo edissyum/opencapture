@@ -405,9 +405,24 @@ def delete_script_and_incron(args):
 
 
 def test_script_verifier(args):
+    custom_id = retrieve_custom_from_url(request)
+    if 'config' in current_context and 'docservers' in current_context and 'log' in current_context:
+        config = current_context.config
+        docservers = current_context.docservers
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        config = _vars[1]
+        docservers = _vars[9]
     try:
+        check_res, message = check_code(args['codeContent'], config['GLOBAL']['applicationpath'],
+                                        docservers['DOCSERVERS_PATH'], args['input_folder'])
+        if not check_res:
+            result_string = ('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
+                             '&nbsp;<strong>(' + message.strip() + ')</strong>')
+            return result_string, 400
+
         result = StringIO()
-        sys.stdout = result
+        sys.stderr = result
         pyflakes.check(args['codeContent'], '')
         result_string = result.getvalue()
         splitted_result = result_string.split(':')

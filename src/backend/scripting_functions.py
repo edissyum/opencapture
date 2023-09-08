@@ -17,6 +17,7 @@
 
 import os
 import json
+import re
 import shutil
 
 from flask_babel import gettext
@@ -26,14 +27,19 @@ from src.backend.main import launch, create_classes_from_custom_id
 def check_code(code, application_path, docserver_path, input_path):
     for line in code.split('\n'):
         if line:
-            if 'import subprocess' in line.lower() or 'from subprocess' in line.lower():
+            if 'import subprocess' in line.lower() or 'from subprocess' in line.lower() or 'sys.modules' in line.lower():
                 return False, line
             if 'shutil.rmtree' in line.lower() or 'shutil.rmdir' in line.lower() or 'shutil.rmdirs' in line.lower():
                 return False, line
             if 'database.select' in line.lower() or 'database.update' in line.lower() or 'database.insert' in line.lower():
                 return False, line
-            if 'os.rmtree' in line.lower() or 'os.rmdir' in line.lower() or 'os.rmdirs' in line.lower() \
-                    or 'os.system()' in line.lower():
+            if 'os.rmtree' in line.lower() or 'os.rmdir' in line.lower() or 'os.rmdirs' in line.lower():
+                return False, line
+            if 'os.system()' in line.lower() or 'os.system' in line.lower() or 'eval(' in line.lower():
+                return False, line
+            if 'exec(' in line.lower() or 'import requests' in line.lower() or 'import urllib' in line.lower():
+                return False, line
+            if 'from requests' in line.lower() or 'from urllib' in line.lower():
                 return False, line
 
             if 'os.remove' in line.lower() or 'shutil.move' in line.lower() or 'shutil.copy' in line.lower() or \
@@ -53,6 +59,11 @@ def check_code(code, application_path, docserver_path, input_path):
                     path_to_access = path_to_access.replace('"', '').replace(' ', '').strip()
                 else:
                     return True, ''
+
+                path_to_access = re.sub(r'(/){2,}', '/', path_to_access)
+                if (not path_to_access.startswith(application_path) and not path_to_access.startswith(docserver_path)
+                        and not path_to_access.startswith(input_path)):
+                    return False, line
 
                 path_to_access = os.path.dirname(path_to_access)
                 try:
