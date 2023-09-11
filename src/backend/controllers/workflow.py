@@ -413,8 +413,10 @@ def test_script_verifier(args):
         _vars = create_classes_from_custom_id(custom_id)
         config = _vars[1]
         docservers = _vars[9]
+
     try:
-        check_res, message = check_code(args['codeContent'], config['GLOBAL']['applicationpath'],
+        check_res, message = check_code(args['codeContent'],
+                                        config['GLOBAL']['applicationpath'] + '/custom/' + custom_id + '/',
                                         docservers['DOCSERVERS_PATH'], args['input_folder'])
         if not check_res:
             result_string = ('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
@@ -432,56 +434,4 @@ def test_script_verifier(args):
             return result_string, 400
     except Exception:
         return traceback.format_exc(), 400
-    return result_string, 200
-
-
-def launch_script(tmp_file, log, file, database, args, config, docservers, datas=None):
-    if os.path.isfile(tmp_file):
-        os.remove(tmp_file)
-
-    check_res, message = check_code(args['codeContent'], config['GLOBAL']['applicationpath'],
-                                    docservers['DOCSERVERS_PATH'], args['input_folder'])
-    if not check_res:
-        result_string = ('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
-                         '<br> &nbsp;<strong>(' + message.strip() + ')</strong>')
-        return result_string, 400
-
-    with open(tmp_file, 'w', encoding='UTF-8') as python_script:
-        python_script.write(args['codeContent'])
-
-    script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.').replace('.py', '')
-    script_name = script_name.replace('..', '.')
-    try:
-        tmp_script_name = script_name.replace('custom.', '')
-        scripting = importlib.import_module(tmp_script_name, 'custom')
-        script_name = tmp_script_name
-    except ModuleNotFoundError:
-        scripting = importlib.import_module(script_name, 'custom')
-
-    data = {
-        'log': log,
-        'file': file,
-        'custom_id': args['custom_id'],
-        'opencapture_path': config['GLOBAL']['applicationpath']
-    }
-
-    if args['step'] == 'input':
-        data['ip'] = '0.0.0.0'
-        data['database'] = database
-        data['user_info'] = 'Test script'
-    elif args['step'] in 'process' 'output':
-        if 'document_id' in args:
-            data['document_id'] = args['document_id']
-
-        if datas:
-            data['datas'] = datas
-
-        if args['step'] == 'output' and 'outputs' in args:
-            data['outputs'] = args['outputs']
-
-    result = StringIO()
-    sys.stdout = result
-    scripting.main(data)
-    result_string = result.getvalue()
-    os.remove(tmp_file)
     return result_string, 200

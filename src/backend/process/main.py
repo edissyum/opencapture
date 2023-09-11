@@ -34,8 +34,9 @@ from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindIn
 def launch_script(workflow_settings, docservers, step, log, file, database, args, config, datas=None):
     if 'script' in workflow_settings[step] and workflow_settings[step]['script']:
         script = workflow_settings[step]['script']
-        check_res, message = check_code(script, config['GLOBAL']['applicationpath'], docservers['DOCSERVERS_PATH'],
-                                        workflow_settings['input']['input_folder'])
+        check_res, message = check_code(script,
+                                        config['GLOBAL']['applicationpath'] + '/custom/' + args['custom_id'] + '/',
+                                        docservers['DOCSERVERS_PATH'], workflow_settings['input']['input_folder'])
 
         if not check_res:
             log.error('[' + step.upper() + '_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +

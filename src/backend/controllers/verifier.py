@@ -486,8 +486,8 @@ def launch_output_script(document_id, workflow_settings, outputs):
 
     if 'script' in workflow_settings['output'] and workflow_settings['output']['script']:
         script = workflow_settings['output']['script']
-        check_res, message = check_code(script, config['GLOBAL']['applicationpath'], docservers['DOCSERVERS_PATH'],
-                                        workflow_settings['input']['input_folder'])
+        check_res, message = check_code(script, config['GLOBAL']['applicationpath'] + '/custom/' + custom_id + '/',
+                                        docservers['DOCSERVERS_PATH'], workflow_settings['input']['input_folder'])
         if not check_res:
             log.error('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
                       '&nbsp;<strong>(' + message.strip() + ')</strong>')
