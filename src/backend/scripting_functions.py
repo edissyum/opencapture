@@ -23,7 +23,7 @@ from flask_babel import gettext
 from src.backend.main import launch, create_classes_from_custom_id
 
 
-def check_code(code, application_path, docserver_path, input_path):
+def check_code(code, docserver_path, input_path):
     for line in code.split('\n'):
         if line:
             not_allowed = ['import subprocess', 'from subprocess', 'sys.modules', 'shutil.rmtree', 'shutil.rmdir',
@@ -34,7 +34,7 @@ def check_code(code, application_path, docserver_path, input_path):
                 return False, line
 
             if 'os.remove' in line.lower() or 'shutil.move' in line.lower() or 'shutil.copy' in line.lower() or \
-               'sys.path.append' in line.lower():
+               'sys.path.append' in line.lower() or 'open(' in line.lower():
                 current_dir = os.getcwd()
                 if 'os.remove' in line:
                     path_to_access = line.split('os.remove(')[1].split(')')[0].replace("'", '').replace('"', '')
@@ -48,14 +48,15 @@ def check_code(code, application_path, docserver_path, input_path):
                 elif 'sys.path.append' in line:
                     path_to_access = line.split('sys.path.append(')[1].split(')')[0].replace("'", '').replace('"', '')
                     path_to_access = path_to_access.replace('"', '').replace(' ', '').strip()
+                elif 'open(' in line:
+                    path_to_access = line.split('open(')[1].split(')')[0].replace("'", '').replace('"', '')
+                    path_to_access = path_to_access.replace(' ', '').strip()
                 else:
                     return True, ''
 
                 path_to_access = re.sub(r'(/){2,}', '/', path_to_access)
                 docserver_path = re.sub(r'(/){2,}', '/', docserver_path)
-                application_path = re.sub(r'(/){2,}', '/', application_path)
-                if (not path_to_access.startswith(application_path) and not path_to_access.startswith(docserver_path)
-                        and not path_to_access.startswith(input_path)):
+                if not path_to_access.startswith(docserver_path) and not path_to_access.startswith(input_path):
                     return False, line
 
                 path_to_access = os.path.dirname(path_to_access)
@@ -65,7 +66,7 @@ def check_code(code, application_path, docserver_path, input_path):
                     return False, line
                 new_dir = os.getcwd() + '/'
 
-                if application_path not in new_dir and docserver_path not in new_dir and input_path not in new_dir:
+                if docserver_path not in new_dir and input_path not in new_dir:
                     try:
                         os.chdir(current_dir)
                     except FileNotFoundError:

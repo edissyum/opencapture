@@ -190,6 +190,37 @@ def create_workflow(data):
     data['process'] = json.dumps(data['process'])
     data['output'] = json.dumps(data['output'])
 
+    res = None
+    test_code = 200
+    if 'input' in data and 'scripts' in data['input']:
+        args = {
+            'codeContent': data['input']['scripts'],
+            'input_folder': data['input']['input_folder']
+        }
+        if workflow_info['module'] == 'verifier':
+            res, test_code = workflow.test_script_verifier(args)
+    if 'process' in data and 'scripts' in data['process']:
+        args = {
+            'codeContent': data['process']['scripts'],
+            'input_folder': data['process']['input_folder']
+        }
+        if workflow_info['module'] == 'verifier':
+            res, test_code = workflow.test_script_verifier(args)
+    if 'output' in data and 'scripts' in data['output']:
+        args = {
+            'codeContent': data['output']['scripts'],
+            'input_folder': data['output']['input_folder']
+        }
+        if workflow_info['module'] == 'verifier':
+            res, test_code = workflow.test_script_verifier(args)
+
+    if test_code != 200:
+        response = {
+            "errors": gettext('CREATE_WORKFLOW_ERROR'),
+            "message": gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') + '&nbsp;<strong>(' + res.strip() + ')</strong>'
+        }
+        return response, 400
+
     res, error = workflow.create_workflow({'columns': data})
     if error is None:
         history.add_history({
@@ -222,13 +253,42 @@ def update_workflow(workflow_id, data):
     workflow_info, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
 
     if error is None:
+        res = None
+        test_code = 200
         if 'input' in data:
             data['input'] = json.dumps(data['input'])
+            if 'scripts' in data['input']:
+                args = {
+                    'codeContent': data['input']['scripts'],
+                    'input_folder': data['input']['input_folder']
+                }
+                if data['module'] == 'verifier':
+                    res, test_code = workflow.test_script_verifier(args)
         if 'process' in data:
             data['process'] = json.dumps(data['process'])
+            if 'scripts' in data['process']:
+                args = {
+                    'codeContent': data['process']['scripts'],
+                    'input_folder': data['process']['input_folder']
+                }
+                if data['module'] == 'verifier':
+                    res, test_code = workflow.test_script_verifier(args)
         if 'output' in data:
             data['output'] = json.dumps(data['output'])
+            if 'scripts' in data['output']:
+                args = {
+                    'codeContent': data['output']['scripts'],
+                    'input_folder': data['output']['input_folder']
+                }
+                if data['module'] == 'verifier':
+                    res, test_code = workflow.test_script_verifier(args)
 
+        if test_code != 200:
+            response = {
+                "errors": gettext('UPDATE_WORKFLOW_ERROR'),
+                "message": gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') + '&nbsp;<strong>(' + res.strip() + ')</strong>'
+            }
+            return response, 400
         _, error = workflow.update_workflow({'set': data, 'workflow_id': workflow_id})
 
         if error is None:
@@ -407,17 +467,13 @@ def delete_script_and_incron(args):
 def test_script_verifier(args):
     custom_id = retrieve_custom_from_url(request)
     if 'config' in current_context and 'docservers' in current_context and 'log' in current_context:
-        config = current_context.config
         docservers = current_context.docservers
     else:
         _vars = create_classes_from_custom_id(custom_id)
-        config = _vars[1]
         docservers = _vars[9]
 
     try:
-        check_res, message = check_code(args['codeContent'],
-                                        config['GLOBAL']['applicationpath'] + '/custom/' + custom_id + '/',
-                                        docservers['DOCSERVERS_PATH'], args['input_folder'])
+        check_res, message = check_code(args['codeContent'], docservers['VERIFIER_SHARE'], args['input_folder'])
         if not check_res:
             result_string = ('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
                              '&nbsp;<strong>(' + message.strip() + ')</strong>')
