@@ -45,6 +45,15 @@ def create_workflow(module):
 
     args = dict(request.json['args'])
     args['module'] = module
+    check, message = rest_validator(args, [
+        {'id': 'module', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     res = workflow.create_workflow(args)
     return make_response(jsonify(res[0])), res[1]
 
@@ -120,6 +129,15 @@ def update_workflow(module, workflow_id):
                         'message': f'/workflows/{module}/update/{workflow_id}'}), 403
 
     data = request.json['args']
+    data['module'] = module
+    check, message = rest_validator(data, [
+        {'id': 'module', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
     res = workflow.update_workflow(workflow_id, data)
     return make_response(jsonify(res[0])), res[1]
 

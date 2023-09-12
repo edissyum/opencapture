@@ -83,7 +83,7 @@
                                 (click)="!this.creationMode ? this.updateWorkflow('input') : ''">
                             {{ 'WORKFLOW.next' | translate }}
                         </button>
-                        <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
+                        <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer" *ngIf="this.allowWFScripting"
                            [matTooltip]="'WORKFLOW.input_scripting' | translate" (click)="openCodeEditor('input')"></i>
                     </div>
                 </mat-step>
@@ -140,7 +140,8 @@
                         {{ 'WORKFLOW.next' | translate }}
                     </button>
                     <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
-                       *ngIf="this.processAllowed" [matTooltip]="'WORKFLOW.process_scripting' | translate" (click)="openCodeEditor('process')"></i>
+                       *ngIf="this.processAllowed && this.allowWFScripting"
+                       [matTooltip]="'WORKFLOW.process_scripting' | translate" (click)="openCodeEditor('process')"></i>
                 </span>
                     </div>
                 </mat-step>
@@ -172,7 +173,7 @@
                             {{ 'WORKFLOW.update' | translate }}
                         </span>
                         </button>
-                        <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
+                        <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer" *ngIf="this.allowWFScripting"
                            [matTooltip]="'WORKFLOW.output_scripting' | translate" (click)="openCodeEditor('output')"></i>
                     </div>
                 </mat-step>

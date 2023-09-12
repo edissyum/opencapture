@@ -98,7 +98,7 @@ export class UpdateCustomerComponent implements OnInit {
             label: marker('ADDRESSES.address_1'),
             type: 'text',
             control: new FormControl(),
-            required: true
+            required: false
         },
         {
             id: 'address2',
@@ -112,21 +112,21 @@ export class UpdateCustomerComponent implements OnInit {
             label: marker('ADDRESSES.postal_code'),
             type: 'text',
             control: new FormControl(),
-            required: true
+            required: false
         },
         {
             id: 'city',
             label: marker('ADDRESSES.city'),
             type: 'text',
             control: new FormControl(),
-            required: true
+            required: false
         },
         {
             id: 'country',
             label: marker('ADDRESSES.country'),
             type: 'country',
             control: new FormControl(),
-            required: true
+            required: false
         }
     ];
     defaultValue    : Country       = {
@@ -140,10 +140,8 @@ export class UpdateCustomerComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
-        private dialog: MatDialog,
         private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
@@ -196,29 +194,10 @@ export class UpdateCustomerComponent implements OnInit {
                                         })
                                     ).subscribe();
                                 } else {
-                                    this.http.post(environment['url'] + '/ws/accounts/addresses/create',
-                                        {'args': {
-                                                'address1': '',
-                                                'address2': '',
-                                                'postal_code': '',
-                                                'city': '',
-                                                'country': '',
-                                                'module': this.currentModule
-                                            }
-                                        }, {headers: this.authService.headers},
+                                    this.addressId = 0;
+                                    this.http.put(environment['url'] + '/ws/accounts/customers/update/' + this.customerId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
                                     ).pipe(
-                                        tap((data: any) => {
-                                            this.addressId = data.id;
-                                            this.http.put(environment['url'] + '/ws/accounts/customers/update/' + this.customerId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
-                                            ).pipe(
-                                                finalize(() => this.loading = false),
-                                                catchError((err: any) => {
-                                                    console.debug(err);
-                                                    this.notify.handleErrors(err, '/accounts/customers/list');
-                                                    return of(false);
-                                                })
-                                            ).subscribe();
-                                        }),
+                                        finalize(() => this.loading = false),
                                         catchError((err: any) => {
                                             console.debug(err);
                                             this.notify.handleErrors(err, '/accounts/customers/list');
@@ -245,7 +224,7 @@ export class UpdateCustomerComponent implements OnInit {
         if (field.control.value === 'splitter') {
             requiredFields = ['name', 'module'];
         } else {
-            requiredFields = ['name', 'vat_number', 'siret', 'siren', 'module', 'address1', 'postal_code', 'city'];
+            requiredFields = ['name', 'vat_number', 'siret', 'siren', 'module'];
         }
 
         this.customerForm.forEach((element: any) => {
@@ -285,31 +264,57 @@ export class UpdateCustomerComponent implements OnInit {
                 customer[element.id] = element.control.value;
             });
             this.addressForm.forEach(element => {
-                address[element.id] = element.control.value;
+                if (element.control.value) {
+                    address[element.id] = element.control.value;
+                }
             });
 
-            this.http.put(environment['url'] + '/ws/accounts/customers/update/' + this.customerId, {'args': customer}, {headers: this.authService.headers},
-            ).pipe(
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err, '/accounts/customers/list');
-                    return of(false);
-                })
-            ).subscribe();
-
-            this.http.put(environment['url'] + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
-            ).pipe(
-                tap(() => {
-                    this.notify.success(this.translate.instant('ACCOUNTS.customer_updated'));
-                    this.router.navigate(['/accounts/customers/list']).then();
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err, '/accounts/customers/list');
-                    return of(false);
-                })
-            ).subscribe();
+            if (this.addressId === 0 && Object.keys(address).length !== 0) {
+                this.http.post(environment['url'] + '/ws/accounts/addresses/create', {'args': address}, {headers: this.authService.headers},
+                ).pipe(
+                    tap((data: any) => {
+                        if (data) {
+                            customer['address_id'] = data.id;
+                            this.update_customer(customer);
+                        }
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err, '/accounts/customers/list');
+                        return of(false);
+                    })
+                ).subscribe();
+            } else if (this.addressId !== 0 && Object.keys(address).length !== 0) {
+                this.http.put(environment['url'] + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
+                ).pipe(
+                    tap(() => {
+                        this.update_customer(customer);
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            } else {
+                this.update_customer(customer);
+            }
         }
+    }
+
+    update_customer(customer: any) {
+        this.http.put(environment['url'] + '/ws/accounts/customers/update/' + this.customerId, {'args': customer}, {headers: this.authService.headers},
+        ).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('ACCOUNTS.customer_updated'));
+                this.router.navigate(['/accounts/customers/list']).then();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err, '/accounts/customers/list');
+                return of(false);
+            })
+        ).subscribe();
     }
 
     getErrorMessageCustomer(field: any) {

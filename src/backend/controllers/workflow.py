@@ -190,6 +190,37 @@ def create_workflow(data):
     data['process'] = json.dumps(data['process'])
     data['output'] = json.dumps(data['output'])
 
+    res = None
+    test_code = 200
+    if 'input' in data and 'scripts' in data['input']:
+        args = {
+            'codeContent': data['input']['scripts'],
+            'input_folder': data['input']['input_folder']
+        }
+        if workflow_info['module'] == 'verifier':
+            res, test_code = workflow.test_script_verifier(args)
+    if 'process' in data and 'scripts' in data['process']:
+        args = {
+            'codeContent': data['process']['scripts'],
+            'input_folder': data['process']['input_folder']
+        }
+        if workflow_info['module'] == 'verifier':
+            res, test_code = workflow.test_script_verifier(args)
+    if 'output' in data and 'scripts' in data['output']:
+        args = {
+            'codeContent': data['output']['scripts'],
+            'input_folder': data['output']['input_folder']
+        }
+        if workflow_info['module'] == 'verifier':
+            res, test_code = workflow.test_script_verifier(args)
+
+    if test_code != 200:
+        response = {
+            "errors": gettext('CREATE_WORKFLOW_ERROR'),
+            "message": gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') + '&nbsp;<strong>(' + res.strip() + ')</strong>'
+        }
+        return response, 400
+
     res, error = workflow.create_workflow({'columns': data})
     if error is None:
         history.add_history({
@@ -222,13 +253,42 @@ def update_workflow(workflow_id, data):
     workflow_info, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
 
     if error is None:
+        res = None
+        test_code = 200
         if 'input' in data:
             data['input'] = json.dumps(data['input'])
+            if 'scripts' in data['input']:
+                args = {
+                    'codeContent': data['input']['scripts'],
+                    'input_folder': data['input']['input_folder']
+                }
+                if data['module'] == 'verifier':
+                    res, test_code = workflow.test_script_verifier(args)
         if 'process' in data:
             data['process'] = json.dumps(data['process'])
+            if 'scripts' in data['process']:
+                args = {
+                    'codeContent': data['process']['scripts'],
+                    'input_folder': data['process']['input_folder']
+                }
+                if data['module'] == 'verifier':
+                    res, test_code = workflow.test_script_verifier(args)
         if 'output' in data:
             data['output'] = json.dumps(data['output'])
+            if 'scripts' in data['output']:
+                args = {
+                    'codeContent': data['output']['scripts'],
+                    'input_folder': data['output']['input_folder']
+                }
+                if data['module'] == 'verifier':
+                    res, test_code = workflow.test_script_verifier(args)
 
+        if test_code != 200:
+            response = {
+                "errors": gettext('UPDATE_WORKFLOW_ERROR'),
+                "message": gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') + '&nbsp;<strong>(' + res.strip() + ')</strong>'
+            }
+            return response, 400
         _, error = workflow.update_workflow({'set': data, 'workflow_id': workflow_id})
 
         if error is None:
@@ -405,9 +465,22 @@ def delete_script_and_incron(args):
 
 
 def test_script_verifier(args):
+    custom_id = retrieve_custom_from_url(request)
+    if 'config' in current_context and 'docservers' in current_context and 'log' in current_context:
+        docservers = current_context.docservers
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
     try:
+        check_res, message = check_code(args['codeContent'], docservers['VERIFIER_SHARE'], args['input_folder'])
+        if not check_res:
+            result_string = ('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
+                             '&nbsp;<strong>(' + message.strip() + ')</strong>')
+            return result_string, 400
+
         result = StringIO()
-        sys.stdout = result
+        sys.stderr = result
         pyflakes.check(args['codeContent'], '')
         result_string = result.getvalue()
         splitted_result = result_string.split(':')
@@ -417,56 +490,4 @@ def test_script_verifier(args):
             return result_string, 400
     except Exception:
         return traceback.format_exc(), 400
-    return result_string, 200
-
-
-def launch_script(tmp_file, log, file, database, args, config, docservers, datas=None):
-    if os.path.isfile(tmp_file):
-        os.remove(tmp_file)
-
-    check_res, message = check_code(args['codeContent'], config['GLOBAL']['applicationpath'],
-                                    docservers['DOCSERVERS_PATH'], args['input_folder'])
-    if not check_res:
-        result_string = ('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
-                         '<br> &nbsp;<strong>(' + message.strip() + ')</strong>')
-        return result_string, 400
-
-    with open(tmp_file, 'w', encoding='UTF-8') as python_script:
-        python_script.write(args['codeContent'])
-
-    script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.').replace('.py', '')
-    script_name = script_name.replace('..', '.')
-    try:
-        tmp_script_name = script_name.replace('custom.', '')
-        scripting = importlib.import_module(tmp_script_name, 'custom')
-        script_name = tmp_script_name
-    except ModuleNotFoundError:
-        scripting = importlib.import_module(script_name, 'custom')
-
-    data = {
-        'log': log,
-        'file': file,
-        'custom_id': args['custom_id'],
-        'opencapture_path': config['GLOBAL']['applicationpath']
-    }
-
-    if args['step'] == 'input':
-        data['ip'] = '0.0.0.0'
-        data['database'] = database
-        data['user_info'] = 'Test script'
-    elif args['step'] in 'process' 'output':
-        if 'document_id' in args:
-            data['document_id'] = args['document_id']
-
-        if datas:
-            data['datas'] = datas
-
-        if args['step'] == 'output' and 'outputs' in args:
-            data['outputs'] = args['outputs']
-
-    result = StringIO()
-    sys.stdout = result
-    scripting.main(data)
-    result_string = result.getvalue()
-    os.remove(tmp_file)
     return result_string, 200

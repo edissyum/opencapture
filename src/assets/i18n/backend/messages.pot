@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-09-05 14:48+0200\n"
+"POT-Creation-Date: 2023-09-08 14:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Generated-By: Babel 2.10.3\n"
 
 #: custom/edissyum/src/backend/process_queue_splitter.py:212
-#: custom/edissyum/src/backend/process_queue_verifier.py:184
+#: custom/edissyum/src/backend/process_queue_verifier.py:183
 #: custom/test/src/backend/process_queue_splitter.py:213
 #: custom/test/src/backend/process_queue_verifier.py:184
 msgid "FILE_UPLOADED_WORKFLOW"
@@ -1384,16 +1384,16 @@ msgid "WORKFLOW_UPDATE_ERROR"
 msgstr ""
 
 #: src/backend/rest/accounts.py:35 src/backend/rest/accounts.py:56
-#: src/backend/rest/accounts.py:69 src/backend/rest/accounts.py:81
-#: src/backend/rest/accounts.py:118 src/backend/rest/accounts.py:140
-#: src/backend/rest/accounts.py:162 src/backend/rest/accounts.py:175
-#: src/backend/rest/accounts.py:189 src/backend/rest/accounts.py:210
-#: src/backend/rest/accounts.py:221 src/backend/rest/accounts.py:232
-#: src/backend/rest/accounts.py:243 src/backend/rest/accounts.py:263
-#: src/backend/rest/accounts.py:283 src/backend/rest/accounts.py:295
-#: src/backend/rest/accounts.py:305 src/backend/rest/accounts.py:316
-#: src/backend/rest/accounts.py:328 src/backend/rest/accounts.py:339
-#: src/backend/rest/accounts.py:383
+#: src/backend/rest/accounts.py:75 src/backend/rest/accounts.py:87
+#: src/backend/rest/accounts.py:124 src/backend/rest/accounts.py:146
+#: src/backend/rest/accounts.py:168 src/backend/rest/accounts.py:181
+#: src/backend/rest/accounts.py:195 src/backend/rest/accounts.py:216
+#: src/backend/rest/accounts.py:227 src/backend/rest/accounts.py:238
+#: src/backend/rest/accounts.py:249 src/backend/rest/accounts.py:269
+#: src/backend/rest/accounts.py:289 src/backend/rest/accounts.py:301
+#: src/backend/rest/accounts.py:311 src/backend/rest/accounts.py:322
+#: src/backend/rest/accounts.py:334 src/backend/rest/accounts.py:345
+#: src/backend/rest/accounts.py:389
 #: src/backend/rest/artificial_intelligence.py:30
 #: src/backend/rest/artificial_intelligence.py:40
 #: src/backend/rest/artificial_intelligence.py:51
@@ -1493,13 +1493,22 @@ msgstr ""
 msgid "UNAUTHORIZED_ROUTE"
 msgstr ""
 
-#: src/backend/rest/accounts.py:44 src/backend/rest/accounts.py:104
-#: src/backend/rest/accounts.py:126 src/backend/rest/accounts.py:148
-#: src/backend/rest/auth.py:39 src/backend/rest/auth.py:101
-#: src/backend/rest/auth.py:123 src/backend/rest/auth.py:143
-#: src/backend/rest/auth.py:235 src/backend/rest/auth.py:254
-#: src/backend/rest/outputs.py:144 src/backend/rest/workflow.py:163
+#: src/backend/rest/accounts.py:44 src/backend/rest/accounts.py:61
+#: src/backend/rest/accounts.py:110 src/backend/rest/accounts.py:132
+#: src/backend/rest/accounts.py:154 src/backend/rest/auth.py:39
+#: src/backend/rest/auth.py:101 src/backend/rest/auth.py:123
+#: src/backend/rest/auth.py:143 src/backend/rest/auth.py:235
+#: src/backend/rest/auth.py:254 src/backend/rest/outputs.py:144
+#: src/backend/rest/workflow.py:163
 msgid "BAD_REQUEST"
+msgstr ""
+
+#: src/backend/rest/accounts.py:62
+msgid "VAR"
+msgstr ""
+
+#: src/backend/rest/accounts.py:62
+msgid "IS_MANDATORY"
 msgstr ""
 
 #: src/backend/rest/auth.py:59 src/backend/rest/auth.py:88
