@@ -34,10 +34,7 @@ ERRORLOG_PATH=install_error.log
 ####################
 # Handle parameters
 parameters="user custom_id supervisor_process path wsgi_threads wsgi_process supervisor_systemd hostname port username password"
-opts=$(getopt \
-  --longoptions "$(printf "%s:," "$parameters")" \
-  --name "$(basename "$0")" --options "" -- "$@"
-)
+opts=$(getopt --longoptions "$(printf "%s:," "$parameters")" --name "$(basename "$0")" --options "" -- "$@")
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -161,7 +158,7 @@ if [ -z $supervisorOrSystemd ]; then
 fi
 
 
-if [ -z wsgiThreads ] && [ -z $wsgiProcess ]; then
+if [ -z $wsgiThreads ] && [ -z $wsgiProcess ]; then
     echo ""
     echo "########################################################################################################################"
     echo "      _______                                                                                             _______ "
@@ -204,7 +201,7 @@ echo ""
 
 ####################
 # Retrieve database informations
-if [ -z $hostname ] && [ -z $port ] && [ -z $databaseUsername ] && [-z $databasePassword]; then
+if [ -z $hostname ] && [ -z $port ] && [ -z $databaseUsername ] && [ -z $databasePassword ]; then
     echo "Type database informations (hostname, port, username and password)."
     echo "It will be used to update path to use the custom's one"
     printf "Hostname [%s] : " "${bold}localhost${normal}"
@@ -273,10 +270,10 @@ else
     echo ""
     echo "Create database user....."
 
-    sudo su postgres -c "psql -c 'CREATE ROLE $databaseUsername'" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    sudo su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'">>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    sudo su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'">>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-    sudo su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\"">>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    su postgres -c "psql -c 'CREATE ROLE $databaseUsername'" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'">>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'">>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\"">>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 fi
 
 echo ""
@@ -369,6 +366,7 @@ echo ""
 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/share/' , '/var/share/$customId/') WHERE docserver_id IN ('INPUTS_ALLOWED_PATH', 'OUTPUTS_ALLOWED_PATH')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/share/' , '/var/share/$customId/') WHERE docserver_id IN ('VERIFIER_SHARE', 'SPLITTER_SHARE')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/tmp/' WHERE docserver_id = 'TMP_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH

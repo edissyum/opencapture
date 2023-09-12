@@ -29,6 +29,7 @@ import { AuthService } from "../../../../../services/auth.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { CodeEditorComponent } from "../../../../../services/code-editor/code-editor.component";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import {ConfigService} from "../../../../../services/config.service";
 
 @Component({
     selector: 'app-workflow-builder',
@@ -47,6 +48,7 @@ export class WorkflowBuilderComponent implements OnInit {
     outputAllowed    : boolean       = true;
     processAllowed   : boolean       = true;
     useInterface     : boolean       = false;
+    allowWFScripting : boolean       = false;
     separationMode   : string        = 'no_sep';
     form_outputs     : any           = [];
     workflow_outputs : any           = [];
@@ -302,6 +304,7 @@ export class WorkflowBuilderComponent implements OnInit {
         private authService: AuthService,
         private notify: NotificationService,
         private translate: TranslateService,
+        private configService: ConfigService,
         public serviceSettings: SettingsService
     ) {}
 
@@ -310,6 +313,10 @@ export class WorkflowBuilderComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+
+        const config = this.configService.getConfig()[0];
+        this.allowWFScripting = config['GLOBAL']['allowwfscripting'];
+        this.allowWFScripting = this.allowWFScripting.toString().toLowerCase() === 'true';
 
         this.workflowId = this.route.snapshot.params['id'];
         if (this.workflowId) {

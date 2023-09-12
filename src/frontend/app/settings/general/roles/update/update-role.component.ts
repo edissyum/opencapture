@@ -69,7 +69,7 @@ export class UpdateRoleComponent implements OnInit {
         },
         {
             id: 'default_route',
-            label: this.translate.instant('HEADER.label_short'),
+            label: this.translate.instant('ROLE.default_route'),
             type: 'list',
             options: [
                 {value: '/home', label: this.translate.instant('GLOBAL.home')},

@@ -60,7 +60,7 @@ def handle_uploaded_file(files, workflow_id, supplier):
             'status': 'wait',
             'module': 'verifier',
             'source': 'interface',
-            'filename': os.path.basename(filename),
+            'filename': os.path.basename(_f.filename),
             'token': token,
             'workflow_id': workflow_id if workflow_id else None,
         })
@@ -486,7 +486,7 @@ def launch_output_script(document_id, workflow_settings, outputs):
 
     if 'script' in workflow_settings['output'] and workflow_settings['output']['script']:
         script = workflow_settings['output']['script']
-        check_res, message = check_code(script, config['GLOBAL']['applicationpath'], docservers['DOCSERVERS_PATH'],
+        check_res, message = check_code(script, docservers['VERIFIER_SHARE'],
                                         workflow_settings['input']['input_folder'])
         if not check_res:
             log.error('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +

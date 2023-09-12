@@ -26,12 +26,11 @@ import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { FormControl } from "@angular/forms";
 import { catchError, finalize, tap } from "rxjs/operators";
-import { Observable, of } from "rxjs";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { FileValidators } from "ngx-file-drag-drop";
 import { DomSanitizer } from "@angular/platform-browser";
-import { ConfigService } from "../../../../../services/config.service";
 import { environment } from  "../../../../env";
+import { of } from "rxjs";
 
 declare const $: any;
 
@@ -188,7 +187,6 @@ export class UpdatePositionsMaskComponent implements OnInit {
     lastId                  : any;
     lastColor               : string    = '';
     lastLabel               : string    = '';
-    config                  : any;
     fileControl             = new FormControl(
         [],
         [
@@ -206,7 +204,6 @@ export class UpdatePositionsMaskComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private configService: ConfigService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) { }
@@ -226,7 +223,6 @@ export class UpdatePositionsMaskComponent implements OnInit {
         this.serviceSettings.init();
         this.launchOnInit = true;
         this.positionMaskId = this.route.snapshot.params['id'];
-        this.config = this.configService.getConfig();
         this.positionsMask = await this.getPositionMask();
         for (const cpt in this.availableFieldsParent) {
             this.availableFieldsParent[cpt]['values'].forEach((element: any) => {

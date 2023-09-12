@@ -189,6 +189,18 @@ def create_address():
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/addresses/create'}), 403
 
     data = request.json['args']
+    check, message = rest_validator(data, [
+        {'id': 'order', 'type': str, 'mandatory': False},
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False}
+    ])
+    print(check)
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     module = ''
     if 'module' in data:
         module = data['module']

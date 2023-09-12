@@ -4,6 +4,8 @@ applicationPath  = /var/www/html/opencapture/
 configMail       = /var/www/html/opencapture/custom/§§CUSTOM_ID§§/config/mail.ini
 watcherConfig    = /var/www/html/opencapture/instance/config/watcher.ini
 logFile          = /var/www/html/opencapture/custom/§§CUSTOM_ID§§/bin/data/log/OpenCapture.log
+; True or False
+allowWFScripting = True
 
 [SPLITTER]
 docstart         = DOCSTART
@@ -23,7 +25,7 @@ referencialSupplierDocument = default_referencial_supplier.ods
 referencialSupplierIndex    = default_referencial_supplier_index.json
 
 [SEPARATORQR]
-; True or False, python way
+; True or False
 enabled         = False
 exportpdfa      = False
 ; _ or - for exemple

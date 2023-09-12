@@ -34,7 +34,7 @@ from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindIn
 def launch_script(workflow_settings, docservers, step, log, file, database, args, config, datas=None):
     if 'script' in workflow_settings[step] and workflow_settings[step]['script']:
         script = workflow_settings[step]['script']
-        check_res, message = check_code(script, config['GLOBAL']['applicationpath'], docservers['DOCSERVERS_PATH'],
+        check_res, message = check_code(script, docservers['VERIFIER_SHARE'],
                                         workflow_settings['input']['input_folder'])
 
         if not check_res:

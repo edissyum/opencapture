@@ -55,7 +55,7 @@ def handle_uploaded_file(files, workflow_id, user_id):
             'status': 'wait',
             'module': 'splitter',
             'source': 'interface',
-            'filename': os.path.basename(filename),
+            'filename': os.path.basename(_f.filename),
             'workflow_id': workflow_id if workflow_id else None
         })
 
