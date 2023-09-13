@@ -191,9 +191,9 @@ def handle_pdf_output(batch, output, log, docservers, configurations):
     if status != 200:
         return res_export_pdf, status
     batch = res_export_pdf['result_batch']
+    batch['pdf_output_compress_file'] = ''
 
     compress_file = output['parameters']['zip_filename']
-    batch['pdf_output_compress_file'] = ''
 
     if compress_file:
         zip_except_doctype = re.search(r'\[Except=(.*?)\]', compress_file) if 'Except' in compress_file else ''
@@ -205,6 +205,7 @@ def handle_pdf_output(batch, output, log, docservers, configurations):
             'extension': 'zip'
         }
         compress_file = _Splitter.get_value_from_mask(None, metadata, mask_args)
+        batch['pdf_output_compress_file'] = compress_file
         compress_file = parameters['folder_out'] + '/' + compress_file
 
         for index, document in enumerate(batch['documents']):
@@ -219,7 +220,6 @@ def handle_pdf_output(batch, output, log, docservers, configurations):
 
         _Files.compress_files(compress_pdfs, compress_file, remove_compressed_files=True)
 
-    batch['pdf_output_compress_file'] = compress_file if compress_file else ''
     return {'result_batch': batch}, 200
 
 
