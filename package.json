@@ -1,6 +1,6 @@
 {
     "name": "opencapture",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "license": "GPL-3.0",
     "author": "Edissyum Consulting <nathan.cheval@edissyum.com>",
     "description": "Open-Capture is the one and only 100% Open Source intelligent capture management",
@@ -58,8 +58,8 @@
         "@types/d3-selection": "^3.0.6",
         "@types/d3-shape": "^3.1.2",
         "@types/node": "^20.6.0",
-        "@typescript-eslint/eslint-plugin": "6.6.0",
-        "@typescript-eslint/parser": "6.6.0",
+        "@typescript-eslint/eslint-plugin": "6.7.0",
+        "@typescript-eslint/parser": "6.7.0",
         "autoprefixer": "^10.4.15",
         "eslint": "^8.49.0",
         "eslint-plugin-import": "latest",
@@ -71,6 +71,6 @@
         "tailwindcss": "^3.3.3",
         "ts-node": "^10.9.1",
         "typescript": "~5.1.6",
-        "zone.js": "~0.13.1"
+        "zone.js": "~0.13.3"
     }
 }
