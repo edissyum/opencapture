@@ -35,7 +35,6 @@ def get_output_parameters(parameters):
 def export_batch(batch_id, log, docservers, configurations, regex):
     export_date = _Files.get_now_date()
     export_zip_file = ''
-    exported_files = []
     outputs_id = []
 
     batch = splitter.retrieve_batches({
@@ -65,6 +64,7 @@ def export_batch(batch_id, log, docservers, configurations, regex):
 
     batch['documents'] = documents
     batch['export_date'] = export_date
+    batch['outputs_result_files'] = []
     batch['pdf_output_compress_file'] = ''
 
     workflow_settings, error = workflow.get_workflow_by_id({'workflow_id': batch['workflow_id']})
@@ -126,7 +126,7 @@ def export_batch(batch_id, log, docservers, configurations, regex):
             return response, 400
 
     if export_zip_file:
-        compress_outputs_result(batch, exported_files, export_zip_file)
+        compress_outputs_result(batch, batch['outputs_result_files'], export_zip_file)
 
     process_after_outputs(batch, 'END', workflow_settings, docservers, log)
     return True, 200
@@ -172,7 +172,9 @@ def export_pdf_files(batch, parameters, log, docservers, configurations):
             }
             return response, 400
 
+        batch['outputs_result_files'].append(export_path)
         batch['documents'][index]['export_path'] = export_path
+
     return {'result_batch': batch}, 200
 
 
@@ -219,6 +221,7 @@ def handle_pdf_output(batch, output, log, docservers, configurations):
             })
 
         _Files.compress_files(compress_pdfs, compress_file, remove_compressed_files=True)
+        batch['outputs_result_files'].append(compress_file)
 
     return {'result_batch': batch}, 200
 
@@ -246,6 +249,8 @@ def handle_xml_output(batch, parameters, regex):
         return response, 400
 
     batch['metadata_file'] = export_result
+    batch['outputs_result_files'].append(export_result)
+
     return {'result_batch': batch}, 200
 
 
