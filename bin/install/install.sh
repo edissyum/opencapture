@@ -93,7 +93,7 @@ if [ ! -z $supervisorOrSystemd ]; then
     fi
 
     if [ $supervisorOrSystemd == "supervisor" ] && [ -z $nbProcessSupervisor ]; then
-        $nbProcessSupervisor=3
+        nbProcessSupervisor=3
     fi
 fi
 
