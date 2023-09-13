@@ -193,6 +193,8 @@ def handle_pdf_output(batch, output, log, docservers, configurations):
     batch = res_export_pdf['result_batch']
 
     compress_file = output['parameters']['zip_filename']
+    batch['pdf_output_compress_file'] = ''
+
     if compress_file:
         zip_except_doctype = re.search(r'\[Except=(.*?)\]', compress_file) if 'Except' in compress_file else ''
         metadata = batch['data']['custom_fields']
@@ -217,7 +219,7 @@ def handle_pdf_output(batch, output, log, docservers, configurations):
 
         _Files.compress_files(compress_pdfs, compress_file, remove_compressed_files=True)
 
-    batch['pdf_output_compress_file'] = compress_file
+    batch['pdf_output_compress_file'] = compress_file if compress_file else ''
     return {'result_batch': batch}, 200
 
 
