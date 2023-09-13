@@ -86,7 +86,6 @@
         );
         $current_url = str_replace('http://', '', $current_url);
         $current_url = str_replace('https://', '', $current_url);
-        $current_url = str_replace('https://', '', $current_url);
         $current_url = preg_replace('~/+~', '/', $current_url);
         $current_fqdn = explode('/', $current_url)[0];
 
@@ -99,19 +98,19 @@
 
                 if (isValidDomainName($current_fqdn) && $current_fqdn_clean == $custom) {
                     ?>
-                    <a href="dist">
-                        <button>
-                            <?php echo $custom; ?>
-                        </button>
-                    </a>
+                        <a href="dist">
+                            <button>
+                                <?php echo $custom; ?>
+                            </button>
+                        </a>
                     <?php
                 } else {
                     ?>
-                    <a href="<?php echo $custom; ?>/dist">
-                        <button>
-                            <?php echo $custom; ?>
-                        </button>
-                    </a>
+                        <a href="<?php echo $custom; ?>/dist">
+                            <button>
+                                <?php echo $custom; ?>
+                            </button>
+                        </a>
                     <?php
                 }
             }
