@@ -18,7 +18,7 @@
 declare const require: any;
 
 export const environment = {
-    url: 'http://192.168.10.134:5000',
+    url: 'http://localhost:5000',
     customId: '',
     fqdn: '',
     production: false,
