@@ -614,14 +614,14 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
                     content = file.read()
         else:
             if document_id:
-                res = verifier.get_document_by_id({
+                document = verifier.get_document_by_id({
                     'select': ['filename', 'full_jpg_filename'],
                     'document_id': document_id,
                 })
-                if res:
-                    res = res[0]
+                if document:
+                    document = document[0]
                     cpt = int(filename.split('-')[len(filename.split('-')) - 1].replace('.jpg', ''))
-                    pdf_path = docservers['VERIFIER_ORIGINAL_PDF'] + '/' + str(year_and_month) + '/' + res['filename']
+                    pdf_path = docservers['VERIFIER_ORIGINAL_PDF'] + '/' + str(year_and_month) + '/' + document['filename']
                     filename = docservers['VERIFIER_IMAGE_FULL'] + '/' + str(year_and_month) + '/' + filename
                     files.save_img_with_pdf2image(pdf_path, filename, cpt)
                     if os.path.isfile(filename):
