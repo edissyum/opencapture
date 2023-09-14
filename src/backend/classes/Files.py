@@ -119,7 +119,6 @@ class Files:
             if page:
                 images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
                 output_path = output + '.jpg'
-                print(output_path)
                 images[0].save(output_path, 'JPEG')
                 outputs_paths.append(output_path)
             else:
