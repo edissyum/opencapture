@@ -366,7 +366,8 @@ def get_thumb():
         year = register_date.strftime('%Y')
         month = register_date.strftime('%m')
         year_and_month = year + '/' + month
-    file_content = verifier.get_file_content(data['type'], data['filename'], 'image/jpeg', year_and_month=year_and_month)
+    file_content = verifier.get_file_content(data['type'], data['filename'], 'image/jpeg',
+                                             year_and_month=year_and_month, document_id=data['documentId'])
     return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
 
 

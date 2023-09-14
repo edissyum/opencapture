@@ -577,12 +577,14 @@ def get_thumb_by_document_id(document_id):
         return '', 404
 
 
-def get_file_content(file_type, filename, mime_type, compress=False, year_and_month=False):
-    if 'docservers' in current_context:
+def get_file_content(file_type, filename, mime_type, compress=False, year_and_month=False, document_id=False):
+    if 'docservers' in current_context and 'files' in current_context:
+        files = current_context.files
         docservers = current_context.docservers
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
+        files = _vars[3]
         docservers = _vars[9]
 
     content = False
@@ -610,6 +612,22 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
             else:
                 with open(full_path, 'rb') as file:
                     content = file.read()
+        else:
+            if document_id:
+                res = verifier.get_document_by_id({
+                    'select': ['filename', 'full_jpg_filename'],
+                    'document_id': document_id,
+                })
+                if res:
+                    res = res[0]
+                    cpt = int(filename.split('-')[len(filename.split('-')) - 1].replace('.jpg', ''))
+                    pdf_path = docservers['VERIFIER_ORIGINAL_PDF'] + '/' + str(year_and_month) + '/' + res['filename']
+                    filename = docservers['VERIFIER_IMAGE_FULL'] + '/' + str(year_and_month) + '/' + filename
+                    files.save_img_with_pdf2image(pdf_path, filename, cpt)
+                    if os.path.isfile(filename):
+                        with open(filename, 'rb') as file:
+                            content = file.read()
+
     if not content:
         if mime_type == 'image/jpeg':
             with open(docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.jpg', 'rb') as file:
