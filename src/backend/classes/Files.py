@@ -109,7 +109,8 @@ class Files:
     def open_img(self, img):
         self.img = Image.open(img)
 
-    def save_img_with_pdf2image(self, pdf_name, output, page=None, docservers=False, chunk_size=10, rotate_img=False):
+    def save_img_with_pdf2image(self, pdf_name, output, page=None, docservers=False, chunk_size=10, rotate_img=False,
+                                page_to_save=False):
         try:
             output = os.path.splitext(output)[0]
             bck_output = os.path.splitext(output)[0]
@@ -125,12 +126,16 @@ class Files:
                 with open(pdf_name, 'rb') as pdf:
                     pdf_reader = pypdf.PdfReader(pdf)
                     page_count = len(pdf_reader.pages)
-
                 for chunk_idx in range(0, page_count, chunk_size):
                     start_page = 0 if chunk_idx == 0 else chunk_idx + 1
                     end_page = min(chunk_idx + chunk_size, page_count)
                     chunk_images = convert_from_path(pdf_name, first_page=start_page, last_page=end_page, dpi=300)
                     for image in chunk_images:
+                        if page_to_save:
+                            if cpt != page_to_save:
+                                cpt = cpt + 1
+                                continue
+
                         if not page:
                             output = bck_output + '-' + str(cpt).zfill(3)
                         output_path = output + '.jpg'
@@ -560,7 +565,11 @@ class Files:
         hour = str('%02d' % now.hour)
         minute = str('%02d' % now.minute)
         seconds = str('%02d' % now.second)
-        docserver_path = docservers['DOCSERVERS_PATH'] + '/' + module + '/original_pdf/'
+        if module == 'verifier':
+            docserver_path = docservers['VERIFIER_ORIGINAL_PDF']
+        else:
+            docserver_path = docservers['SPLITTER_ORIGINAL_PDF']
+
         # Check if docserver folder exists, if not, create it
         if not os.path.exists(docserver_path):
             os.mkdir(docserver_path)

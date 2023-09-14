@@ -194,7 +194,6 @@ def create_address():
         {'id': 'limit', 'type': int, 'mandatory': False},
         {'id': 'offset', 'type': int, 'mandatory': False}
     ])
-    print(check)
     if not check:
         return make_response({
             "errors": gettext('BAD_REQUEST'),
