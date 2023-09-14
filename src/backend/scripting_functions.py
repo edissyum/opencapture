@@ -34,32 +34,33 @@ def check_code(code, docserver_path, input_path):
             if [_na for _na in not_allowed if _na in line.lower()]:
                 return False, line
 
-            directory_path = re.findall("((?:/|\.{1,2}/)[a-zA-Z\./]*[\s]?)", re.sub(r'\s*', '', line))
-            if directory_path:
-                for path in directory_path:
-                    if not os.path.isdir(path):
-                        return False, line
-                    if path:
-                        current_dir = os.getcwd()
-                        path_to_access = re.sub(r'(/){2,}', '/', path)
-                        docserver_path = re.sub(r'(/){2,}', '/', docserver_path)
-                        if not path_to_access.startswith(docserver_path) and not path_to_access.startswith(input_path):
+            if not line.startswith('#'):
+                directory_path = re.findall("((?:/|\.{1,2}/)[a-zA-Z\./]*[\s]?)", re.sub(r'\s*', '', line))
+                if directory_path:
+                    for path in directory_path:
+                        if not os.path.isdir(path):
                             return False, line
+                        if path:
+                            current_dir = os.getcwd()
+                            path_to_access = re.sub(r'(/){2,}', '/', path)
+                            docserver_path = re.sub(r'(/){2,}', '/', docserver_path)
+                            if not path_to_access.startswith(docserver_path) and not path_to_access.startswith(input_path):
+                                return False, line
 
-                        path_to_access = os.path.dirname(path_to_access)
-                        try:
-                            os.chdir(path_to_access)
-                        except FileNotFoundError:
-                            return False, line
-                        new_dir = os.getcwd() + '/'
-
-                        if docserver_path not in new_dir and input_path not in new_dir:
+                            path_to_access = os.path.dirname(path_to_access)
                             try:
-                                os.chdir(current_dir)
+                                os.chdir(path_to_access)
                             except FileNotFoundError:
                                 return False, line
-                            return False, line
-                        os.chdir(current_dir)
+                            new_dir = os.getcwd() + '/'
+
+                            if docserver_path not in new_dir and input_path not in new_dir:
+                                try:
+                                    os.chdir(current_dir)
+                                except FileNotFoundError:
+                                    return False, line
+                                return False, line
+                            os.chdir(current_dir)
     return True, ''
 
 
