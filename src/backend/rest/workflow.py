@@ -61,7 +61,7 @@ def create_workflow(module):
 @bp.route('workflows/<string:module>/list', methods=['GET'])
 @auth.token_required
 def get_workflows(module):
-    list_priv = ['settings', 'workflows_list'] if module == 'verifier' else ['workflows_list_splitter']
+    list_priv = ['settings', 'workflows_list'] if module == 'verifier' else ['upload | workflows_list_splitter']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/workflows/{module}/list'}), 403
 
