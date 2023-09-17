@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.7.0 (2023-08-30)
+ * TinyMCE version 6.6.2 (2023-08-09)
  */
 
 (function () {
@@ -616,7 +616,6 @@
     const documentElement = element => SugarElement.fromDom(documentOrOwner(element).dom.documentElement);
     const defaultView = element => SugarElement.fromDom(documentOrOwner(element).dom.defaultView);
     const parent = element => Optional.from(element.dom.parentNode).map(SugarElement.fromDom);
-    const parentNode = element => parent(element);
     const parentElement = element => Optional.from(element.dom.parentElement).map(SugarElement.fromDom);
     const parents = (element, isRoot) => {
       const stop = isFunction(isRoot) ? isRoot : never;
@@ -6204,8 +6203,6 @@
         const navigate = tabbingConfig.cyclic ? cycleNext : tryNext;
         return go(component, simulatedEvent, tabbingConfig, navigate);
       };
-      const isFirstChild = elem => parentNode(elem).bind(firstChild).exists(child => eq(child, elem));
-      const goFromPseudoTabstop = (component, simulatedEvent, tabbingConfig) => findCurrent(component, tabbingConfig).filter(elem => !tabbingConfig.useTabstopAt(elem)).bind(elem => (isFirstChild(elem) ? goBackwards : goForwards)(component, simulatedEvent, tabbingConfig));
       const execute = (component, simulatedEvent, tabbingConfig) => tabbingConfig.onEnter.bind(f => f(component, simulatedEvent));
       const exit = (component, simulatedEvent, tabbingConfig) => tabbingConfig.onEscape.bind(f => f(component, simulatedEvent));
       const getKeydownRules = constant$1([
@@ -6219,10 +6216,7 @@
           inSet(ENTER)
         ]), execute)
       ]);
-      const getKeyupRules = constant$1([
-        rule(inSet(ESCAPE), exit),
-        rule(inSet(TAB), goFromPseudoTabstop)
-      ]);
+      const getKeyupRules = constant$1([rule(inSet(ESCAPE), exit)]);
       return typical(schema, NoState.init, getKeydownRules, getKeyupRules, () => Optional.some(focusIn));
     };
 
@@ -8564,10 +8558,6 @@
         default: !global$5.deviceType.isTouch()
       });
       registerOption('sidebar_show', { processor: 'string' });
-      registerOption('help_accessibility', {
-        processor: 'boolean',
-        default: editor.hasPlugin('help')
-      });
     };
     const isReadOnly = option$2('readonly');
     const getHeightOption = option$2('height');
@@ -8605,7 +8595,6 @@
     const getPasteAsText = option$2('paste_as_text');
     const getSidebarShow = option$2('sidebar_show');
     const promotionEnabled = option$2('promotion');
-    const useHelpAccessibility = option$2('help_accessibility');
     const isSkinDisabled = editor => editor.options.get('skin') === false;
     const isMenubarEnabled = editor => editor.options.get('menubar') !== false;
     const getSkinUrl = editor => {
@@ -8724,8 +8713,7 @@
         useBranding: useBranding,
         getResize: getResize,
         getPasteAsText: getPasteAsText,
-        getSidebarShow: getSidebarShow,
-        useHelpAccessibility: useHelpAccessibility
+        getSidebarShow: getSidebarShow
     });
 
     const autocompleteSelector = '[data-mce-autocompleter]';
@@ -10444,7 +10432,13 @@
 
     const foregroundId = 'forecolor';
     const backgroundId = 'hilitecolor';
-    const fallbackCols = 5;
+    const DEFAULT_COLS = 5;
+    const calcCols = colors => Math.max(DEFAULT_COLS, Math.ceil(Math.sqrt(colors)));
+    const calcColsOption = (editor, numColors) => {
+      const calculatedCols = calcCols(numColors);
+      const fallbackCols = option$1('color_cols')(editor);
+      return fallbackCols !== DEFAULT_COLS ? fallbackCols : calculatedCols;
+    };
     const mapColors = colorMap => {
       const colors = [];
       for (let i = 0; i < colorMap.length; i += 2) {
@@ -10471,19 +10465,6 @@
           return {
             valid: false,
             message: 'Must be an array of strings.'
-          };
-        }
-      };
-      const colorColsProcessor = value => {
-        if (isNumber(value) && value > 0) {
-          return {
-            value,
-            valid: true
-          };
-        } else {
-          return {
-            valid: false,
-            message: 'Must be a positive number.'
           };
         }
       };
@@ -10539,16 +10520,16 @@
       registerOption('color_map_background', { processor: colorProcessor });
       registerOption('color_map_foreground', { processor: colorProcessor });
       registerOption('color_cols', {
-        processor: colorColsProcessor,
-        default: calcCols(editor)
+        processor: 'number',
+        default: calcCols(getColors$2(editor, 'default').length)
       });
       registerOption('color_cols_foreground', {
-        processor: colorColsProcessor,
-        default: defaultCols(editor, foregroundId)
+        processor: 'number',
+        default: calcColsOption(editor, getColors$2(editor, foregroundId).length)
       });
       registerOption('color_cols_background', {
-        processor: colorColsProcessor,
-        default: defaultCols(editor, backgroundId)
+        processor: 'number',
+        default: calcColsOption(editor, getColors$2(editor, backgroundId).length)
       });
       registerOption('custom_colors', {
         processor: 'boolean',
@@ -10563,6 +10544,20 @@
         default: fallbackColor
       });
     };
+    const colorColsOption = (editor, id) => {
+      if (id === foregroundId) {
+        return option$1('color_cols_foreground')(editor);
+      } else if (id === backgroundId) {
+        return option$1('color_cols_background')(editor);
+      } else {
+        return option$1('color_cols')(editor);
+      }
+    };
+    const getColorCols$1 = (editor, id) => {
+      const colorCols = Math.round(colorColsOption(editor, id));
+      return colorCols > 0 ? colorCols : DEFAULT_COLS;
+    };
+    const hasCustomColors$1 = option$1('custom_colors');
     const getColors$2 = (editor, id) => {
       if (id === foregroundId && editor.options.isSet('color_map_foreground')) {
         return option$1('color_map_foreground')(editor);
@@ -10572,29 +10567,6 @@
         return option$1('color_map')(editor);
       }
     };
-    const calcCols = (editor, id = 'default') => Math.max(fallbackCols, Math.ceil(Math.sqrt(getColors$2(editor, id).length)));
-    const defaultCols = (editor, id) => {
-      const defaultCols = option$1('color_cols')(editor);
-      const calculatedCols = calcCols(editor, id);
-      if (defaultCols === calcCols(editor)) {
-        return calculatedCols;
-      } else {
-        return defaultCols;
-      }
-    };
-    const getColorCols$1 = (editor, id = 'default') => {
-      const getCols = () => {
-        if (id === foregroundId) {
-          return option$1('color_cols_foreground')(editor);
-        } else if (id === backgroundId) {
-          return option$1('color_cols_background')(editor);
-        } else {
-          return option$1('color_cols')(editor);
-        }
-      };
-      return Math.round(getCols());
-    };
-    const hasCustomColors$1 = option$1('custom_colors');
     const getDefaultForegroundColor = option$1('color_default_foreground');
     const getDefaultBackgroundColor = option$1('color_default_background');
 
@@ -10910,8 +10882,7 @@
 
     const cellOverEvent = generate$6('cell-over');
     const cellExecuteEvent = generate$6('cell-execute');
-    const makeAnnouncementText = backstage => (row, col) => backstage.shared.providers.translate(`${ col } columns, ${ row } rows`);
-    const makeCell = (row, col, label) => {
+    const makeCell = (row, col, labelId) => {
       const emitCellOver = c => emitWith(c, cellOverEvent, {
         row,
         col
@@ -10929,7 +10900,7 @@
           tag: 'div',
           attributes: {
             role: 'button',
-            ['aria-label']: label
+            ['aria-labelledby']: labelId
           }
         },
         behaviours: derive$1([
@@ -10947,13 +10918,12 @@
         ])
       });
     };
-    const makeCells = (getCellLabel, numRows, numCols) => {
+    const makeCells = (labelId, numRows, numCols) => {
       const cells = [];
       for (let i = 0; i < numRows; i++) {
         const row = [];
         for (let j = 0; j < numCols; j++) {
-          const label = getCellLabel(i + 1, j + 1);
-          row.push(makeCell(i, j, label));
+          row.push(makeCell(i, j, labelId));
         }
         cells.push(row);
       }
@@ -10968,16 +10938,17 @@
     };
     const makeComponents = cells => bind$3(cells, cellRow => map$2(cellRow, premade));
     const makeLabelText = (row, col) => text$2(`${ col }x${ row }`);
-    const renderInsertTableMenuItem = (spec, backstage) => {
+    const renderInsertTableMenuItem = spec => {
       const numRows = 10;
       const numColumns = 10;
-      const getCellLabel = makeAnnouncementText(backstage);
-      const cells = makeCells(getCellLabel, numRows, numColumns);
+      const sizeLabelId = generate$6('size-label');
+      const cells = makeCells(sizeLabelId, numRows, numColumns);
       const emptyLabelText = makeLabelText(0, 0);
       const memLabel = record({
         dom: {
           tag: 'span',
-          classes: ['tox-insert-table-picker__label']
+          classes: ['tox-insert-table-picker__label'],
+          attributes: { id: sizeLabelId }
         },
         components: [emptyLabelText],
         behaviours: derive$1([Replacing.config({})])
@@ -11902,15 +11873,12 @@
 
     const nonScrollingOverflows = [
       'visible',
-      'hidden',
-      'clip'
+      'hidden'
     ];
-    const isScrollingOverflowValue = value => trim$1(value).length > 0 && !contains$2(nonScrollingOverflows, value);
     const isScroller = elem => {
       if (isHTMLElement(elem)) {
-        const overflowX = get$e(elem, 'overflow-x');
-        const overflowY = get$e(elem, 'overflow-y');
-        return isScrollingOverflowValue(overflowX) || isScrollingOverflowValue(overflowY);
+        const overflow = get$e(elem, 'overflow');
+        return trim$1(overflow).length > 0 && !contains$2(nonScrollingOverflows, overflow);
       } else {
         return false;
       }
@@ -15142,13 +15110,6 @@
             },
             onDehighlightItem: updateAriaOnDehighlight
           }
-        },
-        getAnchorOverrides: () => {
-          return {
-            maxHeightFunction: (element, available) => {
-              anchored()(element, available - 10);
-            }
-          };
         },
         fetch: comp => Future.nu(curry(spec.fetch, comp))
       }));
@@ -18655,10 +18616,7 @@
         dom: detail.dom,
         components: extra.components,
         behaviours: augment(detail.toolbarBehaviours, extra.behaviours),
-        apis: {
-          setGroups,
-          refresh: noop
-        },
+        apis: { setGroups },
         domModification: { attributes: { role: 'group' } }
       };
     };
@@ -20603,7 +20561,7 @@
             name: 'more',
             icon: Optional.some('more-drawer'),
             enabled: true,
-            tooltip: Optional.some('Reveal or hide additional toolbar items'),
+            tooltip: Optional.some('More...'),
             primary: false,
             buttonType: Optional.none(),
             borderless: false
@@ -21885,7 +21843,7 @@
     const createBespokeNumberInput = (editor, backstage, spec) => {
       let currentComp = Optional.none();
       const getValueFromCurrentComp = comp => comp.map(alloyComp => Representing.getValue(alloyComp)).getOr('');
-      const onSetup = onSetupEvent(editor, 'NodeChange SwitchMode', api => {
+      const onSetup = onSetupEvent(editor, 'NodeChange', api => {
         const comp = api.getComponent();
         currentComp = Optional.some(comp);
         spec.updateInputValue(comp);
@@ -21926,7 +21884,7 @@
       const makeStepperButton = (action, title, tooltip, classes) => {
         const translatedTooltip = backstage.shared.providers.translate(tooltip);
         const altExecuting = generate$6('altExecuting');
-        const onSetup = onSetupEvent(editor, 'NodeChange SwitchMode', api => {
+        const onSetup = onSetupEvent(editor, 'NodeChange', api => {
           Disabling.set(api.getComponent(), !editor.selection.isEditable());
         });
         const onClick = comp => {
@@ -24966,9 +24924,9 @@
       const sections = foldl(menuConfig, (acc, name) => {
         return get$g(contextMenus, name.toLowerCase()).map(menu => {
           const items = menu.update(selectedElement);
-          if (isString(items) && isNotEmpty(trim$1(items))) {
+          if (isString(items)) {
             return addContextMenuGroup(acc, items.split(' '));
-          } else if (isArray(items) && items.length > 0) {
+          } else if (items.length > 0) {
             const allItems = map$2(items, makeContextItem);
             return addContextMenuGroup(acc, allItems);
           } else {
@@ -25945,83 +25903,22 @@
             }]
         };
       };
-      const renderHelpAccessibility = () => {
-        const shortcutText = convertText('Alt+0');
-        const text = `Press {0} for help`;
-        return {
-          dom: {
-            tag: 'div',
-            classes: ['tox-statusbar__help-text']
-          },
-          components: [text$2(global$8.translate([
-              text,
-              shortcutText
-            ]))]
-        };
-      };
-      const renderRightContainer = () => {
+      const getTextComponents = () => {
         const components = [];
+        if (useElementPath(editor)) {
+          components.push(renderElementPath(editor, {}, providersBackstage));
+        }
         if (editor.hasPlugin('wordcount')) {
           components.push(renderWordCount(editor, providersBackstage));
         }
         if (useBranding(editor)) {
           components.push(renderBranding());
         }
-        return {
-          dom: {
-            tag: 'div',
-            classes: ['tox-statusbar__right-container']
-          },
-          components
-        };
-      };
-      const getTextComponents = () => {
-        const components = [];
-        const shouldRenderHelp = useHelpAccessibility(editor);
-        const shouldRenderElementPath = useElementPath(editor);
-        const shouldRenderRightContainer = useBranding(editor) || editor.hasPlugin('wordcount');
-        const getTextComponentClasses = () => {
-          const flexStart = 'tox-statusbar__text-container--flex-start';
-          const flexEnd = 'tox-statusbar__text-container--flex-end';
-          const spaceAround = 'tox-statusbar__text-container--space-around';
-          if (shouldRenderHelp) {
-            const container3Columns = 'tox-statusbar__text-container-3-cols';
-            if (!shouldRenderRightContainer && !shouldRenderElementPath) {
-              return [
-                container3Columns,
-                spaceAround
-              ];
-            }
-            if (shouldRenderRightContainer && !shouldRenderElementPath) {
-              return [
-                container3Columns,
-                flexEnd
-              ];
-            }
-            return [
-              container3Columns,
-              flexStart
-            ];
-          }
-          return [shouldRenderRightContainer && !shouldRenderElementPath ? flexEnd : flexStart];
-        };
-        if (shouldRenderElementPath) {
-          components.push(renderElementPath(editor, {}, providersBackstage));
-        }
-        if (shouldRenderHelp) {
-          components.push(renderHelpAccessibility());
-        }
-        if (shouldRenderRightContainer) {
-          components.push(renderRightContainer());
-        }
         if (components.length > 0) {
           return [{
               dom: {
                 tag: 'div',
-                classes: [
-                  'tox-statusbar__text-container',
-                  ...getTextComponentClasses()
-                ]
+                classes: ['tox-statusbar__text-container']
               },
               components
             }];

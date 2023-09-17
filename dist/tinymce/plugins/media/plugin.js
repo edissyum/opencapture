@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.7.0 (2023-08-30)
+ * TinyMCE version 6.6.2 (2023-08-09)
  */
 
 (function () {
@@ -254,6 +254,12 @@
                 data.type = name;
               }
               data = global$5.extend(node.attributes.map, data);
+            }
+            if (name === 'script') {
+              data = {
+                type: 'script',
+                source: node.attr('src')
+              };
             }
             if (name === 'source') {
               if (!data.source) {
@@ -534,6 +540,9 @@
         return '<video width="' + data.width + '" height="' + data.height + '"' + (data.poster ? ' poster="' + data.poster + '"' : '') + ' controls="controls">\n' + '<source src="' + data.source + '"' + (data.sourcemime ? ' type="' + data.sourcemime + '"' : '') + ' />\n' + (data.altsource ? '<source src="' + data.altsource + '"' + (data.altsourcemime ? ' type="' + data.altsourcemime + '"' : '') + ' />\n' : '') + '</video>';
       }
     };
+    const getScriptHtml = data => {
+      return '<script src="' + data.source + '"></script>';
+    };
     const dataToHtml = (editor, dataIn) => {
       var _a;
       const data = global$5.extend({}, dataIn);
@@ -579,6 +588,8 @@
           return getFlashHtml(data);
         } else if (data.sourcemime.indexOf('audio') !== -1) {
           return getAudioHtml(data, audioTemplateCallback);
+        } else if (data.type === 'script') {
+          return getScriptHtml(data);
         } else {
           return getVideoHtml(data, videoTemplateCallback);
         }
@@ -593,6 +604,12 @@
           if (editor.dom.getAttrib(selectedNode, 'data-mce-selected')) {
             selectedNode.setAttribute('data-mce-selected', '2');
           }
+        }
+      });
+      editor.on('ObjectSelected', e => {
+        const objectType = e.target.getAttribute('data-mce-object');
+        if (objectType === 'script') {
+          e.preventDefault();
         }
       });
       editor.on('ObjectResized', e => {
@@ -1101,7 +1118,7 @@
             });
           }
         });
-        parser.addNodeFilter('iframe,video,audio,object,embed', placeHolderConverter(editor));
+        parser.addNodeFilter('iframe,video,audio,object,embed,script', placeHolderConverter(editor));
         serializer.addAttributeFilter('data-mce-object', (nodes, name) => {
           var _a;
           let i = nodes.length;
@@ -1112,7 +1129,7 @@
             }
             const realElmName = node.attr(name);
             const realElm = new global$2(realElmName, 1);
-            if (realElmName !== 'audio') {
+            if (realElmName !== 'audio' && realElmName !== 'script') {
               const className = node.attr('class');
               if (className && className.indexOf('mce-preview-object') !== -1 && node.firstChild) {
                 realElm.attr({
@@ -1134,6 +1151,9 @@
               if (attrName.indexOf('data-mce-p-') === 0) {
                 realElm.attr(attrName.substr(11), attribs[ai].value);
               }
+            }
+            if (realElmName === 'script') {
+              realElm.attr('type', 'text/javascript');
             }
             const innerHtml = node.attr('data-mce-html');
             if (innerHtml) {
