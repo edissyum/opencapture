@@ -27,7 +27,7 @@ bp = Blueprint('forms', __name__, url_prefix='/ws/')
 @auth.token_required
 def get_forms(module):
     if 'skip' not in request.environ or not request.environ['skip']:
-        list_priv = ['settings', 'forms_list'] if module == 'verifier' else ['access_splitter | forms_list_splitter']
+        list_priv = ['settings', 'forms_list | users_list'] if module == 'verifier' else ['users_list | access_splitter | forms_list_splitter']
         if not privileges.has_privileges(request.environ['user_id'], list_priv):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/list'}), 403
 
