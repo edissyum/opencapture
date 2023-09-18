@@ -25,6 +25,7 @@ import { AuthService } from "../auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import { NotificationService } from "../notifications/notifications.service";
+import { PrivilegesService } from "../privileges.service";
 
 @Component({
     selector: 'app-process-watcher',
@@ -46,6 +47,7 @@ export class ProcessWatcherComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        public privilegesService: PrivilegesService,
         private localStorageService: LocalStorageService
     ) {
     }
@@ -74,7 +76,7 @@ export class ProcessWatcherComponent implements OnInit {
         this.isFirstCallDone = true;
         this.getProcessRunning  = true;
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
-        if (splitterOrVerifier) {
+        if (splitterOrVerifier && this.privilegesService.hasPrivilege('monitoring')) {
             this.http.get(environment['url'] + '/ws/monitoring/' + splitterOrVerifier + '/lasts',
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {

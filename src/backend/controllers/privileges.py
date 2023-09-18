@@ -112,4 +112,4 @@ def has_privileges(user_id, needed_privileges):
                     break
         if privilege in privileges_list:
             res.append(True)
-    return True if len(res) == len(needed_privileges) else False
+    return len(res) == len(needed_privileges)
