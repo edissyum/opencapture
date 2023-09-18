@@ -41,10 +41,9 @@
         </div>
     </div>
 </mat-card>
-<div (click)="changeDisplayMode(!this.minimizeDisplay)" *ngIf="this.minimizeDisplay && this.authorizedUrl.includes(this.router.url)"
-     [ngClass]="countCurrentProcess() === 0 ? 'no-current-task' : 'current-task'"
-     matBadge="{{ countCurrentProcess() }}"
-     matTooltip="{{ 'MONITORING.current_processes' | translate }}"
+<div (click)="changeDisplayMode(!this.minimizeDisplay)" [ngClass]="countCurrentProcess() === 0 ? 'no-current-task' : 'current-task'"
+     *ngIf="this.minimizeDisplay && this.authorizedUrl.includes(this.router.url) && this.privilegesService.hasPrivilege('monitoring')"
+     matBadge="{{ countCurrentProcess() }}" matTooltip="{{ 'MONITORING.current_processes' | translate }}"
      class="w-12 h-12 absolute bottom-6 right-6 rounded-full z-10 bg-slate-100 hover:text-green-400 hover:cursor-pointer
             grid justify-items-center drop-shadow-md">
     <span  class="text-lg pt-2">

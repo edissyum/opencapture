@@ -251,10 +251,11 @@ class VerifierTest(unittest.TestCase):
     def test_successful_get_thumb(self):
         self.create_supplier()
         self.create_document()
-        self.database.execute("SELECT full_jpg_filename FROM documents")
+        self.database.execute("SELECT id, full_jpg_filename FROM documents")
         document = self.database.fetchall()
         response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/getThumb',
-                                 json={'args': {'type': 'full', 'filename': document[0]['full_jpg_filename']}},
+                                 json={'args': {'type': 'full', 'filename': document[0]['full_jpg_filename'],
+                                                'documentId': document[0]['id']}},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(str, type(response.json['file']))
