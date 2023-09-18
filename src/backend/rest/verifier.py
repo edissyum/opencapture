@@ -366,7 +366,8 @@ def get_thumb():
         year = register_date.strftime('%Y')
         month = register_date.strftime('%m')
         year_and_month = year + '/' + month
-    file_content = verifier.get_file_content(data['type'], data['filename'], 'image/jpeg', year_and_month=year_and_month)
+    file_content = verifier.get_file_content(data['type'], data['filename'], 'image/jpeg',
+                                             year_and_month=year_and_month, document_id=data['documentId'])
     return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
 
 
@@ -473,7 +474,7 @@ def update_status():
 @bp.route('verifier/customersCount/<int:user_id>/<string:status>/<string:time>', methods=['GET'])
 @auth.token_required
 def get_customers_count(user_id, status, time):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'access_verifier']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings | access_verifier']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/customerCount'}), 403
 
     res = verifier.get_customers_count(user_id, status, time)

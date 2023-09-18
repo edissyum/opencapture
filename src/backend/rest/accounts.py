@@ -189,6 +189,17 @@ def create_address():
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/addresses/create'}), 403
 
     data = request.json['args']
+    check, message = rest_validator(data, [
+        {'id': 'order', 'type': str, 'mandatory': False},
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     module = ''
     if 'module' in data:
         module = data['module']
@@ -291,7 +302,7 @@ def skip_auto_validate(supplier_id):
 @bp.route('accounts/customers/list/<string:module>', methods=['GET'])
 @auth.token_required
 def customers_list(module=False):
-    if not privileges.has_privileges(request.environ['user_id'], ['customers_list']):
+    if not privileges.has_privileges(request.environ['user_id'], ['customers_list | access_verifier']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/customers/list'}), 403
 
     res = accounts.retrieve_customers(request.args, module)

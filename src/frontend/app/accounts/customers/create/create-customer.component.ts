@@ -95,7 +95,7 @@ export class CreateCustomerComponent implements OnInit {
             label: marker('ADDRESSES.address_1'),
             type: 'text',
             control: new FormControl(),
-            required: true
+            required: false
         },
         {
             id: 'address2',
@@ -109,14 +109,14 @@ export class CreateCustomerComponent implements OnInit {
             label: marker('ADDRESSES.postal_code'),
             type: 'text',
             control: new FormControl(),
-            required: true
+            required: false
         },
         {
             id: 'city',
             label: marker('ADDRESSES.city'),
             type: 'text',
             control: new FormControl(),
-            required: true
+            required: false
         },
         {
             id: 'country',
@@ -202,33 +202,42 @@ export class CreateCustomerComponent implements OnInit {
                     address[element.id] = element.control.value;
                 }
             });
-            address['module'] = this.currentModule;
-            this.http.post(environment['url'] + '/ws/accounts/addresses/create', {'args': address}, {headers: this.authService.headers},
-            ).pipe(
-                tap((data: any) => {
-                    if (data) {
-                        customer['address_id'] = data.id;
-                    }
-                    this.http.post(environment['url'] + '/ws/accounts/customers/create', {'args': customer}, {headers: this.authService.headers},
-                    ).pipe(
-                        tap(() => {
-                            this.notify.success(this.translate.instant('ACCOUNTS.customer_created'));
-                            this.router.navigate(['/accounts/customers/list']).then();
-                        }),
-                        catchError((err: any) => {
-                            console.debug(err);
-                            this.notify.handleErrors(err, '/accounts/customers/list');
-                            return of(false);
-                        })
-                    ).subscribe();
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err, '/accounts/customers/list');
-                    return of(false);
-                })
-            ).subscribe();
+            if (Object.keys(address).length !== 0) {
+                address['module'] = this.currentModule;
+                this.http.post(environment['url'] + '/ws/accounts/addresses/create', {'args': address}, {headers: this.authService.headers},
+                ).pipe(
+                    tap((data: any) => {
+                        if (data) {
+                            customer['address_id'] = data.id;
+                        }
+                        this.create_customer(customer);
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err, '/accounts/customers/list');
+                        return of(false);
+                    })
+                ).subscribe();
+            } else {
+                customer['address_id'] = 0;
+                this.create_customer(customer);
+            }
         }
+    }
+
+    create_customer(customer: any) {
+        this.http.post(environment['url'] + '/ws/accounts/customers/create', {'args': customer}, {headers: this.authService.headers},
+        ).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('ACCOUNTS.customer_created'));
+                this.router.navigate(['/accounts/customers/list']).then();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err, '/accounts/customers/list');
+                return of(false);
+            })
+        ).subscribe();
     }
 
     getErrorMessageCustomer(field: any) {

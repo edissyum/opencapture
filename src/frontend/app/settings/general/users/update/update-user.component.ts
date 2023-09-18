@@ -185,7 +185,7 @@ export class UpdateUserComponent implements OnInit {
                 this.forms = data.forms;
                 this.http.get(environment['url'] + '/ws/forms/splitter/list', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
-                        this.forms.push(data.forms);
+                        this.forms = this.forms.concat(data.forms);
                     }),
                     finalize(() => this.loading = false),
                     catchError((err: any) => {

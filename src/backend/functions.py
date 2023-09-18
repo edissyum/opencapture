@@ -114,7 +114,7 @@ def retrieve_custom_from_url(request):
     if not custom_id or not retrieve_config_from_custom_id(custom_id):
         custom_id = request.environ['SERVER_NAME'].replace('/', '')
         if not retrieve_config_from_custom_id(custom_id):
-            custom_id = request.environ['HTTP_ORIGIN'].replace('http://', '').replace('https://', '')
+            custom_id = request.environ['HTTP_REFERER'].replace('http://', '').replace('https://', '')
     return custom_id.replace('/', '')
 
 

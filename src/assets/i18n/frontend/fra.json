@@ -1148,6 +1148,7 @@
 		"separate_by_document_number_value": "Nombres de pages par document",
 		"splitter_method": "Méthode de séparation",
 		"system_fields_to_search": "Champs système à rechercher",
+		"test_before_save": "Il est obligatoire de tester le script avant de valider",
 		"test_input_folder": "Vérifier si le dossier d'entrée existe et est accessible",
 		"test_script": "Tester le fonctionnement du script",
 		"test_script_error": "Erreur lors de l'exécution du script<br>--------------<br>{{ return }}",

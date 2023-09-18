@@ -34,6 +34,7 @@ class WorkflowsTest(unittest.TestCase):
             'label': 'Test Workflow',
             'workflow_id': 'test_workflow',
             'input': {
+                'rotation': 'no_rotation',
                 'remove_blank_pages': False,
                 'splitter_method_id': 'no_sep',
                 'input_folder': f'/var/share/{CUSTOM_ID}/entrant/verifier/new_folder/'
@@ -90,7 +91,7 @@ class WorkflowsTest(unittest.TestCase):
         payload = {
             "label": "Updated test workflow",
             "input": {
-
+                "rotation": "no_rotation",
                 "ai_model_id": None,
                 "customer_id": None,
                 "facturx_only": False,

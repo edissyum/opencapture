@@ -45,6 +45,15 @@ def create_workflow(module):
 
     args = dict(request.json['args'])
     args['module'] = module
+    check, message = rest_validator(args, [
+        {'id': 'module', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     res = workflow.create_workflow(args)
     return make_response(jsonify(res[0])), res[1]
 
@@ -52,7 +61,8 @@ def create_workflow(module):
 @bp.route('workflows/<string:module>/list', methods=['GET'])
 @auth.token_required
 def get_workflows(module):
-    list_priv = ['settings', 'workflows_list'] if module == 'verifier' else ['workflows_list_splitter']
+    list_priv = ['settings | upload', 'workflows_list | upload'] if module == 'verifier' \
+        else ['settings | upload', 'workflows_list | upload']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/workflows/{module}/list'}), 403
 
@@ -120,6 +130,15 @@ def update_workflow(module, workflow_id):
                         'message': f'/workflows/{module}/update/{workflow_id}'}), 403
 
     data = request.json['args']
+    data['module'] = module
+    check, message = rest_validator(data, [
+        {'id': 'module', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
     res = workflow.update_workflow(workflow_id, data)
     return make_response(jsonify(res[0])), res[1]
 
