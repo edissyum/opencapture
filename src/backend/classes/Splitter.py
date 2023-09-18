@@ -108,8 +108,7 @@ class Splitter:
                     'mask': field['defaultValue'],
                     'separator': ' ',
                 }
-                self.get_value_from_mask(None, data, None, mask)
-                default_values['batch'][field['label_short']] = self.get_value_from_mask(None, data, None, mask)
+                default_values['batch'][field['label_short']] = self.get_value_from_mask(None, data, mask)
 
         for field in fields['fields']['document_metadata']:
             if 'defaultValue' in field:
@@ -117,8 +116,7 @@ class Splitter:
                     'mask': field['defaultValue'],
                     'separator': ' ',
                 }
-                self.get_value_from_mask(None, data, None, mask)
-                default_values['document'][field['label_short']] = self.get_value_from_mask(None, data, None, mask)
+                default_values['document'][field['label_short']] = self.get_value_from_mask(None, data, mask)
 
         return default_values
 
