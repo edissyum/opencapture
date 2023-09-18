@@ -1,3 +1,7 @@
+
+HEAD est maintenant sur 7f7099ed9 Merge pull request #1045 from edissyum/dev_v3
+maintedissyum@sv-ocap-app-t1:/var/www/html/opencapture$ gi
+
 <div *ngIf="this.loading || this.documentsLoading || this.batchesLoading">
     <app-loader></app-loader>
 </div>
@@ -149,7 +153,7 @@
                             </ng-container>
                             <ng-container *ngIf="field.type === 'textarea'">
                                 <mat-form-field class="w-full">
-                                    <mat-label>{{ field.label }}</mat-label><mat-label>{{ field.label }}</mat-label>
+                                    <mat-label>{{ field.label }}</mat-label>
                                     <textarea matInput formControlName="{{ field.label_short }}"
                                               (ngModelChange)="setValueChange(field.label_short, $event)"></textarea>
                                 </mat-form-field>
