@@ -623,7 +623,7 @@ def check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, 
                                                attributes=['*'])
                     user_dn = connection.response[0]['dn']
                     if status and user_dn:
-                        connection_status = check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, password)
+                        connection_status = check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, password, log)
                         if not connection_status:
                             return False
                         else:
