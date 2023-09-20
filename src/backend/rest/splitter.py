@@ -197,6 +197,8 @@ def export():
 
     data = json.loads(request.data)
     response, status = splitter.export_batch(data)
+    from time import sleep
+    sleep(10)
     return make_response(jsonify(response)), status
 
 

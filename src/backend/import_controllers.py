@@ -24,6 +24,11 @@ if 'auth' or 'controllers' not in custom_array['auth']['path']:
 elif 'controllers' in custom_array['auth']['path']:
     auth = getattr(__import__(custom_array['auth']['path'], fromlist=[custom_array['auth']['module']]), custom_array['auth']['module'])
 
+if 'user' or 'controllers' not in custom_array['user']['path']:
+    from .controllers import user
+elif 'controllers' in custom_array['user']['path']:
+    user = getattr(__import__(custom_array['user']['path'], fromlist=[custom_array['user']['module']]), custom_array['user']['module'])
+
 if 'workflow' not in custom_array or 'controllers' not in custom_array['workflow']['path']:
     from .controllers import workflow
 elif 'controllers' in custom_array['workflow']['path']:
@@ -39,11 +44,6 @@ if 'mailcollect' or 'controllers' not in custom_array['mailcollect']['path']:
     from .controllers import mailcollect
 elif 'controllers' in custom_array['mailcollect']['path']:
     mailcollect = getattr(__import__(custom_array['mailcollect']['path'], fromlist=[custom_array['mailcollect']['module']]), custom_array['mailcollect']['module'])
-
-if 'user' or 'controllers' not in custom_array['user']['path']:
-    from .controllers import user
-elif 'controllers' in custom_array['user']['path']:
-    user = getattr(__import__(custom_array['user']['path'], fromlist=[custom_array['user']['module']]), custom_array['user']['module'])
 
 if 'roles' or 'controllers' not in custom_array['roles']['path']:
     from .controllers import roles
