@@ -86,14 +86,11 @@
                                 <span>
                                     {{ 'SPLITTER.batch_metadata' | translate }}
                                 </span>
-                                <div (click)="batchMetadata.toggle()" class="mx-1" *ngIf="fieldsCategories['batch_metadata'].length !== 0">
-                                    <mat-slide-toggle [checked]="inputMode === 'Auto'" (change)="changeInputMode($event);">
-                                        {{ 'SPLITTER.auto_complete' | translate }}
-                                    </mat-slide-toggle>
-                                </div>
                             </div>
                             <div>
-                                <mat-form-field id="form-select-field" class="w-full" (click)="$event.stopPropagation()" matTooltip="{{ 'SPLITTER.edit_used_form' | translate }}">
+                                <mat-form-field class="w-full p-4" id="form-select-field"
+                                                (click)="$event.stopPropagation()"
+                                                matTooltip="{{ 'SPLITTER.edit_used_form' | translate }}">
                                     <i matPrefix class="fa-sharp fa-solid fa-caret-down text-green-400 fa-lg"></i>
                                     <mat-select (selectionChange)="onFormChange($event.value)" [(ngModel)]="currentBatch.formId">
                                         <mat-option [value]="form.id" *ngFor="let form of this.forms;">
