@@ -1199,6 +1199,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     validate(): void {
         this.validateLoading = true;
+        this.notify.success(this.translate.instant('SPLITTER.batch_validate_processing'), 5000);
+
         const batchMetadata             = this.batchMetadataValues;
         batchMetadata['id']             = this.currentBatch.id;
         batchMetadata['userName']       = this.userService.user['username'];
