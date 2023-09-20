@@ -537,12 +537,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return mask ? mask.replace('#label', label) : label;
     }
 
-    changeInputMode($event: any) {
-        this.inputMode = $event.checked ? "Auto" : "Manual";
-        this.batchMetadataValues = {};
-        this.fillDataValues({});
-    }
-
     fillDataValues(data: any): void {
         this.hasUnsavedChanges = true;
         for (const field of this.fieldsCategories['batch_metadata']) {
@@ -651,6 +645,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
                 else {
                     this.batchForm.get(field['metadata_key'])?.setValue(optionId);
+                    this.batchMetadataValues[field['label_short']] = selectedMetadata[field['metadata_key']];
                 }
             }
         }
@@ -790,7 +785,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     getFormFieldsValues() {
         for (const field of this.fieldsCategories['batch_metadata']) {
-            if (this.batchForm.get(field.label_short)) {
+            if ((this.batchForm.get(field.label_short) && !field.metadata_key) || this.inputMode != 'Auto') {
                 this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
                 if (field.type === 'date') {
                     this.batchMetadataValues[field.label_short] = moment(this.batchMetadataValues[field.label_short]).format('L');
