@@ -58,9 +58,10 @@ def create_workflow(module):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('workflows/<string:module>/list', methods=['GET'])
+@bp.route('workflows/<string:module>/list', defaults={'user_id': None}, methods=['GET'])
+@bp.route('workflows/<string:module>/list/user/<int:user_id>', methods=['GET'])
 @auth.token_required
-def get_workflows(module):
+def get_workflows(module, user_id):
     list_priv = ['settings | upload', 'workflows_list | upload'] if module == 'verifier' \
         else ['settings | upload', 'workflows_list | upload']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
@@ -68,6 +69,7 @@ def get_workflows(module):
 
     args = dict(request.args)
     args['module'] = module
+    args['user_id'] = user_id
     _workflows = workflow.get_workflows(args)
     return make_response(jsonify(_workflows[0])), _workflows[1]
 

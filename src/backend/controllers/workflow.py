@@ -19,12 +19,12 @@ import os
 import sys
 import json
 import stat
-import importlib
 import traceback
 from io import StringIO
 from flask_babel import gettext
 from pyflakes.scripts import pyflakes
 from src.backend.import_classes import _Config
+from src.backend.import_controllers import user
 from flask import request, g as current_context
 from src.backend.scripting_functions import check_code
 from src.backend.import_models import workflow, history
@@ -40,6 +40,14 @@ def get_workflows(args):
         'where': ["status <> 'DEL'", "module = %s"],
         'data': [args['module'] if 'module' in args else '']
     }
+
+    if 'user_id' in args and args['user_id']:
+        user_customers = user.get_customers_by_user_id(args['user_id'])
+        if user_customers[1] != 200:
+            return user_customers[0], user_customers[1]
+
+        _args['where'].append("((input->>'customer_id')::INTEGER IS NULL OR (input->>'customer_id')::INTEGER = ANY(%s))")
+        _args['data'].append(user_customers[0])
 
     _workflows = workflow.get_workflows(_args)
 

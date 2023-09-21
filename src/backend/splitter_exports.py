@@ -207,8 +207,6 @@ def handle_pdf_output(batch, output, log, docservers, configurations):
             'extension': 'zip'
         }
         compress_file = _Splitter.get_value_from_mask(None, metadata, mask_args)
-        batch['pdf_output_compress_file'] = compress_file
-        compress_file = parameters['folder_out'] + '/' + compress_file
 
         for index, document in enumerate(batch['documents']):
             if zip_except_doctype and document['doctype_key'].startswith(zip_except_doctype.group(1)):
@@ -220,8 +218,11 @@ def handle_pdf_output(batch, output, log, docservers, configurations):
                 'filename': document['filename']
             })
 
-        _Files.compress_files(compress_pdfs, compress_file, remove_compressed_files=True)
-        batch['outputs_result_files'].append(compress_file)
+        if compress_pdfs:
+            batch['pdf_output_compress_file'] = compress_file
+            compress_file = parameters['folder_out'] + '/' + compress_file
+            _Files.compress_files(compress_pdfs, compress_file, remove_compressed_files=True)
+            batch['outputs_result_files'].append(compress_file)
 
     return {'result_batch': batch}, 200
 
