@@ -769,8 +769,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (64, 'add_workflow_spl
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (65, 'update_workflow_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (66, 'generate_auth_token', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (67, 'update_login_top_message', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (67, 'update_login_bottom_message', 'administration');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 68;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (68, 'update_login_bottom_message', 'administration');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 69;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');
