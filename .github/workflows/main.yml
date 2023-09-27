@@ -64,7 +64,7 @@ jobs:
   deploy-backend:
     name: backend deployment
     runs-on: self-hosted
-    needs: [deploy-application]
+    needs: [deploy-frontend]
     defaults:
       run:
         working-directory: /
