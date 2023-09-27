@@ -276,8 +276,7 @@
                                         <ng-container *ngIf="field.type === 'textarea'">
                                             <mat-form-field class="w-full">
                                                 <mat-label>{{ field.label }}</mat-label>
-                                                <textarea matInput formControlName="{{ field.label_short }}"
-                                                          (ngModelChange)="setValueChange(field.label_short, $event)"></textarea>
+                                                <textarea matInput formControlName="{{ field.label_short }}"></textarea>
                                             </mat-form-field>
                                         </ng-container>
                                         <ng-container *ngIf="field.type === 'text' && (!field.metadata_key || inputMode === 'Manual')">
@@ -289,8 +288,7 @@
                                         <ng-container *ngIf="field.type === 'select'">
                                             <mat-form-field class="w-full">
                                                 <mat-label>{{ field.label }}</mat-label>
-                                                <mat-select [formControlName]="field.label_short"
-                                                            (selectionChange)="setValueChange(field.label_short, $event.value)">
+                                                <mat-select [formControlName]="field.label_short">
                                                     <mat-option *ngFor="let option of field.settings.options" [value]="option.id">
                                                         {{ option.label }}
                                                     </mat-option>
