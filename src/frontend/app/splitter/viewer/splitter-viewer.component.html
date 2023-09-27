@@ -262,8 +262,7 @@
                                                         </ngx-mat-select-search>
                                                     </mat-option>
                                                     <mat-option *ngFor="let metadata of filteredServerSideMetadata | async"
-                                                                [value]="metadata.metadataId"
-                                                                (click)="fillData(metadata)">
+                                                                [value]="metadata.metadataId">
                                                         <span *ngIf="metadata.metadataId !== batchMetadataValues.metadataId"
                                                               [innerHTML]="getPlaceholderFromResultMask(field.resultMask, metadata)">
                                                         </span>
