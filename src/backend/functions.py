@@ -45,20 +45,28 @@ def rest_validator(data, required_fields):
         return False, gettext('JSON_ERROR')
 
     for field in required_fields:
+        error_message = (gettext('NO_DATA_OR_DATA_MISSING') + " : '" + field['id'] + "' " + gettext('IS_NOT') + " '"
+                         + str(field['type'])) + "'"
         if field['mandatory']:
             if field['id'] not in data or not data[field['id']]:
                 return False, gettext('NO_DATA_OR_DATA_MISSING')
             if not isinstance(data[field['id']], field['type']):
-                return False, gettext('NO_DATA_OR_DATA_MISSING')
+                if field['type'] == int:
+                    try:
+                        int(data[field['id']])
+                        return True, ''
+                    except (TypeError, ValueError):
+                        return False, error_message
+                return False, error_message
         else:
             if field['id'] in data and data[field['id']] and not isinstance(data[field['id']], field['type']):
                 if field['type'] == int:
                     try:
                         int(data[field['id']])
                         return True, ''
-                    except TypeError:
-                        return False, gettext('NO_DATA_OR_DATA_MISSING')
-                return False, gettext('NO_DATA_OR_DATA_MISSING')
+                    except (TypeError, ValueError):
+                        return False, error_message
+                return False, error_message
     return True, ''
 
 

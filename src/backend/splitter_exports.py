@@ -207,8 +207,6 @@ def handle_pdf_output(batch, output, log, docservers, configurations):
             'extension': 'zip'
         }
         compress_file = _Splitter.get_value_from_mask(None, metadata, mask_args)
-        batch['pdf_output_compress_file'] = compress_file
-        compress_file = parameters['folder_out'] + '/' + compress_file
 
         for index, document in enumerate(batch['documents']):
             if zip_except_doctype and document['doctype_key'].startswith(zip_except_doctype.group(1)):
@@ -220,8 +218,11 @@ def handle_pdf_output(batch, output, log, docservers, configurations):
                 'filename': document['filename']
             })
 
-        _Files.compress_files(compress_pdfs, compress_file, remove_compressed_files=True)
-        batch['outputs_result_files'].append(compress_file)
+        if compress_pdfs:
+            batch['pdf_output_compress_file'] = compress_file
+            compress_file = parameters['folder_out'] + '/' + compress_file
+            _Files.compress_files(compress_pdfs, compress_file, remove_compressed_files=True)
+            batch['outputs_result_files'].append(compress_file)
 
     return {'result_batch': batch}, 200
 
@@ -282,29 +283,29 @@ def handle_cmis_output(output, batch, log, docservers, configurations, regex):
             }
             return response, 500
 
-        if cmis_params['xml_filename']:
-            parameters = {
-                'extension': 'xml',
-                'folder_out': docservers['TMP_PATH'],
-                'separator': cmis_params['separator'],
-                'filename': cmis_params['xml_filename'],
-                'xml_template': cmis_params['xml_template'],
-                'doc_loop_regex': regex['splitter_doc_loop'],
-                'condition_regex': regex['splitter_condition'],
-                'empty_line_regex': regex['splitter_empty_line'],
-                'xml_comment_regex': regex['splitter_xml_comment'],
+    if cmis_params['xml_filename']:
+        parameters = {
+            'extension': 'xml',
+            'folder_out': docservers['TMP_PATH'],
+            'separator': cmis_params['separator'],
+            'filename': cmis_params['xml_filename'],
+            'xml_template': cmis_params['xml_template'],
+            'doc_loop_regex': regex['splitter_doc_loop'],
+            'condition_regex': regex['splitter_condition'],
+            'empty_line_regex': regex['splitter_empty_line'],
+            'xml_comment_regex': regex['splitter_xml_comment'],
+        }
+        res_export_xml, status = handle_xml_output(batch, parameters, regex)
+        if status != 200:
+            return res_export_xml, status
+        cmis_res = cmis.create_document(res_export_xml['result_batch']['metadata_file'], 'text/xml')
+        if not cmis_res[0]:
+            response = {
+                "errors": gettext('EXPORT_XML_ERROR'),
+                "message": cmis_res[1]
             }
-            res_export_xml, status = handle_xml_output(batch, parameters, regex)
-            if status != 200:
-                return res_export_xml, status
-            cmis_res = cmis.create_document(res_export_xml['result_batch']['metadata_file'], 'text/xml')
-            if not cmis_res[0]:
-                response = {
-                    "errors": gettext('EXPORT_XML_ERROR'),
-                    "message": cmis_res[1]
-                }
-                return response, 500
-        return {'result_batch': batch}, 200
+            return response, 500
+    return {'result_batch': batch}, 200
 
 
 def handle_openads_output(output, batch, docservers, log, configurations):

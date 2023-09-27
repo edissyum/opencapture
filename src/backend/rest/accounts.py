@@ -163,6 +163,19 @@ def update_address(address_id):
                         'message': f'/accounts/addresses/update/{address_id}'}), 403
 
     data = request.json['args']
+    check, message = rest_validator(data, [
+        {'id': 'city', 'type': str, 'mandatory': False},
+        {'id': 'country', 'type': str, 'mandatory': False},
+        {'id': 'address1', 'type': str, 'mandatory': False},
+        {'id': 'address2', 'type': str, 'mandatory': False},
+        {'id': 'postal_code', 'type': str, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     res = accounts.update_address(address_id, data)
     return make_response(jsonify(res[0])), res[1]
 
@@ -176,6 +189,19 @@ def update_address_by_supplier_id(suplier_id):
                             'message': f'/accounts/addresses/updateBySupplierId/{suplier_id}'}), 403
 
     data = request.json['args']
+    check, message = rest_validator(data, [
+        {'id': 'city', 'type': str, 'mandatory': False},
+        {'id': 'country', 'type': str, 'mandatory': False},
+        {'id': 'address1', 'type': str, 'mandatory': False},
+        {'id': 'address2', 'type': str, 'mandatory': False},
+        {'id': 'postal_code', 'type': str, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     res = accounts.update_address_by_supplier_id(suplier_id, data)
     return make_response(jsonify(res[0])), res[1]
 
@@ -190,9 +216,11 @@ def create_address():
 
     data = request.json['args']
     check, message = rest_validator(data, [
-        {'id': 'order', 'type': str, 'mandatory': False},
-        {'id': 'limit', 'type': int, 'mandatory': False},
-        {'id': 'offset', 'type': int, 'mandatory': False}
+        {'id': 'city', 'type': str, 'mandatory': True},
+        {'id': 'country', 'type': str, 'mandatory': True},
+        {'id': 'address1', 'type': str, 'mandatory': True},
+        {'id': 'address2', 'type': str, 'mandatory': False},
+        {'id': 'postal_code', 'type': str, 'mandatory': True}
     ])
     if not check:
         return make_response({
@@ -221,6 +249,30 @@ def create_supplier():
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/suppliers/create'}), 403
 
     data = request.json['args']
+    check, message = rest_validator(data, [
+        {'id': 'bic', 'type': str, 'mandatory': False},
+        {'id': 'name', 'type': str, 'mandatory': True},
+        {'id': 'duns', 'type': str, 'mandatory': False},
+        {'id': 'iban', 'type': str, 'mandatory': False},
+        {'id': 'siret', 'type': str, 'mandatory': True},
+        {'id': 'siren', 'type': str, 'mandatory': True},
+        {'id': 'email', 'type': str, 'mandatory': False},
+        {'id': 'pages', 'type': dict, 'mandatory': False},
+        {'id': 'form_id', 'type': int, 'mandatory': False},
+        {'id': 'vat_number', 'type': str, 'mandatory': True},
+        {'id': 'address_id', 'type': int, 'mandatory': False},
+        {'id': 'positions', 'type': dict, 'mandatory': False},
+        {'id': 'document_lang', 'type': str, 'mandatory': True},
+        {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
+        {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     res = accounts.create_supplier(data)
     return make_response(jsonify(res[0])), res[1]
 
@@ -254,16 +306,25 @@ def delete_supplier_position(supplier_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/suppliers/{supplier_id}/deletePosition'}), 403
 
-    form_id = request.json['args']['form_id']
     args = request.json['args']
+    check, message = rest_validator(args, [
+        {'id': 'form_id', 'type': int, 'mandatory': True},
+        {'id': 'field_id', 'type': str, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     res = '', 200
     if 'multiple' in args:
         fields = args['fields']
         for field in fields:
-            res = accounts.delete_document_position_by_supplier_id(supplier_id, field, form_id)
+            res = accounts.delete_document_position_by_supplier_id(supplier_id, field, args['form_id'])
     else:
-        field_id = request.json['args']['field_id']
-        res = accounts.delete_document_position_by_supplier_id(supplier_id, field_id, form_id)
+        field_id = args['field_id']
+        res = accounts.delete_document_position_by_supplier_id(supplier_id, field_id, args['form_id'])
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -274,16 +335,25 @@ def delete_supplier_page(supplier_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/suppliers/{supplier_id}/deletePage'}), 403
 
-    form_id = request.json['args']['form_id']
     args = request.json['args']
+    check, message = rest_validator(args, [
+        {'id': 'form_id', 'type': int, 'mandatory': True},
+        {'id': 'field_id', 'type': str, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     res = '', 200
     if 'multiple' in args:
         fields = args['fields']
         for field in fields:
-            res = accounts.delete_document_page_by_supplier_id(supplier_id, field, form_id)
+            res = accounts.delete_document_page_by_supplier_id(supplier_id, field, args['form_id'])
     else:
-        field_id = request.json['args']['field_id']
-        res = accounts.delete_document_page_by_supplier_id(supplier_id, field_id, form_id)
+        field_id = args['field_id']
+        res = accounts.delete_document_page_by_supplier_id(supplier_id, field_id, args['form_id'])
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -305,7 +375,19 @@ def customers_list(module=False):
     if not privileges.has_privileges(request.environ['user_id'], ['customers_list | access_verifier']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/customers/list'}), 403
 
-    res = accounts.retrieve_customers(request.args, module)
+    data = request.args
+    check, message = rest_validator(data, [
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = accounts.retrieve_customers(data, module)
     return make_response(res[0], res[1])
 
 
@@ -328,6 +410,20 @@ def update_customer(customer_id):
                         'message': f'/accounts/customers/update/{customer_id}'}), 403
 
     data = request.json['args']
+    check, message = rest_validator(data, [
+        {'id': 'name', 'type': str, 'mandatory': False},
+        {'id': 'siret', 'type': int, 'mandatory': False},
+        {'id': 'siren', 'type': int, 'mandatory': False},
+        {'id': 'module', 'type': str, 'mandatory': False},
+        {'id': 'vat_number', 'type': str, 'mandatory': False},
+        {'id': 'company_number', 'type': str, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     res = accounts.update_customer(customer_id, data)
     return make_response(jsonify(res[0])), res[1]
 
@@ -339,6 +435,20 @@ def create_customer():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/customers/create'}), 403
 
     data = request.json['args']
+    check, message = rest_validator(data, [
+        {'id': 'name', 'type': str, 'mandatory': True},
+        {'id': 'siret', 'type': int, 'mandatory': True},
+        {'id': 'siren', 'type': int, 'mandatory': True},
+        {'id': 'module', 'type': str, 'mandatory': True},
+        {'id': 'vat_number', 'type': str, 'mandatory': True},
+        {'id': 'company_number', 'type': str, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     res = accounts.create_customer(data)
     return make_response(jsonify(res[0])), res[1]
 
