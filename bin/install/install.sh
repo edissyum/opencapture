@@ -339,7 +339,6 @@ echo "source /home/$user/python-venv/opencapture/bin/activate" >> "/home/$user/.
 nltk.download('stopwords', download_dir='/home/$user/nltk_data/')
 nltk.download('punkt', download_dir='/home/$user/nltk_data/')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
-
 cd $defaultPath || exit 1
 find . -name ".gitkeep" -delete
 
