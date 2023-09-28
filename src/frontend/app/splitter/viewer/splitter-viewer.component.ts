@@ -1265,8 +1265,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             delete _document.class;
             delete _document.form;
             _documents.push(_document);
-        }
 
+        }
         this.http.post(environment['url'] + '/ws/splitter/saveModifications',
             {
                 'documents'           : _documents,
