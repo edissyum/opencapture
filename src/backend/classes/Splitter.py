@@ -306,8 +306,9 @@ class Splitter:
                 """
                     PDF masks value
                 """
-                if key in document:
-                    value = str(document[key] if document[key] else '').replace(' ', substitute)
+                if key in document['data']['custom_fields']:
+                    value = str(document['data']['custom_fields'][key] if document['data']['custom_fields'][key] else '')
+                    value = value.replace(' ', substitute)
                     mask_result.append(value)
                 elif key in metadata:
                     value = str(metadata[key] if metadata[key] else '').replace(' ', substitute)
