@@ -34,5 +34,3 @@ SELECT setval('metadata_id_seq', (SELECT max(id)+1 FROM metadata), false);
 SELECT setval('splitter_pages_id_seq', (SELECT max(id)+1 FROM splitter_pages), false);
 SELECT setval('splitter_batches_id_seq', (SELECT max(id)+1 FROM splitter_batches), false);
 SELECT setval('splitter_documents_id_seq', (SELECT max(id)+1 FROM splitter_documents), false);
-
-
