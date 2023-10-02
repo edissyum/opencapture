@@ -29,8 +29,8 @@ from io import BytesIO
 
 from PIL import Image
 from fpdf import Template
+from pyzbar.pyzbar import decode
 import xml.etree.ElementTree as Et
-from pyzbar.pyzbar import decode, ZBarSymbol
 
 
 class SeparatorQR:
@@ -157,13 +157,13 @@ class SeparatorQR:
                 self.set_doc_ends()
                 self.extract_and_convert_docs(file)
             elif self.splitter_or_verifier == 'splitter':
-                self.get_xml_qr_code(file)
+                self.get_xml_zbarimg(file)
                 self.parse_xml_multi()
         except Exception as e:
             self.error = True
             self.log.error("INIT : " + str(e))
 
-    def get_xml_qr_code(self, file):
+    def get_xml_zbarimg(self, file):
         try:
             xml = subprocess.Popen([
                 'zbarimg',
@@ -195,7 +195,7 @@ class SeparatorQR:
         if saved_pages:
             for page in saved_pages:
                 img = Image.open(page)
-                detected_barcode = decode(img, symbols=[ZBarSymbol.QRCODE])
+                detected_barcode = decode(img)
                 img.close()
                 if detected_barcode:
                     for barcode in detected_barcode:
