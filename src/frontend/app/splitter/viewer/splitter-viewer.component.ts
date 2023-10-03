@@ -1199,7 +1199,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     validate(): void {
         this.validateLoading = true;
-        this.notify.success(this.translate.instant('SPLITTER.batch_validate_processing'), 5000);
+        this.notify.success(this.translate.instant('SPLITTER.batch_validate_processing'), 60000);
 
         const batchMetadata             = this.batchMetadataValues;
         batchMetadata['id']             = this.currentBatch.id;
@@ -1242,11 +1242,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.translate.get('HISTORY-DESC.validate_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
                     this.historyService.addHistory('splitter', 'viewer', translated);
                 });
+                this.notify.clear();
                 this.notify.success(this.translate.instant('SPLITTER.validate_batch_success'));
                 this.router.navigate(['splitter/list']).then();
             }),
             catchError((err: any) => {
                 this.validateLoading = false;
+                this.notify.clear();
                 this.notify.handleErrors(err);
                 console.debug(err);
                 return of(false);
