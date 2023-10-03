@@ -119,4 +119,8 @@ export class NotificationService {
         }
         return duration;
     }
+
+    clear() {
+        this.toastr.clear();
+    }
 }
