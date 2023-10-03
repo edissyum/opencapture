@@ -323,7 +323,7 @@ class Files:
         rows, cols, _ = image.shape
         blobs_ratio = len(keypoints) / (1.0 * rows * cols)
 
-        if blobs_ratio < float(1E-8):
+        if blobs_ratio < float(1E-6):
             return True
         return False
 

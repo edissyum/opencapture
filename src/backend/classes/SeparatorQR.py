@@ -30,6 +30,7 @@ from io import BytesIO
 from PIL import Image
 from fpdf import Template
 from pyzbar.pyzbar import decode
+import xml.etree.ElementTree as Et
 
 
 class SeparatorQR:
@@ -147,8 +148,8 @@ class SeparatorQR:
         try:
             pdf = pypdf.PdfReader(file)
             self.nb_pages = len(pdf.pages)
-            self.get_xml(file, saved_pages)
             if self.splitter_or_verifier == 'verifier':
+                self.get_xml(file, saved_pages)
                 if self.remove_blank_pages:
                     self.remove_blank_page(file)
                 self.parse_xml()
@@ -156,10 +157,30 @@ class SeparatorQR:
                 self.set_doc_ends()
                 self.extract_and_convert_docs(file)
             elif self.splitter_or_verifier == 'splitter':
+                self.get_xml_zbarimg(file)
                 self.parse_xml_multi()
         except Exception as e:
             self.error = True
             self.log.error("INIT : " + str(e))
+
+    def get_xml_zbarimg(self, file):
+        try:
+            xml = subprocess.Popen([
+                'zbarimg',
+                '--xml',
+                '-q',
+                '-Sdisable',
+                '-Sqr.enable',
+                file
+            ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = xml.communicate()
+            if err.decode('utf-8'):
+                self.log.error('ZBARIMG : ' + str(err))
+            self.barcodes = Et.fromstring(out)
+        except subprocess.CalledProcessError as cpe:
+            if cpe.returncode != 4:
+                self.log.error("ZBARIMG : \nreturn code: %s\ncmd: %s\noutput: %s\nglobal : %s" % (
+                    cpe.returncode, cpe.cmd, cpe.output, cpe))
 
     def get_xml(self, file, saved_pages=None):
         """
@@ -206,10 +227,10 @@ class SeparatorQR:
         if self.barcodes is None:
             return
 
-        for barcode in self.barcodes:
+        for index in self.barcodes[0]:
             self.pages.append({
-                "qr_code": barcode['text'],
-                "num": barcode['attrib']['num']
+                "qr_code": index[0][0].text,
+                "num": index.attrib['num']
             })
 
     def parse_xml(self):
