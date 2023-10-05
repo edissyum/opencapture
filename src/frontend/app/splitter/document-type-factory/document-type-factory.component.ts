@@ -268,7 +268,14 @@ export class DocumentTypeFactoryComponent implements OnInit {
         this.dataSource     = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
         this.treeDataObj.dataChange.subscribe(data => {
             this.dataSource.data = data;
-            this.treeControl.expandAll();
+            const collapseTree = this.localStorageService.get('is_doctypes_tree_collapsed') &&
+                this.localStorageService.get('is_doctypes_tree_collapsed') === 'true';
+            if (collapseTree) {
+                this.treeControl.collapseAll();
+            }
+            else {
+                this.treeControl.expandAll();
+            }
         });
         this.selectFormControl.valueChanges.subscribe(formId => {
             this.localStorageService.save('doctypeFormId', formId);
@@ -503,5 +510,15 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 ).subscribe();
             }
         });
+    }
+
+    expandAll() {
+        this.treeControl.expandAll();
+        this.localStorageService.save('is_doctypes_tree_collapsed', false);
+    }
+
+    collapseAll() {
+        this.treeControl.collapseAll();
+        this.localStorageService.save('is_doctypes_tree_collapsed', true);
     }
 }
