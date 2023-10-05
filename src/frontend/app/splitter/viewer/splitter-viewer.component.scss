@@ -1,3 +1,7 @@
+::ng-deep .cdk-overlay-pane{
+    width: 40% !important;
+}
+
 ::ng-deep #form-select-field {
     .mdc-notched-outline, .mat-mdc-select-arrow-wrapper {
         display: none !important;
@@ -12,7 +16,6 @@
 .drag-document:hover {
     transform: scale(1.5);
 }
-
 
 .btn-icon {
     border-right:1px solid rgb(75 85 99)!important;
