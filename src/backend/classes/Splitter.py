@@ -411,8 +411,9 @@ class Splitter:
         """
         xml_as_string = re.sub(regex['splitter_xml_comment'], '', xml_as_string)
         xml_as_string = re.sub(regex['splitter_empty_line'], '', xml_as_string)
+
         try:
-            with open(xml_file_path, "w") as f:
+            with open(xml_file_path, "w", encoding='utf-8') as f:
                 minidom.parseString(xml_as_string)
                 f.write(xml_as_string)
         except Exception as e:
