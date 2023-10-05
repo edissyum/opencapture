@@ -61,7 +61,7 @@
             </button>
         </mat-tree-node>
         <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding="{{ node.padding }}">
-            <button matTreeNodeToggle class="p-1 rounded font-normal hover:bg-green-400 hover:text-slate-100"
+            <button matTreeNodeToggle class="whitespace-nowrap p-1 rounded font-normal hover:bg-green-400 hover:text-slate-100"
                     [ngClass]="selectedDoctypeInput.key === node.key ? 'bg-green-400 text-slate-100' : ''"
                     [attr.aria-label]="'Toggle ' + node.label"
                     (click)="selectFolder(node)">
