@@ -5,7 +5,7 @@ configMail       = /var/www/html/opencapture/custom/§§CUSTOM_ID§§/config/mai
 watcherConfig    = /var/www/html/opencapture/instance/config/watcher.ini
 logFile          = /var/www/html/opencapture/custom/§§CUSTOM_ID§§/bin/data/log/OpenCapture.log
 ; True or False
-allowWFScripting = True
+allowWFScripting = False
 
 [SPLITTER]
 docstart         = DOCSTART

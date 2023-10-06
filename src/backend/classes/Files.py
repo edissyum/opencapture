@@ -489,7 +489,7 @@ class Files:
                     angle = determine_skew(grayscale)
                     rotated = rotate(src, angle, resize=True) * 255
                     src = rotated.astype(np.uint8)
-            except pytesseract.TesseractError:
+            except (pytesseract.TesseractError, TypeError):
                 pass
 
             gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)

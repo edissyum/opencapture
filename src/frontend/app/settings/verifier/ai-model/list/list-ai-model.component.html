@@ -30,30 +30,31 @@
                     </ng-container>
                     <ng-container matColumnDef="model_label">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.model_label' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element"> {{ element.model_label }} </mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="train_time">
-                        <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.train_time' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element"> {{ element.train_time }} </mat-cell>
+                        <mat-cell *matCellDef="let element"> {{ element['model_label'] }} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="accuracy_score">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.accuracy' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element"> {{ element.accuracy_score }} </mat-cell>
+                        <mat-cell *matCellDef="let element"> {{ element['accuracy_score'] }} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="documents">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.doctypes' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element"> {{ element.documents }} </mat-cell>
+                        <mat-cell *matCellDef="let element"> {{ element['documents'] }} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="min_proba">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.min_proba' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element"> {{ element.min_proba }} </mat-cell>
+                        <mat-cell *matCellDef="let element"> {{ element['min_proba'] }} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="status">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.status' | translate }} </mat-header-cell>
                         <mat-cell *matCellDef="let element">
                             <span class="col-span-1 text-right">
-                                <i *ngIf="element.status === 'training'" class="fas fa-circle-notch fa-spin fa-lg my-4"
-                                   matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.training' | translate }}"></i>
+                                <span *ngIf="element.status === 'training'">
+                                    <i class="fas fa-circle-notch fa-spin fa-lg my-4"
+                                       matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.training' | translate }}"></i>
+                                    <span class="text-green-400 ml-2">
+                                        {{ element['percentage'] }}
+                                    </span>
+                                </span>
                                 <i *ngIf="element.status === 'error'" class="fas fa-triangle-exclamation fa-lg my-4 text-amber-500 cursor-pointer"
                                    matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.error' | translate }}"></i>
                                 <i *ngIf="element.status === 'OK'" class="fa-solid fa-check fa-lg my-4"
@@ -70,7 +71,7 @@
                                 <i class="fa-solid fa-vial"></i>
                             </button>
                             <button mat-icon-button
-                                    (click)="$event.stopPropagation(); deleteConfirmDialog(element.id, element.model_label)"
+                                    (click)="$event.stopPropagation(); deleteConfirmDialog(element.id, element['model_label'])"
                                     matTooltip="{{ 'GLOBAL.delete' | translate }}"
                                     class="inline-block align-text-top">
                                 <i class="fa-solid fa-trash text-lg"></i>
