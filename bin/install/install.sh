@@ -231,7 +231,7 @@ if [ -z $hostname ] && [ -z $port ] && [ -z $databaseUsername ] && [ -z $databas
         databaseUsername="$choice"
     fi
 
-    printf "Password [%s] : " "${bold}$customId${normal}"
+    printf "Password [%s] : " "${bold}$databaseUsername${normal}"
     read -r choice
 
     if [[ "$choice" == "" ]]; then
