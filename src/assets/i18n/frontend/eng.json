@@ -95,7 +95,6 @@
 		"status": "Status",
 		"test_model": "Test a model",
 		"train_a_model": "Train a model",
-		"train_time": "Training time",
 		"training": "Training in progress",
 		"training_done": "Training done",
 		"update_model": "Update model"
@@ -481,8 +480,7 @@
 		"event_date": "Event date",
 		"event_message": "Event message",
 		"filename": "Filename",
-		"id": "Technical id",
-		"id_simple": "Id",
+		"id": "Id",
 		"inactive": "Inactive",
 		"label": "Label",
 		"label_short": "Label short",
