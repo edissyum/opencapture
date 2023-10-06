@@ -130,6 +130,8 @@ def update_model(data, model_id, module, fill_history=False):
 
     if 'status' in data:
         args['set']['status'] = data['status']
+    if 'percentage' in data:
+        args['set']['percentage'] = data['percentage']
     if 'model_label' in data:
         args['set']['model_label'] = data['model_label']
     if 'model_path' in data:
@@ -257,9 +259,7 @@ def launch_train_model(model_name, csv_file, model_id, module):
     classifier = naive_bayes.MultinomialNB(alpha=0.1)  # the prediction model
 
     # pipeline
-    model = pipeline.Pipeline([("vectorizer", vectorizer),
-                               ("classifier", classifier)])
-
+    model = pipeline.Pipeline([("vectorizer", vectorizer), ("classifier", classifier)])
     model["classifier"].fit(x_train, y_train)
 
     # test the model on test values
@@ -338,7 +338,7 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id, module):
                              f" folder {str(j)} / {str(len(chosen_files))})")
 
                     args = {
-                        'status': str(round(total_files * percent, 1)) + " %"
+                        'percentage': str(round(total_files * percent, 1)) + " %"
                     }
                     update_model(args, model_id, module)
 
