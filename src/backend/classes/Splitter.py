@@ -306,8 +306,9 @@ class Splitter:
                 """
                     PDF masks value
                 """
-                if key in document:
-                    value = str(document[key] if document[key] else '').replace(' ', substitute)
+                if key in document['data']['custom_fields']:
+                    value = str(document['data']['custom_fields'][key] if document['data']['custom_fields'][key] else '')
+                    value = value.replace(' ', substitute)
                     mask_result.append(value)
                 elif key in metadata:
                     value = str(metadata[key] if metadata[key] else '').replace(' ', substitute)
@@ -410,8 +411,9 @@ class Splitter:
         """
         xml_as_string = re.sub(regex['splitter_xml_comment'], '', xml_as_string)
         xml_as_string = re.sub(regex['splitter_empty_line'], '', xml_as_string)
+
         try:
-            with open(xml_file_path, "w") as f:
+            with open(xml_file_path, "w", encoding='utf-8') as f:
                 minidom.parseString(xml_as_string)
                 f.write(xml_as_string)
         except Exception as e:

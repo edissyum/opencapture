@@ -7,11 +7,11 @@
             [matTooltip]="'DOCTYPE.clean_search_text' | translate">
         <i class="fa-solid fa-eraser text-lg"></i>
     </button>
-    <button class="text-gray-400 ml-4 mx-2 my-4 hover:text-green-400 hover:cursor-pointer" (click)="treeControl.collapseAll()"
+    <button class="text-gray-400 ml-4 mx-2 my-4 hover:text-green-400 hover:cursor-pointer" (click)="collapseAll()"
             [matTooltip]="'DOCTYPE.minimize_tree' | translate">
         <i class="fa-solid fa-minimize text-lg"></i>
     </button>
-    <button class="text-gray-400 mx-2 my-4 hover:text-green-400 hover:cursor-pointer" (click)="treeControl.expandAll()"
+    <button class="text-gray-400 mx-2 my-4 hover:text-green-400 hover:cursor-pointer" (click)="expandAll()"
             [matTooltip]="'DOCTYPE.maximize_tree' | translate">
         <i class="fa-solid fa-maximize text-lg"></i>
     </button>
@@ -61,7 +61,7 @@
             </button>
         </mat-tree-node>
         <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding="{{ node.padding }}">
-            <button matTreeNodeToggle class="p-1 rounded font-normal hover:bg-green-400 hover:text-slate-100"
+            <button matTreeNodeToggle class="whitespace-nowrap p-1 rounded font-normal hover:bg-green-400 hover:text-slate-100"
                     [ngClass]="selectedDoctypeInput.key === node.key ? 'bg-green-400 text-slate-100' : ''"
                     [attr.aria-label]="'Toggle ' + node.label"
                     (click)="selectFolder(node)">
