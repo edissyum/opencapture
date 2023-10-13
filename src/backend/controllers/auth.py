@@ -361,6 +361,7 @@ def token_required(view):
             token = None
             if 'Bearer' in request.headers['Authorization']:
                 token = request.headers['Authorization'].split('Bearer')[1].lstrip()
+
                 try:
                     token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
                     data = []
@@ -370,7 +371,11 @@ def token_required(view):
                         data = [token['process_token']]
                 except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
                         jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
-                    return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
+                    error_message = str(_e)
+                    if error_message == 'Signature has expired':
+                        error_message = gettext('SESSION_EXPIRED')
+                    return jsonify({"errors": gettext("JWT_ERROR"), "message": error_message}), 500
+
                 request.environ['fromBasicAuth'] = False
             elif 'Basic' in request.headers['Authorization']:
                 user_ws = True
