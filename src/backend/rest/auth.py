@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Essaid MEGHELLET <essaid.meghellet@edissyum.com>
 
-import json
 from flask_babel import gettext
 from src.backend.functions import rest_validator
 from src.backend.import_controllers import auth, privileges
