@@ -334,6 +334,19 @@ def remove_lock_by_user_id(user_id):
         return response, 400
 
 
+def remove_lock_by_batch_id(batch_id):
+    _, error = splitter.remove_lock_by_batch_id(batch_id)
+
+    if error in [None, '']:
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('REMOVE_LOCK_BY_USER_ID_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400
+
+
 def get_page_full_thumbnail(page_id):
     if 'docservers' in current_context:
         docservers = current_context.docservers

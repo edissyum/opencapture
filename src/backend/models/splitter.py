@@ -516,6 +516,27 @@ def remove_lock_by_user_id(args):
     return res
 
 
+def remove_lock_by_batch_id(batch_id):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    data = {
+        'table': ['splitter_batches'],
+        'set': {
+            'locked': False,
+            'locked_by': None
+        },
+        'where': ['id = %s'],
+        'data': [batch_id]
+    }
+    res = database.update(data)
+    return res
+
+
 def update_batch_documents_count(args):
     if 'database' in current_context:
         database = current_context.database
