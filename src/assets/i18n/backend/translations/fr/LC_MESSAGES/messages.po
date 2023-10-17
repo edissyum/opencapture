@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2023-10-13 16:51+0200\n"
+"POT-Creation-Date: 2023-10-17 16:12+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -15,12 +15,24 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.10.1\n"
 
-#: custom/edissyum/src/backend/process_queue_splitter.py:212
-#: custom/edissyum/src/backend/process_queue_verifier.py:183
-#: custom/test/src/backend/process_queue_splitter.py:213
-#: custom/test/src/backend/process_queue_verifier.py:184
+#: custom/300_release/src/backend/process_queue_splitter.py:213
+#: custom/300_release/src/backend/process_queue_verifier.py:184
+#: custom/dev_300/src/backend/process_queue_splitter.py:213
+#: custom/dev_300/src/backend/process_queue_verifier.py:238
+#: custom/dev_300_bis/src/backend/process_queue_splitter.py:213
+#: custom/dev_300_bis/src/backend/process_queue_verifier.py:184
+#: custom/dev_latest/src/backend/process_queue_splitter.py:200
+#: custom/dev_latest/src/backend/process_queue_verifier.py:238
+#: custom/dev_load_users/src/backend/process_queue_splitter.py:199
+#: custom/dev_load_users/src/backend/process_queue_verifier.py:238
+#: custom/edissyum_bis/src/backend/process_queue_splitter.py:213
+#: custom/edissyum_bis/src/backend/process_queue_verifier.py:184
+#: custom/edissyum_test/src/backend/process_queue_splitter.py:213
+#: custom/edissyum_test/src/backend/process_queue_verifier.py:184
+#: custom/release/src/backend/process_queue_splitter.py:213
+#: custom/release/src/backend/process_queue_verifier.py:184
 msgid "FILE_UPLOADED_WORKFLOW"
 msgstr "Fichier téléversé avec le workflow"
 
@@ -65,7 +77,7 @@ msgstr "Erreur lors de la vérification du dossier"
 msgid "FOLDER_DOES_NOT_EXIST"
 msgstr "Dossier inexistant"
 
-#: src/backend/splitter_exports.py:343
+#: src/backend/splitter_exports.py:345
 msgid "OPENADS_ADD_DOC_ERROR"
 msgstr "Erreur lors de l'envoi de document à OpenADS"
 
@@ -182,7 +194,7 @@ msgstr "Un compte tiers existe déjà avec ce numéro de TVA"
 #: src/backend/controllers/accounts.py:453 src/backend/controllers/user.py:248
 #: src/backend/controllers/user.py:278 src/backend/models/accounts.py:231
 #: src/backend/models/accounts.py:254 src/backend/models/accounts.py:273
-#: src/backend/models/user.py:210
+#: src/backend/models/user.py:213
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du compte client"
 
@@ -271,8 +283,8 @@ msgid "FILE_DOESNT_EXISTS"
 msgstr "Le fichier de ce modèle n'existe pas"
 
 #: src/backend/controllers/auth.py:66 src/backend/controllers/auth.py:317
-#: src/backend/controllers/auth.py:376 src/backend/controllers/auth.py:386
-#: src/backend/controllers/auth.py:396 src/backend/controllers/auth.py:441
+#: src/backend/controllers/auth.py:377 src/backend/controllers/auth.py:388
+#: src/backend/controllers/auth.py:398 src/backend/controllers/auth.py:443
 msgid "JWT_ERROR"
 msgstr "Erreur lors de l'authentification par token"
 
@@ -290,8 +302,8 @@ msgstr "Déconnexion de l'utilisateur"
 
 #: src/backend/controllers/auth.py:235 src/backend/controllers/auth.py:250
 #: src/backend/controllers/auth.py:296 src/backend/controllers/auth.py:349
-#: src/backend/controllers/auth.py:472 src/backend/controllers/auth.py:483
-#: src/backend/controllers/auth.py:493 src/backend/controllers/auth.py:520
+#: src/backend/controllers/auth.py:474 src/backend/controllers/auth.py:485
+#: src/backend/controllers/auth.py:495 src/backend/controllers/auth.py:522
 #: src/backend/rest/auth.py:82
 msgid "LOGIN_ERROR"
 msgstr "Erreur lors de la connexion"
@@ -306,99 +318,99 @@ msgstr ""
 msgid "LOGIN"
 msgstr "Connexion de l'utilisateur"
 
-#: src/backend/controllers/auth.py:375
+#: src/backend/controllers/auth.py:376
 msgid "SESSION_EXPIRED"
 msgstr "Votre session à expirée, veuillez vous reconnecter"
 
-#: src/backend/controllers/auth.py:386
+#: src/backend/controllers/auth.py:388
 msgid "AUTHORIZATION_HEADER_INCORRECT"
 msgstr "Le header d'authentification est incorrect ('Bearer' ou 'Basic' attendu)"
 
-#: src/backend/controllers/auth.py:396
+#: src/backend/controllers/auth.py:398
 msgid "ACCOUNT_ALREADY_LOGGED"
 msgstr ""
 "Votre compte est déjà connecté sur un autre poste. Une seule connexion "
 "est autorisée par utilisateur"
 
-#: src/backend/controllers/auth.py:428
+#: src/backend/controllers/auth.py:430
 msgid "FIRSTNAME"
 msgstr "Prénom"
 
-#: src/backend/controllers/auth.py:443 src/backend/controllers/auth.py:448
+#: src/backend/controllers/auth.py:445 src/backend/controllers/auth.py:450
 msgid "REST_ERROR"
 msgstr "Erreur lors de l'authentification avec l'utilisateur webservice"
 
-#: src/backend/controllers/auth.py:444
+#: src/backend/controllers/auth.py:446
 msgid "USER_DO_NOT_EXISTS"
 msgstr "L'utilisateur n'existe pas en base de données"
 
-#: src/backend/controllers/auth.py:448
+#: src/backend/controllers/auth.py:450
 msgid "PASSWORD_INCORRECT"
 msgstr "Le mot de passe est incorrect"
 
-#: src/backend/controllers/auth.py:453
+#: src/backend/controllers/auth.py:455
 msgid "AUTH_ERROR"
 msgstr "Erreur lors de l'authentification"
 
-#: src/backend/controllers/auth.py:453
+#: src/backend/controllers/auth.py:455
 msgid "VALID_TOKEN_OR_USER_WS_MANDATORY"
 msgstr "Un token valide ou un compte de webservice est obligatoire"
 
-#: src/backend/controllers/auth.py:484
+#: src/backend/controllers/auth.py:486
 msgid "SEVERAL_AUTH_METHODS_ENABLED"
 msgstr "Plusieurs méthodes d'authentification sont activées"
 
-#: src/backend/controllers/auth.py:508
+#: src/backend/controllers/auth.py:510
 msgid "LDAP_ERROR"
 msgstr "Erreur LDAP"
 
-#: src/backend/controllers/auth.py:509 src/backend/models/auth.py:140
+#: src/backend/controllers/auth.py:511 src/backend/models/auth.py:140
 msgid "NO_LDAP_CONFIGURATIONS_FOUND"
 msgstr "Aucune configurations LDAP n'est disponible"
 
-#: src/backend/controllers/auth.py:535
+#: src/backend/controllers/auth.py:537
 msgid "LOADING_METHODS_AUTH_ERROR"
 msgstr "Echec lors de l'exécution de la requête"
 
-#: src/backend/controllers/auth.py:547
+#: src/backend/controllers/auth.py:549
 msgid "DISABLE_LOGIN_METHOD_ERROR"
 msgstr "Erreur lors de la désactivation de cette méthode"
 
-#: src/backend/controllers/auth.py:559
+#: src/backend/controllers/auth.py:561
 msgid "ENABLE_LOGIN_METHOD_ERROR"
 msgstr "Erreur lors de l'activation de cette méthode"
 
-#: src/backend/controllers/auth.py:589 src/backend/controllers/auth.py:776
-#: src/backend/controllers/auth.py:832 src/backend/controllers/auth.py:847
-#: src/backend/controllers/auth.py:855 src/backend/controllers/auth.py:861
+#: src/backend/controllers/auth.py:591 src/backend/controllers/auth.py:778
+#: src/backend/controllers/auth.py:834 src/backend/controllers/auth.py:849
+#: src/backend/controllers/auth.py:857 src/backend/controllers/auth.py:863
 msgid "LDAP_CONNECTION_ERROR"
 msgstr "Impossible de se connecter au serveur LDAP"
 
-#: src/backend/controllers/auth.py:590
+#: src/backend/controllers/auth.py:592
 msgid "LOGIN_LDAP_ERROR"
 msgstr "Information(s) de connexion incorrecte(s)"
 
-#: src/backend/controllers/auth.py:764 src/backend/controllers/auth.py:770
+#: src/backend/controllers/auth.py:766 src/backend/controllers/auth.py:772
 msgid "LDAP_SYNCHRO_INFOS_ERROR"
 msgstr "Information(s) de synchronisation incorrecte(s)"
 
-#: src/backend/controllers/auth.py:766 src/backend/controllers/auth.py:772
-#: src/backend/controllers/auth.py:778 src/backend/controllers/auth.py:784
-#: src/backend/controllers/auth.py:790
+#: src/backend/controllers/auth.py:768 src/backend/controllers/auth.py:774
+#: src/backend/controllers/auth.py:780 src/backend/controllers/auth.py:786
+#: src/backend/controllers/auth.py:792
 msgid "LDAP_SYNCHRO_ERROR"
 msgstr "Erreur lors de la synchronisation LDAP"
 
-#: src/backend/controllers/auth.py:782 src/backend/controllers/auth.py:788
-#: src/backend/controllers/auth.py:867 src/backend/rest/auth.py:182
+#: src/backend/controllers/auth.py:784 src/backend/controllers/auth.py:790
+#: src/backend/controllers/auth.py:869 src/backend/rest/auth.py:182
 msgid "INFOS_LDAP_NOT_COMPLETE"
 msgstr "Informations non complètes"
 
-#: src/backend/controllers/auth.py:830 src/backend/controllers/auth.py:845
-#: src/backend/controllers/auth.py:853
+#: src/backend/controllers/auth.py:832 src/backend/controllers/auth.py:847
+#: src/backend/controllers/auth.py:855
 msgid "BAD_CONNECTION_LDAP_INFOS"
 msgstr "Information(s) incorrecte(s)"
 
-#: src/backend/controllers/auth.py:865 src/backend/rest/auth.py:183
+#: src/backend/controllers/auth.py:867 src/backend/rest/auth.py:183
 msgid "NOT_COMPLETE_CONNECTION_INFOS"
 msgstr "Il manque une ou plusieurs informations pour établir la connexion"
 
@@ -497,7 +509,7 @@ msgstr "Erreur lors de l'ajout d'un type de document"
 #: src/backend/controllers/doctypes.py:236
 #: src/backend/controllers/doctypes.py:265
 #: src/backend/controllers/doctypes.py:291
-#: src/backend/controllers/doctypes.py:320 src/backend/controllers/user.py:556
+#: src/backend/controllers/doctypes.py:320 src/backend/controllers/user.py:559
 msgid "DOCTYPE_ERROR"
 msgstr "Erreur sur les types de documents"
 
@@ -779,7 +791,7 @@ msgstr "Erreur lors de la récupération des privilèges"
 
 #: src/backend/controllers/roles.py:39 src/backend/controllers/user.py:122
 #: src/backend/controllers/user.py:138 src/backend/controllers/user.py:219
-#: src/backend/models/user.py:140 src/backend/models/user.py:187
+#: src/backend/models/user.py:143 src/backend/models/user.py:190
 msgid "GET_USER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de l'utilisateur"
 
@@ -970,54 +982,54 @@ msgstr "Mise à jour de l'utilisateur"
 msgid "ERROR_PASSWORD_NOT_MATCH"
 msgstr "Les mots de passes ne correspondent pas"
 
-#: src/backend/controllers/user.py:337
+#: src/backend/controllers/user.py:340
 msgid "USER_UPDATED"
 msgstr "Mise à jour du compte utilisateur&nbsp<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:342 src/backend/controllers/user.py:348
-#: src/backend/models/user.py:255 src/backend/models/user.py:321
+#: src/backend/controllers/user.py:345 src/backend/controllers/user.py:351
+#: src/backend/models/user.py:258 src/backend/models/user.py:324
 msgid "UPDATE_USER_ERROR"
 msgstr "Erreur lors de la mise à jour de l'utilisateur"
 
-#: src/backend/controllers/user.py:364
+#: src/backend/controllers/user.py:367
 msgid "DELETE_USER"
 msgstr "Suppression de l'utilisateur&nbsp;<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:372 src/backend/controllers/user.py:378
+#: src/backend/controllers/user.py:375 src/backend/controllers/user.py:381
 msgid "DELETE_USER_ERROR"
 msgstr "Erreur lors de la suppression de l'utilisateur"
 
-#: src/backend/controllers/user.py:394
+#: src/backend/controllers/user.py:397
 msgid "DISABLE_USER"
 msgstr "Désactivation de l'utilisateur&nbsp;<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:402 src/backend/controllers/user.py:408
+#: src/backend/controllers/user.py:405 src/backend/controllers/user.py:411
 msgid "DISABLE_USER_ERROR"
 msgstr "Erreur lors de désactiver de l'utilisateur"
 
-#: src/backend/controllers/user.py:424
+#: src/backend/controllers/user.py:427
 msgid "ENABLE_USER"
 msgstr "Activation de l'utilisateur&nbsp;<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:432 src/backend/controllers/user.py:438
+#: src/backend/controllers/user.py:435 src/backend/controllers/user.py:441
 msgid "ENABLE_USER_ERROR"
 msgstr "Erreur lors de l'activation de l'utilisateur"
 
-#: src/backend/controllers/user.py:455 src/backend/controllers/user.py:461
-#: src/backend/models/user.py:277
+#: src/backend/controllers/user.py:458 src/backend/controllers/user.py:464
+#: src/backend/models/user.py:280
 msgid "UPDATE_CUSTOMERS_USER_ERROR"
 msgstr "Erreur lors de la mise à jour des comptes clients de l'utilisateur"
 
-#: src/backend/controllers/user.py:476 src/backend/controllers/user.py:483
-#: src/backend/models/user.py:299
+#: src/backend/controllers/user.py:479 src/backend/controllers/user.py:486
+#: src/backend/models/user.py:302
 msgid "UPDATE_FORMS_USER_ERROR"
 msgstr "Erreur lors de la mise à jour des formulaires de l'utilisateur"
 
-#: src/backend/controllers/user.py:527
+#: src/backend/controllers/user.py:530
 msgid "USER_EXPORT_ERROR"
 msgstr "Erreur lors de l'export des utilisateurs"
 
-#: src/backend/controllers/user.py:572
+#: src/backend/controllers/user.py:575
 msgid "GET_DEFAULT_ROUTE_ERROR"
 msgstr "Erreur lors de la récupération de la route par défaut"
 
@@ -1383,11 +1395,15 @@ msgstr "L'utilisateur"
 msgid "ALREADY_REGISTERED"
 msgstr "est déjà enregistré"
 
-#: src/backend/models/user.py:163
+#: src/backend/models/user.py:50
+msgid "USER_RESTORED"
+msgstr "l'utilisateur est restauré"
+
+#: src/backend/models/user.py:166
 msgid "GET_USER_BY_MAIL_ERROR"
 msgstr "Aucun utilisateur asssocié à cette addresse email"
 
-#: src/backend/models/user.py:232
+#: src/backend/models/user.py:235
 msgid "GET_FORMS_BY_USER_ID_ERROR"
 msgstr "Erreur lors de la récupération des formulaires de l'utilisateur"
 
@@ -1565,4 +1581,16 @@ msgid "INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET"
 msgstr ""
 "L'utilisation de l'interface est désactivée dans le workflow ou l'URL "
 "unique n'est pas configurée correctement"
+
+#~ msgid "USER"
+#~ msgstr "L'utilisateur"
+
+#~ msgid "ALREADY_REGISTERED"
+#~ msgstr "est déjà enregistré"
+
+#~ msgid "ALREADY_REGISTERED_USER_REACTIVATE"
+#~ msgstr "est déjà enregistré, l'utilisateur est réactivé. "
+
+#~ msgid "USER_REACTIVATED"
+#~ msgstr "l'utilisateur est réactivé"
 
