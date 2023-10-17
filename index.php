@@ -46,86 +46,89 @@
         }
         if (count($customs) == 1) {
     ?>
-            <script>
-                function isValidFQDN(str) {
-                    return /(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}$)/g.test(str);
-                }
-                let currentUrl = window.location.href.replaceAll('http:', '').replaceAll('https:', '').split("/").filter(elem => elem);
-                const currentCustom = '<?php echo $customs[0]; ?>';
-                if (isValidFQDN(currentUrl[0])) {
-                    const fqdn = currentUrl[0].replaceAll('.', '_').replaceAll('-','_');
-                    if (fqdn === currentCustom) {
-                        location.href = "dist";
-                    }
-                }
-
-                let lastUrlElement = currentUrl[currentUrl.length - 1];
-                if (lastUrlElement !== currentCustom) {
-                    location.href = currentCustom + '/dist';
-                } else {
+        <script>
+            function isValidFQDN(str) {
+                return /(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}$)/g.test(str);
+            }
+            let currentUrl = window.location.href.replaceAll('http:', '').replaceAll('https:', '').split("/").filter(elem => elem);
+            const currentCustom = '<?php echo $customs[0]; ?>';
+            if (isValidFQDN(currentUrl[0])) {
+                const fqdn = currentUrl[0].replaceAll('.', '_').replaceAll('-','_');
+                if (fqdn === currentCustom) {
                     location.href = "dist";
-                }
-            </script>
-    <?php
-        }
-    ?>
-<div class="instances_title">
-    <h2>Liste des instances installées :</h2>
-    <hr>
-</div>
-<div class="customs_list">
-    <?php
-        function isValidDomainName($domain) {
-            return preg_match('/(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}$)/', $domain);
-        }
-        $current_url = sprintf(
-            '%s://%s/%s',
-            isset($_SERVER['HTTPS']) ? 'https' : 'http',
-            $_SERVER['HTTP_HOST'],
-            $_SERVER['REQUEST_URI']
-        );
-        $current_url = str_replace('http://', '', $current_url);
-        $current_url = str_replace('https://', '', $current_url);
-        $current_url = preg_replace('~/+~', '/', $current_url);
-        $current_fqdn = explode('/', $current_url)[0];
-
-        $customCpt = 0;
-        foreach($customs as $custom) {
-            if (is_dir($custom)) {
-                $customCpt += 1;
-                $current_fqdn_clean = preg_replace('/\./', '_', $current_fqdn);
-                $current_fqdn_clean = preg_replace('/-/', '_', $current_fqdn_clean);
-
-                if (isValidDomainName($current_fqdn) && $current_fqdn_clean == $custom) {
-                    ?>
-                        <a href="dist">
-                            <button>
-                                <?php echo $custom; ?>
-                            </button>
-                        </a>
-                    <?php
-                } else {
-                    ?>
-                        <a href="<?php echo $custom; ?>/dist">
-                            <button>
-                                <?php echo $custom; ?>
-                            </button>
-                        </a>
-                    <?php
+                    exit(0);
                 }
             }
-        }
 
-        if ($customCpt == 0) {
-            ?>
-            <span>
-                            Aucune instance n'est configurée. Merci de vous référer à la
-                            <a target="_blank" href="https://kutt.it/DocumentationCreateInstance">documentation officielle</a>
-                            pour en créer une
-                        </span>
-            <?php
+            let lastUrlElement = currentUrl[currentUrl.length - 1];
+            if (lastUrlElement !== currentCustom) {
+                location.href = currentCustom + '/dist';
+                exit(0);
+            } else {
+                location.href = "dist";
+                exit(0);
+            }
+        </script>
+    <?php
         }
     ?>
-</div>
+    <div class="instances_title">
+        <h2>Liste des instances installées :</h2>
+        <hr>
+    </div>
+    <div class="customs_list">
+        <?php
+            function isValidDomainName($domain) {
+                return preg_match('/(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}$)/', $domain);
+            }
+            $current_url = sprintf(
+                '%s://%s/%s',
+                isset($_SERVER['HTTPS']) ? 'https' : 'http',
+                $_SERVER['HTTP_HOST'],
+                $_SERVER['REQUEST_URI']
+            );
+            $current_url = str_replace('http://', '', $current_url);
+            $current_url = str_replace('https://', '', $current_url);
+            $current_url = preg_replace('~/+~', '/', $current_url);
+            $current_fqdn = explode('/', $current_url)[0];
+
+            $customCpt = 0;
+            foreach($customs as $custom) {
+                if (is_dir($custom)) {
+                    $customCpt += 1;
+                    $current_fqdn_clean = preg_replace('/\./', '_', $current_fqdn);
+                    $current_fqdn_clean = preg_replace('/-/', '_', $current_fqdn_clean);
+
+                    if (isValidDomainName($current_fqdn) && $current_fqdn_clean == $custom) {
+                        ?>
+                            <a href="dist">
+                                <button>
+                                    <?php echo $custom; ?>
+                                </button>
+                            </a>
+                        <?php
+                    } else {
+                        ?>
+                            <a href="<?php echo $custom; ?>/dist">
+                                <button>
+                                    <?php echo $custom; ?>
+                                </button>
+                            </a>
+                        <?php
+                    }
+                }
+            }
+
+            if ($customCpt == 0) {
+                ?>
+                <span>
+                    Aucune instance n'est configurée. Merci de vous référer à la
+                    <a target="_blank" href="https://kutt.it/DocumentationCreateInstance">documentation officielle</a>
+                    pour en créer une.
+                </span>
+                <?php
+            }
+        ?>
+    </div>
 </body>
 </html>

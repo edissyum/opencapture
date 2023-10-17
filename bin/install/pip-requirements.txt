@@ -13,7 +13,7 @@ pypdf==3.16.4
 pyzbar==0.1.9
 qrcode==7.4.2
 kuyruk==9.4.1
-pillow==10.0.1
+pillow==10.1.0
 imutils==0.5.4
 thefuzz==0.20.0
 psycopg2==2.9.9
@@ -22,9 +22,9 @@ cmislib3==1.0.8
 pyflakes==3.1.0
 requests==2.31.0
 ocrmypdf==15.2.0
-xlsxwriter==3.1.7
+xlsxwriter==3.1.8
 pdf2image==1.16.3
-gitpython==3.1.37
+gitpython==3.1.38
 imap-tools==1.4.0
 flask_cors==4.0.0
 fs-watcher==1.0.11
