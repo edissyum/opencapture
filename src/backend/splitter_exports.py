@@ -308,7 +308,7 @@ def handle_cmis_output(output, batch, log, docservers, configurations, regex):
     return {'result_batch': batch}, 200
 
 
-def handle_openads_output(output, batch, docservers, log, configurations):
+def handle_openads_output(output, batch, log, docservers, configurations):
     openads_auth = get_output_parameters(output['data']['options']['auth'])
     openads_params = get_output_parameters(output['data']['options']['parameters'])
     _openads = _OpenADS(openads_auth['openads_api'], openads_auth['login'], openads_auth['password'])
@@ -330,14 +330,16 @@ def handle_openads_output(output, batch, docservers, log, configurations):
         'extension': 'pdf',
         'folder_out': docservers['TMP_PATH'],
         'separator': openads_params['separator'],
-        'filename': openads_params['pdf_filename']
+        'filename': openads_params['pdf_filename'],
+        'compress_type': output['compress_type']
     }
+
     res_export_pdf, status = export_pdf_files(batch, parameters, log, docservers, configurations)
     if status != 200:
         return res_export_pdf
 
-    pdf_paths = res_export_pdf['paths']
-    openads_res = _openads.create_documents(openads_folder, pdf_paths, batch['documents'])
+    batch = res_export_pdf['result_batch']
+    openads_res = _openads.create_documents(openads_folder, batch['outputs_result_files'], batch['documents'])
     if not openads_res['status']:
         response = {
             "errors": gettext('OPENADS_ADD_DOC_ERROR'),
