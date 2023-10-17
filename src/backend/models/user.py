@@ -33,7 +33,7 @@ def create_user(args):
         database = _vars[0]
     error = None
     user = database.select({
-        'select': ['id'],
+        'select': ['id', 'status'],
         'table': ['users'],
         'where': ['username = %s'],
         'data': [args['username']]
@@ -45,6 +45,9 @@ def create_user(args):
         error = gettext('BAD_PASSWORD')
     elif user:
         error = gettext('USER') + ' ' + args['username'] + ' ' + gettext('ALREADY_REGISTERED')
+        if user[0]['status'] == 'DEL':
+            update_user({'set': {'status': 'OK'}, 'user_id': user[0]['id']})
+            error += ', ' + gettext('USER_RESTORED')
 
     if error is None:
         user_id = database.insert({

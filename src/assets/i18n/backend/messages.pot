@@ -8,19 +8,31 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-10-13 16:51+0200\n"
+"POT-Creation-Date: 2023-10-17 16:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.10.1\n"
 
-#: custom/edissyum/src/backend/process_queue_splitter.py:212
-#: custom/edissyum/src/backend/process_queue_verifier.py:183
-#: custom/test/src/backend/process_queue_splitter.py:213
-#: custom/test/src/backend/process_queue_verifier.py:184
+#: custom/300_release/src/backend/process_queue_splitter.py:213
+#: custom/300_release/src/backend/process_queue_verifier.py:184
+#: custom/dev_300/src/backend/process_queue_splitter.py:213
+#: custom/dev_300/src/backend/process_queue_verifier.py:238
+#: custom/dev_300_bis/src/backend/process_queue_splitter.py:213
+#: custom/dev_300_bis/src/backend/process_queue_verifier.py:184
+#: custom/dev_latest/src/backend/process_queue_splitter.py:200
+#: custom/dev_latest/src/backend/process_queue_verifier.py:238
+#: custom/dev_load_users/src/backend/process_queue_splitter.py:199
+#: custom/dev_load_users/src/backend/process_queue_verifier.py:238
+#: custom/edissyum_bis/src/backend/process_queue_splitter.py:213
+#: custom/edissyum_bis/src/backend/process_queue_verifier.py:184
+#: custom/edissyum_test/src/backend/process_queue_splitter.py:213
+#: custom/edissyum_test/src/backend/process_queue_verifier.py:184
+#: custom/release/src/backend/process_queue_splitter.py:213
+#: custom/release/src/backend/process_queue_verifier.py:184
 msgid "FILE_UPLOADED_WORKFLOW"
 msgstr ""
 
@@ -65,7 +77,7 @@ msgstr ""
 msgid "FOLDER_DOES_NOT_EXIST"
 msgstr ""
 
-#: src/backend/splitter_exports.py:343
+#: src/backend/splitter_exports.py:345
 msgid "OPENADS_ADD_DOC_ERROR"
 msgstr ""
 
@@ -177,7 +189,7 @@ msgstr ""
 #: src/backend/controllers/accounts.py:453 src/backend/controllers/user.py:248
 #: src/backend/controllers/user.py:278 src/backend/models/accounts.py:231
 #: src/backend/models/accounts.py:254 src/backend/models/accounts.py:273
-#: src/backend/models/user.py:210
+#: src/backend/models/user.py:213
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr ""
 
@@ -266,8 +278,8 @@ msgid "FILE_DOESNT_EXISTS"
 msgstr ""
 
 #: src/backend/controllers/auth.py:66 src/backend/controllers/auth.py:317
-#: src/backend/controllers/auth.py:376 src/backend/controllers/auth.py:386
-#: src/backend/controllers/auth.py:396 src/backend/controllers/auth.py:441
+#: src/backend/controllers/auth.py:377 src/backend/controllers/auth.py:388
+#: src/backend/controllers/auth.py:398 src/backend/controllers/auth.py:443
 msgid "JWT_ERROR"
 msgstr ""
 
@@ -285,8 +297,8 @@ msgstr ""
 
 #: src/backend/controllers/auth.py:235 src/backend/controllers/auth.py:250
 #: src/backend/controllers/auth.py:296 src/backend/controllers/auth.py:349
-#: src/backend/controllers/auth.py:472 src/backend/controllers/auth.py:483
-#: src/backend/controllers/auth.py:493 src/backend/controllers/auth.py:520
+#: src/backend/controllers/auth.py:474 src/backend/controllers/auth.py:485
+#: src/backend/controllers/auth.py:495 src/backend/controllers/auth.py:522
 #: src/backend/rest/auth.py:82
 msgid "LOGIN_ERROR"
 msgstr ""
@@ -299,97 +311,97 @@ msgstr ""
 msgid "LOGIN"
 msgstr ""
 
-#: src/backend/controllers/auth.py:375
+#: src/backend/controllers/auth.py:376
 msgid "SESSION_EXPIRED"
 msgstr ""
 
-#: src/backend/controllers/auth.py:386
+#: src/backend/controllers/auth.py:388
 msgid "AUTHORIZATION_HEADER_INCORRECT"
 msgstr ""
 
-#: src/backend/controllers/auth.py:396
+#: src/backend/controllers/auth.py:398
 msgid "ACCOUNT_ALREADY_LOGGED"
 msgstr ""
 
-#: src/backend/controllers/auth.py:428
+#: src/backend/controllers/auth.py:430
 msgid "FIRSTNAME"
 msgstr ""
 
-#: src/backend/controllers/auth.py:443 src/backend/controllers/auth.py:448
+#: src/backend/controllers/auth.py:445 src/backend/controllers/auth.py:450
 msgid "REST_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:444
+#: src/backend/controllers/auth.py:446
 msgid "USER_DO_NOT_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/auth.py:448
+#: src/backend/controllers/auth.py:450
 msgid "PASSWORD_INCORRECT"
 msgstr ""
 
-#: src/backend/controllers/auth.py:453
+#: src/backend/controllers/auth.py:455
 msgid "AUTH_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:453
+#: src/backend/controllers/auth.py:455
 msgid "VALID_TOKEN_OR_USER_WS_MANDATORY"
 msgstr ""
 
-#: src/backend/controllers/auth.py:484
+#: src/backend/controllers/auth.py:486
 msgid "SEVERAL_AUTH_METHODS_ENABLED"
 msgstr ""
 
-#: src/backend/controllers/auth.py:508
+#: src/backend/controllers/auth.py:510
 msgid "LDAP_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:509 src/backend/models/auth.py:140
+#: src/backend/controllers/auth.py:511 src/backend/models/auth.py:140
 msgid "NO_LDAP_CONFIGURATIONS_FOUND"
 msgstr ""
 
-#: src/backend/controllers/auth.py:535
+#: src/backend/controllers/auth.py:537
 msgid "LOADING_METHODS_AUTH_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:547
+#: src/backend/controllers/auth.py:549
 msgid "DISABLE_LOGIN_METHOD_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:559
+#: src/backend/controllers/auth.py:561
 msgid "ENABLE_LOGIN_METHOD_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:589 src/backend/controllers/auth.py:776
-#: src/backend/controllers/auth.py:832 src/backend/controllers/auth.py:847
-#: src/backend/controllers/auth.py:855 src/backend/controllers/auth.py:861
+#: src/backend/controllers/auth.py:591 src/backend/controllers/auth.py:778
+#: src/backend/controllers/auth.py:834 src/backend/controllers/auth.py:849
+#: src/backend/controllers/auth.py:857 src/backend/controllers/auth.py:863
 msgid "LDAP_CONNECTION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:590
+#: src/backend/controllers/auth.py:592
 msgid "LOGIN_LDAP_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:764 src/backend/controllers/auth.py:770
+#: src/backend/controllers/auth.py:766 src/backend/controllers/auth.py:772
 msgid "LDAP_SYNCHRO_INFOS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:766 src/backend/controllers/auth.py:772
-#: src/backend/controllers/auth.py:778 src/backend/controllers/auth.py:784
-#: src/backend/controllers/auth.py:790
+#: src/backend/controllers/auth.py:768 src/backend/controllers/auth.py:774
+#: src/backend/controllers/auth.py:780 src/backend/controllers/auth.py:786
+#: src/backend/controllers/auth.py:792
 msgid "LDAP_SYNCHRO_ERROR"
 msgstr ""
 
-#: src/backend/controllers/auth.py:782 src/backend/controllers/auth.py:788
-#: src/backend/controllers/auth.py:867 src/backend/rest/auth.py:182
+#: src/backend/controllers/auth.py:784 src/backend/controllers/auth.py:790
+#: src/backend/controllers/auth.py:869 src/backend/rest/auth.py:182
 msgid "INFOS_LDAP_NOT_COMPLETE"
 msgstr ""
 
-#: src/backend/controllers/auth.py:830 src/backend/controllers/auth.py:845
-#: src/backend/controllers/auth.py:853
+#: src/backend/controllers/auth.py:832 src/backend/controllers/auth.py:847
+#: src/backend/controllers/auth.py:855
 msgid "BAD_CONNECTION_LDAP_INFOS"
 msgstr ""
 
-#: src/backend/controllers/auth.py:865 src/backend/rest/auth.py:183
+#: src/backend/controllers/auth.py:867 src/backend/rest/auth.py:183
 msgid "NOT_COMPLETE_CONNECTION_INFOS"
 msgstr ""
 
@@ -770,7 +782,7 @@ msgstr ""
 
 #: src/backend/controllers/roles.py:39 src/backend/controllers/user.py:122
 #: src/backend/controllers/user.py:138 src/backend/controllers/user.py:219
-#: src/backend/models/user.py:140 src/backend/models/user.py:187
+#: src/backend/models/user.py:143 src/backend/models/user.py:190
 msgid "GET_USER_BY_ID_ERROR"
 msgstr ""
 
@@ -862,46 +874,50 @@ msgstr ""
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:433
+#: src/backend/controllers/splitter.py:344
+msgid "REMOVE_LOCK_BY_BATCH_ID_ERROR"
+msgstr ""
+
+#: src/backend/controllers/splitter.py:446
 msgid "ADD_DOCUMENT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:459
+#: src/backend/controllers/splitter.py:472
 msgid "UPDATE_BATCH_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:472
+#: src/backend/controllers/splitter.py:485
 msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:485
+#: src/backend/controllers/splitter.py:498
 #: src/backend/controllers/verifier.py:379
 #: src/backend/controllers/verifier.py:385
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:500
-#: src/backend/controllers/splitter.py:521
-#: src/backend/controllers/splitter.py:536
-#: src/backend/controllers/splitter.py:551
+#: src/backend/controllers/splitter.py:513
+#: src/backend/controllers/splitter.py:534
+#: src/backend/controllers/splitter.py:549
+#: src/backend/controllers/splitter.py:564
 msgid "UPDATE_PAGES_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:565
+#: src/backend/controllers/splitter.py:578
 msgid "CMIS_CONNECTION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:578
+#: src/backend/controllers/splitter.py:591
 msgid "OPENADS_CONNECTION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:678
-#: src/backend/controllers/verifier.py:763 src/backend/models/splitter.py:572
+#: src/backend/controllers/splitter.py:691
+#: src/backend/controllers/verifier.py:763 src/backend/models/splitter.py:593
 #: src/backend/models/verifier.py:195
 msgid "GET_TOTALS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:777
+#: src/backend/controllers/splitter.py:790
 msgid "GET_BATCH_OUTPUTS_ERROR"
 msgstr ""
 
@@ -962,7 +978,7 @@ msgid "USER_UPDATED"
 msgstr ""
 
 #: src/backend/controllers/user.py:342 src/backend/controllers/user.py:348
-#: src/backend/models/user.py:255 src/backend/models/user.py:321
+#: src/backend/models/user.py:258 src/backend/models/user.py:324
 msgid "UPDATE_USER_ERROR"
 msgstr ""
 
@@ -991,12 +1007,12 @@ msgid "ENABLE_USER_ERROR"
 msgstr ""
 
 #: src/backend/controllers/user.py:455 src/backend/controllers/user.py:461
-#: src/backend/models/user.py:277
+#: src/backend/models/user.py:280
 msgid "UPDATE_CUSTOMERS_USER_ERROR"
 msgstr ""
 
 #: src/backend/controllers/user.py:476 src/backend/controllers/user.py:483
-#: src/backend/models/user.py:299
+#: src/backend/models/user.py:302
 msgid "UPDATE_FORMS_USER_ERROR"
 msgstr ""
 
@@ -1370,11 +1386,15 @@ msgstr ""
 msgid "ALREADY_REGISTERED"
 msgstr ""
 
-#: src/backend/models/user.py:163
+#: src/backend/models/user.py:50
+msgid "USER_RESTORED"
+msgstr ""
+
+#: src/backend/models/user.py:166
 msgid "GET_USER_BY_MAIL_ERROR"
 msgstr ""
 
-#: src/backend/models/user.py:232
+#: src/backend/models/user.py:235
 msgid "GET_FORMS_BY_USER_ID_ERROR"
 msgstr ""
 
@@ -1468,39 +1488,39 @@ msgstr ""
 #: src/backend/rest/splitter.py:109 src/backend/rest/splitter.py:119
 #: src/backend/rest/splitter.py:130 src/backend/rest/splitter.py:144
 #: src/backend/rest/splitter.py:155 src/backend/rest/splitter.py:166
-#: src/backend/rest/splitter.py:177 src/backend/rest/splitter.py:196
-#: src/backend/rest/splitter.py:207 src/backend/rest/splitter.py:222
-#: src/backend/rest/splitter.py:225 src/backend/rest/splitter.py:243
-#: src/backend/rest/splitter.py:255 src/backend/rest/splitter.py:266
-#: src/backend/rest/splitter.py:277 src/backend/rest/splitter.py:287
-#: src/backend/rest/splitter.py:298 src/backend/rest/status.py:31
-#: src/backend/rest/user.py:30 src/backend/rest/user.py:41
-#: src/backend/rest/user.py:66 src/backend/rest/user.py:76
-#: src/backend/rest/user.py:108 src/backend/rest/user.py:119
-#: src/backend/rest/user.py:129 src/backend/rest/user.py:139
-#: src/backend/rest/user.py:156 src/backend/rest/user.py:167
-#: src/backend/rest/user.py:177 src/backend/rest/user.py:188
-#: src/backend/rest/user.py:203 src/backend/rest/verifier.py:45
-#: src/backend/rest/verifier.py:96 src/backend/rest/verifier.py:108
-#: src/backend/rest/verifier.py:129 src/backend/rest/verifier.py:142
-#: src/backend/rest/verifier.py:154 src/backend/rest/verifier.py:166
-#: src/backend/rest/verifier.py:179 src/backend/rest/verifier.py:192
-#: src/backend/rest/verifier.py:205 src/backend/rest/verifier.py:218
-#: src/backend/rest/verifier.py:231 src/backend/rest/verifier.py:244
-#: src/backend/rest/verifier.py:255 src/backend/rest/verifier.py:274
-#: src/backend/rest/verifier.py:293 src/backend/rest/verifier.py:313
-#: src/backend/rest/verifier.py:325 src/backend/rest/verifier.py:337
-#: src/backend/rest/verifier.py:360 src/backend/rest/verifier.py:379
-#: src/backend/rest/verifier.py:391 src/backend/rest/verifier.py:402
-#: src/backend/rest/verifier.py:415 src/backend/rest/verifier.py:428
-#: src/backend/rest/verifier.py:439 src/backend/rest/verifier.py:452
-#: src/backend/rest/verifier.py:463 src/backend/rest/verifier.py:478
-#: src/backend/rest/workflow.py:32 src/backend/rest/workflow.py:44
-#: src/backend/rest/workflow.py:68 src/backend/rest/workflow.py:83
-#: src/backend/rest/workflow.py:95 src/backend/rest/workflow.py:107
-#: src/backend/rest/workflow.py:119 src/backend/rest/workflow.py:131
-#: src/backend/rest/workflow.py:153 src/backend/rest/workflow.py:166
-#: src/backend/rest/workflow.py:177
+#: src/backend/rest/splitter.py:177 src/backend/rest/splitter.py:188
+#: src/backend/rest/splitter.py:207 src/backend/rest/splitter.py:218
+#: src/backend/rest/splitter.py:233 src/backend/rest/splitter.py:236
+#: src/backend/rest/splitter.py:254 src/backend/rest/splitter.py:266
+#: src/backend/rest/splitter.py:277 src/backend/rest/splitter.py:288
+#: src/backend/rest/splitter.py:298 src/backend/rest/splitter.py:309
+#: src/backend/rest/status.py:31 src/backend/rest/user.py:30
+#: src/backend/rest/user.py:41 src/backend/rest/user.py:66
+#: src/backend/rest/user.py:76 src/backend/rest/user.py:108
+#: src/backend/rest/user.py:119 src/backend/rest/user.py:129
+#: src/backend/rest/user.py:139 src/backend/rest/user.py:156
+#: src/backend/rest/user.py:167 src/backend/rest/user.py:177
+#: src/backend/rest/user.py:188 src/backend/rest/user.py:203
+#: src/backend/rest/verifier.py:45 src/backend/rest/verifier.py:96
+#: src/backend/rest/verifier.py:108 src/backend/rest/verifier.py:129
+#: src/backend/rest/verifier.py:142 src/backend/rest/verifier.py:154
+#: src/backend/rest/verifier.py:166 src/backend/rest/verifier.py:179
+#: src/backend/rest/verifier.py:192 src/backend/rest/verifier.py:205
+#: src/backend/rest/verifier.py:218 src/backend/rest/verifier.py:231
+#: src/backend/rest/verifier.py:244 src/backend/rest/verifier.py:255
+#: src/backend/rest/verifier.py:274 src/backend/rest/verifier.py:293
+#: src/backend/rest/verifier.py:313 src/backend/rest/verifier.py:325
+#: src/backend/rest/verifier.py:337 src/backend/rest/verifier.py:360
+#: src/backend/rest/verifier.py:379 src/backend/rest/verifier.py:391
+#: src/backend/rest/verifier.py:402 src/backend/rest/verifier.py:415
+#: src/backend/rest/verifier.py:428 src/backend/rest/verifier.py:439
+#: src/backend/rest/verifier.py:452 src/backend/rest/verifier.py:463
+#: src/backend/rest/verifier.py:478 src/backend/rest/workflow.py:32
+#: src/backend/rest/workflow.py:44 src/backend/rest/workflow.py:68
+#: src/backend/rest/workflow.py:83 src/backend/rest/workflow.py:95
+#: src/backend/rest/workflow.py:107 src/backend/rest/workflow.py:119
+#: src/backend/rest/workflow.py:131 src/backend/rest/workflow.py:153
+#: src/backend/rest/workflow.py:166 src/backend/rest/workflow.py:177
 msgid "UNAUTHORIZED_ROUTE"
 msgstr ""
 
