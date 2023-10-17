@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2023-10-17 16:12+0200\n"
+"POT-Creation-Date: 2023-10-17 16:54+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -506,7 +506,7 @@ msgstr "Error while adding doctype"
 #: src/backend/controllers/doctypes.py:236
 #: src/backend/controllers/doctypes.py:265
 #: src/backend/controllers/doctypes.py:291
-#: src/backend/controllers/doctypes.py:320 src/backend/controllers/user.py:559
+#: src/backend/controllers/doctypes.py:320 src/backend/controllers/user.py:556
 msgid "DOCTYPE_ERROR"
 msgstr "Doctype error"
 
@@ -880,46 +880,50 @@ msgstr "Error while updating status"
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Error while removing lock"
 
-#: src/backend/controllers/splitter.py:433
+#: src/backend/controllers/splitter.py:344
+msgid "REMOVE_LOCK_BY_BATCH_ID_ERROR"
+msgstr "Remove lock by batch id error"
+
+#: src/backend/controllers/splitter.py:446
 msgid "ADD_DOCUMENT_ERROR"
 msgstr "Error while adding document"
 
-#: src/backend/controllers/splitter.py:459
+#: src/backend/controllers/splitter.py:472
 msgid "UPDATE_BATCH_ERROR"
 msgstr "Error while updating batch"
 
-#: src/backend/controllers/splitter.py:472
+#: src/backend/controllers/splitter.py:485
 msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr "Error while updating document"
 
-#: src/backend/controllers/splitter.py:485
+#: src/backend/controllers/splitter.py:498
 #: src/backend/controllers/verifier.py:379
 #: src/backend/controllers/verifier.py:385
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr "Error while updating document"
 
-#: src/backend/controllers/splitter.py:500
-#: src/backend/controllers/splitter.py:521
-#: src/backend/controllers/splitter.py:536
-#: src/backend/controllers/splitter.py:551
+#: src/backend/controllers/splitter.py:513
+#: src/backend/controllers/splitter.py:534
+#: src/backend/controllers/splitter.py:549
+#: src/backend/controllers/splitter.py:564
 msgid "UPDATE_PAGES_ERROR"
 msgstr "Error while updating pages"
 
-#: src/backend/controllers/splitter.py:565
+#: src/backend/controllers/splitter.py:578
 msgid "CMIS_CONNECTION_ERROR"
 msgstr "Error while connecting to CMIS"
 
-#: src/backend/controllers/splitter.py:578
+#: src/backend/controllers/splitter.py:591
 msgid "OPENADS_CONNECTION_ERROR"
 msgstr "OpenADS connection error"
 
-#: src/backend/controllers/splitter.py:678
-#: src/backend/controllers/verifier.py:763 src/backend/models/splitter.py:572
+#: src/backend/controllers/splitter.py:691
+#: src/backend/controllers/verifier.py:763 src/backend/models/splitter.py:593
 #: src/backend/models/verifier.py:195
 msgid "GET_TOTALS_ERROR"
 msgstr "Error while retrievings totals"
 
-#: src/backend/controllers/splitter.py:777
+#: src/backend/controllers/splitter.py:790
 msgid "GET_BATCH_OUTPUTS_ERROR"
 msgstr "Error while retrieving output"
 
@@ -977,54 +981,54 @@ msgstr "Update user"
 msgid "ERROR_PASSWORD_NOT_MATCH"
 msgstr "Password do not match"
 
-#: src/backend/controllers/user.py:340
+#: src/backend/controllers/user.py:337
 msgid "USER_UPDATED"
 msgstr "User updated&nbsp<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:345 src/backend/controllers/user.py:351
+#: src/backend/controllers/user.py:342 src/backend/controllers/user.py:348
 #: src/backend/models/user.py:258 src/backend/models/user.py:324
 msgid "UPDATE_USER_ERROR"
 msgstr "Error while updating user"
 
-#: src/backend/controllers/user.py:367
+#: src/backend/controllers/user.py:364
 msgid "DELETE_USER"
 msgstr "User deleted&nbsp;<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:375 src/backend/controllers/user.py:381
+#: src/backend/controllers/user.py:372 src/backend/controllers/user.py:378
 msgid "DELETE_USER_ERROR"
 msgstr "Error while deleting user"
 
-#: src/backend/controllers/user.py:397
+#: src/backend/controllers/user.py:394
 msgid "DISABLE_USER"
 msgstr "User disabled&nbsp;<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:405 src/backend/controllers/user.py:411
+#: src/backend/controllers/user.py:402 src/backend/controllers/user.py:408
 msgid "DISABLE_USER_ERROR"
 msgstr "Error while disabling user"
 
-#: src/backend/controllers/user.py:427
+#: src/backend/controllers/user.py:424
 msgid "ENABLE_USER"
 msgstr "User enabled&nbsp;<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:435 src/backend/controllers/user.py:441
+#: src/backend/controllers/user.py:432 src/backend/controllers/user.py:438
 msgid "ENABLE_USER_ERROR"
 msgstr "Error while enabling user"
 
-#: src/backend/controllers/user.py:458 src/backend/controllers/user.py:464
+#: src/backend/controllers/user.py:455 src/backend/controllers/user.py:461
 #: src/backend/models/user.py:280
 msgid "UPDATE_CUSTOMERS_USER_ERROR"
 msgstr "Error while updating user customers"
 
-#: src/backend/controllers/user.py:479 src/backend/controllers/user.py:486
+#: src/backend/controllers/user.py:476 src/backend/controllers/user.py:483
 #: src/backend/models/user.py:302
 msgid "UPDATE_FORMS_USER_ERROR"
 msgstr "Error while updating user forms"
 
-#: src/backend/controllers/user.py:530
+#: src/backend/controllers/user.py:527
 msgid "USER_EXPORT_ERROR"
 msgstr "Error while exporting users"
 
-#: src/backend/controllers/user.py:575
+#: src/backend/controllers/user.py:572
 msgid "GET_DEFAULT_ROUTE_ERROR"
 msgstr "Error while retrieving default route"
 
@@ -1492,39 +1496,39 @@ msgstr "Error while updating workflow"
 #: src/backend/rest/splitter.py:109 src/backend/rest/splitter.py:119
 #: src/backend/rest/splitter.py:130 src/backend/rest/splitter.py:144
 #: src/backend/rest/splitter.py:155 src/backend/rest/splitter.py:166
-#: src/backend/rest/splitter.py:177 src/backend/rest/splitter.py:196
-#: src/backend/rest/splitter.py:207 src/backend/rest/splitter.py:222
-#: src/backend/rest/splitter.py:225 src/backend/rest/splitter.py:243
-#: src/backend/rest/splitter.py:255 src/backend/rest/splitter.py:266
-#: src/backend/rest/splitter.py:277 src/backend/rest/splitter.py:287
-#: src/backend/rest/splitter.py:298 src/backend/rest/status.py:31
-#: src/backend/rest/user.py:30 src/backend/rest/user.py:41
-#: src/backend/rest/user.py:66 src/backend/rest/user.py:76
-#: src/backend/rest/user.py:108 src/backend/rest/user.py:119
-#: src/backend/rest/user.py:129 src/backend/rest/user.py:139
-#: src/backend/rest/user.py:156 src/backend/rest/user.py:167
-#: src/backend/rest/user.py:177 src/backend/rest/user.py:188
-#: src/backend/rest/user.py:203 src/backend/rest/verifier.py:45
-#: src/backend/rest/verifier.py:96 src/backend/rest/verifier.py:108
-#: src/backend/rest/verifier.py:129 src/backend/rest/verifier.py:142
-#: src/backend/rest/verifier.py:154 src/backend/rest/verifier.py:166
-#: src/backend/rest/verifier.py:179 src/backend/rest/verifier.py:192
-#: src/backend/rest/verifier.py:205 src/backend/rest/verifier.py:218
-#: src/backend/rest/verifier.py:231 src/backend/rest/verifier.py:244
-#: src/backend/rest/verifier.py:255 src/backend/rest/verifier.py:274
-#: src/backend/rest/verifier.py:293 src/backend/rest/verifier.py:313
-#: src/backend/rest/verifier.py:325 src/backend/rest/verifier.py:337
-#: src/backend/rest/verifier.py:360 src/backend/rest/verifier.py:379
-#: src/backend/rest/verifier.py:391 src/backend/rest/verifier.py:402
-#: src/backend/rest/verifier.py:415 src/backend/rest/verifier.py:428
-#: src/backend/rest/verifier.py:439 src/backend/rest/verifier.py:452
-#: src/backend/rest/verifier.py:463 src/backend/rest/verifier.py:478
-#: src/backend/rest/workflow.py:32 src/backend/rest/workflow.py:44
-#: src/backend/rest/workflow.py:68 src/backend/rest/workflow.py:83
-#: src/backend/rest/workflow.py:95 src/backend/rest/workflow.py:107
-#: src/backend/rest/workflow.py:119 src/backend/rest/workflow.py:131
-#: src/backend/rest/workflow.py:153 src/backend/rest/workflow.py:166
-#: src/backend/rest/workflow.py:177
+#: src/backend/rest/splitter.py:177 src/backend/rest/splitter.py:188
+#: src/backend/rest/splitter.py:207 src/backend/rest/splitter.py:218
+#: src/backend/rest/splitter.py:233 src/backend/rest/splitter.py:236
+#: src/backend/rest/splitter.py:254 src/backend/rest/splitter.py:266
+#: src/backend/rest/splitter.py:277 src/backend/rest/splitter.py:288
+#: src/backend/rest/splitter.py:298 src/backend/rest/splitter.py:309
+#: src/backend/rest/status.py:31 src/backend/rest/user.py:30
+#: src/backend/rest/user.py:41 src/backend/rest/user.py:66
+#: src/backend/rest/user.py:76 src/backend/rest/user.py:108
+#: src/backend/rest/user.py:119 src/backend/rest/user.py:129
+#: src/backend/rest/user.py:139 src/backend/rest/user.py:156
+#: src/backend/rest/user.py:167 src/backend/rest/user.py:177
+#: src/backend/rest/user.py:188 src/backend/rest/user.py:203
+#: src/backend/rest/verifier.py:45 src/backend/rest/verifier.py:96
+#: src/backend/rest/verifier.py:108 src/backend/rest/verifier.py:129
+#: src/backend/rest/verifier.py:142 src/backend/rest/verifier.py:154
+#: src/backend/rest/verifier.py:166 src/backend/rest/verifier.py:179
+#: src/backend/rest/verifier.py:192 src/backend/rest/verifier.py:205
+#: src/backend/rest/verifier.py:218 src/backend/rest/verifier.py:231
+#: src/backend/rest/verifier.py:244 src/backend/rest/verifier.py:255
+#: src/backend/rest/verifier.py:274 src/backend/rest/verifier.py:293
+#: src/backend/rest/verifier.py:313 src/backend/rest/verifier.py:325
+#: src/backend/rest/verifier.py:337 src/backend/rest/verifier.py:360
+#: src/backend/rest/verifier.py:379 src/backend/rest/verifier.py:391
+#: src/backend/rest/verifier.py:402 src/backend/rest/verifier.py:415
+#: src/backend/rest/verifier.py:428 src/backend/rest/verifier.py:439
+#: src/backend/rest/verifier.py:452 src/backend/rest/verifier.py:463
+#: src/backend/rest/verifier.py:478 src/backend/rest/workflow.py:32
+#: src/backend/rest/workflow.py:44 src/backend/rest/workflow.py:68
+#: src/backend/rest/workflow.py:83 src/backend/rest/workflow.py:95
+#: src/backend/rest/workflow.py:107 src/backend/rest/workflow.py:119
+#: src/backend/rest/workflow.py:131 src/backend/rest/workflow.py:153
+#: src/backend/rest/workflow.py:166 src/backend/rest/workflow.py:177
 msgid "UNAUTHORIZED_ROUTE"
 msgstr "You are not authorized to access this route"
 
