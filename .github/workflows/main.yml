@@ -1,11 +1,11 @@
-name: Open-Capture deployment
+name: Open-Capture-for-MEM deployment
 on:
   pull_request:
     branches: [ master ]
 
 jobs:
 
-  deploy-application:
+  test-self-hosted:
     name: Retrieve application
     runs-on: self-hosted
     defaults:
@@ -13,99 +13,46 @@ jobs:
         working-directory: /
 
     steps:
+      - name: System info
+        run: lsb_release -a
 
       - name: Checkout source code
         uses: actions/checkout@v2
 
+      - name: Set up Python
+        run: |
+          sudo apt install -y python3
+          sudo apt install -y python3-pip
+        continue-on-error: true
+
       - name: Directory creation
         run: |
-          sudo mkdir -p /var/www/html/opencapture/
-          sudo chmod -R 775 /var/www/html/opencapture/
-          sudo chown -R $(whoami):$(whoami) /var/www/html/opencapture/
+          sudo mkdir -p /opt/edissyum/ 
+          sudo chmod -R 775 /opt/edissyum/
+          sudo chown -R $(whoami):$(whoami) /opt/edissyum/
 
       - name: Retrieve the latest tag
         run: |
           sudo apt install -y git crudini
-          git clone -b master https://github.com/edissyum/opencapture/ /var/www/html/opencapture/
-        continue-on-error: true
-
-  deploy-frontend:
-    name: frontend deployment
-    runs-on: self-hosted
-    needs: [deploy-application]
-    defaults:
-      run:
-        working-directory: /
-
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v2
-
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 18
-
-      - name: Install Node and npm
-        run: |
-          sudo apt install nodejs npm -y
-        continue-on-error: true
-
-      - name: Install dependencies
-        run: |
-          cd /var/www/html/opencapture/src/frontend/
-          npm run reload-packages
-
-      - name: Build
-        run: |
-          cd /var/www/html/opencapture/src/frontend/
-          npm run build-prod
-
-  deploy-backend:
-    name: backend deployment
-    runs-on: self-hosted
-    needs: [deploy-frontend]
-    defaults:
-      run:
-        working-directory: /
-
-    steps:
-
-      - name: Checkout source code
-        uses: actions/checkout@v2
+          git clone -b dev_v4 https://github.com/edissyum/opencaptureformem /opt/edissyum/opencaptureformem/
 
       - name: Launch installation
         run: |
-          cd var/www/html/opencapture/bin/install/
+          cd /opt/edissyum/opencaptureformem/install/
           chmod u+x install.sh
           sed -i 's/$(tput bold)/""/gI' install.sh
           sed -i 's/$(tput sgr0)/""/gI' install.sh
-          sudo ./install.sh --custom_id test --user $(whoami) --path /var/www/html/opencapture/ --wsgi_process 1 --wsgi_threads 5 --supervisor_systemd systemd --hostname $HOST_NAME --port $PORT --username $USER_NAME --password $USER_PASSWORD
-        env:
-          HOST_NAME: ${{ vars.HOST_NAME }}
-          PORT: ${{ vars.PORT }}
-          USER_NAME: ${{ vars.USER_NAME }}
-          USER_PASSWORD: ${{ vars.USER_PASSWORD }}
+          sed -i 's/^user=$(who.*/user=$(whoami)/gI' install.sh
+          sed -i 's/^group=$(who.*/user=$(whoami)/gI' install.sh
+          sudo ./install.sh --user $(whoami) --supervisor_systemd systemd --secure_rabbit no
+
+      - name: Service OC-Worker status
+        run: |
+          sudo systemctl status oc-worker.service
         continue-on-error: true
 
-      - name: Service status
+      - name: Clean installation
         run: |
-          sudo systemctl status OCSplitter-worker_test.service
-          sudo systemctl status OCVerifier-worker_test.service
-          sudo systemctl start postgresql
-          sudo systemctl status postgresql
-        continue-on-error: true
-
-      - name: Launch backend tests
-        run: |
-          source /home/$(whoami)/python-venv/opencapture/bin/activate
-          cd /var/www/html/opencapture/
-          python3 -m unittest discover src/backend/tests/
-          sudo su postgres -c "psql -c 'drop database opencapture_test'"
-          sudo rm -rf /var/www/html/opencapture/
-          sudo rm -rf /var/docservers/
-          sudo rm -f /etc/apache2/sites-available/opencapture.conf
-          sudo rm -f /etc/systemd/system/OCVerifier-worker_test.conf
-          sudo rm -f /etc/systemd/system/OCSplitter-worker_test.conf
+          sudo rm -rf /opt/edissyum/
+          sudo rm -f /etc/systemd/system/oc-worker.service
           sudo systemctl daemon-reload
-          sudo systemctl restart apache2
