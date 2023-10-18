@@ -112,13 +112,13 @@ export class DocserversComponent implements OnInit {
         ).subscribe();
     }
 
-    updateValue(event: any, id: number, docserver: string) {
+    updateValue(event: any, id: number) {
         this.updateLoading = true;
         const value = event.target.value;
         this.docservers.forEach((element: any) => {
             if (element.id === id) {
                 element.path = value;
-                this.http.put(environment['url'] + '/ws/config/updateDocserver/' + element.id, {'data': element}, {headers: this.authService.headers}).pipe(
+                this.http.put(environment['url'] + '/ws/config/updateDocserver/' + element.id, {'args': element}, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         element.updateMode = false;
                         this.updateLoading = false;
