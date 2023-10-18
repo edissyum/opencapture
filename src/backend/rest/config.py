@@ -124,11 +124,10 @@ def update_regex(regex_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'config/updateRegex/{regex_id}'}), 403
 
     check, message = rest_validator(request.json['args'], [
-        {'id': 'id', 'type': int, 'mandatory': True},
-        {'id': 'lang', 'type': str, 'mandatory': True},
+        {'id': 'id', 'type': int, 'mandatory': False},
+        {'id': 'lang', 'type': str, 'mandatory': False},
         {'id': 'label', 'type': str, 'mandatory': True},
-        {'id': 'content', 'type': str, 'mandatory': True},
-        {'id': 'regex_id', 'type': str, 'mandatory': True}
+        {'id': 'content', 'type': str, 'mandatory': True}
     ])
     if not check:
         return make_response({
@@ -175,7 +174,7 @@ def update_configuration_by_id(configuration_id):
     check, message = rest_validator(request.json['data'], [
         {'id': 'type', 'type': str, 'mandatory': True},
         {'id': 'value', 'type': str, 'mandatory': True},
-        {'id': 'label_type', 'type': str, 'mandatory': True},
+        {'id': 'label_type', 'type': str, 'mandatory': False},
         {'id': 'description', 'type': str, 'mandatory': True}
     ])
     if not check:
