@@ -621,12 +621,12 @@ def construct_with_var(data, document_info, regex, separator=None):
         document_info['datas'] = data_tmp
 
     for column in data.split('#'):
-        if column in document_info['datas']:
+        if column in document_info['datas'] and document_info['datas'][column]:
             if separator:
                 _data.append(str(document_info['datas'][column]).replace(' ', separator))
             else:
                 _data.append(document_info['datas'][column])
-        elif column in document_info:
+        elif column in document_info and document_info[column]:
             if separator:
                 _data.append(str(document_info[column]).replace(' ', separator))
             else:

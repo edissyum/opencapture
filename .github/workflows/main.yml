@@ -25,6 +25,7 @@ jobs:
 
       - name: Retrieve the latest tag
         run: |
+          rm -rf /var/www/html/opencapture/
           sudo apt install -y git crudini
           git clone -b master https://github.com/edissyum/opencapture/ /var/www/html/opencapture/
         continue-on-error: true
