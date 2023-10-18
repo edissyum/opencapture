@@ -419,7 +419,7 @@ export class LoginMethodsComponent implements OnInit {
         }
     }
 
-    saveLoginMethodConfigs(): void {
+    saveLoginMethodConfig(): void {
         if (this.isValidSynchronizationForm() && this.isValidConnexionForm()) {
             if (this.connexionServerStatus && this.synchroUsersStatus) {
                 const methodDataToSave : any = {};
@@ -429,7 +429,7 @@ export class LoginMethodsComponent implements OnInit {
                 this.synchroparamsFormGroup.forEach(element => {
                     methodDataToSave[element.id] = element.control.value;
                 });
-                this.http.post(environment['url'] + '/ws/auth/saveLoginMethodConfigs', methodDataToSave, {headers: this.authService.headers}).pipe(
+                this.http.post(environment['url'] + '/ws/auth/saveLoginMethodConfig', methodDataToSave, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.isLdapChecked = true;
                         this.notify.success(this.translate.instant('LOGIN-METHODS.save_ldap_infos_success'));
