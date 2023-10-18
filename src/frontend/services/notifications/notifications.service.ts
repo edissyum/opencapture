@@ -77,16 +77,16 @@ export class NotificationService {
                 } else if (err.error.message === 'missing_secret_key') {
                     this.error('<b>' + this.translate.instant('ERROR.configuration_error') + '</b> : ' + this.translate.instant('ERROR.missing_secret_key'));
                 } else {
-                    if (err.url) {
+                    if (err.url && err.status == 500 && err.error.errors !== this.translate.instant('ERROR.jwt_error')) {
                         this.error(err.url + '<br> <b>' + err.error.errors + '</b> : ' + err.error.message);
                     } else {
                         this.error('<b>' + err.error.errors + '</b> : ' + err.error.message);
                     }
                 }
+
                 if (err.status === 403 || err.status === 404) {
                     this.router.navigate(['/login']).then();
-                }
-                else if (err.error.errors === this.translate.instant('ERROR.jwt_error')) {
+                } else if (err.error.errors === this.translate.instant('ERROR.jwt_error')) {
                     this.router.navigate(['/logout']).then();
                 }
             } else if (err.error.exception !== undefined) {

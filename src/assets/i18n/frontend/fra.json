@@ -95,7 +95,6 @@
 		"status": "Statut",
 		"test_model": "Tester la prédiction d'un modèle",
 		"train_a_model": "Entraîner un modèle",
-		"train_time": "Temps d'entraînement",
 		"training": "Entraînement du modèle en cours",
 		"training_done": "Entraînement du modèle terminé",
 		"update_model": "Modifier le modèle"
@@ -481,8 +480,7 @@
 		"event_date": "Date de l'évènement",
 		"event_message": "Information de l'évènement",
 		"filename": "Fichier",
-		"id": "Identifiant technique",
-		"id_simple": "Identifiant",
+		"id": "Identifiant",
 		"inactive": "Inactif",
 		"label": "Libellé",
 		"label_short": "Libellé technique",

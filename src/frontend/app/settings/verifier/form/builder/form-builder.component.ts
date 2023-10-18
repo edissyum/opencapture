@@ -112,7 +112,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'white',
-                    format: 'alphanum',
+                    format: 'alphanum_extended_with_accent',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
                     display_icon:'fa-solid fa-file-alt'

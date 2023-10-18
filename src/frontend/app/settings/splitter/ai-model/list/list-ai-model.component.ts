@@ -18,8 +18,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, FormControl } from "@angular/forms";
+import { Router } from "@angular/router";
+import { FormControl } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -27,7 +27,7 @@ import { NotificationService } from "../../../../../services/notifications/notif
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { environment } from "../../../../env";
-import { catchError, of, tap } from "rxjs";
+import {catchError, interval, of, tap} from "rxjs";
 import { Sort } from "@angular/material/sort";
 import { finalize } from "rxjs/operators";
 import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
@@ -40,17 +40,18 @@ import { FileValidators } from "ngx-file-drag-drop";
 })
 
 export class ListSplitterAiModelComponent implements OnInit {
-    loading             : boolean     = true;
-    showResponse        : boolean     = false;
-    isPredicting        : boolean     = false;
-    modelsList          : any         = [];
-    displayedColumns    : string[]    = ['id', 'model_label', 'train_time', 'accuracy_score', 'documents', 'min_proba', 'status', 'actions'];
+    displayedColumns    : string[]    = ['id', 'model_label', 'accuracy_score', 'documents', 'min_proba', 'status', 'actions'];
+    inter               : any;
     offset              : number      = 0;
     pageIndex           : number      = 0;
     total               : number      = 0;
     pageSize            : number      = 10;
     clickedRow          : object      = {};
+    modelsList          : any         = [];
     prediction          : any         = [];
+    loading             : boolean     = true;
+    showResponse        : boolean     = false;
+    isPredicting        : boolean     = false;
     fileControl         : FormControl = new FormControl(
         [],
         [
@@ -63,9 +64,7 @@ export class ListSplitterAiModelComponent implements OnInit {
         public router: Router,
         private http: HttpClient,
         private dialog: MatDialog,
-        private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
@@ -78,12 +77,30 @@ export class ListSplitterAiModelComponent implements OnInit {
         this.retrieveModels();
     }
 
-    retrieveModels(offset?: number, size?: number) {
+    retrieveModels(offset?: number, size?: number, inter = false) {
         this.http.get(environment['url'] + '/ws/ai/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.modelsList = data.models;
+                this.modelsList = data['models'];
                 for (let i = 0; i < this.modelsList.length; i++) {
                     let tmp_doc = "";
+
+                    if (this.modelsList[i].status === "training") {
+                        if (!inter) {
+                            this.inter = interval(5000).subscribe(() => {
+                                this.retrieveModels(this.offset, this.pageSize, true);
+                                let model_training = false;
+                                this.modelsList.forEach((model: any) => {
+                                    if (model.status === "training") {
+                                        model_training = true;
+                                    }
+                                });
+                                if (!model_training) {
+                                    this.inter.unsubscribe();
+                                }
+                            });
+                        }
+                    }
+
                     for (let j = 0; j < this.modelsList[i].documents.length; j++) {
                         tmp_doc += this.modelsList[i].documents[j].folder + ", ";
                         if (j === this.modelsList[i].documents.length - 1) {
@@ -92,6 +109,7 @@ export class ListSplitterAiModelComponent implements OnInit {
                     }
                     this.modelsList[i].documents = [tmp_doc];
                 }
+
                 this.total = this.modelsList.length;
                 if (offset !== undefined && size !== undefined) {
                     this.modelsList = this.modelsList.slice(offset, offset + size);

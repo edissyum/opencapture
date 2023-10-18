@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Essaid MEGHELLET <essaid.meghellet@edissyum.com>
 
-import json
 from flask_babel import gettext
 from src.backend.functions import rest_validator
 from src.backend.import_controllers import auth, privileges
@@ -173,17 +172,23 @@ def check_connection_ldap_server():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/retrieveLdapConfigurations'}), 403
 
-    server_ldap_data = request.json
-    if not server_ldap_data:
-        pass
-    if server_ldap_data:
-        res = auth.verify_ldap_server_connection(server_ldap_data)
-    else:
-        res = [{
-            "errors": gettext('INFOS_LDAP_NOT_COMPLETE'),
-            "message": gettext('NOT_COMPLETE_CONNECTION_INFOS')
-        }, 401]
+    check, message = rest_validator(request.json, [
+        {'id': 'typeAD', 'type': str, 'mandatory': True},
+        {'id': 'host', 'type': str, 'mandatory': True},
+        {'id': 'port', 'type': str, 'mandatory': True},
+        {'id': 'loginAdmin', 'type': str, 'mandatory': True},
+        {'id': 'passwordAdmin', 'type': str, 'mandatory': True},
+        {'id': 'baseDN', 'type': str, 'mandatory': True},
+        {'id': 'prefix', 'type': str, 'mandatory': False},
+        {'id': 'suffix', 'type': str, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
+    res = auth.verify_ldap_server_connection(request.json)
     return make_response(res[0], res[1])
 
 
@@ -193,25 +198,63 @@ def ldap_synchronization_users():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/ldapSynchronization'}), 403
 
-    ldap_synchronization_data = request.json
-    res = auth.synchronization_ldap_users(ldap_synchronization_data)
+    check, message = rest_validator(request.json, [
+        {'id': 'typeAD', 'type': str, 'mandatory': True},
+        {'id': 'host', 'type': str, 'mandatory': True},
+        {'id': 'port', 'type': str, 'mandatory': True},
+        {'id': 'loginAdmin', 'type': str, 'mandatory': True},
+        {'id': 'passwordAdmin', 'type': str, 'mandatory': True},
+        {'id': 'baseDN', 'type': str, 'mandatory': True},
+        {'id': 'prefix', 'type': str, 'mandatory': False},
+        {'id': 'suffix', 'type': str, 'mandatory': False},
+        {'id': 'attributSourceUser', 'type': str, 'mandatory': True},
+        {'id': 'classObject', 'type': str, 'mandatory': True},
+        {'id': 'classUser', 'type': str, 'mandatory': True},
+        {'id': 'attributFirstName', 'type': str, 'mandatory': True},
+        {'id': 'attributLastName', 'type': str, 'mandatory': True},
+        {'id': 'usersDN', 'type': str, 'mandatory': True},
+        {'id': 'attributRoleDefault', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = auth.synchronization_ldap_users(request.json)
     return make_response(res[0], res[1])
 
 
-@bp.route('auth/saveLoginMethodConfigs', methods=['POST'])
+@bp.route('auth/saveLoginMethodConfig', methods=['POST'])
 @auth.token_required
 def save_login_method():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/saveLoginMethodConfigs'}), 403
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/saveLoginMethodConfig'}), 403
+
+    check, message = rest_validator(request.json, [
+        {'id': 'typeAD', 'type': str, 'mandatory': True},
+        {'id': 'host', 'type': str, 'mandatory': True},
+        {'id': 'port', 'type': str, 'mandatory': True},
+        {'id': 'loginAdmin', 'type': str, 'mandatory': True},
+        {'id': 'passwordAdmin', 'type': str, 'mandatory': True},
+        {'id': 'baseDN', 'type': str, 'mandatory': True},
+        {'id': 'prefix', 'type': str, 'mandatory': False},
+        {'id': 'suffix', 'type': str, 'mandatory': False},
+        {'id': 'attributSourceUser', 'type': str, 'mandatory': True},
+        {'id': 'classObject', 'type': str, 'mandatory': True},
+        {'id': 'classUser', 'type': str, 'mandatory': True},
+        {'id': 'attributFirstName', 'type': str, 'mandatory': True},
+        {'id': 'attributLastName', 'type': str, 'mandatory': True},
+        {'id': 'usersDN', 'type': str, 'mandatory': True},
+        {'id': 'attributRoleDefault', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
     res = auth.update_login_method('ldap', request.json)
-    if not res:
-        res = [{
-            "errors": gettext('REQUEST_MODIFS_ERROR'),
-            "message": res.replace('\n', '')
-        }, 401]
-    else:
-        res = ['', 200]
     return make_response(res[0], res[1])
 
 
