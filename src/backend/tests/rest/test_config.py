@@ -167,7 +167,7 @@ class ConfigTest(unittest.TestCase):
         docserver_id = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateDocserver/' + str(docserver_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={"data": {"id": docserver_id[0]['id'], "docserver_id": "DOCSERVERS_PATH",
+                                json={"args": {"id": docserver_id[0]['id'], "docserver_id": "DOCSERVERS_PATH",
                                                "description": docserver_id[0]['description'], "path": "/new/path/"}})
         self.assertEqual(200, response.status_code)
 
