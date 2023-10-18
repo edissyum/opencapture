@@ -16,10 +16,9 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 from flask_babel import gettext
-from src.backend.functions import retrieve_custom_from_url
-from src.backend.main import create_classes_from_custom_id
+from src.backend.functions import rest_validator
+from flask import Blueprint, jsonify, make_response, request
 from src.backend.import_controllers import auth, config, privileges
-from flask import Blueprint, jsonify, make_response, request, g as current_context
 
 bp = Blueprint('config', __name__,  url_prefix='/ws/')
 
@@ -39,6 +38,17 @@ def read_config():
 def get_configurations():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/getConfigurations'}), 403
+
+    check, message = rest_validator(request.args, [
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
     res = config.retrieve_configurations(request.args)
     return make_response(jsonify(res[0])), res[1]
@@ -71,6 +81,17 @@ def get_docservers():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'docservers']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/getDocservers'}), 403
 
+    check, message = rest_validator(request.args, [
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     res = config.retrieve_docservers(request.args)
     return make_response(jsonify(res[0])), res[1]
 
@@ -80,6 +101,17 @@ def get_docservers():
 def get_regex():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'regex']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/getRegex'}), 403
+
+    check, message = rest_validator(request.args, [
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
     res = config.retrieve_regex(request.args)
     return make_response(jsonify(res[0])), res[1]
@@ -91,8 +123,20 @@ def update_regex(regex_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'regex']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'config/updateRegex/{regex_id}'}), 403
 
-    args = request.json['args']
-    res = config.update_regex(args, regex_id)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'id', 'type': int, 'mandatory': True},
+        {'id': 'lang', 'type': str, 'mandatory': True},
+        {'id': 'label', 'type': str, 'mandatory': True},
+        {'id': 'content', 'type': str, 'mandatory': True},
+        {'id': 'regex_id', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = config.update_regex(request.json['args'], regex_id)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -108,8 +152,16 @@ def update_login_image():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/updateLoginImage'}), 403
 
-    image_content = request.json['args']['image_content']
-    res = config.update_login_image(image_content)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'image_content', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = config.update_login_image(request.json['args']['image_content'])
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -119,8 +171,20 @@ def update_configuration_by_id(configuration_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/updateConfiguration/{configuration_id}'}), 403
-    args = request.json['data']
-    res = config.update_configuration_by_id(args, configuration_id)
+
+    check, message = rest_validator(request.json['data'], [
+        {'id': 'type', 'type': str, 'mandatory': True},
+        {'id': 'value', 'type': str, 'mandatory': True},
+        {'id': 'label_type', 'type': str, 'mandatory': True},
+        {'id': 'description', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = config.update_configuration_by_id(request.json['data'], configuration_id)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -131,8 +195,19 @@ def update_configuration_by_label(configuration_label):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/updateConfiguration/{configuration_label}'}), 403
 
-    args = request.json['args']
-    res = config.update_configuration_by_label(args, configuration_label)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'type', 'type': str, 'mandatory': False},
+        {'id': 'value', 'type': str, 'mandatory': True},
+        {'id': 'label_type', 'type': str, 'mandatory': False},
+        {'id': 'description', 'type': str, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = config.update_configuration_by_label(request.json['args'], configuration_label)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -143,8 +218,19 @@ def update_docserver(docserver_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/updateDocserver/{docserver_id}'}), 403
 
-    args = request.json['data']
-    res = config.update_docserver(args, docserver_id)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'id', 'type': int, 'mandatory': True},
+        {'id': 'path', 'type': str, 'mandatory': True},
+        {'id': 'description', 'type': str, 'mandatory': True},
+        {'id': 'docserver_id', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = config.update_docserver(request.json['args'], docserver_id)
     return make_response(jsonify(res[0])), res[1]
 
 

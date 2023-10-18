@@ -40,13 +40,13 @@
                     <ng-container matColumnDef="content">
                         <mat-header-cell *matHeaderCellDef> {{ 'HEADER.path' | translate }} </mat-header-cell>
                         <mat-cell *matCellDef="let element" (click)="element.updateMode = true">
-                            <ng-container *ngIf="!element.updateMode else update">
+                            <ng-container *ngIf="!element['updateMode'] else update">
                                 {{ element.path }}
                             </ng-container>
                             <ng-template #update>
                                 <mat-form-field appearance="outline" class="w-full">
-                                    <input matInput [value]="element.path" (keyup.enter)="updateValue($event, element.id, element.docserver_id)"
-                                           class="relative -top-2.5" (focusout)="updateValue($event, element.id, element.docserver_id)">
+                                    <input matInput [value]="element.path" (keyup.enter)="updateValue($event, element.id)"
+                                           class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
                                 </mat-form-field>
                             </ng-template>
                         </mat-cell>
@@ -54,13 +54,13 @@
                     <ng-container matColumnDef="actions">
                         <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                         <mat-cell *matCellDef="let element">
-                            <button *ngIf="!element.updateMode"
+                            <button *ngIf="!element['updateMode']"
                                     (click)="element.updateMode = true"
                                     matTooltip="{{ 'DOCSERVERS.update' | translate }}" mat-icon-button
                                     class="inline-block align-text-top">
                                 <i class="fa-solid fa-edit text-lg"></i>
                             </button>
-                            <button *ngIf="element.updateMode"
+                            <button *ngIf="element['updateMode']"
                                     (click)="element.updateMode = false;"
                                     matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button
                                     class="inline-block align-text-top">
