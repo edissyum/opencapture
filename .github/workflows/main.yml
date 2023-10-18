@@ -19,13 +19,13 @@ jobs:
 
       - name: Directory creation
         run: |
+          sudo rm -rf /var/www/html/opencapture/
           sudo mkdir -p /var/www/html/opencapture/
           sudo chmod -R 775 /var/www/html/opencapture/
           sudo chown -R $(whoami):$(whoami) /var/www/html/opencapture/
 
       - name: Retrieve the latest tag
         run: |
-          rm -rf /var/www/html/opencapture/
           sudo apt install -y git crudini
           git clone -b master https://github.com/edissyum/opencapture/ /var/www/html/opencapture/
         continue-on-error: true
