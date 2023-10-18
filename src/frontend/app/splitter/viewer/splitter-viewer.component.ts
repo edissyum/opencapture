@@ -63,6 +63,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         if (this.hasUnsavedChanges) {
             $event.returnValue = true;
         }
+        this.removeLockByBatchId();
     }
     @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
 
@@ -1301,4 +1302,18 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return outputsLabels.join(', ');
     }
     /* -- End toolbar -- */
+
+    removeLockByBatchId() {
+        if (this.currentBatch.id) {
+            this.http.put(environment['url'] + '/ws/splitter/removeLockByBatchId',
+                {'batch_id': this.currentBatch.id},
+                {headers: this.authService.headers}).pipe(
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
+    }
 }
