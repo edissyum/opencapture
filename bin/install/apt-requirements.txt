@@ -3,6 +3,7 @@ apache2
 python3
 libpq-dev
 pkg-config
+zbar-tools
 imagemagick
 python3-pip
 python3-venv
