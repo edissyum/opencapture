@@ -519,7 +519,7 @@ def update_login_method(login_method_name, server_data):
         return '', 200
     else:
         response = {
-            "errors": gettext('LOGIN_ERROR'),
+            "errors": gettext('UPDATE_LOGIN_METHOD_ERROR'),
             "message": gettext(error)
         }
         return response, 401
