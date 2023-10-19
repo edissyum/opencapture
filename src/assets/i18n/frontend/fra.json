@@ -112,6 +112,7 @@
 		"password_number_mandatory": "Au moins un chiffre est requis",
 		"password_special_char_mandatory": "Au moins un caractère spécial est requis",
 		"password_uppercase_mandatory": "Au moins une majuscule est requise",
+		"session_expired": "Votre session à expirée, veuillez vous reconnecter",
 		"smtp_server_down": "Le serveur SMTP n'est pas disponible ou n'est pas configuré, réinitialisation du mot de passe impossible",
 		"token_not_provided": "Aucun token d'authentification n'a été renseigné"
 	},
