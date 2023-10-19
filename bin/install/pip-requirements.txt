@@ -24,7 +24,7 @@ requests==2.31.0
 ocrmypdf==15.2.0
 xlsxwriter==3.1.8
 pdf2image==1.16.3
-gitpython==3.1.38
+gitpython==3.1.40
 imap-tools==1.4.0
 flask_cors==4.0.0
 fs-watcher==1.0.11
