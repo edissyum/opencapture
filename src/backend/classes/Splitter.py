@@ -139,9 +139,11 @@ class Splitter:
             }
             form_id = None
             if workflow_settings[0]['process']['use_interface'] and \
-                    'form_id' in workflow_settings[0]['process'] and workflow_settings[0]['process']['form_id']:
+                    'form_id' in workflow_settings[0]['process'] and \
+                    workflow_settings[0]['process']['form_id']:
                 form_id = workflow_settings[0]['process']['form_id']
-                default_values = self.get_default_values(form_id, user_id)
+                if user_id:
+                    default_values = self.get_default_values(form_id, user_id)
 
             args = {
                 'table': 'splitter_batches',
