@@ -17,6 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask_babel import gettext
+from src.backend.functions import rest_validator
 from flask import Blueprint, request, make_response, jsonify
 from src.backend.import_controllers import auth, forms, privileges
 
@@ -27,10 +28,24 @@ bp = Blueprint('forms', __name__, url_prefix='/ws/')
 @auth.token_required
 def get_forms(module):
     if 'skip' not in request.environ or not request.environ['skip']:
-        list_priv = ['settings | access_verifier', 'access_verifier | forms_list | users_list'] if module == 'verifier' \
+        list_priv = ['settings | access_verifier', 'access_verifier | forms_list | users_list'] if module == 'verifier'\
             else ['users_list | access_splitter | forms_list_splitter | separator_splitter']
         if not privileges.has_privileges(request.environ['user_id'], list_priv):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/list'}), 403
+
+    check, message = rest_validator(request.args, [
+        {'id': 'time', 'type': str, 'mandatory': False},
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'status', 'type': str, 'mandatory': False},
+        {'id': 'user_id', 'type': int, 'mandatory': False},
+        {'id': 'totals', 'type': bool, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
     args = dict(request.args)
     args['module'] = module
@@ -58,8 +73,21 @@ def create_form(module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/create'}), 403
 
-    args = request.json['args']
-    res = forms.create_form(args, module)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'label', 'type': str, 'mandatory': True},
+        {'id': 'module', 'type': str, 'mandatory': True},
+        {'id': 'outputs', 'type': list, 'mandatory': True},
+        {'id': 'settings', 'type': dict, 'mandatory': True},
+        {'id': 'default_form', 'type': bool, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = forms.create_form(request.json['args'], module)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -91,8 +119,20 @@ def update_form(form_id, module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/update/{form_id}'}), 403
 
-    args = request.json['args']
-    res = forms.update_form(form_id, args, module)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'label', 'type': str, 'mandatory': False},
+        {'id': 'outputs', 'type': list, 'mandatory': False},
+        {'id': 'settings', 'type': dict, 'mandatory': False},
+        {'id': 'default_form', 'type': bool, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = forms.update_form(form_id, request.json['args'], module)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -103,8 +143,17 @@ def update_form_label(form_id, category_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/forms/updateLabel/{form_id}/{category_id}'}), 403
 
-    label = request.json['label']
-    res = forms.update_form_label(form_id, category_id, label)
+    check, message = rest_validator(request.json, [
+        {'id': 'label', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = forms.update_form_label(form_id, category_id, request.json['label'])
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -114,8 +163,17 @@ def update_form_display(form_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'verifier_settings']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/updateDisplay/{form_id}'}), 403
 
-    display = request.json['args']
-    res = forms.update_form(form_id, {"settings": {"display": display}}, 'verifier')
+    check, message = rest_validator(request.json, [
+        {'id': 'display', 'type': dict, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = forms.update_form(form_id, {"settings": {"display": request.json['display']}}, 'verifier')
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -125,8 +183,17 @@ def update_form_unique_url(form_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'verifier_settings']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/updateUniqueUrl/{form_id}'}), 403
 
-    unique_url = request.json['args']
-    res = forms.update_form(form_id, {"settings": {"unique_url": unique_url}}, 'verifier')
+    check, message = rest_validator(request.json, [
+        {'id': 'unique_url', 'type': dict, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = forms.update_form(form_id, {"settings": {"unique_url": request.json['unique_url']}}, 'verifier')
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -182,6 +249,20 @@ def update_fields(form_id, module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/updateFields/{form_id}'}), 403
 
-    args = request.json
-    res = forms.update_fields({'form_id': form_id, 'data': args})
+    check, message = rest_validator(request.json, [
+        {'id': 'lines', 'type': dict, 'mandatory': True if module == 'verifier' else False},
+        {'id': 'other', 'type': dict, 'mandatory': True if module == 'verifier' else False},
+        {'id': 'supplier', 'type': dict, 'mandatory': True if module == 'verifier' else False},
+        {'id': 'facturation', 'type': dict, 'mandatory': True if module == 'verifier' else False},
+        {'id': 'batch_metadata', 'type': dict, 'mandatory': True if module == 'splitter' else False},
+        {'id': 'document_metadata', 'type': dict, 'mandatory': True if module == 'splitter' else False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = forms.update_fields({'form_id': form_id, 'data': request.json})
     return make_response(jsonify(res[0])), res[1]
