@@ -33,6 +33,9 @@ class FormTest(unittest.TestCase):
             'args': {
                 'module': 'splitter',
                 'default_form': False,
+                "outputs": [
+                    "1"
+                ],
                 'label': 'SPLITTER_TEST_FORM',
                 'settings': {
                     'export_zip_file': '',
