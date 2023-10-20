@@ -63,7 +63,10 @@ def check_token(token):
         payload = jwt.decode(token, current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
-        return {"errors": gettext("JWT_ERROR"), "message": str(_e)}, 500
+        error_message = str(_e)
+        if error_message == 'Signature has expired':
+            error_message = gettext('SESSION_EXPIRED')
+        return {"errors": gettext("JWT_ERROR"), "message": error_message}, 500
     return payload, 200
 
 
@@ -107,7 +110,10 @@ def encode_auth_token(user_id):
         ), minutes_before_exp
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
-        return str(_e)
+        error_message = str(_e)
+        if error_message == 'Signature has expired':
+            error_message = gettext('SESSION_EXPIRED')
+        return error_message
 
 
 def generate_unique_url_token(token, workflow_id, module):
@@ -158,7 +164,10 @@ def generate_unique_url_token(token, workflow_id, module):
         )
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
-        return str(_e)
+        error_message = str(_e)
+        if error_message == 'Signature has expired':
+            error_message = gettext('SESSION_EXPIRED')
+        return error_message
 
 
 def generate_reset_token(user_id):
@@ -182,7 +191,10 @@ def decode_reset_token(token):
         decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
-        return {"errors": gettext("RESET_JWT_ERROR"), "message": str(_e)}, 500
+        error_message = str(_e)
+        if error_message == 'Signature has expired':
+            error_message = gettext('SESSION_EXPIRED')
+        return {"errors": gettext("RESET_JWT_ERROR"), "message": error_message}, 500
     return decoded_token, 200
 
 
@@ -191,7 +203,10 @@ def decode_unique_url_token(token):
         decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
-        return {"errors": gettext("UNIQUE_URL_JWT_ERROR"), "message": str(_e)}, 500
+        error_message = str(_e)
+        if error_message == 'Signature has expired':
+            error_message = gettext('SESSION_EXPIRED')
+        return {"errors": gettext("UNIQUE_URL_JWT_ERROR"), "message": error_message}, 500
     return decoded_token, 200
 
 
@@ -314,7 +329,10 @@ def login_with_token(token, lang):
         decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
-        return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
+        error_message = str(_e)
+        if error_message == 'Signature has expired':
+            error_message = gettext('SESSION_EXPIRED')
+        return jsonify({"errors": gettext("JWT_ERROR"), "message": error_message}), 500
 
     if error is None:
         returned_user = user.get_user_by_username({

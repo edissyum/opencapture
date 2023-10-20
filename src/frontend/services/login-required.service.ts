@@ -28,7 +28,6 @@ import { HttpClient } from "@angular/common/http";
 import { LocaleService } from "./locale.service";
 import { ConfigService } from "./config.service";
 import { LastUrlService } from "./last-url.service";
-import { LocalStorageService } from "./local-storage.service";
 
 @Injectable({
     providedIn: 'root'
@@ -44,8 +43,7 @@ export class LoginRequiredService implements CanActivate {
         private translate: TranslateService,
         private configService: ConfigService,
         private localeService: LocaleService,
-        private routerExtService: LastUrlService,
-        private localStorage: LocalStorageService
+        private routerExtService: LastUrlService
     ) {}
 
     login(token: string, route: any) {
@@ -62,7 +60,7 @@ export class LoginRequiredService implements CanActivate {
             ).pipe(
                 tap((data: any) => {
                     this.userService.setUser(data.body.user);
-                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())));
+                    this.authService.setTokens(data.body['auth_token'], btoa(JSON.stringify(this.userService.getUser())));
                     if (!this.authService.headersExists) {
                         this.authService.generateHeaders();
                     }
@@ -87,14 +85,13 @@ export class LoginRequiredService implements CanActivate {
 
     canActivate(): boolean {
         const token = this.authService.getToken('tokenJwt');
-        let route = '';
         if (!token) {
             const params = new URLSearchParams(window.location.href);
             let token_param = '';
             for (const [key, value] of params.entries()) {
                 if (key === 'token') {
                     token_param = value;
-                    route = window.location.hash.replace('#', '').replace(/\?.*/, '');
+                    const route = window.location.hash.replace('#', '').replace(/\?.*/, '');
                     this.login(token_param, route);
                 }
             }

@@ -26,7 +26,7 @@ The functionnalities of Open-Capture are :
 Make sure you have a test custom installed using the following commands : 
 
     cd /var/www/html/opencapture/bin/install/
-    sudo ./create_custom.sh -c test -p false -t systemd
+    sudo ./create_custom.sh -c test -t systemd
     
 Then, go the the tests folder and launch the following commands
 

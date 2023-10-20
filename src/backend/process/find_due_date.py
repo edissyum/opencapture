@@ -117,7 +117,6 @@ class FindDueDate:
             for res in re.finditer(r"" + self.regex['date'], line):
                 date = self.format_date(res.group(), position, True)
                 if date and date[0]:
-                    self.log.info('Due date found : ' + str(date[0]))
                     return date
                 return False
 
