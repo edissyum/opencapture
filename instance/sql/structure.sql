@@ -266,6 +266,7 @@ CREATE TABLE "splitter_pages" (
     "document_id"   INTEGER,
     "thumbnail"     VARCHAR(255),
     "source_page"   INTEGER,
+    "display_order" INTEGER,
     "rotation"      INTEGER         DEFAULT 0,
     "status"        VARCHAR(255)    DEFAULT 'NEW'
 );
