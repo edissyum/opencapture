@@ -112,6 +112,7 @@
 		"password_number_mandatory": "At least one number is required",
 		"password_special_char_mandatory": "At least one special character is required",
 		"password_uppercase_mandatory": "At least one uppercase character is required",
+		"session_expired": "Your session has expired, please log in again",
 		"smtp_server_down": "SMTP server down, password reset is not possible",
 		"token_not_provided": "No authentification token was provided"
 	},
