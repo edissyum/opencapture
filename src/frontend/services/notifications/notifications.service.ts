@@ -48,13 +48,18 @@ export class NotificationService {
     }
 
     error(message: string) {
-        if (this.oldErrorMessage.includes('Signature has expired') && message.includes('Signature has expired') ||
-            this.oldErrorMessage.includes(this.translate.instant('AUTH.not_connected')) && message.includes('Signature has expired')) {
+        if (this.oldErrorMessage.includes(this.translate.instant('AUTH.session_expired')) && message.includes(this.translate.instant('AUTH.session_expired')) ||
+            this.oldErrorMessage.includes(this.translate.instant('AUTH.not_connected')) && message.includes(this.translate.instant('AUTH.session_expired'))) {
             return;
         }
         this.oldErrorMessage = message;
         const duration = this.getMessageDuration(message, 4000);
-        this.toastr.error(message, '', {timeOut: duration, enableHtml: true});
+        message = message.replace("<class 'str'>", 'string');
+        message = message.replace("<class 'int'>", 'integer');
+        message = message.replace("<class 'bool'>", 'boolean');
+        message = message.replace("<class 'dict'>", 'dict');
+        message = message.replace("<class 'list'>", 'list');
+        this.toastr.error(message, '', {timeOut: duration, enableHtml: true, progressBar: true});
     }
 
     handleErrors(err: any, route = '') {
