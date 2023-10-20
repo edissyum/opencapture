@@ -56,7 +56,8 @@ class UserTest(unittest.TestCase):
             "siret": "1234567891011",
             "siren": "123456789",
             "company_number": "123",
-            "address_id": 1
+            "address_id": 1,
+            "module": 'verifier'
         }
 
         return self.app.post(f'/{CUSTOM_ID}/ws/accounts/customers/create',
