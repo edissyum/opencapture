@@ -50,11 +50,12 @@ def rest_validator(data, required_fields):
         if field['mandatory']:
             if field['id'] not in data or not data[field['id']]:
                 return False, gettext('NO_DATA_OR_DATA_MISSING')
+
             if not isinstance(data[field['id']], field['type']):
                 if field['type'] == int:
                     try:
                         int(data[field['id']])
-                        return True, ''
+                        continue
                     except (TypeError, ValueError):
                         return False, error_message
                 return False, error_message
@@ -63,7 +64,7 @@ def rest_validator(data, required_fields):
                 if field['type'] == int:
                     try:
                         int(data[field['id']])
-                        return True, ''
+                        continue
                     except (TypeError, ValueError):
                         return False, error_message
                 return False, error_message

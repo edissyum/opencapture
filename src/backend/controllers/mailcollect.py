@@ -73,12 +73,10 @@ def create_process(args):
             'ip': request.remote_addr,
             'submodule': 'create_mailcollect_process',
             'user_info': request.environ['user_info'],
-            'desc': gettext('CREATE_MAILCOLLECT_PROCESS', process=args['column']['name'])
+            'desc': gettext('CREATE_MAILCOLLECT_PROCESS', process=args['columns']['name'])
         })
-        response = {
-            "process": process
-        }
-        return response, 200
+
+        return {"process": process}, 200
 
     response = {
         "errors": gettext("CREATE_PROCESS_ERROR"),

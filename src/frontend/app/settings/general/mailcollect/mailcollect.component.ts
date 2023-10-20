@@ -216,7 +216,6 @@ export class MailCollectComponent implements OnInit {
         public router: Router,
         private http: HttpClient,
         private dialog: MatDialog,
-        private route: ActivatedRoute,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,

@@ -53,13 +53,13 @@ export class NotificationService {
             return;
         }
         this.oldErrorMessage = message;
-        const duration = this.getMessageDuration(message, 4000);
+        const duration = this.getMessageDuration(message, 6000);
         message = message.replace("<class 'str'>", 'string');
         message = message.replace("<class 'int'>", 'integer');
         message = message.replace("<class 'bool'>", 'boolean');
         message = message.replace("<class 'dict'>", 'dict');
         message = message.replace("<class 'list'>", 'list');
-        this.toastr.error(message, '', {timeOut: duration, enableHtml: true, progressBar: true});
+        this.toastr.error(message, '', {timeOut: duration, enableHtml: true});
     }
 
     handleErrors(err: any, route = '') {
