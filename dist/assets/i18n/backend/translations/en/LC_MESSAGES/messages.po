@@ -328,7 +328,7 @@ msgid "ACCOUNT_ALREADY_LOGGED"
 msgstr ""
 "Your account is already log in another machine. Only one connection is "
 "allowed per account"
->
+
 #: src/backend/controllers/auth.py:430
 msgid "FIRSTNAME"
 msgstr "Firstname"
