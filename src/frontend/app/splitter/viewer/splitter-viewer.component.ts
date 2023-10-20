@@ -860,7 +860,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             this.movedPages.push({
                 'pageId'        : pageId,
                 'newDocumentId' : Number(document['id'].split('-')[1]),
-                'isAddInNewDoc' : (document.status === 'USERADD')
             });
         }
         this.setPageSelection(pageId, false);
@@ -1100,7 +1099,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     this.movedPages.push({
                         'pageId'        : pageId,
                         'newDocumentId' : Number(this.documents[selectedDocIndex].id.split('-')[1]),
-                        'isAddInNewDoc' : (this.documents[selectedDocIndex].status === 'USERADD')
                     });
                     this.setPageSelection(pageId, false);
                 }

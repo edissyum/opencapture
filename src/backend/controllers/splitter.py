@@ -475,6 +475,7 @@ def save_modifications(data):
         return response, 400
 
     for document in data['documents']:
+        page_display_order = 1
         if document['displayOrder']:
             res = splitter.update_document({
                 'id': document['id'].split('-')[-1],
@@ -501,13 +502,16 @@ def save_modifications(data):
             return response, 400
 
         """
-            Save pages rotation
+            Save pages changes
         """
         for page in document['pages']:
             res = splitter.update_page({
                 'page_id': page['id'],
-                'rotation':  page['rotation']
+                'document_id': document['id'],
+                'rotation':  page['rotation'],
+                'display_order': page_display_order,
             })[0]
+            page_display_order += 1
             if not res:
                 response = {
                     "errors": gettext('UPDATE_PAGES_ERROR'),
@@ -515,26 +519,6 @@ def save_modifications(data):
                 }
                 return response, 400
 
-    """
-        moved pages
-    """
-    for moved_page in data['moved_pages']:
-        """ Check if page is added in a new document """
-        if moved_page['isAddInNewDoc']:
-            for new_document_item in new_documents:
-                if new_document_item['tmp_id'] == moved_page['newDocumentId']:
-                    moved_page['newDocumentId'] = new_document_item['id']
-
-        res = splitter.update_page({
-            'page_id': moved_page['pageId'],
-            'document_id': moved_page['newDocumentId'],
-        })[0]
-        if not res:
-            response = {
-                "errors": gettext('UPDATE_PAGES_ERROR'),
-                "message": ''
-            }
-            return response, 400
 
     """
         Deleted documents
