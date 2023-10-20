@@ -160,8 +160,10 @@ class Splitter:
             batch_id = self.db.insert(args)
             batches_id.append(batch_id)
 
-            documents_id = 0
+            document_id = 0
+            page_display_order = 1
             previous_split_document = 0
+
             for page in batch:
                 if page['split_document'] != previous_split_document:
                     documents_data = {'custom_fields': default_values['document']}
@@ -237,7 +239,8 @@ class Splitter:
                         for custom_field in custom_fields:
                             documents_data['custom_fields'][custom_field['label_short']] = entity
                             args['columns']['data'] = json.dumps(documents_data)
-                    documents_id = self.db.insert(args)
+                    document_id = self.db.insert(args)
+                    page_display_order = 1
 
                 previous_split_document = page['split_document']
                 paths_elements = pathlib.Path(page['path'])
@@ -247,12 +250,15 @@ class Splitter:
                     'table': 'splitter_pages',
                     'columns': {
                         'thumbnail': thumbnail,
-                        'document_id': str(documents_id),
+                        'document_id': str(document_id),
                         'source_page': page['source_page'],
+                        'display_order': str(page_display_order),
                         'rotation': rotation if rotation != 'no_rotation' else 0,
                     }
                 }
                 self.db.insert(args)
+                page_display_order += 1
+
             self.db.conn.commit()
 
         return {'batches_id': batches_id}

@@ -282,7 +282,7 @@ def get_document_pages(args):
         'table': ['splitter_pages'],
         'where': ['status = %s', 'document_id = %s'],
         'data': ['NEW', args['document_id']],
-        'order_by': ['document_id']
+        'order_by': ['document_id', 'display_order']
     })
 
     if not pages:
@@ -468,6 +468,8 @@ def update_page(data):
         args['set']['document_id'] = data['document_id']
     if 'rotation' in data:
         args['set']['rotation'] = data['rotation']
+    if 'display_order' in data:
+        args['set']['display_order'] = data['display_order']
     res = database.update(args)
 
     return res
