@@ -134,7 +134,8 @@
                                         <mat-option *ngFor="let metadata of filteredServerSideMetadata | async"
                                                     [value]="metadata.metadataId"
                                                     (click)="fillData(metadata)">
-                                            <span *ngIf="metadata.metadataId !== batchMetadataValues.metadataId"
+                                            <span class="search-mask-result"
+                                                    *ngIf="metadata.metadataId !== batchMetadataValues.metadataId"
                                                   [innerHTML]="getPlaceholderFromResultMask(field.resultMask, metadata)">
                                             </span>
                                             <span *ngIf="metadata.metadataId === batchMetadataValues.metadataId">
