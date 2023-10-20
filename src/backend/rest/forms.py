@@ -250,12 +250,12 @@ def update_fields(form_id, module):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/updateFields/{form_id}'}), 403
 
     check, message = rest_validator(request.json, [
-        {'id': 'lines', 'type': dict, 'mandatory': True if module == 'verifier' else False},
-        {'id': 'other', 'type': dict, 'mandatory': True if module == 'verifier' else False},
-        {'id': 'supplier', 'type': dict, 'mandatory': True if module == 'verifier' else False},
-        {'id': 'facturation', 'type': dict, 'mandatory': True if module == 'verifier' else False},
-        {'id': 'batch_metadata', 'type': dict, 'mandatory': True if module == 'splitter' else False},
-        {'id': 'document_metadata', 'type': dict, 'mandatory': True if module == 'splitter' else False}
+        {'id': 'lines', 'type': list, 'mandatory': False},
+        {'id': 'other', 'type': list, 'mandatory': False},
+        {'id': 'supplier', 'type': list, 'mandatory': False},
+        {'id': 'facturation', 'type': list, 'mandatory': False},
+        {'id': 'batch_metadata', 'type': list, 'mandatory': False},
+        {'id': 'document_metadata', 'type': list, 'mandatory': False}
     ])
 
     if not check:
