@@ -49,7 +49,7 @@ def rest_validator(data, required_fields):
                          + str(field['type'])) + "'"
 
         if field['mandatory']:
-            if field['id'] not in data or not data[field['id']]:
+            if field['id'] not in data or (field['type'] != bool and not data[field['id']]):
                 return False, gettext('NO_DATA_OR_DATA_MISSING') + " : '" + field['id'] + "'"
 
             if not isinstance(data[field['id']], field['type']):
