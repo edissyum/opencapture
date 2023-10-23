@@ -18,8 +18,8 @@
 import os
 import base64
 from flask_babel import gettext
-from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from src.backend.functions import retrieve_custom_from_url, rest_validator
 from src.backend.import_controllers import auth, positions_masks, verifier, privileges
 from flask import Blueprint, request, make_response, jsonify, current_app, g as current_context
 
@@ -32,6 +32,16 @@ def get_positions_masks():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'positions_mask_list']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/positions_masks/list'}), 403
 
+    check, message = rest_validator(request.args, [
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     res = positions_masks.get_positions_masks(request.args)
     return make_response(jsonify(res[0]), res[1])
 
@@ -42,8 +52,18 @@ def add_positions_mask():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_positions_mask']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/positions_masks/add'}), 403
 
-    data = request.json['args']
-    res = positions_masks.add_positions_mask(data)
+    check, message = rest_validator(request.args, [
+        {'id': 'label', 'type': str, 'mandatory': False},
+        {'id': 'form_id', 'type': int, 'mandatory': False},
+        {'id': 'supplier_id', 'type': int, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = positions_masks.add_positions_mask(request.json['args'])
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -65,8 +85,20 @@ def update_positions_mask(position_mask_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/update/{position_mask_id}'}), 403
 
-    data = request.json['args']
-    res = positions_masks.update_positions_mask(position_mask_id, data)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'label', 'type': str, 'mandatory': True},
+        {'id': 'regex', 'type': dict, 'mandatory': True},
+        {'id': 'form_id', 'type': int, 'mandatory': True},
+        {'id': 'supplier_id', 'type': int, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = positions_masks.update_positions_mask(position_mask_id, request.json['args'])
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -77,8 +109,7 @@ def update_positions_by_positions_mask_id(position_mask_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/updatePositions/{position_mask_id}'}), 403
 
-    data = request.json['args']
-    res = positions_masks.update_positions_by_positions_mask_id(position_mask_id, data)
+    res = positions_masks.update_positions_by_positions_mask_id(position_mask_id, request.json['args'])
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -89,8 +120,7 @@ def update_pages_by_positions_mask_id(position_mask_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/updatePages/{position_mask_id}'}), 403
 
-    data = request.json['args']
-    res = positions_masks.update_pages_by_positions_mask_id(position_mask_id, data)
+    res = positions_masks.update_pages_by_positions_mask_id(position_mask_id, request.json['args'])
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -145,8 +175,7 @@ def delete_position_by_positions_mask_id(position_mask_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/{position_mask_id}/deletePosition'}), 403
 
-    field_id = request.json['args']
-    res = positions_masks.delete_position_by_positions_mask_id(position_mask_id, field_id)
+    res = positions_masks.delete_position_by_positions_mask_id(position_mask_id, request.json['args'])
     return make_response(res[0], res[1])
 
 
@@ -157,8 +186,7 @@ def delete_page_by_positions_mask_id(position_mask_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/{position_mask_id}/deletePage'}), 403
 
-    field_id = request.json['args']
-    res = positions_masks.delete_page_by_positions_mask_id(position_mask_id, field_id)
+    res = positions_masks.delete_page_by_positions_mask_id(position_mask_id, request.json['args'])
     return make_response(res[0], res[1])
 
 

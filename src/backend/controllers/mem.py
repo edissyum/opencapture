@@ -163,6 +163,7 @@ def retrieve_contact(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
+
     _ws = _MEMWebServices(
         args['host'],
         args['login'],

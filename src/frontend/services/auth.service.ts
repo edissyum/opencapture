@@ -62,22 +62,22 @@ export class AuthService {
 
     getTokenName() {
         let tokenName = 'OpenCaptureToken';
+        let configName = 'OpenCaptureConfig';
         let userDataName = 'OpenCaptureUserData';
         let cachedUrlName = 'OpenCaptureCachedUrl';
-        let configName = 'OpenCaptureConfig';
         let minimizeDisplay = 'OpenCaptureMinimizeDisplay';
 
         if (environment['customId']) {
             tokenName += '_' + environment['customId'];
+            configName += '_' + environment['customId'];
             userDataName += '_' + environment['customId'];
             cachedUrlName += '_' + environment['customId'];
-            configName += '_' + environment['customId'];
             minimizeDisplay += '_' + environment['customId'];
         } else if (environment['fqdn']) {
             tokenName += '_' + environment['fqdn'];
+            configName += '_' + environment['fqdn'];
             userDataName += '_' + environment['fqdn'];
             cachedUrlName += '_' + environment['fqdn'];
-            configName += '_' + environment['fqdn'];
             minimizeDisplay += '_' + environment['fqdn'];
         }
         return {
