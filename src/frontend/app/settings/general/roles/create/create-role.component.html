@@ -29,7 +29,7 @@
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <mat-select [value]="field.control.value" [formControl]="field['control']" [required]="field['required']">
                                 <mat-option *ngFor="let option of field.options" [value]="option.value">
-                                    {{ option.label }}
+                                    {{ option.label | translate }}
                                 </mat-option>
                             </mat-select>
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>

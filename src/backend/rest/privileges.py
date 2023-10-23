@@ -38,6 +38,5 @@ def get_privileges_by_role_id(role_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_role | add_role']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/privileges/getbyRoleId/{role_id}'}), 403
 
-    args = {'role_id': role_id}
-    _privileges = privileges.get_privileges_by_role_id(args)
+    _privileges = privileges.get_privileges_by_role_id({'role_id': role_id})
     return make_response(jsonify(_privileges[0])), _privileges[1]
