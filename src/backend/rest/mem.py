@@ -1,5 +1,7 @@
 # This file is part of Open-Capture.
+from flask_babel import gettext
 
+from src.backend.functions import rest_validator
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -24,71 +26,171 @@ bp = Blueprint('mem', __name__, url_prefix='/ws/')
 @bp.route('mem/testConnection', methods=['POST'])
 @auth.token_required
 def test_connection():
-    args = request.json['args']
-    connection = mem.test_connection(args)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'host', 'type': str, 'mandatory': True},
+        {'id': 'login', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    connection = mem.test_connection(request.json['args'])
     return make_response(jsonify({'status': connection}), 200)
 
 
 @bp.route('mem/getUsers', methods=['POST'])
 @auth.token_required
 def get_users():
-    args = request.json['args']
-    users = mem.get_users(args)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'host', 'type': str, 'mandatory': True},
+        {'id': 'login', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    users = mem.get_users(request.json['args'])
     return make_response(jsonify(users)), 200
 
 
 @bp.route('mem/getDoctypes', methods=['POST'])
 @auth.token_required
 def get_doctypes():
-    args = request.json['args']
-    doctypes = mem.get_doctypes(args)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'host', 'type': str, 'mandatory': True},
+        {'id': 'login', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    doctypes = mem.get_doctypes(request.json['args'])
     return make_response(jsonify(doctypes)), 200
 
 
 @bp.route('mem/getEntities', methods=['POST'])
 @auth.token_required
 def get_entities():
-    args = request.json['args']
-    entities = mem.get_entities(args)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'host', 'type': str, 'mandatory': True},
+        {'id': 'login', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    entities = mem.get_entities(request.json['args'])
     return make_response(jsonify(entities)), 200
 
 
 @bp.route('mem/getCustomFields', methods=['POST'])
 @auth.token_required
 def get_custom_fields():
-    args = request.json['args']
-    entities = mem.get_custom_fields(args)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'host', 'type': str, 'mandatory': True},
+        {'id': 'login', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    entities = mem.get_custom_fields(request.json['args'])
     return make_response(jsonify(entities)), 200
 
 
 @bp.route('mem/getContactsCustomFields', methods=['POST'])
 @auth.token_required
 def get_contact_custom_fields():
-    args = request.json['args']
-    entities = mem.get_contact_custom_fields(args)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'host', 'type': str, 'mandatory': True},
+        {'id': 'login', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    entities = mem.get_contact_custom_fields(request.json['args'])
     return make_response(jsonify(entities)), 200
 
 
 @bp.route('mem/getPriorities', methods=['POST'])
 @auth.token_required
 def get_priorities():
-    args = request.json['args']
-    priorities = mem.get_priorities(args)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'host', 'type': str, 'mandatory': True},
+        {'id': 'login', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    priorities = mem.get_priorities(request.json['args'])
     return make_response(jsonify(priorities)), 200
 
 
 @bp.route('mem/getStatuses', methods=['POST'])
 @auth.token_required
 def get_statuses():
-    args = request.json['args']
-    statuses = mem.get_statuses(args)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'host', 'type': str, 'mandatory': True},
+        {'id': 'login', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    statuses = mem.get_statuses(request.json['args'])
     return make_response(jsonify(statuses)), 200
 
 
 @bp.route('mem/getDocumentsWithContact', methods=['POST'])
 @auth.token_required
 def get_document_with_args():
-    args = request.json
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'host', 'type': str, 'mandatory': True},
+        {'id': 'login', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    args = request.json['args']
     contact = mem.retrieve_contact(args)
     if contact and contact['contacts'] and contact['count'] > 0:
         args['contactId'] = str(contact['contacts'][0]['id'])
@@ -101,6 +203,17 @@ def get_document_with_args():
 @bp.route('mem/getIndexingModels', methods=['POST'])
 @auth.token_required
 def get_indexing_models():
-    args = request.json['args']
-    indexing_models = mem.get_indexing_models(args)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'host', 'type': str, 'mandatory': True},
+        {'id': 'login', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    indexing_models = mem.get_indexing_models(request.json['args'])
     return make_response(jsonify(indexing_models)), 200
