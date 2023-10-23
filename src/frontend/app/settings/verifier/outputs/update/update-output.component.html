@@ -101,7 +101,7 @@
                                             <i class="fa-solid fa-check text-green-400"></i>
                                         </button>
                                     </mat-form-field>
-                                    <mat-form-field *ngIf="(field.type === 'textarea') && !field.webservice">
+                                    <mat-form-field *ngIf="(field.type === 'textarea') && !field['webservice']">
                                         <mat-label>{{ field.label | translate }}</mat-label>
                                         <textarea cdkTextareaAutosize cdkAutosizeMinRows="1" matInput [value]="field.control.value"
                                                   [formControl]="field['control']" [type]="field.type" [placeholder]="field.placeholder"
@@ -111,7 +111,7 @@
                                             <i class="fa-solid fa-circle-question text-md"></i>
                                         </span>
                                     </mat-form-field>
-                                    <mat-form-field (focusin)="retrieveDataFromWS(field.id)" *ngIf="(field.type === 'text' || field.type === 'number') && field.webservice">
+                                    <mat-form-field (focusin)="retrieveDataFromWS(field.id)" *ngIf="(field.type === 'text' || field.type === 'number') && field['webservice']">
                                         <mat-label>{{ field.label | translate }}</mat-label>
                                         <input matInput [formControl]="field['control']" [type]="field.type"
                                                [readonly]="field['webservice'] && !this.connection"
@@ -141,9 +141,9 @@
                                     </mat-slide-toggle>
                                 </ng-container>
                             </div>
-                            <div class="grid grid-cols-3 gap-x-4 gap-y-10 m-8">
+                            <div class="grid grid-cols-2 gap-x-4 gap-y-10 m-8">
                                 <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]['links']">
-                                    <mat-form-field *ngIf="(field.type === 'text' || field.type === 'number') && !field.webservice">
+                                    <mat-form-field *ngIf="(field.type === 'text' || field.type === 'number') && !field['webservice']">
                                         <mat-label>{{ field.label | translate }}</mat-label>
                                         <input matInput [value]="field.control.value" [formControl]="field['control']"
                                                [type]="field.type" [placeholder]="field.placeholder"
@@ -156,12 +156,12 @@
                                             <i class="fa-solid fa-circle-question text-md"></i>
                                         </span>
                                     </mat-form-field>
-                                    <mat-form-field (focusin)="retrieveDataFromWS(field.id, 'links')" *ngIf="(field.type === 'text' || field.type === 'number') && field.webservice">
+                                    <mat-form-field (focusin)="retrieveDataFromWS(field.id, 'links')" *ngIf="(field.type === 'text' || field.type === 'number') && field['webservice']">
                                         <mat-label>{{ field.label | translate }}</mat-label>
                                         <input matInput [formControl]="field['control']" [type]="field.type"
-                                               [readonly]="field.webservice && !this.connection"
+                                               [readonly]="field['webservice'] && !this.connection"
                                                [placeholder]="field.placeholder" [required]="field['required']" [matAutocomplete]="autocomplete">
-                                        <mat-error *ngIf="field.webservice && !this.connection">{{ 'OUTPUT.check_connection_before' | translate }}</mat-error>
+                                        <mat-error *ngIf="field['webservice'] && !this.connection">{{ 'OUTPUT.check_connection_before' | translate }}</mat-error>
                                         <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
                                               [matTooltip]="field.hint">
                                             <i class="fa-solid fa-circle-question text-md"></i>
