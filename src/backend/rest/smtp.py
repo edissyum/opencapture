@@ -1,7 +1,5 @@
 # This file is part of Open-Capture.
-from flask_babel import gettext
 
-import requests
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -17,7 +15,9 @@ import requests
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+from flask_babel import gettext
 from src.backend.import_controllers import smtp
+from src.backend.functions import rest_validator
 from flask import Blueprint, make_response, request
 
 bp = Blueprint('smtp', __name__, url_prefix='/ws/')
@@ -31,7 +31,14 @@ def check_smtp_status():
 
 @bp.route('smtp/test', methods=['POST'])
 def test_smtp_send():
-    res = ('', 400)
-    if 'email' in request.json and request.json['email'] is not None:
-        res = smtp.test_send(request.json['email'])
+    check, message = rest_validator(request.json, [
+        {'id': 'email', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = smtp.test_send(request.json['email'])
     return make_response(res[0], res[1])

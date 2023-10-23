@@ -33,18 +33,16 @@ def check_smtp_status():
 
 
 def test_send(email):
-    if 'smtp' in current_context:
-        smtp = current_context.smtp
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id, True)
-        smtp = _vars[8]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id, True)
+    smtp = _vars[8]
 
     res = smtp.test_connection(return_error=True)
     if smtp.is_up:
         res = smtp.send_test_email(email)
         if res:
             return '', 200
+
         response = {
             "errors": gettext('SMTP_TEST_SEND_EMAIL_ERROR'),
             "message": str(res[1])
