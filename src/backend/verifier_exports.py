@@ -494,7 +494,8 @@ def export_mem(data, document_info, log, regex, database):
 
                 if custom_field_contact_id and supplier[0]['vat_number'] and supplier[0]['siret']:
                     contact['customFields'] = {
-                        custom_field_contact_id['id']: supplier[0]['vat_number'] + supplier[0]['siret']}
+                        custom_field_contact_id['id']: supplier[0]['vat_number'] + supplier[0]['siret']
+                    }
 
                 res = _ws.create_contact(contact)
                 if res is not False:
