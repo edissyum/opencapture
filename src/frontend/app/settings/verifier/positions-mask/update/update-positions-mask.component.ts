@@ -261,18 +261,18 @@ export class UpdatePositionsMaskComponent implements OnInit {
         });
         this.http.get(environment['url'] + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.customFields) {
-                    for (const field in data.customFields) {
-                        if (data.customFields.hasOwnProperty(field)) {
-                            if (data.customFields[field].module === 'verifier') {
+                if (data['customFields']) {
+                    for (const field in data['customFields']) {
+                        if (data['customFields'].hasOwnProperty(field)) {
+                            if (data['customFields'][field].module === 'verifier') {
                                 for (const parent in this.availableFieldsParent) {
                                     if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push(
                                             {
-                                                id: 'custom_' + data.customFields[field].id,
-                                                label: data.customFields[field].label,
-                                                type: data.customFields[field].type,
-                                                color: data.customFields[field].color,
+                                                id: 'custom_' + data['customFields'][field].id,
+                                                label: data['customFields'][field].label,
+                                                type: data['customFields'][field].type,
+                                                color: data['customFields'][field].color,
                                                 regex: ''
                                             }
                                         );
@@ -399,7 +399,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 }),
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/settings/verifier/positions-mask');
+                    this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();

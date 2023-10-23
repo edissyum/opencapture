@@ -59,9 +59,17 @@ def rest_validator(data, required_fields):
                         continue
                     except (TypeError, ValueError):
                         return False, error_message
+
                 if field['type'] == bool:
                     if data[field['id']] in ['true', 'True', 'false', 'False']:
                         continue
+
+                if field['type'] == dict:
+                    try:
+                        json.loads(data[field['id']])
+                        continue
+                    except (TypeError, ValueError):
+                        return False, error_message
                 return False, error_message
         else:
             if field['id'] in data and data[field['id']] and not isinstance(data[field['id']], field['type']):
@@ -71,10 +79,18 @@ def rest_validator(data, required_fields):
                         continue
                     except (TypeError, ValueError):
                         return False, error_message
+
                 if field['type'] == bool:
                     if data[field['id']] in ['true', 'True', 'false', 'False']:
                         continue
                     return False, error_message
+
+                if field['type'] == dict:
+                    try:
+                        json.loads(data[field['id']])
+                        continue
+                    except (TypeError, ValueError):
+                        return False, error_message
                 return False, error_message
     return True, ''
 

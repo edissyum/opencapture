@@ -31,6 +31,16 @@ def get_outputs(module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/outputs/{module}/list'}), 403
 
+    check, message = rest_validator(request.args, [
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     args = dict(request.args)
     args['module'] = module
     _outputs = outputs.get_outputs(args)
