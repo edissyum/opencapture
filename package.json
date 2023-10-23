@@ -61,7 +61,7 @@
         "@typescript-eslint/eslint-plugin": "6.8.0",
         "@typescript-eslint/parser": "6.8.0",
         "autoprefixer": "^10.4.16",
-        "eslint": "^8.51.0",
+        "eslint": "^8.52.0",
         "eslint-plugin-import": "latest",
         "eslint-plugin-jsdoc": "latest",
         "eslint-plugin-prefer-arrow": "latest",
