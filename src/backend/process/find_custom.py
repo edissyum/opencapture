@@ -48,7 +48,7 @@ class FindCustom:
         self.custom_fields_regex = custom_fields_regex
         self.custom_fields_to_find = custom_fields_to_find
 
-    def check_format_and_clean(self, data, settings):
+    def check_format(self, data, settings):
         match = True
         if settings['format'] == 'number_float':
             data = re.sub(r"\s*", '', data)
@@ -168,7 +168,7 @@ class FindCustom:
                         if regex_settings['remove_keyword']:
                             data = sanitize_keyword(_data.group(), regex_settings['content'])
 
-                        data = self.check_format_and_clean(data, regex_settings)
+                        data = self.check_format(data, regex_settings)
                         if data:
                             if 'remove_spaces' in regex_settings and regex_settings['remove_spaces']:
                                 data = re.sub(r"\s*", '', data)
