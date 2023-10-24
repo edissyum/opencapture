@@ -112,20 +112,27 @@ class Files:
     def save_img_with_pdf2image(self, pdf_name, output, page=None, docservers=False, chunk_size=10, rotate_img=False,
                                 page_to_save=False):
         try:
+            outputs_paths = []
+            directory = os.path.dirname(output)
             output = os.path.splitext(output)[0]
             bck_output = os.path.splitext(output)[0]
-            directory = os.path.dirname(output)
-            outputs_paths = []
             if page:
                 images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
                 output_path = output + '.jpg'
                 images[0].save(output_path, 'JPEG')
+                src = cv2.imread(output_path)
+                rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
+                results = pytesseract.image_to_osd(rgb, output_type=Output.DICT)
+                if results['orientation'] != 0 and results['rotate'] != 0:
+                    src = imutils.rotate_bound(rgb, angle=results["rotate"])
+                    cv2.imwrite(output_path, src)
                 outputs_paths.append(output_path)
             else:
                 cpt = 1
                 with open(pdf_name, 'rb') as pdf:
                     pdf_reader = pypdf.PdfReader(pdf)
                     page_count = len(pdf_reader.pages)
+
                 for chunk_idx in range(0, page_count, chunk_size):
                     start_page = 0 if chunk_idx == 0 else chunk_idx + 1
                     end_page = min(chunk_idx + chunk_size, page_count)
