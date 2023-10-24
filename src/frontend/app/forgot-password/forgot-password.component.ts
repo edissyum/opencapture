@@ -83,7 +83,7 @@ export class ForgotPasswordComponent implements OnInit {
             this.http.post(environment['url'] + '/ws/users/getByMail', {email: email}).pipe(
                 tap((data: any) => {
                     this.http.post(environment['url'] + '/ws/users/sendEmailForgotPassword', {userId: data.id, currentUrl: currentUrl}).pipe(
-                        tap((data: any) => {
+                        tap(() => {
                             this.notify.success(this.translate.instant('USER.forgot_password_email_sent'));
                         }),
                         finalize(() => this.sending = false),
