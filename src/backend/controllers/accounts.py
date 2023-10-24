@@ -150,8 +150,8 @@ def update_supplier(supplier_id, data):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
         spreadsheet = _vars[7]
-    old_supplier, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
+    old_supplier, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
         _set = {}
         if 'address_id' in data:
