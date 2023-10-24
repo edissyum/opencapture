@@ -179,11 +179,10 @@ def update_user(user_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/update/{user_id}'}), 403
 
     check, message = rest_validator(request.json['args'], [
-        {'id': 'role', 'type': int, 'mandatory': True},
-        {'id': 'mode', 'type': str, 'mandatory': True},
+        {'id': 'role', 'type': int, 'mandatory': False},
+        {'id': 'mode', 'type': str, 'mandatory': False},
         {'id': 'email', 'type': str, 'mandatory': False},
         {'id': 'forms', 'type': list, 'mandatory': False},
-        {'id': 'username', 'type': str, 'mandatory': True},
         {'id': 'lastname', 'type': str, 'mandatory': True},
         {'id': 'password', 'type': str, 'mandatory': False},
         {'id': 'firstname', 'type': str, 'mandatory': True},
