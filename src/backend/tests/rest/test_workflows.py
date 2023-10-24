@@ -39,8 +39,18 @@ class WorkflowsTest(unittest.TestCase):
                 'splitter_method_id': 'no_sep',
                 'input_folder': f'/var/share/{CUSTOM_ID}/entrant/verifier/new_folder/'
             },
-            'process': {},
-            'output': {}
+            'process': {
+                "form_id": 1,
+                "custom_fields": [],
+                "system_fields": ["name", "invoice_number", "quotation_number", "document_date", "footer"],
+                "use_interface": True,
+                "delete_documents": False,
+                "override_supplier_form": False,
+                "allow_automatic_validation": True
+            },
+            'output': {
+                "outputs_id": [3]
+            }
         }
 
         return self.app.post(f'/{CUSTOM_ID}/ws/workflows/verifier/create',

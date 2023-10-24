@@ -26,11 +26,21 @@ bp = Blueprint('workflow', __name__, url_prefix='/ws/')
 @bp.route('workflows/<string:module>/verifyInputFolder', methods=['POST'])
 @auth.token_required
 def verify_input_folder(module):
-    list_priv = ['settings', 'add_workflow | update_workflow'] if module == 'verifier' else ['add_workflow_splitter | update_workflow_splitter']
-
+    list_priv = ['settings', 'add_workflow | update_workflow'] if module == 'verifier' else \
+        ['add_workflow_splitter | update_workflow_splitter']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/workflows/{module}/verifyInputFolder'}), 403
+
+    check, message = rest_validator(request.json, [
+        {'id': 'input_folder', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
     res = workflow.verify_input_folder(request.json)
     return make_response(jsonify(res[0])), res[1]
@@ -45,8 +55,14 @@ def create_workflow(module):
 
     args = dict(request.json['args'])
     args['module'] = module
+
     check, message = rest_validator(args, [
-        {'id': 'module', 'type': str, 'mandatory': True}
+        {'id': 'label', 'type': str, 'mandatory': True},
+        {'id': 'module', 'type': str, 'mandatory': True},
+        {'id': 'input', 'type': dict, 'mandatory': True},
+        {'id': 'output', 'type': dict, 'mandatory': True},
+        {'id': 'process', 'type': dict, 'mandatory': True},
+        {'id': 'workflow_id', 'type': str, 'mandatory': True}
     ])
     if not check:
         return make_response({
@@ -66,6 +82,16 @@ def get_workflows(module, user_id):
         else ['settings | upload', 'workflows_list | upload']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/workflows/{module}/list'}), 403
+
+    check, message = rest_validator(request.args, [
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
     args = dict(request.args)
     args['module'] = module
@@ -133,14 +159,20 @@ def update_workflow(module, workflow_id):
 
     data = request.json['args']
     data['module'] = module
+
     check, message = rest_validator(data, [
-        {'id': 'module', 'type': str, 'mandatory': True}
+        {'id': 'label', 'type': str, 'mandatory': True},
+        {'id': 'module', 'type': str, 'mandatory': True},
+        {'id': 'input', 'type': dict, 'mandatory': False},
+        {'id': 'output', 'type': dict, 'mandatory': False},
+        {'id': 'process', 'type': dict, 'mandatory': False}
     ])
     if not check:
         return make_response({
             "errors": gettext('BAD_REQUEST'),
             "message": message
         }, 400)
+
     res = workflow.update_workflow(workflow_id, data)
     return make_response(jsonify(res[0])), res[1]
 
@@ -155,6 +187,17 @@ def create_script_and_watcher(module):
 
     args = dict(request.json['args'])
     args['module'] = module
+
+    check, message = rest_validator(args, [
+        {'id': 'workflow_id', 'type': str, 'mandatory': True},
+        {'id': 'input_folder', 'type': dict, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     res = workflow.create_script_and_watcher(args)
     return make_response(jsonify(res[0])), res[1]
 
