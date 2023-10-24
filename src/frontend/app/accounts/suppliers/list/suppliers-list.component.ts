@@ -232,6 +232,7 @@ export class SuppliersListComponent implements OnInit {
         if (supplierId !== undefined) {
             this.http.delete(environment['url'] + '/ws/accounts/suppliers/deletePositions/' + supplierId, {headers: this.authService.headers}).pipe(
                 tap(() => {
+                    console.log('positions deleted')
                     this.notify.success(this.translate.instant('ACCOUNTS.positions_deleted'));
                 }),
                 catchError((err: any) => {
