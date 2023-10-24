@@ -17,6 +17,8 @@
 
 import re
 import json
+import string
+
 from src.backend.functions import search_custom_positions
 
 
@@ -24,6 +26,21 @@ def sanitize_keyword(data, regex):
     tmp_data = re.sub(r"" + regex[:-2], '', data, flags=re.IGNORECASE)
     data = tmp_data.lstrip()
     return data
+
+
+def validate_iban(unchecked_iban):
+    letters = {ord(d): str(i) for i, d in enumerate(string.digits + string.ascii_uppercase)}
+
+    def _number_iban(iban):
+        return (iban[4:] + iban[:4]).translate(letters)
+
+    def generate_iban_check_digits(iban):
+        number_iban = _number_iban(iban[:2] + '00' + iban[4:])
+        return '{:0>2}'.format(98 - (int(number_iban) % 97))
+
+    def valid_iban(iban):
+        return int(_number_iban(iban)) % 97 == 1
+    return generate_iban_check_digits(unchecked_iban) == unchecked_iban[2:4] and valid_iban(unchecked_iban)
 
 
 class FindCustom:
@@ -57,7 +74,15 @@ class FindCustom:
         if settings['format'] == 'date':
             match = re.match(r"" + self.regex['date'], data)
 
-        if match is None:
+        if settings['format'] == 'lunh_algorithm':
+            _r = [int(ch) for ch in str(data)][::-1]
+            match = (sum(_r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in _r[1::2])) % 10 == 0
+
+        if settings['format'] == 'iban':
+            data = re.sub(r"\s*", '', data)
+            match = validate_iban(data)
+
+        if not match:
             return False
         return data
 
@@ -125,7 +150,8 @@ class FindCustom:
                             if 'custom_' in field:
                                 position = self.database.select({
                                     'select': [
-                                        "positions -> '" + str(self.form_id) + "' -> '" + field + "' as custom_position",
+                                        "positions -> '" + str(
+                                            self.form_id) + "' -> '" + field + "' as custom_position",
                                         "pages -> '" + str(self.form_id) + "' -> '" + field + "' as custom_page"
                                     ],
                                     'table': ['accounts_supplier'],
@@ -136,7 +162,8 @@ class FindCustom:
                                 if position and position['custom_position'] not in [False, 'NULL', '', None]:
                                     data = {'position': position['custom_position'], 'regex': None, 'target': 'full',
                                             'page': position['custom_page']}
-                                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex,
+                                                                             self.file, self.docservers)
                                     try:
                                         position = json.loads(position)
                                     except TypeError:
