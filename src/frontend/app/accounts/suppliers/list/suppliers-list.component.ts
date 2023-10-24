@@ -199,8 +199,10 @@ export class SuppliersListComponent implements OnInit {
 
     deleteSupplier(supplierId: number) {
         if (supplierId !== undefined) {
+            this.loading = true;
             this.http.delete(environment['url'] + '/ws/accounts/suppliers/delete/' + supplierId, {headers: this.authService.headers}).pipe(
                 tap(() => {
+                    this.loading = false;
                     this.loadSuppliers();
                     this.notify.success(this.translate.instant('ACCOUNTS.supplier_deleted'));
                 }),
@@ -215,8 +217,10 @@ export class SuppliersListComponent implements OnInit {
 
     skipAutoValidate(supplierId: number) {
         if (supplierId !== undefined) {
+            this.loading = true;
             this.http.put(environment['url'] + '/ws/accounts/suppliers/skipAutoValidate/' + supplierId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
+                    this.loading = false;
                     this.notify.success(this.translate.instant('ACCOUNTS.skip_validated_success'));
                 }),
                 catchError((err: any) => {
@@ -230,9 +234,10 @@ export class SuppliersListComponent implements OnInit {
 
     deleteSupplierPositions(supplierId: number) {
         if (supplierId !== undefined) {
+            this.loading = true;
             this.http.delete(environment['url'] + '/ws/accounts/suppliers/deletePositions/' + supplierId, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    console.log('positions deleted')
+                    this.loading = false;
                     this.notify.success(this.translate.instant('ACCOUNTS.positions_deleted'));
                 }),
                 catchError((err: any) => {
