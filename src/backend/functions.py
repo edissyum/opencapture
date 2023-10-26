@@ -47,14 +47,27 @@ def rest_validator(data, required_fields):
     for field in required_fields:
         error_message = (gettext('NO_DATA_OR_DATA_MISSING') + " : '" + field['id'] + "' " + gettext('IS_NOT') + " '"
                          + str(field['type'])) + "'"
+
         if field['mandatory']:
-            if field['id'] not in data or not data[field['id']]:
-                return False, gettext('NO_DATA_OR_DATA_MISSING')
+            if field['id'] not in data or (field['type'] != bool and not data[field['id']]):
+                return False, gettext('NO_DATA_OR_DATA_MISSING') + " : '" + field['id'] + "'"
+
             if not isinstance(data[field['id']], field['type']):
                 if field['type'] == int:
                     try:
                         int(data[field['id']])
-                        return True, ''
+                        continue
+                    except (TypeError, ValueError):
+                        return False, error_message
+
+                if field['type'] == bool:
+                    if data[field['id']] in ['true', 'True', 'false', 'False']:
+                        continue
+
+                if field['type'] == dict:
+                    try:
+                        json.loads(data[field['id']])
+                        continue
                     except (TypeError, ValueError):
                         return False, error_message
                 return False, error_message
@@ -63,7 +76,19 @@ def rest_validator(data, required_fields):
                 if field['type'] == int:
                     try:
                         int(data[field['id']])
-                        return True, ''
+                        continue
+                    except (TypeError, ValueError):
+                        return False, error_message
+
+                if field['type'] == bool:
+                    if data[field['id']] in ['true', 'True', 'false', 'False']:
+                        continue
+                    return False, error_message
+
+                if field['type'] == dict:
+                    try:
+                        json.loads(data[field['id']])
+                        continue
                     except (TypeError, ValueError):
                         return False, error_message
                 return False, error_message

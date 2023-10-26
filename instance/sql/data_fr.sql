@@ -149,14 +149,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Pseudo de l''''utilisateur WS",
                 "required": "true",
-                "placeholder": "edissyumws"
+                "placeholder": "ws_opencapture"
             },
             {
                 "id": "password",
                 "type": "password",
                 "label": "Mot de passe de l''''utilisateur WS",
                 "required": "true",
-                "placeholder": "maarch"
+                "placeholder": "ws_opencapture"
             }
         ],
         "links": [
@@ -212,7 +212,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "label": "Utilisateur destinataire",
                 "required": "true",
                 "webservice": "getUsersFromMem",
-                "placeholder": "Bernard BLIER"
+                "placeholder": "Danny OCEAN"
             },
             {
                 "id": "status",
@@ -244,7 +244,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "label": "Utilisateur Rédacteur",
                 "required": "true",
                 "webservice": "getUsersFromMem",
-                "placeholder": "Bernard BLIER"
+                "placeholder": "Danny OCEAN"
             },
             {
                 "id": "priority",
@@ -466,7 +466,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
         "type": "text",
         "label": "Pseudo de l''''utilisateur WS",
         "required": "true",
-        "placeholder": "edissyumws"
+        "placeholder": "ws_opencapture"
       },
       {
         "id": "password",

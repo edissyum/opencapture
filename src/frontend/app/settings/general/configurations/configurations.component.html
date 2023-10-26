@@ -198,7 +198,7 @@
                                 <span class="text-lg">
                                     {{ "CONFIGURATIONS.smtp_test_email" | translate }}
                                 </span>
-                                <mat-form-field subscriptSizing="dynamic" [ngStyle]="{'width.ch': this.emailTestControl.value.length, 'min-width.ch': 20}">
+                                <mat-form-field subscriptSizing="dynamic" [ngStyle]="{'width.ch': this.emailTestControl.value.length + 0.5, 'min-width.ch': 25}">
                                     <input matInput type="text" [formControl]="this.emailTestControl">
                                 </mat-form-field>
                             </div>

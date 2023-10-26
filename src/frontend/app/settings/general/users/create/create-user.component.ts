@@ -116,7 +116,6 @@ export class CreateUserComponent implements OnInit {
     userForms        : any[]     = [];
     customers        : any[]     = [];
     userCustomers    : any[]     = [];
-    errorMessage     : string    = '';
 
     constructor(
         public router: Router,

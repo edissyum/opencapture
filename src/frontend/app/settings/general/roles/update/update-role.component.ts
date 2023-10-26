@@ -198,8 +198,7 @@ export class UpdateRoleComponent implements OnInit {
             }),
             catchError((err: any) => {
                 console.debug(err);
-                this.notify.handleErrors(err);
-                this.router.navigate(['/settings/general/roles']).then();
+                this.notify.handleErrors(err, '/settings/general/roles');
                 return of(false);
             })
         ).subscribe();
@@ -277,7 +276,7 @@ export class UpdateRoleComponent implements OnInit {
             ).pipe(
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/settings/general/roles/');
+                    this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();
@@ -290,7 +289,7 @@ export class UpdateRoleComponent implements OnInit {
                 }),
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/settings/general/roles/');
+                    this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();

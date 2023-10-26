@@ -60,6 +60,7 @@ def get_current_lang():
         _vars = create_classes_from_custom_id(custom_id)
         configurations = _vars[10]
         languages = _vars[11]
+
     current_lang = configurations['locale']
     angular_moment_lang = ''
     babel_lang = ''

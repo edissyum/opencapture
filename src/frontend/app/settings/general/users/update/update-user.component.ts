@@ -291,7 +291,6 @@ export class UpdateUserComponent implements OnInit {
             ).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('USER.updated'));
-                    const _user = user['lastname'] + ' ' + user['firstname'];
                     this.router.navigate(['/settings/general/users/']).then();
                 }),
                 catchError((err: any) => {
@@ -360,7 +359,7 @@ export class UpdateUserComponent implements OnInit {
             }),
             catchError((err: any) => {
                 console.debug(err);
-                this.notify.handleErrors(err, '/settings/general/users/');
+                this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();
@@ -390,7 +389,7 @@ export class UpdateUserComponent implements OnInit {
             }),
             catchError((err: any) => {
                 console.debug(err);
-                this.notify.handleErrors(err, '/settings/general/users/');
+                this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();

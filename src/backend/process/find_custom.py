@@ -48,13 +48,7 @@ class FindCustom:
         self.custom_fields_regex = custom_fields_regex
         self.custom_fields_to_find = custom_fields_to_find
 
-    def check_format_and_clean(self, data, settings):
-        if 'remove_special_char' in settings and settings['remove_special_char']:
-            data_to_replace = r'[-()\"#\\/@;:<>{}\]\[`+=~|!?€$%£*©™]'
-            if settings['format'] == 'date':
-                data_to_replace = r'[-()\"#\\@;:<>{}\]\[`+=~|!?€$%£*©™]'
-            data = re.sub(data_to_replace, '', data)
-
+    def check_format(self, data, settings):
         match = True
         if settings['format'] == 'number_float':
             data = re.sub(r"\s*", '', data)
@@ -155,18 +149,26 @@ class FindCustom:
 
     def run(self):
         cpt = 0
+
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
                 regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
                 if 'content' in regex_settings and regex_settings['content']:
-                    for _data in re.finditer(r"" + regex_settings['content'], line.content.upper(),
-                                             flags=re.IGNORECASE):
+                    upper_line = line.content.upper()
+                    if 'remove_special_char' in regex_settings and regex_settings['remove_special_char']:
+                        data_to_replace = r'[-()\"#\\/@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ]'
+                        if regex_settings['format'] == 'date':
+                            data_to_replace = r'[-()\"#\\@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ]'
+                        upper_line = re.sub(data_to_replace, '', upper_line)
+                        upper_line = re.sub(r'\s+', ' ', upper_line)
+
+                    for _data in re.finditer(r"" + regex_settings['content'], upper_line, flags=re.IGNORECASE):
                         data = _data.group()
 
                         if regex_settings['remove_keyword']:
                             data = sanitize_keyword(_data.group(), regex_settings['content'])
 
-                        data = self.check_format_and_clean(data, regex_settings)
+                        data = self.check_format(data, regex_settings)
                         if data:
                             if 'remove_spaces' in regex_settings and regex_settings['remove_spaces']:
                                 data = re.sub(r"\s*", '', data)

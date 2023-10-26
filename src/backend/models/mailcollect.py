@@ -32,12 +32,13 @@ def retrieve_processes(args):
         if not _vars[0]:
             return {}, _vars[1]
         database = _vars[0]
+
     error = None
     processes = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['mailcollect'],
-        'where': ['1=%s'] if 'where' not in args else args['where'],
-        'data': ['1'] if 'data' not in args else args['data'],
+        'where': ['status <> %s'] if 'where' not in args else args['where'],
+        'data': ['DEL'] if 'data' not in args else args['data'],
         'order_by': ['id ASC'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'offset': str(args['offset']) if 'offset' in args else 0

@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
+from src.backend.functions import rest_validator
 from flask import Blueprint, make_response, jsonify, request
 from src.backend.import_controllers import auth, monitoring, privileges, verifier
 
@@ -59,16 +60,22 @@ def get_process_by_token():
     if not privileges.has_privileges(request.environ['user_id'], ['monitoring']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/monitoring/getProcessByToken'}), 403
 
-    if 'token' in request.json and request.json['token']:
-        token = str(request.json['token'])
-    else:
-        return jsonify({'errors': gettext('TOKEN_IS_MANDATORY'), 'message': ''}), 400
+    check, message = rest_validator(request.json, [
+        {'id': 'token', 'type': str, 'mandatory': True},
+        {'id': 'retrieveData', 'type': bool, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
     retrieve_data = False
     if 'retrieveData' in request.json and request.json['retrieveData']:
         retrieve_data = request.json['retrieveData']
 
-    process, status = monitoring.get_process_by_token(token)
+    process, status = monitoring.get_process_by_token(request.json['token'])
     if process and process['process'] and retrieve_data:
         if 'document_ids' in process['process'][0] and process['process'][0]['document_ids']:
             process['document_data'] = {}
