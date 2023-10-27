@@ -488,10 +488,12 @@ def launch_output_script(document_id, workflow_settings, outputs):
         script = workflow_settings['output']['script']
         check_res, message = check_code(script, docservers['VERIFIER_SHARE'],
                                         workflow_settings['input']['input_folder'])
+
         if not check_res:
             log.error('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
                       '&nbsp;<strong>(' + message.strip() + ')</strong>')
             return False
+
         rand = str(uuid.uuid4())
         tmp_file = docservers['TMP_PATH'] + '/output_scripting_' + rand + '.py'
 
@@ -500,7 +502,8 @@ def launch_output_script(document_id, workflow_settings, outputs):
                 python_script.write(script)
 
             if os.path.isfile(tmp_file):
-                script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.').replace('.py', '')
+                script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '')
+                script_name = script_name.replace('/', '.').replace('.py', '')
                 script_name = script_name.replace('..', '.')
                 try:
                     tmp_script_name = script_name.replace('custom.', '')
@@ -529,17 +532,17 @@ def launch_output_script(document_id, workflow_settings, outputs):
                             'document_id': document_id,
                             'opencapture_path': config['GLOBAL']['applicationpath']
                         }
-
                         res = scripting.main(data)
+
                 os.remove(tmp_file)
                 if not res:
-                    sys.exit(0)
+                    return False
         except Exception as _e:
             os.remove(tmp_file)
             log.error('Error during output scripting : ' + str(traceback.format_exc()))
 
 
-def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
+def ocr_on_the_fly(file_name, selection, thumb_size, lang):
     if 'files' in current_context and 'ocr' in current_context and 'docservers' in current_context:
         files = current_context.files
         ocr = current_context.ocr
@@ -552,9 +555,6 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks, lang):
         docservers = _vars[9]
 
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + file_name
-
-    if positions_masks:
-        path = docservers['VERIFIER_POSITIONS_MASKS'] + '/' + file_name
 
     text = files.ocr_on_fly(path, selection, ocr, thumb_size, lang=lang)
     if text:

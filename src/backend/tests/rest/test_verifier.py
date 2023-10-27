@@ -102,7 +102,7 @@ class VerifierTest(unittest.TestCase):
     def test_successful_get_documents_list(self):
         self.create_supplier()
         self.create_document()
-        response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/documents/list', json={},
+        response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/documents/list', json={'status' : 'NEW'},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
         self.assertEqual(200, response.status_code)

@@ -376,7 +376,7 @@ def ocrise_file(file, lang, log, folder_out, filename):
         generate_searchable_pdf(file, tmp_filename, lang, log)
         try:
             shutil.move(tmp_filename, folder_out + '/' + filename)
-        except shutil.Error as _e:
+        except (shutil.Error, FileNotFoundError) as _e:
             log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
 
 
@@ -385,7 +385,7 @@ def compress_file(file, compress_type, log, folder_out, filename, document_filen
     compress_pdf(file, compressed_file_path, compress_type)
     try:
         shutil.move(compressed_file_path, folder_out + '/' + filename)
-    except shutil.Error as _e:
+    except (shutil.Error, FileNotFoundError) as _e:
         log.error('Moving file ' + compressed_file_path + ' error : ' + str(_e))
 
 
@@ -561,6 +561,8 @@ def export_mem(data, document_info, log, regex, database):
                         args.update({
                             'documentDate': str(document_date.date())
                         })
+                    else:
+                        args.update({'documentDate': None})
 
                     res, message = _ws.insert_with_args(args)
                     if res:
