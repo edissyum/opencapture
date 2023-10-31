@@ -213,7 +213,7 @@ def ldap_synchronization_users():
         {'id': 'attributFirstName', 'type': str, 'mandatory': True},
         {'id': 'attributLastName', 'type': str, 'mandatory': True},
         {'id': 'usersDN', 'type': str, 'mandatory': True},
-        {'id': 'attributRoleDefault', 'type': str, 'mandatory': True}
+        {'id': 'attributRoleDefault', 'type': int, 'mandatory': True}
     ])
     if not check:
         return make_response({
@@ -246,7 +246,7 @@ def save_login_method():
         {'id': 'attributFirstName', 'type': str, 'mandatory': True},
         {'id': 'attributLastName', 'type': str, 'mandatory': True},
         {'id': 'usersDN', 'type': str, 'mandatory': True},
-        {'id': 'attributRoleDefault', 'type': str, 'mandatory': True}
+        {'id': 'attributRoleDefault', 'type': int, 'mandatory': True}
     ])
     if not check:
         return make_response({
