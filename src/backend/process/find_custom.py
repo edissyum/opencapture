@@ -30,6 +30,7 @@ def sanitize_keyword(data, regex):
 
 def validate_iban(unchecked_iban):
     letters = {ord(d): str(i) for i, d in enumerate(string.digits + string.ascii_uppercase)}
+    unchecked_iban = re.sub(r"\s*", '', unchecked_iban)
 
     def _number_iban(iban):
         return (iban[4:] + iban[:4]).translate(letters)
@@ -79,7 +80,6 @@ class FindCustom:
             match = (sum(_r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in _r[1::2])) % 10 == 0
 
         if settings['format'] == 'iban':
-            data = re.sub(r"\s*", '', data)
             match = validate_iban(data)
 
         if not match:
