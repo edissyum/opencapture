@@ -190,7 +190,7 @@ def create_script_and_watcher(module):
 
     check, message = rest_validator(args, [
         {'id': 'workflow_id', 'type': str, 'mandatory': True},
-        {'id': 'input_folder', 'type': dict, 'mandatory': True}
+        {'id': 'input_folder', 'type': str, 'mandatory': True}
     ])
     if not check:
         return make_response({

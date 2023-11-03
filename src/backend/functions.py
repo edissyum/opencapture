@@ -27,7 +27,7 @@ from .classes.Config import Config as _Config
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 
 
-def rest_validator(data, required_fields):
+def rest_validator(data, required_fields, only_data=False):
     mandatory_number = 0
     for field in required_fields:
         if field['mandatory']:
@@ -36,13 +36,14 @@ def rest_validator(data, required_fields):
     if not data and mandatory_number > 1:
         return False, gettext('NO_DATA_OR_DATA_MISSING')
 
-    try:
-        if isinstance(data, bytes):
-            data = json.loads(data.decode('utf-8'))
-        if isinstance(data, str):
-            data = json.loads(data)
-    except json.decoder.JSONDecodeError:
-        return False, gettext('JSON_ERROR')
+    if not only_data:
+        try:
+            if isinstance(data, bytes):
+                data = json.loads(data.decode('utf-8'))
+            if isinstance(data, str):
+                data = json.loads(data)
+        except json.decoder.JSONDecodeError:
+            return False, gettext('JSON_ERROR')
 
     for field in required_fields:
         error_message = (gettext('NO_DATA_OR_DATA_MISSING') + " : '" + field['id'] + "' " + gettext('IS_NOT') + " '"
@@ -349,8 +350,8 @@ def generate_searchable_pdf(pdf, tmp_filename, lang, log):
         res = ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', skip_text=True, language=lang, progress_bar=False)
         if res.value != 0:
             ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', force_ocr=True, language=lang, progress_bar=False)
-    except ocrmypdf.exceptions.PriorOcrFoundError as _e:
-        log.error(_e)
+    except (ocrmypdf.exceptions.PriorOcrFoundError, FileNotFoundError) as _e:
+        log.error('OCR Error : ' + str(_e))
 
 
 def find_form_with_ia(file, ai_model_id, database, docservers, files, ai, ocr, log, module):

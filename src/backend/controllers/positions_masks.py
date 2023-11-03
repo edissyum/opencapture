@@ -101,6 +101,7 @@ def update_positions_mask(position_mask_id, args):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
         spreadsheet = _vars[7]
+
     _, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         res, error = positions_masks.update_positions_mask({'set': args, 'position_mask_id': position_mask_id})
@@ -110,6 +111,7 @@ def update_positions_mask(position_mask_id, args):
             response = {
                 "res": res
             }
+
             history.add_history({
                 'module': 'verifier',
                 'ip': request.remote_addr,

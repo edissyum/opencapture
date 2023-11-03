@@ -202,7 +202,8 @@ class FindName:
                     name = name.strip()
                     for line in text:
                         if name.lower() in line.content.lower():
-                            fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;|@)", '', line.content, flags=re.IGNORECASE)
+                            fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;|@)", '', line.content,
+                                                flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(M,)", 'M.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MR,)", 'MR.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MME,)", 'MME.', fixed_line, flags=re.IGNORECASE)

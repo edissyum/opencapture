@@ -620,6 +620,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             name_class = FindName(ocr, log, docservers, supplier, files, database, regex, datas['form_id'], file)
             datas = found_data_recursively('firstname_lastname', ocr, file, nb_pages, text_by_pages,
                                            name_class, datas, files, configurations)
+
         if 'invoice_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
                                                      docservers, configurations, languages, datas['form_id'])
