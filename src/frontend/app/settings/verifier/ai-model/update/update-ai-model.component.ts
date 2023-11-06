@@ -51,17 +51,24 @@ export class UpdateVerifierAiModelComponent implements OnInit {
     splitterOrVerifier  : any       = 'verifier';
     modelForm           : any[]     = [
         {
-            id: 'model_path',
+            id: 'model_label',
             label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_name"),
             type: 'text',
-            control: new FormControl('', Validators.pattern("[a-zA-Z0-9+._-éùà)(î]+\\.sav+")),
+            control: new FormControl(''),
+            required: true
+        },
+        {
+            id: 'model_path',
+            label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_path"),
+            type: 'text',
+            control: new FormControl(''),
             required: true
         },
         {
             id: 'min_proba',
             label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.min_proba"),
             type: 'text',
-            control: new FormControl('', Validators.pattern("^[1-9][0-9]?$|^100$")),
+            control: new FormControl(''),
             required: true
         }
     ];
@@ -70,14 +77,13 @@ export class UpdateVerifierAiModelComponent implements OnInit {
         public router: Router,
         private http: HttpClient,
         private route: ActivatedRoute,
-        private formBuilder: FormBuilder,
-        private authService: AuthService,
         public userService: UserService,
+        private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
-    ) { }
+    ) {}
 
     async ngOnInit() {
         if (this.router.url.includes('/verifier/')) {
@@ -85,6 +91,17 @@ export class UpdateVerifierAiModelComponent implements OnInit {
         } else if (this.router.url.includes('/splitter/')) {
             this.splitterOrVerifier = 'splitter';
         }
+
+        this.modelForm.forEach((element: any) => {
+            if (element.id === 'model_path') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    if (value && value.includes('/')) {
+                        element.control.setValue(value.replace('/', ''));
+                    }
+                });
+            }
+        });
+
         this.serviceSettings.init();
         this.modelId = this.route.snapshot.params['id'];
         this.retrieveOCDoctypes();
@@ -143,8 +160,9 @@ export class UpdateVerifierAiModelComponent implements OnInit {
 
     updateModel() {
         if (this.isValidForm(this.modelForm)) {
-            const modelName = this.getValueFromForm(this.modelForm, 'model_path');
             const minProba = this.getValueFromForm(this.modelForm, 'min_proba');
+            const modelPath = this.getValueFromForm(this.modelForm, 'model_path');
+            const modelLabel = this.getValueFromForm(this.modelForm, 'model_label');
             const doctypes = [];
             for (let i = 0; i < this.len; i++) {
                 const fold = this.documents[i].folder;
@@ -158,7 +176,7 @@ export class UpdateVerifierAiModelComponent implements OnInit {
             }
             if (this.modelId !== undefined) {
                 this.http.post(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/update/' + this.modelId, {
-                    model_name: modelName, min_proba: minProba, doctypes: doctypes }, {headers: this.authService.headers}).pipe(
+                    model_path: modelPath, model_label: modelLabel, min_proba: minProba, doctypes: doctypes }, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.model_updated'));
                         this.router.navigate(['/settings/' + this.splitterOrVerifier + '/ai']).then();

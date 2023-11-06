@@ -42,11 +42,11 @@
                         </mat-form-field>
                     </ng-container>
                 </div>
-                <div class="mx-10 my-2 grid grid-cols-5 gap-4 place-items-stretch">
+                <div class="mx-10 my-2 grid grid-cols-{{ this.AiModel['trainFolders'].length }} gap-4 place-items-stretch">
                     <div *ngFor="let trainFolder of this.AiModel['trainFolders']" class="text-center">
                         {{ trainFolder['folder'] }}
                         <div class="mt-4">
-                            <mat-form-field>
+                            <mat-form-field class="w-full">
                                 <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.form" | translate }}</mat-label>
                                 <mat-select [(ngModel)]="trainFolder['form']">
                                     <mat-option *ngFor="let form of forms" [value]="form.id">
@@ -58,7 +58,7 @@
                         <button class="max-w-full text-lg text-left hover:text-green-400"
                                 *ngIf="trainFolder.form"
                                 (click)="openDoctypeTree(trainFolder);"
-                                matTooltip="{{ 'GLOBAL.edit' | translate }}">
+                                [matTooltip]="'GLOBAL.edit' | translate">
                             <div class="font-medium truncate">
                                 <i class="fa-solid fa-edit"></i>
                                 {{ trainFolder.doctype }}

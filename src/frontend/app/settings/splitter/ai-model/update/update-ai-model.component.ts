@@ -31,6 +31,7 @@ import { NotificationService } from "../../../../../services/notifications/notif
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import {DocumentTypeComponent} from "../../../../splitter/document-type/document-type.component";
+
 @Component({
   selector: 'app-update-model',
   templateUrl: './update-ai-model.component.html',
@@ -73,9 +74,8 @@ export class UpdateSplitterAiModelComponent implements OnInit {
         private http: HttpClient,
         private dialog: MatDialog,
         private route: ActivatedRoute,
-        private formBuilder: FormBuilder,
-        private authService: AuthService,
         public userService: UserService,
+        private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
@@ -85,6 +85,17 @@ export class UpdateSplitterAiModelComponent implements OnInit {
     async ngOnInit() {
         this.serviceSettings.init();
         this.AiModel.id = this.route.snapshot.params['id'];
+
+        this.AiModel.fields.forEach((element: any) => {
+            if (element.id === 'model_label') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    if (value && value.includes('/')) {
+                        element.control.setValue(value.replace('/', ''));
+                    }
+                });
+            }
+        });
+
         await this.retrieveForms();
         this.http.get(environment['url'] + '/ws/ai/getById/' + this.AiModel.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
