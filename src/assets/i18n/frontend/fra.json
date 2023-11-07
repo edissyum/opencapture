@@ -1153,7 +1153,7 @@
 		"separate_by_document_number_value": "Nombres de pages par document",
 		"splitter_method": "Méthode de séparation",
 		"system_fields_to_search": "Champs système à rechercher",
-		"tesseract_function": "Fonction d'extraction du texte",
+		"tesseract_function": "Fonction d'extraction du texte (OCR)",
 		"tesseract_function_hint": "Choix de la fonction pour extraction du texte. Si la valeur par défaut (Extraction de texte par lignes) ne fonctionne pas, essayez l'extraction de texte brut",
 		"test_before_save": "Il est obligatoire de tester le script avant de valider",
 		"test_input_folder": "Vérifier si le dossier d'entrée existe et est accessible",

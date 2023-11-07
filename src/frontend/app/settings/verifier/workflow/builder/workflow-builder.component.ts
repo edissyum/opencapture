@@ -53,6 +53,7 @@ export class WorkflowBuilderComponent implements OnInit {
     processAllowed   : boolean       = true;
     useInterface     : boolean       = false;
     allowWFScripting : boolean       = false;
+    inputFolderOk    : boolean       = false;
     separationMode   : string        = 'no_sep';
     stepValid        : any           = {
         input: false,
@@ -388,6 +389,10 @@ export class WorkflowBuilderComponent implements OnInit {
                                 this.workflow_outputs = value;
                             }
                             field.control.setValue(value);
+
+                            if (field.id === 'input_folder') {
+                                this.checkFolder(field, true, true);
+                            }
                         });
                     });
                 }),
@@ -670,16 +675,20 @@ export class WorkflowBuilderComponent implements OnInit {
         this.setUsedOutputs();
     }
 
-    checkFolder(field: any, fromUser = false) {
+    checkFolder(field: any, fromUser = false, auto = false) {
         if (fromUser || (field && field.control.value && field.control.value !== this.oldFolder)) {
             this.http.post(environment['url'] + '/ws/workflows/verifier/verifyInputFolder',
                 {'input_folder': field.control.value}, {headers: this.authService.headers}).pipe(
                 tap(() => {
+                    this.inputFolderOk = true;
                     field.control.setErrors();
-                    this.notify.success(this.translate.instant('WORKFLOW.input_folder_ok'));
+                    if (!auto) {
+                        this.notify.success(this.translate.instant('WORKFLOW.input_folder_ok'));
+                    }
                     this.oldFolder = field.control.value;
                 }),
                 catchError((err: any) => {
+                    this.inputFolderOk = false;
                     field.control.setErrors({'folder_not_found': true});
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -693,6 +702,10 @@ export class WorkflowBuilderComponent implements OnInit {
         let valid = true;
         this.fields[step].forEach((element: any) => {
             if ((element.required && !element.control.value) || (element.control.errors && element.id !== 'script')) {
+                valid = false;
+            }
+
+            if (element.id == 'input_folder' && !this.inputFolderOk) {
                 valid = false;
             }
         });

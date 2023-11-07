@@ -1153,7 +1153,7 @@
 		"separate_by_document_number_value": "Number of pages per document",
 		"splitter_method": "Split method",
 		"system_fields_to_search": "System fields to search",
-		"tesseract_function": "Text extraction method",
+		"tesseract_function": "Text extraction method (OCR)",
 		"tesseract_function_hint": "Choice of function for text extraction. If the default (OCR by lines) does not work, try raw text extraction",
 		"test_before_save": "Testing is mandatory before saving",
 		"test_input_folder": "Verify if input folder exists and is writable",
