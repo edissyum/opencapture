@@ -42,7 +42,11 @@ import {ConfigService} from "../../../../../services/config.service";
         }
     }]
 })
+
 export class WorkflowBuilderComponent implements OnInit {
+    workflowId       : any;
+    form_outputs     : any           = [];
+    workflow_outputs : any           = [];
     loading          : boolean       = true;
     creationMode     : boolean       = true;
     outputAllowed    : boolean       = true;
@@ -50,9 +54,6 @@ export class WorkflowBuilderComponent implements OnInit {
     useInterface     : boolean       = false;
     allowWFScripting : boolean       = false;
     separationMode   : string        = 'no_sep';
-    form_outputs     : any           = [];
-    workflow_outputs : any           = [];
-    workflowId       : any;
     stepValid        : any           = {
         input: false,
         process: false,
@@ -270,6 +271,46 @@ export class WorkflowBuilderComponent implements OnInit {
                 control: new FormControl(),
                 required: false,
                 show: true
+            },
+            {
+                id: 'tesseract_function',
+                multiple: false,
+                label: this.translate.instant('WORKFLOW.tesseract_function'),
+                hint: this.translate.instant('WORKFLOW.tesseract_function_hint'),
+                type: 'select',
+                control: new FormControl('line_box_builder'),
+                required: true,
+                show: true,
+                values: [
+                    {
+                        'id': 'line_box_builder',
+                        'label': this.translate.instant('WORKFLOW.line_box_builder')
+                    },
+                    {
+                        'id': 'text_builder',
+                        'label': this.translate.instant('WORKFLOW.text_builder')
+                    }
+                ]
+            },
+            {
+                id: 'convert_function',
+                multiple: false,
+                label: this.translate.instant('WORKFLOW.convert_function'),
+                hint: this.translate.instant('WORKFLOW.convert_function_hint'),
+                type: 'select',
+                control: new FormControl('pdf2image'),
+                required: true,
+                show: true,
+                values: [
+                    {
+                        'id': 'pdf2image',
+                        'label': 'pdf2image'
+                    },
+                    {
+                        'id': 'imagemagick',
+                        'label': 'ImageMagick'
+                    }
+                ]
             },
             {
                 'id': 'script',
