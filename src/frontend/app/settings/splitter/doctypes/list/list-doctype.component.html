@@ -1,5 +1,5 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
@@ -27,7 +27,7 @@
             (selectedDoctypeOutput)="getOutPut($event)">
         </app-document-type-factory>
     </mat-sidenav-content>
-    <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
+    <mat-sidenav #sidenav2 mode="side" [opened]="true" position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-4">
             {{ 'DOCTYPE.edit_doctype' | translate }}
         </h3>
