@@ -242,7 +242,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
     return None
 
 
-def convert(file, files, ocr, nb_pages, custom_pages=False):
+def convert(file, files, ocr, nb_pages, tesseract_function, convert_function, custom_pages=False):
     if custom_pages:
         try:
             filename = os.path.splitext(files.custom_file_name)
@@ -251,21 +251,21 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
             os.remove(improved_img)
         except FileNotFoundError:
             pass
-        files.pdf_to_jpg(file, nb_pages, open_img=False, is_custom=True)
+        files.pdf_to_jpg(file, nb_pages, open_img=False, is_custom=True, convert_function=convert_function)
     else:
-        files.pdf_to_jpg(file, 1, True, True, 'header')
-        ocr.header_text = ocr.line_box_builder(files.img)
-        files.pdf_to_jpg(file, 1, True, True, 'footer')
-        ocr.footer_text = ocr.line_box_builder(files.img)
+        files.pdf_to_jpg(file, 1, True, True, 'header', convert_function=convert_function)
+        ocr.header_text = return_text(files.img, tesseract_function, ocr)
+        files.pdf_to_jpg(file, 1, True, True, 'footer', convert_function=convert_function)
+        ocr.footer_text = return_text(files.img, tesseract_function, ocr)
         files.pdf_to_jpg(file, 1)
         ocr.text = ocr.line_box_builder(files.img)
         if nb_pages > 1:
-            files.pdf_to_jpg(file, nb_pages, True, True, 'header', True)
-            ocr.header_last_text = ocr.line_box_builder(files.img)
-            files.pdf_to_jpg(file, nb_pages, True, True, 'footer', True)
-            ocr.footer_last_text = ocr.line_box_builder(files.img)
-            files.pdf_to_jpg(file, nb_pages, last_image=True)
-            ocr.last_text = ocr.line_box_builder(files.img)
+            files.pdf_to_jpg(file, nb_pages, True, True, 'header', True, convert_function=convert_function)
+            ocr.header_last_text = return_text(files.img, tesseract_function, ocr)
+            files.pdf_to_jpg(file, nb_pages, True, True, 'footer', True, convert_function=convert_function)
+            ocr.footer_last_text = return_text(files.img, tesseract_function, ocr)
+            files.pdf_to_jpg(file, nb_pages, last_image=True, convert_function=convert_function)
+            ocr.last_text = return_text(files.img, tesseract_function, ocr)
 
 
 def return_text(img, tesseract_function, ocr):
@@ -327,7 +327,7 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
             if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
                 break
 
-        convert(file, files, ocr, tmp_nb_pages, True)
+        convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
         _file = files.custom_file_name
         image = files.open_image_return(_file)
 
@@ -335,16 +335,17 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
             text_by_pages[tmp_nb_pages] = return_text(image, tesseract_function, ocr)
 
         data_class.text = text_by_pages[tmp_nb_pages]
-        files.pdf_to_jpg(file, tmp_nb_pages, True, True, 'header')
+        files.pdf_to_jpg(file, tmp_nb_pages, True, True, 'header', convert_function=convert_function)
         data_class.header_text = return_text(files.img, tesseract_function, ocr)
 
-        files.pdf_to_jpg(file, tmp_nb_pages, True, True, 'footer')
+        files.pdf_to_jpg(file, tmp_nb_pages, True, True, 'footer', convert_function=convert_function)
         data_class.footer_text = return_text(files.img, tesseract_function, ocr)
 
         data_class.nb_page = tmp_nb_pages
         data_class.custom_page = True
 
         data = data_class.run()
+
         i += 1
 
     if data:
@@ -414,15 +415,20 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 log.info('Document rotated by ' + str(workflow_settings['input']['rotation']) +
                          '° based on workflow settings')
 
-    # Convert files to JPG
-    convert(file, files, ocr, nb_pages)
-
     form_id_found_with_ai = False
     system_fields_to_find = []
     custom_fields_to_find = []
 
     change_workflow = False
+    convert_function = 'pdf2image'
+    tesseract_function = 'line_box_builder'
+
     if workflow_settings:
+        if 'tesseract_function' in workflow_settings['process'] and workflow_settings['process']['tesseract_function']:
+            tesseract_function = workflow_settings['process']['tesseract_function']
+        if 'convert_function' in workflow_settings['process'] and workflow_settings['process']['convert_function']:
+            convert_function = workflow_settings['process']['convert_function']
+
         if workflow_settings['input']['apply_process']:
             for field in workflow_settings['process']['system_fields']:
                 system_fields_to_find.append(field)
@@ -442,6 +448,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         # Launch input scripting if present
         change_workflow = launch_script(workflow_settings, docservers, 'input', log, file, database, args, config)
+
+    # Convert files to JPG
+    convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
 
     if not change_workflow:
         supplier = None
@@ -564,7 +573,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                         if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
                             break
 
-                    convert(file, files, ocr, tmp_nb_pages, True)
+                    convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
                     supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
                     i += 1
 
@@ -605,7 +614,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     for _r in _regex:
                         regex[_r['regex_id']] = _r['content']
                     ocr = _PyTesseract(supplier[2]['document_lang'], log, config, docservers)
-                    convert(file, files, ocr, nb_pages)
+                    convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
 
         if workflow_settings:
             if 'override_supplier_form' in workflow_settings['process'] and \
@@ -640,13 +649,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             'where': ['module = %s', "settings #>> '{regex}' is not null", "enabled = %s"],
             'data': ['verifier', True]
         })
-
-        tesseract_function = 'line_box_builder'
-        convert_function = 'pdf2image'
-        if 'tesseract_function' in workflow_settings['process'] and workflow_settings['process']['tesseract_function']:
-            tesseract_function = workflow_settings['process']['tesseract_function']
-        if 'convert_function' in workflow_settings['process'] and workflow_settings['process']['convert_function']:
-            convert_function = workflow_settings['process']['convert_function']
 
         for custom_field in custom_fields_regex:
             if (not custom_fields_to_find or custom_field['id'] in custom_fields_to_find) \
@@ -725,7 +727,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     tmp_nb_pages = tmp_nb_pages - 1
                     if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
                         break
-                    convert(file, files, ocr, tmp_nb_pages, True)
+                    convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
                     _file = files.custom_file_name
                     image = files.open_image_return(_file)
                     text = ocr.line_box_builder(image)

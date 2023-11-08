@@ -70,13 +70,15 @@ class Files:
         self.jpg_name_last_footer = img_name + '_last_footer.jpg'
 
     # Convert the first page of PDF to JPG and open the image
-    def pdf_to_jpg(self, pdf_name, page, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
+    def pdf_to_jpg(self, pdf_name, page, open_img=True, crop=False, zone_to_crop=False, last_image=False,
+                   is_custom=False, convert_function='pdf2image'):
         if crop:
             if zone_to_crop == 'header':
                 if is_custom:
-                    self.crop_image_header(pdf_name, last_image, page, self.custom_file_name)
+                    self.crop_image_header(pdf_name, last_image, page, self.custom_file_name,
+                                           convert_function=convert_function)
                 else:
-                    self.crop_image_header(pdf_name, last_image, page)
+                    self.crop_image_header(pdf_name, last_image, page, convert_function=convert_function)
                 if open_img:
                     if last_image:
                         self.img = Image.open(self.jpg_name_last_header)
@@ -84,9 +86,10 @@ class Files:
                         self.img = Image.open(self.jpg_name_header)
             elif zone_to_crop == 'footer':
                 if is_custom:
-                    self.crop_image_footer(pdf_name, last_image, page, self.custom_file_name)
+                    self.crop_image_footer(pdf_name, last_image, page, self.custom_file_name,
+                                           convert_function=convert_function)
                 else:
-                    self.crop_image_footer(pdf_name, last_image, page)
+                    self.crop_image_footer(pdf_name, last_image, page, convert_function=convert_function)
                 if open_img:
                     if last_image:
                         self.img = Image.open(self.jpg_name_last_footer)
@@ -100,7 +103,7 @@ class Files:
             else:
                 target = self.jpg_name
 
-            self.save_img_with_pdf2image(pdf_name, target, page)
+            self.save_img_with_pdf2image(pdf_name, target, page, convert_function=convert_function)
 
             if open_img:
                 self.img = Image.open(target)
@@ -110,16 +113,22 @@ class Files:
         self.img = Image.open(img)
 
     def save_img_with_pdf2image(self, pdf_name, output, page=None, docservers=False, chunk_size=10, rotate_img=False,
-                                page_to_save=False):
+                                page_to_save=False, convert_function='pdf2image'):
         try:
             outputs_paths = []
             directory = os.path.dirname(output)
             output = os.path.splitext(output)[0]
             bck_output = os.path.splitext(output)[0]
             if page:
-                images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
                 output_path = output + '.jpg'
-                images[0].save(output_path, 'JPEG')
+                if convert_function == 'imagemagick':
+                    cmd = f'convert -density 200 {pdf_name}[{str(page - 1)}] -quality 100 -alpha remove {output_path}'
+                    process = subprocess.Popen(cmd.split(' '))
+                    process.communicate()
+                else:
+                    images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
+                    images[0].save(output_path, 'JPEG')
+
                 src = cv2.imread(output_path)
                 rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
                 results = pytesseract.image_to_osd(rgb, output_type=Output.DICT)
@@ -231,7 +240,7 @@ class Files:
 
     # Crop the file to get the header
     # 1/3 + 10% is the ratio we used
-    def crop_image_header(self, pdf_name, last_image, page, output_name=None):
+    def crop_image_header(self, pdf_name, last_image, page, output_name=None, convert_function='pdf2image'):
         try:
             if last_image:
                 output = self.jpg_name_last_header
@@ -241,7 +250,14 @@ class Files:
             if output_name:
                 output = output_name
 
-            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
+            if convert_function == 'imagemagick':
+                cmd = f'convert -density 200 {pdf_name}[{str(page - 1)}] -quality 100 -alpha remove {output}'
+                process = subprocess.Popen(cmd.split(' '))
+                process.communicate()
+                images = [Image.open(output)]
+            else:
+                images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
+
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, 0, images[i].width, int(images[i].height - self.height_ratio))
@@ -252,7 +268,7 @@ class Files:
 
     # Crop the file to get the footer
     # 1/3 + 10% is the ratio we used
-    def crop_image_footer(self, pdf_name, last_image, page, output_name=None):
+    def crop_image_footer(self, pdf_name, last_image, page, output_name=None, convert_function='pdf2image'):
         try:
             if last_image:
                 output = self.jpg_name_last_footer
@@ -262,7 +278,14 @@ class Files:
             if output_name:
                 output = output_name
 
-            images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
+            if convert_function == 'imagemagick':
+                cmd = f'convert -density 200 {pdf_name}[{str(page - 1)}] -quality 100 -alpha remove {output}'
+                process = subprocess.Popen(cmd.split(' '))
+                process.communicate()
+                images = [Image.open(output)]
+            else:
+                images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
+
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, self.height_ratio, images[i].width, images[i].height)
@@ -276,15 +299,16 @@ class Files:
     # And also add the position found on the cropped section divided by 2.8
     def return_position_with_ratio(self, line, target):
         position = {0: {}, 1: {}}
-        position[0][0] = line.position[0][0]
-        position[1][0] = line.position[1][0]
+        if line.position:
+            position[0][0] = line.position[0][0]
+            position[1][0] = line.position[1][0]
 
-        if target == 'footer':
-            position[0][1] = line.position[0][1] + self.height_ratio
-            position[1][1] = line.position[1][1] + self.height_ratio
-        else:
-            position[0][1] = line.position[0][1]
-            position[1][1] = line.position[1][1]
+            if target == 'footer':
+                position[0][1] = line.position[0][1] + self.height_ratio
+                position[1][1] = line.position[1][1] + self.height_ratio
+            else:
+                position[0][1] = line.position[0][1]
+                position[1][1] = line.position[1][1]
         return position
 
     def get_pages(self, docservers, file):
