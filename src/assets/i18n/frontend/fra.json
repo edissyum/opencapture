@@ -301,6 +301,7 @@
 		"json_pattern": "Le champ n'est pas au format JSON",
 		"jwt_error": "Erreur lors de l'authentification par token",
 		"missing_secret_key": "La clé secrète est manquante pour cette instance",
+		"no_default_module_configured": "Le module par défaut n'est pas configuré",
 		"no_privilege_update_bottom_login": "Vous n'avez pas les privilèges pour mettre à jour le message en bas de la page de connexion",
 		"no_privilege_update_top_login": "Vous n'avez pas les privilèges pour mettre à jour le message en haut de la page de connexion",
 		"number_float_pattern": "La valeur n'est pas au format attendu : nombre flottant",
