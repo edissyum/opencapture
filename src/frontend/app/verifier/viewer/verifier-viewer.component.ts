@@ -67,6 +67,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     loadingSubmit           : boolean     = false;
     formEmpty               : boolean     = false;
     processInError          : boolean     = false;
+    imgLoading              : boolean     = false;
     processErrorMessage     : string      = '';
     processErrorIcon        : string      = '';
     token                   : string      = '';
@@ -486,10 +487,12 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         if (this.imgArray[cpt]) {
             this.imgSrc = this.imgArray[cpt];
         } else {
+            this.imgLoading = true;
             this.http.post(environment['url'] + '/ws/verifier/getThumb',
                 {'args': {'type': 'full', 'filename': filename, 'registerDate': this.document['register_date'], 'documentId': this.documentId}},
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
+                    this.imgLoading = false;
                     this.imgSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
                     this.imgArray[cpt] = this.imgSrc;
                 }),
@@ -1754,7 +1757,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     nextPage() {
-        if (this.currentPage < this.document.nb_pages) {
+        if (this.currentPage < this.document['nb_pages']) {
             this.currentPage = this.currentPage + 1;
             this.changeImage(this.currentPage, this.currentPage - 1);
         } else {
@@ -1767,7 +1770,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             this.currentPage = this.currentPage - 1;
             this.changeImage(this.currentPage, this.currentPage + 1);
         } else {
-            this.changeImage(this.document.nb_pages, this.currentPage);
+            this.changeImage(this.document['nb_pages'], this.currentPage);
         }
     }
 
