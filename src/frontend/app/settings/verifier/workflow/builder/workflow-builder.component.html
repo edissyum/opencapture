@@ -1,5 +1,5 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
@@ -69,8 +69,8 @@
                                         </mat-option>
                                     </mat-select>
                                     <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
-                                    <i class="fa-solid fa-circle-question text-md"></i>
-                                </span>
+                                        <i class="fa-solid fa-circle-question text-md"></i>
+                                    </span>
                                 </mat-form-field>
                             </ng-container>
                         </div>
@@ -102,15 +102,15 @@
                                 </div>
                             </ng-container>
                         </div>
-                        <div class="mt-6 grid grid-cols-4 gap-6">
+                        <div class="mt-6 grid grid-cols-3 gap-6">
                             <ng-container *ngFor="let field of this.fields['process']">
                                 <mat-form-field *ngIf="field.type === 'text'">
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [formControl]="field['control']" [required]="field['required']"
                                            [type]="field.type" [placeholder]="field.placeholder">
                                     <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
-                                    <i class="fa-solid fa-circle-question text-md"></i>
-                                </span>
+                                        <i class="fa-solid fa-circle-question text-md"></i>
+                                    </span>
                                 </mat-form-field>
                                 <mat-form-field *ngIf="field.type === 'select'">
                                     <mat-label>{{ field.label | translate }}</mat-label>
@@ -121,8 +121,8 @@
                                         </mat-option>
                                     </mat-select>
                                     <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
-                                    <i class="fa-solid fa-circle-question text-md"></i>
-                                </span>
+                                        <i class="fa-solid fa-circle-question text-md"></i>
+                                    </span>
                                 </mat-form-field>
                             </ng-container>
                         </div>
@@ -132,17 +132,17 @@
                             {{ "WORKFLOW.back" | translate }}
                         </button>
                         <span [class.cursor-not-allowed]="!this.isStepValid('process')">
-                    <button matStepperNext mat-button class="min-w-56 p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
-                            [disabled]="!this.stepValid['process']"
-                            [class.bg-gray-400]="!this.stepValid['process']"
-                            [class.bg-green-400]="this.stepValid['process']"
-                            (click)="!this.creationMode ? this.updateWorkflow('process') : ''">
-                        {{ 'WORKFLOW.next' | translate }}
-                    </button>
-                    <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
-                       *ngIf="this.processAllowed && this.allowWFScripting"
-                       [matTooltip]="'WORKFLOW.process_scripting' | translate" (click)="openCodeEditor('process')"></i>
-                </span>
+                            <button matStepperNext mat-button class="min-w-56 p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                                    [disabled]="!this.stepValid['process']"
+                                    [class.bg-gray-400]="!this.stepValid['process']"
+                                    [class.bg-green-400]="this.stepValid['process']"
+                                    (click)="!this.creationMode ? this.updateWorkflow('process') : ''">
+                                {{ 'WORKFLOW.next' | translate }}
+                            </button>
+                            <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer"
+                               *ngIf="this.processAllowed && this.allowWFScripting"
+                               [matTooltip]="'WORKFLOW.process_scripting' | translate" (click)="openCodeEditor('process')"></i>
+                        </span>
                     </div>
                 </mat-step>
                 <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.output' | translate">
@@ -156,8 +156,8 @@
                                     </mat-option>
                                 </mat-select>
                                 <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
-                                <i class="fa-solid fa-circle-question text-md"></i>
-                            </span>
+                                    <i class="fa-solid fa-circle-question text-md"></i>
+                                </span>
                             </mat-form-field>
                         </ng-container>
                     </div>
@@ -166,12 +166,12 @@
                             {{ "WORKFLOW.back" | translate }}
                         </button>
                         <button mat-button class="valid_button" (click)="!this.creationMode ? this.updateWorkflow('output') : this.createWorkflow()">
-                        <span *ngIf="this.creationMode">
-                            {{ 'WORKFLOW.create' | translate }}
-                        </span>
+                            <span *ngIf="this.creationMode">
+                                {{ 'WORKFLOW.create' | translate }}
+                            </span>
                             <span *ngIf="!this.creationMode">
-                            {{ 'WORKFLOW.update' | translate }}
-                        </span>
+                                {{ 'WORKFLOW.update' | translate }}
+                            </span>
                         </button>
                         <i class="fa-solid fa-scroll float-right fa-3x mr-4 text-green-400 cursor-pointer" *ngIf="this.allowWFScripting"
                            [matTooltip]="'WORKFLOW.output_scripting' | translate" (click)="openCodeEditor('output')"></i>

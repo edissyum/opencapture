@@ -751,6 +751,7 @@ class Files:
     @staticmethod
     def normalize(file_name):
         normalized = file_name.replace(' ', '_')
+        normalized = normalized.replace('°', '')
         return normalized
 
     @staticmethod
