@@ -258,7 +258,7 @@ def convert(file, files, ocr, nb_pages, tesseract_function, convert_function, cu
         files.pdf_to_jpg(file, 1, True, True, 'footer', convert_function=convert_function)
         ocr.footer_text = return_text(files.img, tesseract_function, ocr)
         files.pdf_to_jpg(file, 1)
-        ocr.text = ocr.line_box_builder(files.img)
+        ocr.text = return_text(files.img, tesseract_function, ocr)
         if nb_pages > 1:
             files.pdf_to_jpg(file, nb_pages, True, True, 'header', True, convert_function=convert_function)
             ocr.header_last_text = return_text(files.img, tesseract_function, ocr)
