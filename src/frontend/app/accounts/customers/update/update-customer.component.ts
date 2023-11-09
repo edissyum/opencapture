@@ -15,22 +15,21 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
+import { of } from "rxjs";
+import { environment } from  "../../../env";
+import { FormControl } from "@angular/forms";
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { FormBuilder, FormControl } from "@angular/forms";
+import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { MatDialog } from "@angular/material/dialog";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { UserService } from "../../../../services/user.service";
 import { AuthService } from "../../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
-import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { Country } from "@angular-material-extensions/select-country";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
-import { Country } from "@angular-material-extensions/select-country";
-import { catchError, finalize, tap } from "rxjs/operators";
-import { environment } from  "../../../env";
-import { of } from "rxjs";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
 
 @Component({
     selector: 'app-update',
