@@ -81,6 +81,9 @@ export class UploadComponent implements OnInit {
                     if (data.configuration.length === 1) {
                         this.localStorageService.save('splitter_or_verifier', data.configuration[0].data.value);
                         this.getWorkflows(data.configuration[0].data.value);
+                    } else {
+                        this.router.navigate(['/home']).then();
+                        this.notify.error(this.translate.instant('ERROR.no_default_module_configured'));
                     }
                 }),
                 catchError((err: any) => {

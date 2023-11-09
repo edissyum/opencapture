@@ -36,17 +36,24 @@
     <div class="grid grid-cols-2 overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem)' : 'height: 100vh'">
         <div id="image" class="overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem); direction: rtl' : 'height: 100vh;direction: rtl'">
             <div class="fixed left-4 z-50 text-xl text-left py-2">
-                <ng-container *ngIf="!this.loading && this.document['nb_pages']> 1">
-                    <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()"></i>
+                <ng-container *ngIf="!this.loading && this.document['nb_pages'] > 1">
+                    <span [class.cursor-wait]="this.imgLoading">
+                        <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()" [class.pointer-events-none]="this.imgLoading"></i>
+                    </span>
                     {{ 'VERIFIER.page' | translate }}
                     {{ currentPage }}
                     {{ 'VERIFIER.on' | translate }}
                     {{ this.document['nb_pages'] }}
-                    <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
+                    <span [class.cursor-wait]="this.imgLoading">
+                        <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()" [class.pointer-events-none]="this.imgLoading"></i>
+                    </span>
                 </ng-container>
             </div>
             <div class="image-container px-4" *ngIf="this.document">
-                <img id="document_image" alt="Open-Capture" [src]="this.imgSrc">
+                <div class="absolute right-[75%] z-10 bottom-1/2 transform translate-x-1/2 translate-y-1/2" *ngIf="this.imgLoading">
+                    <i class="fa-solid text-6xl fa-circle-notch fa-spin text-green-400"></i>
+                </div>
+                <img id="document_image" alt="Open-Capture" [src]="this.imgSrc" [class.blur-sm]="this.imgLoading">
             </div>
         </div>
         <div *ngIf="this.fields" id="form" class="px-4 overflow-auto pt-2">
