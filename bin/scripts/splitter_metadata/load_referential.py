@@ -33,7 +33,7 @@ def load_referential(args):
     }
 
     r = requests.get(url=args['method_data']['wsUrl'], params=params, auth=HTTPBasicAuth(args['method_data']['user'],
-                                                                                       args['method_data']['password']),
+                                                                                         args['method_data']['password']),
                      verify=False)
     data = r.json()
 
@@ -52,7 +52,6 @@ def load_referential(args):
                 external_id = '-'.join([str(referential['numero_dossier']), str(demand['numero_demande'])])
                 referential['numero_demande'] = demand['numero_demande'] if 'numero_demande' in demand else ''
                 referential['type_demande'] = demand['type_demande'] if 'type_demande' in demand else ''
-                update_date = datetime.now().strptime('%Y-%m-%d %H:%M:%S')
 
                 metadata = args['database'].select({
                     'select': ['*'],
@@ -75,11 +74,11 @@ def load_referential(args):
                     args['database'].update({
                         'table': ['metadata'],
                         'set': {
-                            'last_edit': update_date,
+                            'last_edit': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                             'data': json.dumps(referential),
                         },
-                        'where': ['external_id = %s', 'type = %s'],
-                        'data': [external_id, 'referential']
+                        'where': ['external_id = %s', 'type = %s', 'form_id = %s'],
+                        'data': [external_id, 'referential', args['form_id']]
                     })
                     args['log'].info(f"Upated metadata external_id : {external_id}")
 
@@ -87,11 +86,11 @@ def load_referential(args):
                 args['database'].update({
                     'table': ['metadata'],
                     'set': {
-                        'last_edit': update_date,
+                        'last_edit': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                         'type': 'referential-archive',
                     },
-                    'where': ['external_id = %s', 'type = %s'],
-                    'data': [str(referential['numero_dossier']), 'referential']
+                    'where': ['external_id = %s', 'type = %s', 'form_id = %s'],
+                    'data': [str(referential['numero_dossier']), 'referential', args['form_id']]
                 })
         else:
             referential['numero_demande'] = ''
