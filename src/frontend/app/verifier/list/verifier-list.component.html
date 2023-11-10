@@ -24,7 +24,7 @@
                     </button>
                 </mat-form-field>
             </div>
-            <div *ngIf="this.loadingCustomers || this.dataSource.data.length === 0" class="loading_customers">
+            <div *ngIf="this.loadingCustomers" class="loading_customers">
                 <div class="m-auto text-center">
                     <i class="fa-solid fa-users fa-4x fa-beat-fade w-full mb-2"></i>
                     <span class="w-full">
@@ -83,8 +83,7 @@
         </div>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <button mat-icon-button (click)="sidenav.toggle();"
-                class="absolute left-2 top-2" style="z-index: 999">
+        <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-2 z-30">
             <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened"
                class="fa-solid fa-stream text-xl text-gray-900"></i>
         </button>
