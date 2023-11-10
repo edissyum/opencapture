@@ -25,7 +25,6 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 defaultPath="/var/www/html/opencapture/"
 imageMagickPolicyFile=/etc/ImageMagick-6/policy.xml
-docserverDefaultPath="/var/docservers/opencapture/"
 user=$(who am i | awk '{print $1}')
 group=www-data
 INFOLOG_PATH=install_info.log
@@ -70,6 +69,9 @@ while [ $# -gt 0 ]; do
             shift 2;;
         --password)
             databasePassword=$2
+            shift 2;;
+        --docserver_path)
+            docserverDefaultPath=$2
             shift 2;;
     *)
         customId=""
@@ -198,6 +200,21 @@ fi
 echo ""
 echo "#######################################################################################################################"
 echo ""
+if [ -z $docserverDefaultPath ]
+    echo "Type docserver default path informations. By default it's /var/docservers/opencapture/"
+    printf "Docserver default path [%s] : " "${bold}/var/docservers/opencapture/${normal}"
+    read -r choice
+
+    if [[ "$choice" == "" ]]; then
+        docserverDefaultPath="/var/docservers/opencapture/"
+    else
+        docserverDefaultPath="$choice"
+    fi
+
+    echo ""
+    echo "#######################################################################################################################"
+    echo ""
+fi
 
 ####################
 # Retrieve database informations
