@@ -269,8 +269,8 @@ def export_doctypes(args):
 
 def csv_preview(files):
     try:
+        rows = []
         for file in files:
-            rows = []
             _f = files[file]
             stream = codecs.iterdecode(_f.stream, 'utf-8')
             for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel)):
