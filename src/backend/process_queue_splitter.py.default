@@ -142,12 +142,11 @@ def launch(args):
         log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 
     database.connect()
-    process_err = False
 
     try:
         if args['file'] is not None:
             path = args['file']
-            if check_file(files, path, log, docservers) and not process_err:
+            if check_file(files, path, log, docservers):
                 if 'workflow_id' in args and args['workflow_id']:
                     available_split_methods_path = docservers['SPLITTER_METHODS_PATH'] + "/splitter_methods.json"
                     if splitter_method_id and os.path.isfile(available_split_methods_path):
@@ -180,12 +179,8 @@ def launch(args):
                                     created_batches = split_res['batches_id']
                                     log.info(f"Batches created : {','.join(str(batch) for batch in created_batches)}")
                 else:
-                    process_err = True
                     log.error("The workflow_id doesn't exists in database")
-            else:
-                process_err = True
     except Exception:
-        process_err = True
         _e = str(traceback.format_exc())
         log.error(_e)
 
