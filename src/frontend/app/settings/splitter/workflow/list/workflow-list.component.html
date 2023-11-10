@@ -55,7 +55,7 @@
                          routerLink="/settings/splitter/workflows/builder/edit/{{ row.id }}"
                          class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
             </mat-table>
-            <mat-paginator showFirstLastButtons
+            <mat-paginator [showFirstLastButtons]="true"
                            [length]="this.total"
                            [pageSize]="pageSize"
                            [pageIndex]="pageIndex"

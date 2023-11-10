@@ -69,7 +69,7 @@
                     <mat-row *matRowDef="let row; columns: columnsToDisplay;"
                              class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
                 </mat-table>
-                <mat-paginator showFirstLastButtons
+                <mat-paginator [showFirstLastButtons]="true"
                                *ngIf="this.total > 0"
                                [length]="this.total"
                                [pageSize]="pageSize"

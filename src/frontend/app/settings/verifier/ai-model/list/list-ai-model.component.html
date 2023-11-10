@@ -83,7 +83,7 @@
                              class="cursor-pointer hover:shadow-md transition-colors duration-300">
                     </mat-row>
                 </mat-table>
-                <mat-paginator showFirstLastButtons
+                <mat-paginator [showFirstLastButtons]="true"
                                [length]="total"
                                [pageSize]="pageSize"
                                [pageIndex]="pageIndex"

@@ -22,11 +22,10 @@ import { TranslateService } from "@ngx-translate/core";
 import { Sort } from "@angular/material/sort";
 import { environment } from "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
-import {interval, of} from "rxjs";
+import { of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
-import * as moment from "moment/moment";
 
 @Component({
     selector: 'app-monitoring-list',
@@ -98,7 +97,7 @@ export class MonitoringListComponent implements OnInit, OnDestroy {
         }
         this.http.get(environment['url'] + '/ws/monitoring/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.allProcessData = data.processss;
+                this.allProcessData = data['processes'];
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -122,8 +121,10 @@ export class MonitoringListComponent implements OnInit, OnDestroy {
             environment['url'] + '/ws/monitoring/list?limit=' + this.pageSize + '&offset=' + this.offset + '&module=' + this.moduleSelected + '&status=' + this.statusSelected,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.processData = data.processses;
-                if (data.processses[0]) this.total = data.processses[0].total;
+                this.processData = data['processes'];
+                if (data['processes'][0]) {
+                    this.total = data['processes'][0].total;
+                }
                 this.processData.forEach((element: any) => {
                     const numberOfSteps = Object.keys(element.steps).length;
                     if (element.steps[numberOfSteps]) {
