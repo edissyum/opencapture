@@ -15,7 +15,6 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Router } from "@angular/router";
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from "../../services/auth.service";
 
@@ -26,7 +25,6 @@ import { AuthService } from "../../services/auth.service";
 })
 export class LogoutComponent implements OnInit {
     constructor(
-        private router: Router,
         private authService: AuthService
     ) {}
 

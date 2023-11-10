@@ -27,8 +27,8 @@ import { TranslateService } from "@ngx-translate/core";
 })
 export class NotFoundComponent implements OnInit {
     constructor(
-        private notify: NotificationService,
         private router: Router,
+        private notify: NotificationService,
         private translate: TranslateService
     ) { }
 

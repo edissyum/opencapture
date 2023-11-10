@@ -67,7 +67,7 @@
                 "@typescript-eslint/type-annotation-spacing": "off",
                 "@typescript-eslint/no-explicit-any": "off",
                 "radix": "off",
-                "curly": "off",
+                "curly": "error",
                 "one-var": [
                     "off",
                     "never"

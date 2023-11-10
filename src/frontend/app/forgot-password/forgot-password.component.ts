@@ -1,13 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { FormControl, Validators } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
-import { AuthService } from "../../services/auth.service";
-import { UserService } from "../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../services/notifications/notifications.service";
-import { ConfigService } from "../../services/config.service";
 import { LocaleService } from "../../services/locale.service";
 import { LocalStorageService } from "../../services/local-storage.service";
 import { environment } from "../env";
@@ -27,15 +23,10 @@ export class ForgotPasswordComponent implements OnInit {
     smtpStatus              : boolean = false;
 
     constructor(
-        private router: Router,
         private http: HttpClient,
         private sanitizer: DomSanitizer,
-        private formBuilder: FormBuilder,
-        private authService: AuthService,
-        private userService: UserService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private configService: ConfigService,
         private localeService: LocaleService,
         private localStorageService: LocalStorageService
     ) {}

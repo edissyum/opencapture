@@ -20,9 +20,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
-import { FormBuilder, FormControl } from "@angular/forms";
+import { FormControl } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
-import { LocaleService } from "../../services/locale.service";
 import { environment } from  "../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -94,11 +93,9 @@ export class UserProfileComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private localeService: LocaleService,
         private privilegeService: PrivilegesService,
         private passwordVerification: PasswordVerificationService
     ) { }

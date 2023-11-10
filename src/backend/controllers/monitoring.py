@@ -80,10 +80,10 @@ def get_processes(module=None, get_last_processes=False):
         args['where'].append('module = %s')
         args['data'].append(module)
 
-    processses, _ = monitoring.get_processes(args)
+    processes, _ = monitoring.get_processes(args)
 
     response = {
-        "processses": processses
+        "processes": processes
     }
     return response, 200
 
@@ -100,6 +100,7 @@ def get_process_by_id(process_id):
         _format = 'TMDay DD TMMonth YYYY HH24:MI:SS'
     else:
         _format = 'Mon DD YYYY HH24:MI:SS'
+
     process, _ = monitoring.get_process_by_id(process_id, _format)
 
     response = {

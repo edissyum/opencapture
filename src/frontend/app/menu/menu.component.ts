@@ -17,7 +17,6 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 import { Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { HttpClient } from "@angular/common/http";
 import { TranslateService } from "@ngx-translate/core";
 import { Component, Input, OnInit } from '@angular/core';
 import { UserService } from "../../services/user.service";
@@ -25,7 +24,6 @@ import { AuthService } from "../../services/auth.service";
 import { LocaleService } from "../../services/locale.service";
 import { PrivilegesService } from "../../services/privileges.service";
 import { LocalStorageService } from "../../services/local-storage.service";
-import { NotificationService } from "../../services/notifications/notifications.service";
 
 @Component({
     selector: 'app-menu',
@@ -41,12 +39,10 @@ export class MenuComponent implements OnInit {
 
     constructor(
         public router: Router,
-        private http: HttpClient,
         public location: Location,
         public authService: AuthService,
         public userService: UserService,
         public translate: TranslateService,
-        private notify: NotificationService,
         public localeService: LocaleService,
         public privilegesService: PrivilegesService,
         public localStorageService: LocalStorageService
@@ -73,7 +69,7 @@ export class MenuComponent implements OnInit {
                     konami!.style.transition = "opacity .5s";
                     konami!.style.opacity = "1";
                     audio.volume = 0.3;
-                    audio.play().then(r => setTimeout(() => {
+                    audio.play().then(() => setTimeout(() => {
                         konami!.style.transition = "opacity 1s";
                         konami!.style.opacity = "0";
                         setTimeout(() => {
@@ -83,7 +79,9 @@ export class MenuComponent implements OnInit {
                     n = 0;
                 }
             }
-            else n = 0;
+            else {
+                n = 0;
+            }
         });
     }
 
