@@ -17,7 +17,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from "../../../../services/settings.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -332,7 +332,9 @@ export class MailCollectComponent implements OnInit {
     }
 
     displayFn(option: any) {
-        if (option) return option.name ? option.name : option.label ? option.label : option.input_label;
+        if (option) {
+            return option.name ? option.name : option.label ? option.label : option.input_label;
+        }
         return '';
     }
 

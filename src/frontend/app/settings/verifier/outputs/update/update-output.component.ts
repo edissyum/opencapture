@@ -336,7 +336,9 @@ export class UpdateOutputComponent implements OnInit {
                                     this.output.data.options[category].forEach((outputElement: any) => {
                                         if (element.id === outputElement.id) {
                                             if (outputElement.value) {
-                                                if (outputElement.webservice) element.values = [outputElement.value];
+                                                if (outputElement.webservice) {
+                                                    element.values = [outputElement.value];
+                                                }
                                                 element.control.setValue(outputElement.value);
                                             }
                                         }
@@ -659,7 +661,9 @@ export class UpdateOutputComponent implements OnInit {
                 }
             }
         }
-        if (_array.data.options['links'].length === 0) delete _array.data.options.links;
+        if (_array.data.options['links'].length === 0) {
+            delete _array.data.options.links;
+        }
 
         this.outputForm.forEach(element => {
             _array[element.id] = element.control.value;

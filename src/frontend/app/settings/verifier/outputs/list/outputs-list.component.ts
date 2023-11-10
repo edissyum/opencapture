@@ -80,8 +80,9 @@ export class OutputsListComponent implements OnInit {
     loadOutputs(): void {
         this.http.get(environment['url'] + '/ws/outputs/verifier/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.outputs[0]) this.total = data.outputs[0].total;
-                else if (this.pageIndex !== 0) {
+                if (data.outputs[0]) {
+                    this.total = data.outputs[0].total;
+                } else if (this.pageIndex !== 0) {
                     this.pageIndex = this.pageIndex - 1;
                     this.offset = this.pageSize * (this.pageIndex);
                     this.loadOutputs();

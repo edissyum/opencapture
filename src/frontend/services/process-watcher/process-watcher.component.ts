@@ -15,7 +15,7 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from "../local-storage.service";
 import { environment } from "../../app/env";
 import { catchError, finalize, tap } from "rxjs/operators";

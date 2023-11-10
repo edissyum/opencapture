@@ -18,9 +18,8 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { MatDialog } from "@angular/material/dialog";
+import { FormControl, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
 import { UserService } from "../../../../services/user.service";
 import { AuthService } from "../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";

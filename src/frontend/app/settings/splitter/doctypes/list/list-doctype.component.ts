@@ -93,7 +93,7 @@ export class ListDoctypeComponent implements OnInit {
 
     toFormGroup() {
         const group: any = {};
-        this.fields.forEach((field: { id: string; required: boolean;disabled: boolean}) => {
+        this.fields.forEach((field: { id: string; required: boolean;disabled: boolean;}) => {
             group[field.id] = field.required ? new FormControl({value:"", disabled: field.disabled}, [Validators.required])
                 : new FormControl({value:"", disabled: field.disabled});
         });
@@ -190,8 +190,9 @@ export class ListDoctypeComponent implements OnInit {
         this.http.post(environment['url'] + '/ws/doctypes/update', newDocType, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('DOCTYPE.doctype_edited'));
-                if (this.selectedFormId)
+                if (this.selectedFormId) {
                     this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);
+                }
                 this.selectedDoctype.code = newDocType.code;
             }),
             catchError((err: any) => {

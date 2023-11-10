@@ -15,7 +15,7 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-loader',
@@ -43,11 +43,7 @@ import { Component, OnInit } from '@angular/core';
         '            </svg>' +
         '        </div>' +
         '    </div>' +
-        '</div>',
+        '</div>'
 })
 
-export class LoaderComponent implements OnInit {
-
-    ngOnInit() {
-    }
-}
+export class LoaderComponent  {}

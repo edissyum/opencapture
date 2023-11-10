@@ -101,7 +101,7 @@ export class CreateOutputComponent implements OnInit {
                 {
                     'id': false,
                     'label': marker('OUTPUT.ocr_disabled')
-                },
+                }
             ],
             required: false
         }
@@ -129,7 +129,7 @@ export class CreateOutputComponent implements OnInit {
 
         this.http.get(environment['url'] + '/ws/outputs/verifier/getOutputsTypes', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.outputsTypes = data.outputs_types;
+                this.outputsTypes = data['outputs_types'];
             }),
             finalize(() => {this.loading = false;}),
             catchError((err: any) => {

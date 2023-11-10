@@ -48,12 +48,14 @@ export class SettingsComponent implements OnInit {
             if (element['id'] === this.selectedSetting) {
                 settingsFound = true;
                 const routeToGo = element.route;
-                if (routeToGo && this.privilegesService.hasPrivilege(element.privilege))
+                if (routeToGo && this.privilegesService.hasPrivilege(element.privilege)) {
                     this.router.navigateByUrl(routeToGo).then();
+                }
             }
         });
 
-        if (!settingsFound)
+        if (!settingsFound) {
             this.router.navigateByUrl('/settings/general/configurations').then();
+        }
     }
 }

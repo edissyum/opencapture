@@ -231,6 +231,7 @@ def launch_train_model(model_name, csv_file, model_id, module):
     :param model_id: model's id
     :param model_name: name of the model that will be saved, .sav format
     :param csv_file: the csv that contains image read text
+    :param module: verifier or splitter
     :return: N/A
     """
     if 'artificial_intelligence' in current_context and 'log' in current_context:
@@ -405,6 +406,7 @@ def rename_model(new_name, model_id, module):
     Rename model .sav file when database name is updated from front
     :param new_name: New name for our model
     :param model_id: unique model's database id
+    :param module: verifier or splitter
     :return: N/A
     """
     if 'docservers' in current_context:

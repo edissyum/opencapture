@@ -66,11 +66,13 @@ export class RegexComponent implements OnInit {
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/regex') || lastUrl === '/') {
-            if (this.localStorageService.get('regexPageIndex'))
+            if (this.localStorageService.get('regexPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('regexPageIndex') as string);
+            }
             this.offset = this.pageSize * (this.pageIndex);
-        } else
+        } else {
             this.localStorageService.remove('regexPageIndex');
+        }
 
         this.http.get(environment['url'] + '/ws/config/getRegex', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -89,8 +91,9 @@ export class RegexComponent implements OnInit {
     loadRegex() {
         this.http.get(environment['url'] + '/ws/config/getRegex?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.regex[0]) this.total = data.regex[0].total;
-                else if (this.pageIndex !== 0) {
+                if (data.regex[0]) {
+                    this.total = data.regex[0].total;
+                } else if (this.pageIndex !== 0) {
                     this.pageIndex = this.pageIndex - 1;
                     this.offset = this.pageSize * (this.pageIndex);
                     this.loadRegex();
