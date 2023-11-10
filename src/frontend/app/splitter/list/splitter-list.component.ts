@@ -103,8 +103,10 @@ export class SplitterListComponent implements OnInit {
         this.removeLockByUserId(this.userService.user.username);
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('splitter/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
-            if (this.localStorageService.get('splitterPageIndex'))
+            if (this.localStorageService.get('splitterPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('splitterPageIndex') as string);
+            }
+
             if (this.localStorageService.get('splitterTimeIndex')) {
                 this.selectedTab = parseInt(this.localStorageService.get('splitterTimeIndex') as string);
                 this.currentTime = this.batchList[this.selectedTab].id;
@@ -245,8 +247,9 @@ export class SplitterListComponent implements OnInit {
         Array.from(checkboxList).forEach((element: any) => {
             if (element.checked) {
                 const batchId = element.id.split('_')[0];
-                if (batchId !== parentId.toString())
+                if (batchId !== parentId.toString()) {
                     listOfBatchToMerge.push(batchId);
+                }
             }
         });
 
@@ -256,7 +259,9 @@ export class SplitterListComponent implements OnInit {
                     listOfBatchFormId.push(batch.form_id);
                 }
             });
-            if (parentId === batch.id) listOfBatchFormId.push(batch.form_id);
+            if (parentId === batch.id) {
+                listOfBatchFormId.push(batch.form_id);
+            }
         });
         const uniqueFormId = listOfBatchFormId.filter((item, i, ar) => ar.indexOf(item) === i);
 
@@ -339,7 +344,7 @@ export class SplitterListComponent implements OnInit {
         this.isLoading = true;
         const deleteIds : number[] = [];
         const checkboxList = document.querySelectorAll('.checkBox_list:checked');
-        Array.from(checkboxList).forEach((element: any, cpt: number) => {
+        Array.from(checkboxList).forEach((element: any) => {
             const batchId = element.id.split('_')[0];
             deleteIds.push(Number(batchId));
         });

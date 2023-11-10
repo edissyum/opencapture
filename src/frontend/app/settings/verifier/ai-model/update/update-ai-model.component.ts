@@ -17,7 +17,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";

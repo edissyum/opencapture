@@ -62,11 +62,13 @@ export class WorkflowListSplitterComponent implements OnInit {
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/splitter/workflows') || lastUrl === '/') {
-            if (this.localStorageService.get('workflowsPageIndex'))
+            if (this.localStorageService.get('workflowsPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('workflowsPageIndex') as string);
+            }
             this.offset = this.pageSize * (this.pageIndex);
-        } else
+        } else {
             this.localStorageService.remove('workflowsPageIndex');
+        }
 
         this.http.get(environment['url'] + '/ws/workflows/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -85,8 +87,9 @@ export class WorkflowListSplitterComponent implements OnInit {
         this.loading = true;
         this.http.get(environment['url'] + '/ws/workflows/splitter/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.workflows[0]) this.total = data.workflows[0].total;
-                else if (this.pageIndex !== 0) {
+                if (data.workflows[0]) {
+                    this.total = data.workflows[0].total;
+                } else if (this.pageIndex !== 0) {
                     this.pageIndex = this.pageIndex - 1;
                     this.offset = this.pageSize * (this.pageIndex);
                     this.loadWorkflows();

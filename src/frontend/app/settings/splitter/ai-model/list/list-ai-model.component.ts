@@ -175,8 +175,9 @@ export class ListSplitterAiModelComponent implements OnInit {
         const disp = Object.values(this.clickedRow)[2];
         if (disp) {
             return (disp);
+        } else {
+            return 0;
         }
-        else return 0;
     }
 
     deleteConfirmDialog(modelId: number, model: string) {

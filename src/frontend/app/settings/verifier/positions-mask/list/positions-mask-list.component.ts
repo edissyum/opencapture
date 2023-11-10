@@ -83,8 +83,9 @@ export class PositionsMaskListComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/positions_masks/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data['positions_masks'].length > 0) {
-                    if (data['positions_masks'][0]['total']) this.total = data['positions_masks'][0]['total'];
-                    else if (this.pageIndex !== 0) {
+                    if (data['positions_masks'][0]['total']) {
+                        this.total = data['positions_masks'][0]['total'];
+                    } else if (this.pageIndex !== 0) {
                         this.pageIndex = this.pageIndex - 1;
                         this.offset = this.pageSize * (this.pageIndex);
                         this.loadPositionMask();

@@ -170,8 +170,9 @@ export class VerifierListComponent implements OnInit {
         this.localStorageService.save('splitter_or_verifier', 'verifier');
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
-            if (this.localStorageService.get('documentsPageIndex'))
+            if (this.localStorageService.get('documentsPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('documentsPageIndex') as string);
+            }
             if (this.localStorageService.get('documentsTimeIndex')) {
                 this.selectedTab = parseInt(this.localStorageService.get('documentsTimeIndex') as string);
                 this.currentTime = this.batchList[this.selectedTab].id;
@@ -327,8 +328,9 @@ export class VerifierListComponent implements OnInit {
         ).pipe(
             tap((data: any) => {
                 if (data) {
-                    if (data.documents.length !== 0) this.total = data.total;
-                    else if (this.pageIndex !== 0) {
+                    if (data.documents.length !== 0) {
+                        this.total = data.total;
+                    } else if (this.pageIndex !== 0) {
                         this.pageIndex = this.pageIndex - 1;
                         this.offset = this.pageSize * (this.pageIndex);
                         this.loadDocuments();
@@ -424,7 +426,9 @@ export class VerifierListComponent implements OnInit {
                 element.display = false;
             }
         });
-        if (!customerMatch) this.customerFilterEmpty = true;
+        if (!customerMatch) {
+            this.customerFilterEmpty = true;
+        }
         this.dataSource.data = tmpData;
     }
 
@@ -634,8 +638,11 @@ export class VerifierListComponent implements OnInit {
     }
 
     expandAll() {
-        if (!this.expanded) this.treeControl.expandAll();
-        else this.treeControl.collapseAll();
+        if (!this.expanded) {
+            this.treeControl.expandAll();
+        } else {
+            this.treeControl.collapseAll();
+        }
         this.expanded = !this.expanded;
     }
 }

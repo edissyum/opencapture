@@ -19,7 +19,7 @@
         <div class="overflow-x-hidden h-full-overflow">
             <div *ngIf="!loading">
                 <div class="mx-10 mt-10 mb-5 grid grid-cols-2 gap-4 place-items-stretch">
-                    <ng-container *ngFor="let field of this.AiModel.fields">
+                    <ng-container *ngFor="let field of this.AiModel['fields']">
                         <mat-form-field *ngIf="field.type === 'text'">
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type"

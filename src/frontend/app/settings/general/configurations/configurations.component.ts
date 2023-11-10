@@ -555,7 +555,9 @@ export class ConfigurationsComponent implements OnInit {
     loadConfigurations() {
         this.http.get(environment['url'] + '/ws/config/getConfigurations?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.configurations[0]) this.total = data.configurations[0].total;
+                if (data.configurations[0]) {
+                    this.total = data.configurations[0].total;
+                }
                 else if (this.pageIndex !== 0) {
                     this.pageIndex = this.pageIndex - 1;
                     this.offset = this.pageSize * (this.pageIndex);

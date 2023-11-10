@@ -57,7 +57,8 @@ def get_ai_models(module):
 @bp.route('ai/getById/<int:model_id>', methods=['GET'])
 @auth.token_required
 def get_model_by_id(model_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_ai_model | update_ai_model_splitter']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings',
+                                                                  'update_ai_model | update_ai_model_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/getById/{model_id}'}), 403
 
     model = artificial_intelligence.get_model_by_id(model_id)
@@ -67,7 +68,8 @@ def get_model_by_id(model_id):
 @bp.route('ai/<string:module>/trainModel/<string:model_name>', methods=['POST'])
 @auth.token_required
 def train_model(model_name, module):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'create_ai_model | create_ai_model_splitter']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings',
+                                                                  'create_ai_model | create_ai_model_splitter']):
         return jsonify({
             'errors': gettext('UNAUTHORIZED_ROUTE'),
             'message': f'/ai/{module}/trainModel/{model_name}'

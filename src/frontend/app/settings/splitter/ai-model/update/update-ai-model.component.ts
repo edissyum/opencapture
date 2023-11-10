@@ -19,11 +19,11 @@
 import { lastValueFrom, of } from "rxjs";
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import {MatDialog} from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { catchError, finalize, tap } from "rxjs/operators";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { FormControl, Validators } from "@angular/forms";
 import { environment } from "../../../../env";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";

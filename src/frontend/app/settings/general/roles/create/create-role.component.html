@@ -40,7 +40,7 @@
             <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
             <h4 class="text-center mt-10 mb-10">{{ 'PRIVILEGES.list' | translate }}</h4>
             <div class="flex justify-center items-center ml-10 mr-5">
-                <mat-tab-group *ngIf="this.privileges" dynamicHeight>
+                <mat-tab-group *ngIf="this.privileges" [dynamicHeight]="true">
                     <mat-tab *ngFor="let parent of this.privileges['parent']" [label]="this.translate.instant('PRIVILEGES.' + parent)">
                         <div class="grid grid-cols-4 gap-x-60 gap-y-10 mt-10">
                             <mat-slide-toggle *ngFor="let privilege of this.getChildsByParent(parent)"

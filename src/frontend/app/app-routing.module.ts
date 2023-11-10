@@ -141,7 +141,7 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     { path: '404', component: NotFoundComponent, data: {showMenu: false} }, // This two routes (** and 404) need to be the last of const routes: Routes variable
-    { path: '**', redirectTo: '404' }, // if routes doesn't exists, redirect to 404, display a popup and then redirect to login
+    { path: '**', redirectTo: '404' } // if routes doesn't exists, redirect to 404, display a popup and then redirect to login
 ];
 
 @NgModule({

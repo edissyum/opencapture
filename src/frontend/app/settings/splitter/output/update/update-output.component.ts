@@ -111,7 +111,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 {
                     'id': false,
                     'label': marker('OUTPUT.ocr_disabled')
-                },
+                }
             ],
             required: false
         }
@@ -245,7 +245,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                         for (const _output of this.outputsTypes) {
                             this.outputsTypesForm[_output.output_type_id] = {
                                 'auth' : [],
-                                'parameters' : [],
+                                'parameters' : []
                             };
                             for (const category in this.outputsTypesForm[_output.output_type_id]) {
                                 if (_output.data.options[category]) {
@@ -263,7 +263,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                                             required: option.required,
                                             isJson: option.isJson,
                                             hint: option.hint,
-                                            webservice: option.webservice,
+                                            webservice: option.webservice
                                         });
                                     }
                                 }
@@ -277,7 +277,9 @@ export class SplitterUpdateOutputComponent implements OnInit {
                                 this.output.data.options[category].forEach((outputElement: any) => {
                                     if (element.id === outputElement.id) {
                                         if (outputElement.value) {
-                                            if (outputElement.webservice) element.values = [outputElement.value];
+                                            if (outputElement.webservice) {
+                                                element.values = [outputElement.value];
+                                            }
                                             element.control.setValue(outputElement.value);
                                         }
                                     }

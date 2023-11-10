@@ -2,7 +2,7 @@
     <app-loader></app-loader>
 </div>
 <mat-drawer-container
-        hasBackdrop="false"
+        [hasBackdrop]="false"
         *ngIf="!this.loading"
         (click)="onScreenClick($event)"
         [class.pointer-events-none]="validateLoading"

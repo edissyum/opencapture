@@ -2,11 +2,9 @@
 SELECT setval('users_id_seq', (SELECT max(id)+1 FROM users), false);
 SELECT setval('regex_id_seq', (SELECT max(id)+1 FROM regex), false);
 SELECT setval('roles_id_seq', (SELECT max(id)+1 FROM roles), false);
-SELECT setval('status_id_seq', (SELECT max(id)+1 FROM status), false);
 SELECT setval('history_id_seq', (SELECT max(id)+1 FROM history), false);
 SELECT setval('outputs_id_seq', (SELECT max(id)+1 FROM outputs), false);
 SELECT setval('ai_models_id_seq', (SELECT max(id)+1 FROM ai_models), false);
-SELECT setval('languages_id_seq', (SELECT max(id)+1 FROM languages), false);
 SELECT setval('workflows_id_seq', (SELECT max(id)+1 FROM workflows), false);
 SELECT setval('privileges_id_seq', (SELECT max(id)+1 FROM privileges), false);
 SELECT setval('docservers_id_seq', (SELECT max(id)+1 FROM docservers), false);

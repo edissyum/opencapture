@@ -34,7 +34,7 @@
                                 <div *ngIf="!input.limit || (input.limit && displayInput(input))">
                                     <mat-form-field *ngIf="input['controlType'] === 'text'" class="w-full">
                                         <mat-label>{{ input.label | translate }}</mat-label>
-                                        <input matInput [formControl]="input['control']" [id]="input.field_id"
+                                        <input matInput [formControl]="input['control']" [id]="input['field_id']"
                                                [type]="input.type" [matAutocomplete]="autocomplete">
                                         <mat-autocomplete #autocomplete="matAutocomplete" [panelWidth]="'auto'">
                                         <span *ngIf="input.control.value === null || input.control.value === '' || input.control.value === undefined">
@@ -68,11 +68,11 @@
                                     <div class="drop-box-option p-4" *ngFor="let option of selectOptions; let optionIndex = index;" cdkDrag>
                                         <mat-form-field class="w-40 mr-2">
                                             <mat-label>{{ 'HEADER.id' | translate }}</mat-label>
-                                            <input matInput [formControl]="option.idControl" type="text">
+                                            <input matInput [formControl]="option['idControl']" type="text">
                                         </mat-form-field>
                                         <mat-form-field class="w-40">
                                             <mat-label>{{ 'HEADER.label' | translate }}</mat-label>
-                                            <input matInput [formControl]="option.labelControl" type="text">
+                                            <input matInput [formControl]="option['labelControl']" type="text">
                                         </mat-form-field>
                                         <div [matTooltip]="'CUSTOM-FIELDS.delete_choice' | translate"
                                              (click)="deleteSelectOption(optionIndex)" class="top-0 mx-2 h-8 cursor-pointer">

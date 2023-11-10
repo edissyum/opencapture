@@ -21,7 +21,7 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!this.loading" class="w-full">
-            <mat-tab-group [selectedIndex]="this.selectedIndex" dynamicHeight>
+            <mat-tab-group [selectedIndex]="this.selectedIndex" [dynamicHeight]="true">
                 <mat-tab *ngFor="let process of this.processes">
                     <ng-template mat-tab-label>
                         <span class="actions" *ngIf="getNameOfProcess(process) !== '' && getNameOfProcess(process) !== null else input">

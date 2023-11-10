@@ -59,7 +59,7 @@ export class LocaleService {
                 LLLL : 'dddd D MMMM YYYY à HH:mm:ss'
             },
             week : {
-                dow : 1, // Monday is the first day of the week.
+                dow : 1 // Monday is the first day of the week.
             }
         });
         moment.updateLocale('en-GB', {
@@ -74,7 +74,7 @@ export class LocaleService {
                 llll: "ddd, MMM D YYYY HH:mm:ss"
             },
             week : {
-                dow : 0, // Sunday is the first day of the week.
+                dow : 0 // Sunday is the first day of the week.
             }
         });
         moment.locale(this.dateAdaptaterLocale);
