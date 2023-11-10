@@ -86,7 +86,7 @@ def load_referential(args):
                 args['database'].update({
                     'table': ['metadata'],
                     'set': {
-                        'last_edit': datetime.now(),
+                        'last_edit': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                         'type': 'referential-archive',
                     },
                     'where': ['external_id = %s', 'type = %s', 'form_id = %s'],
