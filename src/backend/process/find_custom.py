@@ -81,6 +81,17 @@ class FindCustom:
 
         if settings['format'] == 'iban':
             match = validate_iban(data)
+            if not match:
+                new_data = data[:-1]
+                match = validate_iban(data[:-1])
+                if match:
+                    data = new_data
+
+            if not match:
+                new_data = re.sub(r"^ER", 'FR', data)
+                match = validate_iban(new_data)
+                if match:
+                    data = new_data
 
         if not match:
             return False
@@ -176,7 +187,6 @@ class FindCustom:
 
     def run(self):
         cpt = 0
-
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
                 regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
