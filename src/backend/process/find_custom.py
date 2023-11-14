@@ -193,9 +193,9 @@ class FindCustom:
                 if 'content' in regex_settings and regex_settings['content']:
                     upper_line = line.content.upper()
                     if 'remove_special_char' in regex_settings and regex_settings['remove_special_char']:
-                        data_to_replace = r'[-()\"#\\/@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ]'
+                        data_to_replace = r'[-()\"#\\/@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ,]'
                         if regex_settings['format'] == 'date':
-                            data_to_replace = r'[-()\"#\\@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ]'
+                            data_to_replace = r'[-()\"#\\@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ,]'
                         upper_line = re.sub(data_to_replace, '', upper_line)
                         upper_line = re.sub(r'\s+', ' ', upper_line)
 

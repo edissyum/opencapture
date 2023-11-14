@@ -205,6 +205,7 @@ class FindName:
         names_referential = self.docservers['REFERENTIALS_PATH'] + 'LISTE_PRENOMS.csv'
 
         text_cpt = 0
+
         for text in [self.text, self.header_text, self.footer_text]:
             with open(names_referential, 'r', encoding='UTF-8') as _f:
                 for name in _f.readlines():
@@ -220,8 +221,9 @@ class FindName:
                             fixed_line = re.sub(r"(MLE,)", 'MLE.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MLLE,)", 'MLLE.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(,)", '', fixed_line, flags=re.IGNORECASE)
+                            fixed_line = re.sub(r"(\.{2,})", ' ', fixed_line, flags=re.IGNORECASE)
 
-                            civility_regex = r"(DOCTEUR|MONSIEUR|MR|M\.|MM(E|F)|MLLE|MLE|MADAME|MADEMOISELLE|MR(/|-)MM(E|F)|MM(E|F)(/|-)MR|M)"
+                            civility_regex = r"(DOCTEUR|MONSIEUR|MR|M\.|MM(E|F)|MLLE|ML(E)?|MADAME|MADEMOISELLE|MR(/|-)MM(E|F)|MM(E|F)(/|-)MR|M)"
                             civility = re.findall(civility_regex, fixed_line, flags=re.IGNORECASE)
                             splitted_line = list(filter(None, fixed_line.split(' ')))
 
