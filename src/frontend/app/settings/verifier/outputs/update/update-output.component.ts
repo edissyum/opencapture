@@ -63,6 +63,7 @@ export class UpdateOutputComponent implements OnInit {
     oldFolder               : string        = '';
     toHighlight             : string        = '';
     allowedPath             : string        = '';
+    showPassword            : { [key: string]: boolean; } = {};
     outputForm              : any[]         = [
         {
             id: 'output_type_id',
@@ -277,7 +278,7 @@ export class UpdateOutputComponent implements OnInit {
                     tap((data: any) => {
                         this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
                             tap((data: any) => {
-                                data.customFields.forEach((field: any) => {
+                                data['customFields'].forEach((field: any) => {
                                     this.availableFields.push({
                                         'id': 'custom_' + field.id,
                                         'label': field.label
@@ -291,7 +292,7 @@ export class UpdateOutputComponent implements OnInit {
                                 return of(false);
                             })
                         ).subscribe();
-                        this.outputsTypes = data.outputs_types;
+                        this.outputsTypes = data['outputs_types'];
                         /**
                          * Create the form with auth and parameters data
                          **/
@@ -308,6 +309,11 @@ export class UpdateOutputComponent implements OnInit {
                                             option.placeholder = (this.allowedPath + '/output').replace(/\/\//g, '/');
                                             option.hint = this.translate.instant('GLOBAL.allowed_path', {allowedPath: this.allowedPath});
                                         }
+
+                                        if (option.type == 'password') {
+                                            this.showPassword[option.id] = false;
+                                        }
+
                                         this.outputsTypesForm[_output.output_type_id][category].push({
                                             id: option.id,
                                             label: option.label,

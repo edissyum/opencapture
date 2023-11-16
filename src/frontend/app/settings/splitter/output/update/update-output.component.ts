@@ -18,7 +18,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { FormBuilder, FormControl } from "@angular/forms";
+import { FormControl } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
@@ -49,6 +49,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     originalOutputType    : any;
     toHighlight           : string        = '';
     allowedPath           : string        = '';
+    showPassword            : { [key: string]: boolean; } = {};
     outputForm            : any[]         = [
         {
             id: 'output_type_id',
@@ -184,7 +185,6 @@ export class SplitterUpdateOutputComponent implements OnInit {
         public router: Router,
         private http: HttpClient,
         private route: ActivatedRoute,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         public userService: UserService,
         public translate: TranslateService,
@@ -238,7 +238,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 ).subscribe();
                 this.http.get(environment['url'] + '/ws/outputs/splitter/getOutputsTypes', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
-                        this.outputsTypes = data.outputs_types;
+                        this.outputsTypes = data['outputs_types'];
                         /**
                          * Create the form with auth and parameters data
                          **/
@@ -254,6 +254,11 @@ export class SplitterUpdateOutputComponent implements OnInit {
                                             option.placeholder = (this.allowedPath + '/output').replace(/\/\//g, '/');
                                             option.hint = this.translate.instant('GLOBAL.allowed_path', {allowedPath: this.allowedPath});
                                         }
+
+                                        if (option.type == 'password') {
+                                            this.showPassword[option.id] = false;
+                                        }
+
                                         this.outputsTypesForm[_output.output_type_id][category].push({
                                             id: option.id,
                                             label: option.label,
@@ -311,7 +316,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let newField;
-                data.customFields.forEach((field: {
+                data['customFields'].forEach((field: {
                         id: any
                         label_short: string
                         module: string
