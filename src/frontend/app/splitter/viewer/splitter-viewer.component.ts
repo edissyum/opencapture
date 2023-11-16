@@ -191,9 +191,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     updateBatchLock() {
         this.http.post(environment['url'] + '/ws/splitter/lockBatch', {
-                'batchId' : this.currentBatch.id,
-                'lockedBy': this.userService.user.username
-            }, {headers: this.authService.headers}).pipe(
+            'batchId' : this.currentBatch.id,
+            'lockedBy': this.userService.user.username
+        }, {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 this.loading = false;
                 this.notify.handleErrors(err);
@@ -699,8 +699,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 form_id  : newFormId
                             })
                             .subscribe((translated: string) => {
-                            this.historyService.addHistory('splitter', 'viewer', translated);
-                        });
+                                this.historyService.addHistory('splitter', 'viewer', translated);
+                            });
                         this.loadSelectedBatch();
                     }),
                     catchError((err: any) => {
@@ -717,6 +717,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadFormFields(): void {
+        this.inputMode = 'Manual';
         this.http.get(environment['url'] + '/ws/forms/fields/getByFormId/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 for (const fieldCategory in this.fieldsCategories) {
@@ -736,7 +737,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 'metadata_key'   : field.metadata_key,
                                 'validationMask' : field.validationMask
                             });
-                            if (field.metadata_key && fieldCategory === 'batch_metadata') {
+                            if (fieldCategory === 'batch_metadata' && field.metadata_key &&
+                                !field.metadata_key.includes("SEPARATOR_META")) {
                                 this.inputMode = 'Auto';
                             }
                         });
@@ -1114,9 +1116,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     changeBatch(id: number): void {
-        this.loading                            = true;
+        this.loading = true;
+        this.batchMetadataValues = {};
         this.fieldsCategories['batch_metadata'] = [];
-        this.batchMetadataValues                = {};
         this.fillDataValues({});
         this.router.navigate(['splitter/viewer/' + this.currentTime + '/' + id]).then();
         this.currentBatch.id = id;
