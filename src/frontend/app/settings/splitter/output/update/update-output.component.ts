@@ -536,9 +536,9 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     const entities = [];
                     for (const cpt in data) {
                         entities.push({
-                            'id': data[cpt].serialId,
-                            'value': data[cpt].entity_label,
-                            'extra': data[cpt].entity_id
+                            'id': data[cpt]['serialId'],
+                            'value': data[cpt]['entity_label'],
+                            'extra': data[cpt]['entity_id']
                         });
                     }
                     this.setAutocompleteValues(cpt, entities);
@@ -556,9 +556,9 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     const doctypes = [];
                     for (const cpt in data) {
                         doctypes.push({
-                            'id': data[cpt].type_id,
+                            'id': data[cpt]['type_id'],
                             'value': data[cpt].description,
-                            'extra': data[cpt].type_id
+                            'extra': data[cpt]['type_id']
                         });
                     }
                     this.setAutocompleteValues(cpt, doctypes);
@@ -571,8 +571,8 @@ export class SplitterUpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
-                if (_return && _return.priorities) {
-                    const data = _return.priorities;
+                if (_return && _return['priorities']) {
+                    const data = _return['priorities'];
                     const priorities = [];
                     for (const cpt in data) {
                         priorities.push({
@@ -591,13 +591,13 @@ export class SplitterUpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
-                if (_return && _return.statuses) {
-                    const data = _return.statuses;
+                if (_return && _return['statuses']) {
+                    const data = _return['statuses'];
                     const statuses = [];
                     for (const cpt in data) {
                         statuses.push({
                             'id': data[cpt].id,
-                            'value': data[cpt].label_status,
+                            'value': data[cpt]['label_status'],
                             'extra': data[cpt].id
                         });
                     }
@@ -611,8 +611,8 @@ export class SplitterUpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
-                if (_return && _return.indexingModels) {
-                    const data = _return.indexingModels;
+                if (_return && _return['indexingModels']) {
+                    const data = _return['indexingModels'];
                     const indexingModels = [];
                     for (const cpt in data) {
                         indexingModels.push({
