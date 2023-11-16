@@ -122,7 +122,7 @@ class Splitter:
 
     def create_batches(self, batch_folder, file, workflow_id, user_id, original_filename, artificial_intelligence):
         batches_id = []
-        for _, batch in enumerate(self.result_batches):
+        for _, batch_pages in enumerate(self.result_batches):
             workflow_settings = self.db.select({
                 'select': ['id', 'input, process'],
                 'table': ['workflows'],
@@ -145,6 +145,23 @@ class Splitter:
                 if user_id:
                     default_values = self.get_default_values(form_id, user_id)
 
+            if batch_pages:
+                first_page = batch_pages[0]
+                if first_page['metadata_1'] or first_page['metadata_2'] or first_page['metadata_3']:
+                    custom_fields = self.db.select({
+                        'select': ['*'],
+                        'table': ['custom_fields'],
+                        'where': ['module = %s', 'status <> %s'],
+                        'data': ['splitter', 'DEL'],
+                    })
+                    for custom_field in custom_fields:
+                        if first_page['metadata_1'] and custom_field['metadata_key'] == 'SEPARATOR_META1':
+                            default_values['batch'][custom_field['label_short']] = first_page['metadata_1']
+                        if first_page['metadata_2'] and custom_field['metadata_key'] == 'SEPARATOR_META2':
+                            default_values['batch'][custom_field['label_short']] = first_page['metadata_2']
+                        if first_page['metadata_3'] and custom_field['metadata_key'] == 'SEPARATOR_META3':
+                            default_values['batch'][custom_field['label_short']] = first_page['metadata_3']
+
             args = {
                 'table': 'splitter_batches',
                 'columns': {
@@ -152,11 +169,11 @@ class Splitter:
                     'batch_folder': batch_folder,
                     'workflow_id': workflow_settings[0]['id'],
                     'file_path': clean_path.replace(clean_ds, ''),
-                    'thumbnail': os.path.basename(batch[0]['path']),
+                    'thumbnail': os.path.basename(batch_pages[0]['path']),
                     'file_name': os.path.basename(original_filename),
                     'data': json.dumps({'custom_fields': default_values['batch']}),
                     'customer_id': str(workflow_settings[0]['input']['customer_id']),
-                    'documents_count': str(max((node['split_document'] for node in batch)))
+                    'documents_count': str(max((node['split_document'] for node in batch_pages)))
                 }
             }
             batch_id = self.db.insert(args)
@@ -165,10 +182,9 @@ class Splitter:
             document_id = 0
             page_display_order = 1
             previous_split_document = 0
-
-            for page in batch:
+            for page in batch_pages:
                 if page['split_document'] != previous_split_document:
-                    documents_data = {'custom_fields': default_values['document']}
+                    documents_data = json.dumps({'custom_fields': default_values['document']})
                     args = {
                         'table': 'splitter_documents',
                         'columns': {
@@ -208,21 +224,6 @@ class Splitter:
                         if default_doctype:
                             args['columns']['doctype_key'] = default_doctype[0]['key']
 
-                    if page['metadata_1'] or page['metadata_2'] or page['metadata_3']:
-                        custom_fields = self.db.select({
-                            'select': ['*'],
-                            'table': ['custom_fields'],
-                            'where': ['module = %s', 'status <> %s'],
-                            'data': ['splitter', 'DEL'],
-                        })
-                        for custom_field in custom_fields:
-                            if page['metadata_1'] and custom_field['metadata_key'] == 'SEPARATOR_META1':
-                                documents_data['custom_fields'][custom_field['label_short']] = page['metadata_1']
-                            if page['metadata_2'] and custom_field['metadata_key'] == 'SEPARATOR_META2':
-                                documents_data['custom_fields'][custom_field['label_short']] = page['metadata_2']
-                            if page['metadata_3'] and custom_field['metadata_key'] == 'SEPARATOR_META3':
-                                documents_data['custom_fields'][custom_field['label_short']] = page['metadata_3']
-                    args['columns']['data'] = json.dumps(documents_data)
                     """
                         MEM Courrier entity separator
                     """
