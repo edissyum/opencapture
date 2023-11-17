@@ -25,7 +25,6 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 defaultPath="/var/www/html/opencapture/"
 imageMagickPolicyFile=/etc/ImageMagick-6/policy.xml
-docserverDefaultPath="/var/docservers/opencapture/"
 user=$(who am i | awk '{print $1}')
 group=www-data
 INFOLOG_PATH=install_info.log
@@ -33,7 +32,7 @@ ERRORLOG_PATH=install_error.log
 
 ####################
 # Handle parameters
-parameters="user custom_id supervisor_process path wsgi_threads wsgi_process supervisor_systemd hostname port username password"
+parameters="user custom_id supervisor_process path wsgi_threads wsgi_process supervisor_systemd hostname port username password docserver_path"
 opts=$(getopt --longoptions "$(printf "%s:," "$parameters")" --name "$(basename "$0")" --options "" -- "$@")
 
 while [ $# -gt 0 ]; do
@@ -70,6 +69,9 @@ while [ $# -gt 0 ]; do
             shift 2;;
         --password)
             databasePassword=$2
+            shift 2;;
+        --docserver_path)
+            docserverDefaultPath=$2
             shift 2;;
     *)
         customId=""
@@ -198,6 +200,22 @@ fi
 echo ""
 echo "#######################################################################################################################"
 echo ""
+
+if [ -z $docserverDefaultPath ]; then
+    echo "Type docserver default path informations. By default it's /var/docservers/opencapture/"
+    printf "Docserver default path [%s] : " "${bold}/var/docservers/opencapture/${normal}"
+    read -r choice
+
+    if [[ "$choice" == "" ]]; then
+        docserverDefaultPath="/var/docservers/opencapture/"
+    else
+        docserverDefaultPath="$choice"
+    fi
+
+    echo ""
+    echo "#######################################################################################################################"
+    echo ""
+fi
 
 ####################
 # Retrieve database informations
@@ -372,6 +390,7 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/MailCollect/' WHERE docserver_id = 'MAILCOLLECT_BATCHES'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/splitter_metadata/' WHERE docserver_id = 'SPLITTER_METADATA_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '//' , '/')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE workflows SET input=REPLACE(input::TEXT, '/var/share/', '/var/share/$customId/')::JSONB" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
@@ -436,6 +455,7 @@ cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customI
 cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
 cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.ods"
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
+cp $defaultPath/instance/referencial/LISTE_PRENOMS.csv "$defaultPath/custom/$customId/instance/referencial/LISTE_PRENOMS.csv"
 cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 cp $defaultPath/src/backend/process_queue_splitter.py.default "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
 cp $defaultPath/bin/scripts/OCVerifier_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"

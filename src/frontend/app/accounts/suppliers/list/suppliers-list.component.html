@@ -89,7 +89,7 @@
                          routerLink="/accounts/suppliers/update/{{ row.id }}"
                          class="cursor-pointer hover:shadow-md transition-colors duration-300 z-20"></mat-row>
             </mat-table>
-            <mat-paginator showFirstLastButtons
+            <mat-paginator [showFirstLastButtons]="true"
                            [length]="this.total"
                            [pageSize]="pageSize"
                            [pageIndex]="pageIndex"

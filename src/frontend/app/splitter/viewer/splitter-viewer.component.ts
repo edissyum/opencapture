@@ -456,11 +456,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         for (const field of this.fieldsCategories['document_metadata']) {
             const control = field.required ? new FormControl('', Validators.required) : new FormControl('');
             const labelShort = field.label_short;
-            if (this.documents[documentIndex]['customFieldsValues'].hasOwnProperty(labelShort))
+
+            if (this.documents[documentIndex]['customFieldsValues'].hasOwnProperty(labelShort)) {
                 control.setValue(this.documents[documentIndex]['customFieldsValues'][labelShort]);
-            control.valueChanges.subscribe(value => {
-                this.documents[documentIndex]['customFieldsValues'][labelShort] = value;
-            });
+                control.valueChanges.subscribe(value => {
+                    this.documents[documentIndex]['customFieldsValues'][labelShort] = value;
+                });
+            }
+
             newForm.addControl(labelShort, control);
             if (field.metadata_key) { // used to control autocomplete search fields
                 const controlSearch = new FormControl('');
@@ -809,8 +812,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     moment(this.currentBatch.customFieldsValues[field.label_short], format);
                 group[field.label_short].setValue(value);
             }
-            if (field.metadata_key)
+            if (field.metadata_key) {
                 group['search_' + field.label_short] = new FormControl('');
+            }
         });
         return new FormGroup(group);
     }
@@ -838,8 +842,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     /* -- Begin documents control -- */
     addDocumentIdToDropList(id: string): string {
-        if (!this.DropListDocumentsIds.includes(id))
+        if (!this.DropListDocumentsIds.includes(id)) {
             this.DropListDocumentsIds.push(id);
+        }
         return id;
     }
 
@@ -849,7 +854,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     dropPage(event: CdkDragDrop<any[]>, document: any): void {
         this.hasUnsavedChanges = true;
-        let pageId = undefined;
+        let pageId;
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
             pageId = event.container.data[event.currentIndex].id;
@@ -1004,8 +1009,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     deleteSelectedPages(): void {
-        if (this.currentBatch.selectedPagesCount === 0)
+        if (this.currentBatch.selectedPagesCount === 0) {
             return;
+        }
 
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{

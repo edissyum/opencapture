@@ -63,7 +63,7 @@ export class CreateFolderDoctypeComponent implements OnInit {
 
     toFormGroup() {
         const group: any = {};
-        this.fields.forEach((field: { id: string; required: boolean;disabled: boolean}) => {
+        this.fields.forEach((field: { id: string; required: boolean;disabled: boolean;}) => {
             group[field.id] = field.required ? new FormControl({value:"", disabled: field.disabled}, [Validators.required])
                 : new FormControl({value:"", disabled: field.disabled});
         });
@@ -117,8 +117,9 @@ export class CreateFolderDoctypeComponent implements OnInit {
                 Object.keys(this.form.controls).forEach(key => {
                     this.form.controls[key].setErrors(null);
                 });
-                if (this.selectedFormId)
+                if (this.selectedFormId) {
                     this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);
+                }
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {

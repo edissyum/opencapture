@@ -63,6 +63,7 @@ export class UpdateOutputComponent implements OnInit {
     oldFolder               : string        = '';
     toHighlight             : string        = '';
     allowedPath             : string        = '';
+    showPassword            : { [key: string]: boolean; } = {};
     outputForm              : any[]         = [
         {
             id: 'output_type_id',
@@ -277,7 +278,7 @@ export class UpdateOutputComponent implements OnInit {
                     tap((data: any) => {
                         this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
                             tap((data: any) => {
-                                data.customFields.forEach((field: any) => {
+                                data['customFields'].forEach((field: any) => {
                                     this.availableFields.push({
                                         'id': 'custom_' + field.id,
                                         'label': field.label
@@ -291,7 +292,7 @@ export class UpdateOutputComponent implements OnInit {
                                 return of(false);
                             })
                         ).subscribe();
-                        this.outputsTypes = data.outputs_types;
+                        this.outputsTypes = data['outputs_types'];
                         /**
                          * Create the form with auth and parameters data
                          **/
@@ -308,6 +309,11 @@ export class UpdateOutputComponent implements OnInit {
                                             option.placeholder = (this.allowedPath + '/output').replace(/\/\//g, '/');
                                             option.hint = this.translate.instant('GLOBAL.allowed_path', {allowedPath: this.allowedPath});
                                         }
+
+                                        if (option.type == 'password') {
+                                            this.showPassword[option.id] = false;
+                                        }
+
                                         this.outputsTypesForm[_output.output_type_id][category].push({
                                             id: option.id,
                                             label: option.label,
@@ -336,7 +342,9 @@ export class UpdateOutputComponent implements OnInit {
                                     this.output.data.options[category].forEach((outputElement: any) => {
                                         if (element.id === outputElement.id) {
                                             if (outputElement.value) {
-                                                if (outputElement.webservice) element.values = [outputElement.value];
+                                                if (outputElement.webservice) {
+                                                    element.values = [outputElement.value];
+                                                }
                                                 element.control.setValue(outputElement.value);
                                             }
                                         }
@@ -490,9 +498,9 @@ export class UpdateOutputComponent implements OnInit {
                     const entities = [];
                     for (const cpt in data) {
                         entities.push({
-                            'id': data[cpt].serialId,
-                            'value': data[cpt].entity_label,
-                            'extra': data[cpt].entity_id
+                            'id': data[cpt]['serialId'],
+                            'value': data[cpt]['entity_label'],
+                            'extra': data[cpt]['entity_id']
                         });
                     }
                     this.setAutocompleteValues(cpt, entities);
@@ -505,8 +513,8 @@ export class UpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getCustomFields', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
-                if (_return && _return.customFields) {
-                    const data = _return.customFields;
+                if (_return && _return['customFields']) {
+                    const data = _return['customFields'];
                     const customFields = [];
                     for (const cpt in data) {
                         customFields.push({
@@ -525,8 +533,8 @@ export class UpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getContactsCustomFields', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
-                if (_return && _return.customFields) {
-                    const data = _return.customFields;
+                if (_return && _return['customFields']) {
+                    const data = _return['customFields'];
                     const customFields = [];
                     for (const cpt in data) {
                         customFields.push({
@@ -550,9 +558,9 @@ export class UpdateOutputComponent implements OnInit {
                     const doctypes = [];
                     for (const cpt in data) {
                         doctypes.push({
-                            'id': data[cpt].type_id,
+                            'id': data[cpt]['type_id'],
                             'value': data[cpt].description,
-                            'extra': data[cpt].type_id
+                            'extra': data[cpt]['type_id']
                         });
                     }
                     this.setAutocompleteValues(cpt, doctypes);
@@ -565,8 +573,8 @@ export class UpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
-                if (_return && _return.priorities) {
-                    const data = _return.priorities;
+                if (_return && _return['priorities']) {
+                    const data = _return['priorities'];
                     const priorities = [];
                     for (const cpt in data) {
                         priorities.push({
@@ -585,13 +593,13 @@ export class UpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
-                if (_return && _return.statuses) {
-                    const data = _return.statuses;
+                if (_return && _return['statuses']) {
+                    const data = _return['statuses'];
                     const statuses = [];
                     for (const cpt in data) {
                         statuses.push({
                             'id': data[cpt].id,
-                            'value': data[cpt].label_status,
+                            'value': data[cpt]['label_status'],
                             'extra': data[cpt].id
                         });
                     }
@@ -605,14 +613,14 @@ export class UpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
-                if (_return && _return.indexingModels) {
-                    const data = _return.indexingModels;
+                if (_return && _return['indexingModels']) {
+                    const data = _return['indexingModels'];
                     const indexingModels = [];
                     for (const cpt in data) {
                         indexingModels.push({
                             'id': data[cpt].id,
                             'value': data[cpt].label,
-                            'extra': data[cpt].category
+                            'extra': data[cpt]['category']
                         });
                     }
                     this.setAutocompleteValues(cpt, indexingModels);
@@ -659,7 +667,9 @@ export class UpdateOutputComponent implements OnInit {
                 }
             }
         }
-        if (_array.data.options['links'].length === 0) delete _array.data.options.links;
+        if (_array.data.options['links'].length === 0) {
+            delete _array.data.options.links;
+        }
 
         this.outputForm.forEach(element => {
             _array[element.id] = element.control.value;

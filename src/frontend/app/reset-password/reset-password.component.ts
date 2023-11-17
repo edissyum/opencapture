@@ -17,14 +17,12 @@
 
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { FormBuilder, FormControl } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { FormControl } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../services/auth.service";
-import { UserService } from "../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../services/notifications/notifications.service";
-import { ConfigService } from "../../services/config.service";
 import { LocaleService } from "../../services/locale.service";
 import { LocalStorageService } from "../../services/local-storage.service";
 import { environment } from "../env";
@@ -58,16 +56,12 @@ export class ResetPasswordComponent implements OnInit {
     ];
 
     constructor(
-        private router: Router,
         private http: HttpClient,
         private route: ActivatedRoute,
         private sanitizer: DomSanitizer,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
-        private userService: UserService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private configService: ConfigService,
         private localeService: LocaleService,
         private localStorageService: LocalStorageService,
         public passwordVerification: PasswordVerificationService
@@ -115,7 +109,7 @@ export class ResetPasswordComponent implements OnInit {
     onSubmit() {
         const passwordConfirm = this.passwordForm.filter((element: any) => element.id === 'password_check')[0].control.value;
         this.http.put(environment['url'] + '/ws/users/resetPassword', {resetToken: this.resetToken, newPassword: passwordConfirm}).pipe(
-            tap((data: any) => {
+            tap(() => {
                 this.notify.success(this.translate.instant('USER.password_reset_success'));
                 this.authService.logout();
             }),

@@ -418,7 +418,9 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     return;
                 } else {
                     const formData: FormData = new FormData();
-                    if (data) formData.append(data[0].name, data[0]);
+                    if (data) {
+                        formData.append(data[0].name, data[0]);
+                    }
 
                     this.http.post(environment['url'] + '/ws/positions_masks/getImageFromPdf/' + this.positionMaskId, formData, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
@@ -581,8 +583,9 @@ export class UpdatePositionsMaskComponent implements OnInit {
 
     getSelectionByCpt(selection: any, cpt: any) {
         for (const index in selection) {
-            if (selection[index].id === cpt)
+            if (selection[index].id === cpt) {
                 return selection[index];
+            }
         }
     }
 
@@ -599,10 +602,9 @@ export class UpdatePositionsMaskComponent implements OnInit {
     }
 
     checkIfObjectIsEqual(object1: any, object2: any) {
-        if (!object1)
+        if (!object1 || !object2) {
             return false;
-        if (!object2)
-            return false;
+        }
 
         const aProps = Object.getOwnPropertyNames(object1);
         const bProps = Object.getOwnPropertyNames(object2);
@@ -733,7 +735,9 @@ export class UpdatePositionsMaskComponent implements OnInit {
                         input.remove();
                         background.remove();
                         outline.remove();
-                        if (page === this.currentPage) this.drawPositionByField(field, position);
+                        if (page === this.currentPage) {
+                            this.drawPositionByField(field, position);
+                        }
                     }
                 }
             }

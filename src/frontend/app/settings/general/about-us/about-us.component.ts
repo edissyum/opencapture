@@ -23,7 +23,6 @@ import { environment } from "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { AuthService } from "../../../../services/auth.service";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 
 @Component({
@@ -41,7 +40,6 @@ export class AboutUsComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
-        private authService: AuthService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
@@ -53,8 +51,8 @@ export class AboutUsComponent implements OnInit {
         this.currentVersion = environment.version;
         this.http.get(environment['url'] + '/ws/config/gitInfo').pipe(
             tap((data: any) => {
-                if (data.git_latest) {
-                    this.lastVersion = data.git_latest;
+                if (data['git_latest']) {
+                    this.lastVersion = data['git_latest'];
                 } else {
                     this.lastVersion = undefined;
                 }

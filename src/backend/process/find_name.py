@@ -75,6 +75,8 @@ class FindName:
                 return False
 
             self.log.info('Firstname and lastname found : ' + firstname + ' ' + lastname)
+            firstname = re.sub('[}{\|\[\]\(\)]', '', firstname)
+            lastname = re.sub('[}{\|\[\]\(\)]', '', lastname)
             return [
                 {'firstname': firstname, 'lastname': lastname},
                 {
@@ -84,6 +86,7 @@ class FindName:
                 self.nb_page
             ]
         elif firstname:
+            firstname = re.sub('[}{\|\[\]\(\)]', '', firstname)
             self.log.info('Firstname found : ' + firstname)
             return [
                 {'firstname': firstname},
@@ -91,6 +94,7 @@ class FindName:
                 self.nb_page
             ]
         elif lastname:
+            lastname = re.sub('[}{\|\[\]\(\)]', '', lastname)
             self.log.info('Lastname found : ' + lastname)
             return [
                 {'lastname': lastname},
@@ -119,6 +123,8 @@ class FindName:
                 del lastname_position['ocr_from_user']
 
             if firstname and lastname:
+                firstname = re.sub('[}{\|\[\]\(\)]', '', firstname)
+                lastname = re.sub('[}{\|\[\]\(\)]', '', lastname)
                 return [
                     {'firstname': firstname, 'lastname': lastname},
                     {
@@ -185,6 +191,8 @@ class FindName:
                             del lastname_position['ocr_from_user']
 
                 if firstname and lastname:
+                    firstname = re.sub('[}{\|\[\]\(\)]', '', firstname)
+                    lastname = re.sub('[}{\|\[\]\(\)]', '', lastname)
                     return [
                         {'firstname': firstname, 'lastname': lastname},
                         {
@@ -195,14 +203,16 @@ class FindName:
                     ]
 
         names_referential = self.docservers['REFERENTIALS_PATH'] + 'LISTE_PRENOMS.csv'
+
         text_cpt = 0
+
         for text in [self.text, self.header_text, self.footer_text]:
             with open(names_referential, 'r', encoding='UTF-8') as _f:
                 for name in _f.readlines():
                     name = name.strip()
                     for line in text:
                         if name.lower() in line.content.lower():
-                            fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;|@)", '', line.content,
+                            fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;|@|_)", ' ', line.content,
                                                 flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(M,)", 'M.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MR,)", 'MR.', fixed_line, flags=re.IGNORECASE)
@@ -211,8 +221,9 @@ class FindName:
                             fixed_line = re.sub(r"(MLE,)", 'MLE.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MLLE,)", 'MLLE.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(,)", '', fixed_line, flags=re.IGNORECASE)
+                            fixed_line = re.sub(r"(\.{2,})", ' ', fixed_line, flags=re.IGNORECASE)
 
-                            civility_regex = r"(DOCTEUR|MONSIEUR|MR|M\.|MM(E|F)|MLLE|MLE|MADAME|MADEMOISELLE|MR(/|-)MM(E|F)|MM(E|F)(/|-)MR|M)"
+                            civility_regex = r"(DOCTEUR|MONSIEUR|MR|M\.|MM(E|F)|MLLE|ML(E)?|MADAME|MADEMOISELLE|MR(/|-)MM(E|F)|MM(E|F)(/|-)MR|M)"
                             civility = re.findall(civility_regex, fixed_line, flags=re.IGNORECASE)
                             splitted_line = list(filter(None, fixed_line.split(' ')))
 

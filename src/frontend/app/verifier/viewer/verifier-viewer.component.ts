@@ -514,8 +514,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
     updateFilteredOption(event: any, control: any) {
         let value = '';
-        if (event.target.value) value = event.target.value;
-        else if (control.value) value = control.value;
+        if (event.target.value) {
+            value = event.target.value;
+        } else if (control.value) {
+            value = control.value;
+        }
         control.patchValue(value);
     }
 
@@ -552,7 +555,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     drawPositionByField(field: any, position: any, cpt = '0') {
         this.lastId = field.id;
         this.lastLabel = this.translate.instant(field.label).trim();
-        if (cpt !== '0') this.lastLabel += ' ' + parseInt(cpt);
+
+        if (cpt !== '0') {
+            this.lastLabel += ' ' + parseInt(cpt);
+        }
+
         this.lastColor = field.color;
         this.disableOCR = true;
         const newArea = {
@@ -691,8 +698,12 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     _field.control.setValue(value);
                     _field.control.markAsTouched();
 
-                    if (field.id === 'siret' || field.id === 'siren') this.checkSirenOrSiret(field.id, value);
-                    if (field.id === 'vat_number') this.checkVAT(field.id, value);
+                    if (field.id === 'siret' || field.id === 'siren') {
+                        this.checkSirenOrSiret(field.id, value);
+                    }
+                    if (field.id === 'vat_number') {
+                        this.checkVAT(field.id, value);
+                    }
                 }
 
                 if (field.id === 'name' && category === 'supplier') {
@@ -789,8 +800,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
     getSelectionByCpt(selection: any, cpt: any) {
         for (const index in selection) {
-            if (selection[index].id === cpt)
+            if (selection[index].id === cpt) {
                 return selection[index];
+            }
         }
     }
 
@@ -1071,14 +1083,19 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             if (fieldId) {
                 const field = this.getField(fieldId);
                 if (Object.keys(field).length !== 0) {
-                    if (field.unit === 'addresses' || field.unit === 'supplier') showNotif = false;
-                    if (field.control.errors || this.document.datas[fieldId] === data) return false;
+                    if (field.unit === 'addresses' || field.unit === 'supplier') {
+                        showNotif = false;
+                    }
+                    if (field.control.errors || this.document['datas'][fieldId] === data) {
+                        return false;
+                    }
+
                     data = {[fieldId]: data};
                     this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/updateData',
                         {'args': data},
                         {headers: this.authService.headers}).pipe(
                         tap(() => {
-                            this.document.datas[fieldId] = oldData;
+                            this.document['datas'][fieldId] = oldData;
                             if (showNotif) {
                                 this.notify.success(this.translate.instant('DOCUMENTS.position_and_data_updated', {"input": this.lastLabel}));
                             }
@@ -1101,8 +1118,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         const supplierData: any = {};
         this.fields.supplier.forEach((element: any) => {
             const field = this.getField(element.id);
-            if (element.unit === 'supplier') supplierData[element.id] = field.control.value;
-            if (element.unit === 'addresses') addressData[element.id] = field.control.value;
+            if (element.unit === 'supplier') {
+                supplierData[element.id] = field.control.value;
+            }
+            if (element.unit === 'addresses') {
+                addressData[element.id] = field.control.value;
+            }
+
             this.saveData(field.control.value, element.id);
         });
 
@@ -1145,8 +1167,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         const addressData: any = {};
         this.fields.supplier.forEach((element: any) => {
             const field = this.getField(element.id);
-            if (element.unit === 'supplier') supplierData[element.id] = field.control.value;
-            if (element.unit === 'addresses') addressData[element.id] = field.control.value;
+
+            if (element.unit === 'supplier') {
+                supplierData[element.id] = field.control.value;
+            }
+            if (element.unit === 'addresses') {
+                addressData[element.id] = field.control.value;
+            }
+
             this.saveData(field.control.value, element.id);
         });
 
@@ -1452,7 +1480,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     getSupplierInfo(supplierId: any, showNotif = false, launchOnInit = false) {
         this.suppliers.forEach((supplier: any) => {
             if (supplier.id === supplierId) {
-                if (!supplier.address_id) supplier.address_id = 0;
+                if (!supplier.address_id) {
+                    supplier.address_id = 0;
+                }
                 this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + supplier.address_id, {headers: this.authService.headers}).pipe(
                     tap((address: any) => {
                         const supplierData : any = {

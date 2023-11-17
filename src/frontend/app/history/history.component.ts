@@ -173,7 +173,9 @@ export class HistoryComponent implements OnInit {
             environment['url'] + '/ws/history/list?limit=' + this.pageSize + '&offset=' + this.offset + '&user=' + this.userSelected + '&submodule=' + this.subModuleSelected + '&module=' + this.moduleSelected,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.history[0]) this.total = data.history[0].total;
+                if (data.history[0]) {
+                    this.total = data.history[0].total;
+                }
                 this.history = data.history;
                 this.form.forEach((element: any) => {
                     if (element.id === 'module') {

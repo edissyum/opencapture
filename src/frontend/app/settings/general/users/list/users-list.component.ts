@@ -86,11 +86,13 @@ export class UsersListComponent implements OnInit {
         // If we came from another route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/users') || lastUrl === '/') {
-            if (this.localStorageService.get('usersPageIndex'))
+            if (this.localStorageService.get('usersPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('usersPageIndex') as string);
+            }
             this.offset = this.pageSize * (this.pageIndex);
-        } else
+        } else {
             this.localStorageService.remove('usersPageIndex');
+        }
 
         this.http.get(environment['url'] + '/ws/users/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -162,8 +164,9 @@ export class UsersListComponent implements OnInit {
     loadUsers(): void {
         this.http.get(environment['url'] + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.users[0]) this.total = data.users[0].total;
-                else if (this.pageIndex !== 0) {
+                if (data.users[0]) {
+                    this.total = data.users[0].total;
+                } else if (this.pageIndex !== 0) {
                     this.pageIndex = this.pageIndex - 1;
                     this.offset = this.pageSize * (this.pageIndex);
                     this.loadUsers();

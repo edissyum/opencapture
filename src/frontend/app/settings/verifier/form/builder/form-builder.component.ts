@@ -817,7 +817,9 @@ export class FormBuilderComponent implements OnInit {
                             this.formSettingId = data.module_settings_id;
                             for (const field in this.form) {
                                 for (const info in data) {
-                                    if (info === field) this.form[field].control.setValue(data[field]);
+                                    if (info === field) {
+                                        this.form[field].control.setValue(data[field]);
+                                    }
                                 }
                             }
 
@@ -831,10 +833,14 @@ export class FormBuilderComponent implements OnInit {
 
                             if (data.outputs) {
                                 const length = data.outputs.length;
-                                if (length === 1) this.outputForm[0].control.setValue(data.outputs[0]);
+                                if (length === 1) {
+                                    this.outputForm[0].control.setValue(data.outputs[0]);
+                                }
                                 if (length > 1) {
                                     for (const cpt in data.outputs) {
-                                        if (parseInt(cpt) !== 0) this.addOutput();
+                                        if (parseInt(cpt) !== 0) {
+                                            this.addOutput();
+                                        }
                                         this.outputForm[cpt].control.setValue(data.outputs[cpt]);
                                     }
                                 }
@@ -1039,7 +1045,9 @@ export class FormBuilderComponent implements OnInit {
         const previousUnit = event.previousContainer.id;
 
         if (event.previousContainer === event.container) {
-            if (event.container.data) moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+            if (event.container.data) {
+                moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+            }
         } else {
             transferArrayItem(event.previousContainer.data ? event.previousContainer.data : this.fields[previousUnit],
                 event.container.data ? event.container.data : this.fields[unit],
@@ -1102,7 +1110,9 @@ export class FormBuilderComponent implements OnInit {
         const isDefault = this.form.default_form.control.value;
         const outputs: any[] = [];
         this.outputForm.forEach((element: any) => {
-            if (element.control.value) outputs.push(element.control.value);
+            if (element.control.value) {
+                outputs.push(element.control.value);
+            }
         });
 
         const settings: any = {};
@@ -1142,9 +1152,13 @@ export class FormBuilderComponent implements OnInit {
                 })
             ).subscribe();
         } else {
-            if (!label && outputs.length === 0) this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
-            else if (!label) this.notify.error(this.translate.instant('FORMS.label_mandatory'));
-            else if (outputs.length === 0) this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
+            if (!label && outputs.length === 0) {
+                this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
+            } else if (!label) {
+                this.notify.error(this.translate.instant('FORMS.label_mandatory'));
+            } else if (outputs.length === 0) {
+                this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
+            }
             this.updateFormLoading = false;
         }
     }
@@ -1183,11 +1197,19 @@ export class FormBuilderComponent implements OnInit {
         const isDefault = this.form.default_form.control.value;
         let supplierVerif = this.formSettings.supplier_verif.control.value;
         let allowLearning = this.formSettings.allow_learning.control.value;
-        if (!supplierVerif) supplierVerif = false;
-        if (!allowLearning) allowLearning = false;
+        if (!supplierVerif) {
+            supplierVerif = false;
+        }
+
+        if (!allowLearning) {
+            allowLearning = false;
+        }
+
         const outputs: any[] = [];
         this.outputForm.forEach((element: any) => {
-            if (element.control.value) outputs.push(element.control.value);
+            if (element.control.value) {
+                outputs.push(element.control.value);
+            }
         });
         if (label !== '' && outputs.length >= 1) {
             this.http.post(environment['url'] + '/ws/forms/verifier/create', {
@@ -1231,9 +1253,13 @@ export class FormBuilderComponent implements OnInit {
                 })
             ).subscribe();
         } else {
-            if (!label && outputs.length === 0) this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
-            else if (!label) this.notify.error(this.translate.instant('FORMS.label_mandatory'));
-            else if (outputs.length === 0) this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
+            if (!label && outputs.length === 0) {
+                this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
+            } else if (!label) {
+                this.notify.error(this.translate.instant('FORMS.label_mandatory'));
+            } else if (outputs.length === 0) {
+                this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
+            }
             this.updateFormLoading = false;
         }
     }
