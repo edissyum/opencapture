@@ -1869,8 +1869,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             return of(false);
                         })
                     ).subscribe();
-                }
-                else {
+                } else {
                     this.form['supplier'].forEach((element: any) => {
                         if (element.id === 'siren') {
                             setTimeout(() => {
@@ -1900,8 +1899,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             return of(false);
                         })
                     ).subscribe();
-                }
-                else {
+                } else {
                     this.form['supplier'].forEach((element: any) => {
                         if (element.id === 'siret') {
                             setTimeout(() => {

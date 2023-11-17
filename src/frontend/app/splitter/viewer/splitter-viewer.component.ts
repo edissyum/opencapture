@@ -646,8 +646,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             if (field['metadata_key']) {
                 if (field.type === 'select' && selectedMetadata[field['metadata_key']]) {
                     this.batchForm.get(field['metadata_key'])?.setValue(selectedMetadata[field['metadata_key']]);
-                }
-                else {
+                } else {
                     this.batchForm.get(field['metadata_key'])?.setValue(optionId);
                     this.batchMetadataValues[field['label_short']] = selectedMetadata[field['metadata_key']];
                 }

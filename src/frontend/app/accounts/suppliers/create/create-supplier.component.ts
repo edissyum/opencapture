@@ -325,8 +325,7 @@ export class CreateSupplierComponent implements OnInit {
             if (element.control.errors) {
                 if (element.control.errors.email) {
                     error = this.translate.instant('ACCOUNTS.email_format_error');
-                }
-                else if (element.control.errors.pattern) {
+                } else if (element.control.errors.pattern) {
                     error = this.translate.instant('ACCOUNTS.pattern_error');
                 }
             }
