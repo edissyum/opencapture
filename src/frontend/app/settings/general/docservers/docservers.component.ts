@@ -97,8 +97,7 @@ export class DocserversComponent implements OnInit {
             tap((data: any) => {
                 if (data.docservers[0]) {
                     this.total = data.docservers[0].total;
-                }
-                else if (this.pageIndex !== 0) {
+                } else if (this.pageIndex !== 0) {
                     this.pageIndex = this.pageIndex - 1;
                     this.offset = this.pageSize * (this.pageIndex);
                     this.loadDocservers();

@@ -420,8 +420,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 if (status === true) {
                     this.notify.success(this.translate.instant('OUTPUT.cmis_connection_ok'));
                     this.connection = true;
-                }
-                else {
+                } else {
                     this.notify.error(this.translate.instant('OUTPUT.cmis_connection_ko') + ' : ' + data.message);
                     this.connection = false;
                 }
@@ -453,8 +452,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 if (status === true) {
                     this.notify.success(this.translate.instant('OUTPUT.mem_connection_ok'));
                     this.connection = true;
-                }
-                else {
+                } else {
                     this.notify.error(this.translate.instant('OUTPUT.mem_connection_ko') + ' : ' + status[1]);
                     this.connection = false;
                 }
@@ -485,8 +483,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 if (status === true) {
                     this.notify.success(this.translate.instant('OUTPUT.openads_connection_ok'));
                     this.connection = true;
-                }
-                else {
+                } else {
                     this.notify.error(this.translate.instant('OUTPUT.openads_connection_ko') + ' : ' + data.message);
                     this.connection = false;
                 }
