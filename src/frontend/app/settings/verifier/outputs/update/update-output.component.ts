@@ -447,8 +447,7 @@ export class UpdateOutputComponent implements OnInit {
                 if (status === true) {
                     this.notify.success(this.translate.instant('OUTPUT.mem_connection_ok'));
                     this.connection = true;
-                }
-                else {
+                } else {
                     this.notify.error('<strong>' + this.translate.instant('OUTPUT.mem_connection_ko') + '</strong> : ' + data.status[1]);
                     this.connection = false;
                 }
