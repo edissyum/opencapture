@@ -26,7 +26,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { UserService } from "../../../../services/user.service";
 import { AuthService } from "../../../../services/auth.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { Country } from "@angular-material-extensions/select-country";
+import { COUNTRIES_DB_FR, Country } from "@angular-material-extensions/select-country";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
@@ -130,7 +130,7 @@ export class UpdateCustomerComponent implements OnInit {
     ];
     defaultValue    : Country       = {
         name: 'France',
-        alpha2Code: '',
+        alpha2Code: 'FR',
         alpha3Code: '',
         numericCode: '',
         callingCode: ''
@@ -177,7 +177,11 @@ export class UpdateCustomerComponent implements OnInit {
                                                     this.addressForm.forEach(element => {
                                                         if (element.id === field) {
                                                             if (field === 'country') {
-                                                                this.defaultValue.name = address[field];
+                                                                COUNTRIES_DB_FR.forEach((country: Country) => {
+                                                                    if (country.name === address[field]) {
+                                                                        this.defaultValue = country;
+                                                                    }
+                                                                });
                                                             }
                                                             element.control.setValue(address[field]);
                                                         }
