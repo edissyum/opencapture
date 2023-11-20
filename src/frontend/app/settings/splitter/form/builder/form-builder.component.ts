@@ -501,11 +501,18 @@ export class SplitterFormBuilderComponent implements OnInit {
         const isDefault         = this.form.default_form.control.value;
         const metadataMethod    = this.formSettings.metadata_method.control.value;
         const exportZipFile     = this.formSettings.export_zip_file.control.value;
+        const outputs: any[]    = [];
+        this.outputForm.forEach((element: any) => {
+            if (element.control.value) {
+                outputs.push(element.control.value);
+            }
+        });
         if (label) {
             this.http.post(environment['url'] + '/ws/forms/splitter/create',
                 {
                     'args': {
                         'label'         : label,
+                        'outputs'       : outputs,
                         'default_form'  : isDefault,
                         'module'        : "splitter",
                         'settings'      : {
