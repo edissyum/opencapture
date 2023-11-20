@@ -235,7 +235,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.loadBatches();
                 this.loadStatus();
                 this.loadFormFields();
-                this.loadDocuments();
                 this.loadDefaultDocType();
                 this.loadOutputsData();
                 this.loadReferentialOnView();
@@ -778,6 +777,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         });
                     }
                 }
+                this.loadDocuments();
             }), finalize(() => this.loading = false),
             catchError((err: any) => {
                 this.loading = false;
