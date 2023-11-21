@@ -24,6 +24,10 @@ import { AuthService } from "../../services/auth.service";
 import { LocaleService } from "../../services/locale.service";
 import { PrivilegesService } from "../../services/privileges.service";
 import { LocalStorageService } from "../../services/local-storage.service";
+import {environment} from "../env";
+import {catchError, tap} from "rxjs/operators";
+import {of} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
     selector: 'app-menu',
@@ -36,9 +40,11 @@ export class MenuComponent implements OnInit {
     @Input() imageMobile        : any;
     profileDropdownCurrentState : boolean = false;
     mobileMenuState             : boolean = false;
+    defaultModule               : string = '';
 
     constructor(
         public router: Router,
+        private http: HttpClient,
         public location: Location,
         public authService: AuthService,
         public userService: UserService,
@@ -83,6 +89,22 @@ export class MenuComponent implements OnInit {
                 n = 0;
             }
         });
+
+        if (!this.defaultModule) {
+            this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/defaultModule', {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    if (data.configuration.length === 1) {
+                        this.defaultModule = data.configuration[0].data.value;
+                    }
+                })
+            ).subscribe();
+        }
+    }
+
+    goToUpload() {
+        if (this.defaultModule) {
+            this.localStorageService.save('splitter_or_verifier', this.defaultModule);
+        }
     }
 
     getSplitterOrVerifier() {
