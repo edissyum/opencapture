@@ -33,7 +33,7 @@ for custom_name in ${SECTIONS[@]}; do
     mv $opencapturePath/bin/data/ $opencapturePath/data/ 2>/dev/null
     rm -rf $opencapturePath/bin/data/
 
-    mkdir -p custom/$custom_name/data
+    mkdir -p custom/$custom_name/data/
     mv $opencapturePath/custom/$custom_name/bin/data/ $opencapturePath/custom/$custom_name/data/ 2>/dev/null
     rm -rf $opencapturePath/custom/$custom_name/bin/data/
 
