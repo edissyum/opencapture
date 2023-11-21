@@ -48,7 +48,8 @@
                                 [class.hover:text-white]="privilegesService.hasPrivilege('upload')"
                                 [class.text-gray-500]="!location.path().includes('/upload')"
                                 [class.bg-transparent]="!location.path().includes('/upload')"
-                                class="px-3 py-2 text-sm font-medium transition duration-300">
+                                class="px-3 py-2 text-sm font-medium transition duration-300"
+                                (click)="goToUpload()" *ngIf="this.defaultModule || getSplitterOrVerifier()">
                             {{ 'GLOBAL.upload' | translate }}
                         </button>
                     </div>
