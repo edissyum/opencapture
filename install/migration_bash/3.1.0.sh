@@ -30,8 +30,13 @@ opencapturePath="/var/www/html/opencapture/"
 SECTIONS=$(crudini --get $opencapturePath/custom/custom.ini | sed 's/:.*//')
 for custom_name in ${SECTIONS[@]}; do
     cd $opencapturePath
+
+    mkdir -p data/
+    mv $opencapturePath/bin/data/ $opencapturePath/data/ 2>/dev/null
+    rm -rf $opencapturePath/bin/data/
+
     mkdir -p custom/$custom_name/data
-    mv $opencapturePath/custom/$custom_name/bin/data/* $opencapturePath/custom/$custom_name/data/
+    mv $opencapturePath/custom/$custom_name/bin/data/ $opencapturePath/custom/$custom_name/data/ 2>/dev/null
     rm -rf $opencapturePath/custom/$custom_name/bin/data/
 done
 
