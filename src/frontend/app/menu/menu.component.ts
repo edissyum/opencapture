@@ -102,7 +102,7 @@ export class MenuComponent implements OnInit {
     }
 
     goToUpload() {
-        if (this.defaultModule) {
+        if (this.defaultModule && !this.getSplitterOrVerifier()) {
             this.localStorageService.save('splitter_or_verifier', this.defaultModule);
         }
     }
