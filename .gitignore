@@ -5,11 +5,11 @@
 custom/
 bin/data/tmp/
 node_modules/
+install/*.log
 bin/data/*.pdf
 last_mail.lock
 bin/data/error/
 bin/scripts/*.sh
-bin/install/*.log
 bin/data/pdf/*.pdf
 /package-lock.json
 bin/data/log/*.log

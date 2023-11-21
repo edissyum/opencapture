@@ -77,7 +77,7 @@ jobs:
 
       - name: Launch installation
         run: |
-          cd /var/www/html/opencapture/bin/install/
+          cd /var/www/html/opencapture/install/
           chmod u+x install.sh
           sed -i 's/$(tput bold)/""/gI' install.sh
           sed -i 's/$(tput sgr0)/""/gI' install.sh

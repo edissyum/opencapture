@@ -61,7 +61,7 @@ cd "$openCapturePath" || exit 1
 # Force launch of apt and pip requirements
 # in case of older version without somes packages/libs
 echo "APT & PIP packages installation ......."
-cd bin/install/ || exit 2
+cd install/ || exit 2
 apt-get -y update >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 apt-get install -y php >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 xargs -a apt-requirements.txt apt-get install -y >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -106,7 +106,7 @@ chown -R "$user":"$user" $openCapturePath
 
 ####################
 # Display a message if a SQL migration file is present for new version
-if test -f "$openCapturePath/bin/install/migration_sql/$latest_tag.sql"; then
+if test -f "$openCapturePath/install/migration_sql/$latest_tag.sql"; then
     echo "####################################################################"
     echo "                     Version : $latest_tag                          "
     echo "      A script to update database in the application is present     "
@@ -117,6 +117,6 @@ fi
 
 ####################
 # Run bash migration file if present for new version
-if test -f "$openCapturePath/bin/install/migration_bash/$latest_tag.sh"; then
-    bash "$openCapturePath/bin/install/migration_bash/$latest_tag.sh"
+if test -f "$openCapturePath/install/migration_bash/$latest_tag.sh"; then
+    bash "$openCapturePath/install/migration_bash/$latest_tag.sh"
 fi
