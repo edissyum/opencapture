@@ -21,8 +21,6 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-#apt install -y jq
-
 opencapturePath="/var/www/html/opencapture/"
 
 #####################
