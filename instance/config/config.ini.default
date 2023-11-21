@@ -3,7 +3,7 @@ applicationUrl   =
 applicationPath  = /var/www/html/opencapture/
 configMail       = /var/www/html/opencapture/custom/§§CUSTOM_ID§§/config/mail.ini
 watcherConfig    = /var/www/html/opencapture/instance/config/watcher.ini
-logFile          = /var/www/html/opencapture/custom/§§CUSTOM_ID§§/bin/data/log/OpenCapture.log
+logFile          = /var/www/html/opencapture/custom/§§CUSTOM_ID§§/data/log/OpenCapture.log
 ; True or False
 allowWFScripting = False
 
