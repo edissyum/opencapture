@@ -10,14 +10,13 @@ Open-Capture is a **free and Open Source** software under **GNU General Public L
   
 The functionnalities of Open-Capture are :
    - Fully web interface for videocoding : No installation needed on user's workstation
-   - OCR On Fly. Draw a rectangle on the image, get the text directly in your input
-   - The core works on Linux (tested and Debian)
+   - OCR On Fly. Draw a rectangle on the image, get the text directly in your input and save positions
+   - The core works on Linux (tested on Debian)
    - Complex machine learning algorithms used to predict information locations from one invoice to another
-   - Find suppliers into a document using VAT Number, SIRET, SIREN or IBAN
+   - Find suppliers into a document using VAT Number, EMAIL, DUNS, BIC, SIRET, SIREN or IBAN
    - Find VAT Rate, no taxes amount and total taxes amount using powerful algorithm.
    - Wrote fully in Python for the backend, using Flask micro framework. Angular & Tailwind for the front
    - Already set to use **fra** or **eng** locales. Other locales could be added easily using simple json file
-   - Multiple ADR (LAD) profile, using INI file
    - SIRET/SIREN & VAT number verification (Only FR for now, could be disabled in form settings)
    - Complex locale REGEX used. Easy to improve and modify
 
