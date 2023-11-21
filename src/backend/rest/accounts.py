@@ -216,11 +216,11 @@ def create_address():
 
     data = request.json['args']
     check, message = rest_validator(data, [
-        {'id': 'city', 'type': str, 'mandatory': True},
-        {'id': 'country', 'type': str, 'mandatory': True},
-        {'id': 'address1', 'type': str, 'mandatory': True},
+        {'id': 'city', 'type': str, 'mandatory': False},
+        {'id': 'country', 'type': str, 'mandatory': False},
+        {'id': 'address1', 'type': str, 'mandatory': False},
         {'id': 'address2', 'type': str, 'mandatory': False},
-        {'id': 'postal_code', 'type': str, 'mandatory': True}
+        {'id': 'postal_code', 'type': str, 'mandatory': False}
     ])
     if not check:
         return make_response({

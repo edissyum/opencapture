@@ -244,11 +244,16 @@ export function createTranslateLoader(http: HttpClient) {
     ],
     providers: [
         Title,
-        TranslateService,
         LastUrlService,
+        TranslateService,
         HintServiceComponent,
         ErrorServiceComponent,
-        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}},
+        {
+            provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+            useValue: {
+                appearance: 'outline'
+            }
+        },
         {
             provide: MatPaginatorIntl,
             useClass: CustomMatPaginatorIntl
@@ -258,7 +263,13 @@ export function createTranslateLoader(http: HttpClient) {
             useClass: MiddlewareComponent,
             multi: true
         },
-        [{ provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }]
+        [
+            {
+                provide: HTTP_INTERCEPTORS,
+                useClass: TimeoutInterceptor,
+                multi: true
+            }
+        ]
 ],
     bootstrap: [AppComponent]
 })
