@@ -26,7 +26,7 @@ fi
 opencapturePath="/var/www/html/opencapture/"
 
 #####################
-# Update input_id to workflow_id
+# Change old bin/data path to data/
 SECTIONS=$(crudini --get $opencapturePath/custom/custom.ini | sed 's/:.*//')
 for custom_name in ${SECTIONS[@]}; do
     cd $opencapturePath
@@ -38,12 +38,12 @@ for custom_name in ${SECTIONS[@]}; do
     mkdir -p custom/$custom_name/data
     mv $opencapturePath/custom/$custom_name/bin/data/ $opencapturePath/custom/$custom_name/data/ 2>/dev/null
     rm -rf $opencapturePath/custom/$custom_name/bin/data/
-done
 
-####################
-# Update custom config ini to add applicationPath
-#SECTIONS=$(crudini --get $opencapturePath/custom/custom.ini | sed 's/:.*//')
-#for custom_name in ${SECTIONS[@]}; do
-#    cd $opencapturePath
-#    crudini --set custom/$custom_name/config/config.ini GLOBAL applicationPath $opencapturePath
-#done
+    ####################
+    # Update custom config ini to modify log path
+    sed -i "s|bin/data/log|data/log|g" $opencapturePath/custom/$custom_name/config/config.ini
+
+    ####################
+    # Update custom script to modify paths
+    find $opencapturePath/custom/$custom_name/bin/scripts/ -type f -exec sed -i "s|bin/data/|data/|g" {} \;
+done
