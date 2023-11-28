@@ -183,8 +183,13 @@ def update_form_unique_url(form_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'verifier_settings']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/updateUniqueUrl/{form_id}'}), 403
 
-    check, message = rest_validator(request.json, [
-        {'id': 'unique_url', 'type': dict, 'mandatory': True}
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'expiration', 'type': int, 'mandatory': False},
+        {'id': 'change_form', 'type': bool, 'mandatory': False},
+        {'id': 'refuse_document', 'type': bool, 'mandatory': False},
+        {'id': 'create_supplier', 'type': bool, 'mandatory': False},
+        {'id': 'validate_document', 'type': bool, 'mandatory': False},
+        {'id': 'allow_supplier_autocomplete', 'type': bool, 'mandatory': False}
     ])
 
     if not check:
@@ -193,7 +198,7 @@ def update_form_unique_url(form_id):
             "message": message
         }, 400)
 
-    res = forms.update_form(form_id, {"settings": {"unique_url": request.json['unique_url']}}, 'verifier')
+    res = forms.update_form(form_id, {"settings": {"unique_url": request.json['args']}}, 'verifier')
     return make_response(jsonify(res[0])), res[1]
 
 
