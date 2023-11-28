@@ -17,8 +17,8 @@
 
 import re
 import json
+import math
 import string
-
 from src.backend.functions import search_custom_positions
 
 
@@ -26,6 +26,43 @@ def sanitize_keyword(data, regex):
     tmp_data = re.sub(r"" + regex[:-2], '', data, flags=re.IGNORECASE)
     data = tmp_data.lstrip()
     return data
+
+
+def validate_adeli(unchecked_adeli):
+    if len(unchecked_adeli) != 9:
+        return False
+    try:
+        int(unchecked_adeli)
+    except ValueError:
+        return False
+
+    numero = unchecked_adeli[:8]
+    cle = unchecked_adeli[8:]
+
+    if numero == '00000000':
+        return True
+
+    pos = 1
+    cletmp = 0
+
+    for num in reversed(numero):
+        num = int(num)
+        if pos % 2 != 0:
+            num *= 2
+
+        pos = pos + 1
+        if num >= 10:
+            cletmp += math.floor(num / 10)
+            cletmp += num % 10
+        else:
+            cletmp += num
+    tmp_cle = int(str(cletmp)[len(str(cletmp)) - 1])
+    cle_final = 10 - tmp_cle
+    if cle_final == 10:
+        cle_final = 0
+    if int(cle_final) == int(cle):
+        return True
+    return False
 
 
 def validate_iban(unchecked_iban):
@@ -78,6 +115,9 @@ class FindCustom:
         if settings['format'] == 'lunh_algorithm':
             _r = [int(ch) for ch in str(data)][::-1]
             match = (sum(_r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in _r[1::2])) % 10 == 0
+
+        if settings['format'] == 'adeli':
+            match = validate_adeli(data)
 
         if settings['format'] == 'iban':
             match = validate_iban(data)
@@ -204,7 +244,6 @@ class FindCustom:
 
                         if regex_settings['remove_keyword']:
                             data = sanitize_keyword(_data.group(), regex_settings['content'])
-
                         data = self.check_format(data, regex_settings)
                         if data:
                             if 'remove_spaces' in regex_settings and regex_settings['remove_spaces']:
