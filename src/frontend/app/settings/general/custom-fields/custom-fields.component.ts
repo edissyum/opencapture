@@ -73,6 +73,10 @@ export class CustomFieldsComponent implements OnInit {
         {
             'id': 'iban',
             'label': this.translate.instant('FORMATS.iban')
+        },
+        {
+            'id': 'adeli',
+            'label': this.translate.instant('FORMATS.adeli')
         }
     ];
     updateCustomId          : any;

@@ -129,6 +129,7 @@ export class UploadComponent implements OnInit {
         }
 
         let timeout = 2000;
+
         for (let i = 0; i < this.fileControl.value!.length; i++) {
             if (this.fileControl.status === 'VALID') {
                 timeout += this.fileControl.value![i]['size'] / 200;
@@ -138,6 +139,7 @@ export class UploadComponent implements OnInit {
                 return;
             }
         }
+
         formData.set('workflowId', this.selectedWorkflowTechnicalId);
         formData.set('userId', this.userService.user.id);
 
