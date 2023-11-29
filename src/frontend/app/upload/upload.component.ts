@@ -128,21 +128,25 @@ export class UploadComponent implements OnInit {
             return;
         }
 
+        let timeout = 2000;
+
         for (let i = 0; i < this.fileControl.value!.length; i++) {
             if (this.fileControl.status === 'VALID') {
+                timeout += this.fileControl.value![i]['size'] / 200;
                 formData.append(this.fileControl.value![i]['name'], this.fileControl.value![i]);
             } else {
                 this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
                 return;
             }
         }
+
         formData.set('workflowId', this.selectedWorkflowTechnicalId);
         formData.set('userId', this.userService.user.id);
 
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
-                environment['url'] + '/ws/verifier/checkFileBeforeUpload', formData, {headers: new HttpHeaders({ timeout: `${2000}` })},
+                environment['url'] + '/ws/verifier/checkFileBeforeUpload', formData, {headers: new HttpHeaders({ timeout: `${timeout}` })},
             ).pipe(
                 tap(() => {
                     this.http.post(environment['url'] + '/ws/' + splitterOrVerifier + '/upload', formData, {headers: this.authService.headers}).pipe(
