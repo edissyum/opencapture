@@ -257,7 +257,7 @@ def convert(file, files, ocr, nb_pages, tesseract_function, convert_function, cu
         ocr.header_text = return_text(files.img, tesseract_function, ocr)
         files.pdf_to_jpg(file, 1, True, True, 'footer', convert_function=convert_function)
         ocr.footer_text = return_text(files.img, tesseract_function, ocr)
-        files.pdf_to_jpg(file, 1)
+        files.pdf_to_jpg(file, 1, convert_function=convert_function)
         ocr.text = return_text(files.img, tesseract_function, ocr)
         if nb_pages > 1:
             files.pdf_to_jpg(file, nb_pages, True, True, 'header', True, convert_function=convert_function)
@@ -415,9 +415,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 log.info('Document rotated by ' + str(workflow_settings['input']['rotation']) +
                          '° based on workflow settings')
 
-    form_id_found_with_ai = False
     system_fields_to_find = []
     custom_fields_to_find = []
+    form_id_found_with_ai = False
 
     change_workflow = False
     convert_function = 'pdf2image'
@@ -554,8 +554,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                             'document_lang': ''
                                         }
                                         supplier = [data['vat_number'], (('', ''), ('', '')), data, False, column]
-                                        log.info('Supplier created using INSEE database : ' + supplier[2]['name'] + ' with '
-                                                 + column.upper() + ' : ' + value)
+                                        log.info('Supplier created using INSEE database : ' + supplier[2]['name']
+                                                 + ' with ' + column.upper() + ' : ' + value)
 
         if 'name' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             # Find supplier in document if not send using upload rest
