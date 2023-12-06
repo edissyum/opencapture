@@ -582,6 +582,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             tap((data: any) => {
                 data.metadata.forEach((metadataItem: any) => {
                     metadataItem.data['metadataId'] = metadataItem.id;
+                    for (const field of this.fieldsCategories['batch_metadata']) {
+                        const metadataKey = field['metadata_key'];
+                        if (metadataKey && !(metadataKey in metadataItem.data)) {
+                            metadataItem.data[metadataKey] = '';
+                        }
+                    }
                     this.metadata.push(metadataItem.data);
                 });
                 if (this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')) {
