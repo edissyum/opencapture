@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import re
-import json
 import base64
 import pandas as pd
 from flask_babel import gettext
