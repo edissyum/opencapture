@@ -37,7 +37,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
     loading             : boolean               = true;
     workflowLabel       : string                = '';
     processData         : any                   = [];
-    pageSize            : number                = 10;
+    pageSize            : number                = 20;
     pageIndex           : number                = 0;
     total               : number                = 0;
     splitterCpt         : number                = 0;
