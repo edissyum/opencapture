@@ -1,5 +1,5 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav #sidenav mode="side" opened class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
             {{ "ACCOUNTS.choose_workflow_upload" | translate }}
         </h3>
@@ -17,7 +17,7 @@
         </mat-list>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-2" style="z-index: 999">
+        <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-2 z-30">
             <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-xl text-gray-900"></i>
         </button>
         <div *ngIf="this.loading">

@@ -259,7 +259,6 @@ def export_doctypes(args):
             'encoded_file': b64.decode()
         }
         return response, 200
-
     except Exception as e:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),
@@ -267,13 +266,11 @@ def export_doctypes(args):
         }
         return response, 500
 
-    return True, 200
-
 
 def csv_preview(files):
     try:
+        rows = []
         for file in files:
-            rows = []
             _f = files[file]
             stream = codecs.iterdecode(_f.stream, 'utf-8')
             for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel)):

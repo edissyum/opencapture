@@ -261,18 +261,18 @@ export class UpdatePositionsMaskComponent implements OnInit {
         });
         this.http.get(environment['url'] + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.customFields) {
-                    for (const field in data.customFields) {
-                        if (data.customFields.hasOwnProperty(field)) {
-                            if (data.customFields[field].module === 'verifier') {
+                if (data['customFields']) {
+                    for (const field in data['customFields']) {
+                        if (data['customFields'].hasOwnProperty(field)) {
+                            if (data['customFields'][field].module === 'verifier') {
                                 for (const parent in this.availableFieldsParent) {
                                     if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push(
                                             {
-                                                id: 'custom_' + data.customFields[field].id,
-                                                label: data.customFields[field].label,
-                                                type: data.customFields[field].type,
-                                                color: data.customFields[field].color,
+                                                id: 'custom_' + data['customFields'][field].id,
+                                                label: data['customFields'][field].label,
+                                                type: data['customFields'][field].type,
+                                                color: data['customFields'][field].color,
                                                 regex: ''
                                             }
                                         );
@@ -399,7 +399,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 }),
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/settings/verifier/positions-mask');
+                    this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();
@@ -418,7 +418,9 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     return;
                 } else {
                     const formData: FormData = new FormData();
-                    if (data) formData.append(data[0].name, data[0]);
+                    if (data) {
+                        formData.append(data[0].name, data[0]);
+                    }
 
                     this.http.post(environment['url'] + '/ws/positions_masks/getImageFromPdf/' + this.positionMaskId, formData, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
@@ -581,8 +583,9 @@ export class UpdatePositionsMaskComponent implements OnInit {
 
     getSelectionByCpt(selection: any, cpt: any) {
         for (const index in selection) {
-            if (selection[index].id === cpt)
+            if (selection[index].id === cpt) {
                 return selection[index];
+            }
         }
     }
 
@@ -599,10 +602,9 @@ export class UpdatePositionsMaskComponent implements OnInit {
     }
 
     checkIfObjectIsEqual(object1: any, object2: any) {
-        if (!object1)
+        if (!object1 || !object2) {
             return false;
-        if (!object2)
-            return false;
+        }
 
         const aProps = Object.getOwnPropertyNames(object1);
         const bProps = Object.getOwnPropertyNames(object2);
@@ -733,7 +735,9 @@ export class UpdatePositionsMaskComponent implements OnInit {
                         input.remove();
                         background.remove();
                         outline.remove();
-                        if (page === this.currentPage) this.drawPositionByField(field, position);
+                        if (page === this.currentPage) {
+                            this.drawPositionByField(field, position);
+                        }
                     }
                 }
             }

@@ -196,7 +196,7 @@ def update_configuration_by_label(configuration_label):
 
     check, message = rest_validator(request.json['args'], [
         {'id': 'type', 'type': str, 'mandatory': False},
-        {'id': 'value', 'type': str, 'mandatory': True},
+        {'id': 'value', 'type': str if configuration_label not in ['smtp'] else dict, 'mandatory': True},
         {'id': 'label_type', 'type': str, 'mandatory': False},
         {'id': 'description', 'type': str, 'mandatory': False}
     ])

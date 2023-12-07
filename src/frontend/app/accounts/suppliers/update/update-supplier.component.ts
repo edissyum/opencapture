@@ -18,9 +18,8 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { MatDialog } from "@angular/material/dialog";
 import { UserService } from "../../../../services/user.service";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { FormControl, Validators } from "@angular/forms";
 import { AuthService } from "../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
@@ -30,7 +29,7 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { Country } from "@angular-material-extensions/select-country";
+import { COUNTRIES_DB_FR, Country } from "@angular-material-extensions/select-country";
 import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
@@ -165,7 +164,7 @@ export class UpdateSupplierComponent implements OnInit {
 
     defaultValue: Country = {
         name: 'France',
-        alpha2Code: '',
+        alpha2Code: 'FR',
         alpha3Code: '',
         numericCode: '',
         callingCode: ''
@@ -174,10 +173,8 @@ export class UpdateSupplierComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
-        private dialog: MatDialog,
         private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
@@ -255,7 +252,11 @@ export class UpdateSupplierComponent implements OnInit {
                                                             this.addressForm.forEach(adr_element => {
                                                                 if (adr_element.id === adr_field) {
                                                                     if (adr_field === 'country') {
-                                                                        this.defaultValue.name = address[adr_field];
+                                                                        COUNTRIES_DB_FR.forEach((country: Country) => {
+                                                                            if (country.name === address[adr_field]) {
+                                                                                this.defaultValue = country;
+                                                                            }
+                                                                        });
                                                                     }
                                                                     adr_element.control.setValue(address[adr_field]);
                                                                 }
@@ -322,7 +323,7 @@ export class UpdateSupplierComponent implements OnInit {
 
     onCountrySelected(country: Country) {
         this.addressForm.forEach((element: any) => {
-            if (element.id === 'country') {
+            if (element.id === 'country' && country) {
                 element.control.setValue(country['name']);
             }
         });

@@ -48,8 +48,8 @@ export class NotificationService {
     }
 
     error(message: string) {
-        if (this.oldErrorMessage.includes(this.translate.instant('AUTH.session_expired')) && message.includes(this.translate.instant('AUTH.session_expired')) ||
-            this.oldErrorMessage.includes(this.translate.instant('AUTH.not_connected')) && message.includes(this.translate.instant('AUTH.session_expired'))) {
+        if (this.oldErrorMessage && (this.oldErrorMessage.includes(this.translate.instant('AUTH.session_expired')) && message.includes(this.translate.instant('AUTH.session_expired')) ||
+            this.oldErrorMessage.includes(this.translate.instant('AUTH.not_connected')) && message.includes(this.translate.instant('AUTH.session_expired')))) {
             return;
         }
         this.oldErrorMessage = message;

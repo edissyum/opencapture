@@ -1,5 +1,5 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
@@ -21,7 +21,7 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!this.loading" class="w-full">
-            <mat-tab-group [selectedIndex]="this.selectedIndex" dynamicHeight>
+            <mat-tab-group [selectedIndex]="this.selectedIndex" [dynamicHeight]="true">
                 <mat-tab *ngFor="let process of this.processes">
                     <ng-template mat-tab-label>
                         <span class="actions" *ngIf="getNameOfProcess(process) !== '' && getNameOfProcess(process) !== null else input">

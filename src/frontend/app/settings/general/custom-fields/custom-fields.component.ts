@@ -65,6 +65,18 @@ export class CustomFieldsComponent implements OnInit {
         {
             'id': 'number_float',
             'label': this.translate.instant('FORMATS.number')
+        },
+        {
+            'id': 'luhn_algorithm',
+            'label': this.translate.instant('FORMATS.luhn_algorithm')
+        },
+        {
+            'id': 'iban',
+            'label': this.translate.instant('FORMATS.iban')
+        },
+        {
+            'id': 'adeli',
+            'label': this.translate.instant('FORMATS.adeli')
         }
     ];
     updateCustomId          : any;

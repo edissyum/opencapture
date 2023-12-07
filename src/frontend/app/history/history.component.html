@@ -1,4 +1,4 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
     <mat-sidenav-content class="bg-white overflow-hidden">
         <div *ngIf="this.loading">
             <app-loader></app-loader>
@@ -85,7 +85,7 @@
                              class="hover:text-green-400 select-none hover:shadow-md transition-colors duration-300"></mat-row>
                 </mat-table>
             </div>
-            <mat-paginator showFirstLastButtons
+            <mat-paginator [showFirstLastButtons]="true"
                            [length]="total"
                            [pageSize]="pageSize"
                            [pageIndex]="pageIndex"

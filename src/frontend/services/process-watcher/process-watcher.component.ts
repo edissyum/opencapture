@@ -15,7 +15,7 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from "../local-storage.service";
 import { environment } from "../../app/env";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -80,10 +80,10 @@ export class ProcessWatcherComponent implements OnInit {
             this.http.get(environment['url'] + '/ws/monitoring/' + splitterOrVerifier + '/lasts',
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
-                    if (this.displayedProcessData !== data['processses']) {
+                    if (this.displayedProcessData !== data['processes']) {
                         this.processes = [];
                         let cpt = 1;
-                        for (const process of data['processses']) {
+                        for (const process of data['processes']) {
                             process.error_message = '';
                             if (process.error) {
                                 Object.keys(process.steps).forEach((step: any) => {

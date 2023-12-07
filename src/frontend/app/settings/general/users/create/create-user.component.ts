@@ -116,7 +116,6 @@ export class CreateUserComponent implements OnInit {
     userForms        : any[]     = [];
     customers        : any[]     = [];
     userCustomers    : any[]     = [];
-    errorMessage     : string    = '';
 
     constructor(
         public router: Router,
@@ -248,10 +247,11 @@ export class CreateUserComponent implements OnInit {
             }
             cpt = cpt + 1;
         }
-        if (!found)
+        if (!found) {
             this.userForms.push(formId);
-        else
+        } else {
             this.userForms.splice(cpt, 1);
+        }
     }
 
     isValidForm() {

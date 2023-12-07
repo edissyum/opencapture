@@ -95,8 +95,9 @@ export class FormListComponent implements OnInit {
         this.loading = true;
         this.http.get(environment['url'] + '/ws/forms/verifier/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.forms[0]) this.total = data.forms[0].total;
-                else if (this.pageIndex !== 0) {
+                if (data.forms[0]) {
+                    this.total = data.forms[0].total;
+                } else if (this.pageIndex !== 0) {
                     this.pageIndex = this.pageIndex - 1;
                     this.offset = this.pageSize * (this.pageIndex);
                     this.loadForms();

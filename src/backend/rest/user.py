@@ -17,6 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask_babel import gettext
+from src.backend.functions import rest_validator
 from flask import Blueprint, request, make_response, jsonify
 from src.backend.import_controllers import auth, user, privileges
 
@@ -29,8 +30,25 @@ def create_user():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_user']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/users/new'}), 403
 
-    data = request.json
-    res = user.create_user(data)
+    check, message = rest_validator(request.json, [
+        {'id': 'role', 'type': int, 'mandatory': True},
+        {'id': 'mode', 'type': str, 'mandatory': True},
+        {'id': 'email', 'type': str, 'mandatory': False},
+        {'id': 'forms', 'type': list, 'mandatory': False},
+        {'id': 'username', 'type': str, 'mandatory': True},
+        {'id': 'lastname', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': True},
+        {'id': 'firstname', 'type': str, 'mandatory': True},
+        {'id': 'customers', 'type': list, 'mandatory': False},
+        {'id': 'password_check', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = user.create_user(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -39,6 +57,18 @@ def create_user():
 def get_users():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'users_list | user_quota']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/users/list'}), 403
+
+    check, message = rest_validator(request.args, [
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
     args = {
         'select': ['*', 'count(*) OVER() as total'],
@@ -65,6 +95,18 @@ def get_users_full():
     if not privileges.has_privileges(request.environ['user_id'], ['history | statistics']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/users/list_full'}), 403
 
+    check, message = rest_validator(request.args, [
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     _users = user.get_users_full(request.args)
     return make_response(jsonify(_users[0])), _users[1]
 
@@ -81,22 +123,51 @@ def get_user_by_id(user_id):
 
 @bp.route('users/sendEmailForgotPassword', methods=['POST'])
 def send_email_forgot_password():
-    data = request.json
-    res = user.send_email_forgot_password(data)
+    check, message = rest_validator(request.json, [
+        {'id': 'userId', 'type': int, 'mandatory': False},
+        {'id': 'currentUrl', 'type': str, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = user.send_email_forgot_password(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('users/resetPassword', methods=['PUT'])
 def reset_password():
-    data = request.json
-    res = user.reset_password(data)
+    check, message = rest_validator(request.json, [
+        {'id': 'resetToken', 'type': str, 'mandatory': False},
+        {'id': 'newPassword', 'type': str, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = user.reset_password(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('users/getByMail', methods=['POST'])
 def get_user_by_mail():
-    data = request.json
-    _user = user.get_user_by_mail(data['email'])
+    check, message = rest_validator(request.json, [
+        {'id': 'email', 'type': str, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    _user = user.get_user_by_mail(request.json['email'])
     return make_response(jsonify(_user[0])), _user[1]
 
 
@@ -107,8 +178,24 @@ def update_user(user_id):
         if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/update/{user_id}'}), 403
 
-    data = request.json['args']
-    res = user.update_user(user_id, data)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'role', 'type': int, 'mandatory': False},
+        {'id': 'mode', 'type': str, 'mandatory': False},
+        {'id': 'email', 'type': str, 'mandatory': False},
+        {'id': 'forms', 'type': list, 'mandatory': False},
+        {'id': 'lastname', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': False},
+        {'id': 'firstname', 'type': str, 'mandatory': True},
+        {'id': 'customers', 'type': list, 'mandatory': False},
+        {'id': 'password_check', 'type': str, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = user.update_user(user_id, request.json['args'])
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -155,8 +242,17 @@ def update_customers_by_user_id(user_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/customers/update/{user_id}'}), 403
 
-    customers = request.json['customers']
-    res = user.update_customers_by_user_id(user_id, customers)
+    check, message = rest_validator(request.json, [
+        {'id': 'customers', 'type': list, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = user.update_customers_by_user_id(user_id, request.json['customers'])
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -176,8 +272,17 @@ def update_forms_by_user_id(user_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/forms/update/{user_id}'}), 403
 
-    forms = request.json['forms']
-    res = user.update_forms_by_user_id(user_id, forms)
+    check, message = rest_validator(request.json, [
+        {'id': 'forms', 'type': list, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = user.update_forms_by_user_id(user_id, request.json['forms'])
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -202,8 +307,19 @@ def export_users():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'users_list']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/users/export'}), 403
 
-    data = request.json
-    res = user.export_users(data['args'])
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'columns', 'type': list, 'mandatory': True},
+        {'id': 'delimiter', 'type': str, 'mandatory': True},
+        {'id': 'extension', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = user.export_users(request.json['args'])
     return make_response(jsonify(res[0])), res[1]
 
 

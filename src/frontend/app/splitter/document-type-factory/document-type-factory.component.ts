@@ -162,13 +162,11 @@ export class ChecklistDatabase {
                 > -1 && d.code.lastIndexOf('.') === 1
             );
             Object.assign([], filteredTreeData).forEach(ftd => {
-                // @ts-ignore
-                const code = (ftd.code as string);
+                const code = (ftd['code'] as string);
                 filteredTreeData = filteredTreeData.concat(this.doctypeData.filter(d =>
                     d.code.startsWith(code + ".") && d.code !== code
                 ));
             });
-
         } else {
             filteredTreeData = this.doctypeData;
         }
@@ -294,8 +292,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
                     const defaultFormId = this.localStorageService.get('doctypeFormId') ?
                         this.localStorageService.get('doctypeFormId') : this.forms[0].id;
                     this.selectFormControl.setValue(Number(defaultFormId));
-                }
-                else {
+                } else {
                     this.notify.handleErrors(this.translate.instant('FORMS.no_form_available'));
                 }
             }),

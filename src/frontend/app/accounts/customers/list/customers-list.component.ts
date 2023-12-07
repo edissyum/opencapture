@@ -17,10 +17,9 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { UserService } from "../../../../services/user.service";
-import { FormBuilder } from "@angular/forms";
 import { AuthService } from "../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
@@ -55,9 +54,7 @@ export class CustomersListComponent implements OnInit {
         public router: Router,
         private http: HttpClient,
         private dialog: MatDialog,
-        private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
@@ -71,14 +68,17 @@ export class CustomersListComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('accounts/customers') || lastUrl === '/') {
-            if (this.localStorageService.get('customersPageIndex'))
+            if (this.localStorageService.get('customersPageIndex')) {
                 this.pageIndex = parseInt(this.localStorageService.get('customersPageIndex') as string);
+            }
             this.offset = this.pageSize * (this.pageIndex);
-        } else
+        } else {
             this.localStorageService.remove('customersPageIndex');
+        }
 
         this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {

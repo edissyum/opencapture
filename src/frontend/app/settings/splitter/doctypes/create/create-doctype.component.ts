@@ -89,7 +89,7 @@ export class CreateDoctypeComponent implements OnInit {
 
     toFormGroup() {
         const group: any = {};
-        this.fields.forEach((field: { id: string; required: boolean;disabled: boolean; value: any}) => {
+        this.fields.forEach((field: { id: string; required: boolean;disabled: boolean; value: any;}) => {
             group[field.id] = field.required ? new FormControl({value:"", disabled: field.disabled}, [Validators.required])
                 : new FormControl({value: field.value, disabled: field.disabled});
         });
@@ -123,8 +123,9 @@ export class CreateDoctypeComponent implements OnInit {
         this.http.post(environment['url'] + '/ws/doctypes/add', newDocType, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('DOCTYPE.doctype_added'));
-                if (this.selectedFormId)
+                if (this.selectedFormId) {
                     this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);
+                }
                 this.form.reset();
                 Object.keys(this.form.controls).forEach(key => {
                     this.form.controls[key].setErrors(null);

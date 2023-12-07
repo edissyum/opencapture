@@ -17,13 +17,13 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 import { Component, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormControl } from "@angular/forms";
+import { FormControl } from "@angular/forms";
 import { FileValidators } from "ngx-file-drag-drop";
 import { environment } from  "../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { HttpClient, HttpHeaders} from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -49,9 +49,7 @@ export class UploadComponent implements OnInit {
     constructor(
         private router: Router,
         private http: HttpClient,
-        private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
@@ -74,22 +72,8 @@ export class UploadComponent implements OnInit {
             this.userService.user = this.userService.getUserFromLocal();
         }
 
-        const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
-        if (!splitterOrVerifier) {
-            this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/defaultModule', {headers: this.authService.headers}).pipe(
-                tap((data: any) => {
-                    if (data.configuration.length === 1) {
-                        this.localStorageService.save('splitter_or_verifier', data.configuration[0].data.value);
-                        this.getWorkflows(data.configuration[0].data.value);
-                    }
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe();
-        } else {
+        const splitterOrVerifier: any = this.localStorageService.get('splitter_or_verifier');
+        if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.getWorkflows(splitterOrVerifier);
         }
     }
@@ -154,6 +138,7 @@ export class UploadComponent implements OnInit {
                 return;
             }
         }
+
         formData.set('workflowId', this.selectedWorkflowTechnicalId);
         formData.set('userId', this.userService.user.id);
 

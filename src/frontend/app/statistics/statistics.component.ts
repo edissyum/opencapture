@@ -81,7 +81,7 @@ export class StatisticsComponent implements OnInit {
             'id': 'pie-grid',
             'label': marker('STATISTICS.diagram_pie_grid'),
             'logo': 'fa-grip'
-        },
+        }
 
     ];
     selectedStatistic   : any;

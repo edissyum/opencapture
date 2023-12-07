@@ -63,8 +63,11 @@ export class PasswordVerificationService {
         const password = userFields.filter((element: any) => element.id === 'new_password')[0];
         const passwordError = this.verifyRules(password.control.value);
 
-        if (passwordError !== '') password.control.setErrors({"message": passwordError});
-        else password.control.setErrors(null);
+        if (passwordError !== '') {
+            password.control.setErrors({"message": passwordError});
+        } else {
+            password.control.setErrors(null);
+        }
     }
 
     checkPasswordValidity(userFields: any) {
@@ -73,11 +76,17 @@ export class PasswordVerificationService {
         const passwordError = this.verifyRules(password.control.value);
         const passwordCheckError = this.verifyRules(passwordCheck.control.value);
 
-        if (passwordError !== '') password.control.setErrors({"message": passwordError});
-        else password.control.setErrors(null);
+        if (passwordError !== '') {
+            password.control.setErrors({"message": passwordError});
+        } else {
+            password.control.setErrors(null);
+        }
 
-        if (passwordCheckError !== '') passwordCheck.control.setErrors({"message": passwordCheckError});
-        else passwordCheck.control.setErrors(null);
+        if (passwordCheckError !== '') {
+            passwordCheck.control.setErrors({"message": passwordCheckError});
+        } else {
+            passwordCheck.control.setErrors(null);
+        }
 
         if (passwordError === '' && passwordCheckError === '') {
             const mismatch = this.checkPasswordConfirmation(password.control.value, passwordCheck.control.value);

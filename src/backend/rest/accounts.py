@@ -216,11 +216,11 @@ def create_address():
 
     data = request.json['args']
     check, message = rest_validator(data, [
-        {'id': 'city', 'type': str, 'mandatory': True},
-        {'id': 'country', 'type': str, 'mandatory': True},
-        {'id': 'address1', 'type': str, 'mandatory': True},
+        {'id': 'city', 'type': str, 'mandatory': False},
+        {'id': 'country', 'type': str, 'mandatory': False},
+        {'id': 'address1', 'type': str, 'mandatory': False},
         {'id': 'address2', 'type': str, 'mandatory': False},
-        {'id': 'postal_code', 'type': str, 'mandatory': True}
+        {'id': 'postal_code', 'type': str, 'mandatory': False}
     ])
     if not check:
         return make_response({
@@ -248,21 +248,20 @@ def create_supplier():
         if not privileges.has_privileges(request.environ['user_id'], ['create_supplier | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/suppliers/create'}), 403
 
-    data = request.json['args']
-    check, message = rest_validator(data, [
+    check, message = rest_validator(request.json['args'], [
         {'id': 'bic', 'type': str, 'mandatory': False},
         {'id': 'name', 'type': str, 'mandatory': True},
         {'id': 'duns', 'type': str, 'mandatory': False},
         {'id': 'iban', 'type': str, 'mandatory': False},
-        {'id': 'siret', 'type': str, 'mandatory': True},
-        {'id': 'siren', 'type': str, 'mandatory': True},
+        {'id': 'siret', 'type': str, 'mandatory': False},
+        {'id': 'siren', 'type': str, 'mandatory': False},
         {'id': 'email', 'type': str, 'mandatory': False},
         {'id': 'pages', 'type': dict, 'mandatory': False},
         {'id': 'form_id', 'type': int, 'mandatory': False},
         {'id': 'vat_number', 'type': str, 'mandatory': True},
         {'id': 'address_id', 'type': int, 'mandatory': False},
         {'id': 'positions', 'type': dict, 'mandatory': False},
-        {'id': 'document_lang', 'type': str, 'mandatory': True},
+        {'id': 'document_lang', 'type': str, 'mandatory': False},
         {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
         {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False}
     ])
@@ -273,7 +272,7 @@ def create_supplier():
             "message": message
         }, 400)
 
-    res = accounts.create_supplier(data)
+    res = accounts.create_supplier(request.json['args'])
     return make_response(jsonify(res[0])), res[1]
 
 

@@ -67,6 +67,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     loadingSubmit           : boolean     = false;
     formEmpty               : boolean     = false;
     processInError          : boolean     = false;
+    imgLoading              : boolean     = false;
     processErrorMessage     : string      = '';
     processErrorIcon        : string      = '';
     token                   : string      = '';
@@ -409,7 +410,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
                     this.form.facturation.forEach((element: any) => {
                        if (element.id === data['autocompleteField']) {
-                           this.http.post(environment['url'] + '/ws/mem/getDocumentsWithContact', data, {headers: this.authService.headers},
+                           this.http.post(environment['url'] + '/ws/mem/getDocumentsWithContact', {'args': data}, {headers: this.authService.headers},
                            ).pipe(
                                tap((_return: any) => {
                                    element.type = 'autocomplete';
@@ -486,10 +487,12 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         if (this.imgArray[cpt]) {
             this.imgSrc = this.imgArray[cpt];
         } else {
+            this.imgLoading = true;
             this.http.post(environment['url'] + '/ws/verifier/getThumb',
                 {'args': {'type': 'full', 'filename': filename, 'registerDate': this.document['register_date'], 'documentId': this.documentId}},
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
+                    this.imgLoading = false;
                     this.imgSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
                     this.imgArray[cpt] = this.imgSrc;
                 }),
@@ -511,8 +514,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
     updateFilteredOption(event: any, control: any) {
         let value = '';
-        if (event.target.value) value = event.target.value;
-        else if (control.value) value = control.value;
+        if (event.target.value) {
+            value = event.target.value;
+        } else if (control.value) {
+            value = control.value;
+        }
         control.patchValue(value);
     }
 
@@ -549,7 +555,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     drawPositionByField(field: any, position: any, cpt = '0') {
         this.lastId = field.id;
         this.lastLabel = this.translate.instant(field.label).trim();
-        if (cpt !== '0') this.lastLabel += ' ' + parseInt(cpt);
+
+        if (cpt !== '0') {
+            this.lastLabel += ' ' + parseInt(cpt);
+        }
+
         this.lastColor = field.color;
         this.disableOCR = true;
         const newArea = {
@@ -688,8 +698,12 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     _field.control.setValue(value);
                     _field.control.markAsTouched();
 
-                    if (field.id === 'siret' || field.id === 'siren') this.checkSirenOrSiret(field.id, value);
-                    if (field.id === 'vat_number') this.checkVAT(field.id, value);
+                    if (field.id === 'siret' || field.id === 'siren') {
+                        this.checkSirenOrSiret(field.id, value);
+                    }
+                    if (field.id === 'vat_number') {
+                        this.checkVAT(field.id, value);
+                    }
                 }
 
                 if (field.id === 'name' && category === 'supplier') {
@@ -786,8 +800,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
     getSelectionByCpt(selection: any, cpt: any) {
         for (const index in selection) {
-            if (selection[index].id === cpt)
+            if (selection[index].id === cpt) {
                 return selection[index];
+            }
         }
     }
 
@@ -1068,14 +1083,19 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             if (fieldId) {
                 const field = this.getField(fieldId);
                 if (Object.keys(field).length !== 0) {
-                    if (field.unit === 'addresses' || field.unit === 'supplier') showNotif = false;
-                    if (field.control.errors || this.document.datas[fieldId] === data) return false;
+                    if (field.unit === 'addresses' || field.unit === 'supplier') {
+                        showNotif = false;
+                    }
+                    if (field.control.errors || this.document['datas'][fieldId] === data) {
+                        return false;
+                    }
+
                     data = {[fieldId]: data};
                     this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/updateData',
                         {'args': data},
                         {headers: this.authService.headers}).pipe(
                         tap(() => {
-                            this.document.datas[fieldId] = oldData;
+                            this.document['datas'][fieldId] = oldData;
                             if (showNotif) {
                                 this.notify.success(this.translate.instant('DOCUMENTS.position_and_data_updated', {"input": this.lastLabel}));
                             }
@@ -1098,8 +1118,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         const supplierData: any = {};
         this.fields.supplier.forEach((element: any) => {
             const field = this.getField(element.id);
-            if (element.unit === 'supplier') supplierData[element.id] = field.control.value;
-            if (element.unit === 'addresses') addressData[element.id] = field.control.value;
+            if (element.unit === 'supplier') {
+                supplierData[element.id] = field.control.value;
+            }
+            if (element.unit === 'addresses') {
+                addressData[element.id] = field.control.value;
+            }
+
             this.saveData(field.control.value, element.id);
         });
 
@@ -1142,8 +1167,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         const addressData: any = {};
         this.fields.supplier.forEach((element: any) => {
             const field = this.getField(element.id);
-            if (element.unit === 'supplier') supplierData[element.id] = field.control.value;
-            if (element.unit === 'addresses') addressData[element.id] = field.control.value;
+
+            if (element.unit === 'supplier') {
+                supplierData[element.id] = field.control.value;
+            }
+            if (element.unit === 'addresses') {
+                addressData[element.id] = field.control.value;
+            }
+
             this.saveData(field.control.value, element.id);
         });
 
@@ -1449,7 +1480,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     getSupplierInfo(supplierId: any, showNotif = false, launchOnInit = false) {
         this.suppliers.forEach((supplier: any) => {
             if (supplier.id === supplierId) {
-                if (!supplier.address_id) supplier.address_id = 0;
+                if (!supplier.address_id) {
+                    supplier.address_id = 0;
+                }
                 this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + supplier.address_id, {headers: this.authService.headers}).pipe(
                     tap((address: any) => {
                         const supplierData : any = {
@@ -1754,7 +1787,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     nextPage() {
-        if (this.currentPage < this.document.nb_pages) {
+        if (this.currentPage < this.document['nb_pages']) {
             this.currentPage = this.currentPage + 1;
             this.changeImage(this.currentPage, this.currentPage - 1);
         } else {
@@ -1767,7 +1800,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             this.currentPage = this.currentPage - 1;
             this.changeImage(this.currentPage, this.currentPage + 1);
         } else {
-            this.changeImage(this.document.nb_pages, this.currentPage);
+            this.changeImage(this.document['nb_pages'], this.currentPage);
         }
     }
 
@@ -1836,8 +1869,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             return of(false);
                         })
                     ).subscribe();
-                }
-                else {
+                } else {
                     this.form['supplier'].forEach((element: any) => {
                         if (element.id === 'siren') {
                             setTimeout(() => {
@@ -1867,8 +1899,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             return of(false);
                         })
                     ).subscribe();
-                }
-                else {
+                } else {
                     this.form['supplier'].forEach((element: any) => {
                         if (element.id === 'siret') {
                             setTimeout(() => {

@@ -18,8 +18,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
+import { FormControl, Validators } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -42,7 +42,7 @@ export class CreateSplitterAiModelComponent implements OnInit {
     forms               : any       = [];
     AiModel             : any       = {
         id             : 0,
-        trainFolders : [],
+        trainFolders   : [],
         fields         : [
             {
                 id: 'model_label',
@@ -72,9 +72,7 @@ export class CreateSplitterAiModelComponent implements OnInit {
         public router: Router,
         private http: HttpClient,
         private dialog: MatDialog,
-        private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
@@ -84,6 +82,16 @@ export class CreateSplitterAiModelComponent implements OnInit {
 
     ngOnInit() {
         this.serviceSettings.init();
+
+        this.AiModel.fields.forEach((element: any) => {
+            if (element.id === 'model_label') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    if (value && value.includes('/')) {
+                        element.control.setValue(value.replace('/', ''));
+                    }
+                });
+            }
+        });
         this.retrieveDoctypes();
         this.retrieveForms();
     }

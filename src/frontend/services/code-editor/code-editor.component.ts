@@ -73,7 +73,9 @@ export class CodeEditorComponent implements OnInit {
     }
 
     testScript() {
-        if (this.testing) return;
+        if (this.testing) {
+            return;
+        }
         this.testing = true;
         this.http.post(environment['url'] + '/ws/workflows/' + this.splitterOrVerifier + '/testScript', {
             'args': {

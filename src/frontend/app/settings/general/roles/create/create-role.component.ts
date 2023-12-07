@@ -146,29 +146,33 @@ export class CreateRoleComponent implements OnInit {
                 });
             });
 
-            this.http.post(environment['url'] + '/ws/roles/create', {'args': role}, {headers: this.authService.headers},
-            ).pipe(
-                tap((data: any) => {
-                    const newRoleId = data.id;
-                    this.http.put(environment['url'] + '/ws/roles/updatePrivilege/' + newRoleId, {'privileges': rolePrivileges}, {headers: this.authService.headers},
-                    ).pipe(
-                        tap(() => {
-                            this.notify.success(this.translate.instant('ROLE.created'));
-                            this.router.navigate(['/settings/general/roles/']).then();
-                        }),
-                        catchError((err: any) => {
-                            console.debug(err);
-                            this.notify.handleErrors(err, '/settings/general/roles/');
-                            return of(false);
-                        })
-                    ).subscribe();
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err, '/settings/general/roles/');
-                    return of(false);
-                })
-            ).subscribe();
+            if (rolePrivileges.length !== 0) {
+                this.http.post(environment['url'] + '/ws/roles/create', {'args': role}, {headers: this.authService.headers},
+                ).pipe(
+                    tap((data: any) => {
+                        const newRoleId = data.id;
+                        this.http.put(environment['url'] + '/ws/roles/updatePrivilege/' + newRoleId, {'privileges': rolePrivileges}, {headers: this.authService.headers},
+                        ).pipe(
+                            tap(() => {
+                                this.notify.success(this.translate.instant('ROLE.created'));
+                                this.router.navigate(['/settings/general/roles/']).then();
+                            }),
+                            catchError((err: any) => {
+                                console.debug(err);
+                                this.notify.handleErrors(err);
+                                return of(false);
+                            })
+                        ).subscribe();
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            } else {
+                this.notify.error(this.translate.instant('ROLE.no_privileges'));
+            }
         }
     }
 

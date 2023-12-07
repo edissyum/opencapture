@@ -1,5 +1,5 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
@@ -17,7 +17,7 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div class="overflow-x-hidden h-full-overflow">
-            <mat-table matSort matSortDisableClear [dataSource]="forms" (matSortChange)="sortData($event)" class="w-full">
+            <mat-table matSort [matSortDisableClear]="true" [dataSource]="forms" (matSortChange)="sortData($event)" class="w-full">
                 <ng-container matColumnDef="id">
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
@@ -73,7 +73,7 @@
                          routerLink="/settings/verifier/forms/builder/edit/{{ row.id }}"
                          class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
             </mat-table>
-            <mat-paginator showFirstLastButtons
+            <mat-paginator [showFirstLastButtons]="true"
                            [length]="this.total"
                            [pageSize]="pageSize"
                            [pageIndex]="pageIndex"

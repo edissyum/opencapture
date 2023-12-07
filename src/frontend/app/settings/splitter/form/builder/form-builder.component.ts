@@ -207,7 +207,9 @@ export class SplitterFormBuilderComponent implements OnInit {
                         tap((data: any) => {
                             for (const field in this.form) {
                                 for (const info in data) {
-                                    if (info === field) this.form[field].control.setValue(data[field]);
+                                    if (info === field) {
+                                        this.form[field].control.setValue(data[field]);
+                                    }
                                 }
                             }
 
@@ -221,10 +223,14 @@ export class SplitterFormBuilderComponent implements OnInit {
 
                             if (data.outputs) {
                                 const length = data.outputs.length;
-                                if (length === 1) this.outputForm[0].control.setValue(data.outputs[0]);
+                                if (length === 1) {
+                                    this.outputForm[0].control.setValue(data.outputs[0]);
+                                }
                                 if (length > 1) {
                                     for (const cpt in data.outputs) {
-                                        if (parseInt(cpt) !== 0) this.addOutput();
+                                        if (parseInt(cpt) !== 0) {
+                                            this.addOutput();
+                                        }
                                         this.outputForm[cpt].control.setValue(data.outputs[cpt]);
                                     }
                                 }
@@ -280,7 +286,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                                                 format       : data.customFields[field].type,
                                                 unit         : 'custom',
                                                 class        : "w-1/3",
-                                                class_label  : "1/33",
+                                                class_label  : "1/33"
                                             }
                                         );
                                     }
@@ -301,10 +307,12 @@ export class SplitterFormBuilderComponent implements OnInit {
             this.http.get(environment['url'] + '/ws/forms/fields/getByFormId/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data.fields) {
-                        if (data.fields.batch_metadata)
+                        if (data.fields.batch_metadata) {
                             this.fields.batch_metadata = data.fields.batch_metadata;
-                        if (data.fields.document_metadata)
+                        }
+                        if (data.fields.document_metadata) {
                             this.fields.document_metadata = data.fields.document_metadata;
+                        }
 
                         for (const category in this.fields) {
                             if (this.fields.hasOwnProperty(category)) {
@@ -394,8 +402,9 @@ export class SplitterFormBuilderComponent implements OnInit {
     }
 
     deleteField(event: any, previousIndex: any, category:any, unit: any) {
-        if (unit === 'addresses')
+        if (unit === 'addresses') {
             unit = 'supplier';
+        }
         for (const parentField in this.availableFieldsParent) {
             const id = this.availableFieldsParent[parentField].id.split('_fields')[0];
             if (id === unit) {
@@ -439,7 +448,9 @@ export class SplitterFormBuilderComponent implements OnInit {
         const exportZipFile     = this.formSettings.export_zip_file.control.value;
         const outputs: any[]    = [];
         this.outputForm.forEach((element: any) => {
-            if (element.control.value) outputs.push(element.control.value);
+            if (element.control.value) {
+                outputs.push(element.control.value);
+            }
         });
 
         if (label !== '' && outputs.length >= 1) {
@@ -475,9 +486,13 @@ export class SplitterFormBuilderComponent implements OnInit {
                 })
             ).subscribe();
         } else {
-            if (!label && outputs.length === 0) this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
-            else if (!label) this.notify.error(this.translate.instant('FORMS.label_mandatory'));
-            else if (outputs.length === 0) this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
+            if (!label && outputs.length === 0) {
+                this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
+            } else if (!label) {
+                this.notify.error(this.translate.instant('FORMS.label_mandatory'));
+            } else if (outputs.length === 0) {
+                this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
+            }
         }
     }
 
@@ -486,11 +501,18 @@ export class SplitterFormBuilderComponent implements OnInit {
         const isDefault         = this.form.default_form.control.value;
         const metadataMethod    = this.formSettings.metadata_method.control.value;
         const exportZipFile     = this.formSettings.export_zip_file.control.value;
+        const outputs: any[]    = [];
+        this.outputForm.forEach((element: any) => {
+            if (element.control.value) {
+                outputs.push(element.control.value);
+            }
+        });
         if (label) {
             this.http.post(environment['url'] + '/ws/forms/splitter/create',
                 {
                     'args': {
                         'label'         : label,
+                        'outputs'       : outputs,
                         'default_form'  : isDefault,
                         'module'        : "splitter",
                         'settings'      : {

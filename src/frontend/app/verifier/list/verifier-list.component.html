@@ -1,5 +1,5 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav #sidenav mode="side" opened class="2xl:w-96 xl:w-72 sm:w-64 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="2xl:w-96 xl:w-72 sm:w-64 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem" [class.pointer-events-none]="this.loading">
             <i class="fa-solid text-gray-900 fa-sync-alt mr-4 cursor-pointer transition-all duration-300"
                [ngClass]="{'text-green-400': this.customerFilter.value || this.customerFilterEnabled, 'fa-beat': this.customerFilter.value || this.customerFilterEnabled}"
@@ -24,7 +24,7 @@
                     </button>
                 </mat-form-field>
             </div>
-            <div *ngIf="this.loadingCustomers || this.dataSource.data.length === 0" class="loading_customers">
+            <div *ngIf="this.loadingCustomers" class="loading_customers">
                 <div class="m-auto text-center">
                     <i class="fa-solid fa-users fa-4x fa-beat-fade w-full mb-2"></i>
                     <span class="w-full">
@@ -83,8 +83,7 @@
         </div>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <button mat-icon-button (click)="sidenav.toggle();"
-                class="absolute left-2 top-2" style="z-index: 999">
+        <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-2 z-30">
             <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened"
                class="fa-solid fa-stream text-xl text-gray-900"></i>
         </button>

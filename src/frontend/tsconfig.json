@@ -5,8 +5,8 @@
         "strict": true,
         "baseUrl": "./",
         "sourceMap": true,
-        "target": "es2021",
-        "module": "es2022",
+        "target": "ESNext",
+        "module": "ESNext",
         "declaration": false,
         "importHelpers": true,
         "noImplicitReturns": true,
@@ -15,17 +15,17 @@
         "downlevelIteration": true,
         "outDir": "./dist/out-tsc",
         "experimentalDecorators": true,
+        "useDefineForClassFields": false,
         "noFallthroughCasesInSwitch": true,
         "forceConsistentCasingInFileNames": true,
         "noPropertyAccessFromIndexSignature": true,
         "lib": [
-            "es2022",
+            "ESNext",
             "dom"
         ]
     },
     "angularCompilerOptions": {
         "strictTemplates": true,
-        "useDefineForClassFields": true,
         "strictInjectionParameters": true,
         "strictInputAccessModifiers": true,
         "enableI18nLegacyMessageIdFormat": false

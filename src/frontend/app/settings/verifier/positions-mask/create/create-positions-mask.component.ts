@@ -96,6 +96,7 @@ export class CreatePositionsMaskComponent implements OnInit {
 
     createPositionsMask() {
         if (this.isValidForm(this.form)) {
+            this.loading = true;
             const label = this.form['label'].control.value;
             const supplierName = this.form['supplier_id'].control.value;
             const formId = this.form['form_id'].control.value;
@@ -118,6 +119,7 @@ export class CreatePositionsMaskComponent implements OnInit {
                 }),
                 catchError((err: any) => {
                     console.debug(err);
+                    this.loading = false;
                     this.notify.handleErrors(err, '/settings/verifier/positions-mask');
                     return of(false);
                 })

@@ -18,7 +18,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { FormBuilder, FormControl } from "@angular/forms";
+import { FormControl } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
@@ -49,6 +49,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     originalOutputType    : any;
     toHighlight           : string        = '';
     allowedPath           : string        = '';
+    showPassword            : { [key: string]: boolean; } = {};
     outputForm            : any[]         = [
         {
             id: 'output_type_id',
@@ -111,7 +112,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 {
                     'id': false,
                     'label': marker('OUTPUT.ocr_disabled')
-                },
+                }
             ],
             required: false
         }
@@ -184,7 +185,6 @@ export class SplitterUpdateOutputComponent implements OnInit {
         public router: Router,
         private http: HttpClient,
         private route: ActivatedRoute,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         public userService: UserService,
         public translate: TranslateService,
@@ -238,14 +238,14 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 ).subscribe();
                 this.http.get(environment['url'] + '/ws/outputs/splitter/getOutputsTypes', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
-                        this.outputsTypes = data.outputs_types;
+                        this.outputsTypes = data['outputs_types'];
                         /**
                          * Create the form with auth and parameters data
                          **/
                         for (const _output of this.outputsTypes) {
                             this.outputsTypesForm[_output.output_type_id] = {
                                 'auth' : [],
-                                'parameters' : [],
+                                'parameters' : []
                             };
                             for (const category in this.outputsTypesForm[_output.output_type_id]) {
                                 if (_output.data.options[category]) {
@@ -254,6 +254,11 @@ export class SplitterUpdateOutputComponent implements OnInit {
                                             option.placeholder = (this.allowedPath + '/output').replace(/\/\//g, '/');
                                             option.hint = this.translate.instant('GLOBAL.allowed_path', {allowedPath: this.allowedPath});
                                         }
+
+                                        if (option.type == 'password') {
+                                            this.showPassword[option.id] = false;
+                                        }
+
                                         this.outputsTypesForm[_output.output_type_id][category].push({
                                             id: option.id,
                                             label: option.label,
@@ -263,7 +268,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                                             required: option.required,
                                             isJson: option.isJson,
                                             hint: option.hint,
-                                            webservice: option.webservice,
+                                            webservice: option.webservice
                                         });
                                     }
                                 }
@@ -277,7 +282,9 @@ export class SplitterUpdateOutputComponent implements OnInit {
                                 this.output.data.options[category].forEach((outputElement: any) => {
                                     if (element.id === outputElement.id) {
                                         if (outputElement.value) {
-                                            if (outputElement.webservice) element.values = [outputElement.value];
+                                            if (outputElement.webservice) {
+                                                element.values = [outputElement.value];
+                                            }
                                             element.control.setValue(outputElement.value);
                                         }
                                     }
@@ -309,7 +316,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let newField;
-                data.customFields.forEach((field: {
+                data['customFields'].forEach((field: {
                         id: any
                         label_short: string
                         module: string
@@ -413,8 +420,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 if (status === true) {
                     this.notify.success(this.translate.instant('OUTPUT.cmis_connection_ok'));
                     this.connection = true;
-                }
-                else {
+                } else {
                     this.notify.error(this.translate.instant('OUTPUT.cmis_connection_ko') + ' : ' + data.message);
                     this.connection = false;
                 }
@@ -446,8 +452,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 if (status === true) {
                     this.notify.success(this.translate.instant('OUTPUT.mem_connection_ok'));
                     this.connection = true;
-                }
-                else {
+                } else {
                     this.notify.error(this.translate.instant('OUTPUT.mem_connection_ko') + ' : ' + status[1]);
                     this.connection = false;
                 }
@@ -478,8 +483,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 if (status === true) {
                     this.notify.success(this.translate.instant('OUTPUT.openads_connection_ok'));
                     this.connection = true;
-                }
-                else {
+                } else {
                     this.notify.error(this.translate.instant('OUTPUT.openads_connection_ko') + ' : ' + data.message);
                     this.connection = false;
                 }
@@ -529,9 +533,9 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     const entities = [];
                     for (const cpt in data) {
                         entities.push({
-                            'id': data[cpt].serialId,
-                            'value': data[cpt].entity_label,
-                            'extra': data[cpt].entity_id
+                            'id': data[cpt]['serialId'],
+                            'value': data[cpt]['entity_label'],
+                            'extra': data[cpt]['entity_id']
                         });
                     }
                     this.setAutocompleteValues(cpt, entities);
@@ -549,9 +553,9 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     const doctypes = [];
                     for (const cpt in data) {
                         doctypes.push({
-                            'id': data[cpt].type_id,
+                            'id': data[cpt]['type_id'],
                             'value': data[cpt].description,
-                            'extra': data[cpt].type_id
+                            'extra': data[cpt]['type_id']
                         });
                     }
                     this.setAutocompleteValues(cpt, doctypes);
@@ -564,8 +568,8 @@ export class SplitterUpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
-                if (_return && _return.priorities) {
-                    const data = _return.priorities;
+                if (_return && _return['priorities']) {
+                    const data = _return['priorities'];
                     const priorities = [];
                     for (const cpt in data) {
                         priorities.push({
@@ -584,13 +588,13 @@ export class SplitterUpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
-                if (_return && _return.statuses) {
-                    const data = _return.statuses;
+                if (_return && _return['statuses']) {
+                    const data = _return['statuses'];
                     const statuses = [];
                     for (const cpt in data) {
                         statuses.push({
                             'id': data[cpt].id,
-                            'value': data[cpt].label_status,
+                            'value': data[cpt]['label_status'],
                             'extra': data[cpt].id
                         });
                     }
@@ -604,8 +608,8 @@ export class SplitterUpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMEMConnectionInfo();
             this.http.post(environment['url'] + '/ws/mem/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
-                if (_return && _return.indexingModels) {
-                    const data = _return.indexingModels;
+                if (_return && _return['indexingModels']) {
+                    const data = _return['indexingModels'];
                     const indexingModels = [];
                     for (const cpt in data) {
                         indexingModels.push({

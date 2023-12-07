@@ -1,5 +1,5 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
@@ -28,8 +28,8 @@
                         <mat-form-field *ngIf="field.type === 'select' && field.id === 'output_type_id'">
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <mat-select [id]="field.id" [name]="field.id" [(ngModel)]="field.control.value" (selectionChange)="changeOutputType($event)" [required]="field['required']">
-                                <mat-option *ngFor="let option of this.outputsTypes" [value]="option.output_type_id">
-                                    {{ option.output_type_label }}
+                                <mat-option *ngFor="let option of this.outputsTypes" [value]="option['output_type_id']">
+                                    {{ option['output_type_label'] }}
                                 </mat-option>
                             </mat-select>
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, this.outputForm) }}</mat-error>

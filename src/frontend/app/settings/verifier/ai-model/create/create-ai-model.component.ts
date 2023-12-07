@@ -18,8 +18,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
+import { FormControl, Validators } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -71,9 +71,7 @@ export class CreateVerifierAiModelComponent implements OnInit {
         public router: Router,
         private http: HttpClient,
         private dialog: MatDialog,
-        private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
@@ -83,6 +81,17 @@ export class CreateVerifierAiModelComponent implements OnInit {
 
     ngOnInit() {
         this.serviceSettings.init();
+
+        this.modelForm.forEach((element: any) => {
+            if (element.id === 'model_label') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    if (value && value.includes('/')) {
+                        element.control.setValue(value.replace('/', ''));
+                    }
+                });
+            }
+        });
+
         this.retrieveModels();
         this.retrieveDoctypes();
         this.retrieveOCDoctypes();
@@ -153,13 +162,6 @@ export class CreateVerifierAiModelComponent implements OnInit {
             }
         });
         return error;
-    }
-
-    changeOutputType(event: any, doc: string) {
-        const val = event.value;
-        const match = this.docStatus.find((a: { doc: string; }) => a.doc === doc);
-        match.linked_doctype = val;
-        return true;
     }
 
     onFormSelect(event: any, index: number, doc: string) {
@@ -254,7 +256,7 @@ export class CreateVerifierAiModelComponent implements OnInit {
     retrieveModels() {
         this.http.get(environment['url'] + '/ws/ai/verifier/list?limit=', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.listModels = data.models;
+                this.listModels = data['models'];
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -278,29 +280,5 @@ export class CreateVerifierAiModelComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-    }
-
-    displayDoctypes(form: any) {
-        return !!form.value;
-    }
-
-    openDoctypeTree(document: any, formId: number): void {
-        const dialogRef = this.dialog.open(DocumentTypeComponent, {
-            width   : '800px',
-            height  : '860px',
-            data    : {
-                selectedDoctype: {
-                    key: document.doctypeKey  ? document.doctypeKey  : "",
-                    label: document.doctypeLabel  ? document.doctypeLabel  : ""
-                },
-                formId: formId
-            }
-        });
-        dialogRef.afterClosed().subscribe((result: any) => {
-            if (result) {
-                document.doctypeLabel = result.label;
-                document.doctypeKey   = result.key;
-            }
-        });
     }
 }

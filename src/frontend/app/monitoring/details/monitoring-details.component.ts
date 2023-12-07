@@ -26,7 +26,6 @@ import { HttpClient } from "@angular/common/http";
 import { TranslateService } from "@ngx-translate/core";
 import { SettingsService } from "../../../services/settings.service";
 import * as moment from "moment";
-
 @Component({
     selector: 'app-monitoring-details',
     templateUrl: './monitoring-details.component.html',
@@ -36,12 +35,13 @@ import * as moment from "moment";
 export class MonitoringDetailsComponent implements OnInit, OnDestroy {
     columnsToDisplay    : string[]              = ['step', 'event_date', 'event_message', 'status'];
     loading             : boolean               = true;
+    workflowLabel       : string                = '';
     processData         : any                   = [];
-    pageSize            : number                = 10;
+    pageSize            : number                = 20;
     pageIndex           : number                = 0;
     total               : number                = 0;
     splitterCpt         : number                = 0;
-    workflowLabel       : string                = '';
+    offset              : number                = 0;
     processId           : number | undefined;
     steps               : any;
     allSteps            : any;
@@ -61,6 +61,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+
         this.processId = this.route.snapshot.params['id'];
         await this.loadProcess();
 
@@ -116,9 +117,9 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
                         });
                     }
                     if (this.processData['elapsed_time']) {
-                        const hours = this.processData.elapsed_time.slice(0, 2);
-                        const minutes = this.processData.elapsed_time.slice(3, 5);
-                        const seconds = this.processData.elapsed_time.slice(6, 11);
+                        const hours = this.processData['elapsed_time'].slice(0, 2);
+                        const minutes = this.processData['elapsed_time'].slice(3, 5);
+                        const seconds = this.processData['elapsed_time'].slice(6, 11);
 
                         let message = '';
                         if (hours && hours !== '00') {
@@ -154,7 +155,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
                     }
 
                     this.allSteps = listOfSteps;
-                    this.steps = listOfSteps.slice().splice(0, this.pageSize)
+                    this.steps = listOfSteps.slice().splice(0, this.pageSize);
                 } else {
                     this.notify.error(this.translate.instant('MONITORING.process_doesnt_exist', {id: this.processId}));
                     this.router.navigate(['/monitoring']);
@@ -171,6 +172,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
 
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
+        this.offset = this.pageSize * (event.pageIndex);
         const data = this.allSteps.slice();
         this.steps = data.splice(this.pageSize * event.pageIndex, this.pageSize + (this.pageSize * (event.pageIndex)));
     }

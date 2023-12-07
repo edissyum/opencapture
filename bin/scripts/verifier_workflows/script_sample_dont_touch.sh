@@ -19,8 +19,8 @@
 name="§§SCRIPT_NAME§§"
 OCPath="§§OC_PATH§§"
 logFile="§§LOG_PATH§§"
-errFilepath="$OCPath/bin/data/error/$name/"
-tmpFilepath="$OCPath/bin/data/pdf/"
+errFilepath="$OCPath/data/error/$name/"
+tmpFilepath="$OCPath/data/pdf/"
 PID=/tmp/securite-$name-$$.pid
 
 spaces="              "

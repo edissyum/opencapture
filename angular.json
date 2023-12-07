@@ -32,7 +32,7 @@
                         "baseHref": "./",
                         "outputPath": "dist/",
                         "index": "src/frontend/index.html",
-                        "polyfills": "src/frontend/polyfills.ts",
+                        "polyfills": ["zone.js"],
                         "main": "src/frontend/main.ts",
                         "tsConfig": "src/frontend/tsconfig.app.json",
                         "aot": true,

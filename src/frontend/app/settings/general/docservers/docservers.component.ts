@@ -95,8 +95,9 @@ export class DocserversComponent implements OnInit {
     loadDocservers() {
         this.http.get(environment['url'] + '/ws/config/getDocservers?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.docservers[0]) this.total = data.docservers[0].total;
-                else if (this.pageIndex !== 0) {
+                if (data.docservers[0]) {
+                    this.total = data.docservers[0].total;
+                } else if (this.pageIndex !== 0) {
                     this.pageIndex = this.pageIndex - 1;
                     this.offset = this.pageSize * (this.pageIndex);
                     this.loadDocservers();

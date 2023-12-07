@@ -15,12 +15,11 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-import json
-import base64
 import re
-
+import base64
 import pandas as pd
 from flask_babel import gettext
+from src.backend.functions import rest_validator
 from flask import Blueprint, make_response, request, jsonify
 from src.backend.import_controllers import auth, config, verifier, privileges
 
@@ -44,11 +43,20 @@ def upload():
     if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'upload']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/upload'}), 403
 
-    if 'workflowId' in request.form:
-        workflow_id = request.form['workflowId']
-    else:
-        return jsonify({'errors': gettext('VERIFIER_UPLOAD_ERROR'),
-                        'message': gettext('WORKFLOW_ID_IS_MANDATORY')}), 400
+    check, message = rest_validator(request.form, [
+        {'id': 'siret', 'type': int, 'mandatory': False},
+        {'id': 'siren', 'type': int, 'mandatory': False},
+        {'id': 'userId', 'type': int, 'mandatory': False},
+        {'id': 'workflowId', 'type': str, 'mandatory': True},
+        {'id': 'vat_number', 'type': str, 'mandatory': False},
+        {'id': 'returnUniqueUrl', 'type': bool, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
     supplier = {}
     if 'siret' in request.form:
@@ -59,12 +67,12 @@ def upload():
         supplier = {'column': 'vat_number', 'value': request.form['vat_number']}
 
     files = request.files
-    res = verifier.handle_uploaded_file(files, workflow_id, supplier)
+    res = verifier.handle_uploaded_file(files, request.form['workflowId'], supplier)
 
     if res and res[0] is not False:
         for file in res[0]:
             if 'returnUniqueUrl' in request.form and request.form['returnUniqueUrl']:
-                token = auth.generate_unique_url_token(file['token'], workflow_id, 'verifier')
+                token = auth.generate_unique_url_token(file['token'], request.form['workflowId'], 'verifier')
                 if token:
                     cfg, _ = config.read_config()
                     application_url = cfg['GLOBAL']['applicationurl']
@@ -95,8 +103,24 @@ def documents_list():
     if not privileges.has_privileges(request.environ['user_id'], ['access_verifier | statistics']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/documents/list'}), 403
 
-    data = request.json
-    res = verifier.retrieve_documents(data)
+    check, message = rest_validator(request.json, [
+        {'id': 'time', 'type': str, 'mandatory': False},
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'status', 'type': str, 'mandatory': True},
+        {'id': 'offset', 'type': int, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'form_id', 'type': int, 'mandatory': False},
+        {'id': 'allowedCustomers', 'type': list, 'mandatory': False},
+        {'id': 'allowedSuppliers', 'type': list, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = verifier.retrieve_documents(request.json)
     return make_response(res[0], res[1])
 
 
@@ -114,11 +138,18 @@ def document_info(document_id):
 
 @bp.route('verifier/documents/getDocumentIdAndStatusByToken', methods=['POST'])
 def get_document_informations_by_token():
-    if 'token' in request.json and request.json['token']:
-        res = verifier.get_document_id_and_status_by_token(request.json['token'])
-        return make_response(res[0], res[1])
-    else:
-        return jsonify({'errors': gettext('TOKEN_IS_MANDATORY'), 'message': ''}), 400
+    check, message = rest_validator(request.json, [
+        {'id': 'token', 'type': str, 'mandatory': True},
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = verifier.get_document_id_and_status_by_token(request.json['token'])
+    return make_response(res[0], res[1])
 
 
 @bp.route('verifier/documents/<int:document_id>/updatePosition', methods=['PUT'])
@@ -129,8 +160,7 @@ def update_document_position(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/updatePosition'}), 403
 
-    data = request.json['args']
-    res = verifier.update_position_by_document_id(document_id, data)
+    res = verifier.update_position_by_document_id(document_id, request.json['args'])
     return make_response(res[0], res[1])
 
 
@@ -142,8 +172,7 @@ def update_document_page(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/updatePage'}), 403
 
-    data = request.json['args']
-    res = verifier.update_page_by_document_id(document_id, data)
+    res = verifier.update_page_by_document_id(document_id, request.json['args'])
     return make_response(res[0], res[1])
 
 
@@ -166,8 +195,7 @@ def update_document_data(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/updateData'}), 403
 
-    data = request.json['args']
-    res = verifier.update_document_data_by_document_id(document_id, data)
+    res = verifier.update_document_data_by_document_id(document_id, request.json['args'])
     return make_response(res[0], res[1])
 
 
@@ -179,8 +207,20 @@ def export_xml(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/export_xml'}), 403
 
-    data = request.json['args']
-    res = verifier.export_xml(document_id, data)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'data', 'type': dict, 'mandatory': True},
+        {'id': 'module', 'type': str, 'mandatory': True},
+        {'id': 'ocrise', 'type': bool, 'mandatory': False},
+        {'id': 'compress_type', 'type': str, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = verifier.export_xml(document_id, request.json['args'])
     return make_response(jsonify(res[0]), res[1])
 
 
@@ -192,8 +232,20 @@ def export_pdf(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/export_pdf'}), 403
 
-    data = request.json['args']
-    res = verifier.export_pdf(document_id, data)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'data', 'type': dict, 'mandatory': True},
+        {'id': 'module', 'type': str, 'mandatory': True},
+        {'id': 'ocrise', 'type': bool, 'mandatory': False},
+        {'id': 'compress_type', 'type': str, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = verifier.export_pdf(document_id, request.json['args'])
     return make_response(jsonify(res[0]), res[1])
 
 
@@ -205,8 +257,20 @@ def export_facturx(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/export_facturx'}), 403
 
-    data = request.json['args']
-    res = verifier.export_facturx(document_id, data)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'data', 'type': dict, 'mandatory': True},
+        {'id': 'module', 'type': str, 'mandatory': True},
+        {'id': 'ocrise', 'type': bool, 'mandatory': False},
+        {'id': 'compress_type', 'type': str, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = verifier.export_facturx(document_id, request.json['args'])
     return make_response(jsonify(res[0]), res[1])
 
 
@@ -218,8 +282,20 @@ def export_mem(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/export_mem'}), 403
 
-    data = request.json['args']
-    res = verifier.export_mem(document_id, data)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'data', 'type': dict, 'mandatory': True},
+        {'id': 'module', 'type': str, 'mandatory': True},
+        {'id': 'ocrise', 'type': bool, 'mandatory': False},
+        {'id': 'compress_type', 'type': str, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = verifier.export_mem(document_id, request.json['args'])
     return make_response(jsonify(res[0]), res[1])
 
 
@@ -231,9 +307,18 @@ def launch_output_script(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/outputScript'}), 403
 
-    outputs = request.json['outputs']
-    workflow = request.json['workflow']
-    verifier.launch_output_script(document_id, workflow, outputs)
+    check, message = rest_validator(request.json, [
+        {'id': 'outputs', 'type': list, 'mandatory': True},
+        {'id': 'workflow', 'type': dict, 'mandatory': True},
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    verifier.launch_output_script(document_id, request.json['workflow'], request.json['outputs'])
     return make_response('', 200)
 
 
@@ -255,14 +340,23 @@ def delete_document_data(document_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/verifier/documents/{document_id}/deleteData'}), 403
 
-    args = request.json['args']
-    res = '', 200
-    if 'multiple' in args:
-        fields = args['fields']
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'fields', 'type': dict, 'mandatory': 'fields' in request.json['args']},
+        {'id': 'multiple', 'type': bool, 'mandatory': 'fields' in request.json['args']}
+    ], only_data='fields' not in request.json['args'])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    if 'multiple' in request.json['args']:
+        fields = request.json['args']['fields']
         for field in fields:
             res = verifier.delete_document_data_by_document_id(document_id, field)
     else:
-        field_id = args
+        field_id = request.json['args']
         res = verifier.delete_document_data_by_document_id(document_id, field_id)
     return make_response(res[0], res[1])
 
@@ -274,14 +368,23 @@ def delete_document_position(document_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/verifier/documents/{document_id}/deletePosition'}), 403
 
-    args = request.json['args']
-    res = '', 200
-    if 'multiple' in args:
-        fields = args['fields']
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'fields', 'type': dict, 'mandatory': 'fields' in request.json['args']},
+        {'id': 'multiple', 'type': bool, 'mandatory': 'fields' in request.json['args']}
+    ], only_data='fields' not in request.json['args'])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    if 'multiple' in request.json['args']:
+        fields = request.json['args']['fields']
         for field in fields:
             res = verifier.delete_document_position_by_document_id(document_id, field)
     else:
-        field_id = args
+        field_id = request.json['args']
         res = verifier.delete_document_position_by_document_id(document_id, field_id)
     return make_response(res[0], res[1])
 
@@ -293,14 +396,23 @@ def delete_document_page(document_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/verifier/documents/{document_id}/deletePage'}), 403
 
-    args = request.json['args']
-    res = '', 200
-    if 'multiple' in args:
-        fields = args['fields']
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'fields', 'type': dict, 'mandatory': 'fields' in request.json['args']},
+        {'id': 'multiple', 'type': bool, 'mandatory': 'fields' in request.json['args']}
+    ], only_data='fields' not in request.json['args'])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    if 'multiple' in request.json['args']:
+        fields = request.json['args']['fields']
         for field in fields:
             res = verifier.delete_document_page_by_document_id(document_id, field)
     else:
-        field_id = args
+        field_id = request.json['args']
         res = verifier.delete_document_page_by_document_id(document_id, field_id)
     return make_response(res[0], res[1])
 
@@ -313,8 +425,7 @@ def update_document(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/update'}), 403
 
-    data = request.json['args']
-    res = verifier.update_document(document_id, data)
+    res = verifier.update_document(document_id, request.json['args'])
     return make_response(res[0], res[1])
 
 
@@ -336,19 +447,29 @@ def ocr_on_fly():
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/ocrOnFly'}), 403
 
-    data = request.json
-    positions_masks = False
+    check, message = rest_validator(request.json, [
+        {'id': 'lang', 'type': str, 'mandatory': False},
+        {'id': 'fileName', 'type': str, 'mandatory': True},
+        {'id': 'thumbSize', 'type': dict, 'mandatory': True},
+        {'id': 'selection', 'type': dict, 'mandatory': True},
+        {'id': 'registerDate', 'type': str, 'mandatory': False}
+    ])
 
-    if 'registerDate' in data:
-        register_date = pd.to_datetime(data['registerDate'])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    if 'registerDate' in request.json:
+        register_date = pd.to_datetime(request.json['registerDate'])
         year = register_date.strftime('%Y')
         month = register_date.strftime('%m')
         year_and_month = year + '/' + month
-        data['fileName'] = year_and_month + '/' + data['fileName']
+        request.json['fileName'] = year_and_month + '/' + request.json['fileName']
 
-    if 'positionsMasks' in data:
-        positions_masks = data['positionsMasks']
-    result = verifier.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'], positions_masks, data['lang'])
+    result = verifier.ocr_on_the_fly(request.json['fileName'], request.json['selection'], request.json['thumbSize'],
+                                     request.json['lang'])
     return make_response({'result': result}, 200)
 
 
@@ -359,15 +480,32 @@ def get_thumb():
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier | update_position_mask']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/getThumb'}), 403
 
-    data = request.json['args']
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'type', 'type': str, 'mandatory': False},
+        {'id': 'filename', 'type': str, 'mandatory': True},
+        {'id': 'documentId', 'type': int, 'mandatory': False},
+        {'id': 'registerDate', 'type': str, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     year_and_month = False
-    if 'registerDate' in data:
-        register_date = pd.to_datetime(data['registerDate'])
+    if 'registerDate' in request.json['args']:
+        register_date = pd.to_datetime(request.json['args']['registerDate'])
         year = register_date.strftime('%Y')
         month = register_date.strftime('%m')
         year_and_month = year + '/' + month
-    file_content = verifier.get_file_content(data['type'], data['filename'], 'image/jpeg',
-                                             year_and_month=year_and_month, document_id=data['documentId'])
+
+    if 'documentId' not in request.json['args']:
+        request.json['args']['documentId'] = None
+
+    file_content = verifier.get_file_content(request.json['args']['type'], request.json['args']['filename'],
+                                             'image/jpeg', year_and_month=year_and_month,
+                                             document_id=request.json['args']['documentId'])
     return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
 
 
@@ -378,8 +516,17 @@ def get_thumb_by_document_id():
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/getThumb'}), 403
 
-    document_id = request.json['documentId']
-    file_content = verifier.get_thumb_by_document_id(document_id)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'documentId', 'type': int, 'mandatory': True},
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    file_content = verifier.get_thumb_by_document_id(request.json['documentId'])
     return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
 
 
@@ -401,9 +548,18 @@ def verify_siren():
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/verifySIREN'}), 403
 
-    token = request.json['token']
-    siren = request.json['siren']
-    status = verifier.verify_siren(token, siren)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'siren', 'type': str, 'mandatory': True},
+        {'id': 'token', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    status = verifier.verify_siren(request.json['token'], request.json['siren'])
     return make_response({'status': status[0]}, status[1])
 
 
@@ -414,9 +570,18 @@ def verify_siret():
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/verifySIRET'}), 403
 
-    token = request.json['token']
-    siret = request.json['siret']
-    status = verifier.verify_siret(token, siret)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'siret', 'type': str, 'mandatory': True},
+        {'id': 'token', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    status = verifier.verify_siret(request.json['token'], request.json['siret'])
     return make_response({'status': status[0]}, status[1])
 
 
@@ -427,8 +592,17 @@ def verify_vat_number():
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/verifyVATNumber'}), 403
 
-    vat_number = request.json['vat_number']
-    status = verifier.verify_vat_number(vat_number)
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'vat_number', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    status = verifier.verify_vat_number(request.json['vat_number'])
     return make_response({'status': status[0]}, status[1])
 
 
@@ -462,12 +636,18 @@ def update_status():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_status']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/status'}), 403
 
-    data = json.loads(request.data)
-    args = {
-        'ids': data['ids'],
-        'status': data['status']
-    }
-    res = verifier.update_status(args)
+    check, message = rest_validator(request.json, [
+        {'id': 'ids', 'type': list, 'mandatory': True},
+        {'id': 'status', 'type': str, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = verifier.update_status({'ids': request.json['ids'], 'status': request.json['status']})
     return make_response(jsonify(res[0])), res[1]
 
 

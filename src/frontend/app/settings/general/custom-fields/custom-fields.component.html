@@ -1,5 +1,5 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
@@ -25,7 +25,7 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <form [formGroup]="form">
-                        <div class="cursor-pointer relative top-9 ml-4 w-1/12" matTooltip="{{ 'CUSTOM-FIELDS.reset' | translate }}"
+                        <div class="cursor-pointer relative top-9 ml-4 w-1/12" [matTooltip]="'CUSTOM-FIELDS.reset' | translate"
                              (click)="resetForm()">
                             <i class="self-center fa-solid fa-sync fa-lg hover:text-green-400"></i>
                         </div>
@@ -34,7 +34,7 @@
                                 <div *ngIf="!input.limit || (input.limit && displayInput(input))">
                                     <mat-form-field *ngIf="input['controlType'] === 'text'" class="w-full">
                                         <mat-label>{{ input.label | translate }}</mat-label>
-                                        <input matInput [formControl]="input['control']" [id]="input.field_id"
+                                        <input matInput [formControl]="input['control']" [id]="input['field_id']"
                                                [type]="input.type" [matAutocomplete]="autocomplete">
                                         <mat-autocomplete #autocomplete="matAutocomplete" [panelWidth]="'auto'">
                                         <span *ngIf="input.control.value === null || input.control.value === '' || input.control.value === undefined">
@@ -68,19 +68,19 @@
                                     <div class="drop-box-option p-4" *ngFor="let option of selectOptions; let optionIndex = index;" cdkDrag>
                                         <mat-form-field class="w-40 mr-2">
                                             <mat-label>{{ 'HEADER.id' | translate }}</mat-label>
-                                            <input matInput [formControl]="option.idControl" type="text">
+                                            <input matInput [formControl]="option['idControl']" type="text">
                                         </mat-form-field>
                                         <mat-form-field class="w-40">
                                             <mat-label>{{ 'HEADER.label' | translate }}</mat-label>
-                                            <input matInput [formControl]="option.labelControl" type="text">
+                                            <input matInput [formControl]="option['labelControl']" type="text">
                                         </mat-form-field>
-                                        <div matTooltip="{{ 'CUSTOM-FIELDS.delete_choice' | translate }}"
+                                        <div [matTooltip]="'CUSTOM-FIELDS.delete_choice' | translate"
                                              (click)="deleteSelectOption(optionIndex)" class="top-0 mx-2 h-8 cursor-pointer">
                                             <i class="fa-solid fa-trash fa-lg hover:text-green-400"></i>
                                         </div>
                                     </div>
                                 </div>
-                                <div matTooltip="{{ 'CUSTOM-FIELDS.add_choice' | translate }}"
+                                <div [matTooltip]="'CUSTOM-FIELDS.add_choice' | translate"
                                      (click)="addSelectOption()" class="top-0 mx-2 h-8 inline-block">
                                     <i class="fa-solid fa-plus fa-lg hover:text-green-400"></i>
                                 </div>
@@ -122,7 +122,7 @@
                                 </div>
                                 <mat-form-field class="w-full">
                                     <mat-label>{{ 'FORMATS.regex' | translate }}</mat-label>
-                                    <textarea cdkTextareaAutosize cdkAutosizeMinRows="1" matInput [value]="regexControl.value"
+                                    <textarea [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="1" matInput [value]="regexControl.value"
                                               [formControl]="regexControl" (keyup)="checkRegex()" spellcheck="false"></textarea>
                                 </mat-form-field>
                                 <mat-form-field class="w-full">
@@ -164,16 +164,16 @@
                                             </div>
                                         </div>
                                         <div class="actions">
-                                            <button matTooltip="{{ 'GLOBAL.move_to_active' | translate }}" mat-icon-button
+                                            <button [matTooltip]="'GLOBAL.move_to_active' | translate" mat-icon-button
                                                     class="hover:text-green-400" (click)="moveToActive(i)">
                                                 <i class="fa fa-plus"></i>
                                             </button>
-                                            <button matTooltip="{{ 'GLOBAL.edit' | translate }}" mat-icon-button
+                                            <button [matTooltip]="'GLOBAL.edit' | translate" mat-icon-button
                                                     class="hover:text-green-400"
                                                     (click)="updateCustomField(item, 'inactive')">
                                                 <i class="fa-solid fa-edit"></i>
                                             </button>
-                                            <button matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
+                                            <button [matTooltip]="'GLOBAL.delete' | translate" mat-icon-button
                                                     class="hover:text-green-400"
                                                     (click)="deleteCustomField(item.id, 'inactive')">
                                                 <i class="fa-solid fa-trash"></i>
@@ -197,16 +197,16 @@
                                             </div>
                                         </div>
                                         <div class="actions">
-                                            <button matTooltip="{{ 'GLOBAL.move_to_inactive' | translate }}" mat-icon-button
+                                            <button [matTooltip]="'GLOBAL.move_to_inactive' | translate" mat-icon-button
                                                     class="hover:text-green-400" (click)="moveToInactive(i)">
                                                 <i class="fa fa-minus"></i>
                                             </button>
-                                            <button matTooltip="{{ 'GLOBAL.edit' | translate }}" mat-icon-button
+                                            <button [matTooltip]="'GLOBAL.edit' | translate" mat-icon-button
                                                     class="hover:text-green-400"
                                                     (click)="updateCustomField(item, 'active')">
                                                 <i class="fa-solid fa-edit"></i>
                                             </button>
-                                            <button matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
+                                            <button [matTooltip]="'GLOBAL.delete' | translate" mat-icon-button
                                                     class="hover:text-green-400"
                                                     (click)="deleteCustomField(item.id, 'active')">
                                                 <i class="fa-solid fa-trash"></i>

@@ -1,5 +1,5 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
@@ -73,7 +73,7 @@
                     <mat-row *matRowDef="let row; columns: columnsToDisplay;"
                              class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
                 </mat-table>
-                <mat-paginator showFirstLastButtons
+                <mat-paginator [showFirstLastButtons]="true"
                                *ngIf="this.total > 0"
                                [length]="this.total"
                                [pageSize]="pageSize"

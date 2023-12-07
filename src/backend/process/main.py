@@ -31,6 +31,26 @@ from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindIn
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber, FindName
 
 
+class DictX(dict):
+    def __getattr__(self, key):
+        try:
+            return self[key]
+        except KeyError as k:
+            raise AttributeError(k)
+
+    def __setattr__(self, key, value):
+        self[key] = value
+
+    def __delattr__(self, key):
+        try:
+            del self[key]
+        except KeyError as k:
+            raise AttributeError(k)
+
+    def __repr__(self):
+        return '<DictX ' + dict.__repr__(self) + '>'
+
+
 def launch_script(workflow_settings, docservers, step, log, file, database, args, config, datas=None):
     if 'script' in workflow_settings[step] and workflow_settings[step]['script']:
         script = workflow_settings[step]['script']
@@ -91,10 +111,10 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
 
 
 def execute_outputs(output_info, log, regex, document_data, database, current_lang):
+    path = None
     data = output_info['data']
     ocrise = output_info['ocrise']
     compress_type = output_info['compress_type']
-    path = None
 
     if output_info['output_type_id'] == 'export_xml':
         path, _ = verifier_exports.export_xml(data, log, regex, document_data, database)
@@ -192,15 +212,16 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
             args['outputs'] = []
             document_data['status'] = 'NO_INTERFACE'
             for output_id in workflow_settings['output']['outputs_id']:
-                output_info = database.select({
-                    'select': ['output_type_id', 'data', 'compress_type', 'ocrise'],
-                    'table': ['outputs'],
-                    'where': ['id = %s'],
-                    'data': [output_id]
-                })
-                if output_info:
-                    args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database,
-                                                           current_lang))
+                if output_id:
+                    output_info = database.select({
+                        'select': ['output_type_id', 'data', 'compress_type', 'ocrise'],
+                        'table': ['outputs'],
+                        'where': ['id = %s'],
+                        'data': [output_id]
+                    })
+                    if output_info:
+                        args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database,
+                                                               current_lang))
 
     if workflow_settings:
         document_data['workflow_id'] = workflow_settings['id']
@@ -221,7 +242,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
     return None
 
 
-def convert(file, files, ocr, nb_pages, custom_pages=False):
+def convert(file, files, ocr, nb_pages, tesseract_function, convert_function, custom_pages=False):
     if custom_pages:
         try:
             filename = os.path.splitext(files.custom_file_name)
@@ -230,24 +251,35 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
             os.remove(improved_img)
         except FileNotFoundError:
             pass
-        files.pdf_to_jpg(file, nb_pages, open_img=False, is_custom=True)
+        files.pdf_to_jpg(file, nb_pages, open_img=False, is_custom=True, convert_function=convert_function)
     else:
-        files.pdf_to_jpg(file, 1, True, True, 'header')
-        ocr.header_text = ocr.line_box_builder(files.img)
-        files.pdf_to_jpg(file, 1, True, True, 'footer')
-        ocr.footer_text = ocr.line_box_builder(files.img)
-        files.pdf_to_jpg(file, 1)
-        ocr.text = ocr.line_box_builder(files.img)
+        files.pdf_to_jpg(file, 1, True, True, 'header', convert_function=convert_function)
+        ocr.header_text = return_text(files.img, tesseract_function, ocr)
+        files.pdf_to_jpg(file, 1, True, True, 'footer', convert_function=convert_function)
+        ocr.footer_text = return_text(files.img, tesseract_function, ocr)
+        files.pdf_to_jpg(file, 1, convert_function=convert_function)
+        ocr.text = return_text(files.img, tesseract_function, ocr)
         if nb_pages > 1:
-            files.pdf_to_jpg(file, nb_pages, True, True, 'header', True)
-            ocr.header_last_text = ocr.line_box_builder(files.img)
-            files.pdf_to_jpg(file, nb_pages, True, True, 'footer', True)
-            ocr.footer_last_text = ocr.line_box_builder(files.img)
-            files.pdf_to_jpg(file, nb_pages, last_image=True)
-            ocr.last_text = ocr.line_box_builder(files.img)
+            files.pdf_to_jpg(file, nb_pages, True, True, 'header', True, convert_function=convert_function)
+            ocr.header_last_text = return_text(files.img, tesseract_function, ocr)
+            files.pdf_to_jpg(file, nb_pages, True, True, 'footer', True, convert_function=convert_function)
+            ocr.footer_last_text = return_text(files.img, tesseract_function, ocr)
+            files.pdf_to_jpg(file, nb_pages, last_image=True, convert_function=convert_function)
+            ocr.last_text = return_text(files.img, tesseract_function, ocr)
 
 
-def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_class, _res, files, configurations):
+def return_text(img, tesseract_function, ocr):
+    if tesseract_function == 'text_builder':
+        lines = []
+        for line in ocr.text_builder(img).split('\n'):
+            lines.append(DictX({'content': line, 'position': []}))
+        return lines
+    else:
+        return ocr.line_box_builder(img)
+
+
+def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_class, _res, files, configurations,
+                           tesseract_function, convert_function):
     data = data_class.run()
     if not data:
         improved_image = files.img_name + '_improved.jpg'
@@ -262,13 +294,13 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
             improved_footer_image = files.improve_image_detection(files.jpg_name_header, remove_lines=False)
 
         image = files.open_image_return(improved_image)
-        data_class.text = ocr.line_box_builder(image)
+        data_class.text = return_text(image, tesseract_function, ocr)
 
         image = files.open_image_return(improved_header_image)
-        data_class.header_text = ocr.line_box_builder(image)
+        data_class.header_text = return_text(image, tesseract_function, ocr)
 
         image = files.open_image_return(improved_footer_image)
-        data_class.footer_text = ocr.line_box_builder(image)
+        data_class.footer_text = return_text(image, tesseract_function, ocr)
 
         if data_name == 'firstname_lastname':
             data_class.improved = True
@@ -295,22 +327,25 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
             if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
                 break
 
-        convert(file, files, ocr, tmp_nb_pages, True)
+        convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
         _file = files.custom_file_name
         image = files.open_image_return(_file)
 
         if tmp_nb_pages not in text_by_pages:
-            text_by_pages[tmp_nb_pages] = ocr.line_box_builder(image)
+            text_by_pages[tmp_nb_pages] = return_text(image, tesseract_function, ocr)
 
         data_class.text = text_by_pages[tmp_nb_pages]
-        files.pdf_to_jpg(file, tmp_nb_pages, True, True, 'header')
-        data_class.header_text = ocr.line_box_builder(files.img)
-        files.pdf_to_jpg(file, tmp_nb_pages, True, True, 'footer')
-        data_class.footer_text = ocr.line_box_builder(files.img)
+        files.pdf_to_jpg(file, tmp_nb_pages, True, True, 'header', convert_function=convert_function)
+        data_class.header_text = return_text(files.img, tesseract_function, ocr)
+
+        files.pdf_to_jpg(file, tmp_nb_pages, True, True, 'footer', convert_function=convert_function)
+        data_class.footer_text = return_text(files.img, tesseract_function, ocr)
+
         data_class.nb_page = tmp_nb_pages
         data_class.custom_page = True
 
         data = data_class.run()
+
         i += 1
 
     if data:
@@ -380,15 +415,20 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 log.info('Document rotated by ' + str(workflow_settings['input']['rotation']) +
                          '° based on workflow settings')
 
-    # Convert files to JPG
-    convert(file, files, ocr, nb_pages)
-
-    form_id_found_with_ai = False
     system_fields_to_find = []
     custom_fields_to_find = []
+    form_id_found_with_ai = False
 
     change_workflow = False
+    convert_function = 'pdf2image'
+    tesseract_function = 'line_box_builder'
+
     if workflow_settings:
+        if 'tesseract_function' in workflow_settings['process'] and workflow_settings['process']['tesseract_function']:
+            tesseract_function = workflow_settings['process']['tesseract_function']
+        if 'convert_function' in workflow_settings['process'] and workflow_settings['process']['convert_function']:
+            convert_function = workflow_settings['process']['convert_function']
+
         if workflow_settings['input']['apply_process']:
             for field in workflow_settings['process']['system_fields']:
                 system_fields_to_find.append(field)
@@ -408,6 +448,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         # Launch input scripting if present
         change_workflow = launch_script(workflow_settings, docservers, 'input', log, file, database, args, config)
+
+    # Convert files to JPG
+    convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
 
     if not change_workflow:
         supplier = None
@@ -511,8 +554,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                             'document_lang': ''
                                         }
                                         supplier = [data['vat_number'], (('', ''), ('', '')), data, False, column]
-                                        log.info('Supplier created using INSEE database : ' + supplier[2]['name'] + ' with '
-                                                 + column.upper() + ' : ' + value)
+                                        log.info('Supplier created using INSEE database : ' + supplier[2]['name']
+                                                 + ' with ' + column.upper() + ' : ' + value)
 
         if 'name' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             # Find supplier in document if not send using upload rest
@@ -530,7 +573,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                         if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
                             break
 
-                    convert(file, files, ocr, tmp_nb_pages, True)
+                    convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
                     supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
                     i += 1
 
@@ -571,7 +614,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     for _r in _regex:
                         regex[_r['regex_id']] = _r['content']
                     ocr = _PyTesseract(supplier[2]['document_lang'], log, config, docservers)
-                    convert(file, files, ocr, nb_pages)
+                    convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
 
         if workflow_settings:
             if 'override_supplier_form' in workflow_settings['process'] and \
@@ -614,41 +657,47 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                                 datas['form_id'], custom_fields_to_find, custom_field)
                 custom_field = 'custom_' + str(custom_field['id'])
                 datas = found_data_recursively(custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
-                                               datas, files, configurations)
+                                               datas, files, configurations, tesseract_function, convert_function)
 
         if 'firstname_lastname' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             name_class = FindName(ocr, log, docservers, supplier, files, database, regex, datas['form_id'], file)
             datas = found_data_recursively('firstname_lastname', ocr, file, nb_pages, text_by_pages,
-                                           name_class, datas, files, configurations)
+                                           name_class, datas, files, configurations, tesseract_function,
+                                           convert_function)
+
         if 'invoice_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
                                                      docservers, configurations, languages, datas['form_id'])
             datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages,
-                                           invoice_number_class, datas, files, configurations)
+                                           invoice_number_class, datas, files, configurations, tesseract_function,
+                                           convert_function)
 
         if 'document_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             date_class = FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                   languages, datas['form_id'])
             datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class,
-                                           datas, files, configurations)
+                                           datas, files, configurations, tesseract_function, convert_function)
 
         if 'document_due_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             due_date_class = FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                          languages, datas['form_id'])
             datas = found_data_recursively('document_due_date', ocr, file, nb_pages, text_by_pages,
-                                           due_date_class, datas, files, configurations)
+                                           due_date_class, datas, files, configurations, tesseract_function,
+                                           convert_function)
 
         if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
                                                          docservers, configurations, datas['form_id'], languages)
             datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages,
-                                           quotation_number_class, datas, files, configurations)
+                                           quotation_number_class, datas, files, configurations, tesseract_function,
+                                           convert_function)
 
         if 'delivery_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file, docservers,
-                                                       configurations, datas['form_id'])
-            datas = found_data_recursively('delivery_number', ocr, file, nb_pages, text_by_pages, delivery_number_class,
-                                           datas, files, configurations)
+            delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
+                                                       docservers, configurations, datas['form_id'])
+            datas = found_data_recursively('delivery_number', ocr, file, nb_pages, text_by_pages,
+                                           delivery_number_class, datas, files, configurations, tesseract_function,
+                                           convert_function)
 
         footer = None
         if 'footer' in system_fields_to_find or not workflow_settings['input']['apply_process']:
@@ -678,7 +727,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     tmp_nb_pages = tmp_nb_pages - 1
                     if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
                         break
-                    convert(file, files, ocr, tmp_nb_pages, True)
+                    convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
                     _file = files.custom_file_name
                     image = files.open_image_return(_file)
                     text = ocr.line_box_builder(image)

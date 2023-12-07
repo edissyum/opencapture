@@ -1,5 +1,5 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
@@ -29,7 +29,7 @@
                             <mat-label>{{ field.label | translate }}</mat-label>
                             <mat-select [value]="field.control.value" [formControl]="field['control']" [required]="field['required']">
                                 <mat-option *ngFor="let option of field.options" [value]="option.value">
-                                    {{ option.label }}
+                                    {{ option.label | translate }}
                                 </mat-option>
                             </mat-select>
                             <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
@@ -40,7 +40,7 @@
             <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
             <h4 class="text-center mt-10 mb-10">{{ 'PRIVILEGES.list' | translate }}</h4>
             <div class="flex justify-center items-center ml-10 mr-5">
-                <mat-tab-group *ngIf="this.privileges" dynamicHeight>
+                <mat-tab-group *ngIf="this.privileges" [dynamicHeight]="true">
                     <mat-tab *ngFor="let parent of this.privileges['parent']" [label]="this.translate.instant('PRIVILEGES.' + parent)">
                         <div class="grid grid-cols-4 gap-x-60 gap-y-10 mt-10">
                             <mat-slide-toggle *ngFor="let privilege of this.getChildsByParent(parent)"

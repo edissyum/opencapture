@@ -2,12 +2,12 @@
     <app-loader></app-loader>
 </div>
 <mat-drawer-container
-        hasBackdrop="false"
+        [hasBackdrop]="false"
         *ngIf="!this.loading"
         (click)="onScreenClick($event)"
         [class.pointer-events-none]="validateLoading"
         class="w-full absolute top-16 bottom-0">
-    <mat-drawer #drawer mode="side" opened class="w-1/5">
+    <mat-drawer #drawer mode="side" [opened]="true" class="w-1/5">
         <div class="mt-1">
             <div [ngSwitch]="currentTime" class="mt-2 w-full h-10 grid place-content-center">
                 <div class="text-base text-slate-400">

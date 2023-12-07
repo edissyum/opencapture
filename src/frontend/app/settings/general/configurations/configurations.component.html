@@ -1,5 +1,5 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" autosize>
-    <mat-sidenav #sidenav mode="side" opened class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
@@ -22,7 +22,7 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div *ngIf="!loading" class="w-full">
-            <mat-tab-group dynamicHeight (selectedTabChange)="onTabChanged($event)">
+            <mat-tab-group [dynamicHeight]="true" (selectedTabChange)="onTabChanged($event)">
                 <mat-tab [label]="'CONFIGURATIONS.global' | translate">
                     <div class="overflow-x-hidden overflow-y-auto text-center" style="height: calc(100vh - 11rem) !important">
                         <div class="grid grid-cols-2 gap-6">
@@ -64,6 +64,7 @@
                                 <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
                                 <editor [formControl]="loginTopMessage"
                                         [init]="{
+                                        resize: false,
                                         menubar: false,
                                         branding: false,
                                         promotion: false,
@@ -90,6 +91,7 @@
                                 <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
                                 <editor [formControl]="loginBottomMessage"
                                         [init]="{
+                                        resize: false,
                                         menubar: false,
                                         branding: false,
                                         promotion: false,
@@ -169,19 +171,19 @@
                                            [disabled]="!this.passwordVerification.minLengthEnabled || this.updating" (change)="updatePasswordRules()">
                                 </mat-form-field>
                                 <div class="mb-4">
-                                    <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules.uppercaseMandatory" (change)="updatePasswordRules()"
+                                    <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules['uppercaseMandatory']" (change)="updatePasswordRules()"
                                                       [disabled]="this.updating">
                                         {{ "CONFIGURATIONS.enable_password_uppercase_mandatory" | translate }}
                                     </mat-slide-toggle>
                                 </div>
                                 <div class="my-4">
-                                    <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules.specialCharMandatory" (change)="updatePasswordRules()"
+                                    <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules['specialCharMandatory']" (change)="updatePasswordRules()"
                                                       [disabled]="this.updating">
                                         {{ "CONFIGURATIONS.enable_password_special_char_mandatory" | translate }}
                                     </mat-slide-toggle>
                                 </div>
                                 <div class="my-4">
-                                    <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules.numberMandatory" (change)="updatePasswordRules()"
+                                    <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules['numberMandatory']" (change)="updatePasswordRules()"
                                                       [disabled]="this.updating">
                                         {{ "CONFIGURATIONS.enable_password_number_mandatory" | translate }}
                                     </mat-slide-toggle>
@@ -198,7 +200,7 @@
                                 <span class="text-lg">
                                     {{ "CONFIGURATIONS.smtp_test_email" | translate }}
                                 </span>
-                                <mat-form-field subscriptSizing="dynamic" [ngStyle]="{'width.ch': this.emailTestControl.value.length, 'min-width.ch': 20}">
+                                <mat-form-field subscriptSizing="dynamic" [ngStyle]="{'width.ch': this.emailTestControl.value.length + 0.5, 'min-width.ch': 25}">
                                     <input matInput type="text" [formControl]="this.emailTestControl">
                                 </mat-form-field>
                             </div>
@@ -279,12 +281,12 @@
                             </ng-container>
                             <ng-container matColumnDef="type">
                                 <mat-header-cell *matHeaderCellDef> {{ 'HEADER.type' | translate }} </mat-header-cell>
-                                <mat-cell *matCellDef="let element"> {{ element.data.label_type | translate }} </mat-cell>
+                                <mat-cell *matCellDef="let element"> {{ element.data['label_type'] | translate }} </mat-cell>
                             </ng-container>
                             <ng-container matColumnDef="content">
                                 <mat-header-cell *matHeaderCellDef>{{ 'HEADER.value' | translate }} </mat-header-cell>
                                 <mat-cell *matCellDef="let element" (click)="element.updateMode = true">
-                                    <ng-container *ngIf="!element.updateMode else update">
+                                    <ng-container *ngIf="!element['updateMode'] else update">
                                         {{ element.data.value }}
                                     </ng-container>
                                     <ng-template #update>
@@ -318,13 +320,13 @@
                             <ng-container matColumnDef="actions">
                                 <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                                 <mat-cell *matCellDef="let element">
-                                    <button *ngIf="!element.updateMode"
+                                    <button *ngIf="!element['updateMode']"
                                             (click)="element.updateMode = true"
                                             matTooltip="{{ 'CONFIGURATIONS.update' | translate }}" mat-icon-button
                                             class="inline-block align-text-top">
                                         <i class="fa-solid fa-edit text-lg"></i>
                                     </button>
-                                    <button *ngIf="element.updateMode"
+                                    <button *ngIf="element['updateMode']"
                                             (click)="element.updateMode = false;"
                                             matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button
                                             class="inline-block align-text-top">
@@ -337,7 +339,7 @@
                             <mat-row *matRowDef="let row; columns: columnsToDisplay;"
                                      class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
                         </mat-table>
-                        <mat-paginator showFirstLastButtons
+                        <mat-paginator [showFirstLastButtons]="true"
                                        *ngIf="this.total > 0"
                                        [length]="this.total"
                                        [pageSize]="pageSize"

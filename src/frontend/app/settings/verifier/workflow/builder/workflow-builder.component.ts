@@ -42,17 +42,19 @@ import {ConfigService} from "../../../../../services/config.service";
         }
     }]
 })
+
 export class WorkflowBuilderComponent implements OnInit {
+    workflowId       : any;
+    form_outputs     : any           = [];
+    workflow_outputs : any           = [];
     loading          : boolean       = true;
     creationMode     : boolean       = true;
     outputAllowed    : boolean       = true;
     processAllowed   : boolean       = true;
     useInterface     : boolean       = false;
     allowWFScripting : boolean       = false;
+    inputFolderOk    : boolean       = false;
     separationMode   : string        = 'no_sep';
-    form_outputs     : any           = [];
-    workflow_outputs : any           = [];
-    workflowId       : any;
     stepValid        : any           = {
         input: false,
         process: false,
@@ -272,6 +274,46 @@ export class WorkflowBuilderComponent implements OnInit {
                 show: true
             },
             {
+                id: 'tesseract_function',
+                multiple: false,
+                label: this.translate.instant('WORKFLOW.tesseract_function'),
+                hint: this.translate.instant('WORKFLOW.tesseract_function_hint'),
+                type: 'select',
+                control: new FormControl('line_box_builder'),
+                required: true,
+                show: true,
+                values: [
+                    {
+                        'id': 'line_box_builder',
+                        'label': this.translate.instant('WORKFLOW.line_box_builder')
+                    },
+                    {
+                        'id': 'text_builder',
+                        'label': this.translate.instant('WORKFLOW.text_builder')
+                    }
+                ]
+            },
+            {
+                id: 'convert_function',
+                multiple: false,
+                label: this.translate.instant('WORKFLOW.convert_function'),
+                hint: this.translate.instant('WORKFLOW.convert_function_hint'),
+                type: 'select',
+                control: new FormControl('pdf2image'),
+                required: true,
+                show: true,
+                values: [
+                    {
+                        'id': 'pdf2image',
+                        'label': 'pdf2image'
+                    },
+                    {
+                        'id': 'imagemagick',
+                        'label': 'ImageMagick'
+                    }
+                ]
+            },
+            {
                 'id': 'script',
                 'required': false,
                 'control': new FormControl(),
@@ -347,6 +389,10 @@ export class WorkflowBuilderComponent implements OnInit {
                                 this.workflow_outputs = value;
                             }
                             field.control.setValue(value);
+
+                            if (field.id === 'input_folder') {
+                                this.checkFolder(field, true, true);
+                            }
                         });
                     });
                 }),
@@ -629,16 +675,20 @@ export class WorkflowBuilderComponent implements OnInit {
         this.setUsedOutputs();
     }
 
-    checkFolder(field: any, fromUser = false) {
+    checkFolder(field: any, fromUser = false, auto = false) {
         if (fromUser || (field && field.control.value && field.control.value !== this.oldFolder)) {
             this.http.post(environment['url'] + '/ws/workflows/verifier/verifyInputFolder',
                 {'input_folder': field.control.value}, {headers: this.authService.headers}).pipe(
                 tap(() => {
+                    this.inputFolderOk = true;
                     field.control.setErrors();
-                    this.notify.success(this.translate.instant('WORKFLOW.input_folder_ok'));
+                    if (!auto) {
+                        this.notify.success(this.translate.instant('WORKFLOW.input_folder_ok'));
+                    }
                     this.oldFolder = field.control.value;
                 }),
                 catchError((err: any) => {
+                    this.inputFolderOk = false;
                     field.control.setErrors({'folder_not_found': true});
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -652,6 +702,10 @@ export class WorkflowBuilderComponent implements OnInit {
         let valid = true;
         this.fields[step].forEach((element: any) => {
             if ((element.required && !element.control.value) || (element.control.errors && element.id !== 'script')) {
+                valid = false;
+            }
+
+            if (element.id == 'input_folder' && !this.inputFolderOk) {
                 valid = false;
             }
         });
