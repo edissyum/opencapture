@@ -100,6 +100,15 @@ export class MenuComponent implements OnInit {
         }
     }
 
+    @HostListener('document:click', ['$event'])
+    onScreenClick(event: MouseEvent) {
+        const clickedElement = event.target as HTMLElement;
+        const userMenu = document.getElementById('user-menu');
+        if (userMenu && !userMenu.contains(clickedElement)) {
+            this.hideProfileDropdown = true;
+        }
+    }
+
     goToUpload() {
         if (this.defaultModule && !this.getSplitterOrVerifier()) {
             this.localStorageService.save('splitter_or_verifier', this.defaultModule);
@@ -120,14 +129,5 @@ export class MenuComponent implements OnInit {
 
     toggleMobileMenu() {
         this.mobileMenuState = !this.mobileMenuState;
-    }
-
-    @HostListener('document:click', ['$event'])
-    onScreenClick(event: MouseEvent) {
-        const clickedElement = event.target as HTMLElement;
-        const userMenu = document.getElementById('user-menu');
-        if (userMenu && !userMenu.contains(clickedElement)) {
-            this.hideProfileDropdown = true;
-        }
     }
 }
