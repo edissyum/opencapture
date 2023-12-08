@@ -23,9 +23,6 @@ from src.backend.functions import search_custom_positions
 
 
 def sanitize_keyword(data, regex):
-    if regex[0] == '^':
-        regex = regex[1:]
-
     tmp_data = re.sub(r"" + regex[:-2], '', data, flags=re.IGNORECASE)
     data = tmp_data.lstrip()
     return data
@@ -253,9 +250,6 @@ class FindCustom:
                             if 'remove_spaces' in regex_settings and regex_settings['remove_spaces']:
                                 data = re.sub(r"\s*", '', data)
                             data = data.strip()
-
-                            if len(data) <= 3:
-                                continue
 
                             self.log.info(self.custom_fields_regex['label'] + ' found : ' + data)
                             position = line.position
