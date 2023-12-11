@@ -354,6 +354,7 @@
 		"alphanum_extended": "Caractères alphanumériques étendus [0-9aA-zZ-/'#,\\.\\s]",
 		"alphanum_extended_with_accent": "Caractères alphanumériques étendus avec accent [0-9aA-zZ-\\u00C0-\\u017F/'#,\\.\\s]",
 		"char": "Caractères alphabétiques [aA-zZ]",
+		"char_min": "Nombre de caractères minimum",
 		"date": "Date",
 		"email": "Adresse email",
 		"iban": "Numéro IBAN",
@@ -869,7 +870,6 @@
 		"workflow_update": "Modification du workflow"
 	},
 	"SPLITTER": {
-		"Other": "(Autre)",
 		"add_document": "Ajouter un document",
 		"all_batches_checked_deleted": "Tous les lots selectionnés supprimés avec succès",
 		"barch_form_change_success": "Formulaire du lot modifié avec succès",
@@ -926,6 +926,7 @@
 		"no_metadata_required": "Aucune métadonnée requise",
 		"no_result": "0 Résultat",
 		"no_selected_doctype": "(Merci de typer le document)",
+		"other": "(Autre)",
 		"pageRotated": "Page tournée avec",
 		"quit_without_saving": "Quitter sans enregistrer",
 		"quit_without_saving_modifications": "Voulez-vous quitter sans enregistrer les modifications ?",
