@@ -961,6 +961,7 @@
 		"diagram_pie_chart": "Pie chart diagram",
 		"diagram_pie_grid": "Pie grid diagram",
 		"diagram_vertical_bar": "Vertical bar diagram",
+		"documents_uploaded_per_worklow": "Documents uplaoded per workflow",
 		"splitter_documents_uploaded": "Uploaded documents for this year",
 		"verifier_documents_uploaded": "Uploaded documents for this year",
 		"verifier_documents_validated_per_form": "Documents validated per form",

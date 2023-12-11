@@ -961,6 +961,7 @@
 		"diagram_pie_chart": "Diagramme circulaire",
 		"diagram_pie_grid": "Diagramme circulaire en grille",
 		"diagram_vertical_bar": "Diagramme en bâton",
+		"documents_uploaded_per_worklow": "Documents uploadés par workflow",
 		"splitter_documents_uploaded": "Documents uploadés sur l'année",
 		"verifier_documents_uploaded": "Documents uploadés sur l'année",
 		"verifier_documents_validated_per_form": "Documents validés par formulaire",
