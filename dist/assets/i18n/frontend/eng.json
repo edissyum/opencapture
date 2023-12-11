@@ -301,7 +301,6 @@
 		"json_pattern": "The field is not JSON formatted",
 		"jwt_error": "Authentification by token error",
 		"missing_secret_key": "Secret key missing for this instance",
-		"no_default_module_configured": "No default module configured",
 		"no_privilege_update_bottom_login": "You don't have the privilege to update the bottom login text",
 		"no_privilege_update_top_login": "You don't have the privilege to update the top login text",
 		"number_float_pattern": "The value is not well formatted : float",
@@ -350,6 +349,7 @@
 		"validation_mask": "Validation mask"
 	},
 	"FORMATS": {
+		"adeli": "Numéro ADELI",
 		"alphanum": "Alphanumeric [0-9aA-zZ']",
 		"alphanum_extended": "Alphanumeric extended [0-9aA-zZ-/'#,\\.\\s\\(\\)]",
 		"alphanum_extended_with_accent": "Alphanumeric extended with accent [0-9aA-zZ-À-ſ/'#,\\.\\s\\(\\)]",

@@ -208,8 +208,10 @@ export class VerifierListComponent implements OnInit {
                     {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
                 ];
                 data.forms.forEach((form: any) => {
-                    this.forms.push(form);
-                    this.filteredForms.push(form);
+                    if (form.total > 0) {
+                        this.forms.push(form);
+                        this.filteredForms.push(form);
+                    }
                 });
             }),
             catchError((err: any) => {

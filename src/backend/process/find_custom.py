@@ -227,6 +227,7 @@ class FindCustom:
 
     def run(self):
         cpt = 0
+
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
                 regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
@@ -249,6 +250,7 @@ class FindCustom:
                             if 'remove_spaces' in regex_settings and regex_settings['remove_spaces']:
                                 data = re.sub(r"\s*", '', data)
                             data = data.strip()
+
                             self.log.info(self.custom_fields_regex['label'] + ' found : ' + data)
                             position = line.position
                             if cpt == 1:

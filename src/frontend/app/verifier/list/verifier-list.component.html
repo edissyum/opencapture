@@ -99,12 +99,12 @@
                     </span>
                 </ng-template>
                 <div class="verifier-container flex flex-col">
-                    <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
-                        <mat-form-field class="mb-3 relative left-4 w-3/4" appearance="outline">
+                    <div class="grid grid-cols-4 grid-flow-row gap-0 mt-4 z-30">
+                        <mat-form-field class="mb-3 relative left-4 w-10/12" appearance="outline">
                             <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
                             <input matInput type="text" [(ngModel)]="search" [disabled]="this.total === 0" (keyup)="searchDocument($event)">
                         </mat-form-field>
-                        <div class="w-full m-auto grid grid-cols-2 gap-2">
+                        <div class="w-10/12 m-auto grid grid-cols-2 gap-2 col-span-2">
                             <mat-form-field appearance="outline">
                                 <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
                                 <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)"
