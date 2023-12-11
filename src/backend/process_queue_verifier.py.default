@@ -182,6 +182,7 @@ def launch(args):
             'user_info': args['user_info'],
             'history_submodule': 'upload_file',
             'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>',
+            'workflow_id': args['workflow_id'],
             'user_ip': args['ip']
         }
     })

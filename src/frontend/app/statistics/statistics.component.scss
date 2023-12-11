@@ -1,0 +1,15 @@
+.settings_header {
+    @apply z-30;
+    @apply px-2;
+    @apply flex;
+    @apply py-1.5;
+    @apply relative;
+    @apply items-center;
+    @apply bg-green-400;
+    @apply bg-opacity-60;
+    @apply text-gray-900;
+    @apply justify-between;
+    & div button i {
+        @apply leading-none #{!important};
+    }
+}

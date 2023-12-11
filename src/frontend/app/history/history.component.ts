@@ -37,19 +37,19 @@ import * as moment from "moment";
     providers: [DatePipe]
 })
 export class HistoryComponent implements OnInit {
-    filteredUsers       : Observable<any> | any;
     columnsToDisplay    : string[] = ['id', 'history_module', 'history_submodule', 'history_date', 'user_info', 'history_desc', 'user_ip'];
+    filteredUsers       : Observable<any> | any;
     loading             : boolean  = true;
     toHighlight         : string   = '';
     pageSize            : number   = 10;
     pageIndex           : number   = 0;
     total               : number   = 0;
     offset              : number   = 0;
-    history             : any;
-    users               : any;
     userSelected        : string = '';
     moduleSelected      : string = '';
     subModuleSelected   : string = '';
+    history             : any;
+    users               : any;
     form                : any[]    = [
         {
             'id': 'user_id',
@@ -106,9 +106,8 @@ export class HistoryComponent implements OnInit {
             this.toHighlight = value;
             const filterValue = value.toLowerCase();
             return array.filter((option: any) => option.value.toLowerCase().indexOf(filterValue) !== -1);
-        } else {
-            return array;
         }
+        return array;
     }
 
     ngOnInit(): void {
