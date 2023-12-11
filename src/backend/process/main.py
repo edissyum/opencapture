@@ -449,10 +449,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         # Launch input scripting if present
         change_workflow = launch_script(workflow_settings, docservers, 'input', log, file, database, args, config)
 
-    # Convert files to JPG
-    convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
-
     if not change_workflow:
+        # Convert files to JPG
+        convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
+
         supplier = None
         supplier_lang_different = False
 
@@ -859,5 +859,4 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             # Launch outputs scripting if present
             launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
         return document_id
-    else:
-        return None
+    return None
