@@ -17,7 +17,6 @@
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { MatDialog } from '@angular/material/dialog';
 import { Router } from "@angular/router";
 import { FormControl, Validators } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
@@ -29,7 +28,6 @@ import { PrivilegesService } from "../../../../../services/privileges.service";
 import { environment } from "../../../../env";
 import { catchError, of, tap } from "rxjs";
 import { finalize } from "rxjs/operators";
-import {DocumentTypeComponent} from "../../../../splitter/document-type/document-type.component";
 
 @Component({
   selector: 'app-create-model',
@@ -38,18 +36,18 @@ import {DocumentTypeComponent} from "../../../../splitter/document-type/document
 })
 
 export class CreateVerifierAiModelComponent implements OnInit {
-    loading             : boolean   = true;
-    docs                : any       = [];
-    doctypes            : any       = [];
-    docStatus           : any       = [];
-    controls            : any       = [];
-    formControl         : FormControl = new FormControl('');
-    listModels          : any       = [];
-    forms               : any       = [];
-    chosenForm          : any       = [];
-    chosenDocs          : any       = [];
-    totalChecked        : number    = 0;
-    modelForm           : any[]     = [
+    totalChecked        : number        = 0;
+    docs                : any           = [];
+    doctypes            : any           = [];
+    docStatus           : any           = [];
+    controls            : any           = [];
+    listModels          : any           = [];
+    forms               : any           = [];
+    chosenForm          : any           = [];
+    chosenDocs          : any           = [];
+    loading             : boolean       = true;
+    formControl         : FormControl   = new FormControl('');
+    modelForm           : any[]         = [
         {
             id: 'model_label',
             label: this.translate.instant("ARTIFICIAL-INTELLIGENCE.model_name"),
@@ -70,7 +68,6 @@ export class CreateVerifierAiModelComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
-        private dialog: MatDialog,
         public userService: UserService,
         private authService: AuthService,
         public translate: TranslateService,
