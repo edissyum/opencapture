@@ -24,15 +24,15 @@
             <mat-tab-group [selectedIndex]="this.selectedIndex" [dynamicHeight]="true">
                 <mat-tab *ngFor="let process of this.processes">
                     <ng-template mat-tab-label>
-                        <span class="actions" *ngIf="getNameOfProcess(process) !== '' && getNameOfProcess(process) !== null else input">
-                            <span *ngIf="!process.edit_name">
+                        <span class="actions" *ngIf="getNameOfProcess(process) !== '' else input">
+                            <span *ngIf="!process['edit_name']">
                                 {{ getNameOfProcess(process) }}
                             </span>
 
-                            <i *ngIf="!process.edit_name" [title]="'MAILCOLLECT.edit_process_name' | translate"
+                            <i *ngIf="!process['edit_name']" [title]="'MAILCOLLECT.edit_process_name' | translate"
                                class="fas fa-edit ml-5 hover:scale-125 transition-all duration-75"
                                (click)="process.edit_name = true"></i>
-                            <i *ngIf="!process.edit_name" [title]="'MAILCOLLECT.delete_process' | translate"
+                            <i *ngIf="!process['edit_name']" [title]="'MAILCOLLECT.delete_process' | translate"
                                class="fas fa-trash text-red-600 ml-5 hover:scale-125 transition-all duration-75"
                                (click)="deleteConfirmDialog(process)"></i>
                             <i *ngIf="processIsEnabled(process)" [title]="'MAILCOLLECT.disable_process' | translate"
@@ -45,7 +45,7 @@
                                class="fas fa-clone ml-5 text-green-400 hover:scale-125 transition-all duration-75"
                                (click)="duplicateConfirmDialog(process)"></i>
 
-                            <div *ngIf="process.edit_name" class="grid grid-cols-5">
+                            <div *ngIf="process['edit_name']" class="grid grid-cols-5">
                                 <div class="change_process_name settings_search col-span-4">
                                     <mat-form-field class="block">
                                         <input #new_process_name [value]="getNameOfProcess(process)" matInput
