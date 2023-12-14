@@ -34,7 +34,7 @@ def check_file_before_upload():
     :return:
     """
 
-    _ = request.files
+    # _ = request.files
     return '', 200
 
 
