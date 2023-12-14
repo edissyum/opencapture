@@ -153,6 +153,7 @@ export class UploadComponent implements OnInit {
                             this.notify.success(this.translate.instant('UPLOAD.upload_success'));
                         }),
                         catchError((err: any) => {
+                            this.sending = false;
                             this.fileControl.setValue([]);
                             this.notify.handleErrors(err);
                             return of(false);
