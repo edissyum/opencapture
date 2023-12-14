@@ -18,6 +18,9 @@
 import os
 import json
 import glob
+from tempfile import NamedTemporaryFile
+
+import magic
 import pypdf
 import shutil
 import ocrmypdf
@@ -94,6 +97,33 @@ def rest_validator(data, required_fields, only_data=False):
                         return False, error_message
                 return False, error_message
     return True, ''
+
+
+def check_extensions_mime(files):
+    extensions = ['pdf']
+    mimetypes = ['application/pdf']
+
+    mime = magic.Magic(mime=True)
+    for file in files:
+        _f = files[file]
+        ext = _f.filename.split('.')[-1]
+        if ext not in extensions:
+            response = {
+                "errors": gettext("UPLOAD_ERRROR"),
+                "message": gettext("FILE_EXTENSION_NOT_ALLOWED")
+            }
+            return response, 400
+
+        with NamedTemporaryFile('w', delete=True) as tmp:
+            _f.save(tmp.name)
+            mime_type = mime.from_file(tmp.name)
+            if mime_type not in mimetypes:
+                response = {
+                    "errors": gettext("UPLOAD_ERRROR"),
+                    "message": gettext("FILE_MIME_NOT_ALLOWED")
+                }
+                return response, 400
+        return '', 200
 
 
 def delete_documents(docservers, path, filename, full_jpg_filename):

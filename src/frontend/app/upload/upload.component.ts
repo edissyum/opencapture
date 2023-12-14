@@ -23,7 +23,6 @@ import { environment } from  "../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { HttpClient, HttpHeaders} from "@angular/common/http";
-import { Router } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -47,7 +46,6 @@ export class UploadComponent implements OnInit {
     error                       : boolean       = false;
 
     constructor(
-        private router: Router,
         private http: HttpClient,
         public userService: UserService,
         private authService: AuthService,
@@ -129,7 +127,6 @@ export class UploadComponent implements OnInit {
         }
 
         let timeout = 2000;
-
         for (let i = 0; i < this.fileControl.value!.length; i++) {
             if (this.fileControl.status === 'VALID') {
                 timeout += this.fileControl.value![i]['size'] / 200;
@@ -156,12 +153,13 @@ export class UploadComponent implements OnInit {
                             this.notify.success(this.translate.instant('UPLOAD.upload_success'));
                         }),
                         catchError((err: any) => {
+                            this.fileControl.setValue([]);
                             this.notify.handleErrors(err);
                             return of(false);
                         })
                     ).subscribe();
                 }),
-                catchError(() => {
+                catchError((err: any) => {
                     this.sending = false;
                     this.fileControl.setValue([]);
                     this.notify.handleErrors(this.translate.instant('ERROR.permission_problem'));
