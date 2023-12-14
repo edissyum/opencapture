@@ -47,7 +47,7 @@ msgstr "File extension is not allowed"
 
 #: src/backend/functions.py:125
 msgid "FILE_MIME_NOT_ALLOWED"
-msgstr "File MIME type is not allowed"
+msgstr "File MIME type doesn't match to extension"
 
 #: src/backend/scripting_functions.py:77
 msgid "WORFKLOW_NOT_FOUND"
