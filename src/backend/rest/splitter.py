@@ -17,8 +17,8 @@
 
 import json
 from flask_babel import gettext
-from src.backend.functions import rest_validator
 from flask import Blueprint, make_response, jsonify, request
+from src.backend.functions import rest_validator, check_extensions_mime
 from src.backend.import_controllers import auth, splitter, forms, privileges
 
 bp = Blueprint('splitter', __name__, url_prefix='/ws/')
@@ -39,6 +39,11 @@ def upload():
         user_id = request.form['userId']
 
     files = request.files
+
+    message, code = check_extensions_mime(files)
+    if code != 200:
+        return make_response(message, code)
+
     res = splitter.handle_uploaded_file(files, workflow_id, user_id)
     if res:
         return make_response('', 200)
