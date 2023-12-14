@@ -26,7 +26,7 @@ from src.backend.import_controllers import auth, config, verifier, privileges
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 
 
-@bp.route('verifier/checkFileBeforeUpload', methods=['POST'])
+@bp.route('checkFileBeforeUpload', methods=['POST'])
 def check_file_before_upload():
     """
     Check if the file is valid before upload
@@ -34,7 +34,7 @@ def check_file_before_upload():
     :return:
     """
 
-    # _ = request.files
+    _ = request.files
     return '', 200
 
 

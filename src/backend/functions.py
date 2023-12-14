@@ -126,9 +126,10 @@ def check_extensions_mime(files):
                         response = {
                             "errors": gettext("UPLOAD_ERRROR"),
                             "message": gettext("FILE_MIME_NOT_ALLOWED") + ' : ' + '<b>' + ext + '</b>' +
-                                       ' / <b>' + mime_type + '</b>'
+                            ' / <b>' + mime_type + '</b>'
                         }
                         return response, 400
+        _f.seek(0)
         return '', 200
 
 

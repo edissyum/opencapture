@@ -143,7 +143,7 @@ export class UploadComponent implements OnInit {
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
-                environment['url'] + '/ws/verifier/checkFileBeforeUpload', formData, {headers: new HttpHeaders({ timeout: `${timeout}` })},
+                environment['url'] + '/ws/checkFileBeforeUpload', formData, {headers: new HttpHeaders({ timeout: `${timeout}` })},
             ).pipe(
                 tap(() => {
                     this.http.post(environment['url'] + '/ws/' + splitterOrVerifier + '/upload', formData, {headers: this.authService.headers}).pipe(
