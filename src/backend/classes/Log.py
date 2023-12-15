@@ -76,6 +76,7 @@ class Log:
             'table': ['monitoring'],
             'set': {
                 "error": status == 'error' or self.process_in_error,
+                'status': status,
                 'steps': "jsonb_set(steps, '{" + str(self.current_step) + "}', '" + json.dumps(new_step) + "')"
             },
             'where': ['id = %s'],

@@ -66,7 +66,7 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
         await this.loadProcess();
 
         this.timer = setInterval(()=> {
-            if (this.processData.status === 'done') {
+            if (this.processData.status === 'done' || this.processData.status === 'error') {
                 clearInterval(this.timer);
                 return;
             }
