@@ -110,8 +110,7 @@ if __name__ == '__main__':
                 log.info(f"File removed: {batch_folder}")
                 shutil.rmtree(thumb_folder)
                 log.info(f"File removed: {thumb_folder}")
-
-        except Exception as e:
+        except (Exception,) as e:
             log.error(f"Error while removing files : {e}")
             continue
 

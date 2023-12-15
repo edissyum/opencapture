@@ -36,5 +36,5 @@ class CMIS:
                 file_content = file.read().decode('ISO-8859-1')
                 self._root_folder.createDocumentFromString(file_name, contentString=file_content, contentType=content_type)
                 return True, ''
-        except Exception as e:
+        except (Exception,) as e:
             return False, str(e)

@@ -180,7 +180,7 @@ def launch(args):
                                     log.info(f"Batches created : {','.join(str(batch) for batch in created_batches)}")
                 else:
                     log.error("The workflow_id doesn't exists in database")
-    except Exception:
+    except (Exception,):
         _e = str(traceback.format_exc())
         log.error(_e)
 

@@ -983,7 +983,7 @@
 		"textarea": "Multiligne (textarea)"
 	},
 	"UPLOAD": {
-		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
+		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas dans un format autorisé (PDF, JPG, PNG)",
 		"no_file": "Aucun fichier à téléverser",
 		"placeholder": "Cliquez pour choisir un ou plusieurs documents PDF ou faites glisser vos documents",
 		"please_select_workflow": "Choisissez un workflow avant de procéder au téléversement",

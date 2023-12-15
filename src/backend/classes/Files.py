@@ -178,7 +178,7 @@ class Files:
                     del chunk_images
             return outputs_paths
 
-        except Exception as error:
+        except (Exception,) as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
             return False
 
@@ -233,7 +233,7 @@ class Files:
                     del chunk_images
             return outputs_paths
 
-        except Exception as error:
+        except (Exception,) as error:
             self.log.error('bError during pdf2image conversion : ' + str(error))
             return False
 
@@ -262,7 +262,7 @@ class Files:
                 crop_ratio = (0, 0, images[i].width, int(images[i].height - self.height_ratio))
                 _im = images[i].crop(crop_ratio)
                 _im.save(output, 'JPEG')
-        except Exception as error:
+        except (Exception,) as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
 
     # Crop the file to get the footer
@@ -290,7 +290,7 @@ class Files:
                 crop_ratio = (0, self.height_ratio, images[i].width, images[i].height)
                 _im = images[i].crop(crop_ratio)
                 _im.save(output, 'JPEG')
-        except Exception as error:
+        except (Exception,) as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
 
     # When we crop footer we need to rearrange the position of founded text
@@ -384,14 +384,23 @@ class Files:
                     try:
                         reader = pypdf.PdfReader(file)
                         _ = reader.pages[0]
-                    except Exception:
+                        return True
+                    except (Exception,):
                         try:
                             shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         except FileNotFoundError:
                             pass
                         return False
-                    else:
+                elif file.lower().endswith(('.jpg', '.jpeg', '.png')):
+                    try:
+                        Image.open(file)
                         return True
+                    except (Exception,):
+                        try:
+                            shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                        except FileNotFoundError:
+                            pass
+                        return False
                 else:
                     return False
             else:
@@ -739,7 +748,7 @@ class Files:
                     pdf_writer.write(file)
                     args['log'].info(f"Splitter file exported to : {file_path}")
                 pdf_writer = pypdf.PdfWriter()
-        except Exception as err:
+        except (Exception,) as err:
             return False, str(err)
 
         return file_path, ''
@@ -793,7 +802,7 @@ class Files:
                     output = bck_output + '-' + str(cpt).zfill(3)
                 images[i].save(output + '.jpg', 'JPEG')
                 cpt = cpt + 1
-        except Exception as error:
+        except (Exception,) as error:
             log.error('Error during pdf2image conversion : ' + str(error))
 
     @staticmethod
@@ -806,7 +815,7 @@ class Files:
             else:
                 log.error(f'File {path} does not exist')
                 return False
-        except Exception as error:
+        except (Exception,) as error:
             log.error(f'Error during file deletion : {str(error)}')
             return False
 
@@ -820,7 +829,7 @@ class Files:
             else:
                 log.error(f'Folder {path} does not exist')
                 return False
-        except Exception as error:
+        except (Exception,) as error:
             log.error(f'Error during folder deletion : {str(error)}')
             return False
 

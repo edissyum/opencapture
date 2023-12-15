@@ -100,37 +100,41 @@ def rest_validator(data, required_fields, only_data=False):
 
 
 def check_extensions_mime(files):
-    formats = [{
-        'extension': 'pdf',
-        'mime': 'application/pdf'
-    }]
+    formats_file = str(Path(__file__).parents[2]) + '/instance/config/formats.json'
+    if os.path.isfile(formats_file):
+        with open(formats_file) as json_file:
+            formats = json.load(json_file)
+    else:
+        response = {
+            "errors": gettext("UPLOAD_ERRROR"),
+            "message": gettext("FORMATS_FILE_NOT_FOUND")
+        }
+        return response, 400
 
     mime = magic.Magic(mime=True)
     for file in files:
         _f = files[file]
-        ext = _f.filename.split('.')[-1]
-        for _format in formats:
-            if ext not in _format['extension']:
-                response = {
-                    "errors": gettext("UPLOAD_ERRROR"),
-                    "message": gettext("FILE_EXTENSION_NOT_ALLOWED") + ' : <b>' + ext + '</b>'
-                }
-                return response, 400
+        ext = _f.filename.split('.')[-1].lower()
+        allowed_extensions = [_f['extension'].lower() for _f in formats]
+        if ext not in allowed_extensions:
+            response = {
+                "errors": gettext("UPLOAD_ERRROR"),
+                "message": gettext("FILE_EXTENSION_NOT_ALLOWED") + ' : <b>' + ext + '</b>'
+            }
+            return response, 400
 
-        for _format in formats:
-            if _format['extension'] == ext:
-                with NamedTemporaryFile('w', delete=True) as tmp:
-                    _f.save(tmp.name)
-                    mime_type = mime.from_file(tmp.name)
-                    if mime_type not in _format['mime']:
-                        response = {
-                            "errors": gettext("UPLOAD_ERRROR"),
-                            "message": gettext("FILE_MIME_NOT_ALLOWED") + ' : ' + '<b>' + ext + '</b>' +
-                            ' / <b>' + mime_type + '</b>'
-                        }
-                        return response, 400
+        allowed_mime = [_f['mime'].lower() for _f in formats if _f['extension'].lower() == ext]
+        mime_type = mime.from_buffer(_f.read())
+
+        if mime_type not in allowed_mime:
+            response = {
+                "errors": gettext("UPLOAD_ERRROR"),
+                "message": gettext("FILE_MIME_NOT_ALLOWED") + ' : ' + '<b>' + ext + '</b>' +
+                ' / <b>' + mime_type + '</b>'
+            }
+            return response, 400
         _f.seek(0)
-        return '', 200
+    return '', 200
 
 
 def delete_documents(docservers, path, filename, full_jpg_filename):

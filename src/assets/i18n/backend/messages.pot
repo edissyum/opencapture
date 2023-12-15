@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-12-14 11:51+0100\n"
+"POT-Creation-Date: 2023-12-15 10:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,15 +37,20 @@ msgstr ""
 msgid "IS_NOT"
 msgstr ""
 
-#: src/backend/functions.py:113 src/backend/functions.py:124
+#: src/backend/functions.py:109 src/backend/functions.py:121
+#: src/backend/functions.py:131
 msgid "UPLOAD_ERRROR"
 msgstr ""
 
-#: src/backend/functions.py:114
+#: src/backend/functions.py:110
+msgid "FORMATS_FILE_NOT_FOUND"
+msgstr ""
+
+#: src/backend/functions.py:122
 msgid "FILE_EXTENSION_NOT_ALLOWED"
 msgstr ""
 
-#: src/backend/functions.py:125
+#: src/backend/functions.py:132
 msgid "FILE_MIME_NOT_ALLOWED"
 msgstr ""
 
