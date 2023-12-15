@@ -533,7 +533,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         for (const fieldId in this.document['datas']) {
             const page = this.getPage(fieldId);
             const position = this.document.positions[fieldId];
-            if (position && position.length > 0 && parseInt(String(page)) === parseInt(String(this.currentPage))) {
+            if (position && Object.keys(position).length > 0 && parseInt(String(page)) === parseInt(String(this.currentPage))) {
                 const splittedFieldId = fieldId.split('_');
                 const field = this.getFieldInfo(fieldId);
                 let cpt = '0';

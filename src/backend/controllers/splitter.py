@@ -229,7 +229,7 @@ def download_original_file(batch_id):
     if res[0]:
         try:
             batch = res[0]
-            file_path = docservers['SPLITTER_ORIGINAL_PDF'] + "/" + batch['file_path']
+            file_path = docservers['SPLITTER_ORIGINAL_DOC'] + "/" + batch['file_path']
             with open(file_path, 'rb') as pdf_file:
                 encoded_file = base64.b64encode(pdf_file.read()).decode('utf-8')
             return {'encodedFile': encoded_file, 'filename': batch['file_name']}, 200
@@ -687,7 +687,7 @@ def merge_batches(parent_id, batches):
         docservers = _vars[9]
 
     parent_info = splitter.get_batch_by_id({'id': parent_id})[0]
-    parent_filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + parent_info['file_path']
+    parent_filename = docservers['SPLITTER_ORIGINAL_DOC'] + '/' + parent_info['file_path']
     parent_batch_documents = int(parent_info['documents_count'])
     parent_document_id = splitter.get_documents({'id': parent_id})[0][-1]['id']
     parent_max_split_index = splitter.get_documents_max_split_index({'id': parent_id})[0][0]['split_index']
@@ -703,7 +703,7 @@ def merge_batches(parent_id, batches):
         batch_info = splitter.get_batch_by_id({'id': batch})[0]
         parent_batch_documents += batch_info['documents_count']
         batches_info.append(batch_info)
-        pdf = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
+        pdf = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch_info['file_path'])
         for page in range(len(pdf.pages)):
             merged_pdf.add_page(pdf.pages[page])
 

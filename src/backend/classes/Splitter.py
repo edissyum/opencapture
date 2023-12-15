@@ -131,7 +131,7 @@ class Splitter:
             })
 
             clean_path = re.sub(r"/+", "/", file)
-            clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_PDF'])
+            clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_DOC'])
 
             default_values = {
                 'document': {},

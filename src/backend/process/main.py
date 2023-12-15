@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import shutil
 import uuid
 import json
 import datetime
@@ -810,10 +811,16 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         full_jpg_filename = str(uuid.uuid4())
         file = files.move_to_docservers(docservers, file)
 
-        # Convert all the pages to JPG (used to full web interface)
-        files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename,
-                                      docservers=True, rotate_img=True, page_to_save=1)
-        files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename, rotate_img=True)
+        if file.lower().endswith('.pdf'):
+            # Convert all the pages to JPG (used to full web interface)
+            files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename,
+                                          docservers=True, rotate_img=True, page_to_save=1)
+            files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename,
+                                              rotate_img=True)
+        else:
+            files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], file,
+                                           full_jpg_filename + '-001.jpg', True)
+            files.move_to_docservers_image(docservers['VERIFIER_THUMB'], file, full_jpg_filename + '-001.jpg', True)
 
         allow_auto = False
         if workflow_settings and workflow_settings['input']['apply_process']:
