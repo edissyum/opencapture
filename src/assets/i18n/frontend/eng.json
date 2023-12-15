@@ -354,6 +354,7 @@
 		"alphanum_extended": "Alphanumeric extended [0-9aA-zZ-/'#,\\.\\s\\(\\)]",
 		"alphanum_extended_with_accent": "Alphanumeric extended with accent [0-9aA-zZ-À-ſ/'#,\\.\\s\\(\\)]",
 		"char": "Alphabetic [aA-zZ]",
+		"char_min": "Minimun length",
 		"date": "Date",
 		"email": "Email address",
 		"iban": "IBAN number",
@@ -869,7 +870,6 @@
 		"workflow_update": "Update workflow"
 	},
 	"SPLITTER": {
-		"Other": "(Autre)",
 		"add_document": "Add document",
 		"all_batches_checked_deleted": "All checked batches was successfully deleted",
 		"barch_form_change_success": "Batch form changed with success",
@@ -926,6 +926,7 @@
 		"no_metadata_required": "No metadata required ",
 		"no_result": "No result",
 		"no_selected_doctype": "(Please fill document type)",
+		"other": "(Other)",
 		"pageRotated": "Page rotated",
 		"quit_without_saving": "Quit without saving",
 		"quit_without_saving_modifications": "Are you sure you want to quit without saving?",
@@ -960,6 +961,7 @@
 		"diagram_pie_chart": "Pie chart diagram",
 		"diagram_pie_grid": "Pie grid diagram",
 		"diagram_vertical_bar": "Vertical bar diagram",
+		"documents_uploaded_per_worklow": "Documents uploaded per workflow",
 		"splitter_documents_uploaded": "Uploaded documents for this year",
 		"verifier_documents_uploaded": "Uploaded documents for this year",
 		"verifier_documents_validated_per_form": "Documents validated per form",

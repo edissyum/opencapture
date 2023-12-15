@@ -323,7 +323,7 @@ def get_last_git_version():
 
     latest_git_version = subprocess.Popen("git ls-remote --tags --sort='v:refname' "
                                           "https://github.com/edissyum/opencapture.git | "
-                                          "tail -n1 |  sed 's/.*\///; s/\^{}//' | grep -E '2.+([0-9])$'", shell=True,
+                                          "tail -n1 |  sed 's/.*\///; s/\^{}//' | grep -E '3.+([0-9])$'", shell=True,
                                           stdout=subprocess.PIPE).stdout.read()
     return str(latest_git_version.decode('utf-8').strip())
 

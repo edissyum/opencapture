@@ -32,11 +32,10 @@ import subprocess
 import numpy as np
 from PIL import Image
 from zipfile import ZipFile
-
 from deskew import determine_skew
-from pdf2image import convert_from_path
 from skimage.color import rgb2gray
 from skimage.transform import rotate
+from pdf2image import convert_from_path
 from werkzeug.utils import secure_filename
 from pytesseract import pytesseract, Output
 from src.backend.functions import get_custom_array, generate_searchable_pdf
@@ -386,7 +385,10 @@ class Files:
                         reader = pypdf.PdfReader(file)
                         _ = reader.pages[0]
                     except Exception:
-                        shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                        try:
+                            shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                        except FileNotFoundError:
+                            pass
                         return False
                     else:
                         return True

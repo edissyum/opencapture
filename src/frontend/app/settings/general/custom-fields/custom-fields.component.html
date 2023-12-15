@@ -96,16 +96,6 @@
                                            <i class="fa-solid fa-circle-question text-md"></i>
                                         </span>
                                     </mat-slide-toggle>
-                                    <mat-form-field class="w-1/2">
-                                        <mat-label>{{ 'CUSTOM-FIELDS.regex_format' | translate }}</mat-label>
-                                        <mat-select [formControl]="regexFormat" (selectionChange)="checkRegex()">
-                                            <mat-option *ngFor="let opt of formats" [value]="opt.id">
-                                                {{ opt.label | translate }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-                                <div class="flex flex-row gap-10 justify-center">
                                     <mat-slide-toggle [formControl]="regexRemoveSpecialChar" class="mb-8 flex justify-center">
                                         <span class="justify-center">{{ 'CUSTOM-FIELDS.regex_remove_special_char' | translate }}</span>
                                         <span class="relative text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="'CUSTOM-FIELDS.regex_remove_special_char_hint' | translate">
@@ -116,22 +106,39 @@
                                         <span class="justify-center">{{ 'CUSTOM-FIELDS.regex_remove_spaces' | translate }}</span>
                                     </mat-slide-toggle>
                                 </div>
+                                <div class="flex flex-row gap-10 justify-center w-11/12 m-auto">
+                                    <mat-form-field class="w-1/2">
+                                        <mat-label>{{ 'CUSTOM-FIELDS.regex_format' | translate }}</mat-label>
+                                        <mat-select [formControl]="regexFormat" (selectionChange)="checkRegex()">
+                                            <mat-option *ngFor="let opt of formats" [value]="opt.id">
+                                                {{ opt.label | translate }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-1/2">
+                                        <mat-label>{{ 'FORMATS.char_min' | translate }}</mat-label>
+                                        <input matInput [value]="regexCharMinControl.value"
+                                               [formControl]="regexCharMinControl" (keyup)="checkCharMin()">
+                                    </mat-form-field>
+                                </div>
+                                <hr class="border-green-400 w-1/2 mb-14 mt-2 mx-auto">
                                 <div class="-mt-4 mb-4">
                                     <app-hint [specificClass]="'w-1/2'" *ngIf="regexRemoveKeyWord.value"
                                               [message]="'CUSTOM-FIELDS.regex_remove_keyword_explanation' | translate"></app-hint>
                                 </div>
                                 <mat-form-field class="w-full">
                                     <mat-label>{{ 'FORMATS.regex' | translate }}</mat-label>
-                                    <textarea [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="1" matInput [value]="regexControl.value"
-                                              [formControl]="regexControl" (keyup)="checkRegex()" spellcheck="false"></textarea>
+                                    <textarea [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="1" matInput
+                                              [value]="regexControl.value" [formControl]="regexControl"
+                                              (keyup)="checkRegex()" spellcheck="false"></textarea>
                                 </mat-form-field>
                                 <mat-form-field class="w-full">
                                     <mat-label>{{ 'FORMATS.test_string' | translate }}</mat-label>
                                     <input matInput type="text" [formControl]="regexTestControl" (keyup)="checkRegex()">
                                 </mat-form-field>
                                 <span>
-                                {{ 'CUSTOM-FIELDS.regex_results' | translate }} : <span [innerHTML]="regexResult"></span>
-                            </span>
+                                    {{ 'CUSTOM-FIELDS.regex_results' | translate }} : <span [innerHTML]="regexResult"></span>
+                                </span>
                             </div>
                         </div>
                         <div class="flex justify-center m-5">
