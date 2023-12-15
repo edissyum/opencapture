@@ -496,6 +496,6 @@ def test_script_verifier(args):
             result_string = '<strong>' + gettext('LINE') + ' ' + splitted_result[1] + ' ' + \
                             gettext('COLUMN') + ' ' + splitted_result[2] + '</strong> : ' + splitted_result[3]
             return result_string, 400
-    except Exception:
+    except (Exception,):
         return traceback.format_exc(), 400
     return result_string, 200

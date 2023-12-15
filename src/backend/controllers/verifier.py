@@ -537,7 +537,7 @@ def launch_output_script(document_id, workflow_settings, outputs):
                 os.remove(tmp_file)
                 if not res:
                     return False
-        except Exception as _e:
+        except (Exception,) as _e:
             os.remove(tmp_file)
             log.error('Error during output scripting : ' + str(traceback.format_exc()))
 

@@ -108,7 +108,7 @@ def launch_referential_update(form_data):
                                                                         method['script'],
                                                                         method['method'])
                     metadata_load(args)
-    except Exception as e:
+    except (Exception,) as e:
         response = {
             'status': False,
             "errors": gettext('LOAD_METADATA_ERROR'),
@@ -233,7 +233,7 @@ def download_original_file(batch_id):
             with open(file_path, 'rb') as pdf_file:
                 encoded_file = base64.b64encode(pdf_file.read()).decode('utf-8')
             return {'encodedFile': encoded_file, 'filename': batch['file_name']}, 200
-        except Exception as e:
+        except (Exception,) as e:
             response = {
                 "errors": "ERROR",
                 "message": str(e)
@@ -369,7 +369,7 @@ def get_page_full_thumbnail(page_id):
             encoded_string = base64.b64encode(image_file.read())
             full_thumbnail = encoded_string.decode("utf-8")
             return {'fullThumbnail': full_thumbnail}, 200
-    except Exception as e:
+    except (Exception,) as e:
         response = {
             "errors": "ERROR",
             "message": str(e)
@@ -556,7 +556,7 @@ def save_modifications(data):
 def test_cmis_connection(args):
     try:
         _CMIS(args['cmis_ws'], args['login'], args['password'], args['folder'])
-    except Exception as e:
+    except (Exception,) as e:
         response = {
             'status': False,
             "errors": gettext('CMIS_CONNECTION_ERROR'),

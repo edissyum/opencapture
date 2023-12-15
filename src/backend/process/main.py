@@ -105,7 +105,7 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
                 res = scripting.main(data)
                 os.remove(tmp_file)
                 return change_workflow and res != 'DISABLED'
-        except Exception:
+        except (Exception,):
             log.error('Error during ' + step + ' scripting :s' + str(traceback.format_exc()))
             os.remove(tmp_file)
 
@@ -391,16 +391,17 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         'pages': {},
         'positions': {}
     }
-    nb_pages = files.get_pages(docservers, file)
-    splitted_file = os.path.basename(file).split('_')
-    if splitted_file[0] == 'SPLITTER':
-        original_file = os.path.basename(file).split('_')
-        original_file = original_file[1] + '_' + original_file[2] + '.pdf'
-    else:
-        original_file = os.path.basename(file)
+
+    nb_pages = 1
+    original_file = os.path.basename(file)
+    if file.endswith('.pdf'):
+        nb_pages = files.get_pages(docservers, file)
+        splitted_file = os.path.basename(file).split('_')
+        if splitted_file[0] == 'SPLITTER':
+            original_file = os.path.basename(file).split('_')
+            original_file = original_file[1] + '_' + original_file[2] + '.pdf'
 
     workflow_settings = None
-
     if 'workflow_id' in args:
         workflow_settings = database.select({
             'select': ['*'],

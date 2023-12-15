@@ -201,7 +201,7 @@ def update_form(form_id, args, module):
                     forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '" + settings_data + "')"}, 'form_id': form_id})
                 else:
                     forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '\"" + str(args['settings'][setting]) + "\"')"}, 'form_id': form_id})
-            except Exception:
+            except (Exception,):
                 forms.update_form({'set': {'settings': "jsonb_set(settings, '{" + setting + "}', '\"" + str(args['settings'][setting]) + "\"')"}, 'form_id': form_id})
 
         # Update form other database columns

@@ -521,8 +521,7 @@ def export_users(args):
             'encoded_file': b64.decode()
         }
         return response, 200
-
-    except Exception as e:
+    except (Exception,) as e:
         response = {
             "errors": gettext("USER_EXPORT_ERROR"),
             "message": str(e)
@@ -550,8 +549,7 @@ def import_users(args):
             subprocess.run(shell_cmd, shell=True)
 
         return {'OK': True}, 200
-
-    except Exception as e:
+    except (Exception,) as e:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),
             "message": str(e)
