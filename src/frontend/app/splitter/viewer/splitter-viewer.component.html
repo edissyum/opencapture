@@ -400,7 +400,7 @@
                                 <mat-label>{{ 'SPLITTER.move_selected_to' | translate }}</mat-label>
                                 <mat-select [(ngModel)]="toolSelectedOption">
                                     <mat-option *ngFor="let document of this.documents;" [value]="document['id']" class="w-full document_type_options">
-                                        {{ document['doctypeLabel'] }}
+                                        {{ document['doctypeLabel'] !== '' ? document['doctypeLabel'] : 'SPLITTER.no_selected_doctype' | translate }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
