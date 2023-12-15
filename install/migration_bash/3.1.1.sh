@@ -17,7 +17,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 if [ "$EUID" -ne 0 ]; then
-    echo "3.1.0.sh needed to be launch by user with root privileges"
+    echo "$(basename "$0") needed to be launch by user with root privileges"
     exit 1
 fi
 
