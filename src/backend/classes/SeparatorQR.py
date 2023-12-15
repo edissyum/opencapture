@@ -159,7 +159,7 @@ class SeparatorQR:
             elif self.splitter_or_verifier == 'splitter':
                 self.get_xml_zbarimg(file)
                 self.parse_xml_multi()
-        except Exception as e:
+        except (Exception,) as e:
             self.error = True
             self.log.error("INIT : " + str(e))
 
@@ -292,7 +292,7 @@ class SeparatorQR:
                 if self.convert_to_pdfa == 'True':
                     self.convert_to_pdfa(page['pdfa_filename'], page['pdf_filename'])
             os.remove(file)
-        except Exception as _e:
+        except (Exception,) as _e:
             self.log.error("EACD: " + str(_e))
 
     @staticmethod
@@ -403,7 +403,7 @@ class SeparatorQR:
                 page.save(buffered, format="JPEG")
                 encoded_thumbnails.append(f"data:image/jpeg;base64,"
                                           f"{base64.b64encode(buffered.getvalue()).decode('utf-8')}")
-        except Exception as _e:
+        except (Exception,) as _e:
             return {'error': str(_e)}
 
         return {
