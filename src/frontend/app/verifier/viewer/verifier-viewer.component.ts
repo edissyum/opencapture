@@ -291,7 +291,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         * Enable library to draw rectangle on load (OCR ON FLY)
         */
         this.imageDocument = $('#document_image');
-        this.ratio = this.document.img_width / this.imageDocument.width();
+        this.ratio = this.document['img_width'] / this.imageDocument.width();
         this.ocr({
             'target' : {
                 'id': '',
@@ -323,10 +323,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         if (this.formSettings.settings.unique_url && this.formSettings.settings.unique_url.allow_supplier_autocomplete) {
             this.allowAutocomplete = true;
         }
-    }
-
-    timeout(ms: number) {
-        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     async reloadPageWaitingFinish(token: any) {
@@ -534,10 +530,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     async drawPositions(): Promise<any> {
-        for (const fieldId in this.document.datas) {
+        for (const fieldId in this.document['datas']) {
             const page = this.getPage(fieldId);
             const position = this.document.positions[fieldId];
-            if (position && parseInt(String(page)) === parseInt(String(this.currentPage))) {
+            if (position && position.length > 0 && parseInt(String(page)) === parseInt(String(this.currentPage))) {
                 const splittedFieldId = fieldId.split('_');
                 const field = this.getFieldInfo(fieldId);
                 let cpt = '0';
