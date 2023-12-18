@@ -145,11 +145,11 @@
 
                     <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
 
-                    <div *ngIf="this.documents.length === 0 && !this.loading" class="my-32 mx-auto text-center text-gray-200">
+                    <div *ngIf="this.documents.length === 0 && !this.loading" class="text-gray-200 text-center absolute top-[55%] left-[50%]" style="transform: translate(-50%, -50%);">
                         <i class="fa-regular fa-folder-open fa-10x w-full"></i>
                         <span class="text-4xl">
-                                {{ 'SPLITTER.no_batch_found' | translate }}
-                            </span>
+                            {{ 'GLOBAL.no_batch_found' | translate }}
+                        </span>
                     </div>
 
                     <div *ngIf="this.loading">
