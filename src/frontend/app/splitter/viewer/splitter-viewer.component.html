@@ -15,7 +15,7 @@
                 </div>
             </div>
             <span *ngIf="batches.length === 0" class="text-slate-400 w-full grid place-content-center">
-                {{ 'SPLITTER.no_batch_found' | translate }}
+                {{ 'GLOBAL.no_batch_found' | translate }}
             </span>
             <div cdkDropList  (cdkDropListDropped)="dropBatch($event)">
                 <div class="cursor-move" (cdkDragStarted)="this.isBatchOnDrag = true" (cdkDragEnded)="onBatchDrop(batch.id)"
