@@ -95,14 +95,16 @@ class Files:
                     else:
                         self.img = Image.open(self.jpg_name_footer)
         else:
+            target = self.jpg_name
             if last_image:
                 target = self.jpg_name_last
             elif is_custom:
                 target = self.custom_file_name
-            else:
-                target = self.jpg_name
 
-            self.save_img_with_pdf2image(pdf_name, target, page, convert_function=convert_function)
+            if pdf_name.lower().endswith('.pdf'):
+                self.save_img_with_pdf2image(pdf_name, target, page, convert_function=convert_function)
+            else:
+                shutil.copyfile(pdf_name, target)
 
             if open_img:
                 self.img = Image.open(target)
@@ -177,8 +179,7 @@ class Files:
                         del image
                     del chunk_images
             return outputs_paths
-
-        except Exception as error:
+        except (Exception,) as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
             return False
 
@@ -232,9 +233,8 @@ class Files:
                         del image
                     del chunk_images
             return outputs_paths
-
-        except Exception as error:
-            self.log.error('bError during pdf2image conversion : ' + str(error))
+        except (Exception,) as error:
+            self.log.error('Error during pdf2image conversion : ' + str(error))
             return False
 
     # Crop the file to get the header
@@ -249,7 +249,7 @@ class Files:
             if output_name:
                 output = output_name
 
-            if convert_function == 'imagemagick':
+            if convert_function == 'imagemagick' or pdf_name.lower().endswith(('.jpg', 'jpeg', '.png')):
                 cmd = f'convert -density 200 {pdf_name}[{str(page - 1)}] -quality 100 -alpha remove {output}'
                 process = subprocess.Popen(cmd.split(' '))
                 process.communicate()
@@ -262,7 +262,7 @@ class Files:
                 crop_ratio = (0, 0, images[i].width, int(images[i].height - self.height_ratio))
                 _im = images[i].crop(crop_ratio)
                 _im.save(output, 'JPEG')
-        except Exception as error:
+        except (Exception,) as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
 
     # Crop the file to get the footer
@@ -277,7 +277,7 @@ class Files:
             if output_name:
                 output = output_name
 
-            if convert_function == 'imagemagick':
+            if convert_function == 'imagemagick' or pdf_name.lower().endswith(('.jpg', 'jpeg', '.png')):
                 cmd = f'convert -density 200 {pdf_name}[{str(page - 1)}] -quality 100 -alpha remove {output}'
                 process = subprocess.Popen(cmd.split(' '))
                 process.communicate()
@@ -290,7 +290,7 @@ class Files:
                 crop_ratio = (0, self.height_ratio, images[i].width, images[i].height)
                 _im = images[i].crop(crop_ratio)
                 _im.save(output, 'JPEG')
-        except Exception as error:
+        except (Exception,) as error:
             self.log.error('Error during pdf2image conversion : ' + str(error))
 
     # When we crop footer we need to rearrange the position of founded text
@@ -384,14 +384,23 @@ class Files:
                     try:
                         reader = pypdf.PdfReader(file)
                         _ = reader.pages[0]
-                    except Exception:
+                        return True
+                    except (Exception,):
                         try:
                             shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         except FileNotFoundError:
                             pass
                         return False
-                    else:
+                elif file.lower().endswith(('.jpg', '.jpeg', '.png')):
+                    try:
+                        Image.open(file)
                         return True
+                    except (Exception,):
+                        try:
+                            shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                        except FileNotFoundError:
+                            pass
+                        return False
                 else:
                     return False
             else:
@@ -567,7 +576,7 @@ class Files:
         return improved_img
 
     @staticmethod
-    def move_to_docservers_image(docserver_path, file):
+    def move_to_docservers_image(docserver_path, file, output=False, copy=False):
         now = datetime.datetime.now()
         year = str(now.year)
         month = str('%02d' % now.month)
@@ -585,8 +594,13 @@ class Files:
             os.mkdir(docserver_path + '/' + year + '/' + month)
 
         final_directory = docserver_path + '/' + year + '/' + month + '/' + os.path.basename(file)
+        if output:
+            final_directory = docserver_path + '/' + year + '/' + month + '/' + output
 
-        shutil.move(file, final_directory)
+        if copy:
+            shutil.copyfile(file, final_directory)
+        else:
+            shutil.move(file, final_directory)
         return final_directory
 
     @staticmethod
@@ -599,9 +613,9 @@ class Files:
         minute = str('%02d' % now.minute)
         seconds = str('%02d' % now.second)
         if module == 'verifier':
-            docserver_path = docservers['VERIFIER_ORIGINAL_PDF']
+            docserver_path = docservers['VERIFIER_ORIGINAL_DOC']
         else:
-            docserver_path = docservers['SPLITTER_ORIGINAL_PDF']
+            docserver_path = docservers['SPLITTER_ORIGINAL_DOC']
 
         # Check if docserver folder exists, if not, create it
         if not os.path.exists(docserver_path):
@@ -615,7 +629,8 @@ class Files:
         if not os.path.exists(docserver_path + '/' + year + '/' + month):
             os.mkdir(docserver_path + '/' + year + '/' + month)
 
-        new_filename = day + month + year + '_' + hour + minute + seconds + '_' + uuid.uuid4().hex + '.pdf'
+        extension = os.path.splitext(file)[1]
+        new_filename = day + month + year + '_' + hour + minute + seconds + '_' + uuid.uuid4().hex + extension
         final_directory = docserver_path + '/' + year + '/' + month + '/' + new_filename
 
         shutil.move(file, final_directory)
@@ -739,7 +754,7 @@ class Files:
                     pdf_writer.write(file)
                     args['log'].info(f"Splitter file exported to : {file_path}")
                 pdf_writer = pypdf.PdfWriter()
-        except Exception as err:
+        except (Exception,) as err:
             return False, str(err)
 
         return file_path, ''
@@ -793,7 +808,7 @@ class Files:
                     output = bck_output + '-' + str(cpt).zfill(3)
                 images[i].save(output + '.jpg', 'JPEG')
                 cpt = cpt + 1
-        except Exception as error:
+        except (Exception,) as error:
             log.error('Error during pdf2image conversion : ' + str(error))
 
     @staticmethod
@@ -806,7 +821,7 @@ class Files:
             else:
                 log.error(f'File {path} does not exist')
                 return False
-        except Exception as error:
+        except (Exception,) as error:
             log.error(f'Error during file deletion : {str(error)}')
             return False
 
@@ -820,7 +835,7 @@ class Files:
             else:
                 log.error(f'Folder {path} does not exist')
                 return False
-        except Exception as error:
+        except (Exception,) as error:
             log.error(f'Error during folder deletion : {str(error)}')
             return False
 

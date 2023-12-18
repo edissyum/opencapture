@@ -466,6 +466,7 @@
 		"move_to_inactive": "Déplacer vers les inactifs",
 		"n_minutes_ago": "il y a {{ minutes }} min",
 		"new_workflow_link": "Réattribution des workflows",
+		"no_batch_found": "Aucun lot à afficher",
 		"no_task_to_show": "Aucune tâche n'est lancée",
 		"quit": "Quitter",
 		"reset-password": "Réinitialiser le mot de passe",
@@ -921,7 +922,6 @@
 		"min_3_letter": "Au moins 3 lettres",
 		"moveToAnotherDoc": "Déplacer vers un autre document",
 		"move_selected_to": "Déplacer la sélection vers",
-		"no_batch_found": "Aucun lot à afficher",
 		"no_document_to_show": "Aucun document à afficher",
 		"no_metadata_required": "Aucune métadonnée requise",
 		"no_result": "0 Résultat",
@@ -983,7 +983,7 @@
 		"textarea": "Multiligne (textarea)"
 	},
 	"UPLOAD": {
-		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
+		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas dans un format autorisé (PDF, JPG, PNG)",
 		"no_file": "Aucun fichier à téléverser",
 		"placeholder": "Cliquez pour choisir un ou plusieurs documents PDF ou faites glisser vos documents",
 		"please_select_workflow": "Choisissez un workflow avant de procéder au téléversement",

@@ -154,7 +154,7 @@ def export_pdf_files(batch, parameters, log, docservers, configurations):
 
         filename = _Splitter.get_value_from_mask(document, batch['data']['custom_fields'], mask_args)
 
-        document['file_path'] = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch['file_path']
+        document['file_path'] = docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch['file_path']
         document['compress_type'] = parameters['compress_type']
         document['folder_out'] = parameters['folder_out']
         document['filename'] = filename
@@ -372,4 +372,4 @@ def process_after_outputs(batch, close_status, workflow_settings, docservers, lo
         'status': close_status
     })
     if workflow_settings['process']['delete_documents']:
-        _Files.remove_file(f"{docservers['SPLITTER_ORIGINAL_PDF']}/{batch['file_path']}", log)
+        _Files.remove_file(f"{docservers['SPLITTER_ORIGINAL_DOC']}/{batch['file_path']}", log)

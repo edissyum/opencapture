@@ -52,5 +52,5 @@ def get_token(user_id):
             secret_key,
             algorithm='HS512'
         )
-    except Exception as _e:
+    except (Exception,) as _e:
         return str(_e)

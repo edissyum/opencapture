@@ -131,7 +131,7 @@ class Splitter:
             })
 
             clean_path = re.sub(r"/+", "/", file)
-            clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_PDF'])
+            clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_DOC'])
 
             default_values = {
                 'document': {},
@@ -425,7 +425,7 @@ class Splitter:
             with open(xml_file_path, "w", encoding='utf-8') as f:
                 minidom.parseString(xml_as_string)
                 f.write(xml_as_string)
-        except Exception as e:
+        except (Exception,) as e:
             return False, str(e)
 
         return True, xml_file_path

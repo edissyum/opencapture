@@ -537,7 +537,7 @@ def launch_output_script(document_id, workflow_settings, outputs):
                 os.remove(tmp_file)
                 if not res:
                     return False
-        except Exception as _e:
+        except (Exception,) as _e:
             os.remove(tmp_file)
             log.error('Error during output scripting : ' + str(traceback.format_exc()))
 
@@ -621,7 +621,7 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
                 if document:
                     document = document[0]
                     cpt = int(filename.split('-')[len(filename.split('-')) - 1].replace('.jpg', ''))
-                    pdf_path = docservers['VERIFIER_ORIGINAL_PDF'] + '/' + str(year_and_month) + '/' + document['filename']
+                    pdf_path = docservers['VERIFIER_ORIGINAL_DOC'] + '/' + str(year_and_month) + '/' + document['filename']
                     filename = docservers['VERIFIER_IMAGE_FULL'] + '/' + str(year_and_month) + '/' + filename
                     files.save_img_with_pdf2image(pdf_path, filename, cpt)
                     if os.path.isfile(filename):

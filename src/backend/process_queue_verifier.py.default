@@ -212,7 +212,7 @@ def launch(args):
                 res = execute(args, path, log, config, files, ocr, regex, database, docservers, configurations,
                               languages, mail_class, smtp)
                 list_of_ids.append(res)
-        except Exception:
+        except (Exception,):
             _e = str(traceback.format_exc())
             log.error(_e)
 

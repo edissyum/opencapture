@@ -259,7 +259,7 @@ def export_doctypes(args):
             'encoded_file': b64.decode()
         }
         return response, 200
-    except Exception as e:
+    except (Exception,) as e:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),
             "message": str(e)
@@ -282,8 +282,7 @@ def csv_preview(files):
             'rows': rows
         }
         return response, 200
-
-    except Exception as e:
+    except (Exception,) as e:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),
             "message": str(e)
@@ -311,8 +310,7 @@ def import_from_csv(args):
                 _, _ = doctypes.add_doctype(doctype)
 
         return {'OK': True}, 200
-
-    except Exception as e:
+    except (Exception,) as e:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),
             "message": str(e)

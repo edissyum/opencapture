@@ -35,7 +35,7 @@ class OpenADS:
             if 'msg' in res and res['msg'] == 'Running':
                 return {'status': True}
 
-        except Exception as e:
+        except (Exception,) as e:
             response = {
                 "status": False,
                 "message": str(e)
@@ -58,7 +58,7 @@ class OpenADS:
             elif 'status' in res and res['status'] == 'error':
                 return {'status': False, "error": res['errors'][0]['description']}
 
-        except Exception as e:
+        except (Exception,) as e:
             response = {'status': False, 'error': str(e)}
             return response
 
@@ -82,7 +82,7 @@ class OpenADS:
                 response = requests.post(self.api + "/dossier/" + folder_id + "/pieces", data=json.dumps(data), auth=self.auth)
                 if 'errors' in response:
                     return {'status': False, "error": response['errors'][0]['description']}
-        except Exception as e:
+        except (Exception,) as e:
             response = {'status': False, 'error': str(e)}
             return response
 
