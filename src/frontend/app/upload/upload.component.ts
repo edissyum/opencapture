@@ -37,7 +37,7 @@ import { LocalStorageService } from "../../services/local-storage.service";
 })
 
 export class UploadComponent implements OnInit {
-    allowedExtensions           : string[]      = ['pdf', 'jpg', 'jpeg', 'png'];
+    allowedExtensions           : string[]      = ['pdf', 'jpg', 'jpeg', 'png', 'heif', 'heic'];
     headers                     : HttpHeaders   = this.authService.headers;
     selectedWorkflow            : any           = '';
     selectedWorkflowTechnicalId : any           = '';

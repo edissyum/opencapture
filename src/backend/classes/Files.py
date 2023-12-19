@@ -23,6 +23,7 @@ import json
 import time
 import uuid
 import pypdf
+import pyheif
 import string
 import random
 import shutil
@@ -47,6 +48,18 @@ if 'FindDate' not in custom_array:
 else:
     FindDate = getattr(__import__(custom_array['find_date']['path'] + '.' + custom_array['find_date']['module'],
                                   fromlist=[custom_array['find_date']['module']]), custom_array['find_date']['module'])
+
+
+def convert_heif_to_jpg(file):
+    heif_file = pyheif.read(file)
+    return Image.frombytes(
+        heif_file.mode,
+        heif_file.size,
+        heif_file.data,
+        "raw",
+        heif_file.mode,
+        heif_file.stride,
+    )
 
 
 class Files:
@@ -103,6 +116,9 @@ class Files:
 
             if pdf_name.lower().endswith('.pdf'):
                 self.save_img_with_pdf2image(pdf_name, target, page, convert_function=convert_function)
+            elif pdf_name.lower().endswith(('.heic', '.heif')):
+                heif_file = convert_heif_to_jpg(pdf_name)
+                heif_file.save(target, 'JPEG')
             else:
                 shutil.copyfile(pdf_name, target)
 
@@ -254,6 +270,10 @@ class Files:
                 process = subprocess.Popen(cmd.split(' '))
                 process.communicate()
                 images = [Image.open(output)]
+            elif pdf_name.lower().endswith(('.heic', '.heif')):
+                heif_file = convert_heif_to_jpg(pdf_name)
+                heif_file.save(output, 'JPEG')
+                images = [Image.open(output)]
             else:
                 images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
 
@@ -281,6 +301,10 @@ class Files:
                 cmd = f'convert -density 200 {pdf_name}[{str(page - 1)}] -quality 100 -alpha remove {output}'
                 process = subprocess.Popen(cmd.split(' '))
                 process.communicate()
+                images = [Image.open(output)]
+            elif pdf_name.lower().endswith(('.heic', '.heif')):
+                heif_file = convert_heif_to_jpg(pdf_name)
+                heif_file.save(output, 'JPEG')
                 images = [Image.open(output)]
             else:
                 images = convert_from_path(pdf_name, first_page=page, last_page=page, dpi=300)
@@ -380,7 +404,7 @@ class Files:
             time.sleep(1)
             size2 = os.path.getsize(file)
             if size2 == size:
-                if file.lower().endswith(".pdf"):
+                if file.lower().endswith('.pdf'):
                     try:
                         reader = pypdf.PdfReader(file)
                         _ = reader.pages[0]
@@ -395,7 +419,17 @@ class Files:
                     try:
                         Image.open(file)
                         return True
-                    except (Exception,):
+                    except (Exception,) as _e:
+                        try:
+                            shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                        except FileNotFoundError:
+                            pass
+                        return False
+                elif file.lower().endswith(('.heic', '.heif')):
+                    try:
+                        convert_heif_to_jpg(file)
+                        return True
+                    except (Exception,) as _e:
                         try:
                             shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         except FileNotFoundError:
@@ -598,7 +632,11 @@ class Files:
             final_directory = docserver_path + '/' + year + '/' + month + '/' + output
 
         if copy:
-            shutil.copyfile(file, final_directory)
+            if file.lower().endswith(('.heic', '.heif')):
+                heif_image = convert_heif_to_jpg(file)
+                heif_image.save(final_directory, 'JPEG')
+            else:
+                shutil.copyfile(file, final_directory)
         else:
             shutil.move(file, final_directory)
         return final_directory

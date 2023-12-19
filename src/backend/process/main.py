@@ -818,8 +818,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename,
                                               rotate_img=True)
         else:
-            files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], file,
-                                           full_jpg_filename + '-001.jpg', True)
+            files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], file, full_jpg_filename + '-001.jpg', True)
             files.move_to_docservers_image(docservers['VERIFIER_THUMB'], file, full_jpg_filename + '-001.jpg', True)
 
         allow_auto = False
