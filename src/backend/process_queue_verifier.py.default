@@ -48,10 +48,11 @@ kuyruk = Kuyruk()
 def execute(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages, mail, smtp):
     if check_file(files, path, log, docservers):
         is_facturx = False
-        with open(path, 'rb') as _f:
-            _, xml_content = facturx.get_facturx_xml_from_pdf(_f.read())
-            if _ is not None:
-                is_facturx = True
+        if path.lower().endswith('.pdf'):
+            with open(path, 'rb') as _f:
+                _, xml_content = facturx.get_facturx_xml_from_pdf(_f.read())
+                if _ is not None:
+                    is_facturx = True
 
         if not is_facturx:
             skip = res = False
