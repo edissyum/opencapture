@@ -14,5 +14,13 @@
     {
         "extension": "png",
         "mime": "image/png"
+    },
+    {
+        "extension": "heif",
+        "mime": "image/heic"
+    },
+    {
+        "extension": "heic",
+        "mime": "image/heic"
     }
 ]

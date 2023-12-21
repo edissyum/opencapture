@@ -8,6 +8,7 @@ ldap3==2.9.1
 pyocr==0.8.5
 PyJWT==2.8.0
 flask==3.0.0
+pyheif==0.7.1
 deskew==1.4.3
 pypdf==3.17.3
 pyzbar==0.1.9
