@@ -179,12 +179,13 @@ def launch(args):
     database.insert({
         'table': 'history',
         'columns': {
+            'user_ip': args['ip'],
             'history_module': 'verifier',
             'user_info': args['user_info'],
-            'history_submodule': 'upload_file',
-            'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>',
             'workflow_id': args['workflow_id'],
-            'user_ip': args['ip']
+            'history_submodule': 'upload_file',
+            'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
+            'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>'
         }
     })
 
