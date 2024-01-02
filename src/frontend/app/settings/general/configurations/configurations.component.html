@@ -135,13 +135,12 @@
                                 <input matInput id="associated_user" type="text" [matAutocomplete]="autocomplete" [placeholder]="'CONFIGURATIONS.select_user' | translate" required>
                                 <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setSelectedUser($event)">
                                     <mat-option *ngFor="let option of this.filteredUsers | async" [value]="option" [id]="option.id">
-                                        <span [innerHTML]="option['lastname'] + ' ' + option['firstname'] + ' (' + option.username + ')' | highlight: toHighlight"></span>
+                                        <span [innerHTML]="option['firstname'] + ' ' + option['lastname'] + ' (' + option.username + ')' | highlight: toHighlight"></span>
                                     </mat-option>
                                 </mat-autocomplete>
                             </mat-form-field>
                         </div>
-                        <div class="text-center mt-8"
-                             [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('generate_auth_token')">
+                        <div class="text-center mt-8" [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('generate_auth_token')">
                             <button class="valid_button" type="submit" mat-button (click)="generateAuthToken()"
                                     [disabled]="!this.privilegesService.hasPrivilege('generate_auth_token')"
                                     [class.invalid_button]="!this.privilegesService.hasPrivilege('generate_auth_token')"
