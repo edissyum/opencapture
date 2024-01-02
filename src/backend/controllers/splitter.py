@@ -519,7 +519,6 @@ def save_modifications(data):
                 }
                 return response, 400
 
-
     """
         Deleted documents
     """
@@ -580,21 +579,16 @@ def test_openads_connection(args):
 
 
 def export_batch(data):
-    if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context\
-            and 'configurations' in current_context:
+    if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context:
         log = current_context.log
         regex = current_context.regex
         docservers = current_context.docservers
-        configurations = current_context.configurations
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         regex = _vars[2]
         log = _vars[5]
         docservers = _vars[9]
-        configurations = _vars[10]
-
-    exported_files = []
 
     save_response = save_modifications({
         'batch_id': data['batchId'],
@@ -607,7 +601,7 @@ def export_batch(data):
     if save_response[1] != 200:
         return save_response
 
-    export_res = splitter_exports.export_batch(data['batchId'], log, docservers, configurations, regex)
+    export_res = splitter_exports.export_batch(data['batchId'], log, docservers, regex)
     return export_res
 
 
