@@ -113,9 +113,9 @@ def generate_auth_token():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/generateAuthToken'}), 403
 
     check, message = rest_validator(request.json, [
+        {'id': 'token', 'type': str, 'mandatory': False},
         {'id': 'username', 'type': str, 'mandatory': True},
-        {'id': 'expiration', 'type': int, 'mandatory': True},
-        {'id': 'token', 'type': str, 'mandatory': False}
+        {'id': 'expiration', 'type': int, 'mandatory': True}
     ])
     if not check:
         return make_response({
@@ -123,12 +123,12 @@ def generate_auth_token():
             "message": message
         }, 400)
 
-    data = request.json
-    if 'token' in data:
-        _, code = auth.check_token(data['token'])
+    if 'token' in request.json:
+        _, code = auth.check_token(request.json['token'])
         if code == 200:
-            return make_response({'token': data['token']}, 200)
-    res = auth.generate_token(data['username'], data['expiration'])
+            return make_response({'token': request.json['token']}, 200)
+
+    res = auth.generate_token(request.json['username'], request.json['expiration'])
     return make_response({'token': res[0]}, res[1])
 
 
@@ -199,20 +199,20 @@ def ldap_synchronization_users():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/ldapSynchronization'}), 403
 
     check, message = rest_validator(request.json, [
-        {'id': 'typeAD', 'type': str, 'mandatory': True},
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'port', 'type': str, 'mandatory': True},
-        {'id': 'loginAdmin', 'type': str, 'mandatory': True},
-        {'id': 'passwordAdmin', 'type': str, 'mandatory': True},
         {'id': 'baseDN', 'type': str, 'mandatory': True},
+        {'id': 'typeAD', 'type': str, 'mandatory': True},
+        {'id': 'usersDN', 'type': str, 'mandatory': True},
         {'id': 'prefix', 'type': str, 'mandatory': False},
         {'id': 'suffix', 'type': str, 'mandatory': False},
-        {'id': 'attributSourceUser', 'type': str, 'mandatory': True},
-        {'id': 'classObject', 'type': str, 'mandatory': True},
         {'id': 'classUser', 'type': str, 'mandatory': True},
-        {'id': 'attributFirstName', 'type': str, 'mandatory': True},
+        {'id': 'loginAdmin', 'type': str, 'mandatory': True},
+        {'id': 'classObject', 'type': str, 'mandatory': True},
+        {'id': 'passwordAdmin', 'type': str, 'mandatory': True},
         {'id': 'attributLastName', 'type': str, 'mandatory': True},
-        {'id': 'usersDN', 'type': str, 'mandatory': True},
+        {'id': 'attributFirstName', 'type': str, 'mandatory': True},
+        {'id': 'attributSourceUser', 'type': str, 'mandatory': True},
         {'id': 'attributRoleDefault', 'type': int, 'mandatory': True}
     ])
     if not check:
@@ -232,20 +232,20 @@ def save_login_method():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/saveLoginMethodConfig'}), 403
 
     check, message = rest_validator(request.json, [
-        {'id': 'typeAD', 'type': str, 'mandatory': True},
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'port', 'type': str, 'mandatory': True},
-        {'id': 'loginAdmin', 'type': str, 'mandatory': True},
-        {'id': 'passwordAdmin', 'type': str, 'mandatory': True},
+        {'id': 'typeAD', 'type': str, 'mandatory': True},
         {'id': 'baseDN', 'type': str, 'mandatory': True},
         {'id': 'prefix', 'type': str, 'mandatory': False},
-        {'id': 'suffix', 'type': str, 'mandatory': False},
-        {'id': 'attributSourceUser', 'type': str, 'mandatory': True},
-        {'id': 'classObject', 'type': str, 'mandatory': True},
-        {'id': 'classUser', 'type': str, 'mandatory': True},
-        {'id': 'attributFirstName', 'type': str, 'mandatory': True},
-        {'id': 'attributLastName', 'type': str, 'mandatory': True},
         {'id': 'usersDN', 'type': str, 'mandatory': True},
+        {'id': 'suffix', 'type': str, 'mandatory': False},
+        {'id': 'classUser', 'type': str, 'mandatory': True},
+        {'id': 'loginAdmin', 'type': str, 'mandatory': True},
+        {'id': 'classObject', 'type': str, 'mandatory': True},
+        {'id': 'passwordAdmin', 'type': str, 'mandatory': True},
+        {'id': 'attributLastName', 'type': str, 'mandatory': True},
+        {'id': 'attributFirstName', 'type': str, 'mandatory': True},
+        {'id': 'attributSourceUser', 'type': str, 'mandatory': True},
         {'id': 'attributRoleDefault', 'type': int, 'mandatory': True}
     ])
     if not check:
