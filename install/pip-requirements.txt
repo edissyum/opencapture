@@ -14,7 +14,7 @@ pypdf==3.17.4
 pyzbar==0.1.9
 qrcode==7.4.2
 kuyruk==10.0.2
-pillow==10.1.0
+pillow==10.2.0
 imutils==0.5.4
 thefuzz==0.20.0
 psycopg2==2.9.9

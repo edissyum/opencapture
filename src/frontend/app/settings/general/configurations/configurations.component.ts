@@ -320,7 +320,7 @@ export class ConfigurationsComponent implements OnInit {
                 element.control.setValue(element.control.value);
             }
         });
-        this.http.get(environment['url'] + '/ws/users/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/users/list?mode=webservice', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.filteredUsers = this.tokenUserControl.valueChanges.pipe(
                     startWith(''),
