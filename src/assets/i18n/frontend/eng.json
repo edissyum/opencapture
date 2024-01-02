@@ -171,7 +171,7 @@
 		"smtp_test_email": "The following emai will be used to test the SMTP configuration : ",
 		"string": "String",
 		"test_smtp": "Test SMTP configuration",
-		"token_associated_user": "Associated user",
+		"token_associated_user": "Associated webservice user",
 		"token_copied": "Token copied in clipboard successfully",
 		"token_expiration": "Expiration delay (in days)",
 		"top_login_text": "Show text at the top of the login page",
