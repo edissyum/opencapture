@@ -40,17 +40,19 @@ def login():
         }, 400)
 
     login_method = auth.get_enabled_login_method()
-    enabled_login_method_name = login_method[0]['login_method_name'] if login_method[0]['login_method_name'] else [{'method_name': 'default'}]
+    enabled_login_method = [{'method_name': 'default'}]
+    if login_method and 'login_method_name' in login_method[0] and login_method[0]['login_method_name']:
+        enabled_login_method = login_method[0]['login_method_name']
+
     res = auth.check_connection()
-    data = request.json
-    if enabled_login_method_name and enabled_login_method_name[0]['method_name'] == 'default':
+    if enabled_login_method and enabled_login_method[0]['method_name'] == 'default':
         if res is None:
-            if 'username' in data and 'password' in data:
-                res = auth.login(data['username'], data['password'], data['lang'])
-                if res[1] == 200 and data['username'] == 'admin' and data['password'] == 'admin':
+            if 'username' in request.json and 'password' in request.json:
+                res = auth.login(request.json['username'], request.json['password'], request.json['lang'])
+                if res[1] == 200 and request.json['username'] == 'admin' and request.json['password'] == 'admin':
                     res[0]['admin_password_alert'] = True
-            elif 'token' in data:
-                res = auth.login_with_token(data['token'], data['lang'])
+            elif 'token' in request.json:
+                res = auth.login_with_token(request.json['token'], request.json['lang'])
             else:
                 res = ('', 402)
         else:
@@ -58,20 +60,20 @@ def login():
                 "errors": gettext('PGSQL_ERROR'),
                 "message": res.replace('\n', '')
             }, 401]
-    elif enabled_login_method_name and enabled_login_method_name[0]['method_name'] == 'ldap':
+    elif enabled_login_method and enabled_login_method[0]['method_name'] == 'ldap':
         if res is None:
-            if 'token' in data:
-                res = auth.login_with_token(data['token'], data['lang'])
+            if 'token' in request.json:
+                res = auth.login_with_token(request.json['token'], request.json['lang'])
             else:
-                is_user_exists = auth.verify_user_by_username(data['username'])
+                is_user_exists = auth.verify_user_by_username(request.json['username'])
                 if is_user_exists and is_user_exists[1] == 200:
-                    role_id = auth.get_user_role_by_username(data['username'])
+                    role_id = auth.get_user_role_by_username(request.json['username'])
                     if role_id and role_id == 'superadmin':
-                        res = auth.login(data['username'], data['password'], data['lang'])
+                        res = auth.login(request.json['username'], request.json['password'], request.json['lang'])
                     else:
                         configs = auth.get_ldap_configurations()
                         if configs and configs[0]['ldap_configurations']:
-                            res = auth.ldap_connection_bind(configs, data)
+                            res = auth.ldap_connection_bind(configs, request.json)
                         else:
                             error = configs[0]['message']
                             res = [{
@@ -101,8 +103,7 @@ def check_token():
             "message": message
         }, 400)
 
-    data = request.json
-    res = auth.check_token(data['token'])
+    res = auth.check_token(request.json['token'])
     return make_response(res[0], res[1])
 
 
