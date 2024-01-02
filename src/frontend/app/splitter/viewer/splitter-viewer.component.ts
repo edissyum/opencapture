@@ -824,14 +824,34 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return new FormGroup(group);
     }
 
+    b64toBlob(b64Data: string, contentType = '', sliceSize = 512) {
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+
+        return new Blob(byteArrays, {type: contentType});
+    }
+
     downloadOriginalFile(): void {
         this.downloadLoading = true;
         this.http.get(environment['url'] + '/ws/splitter/batch/' + this.currentBatch.id + '/file',
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                const src = `data:application/pdf;base64,${data['encodedFile']}`;
+                const blob = this.b64toBlob(data['encodedFile'], 'application/pdf');
+                const blobUrl = URL.createObjectURL(blob);
                 const newWindow = window.open();
-                newWindow!.document.write(`<iframe style="width: 100%;height: 100%;margin: 0;padding: 0;" src="${src}" allowfullscreen></iframe>`);
+                newWindow!.document.write(`<iframe style="width: 100%;height: 100%;margin: 0;padding: 0;" src="${blobUrl}" allowfullscreen></iframe>`);
                 newWindow!.document.title = data['filename'];
             }),
             finalize(() => this.downloadLoading = false),
