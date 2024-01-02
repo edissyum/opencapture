@@ -15,27 +15,27 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { environment } from  "../../env";
-import { catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap } from "rxjs/operators";
-import { of, ReplaySubject, Subject } from "rxjs";
-import { HttpClient } from "@angular/common/http";
-import { LocalStorageService } from "../../../services/local-storage.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { AuthService } from "../../../services/auth.service";
-import { UserService } from "../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
-import { NotificationService } from "../../../services/notifications/notifications.service";
-import { DomSanitizer } from "@angular/platform-browser";
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
-import { MatDialog } from "@angular/material/dialog";
-import { DocumentTypeComponent } from "../document-type/document-type.component";
-import { remove } from 'remove-accents';
-import { HistoryService } from "../../../services/history.service";
-import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { LocaleService } from "../../../services/locale.service";
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {environment} from "../../env";
+import {catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap} from "rxjs/operators";
+import {of, ReplaySubject, Subject} from "rxjs";
+import {HttpClient} from "@angular/common/http";
+import {LocalStorageService} from "../../../services/local-storage.service";
+import {ActivatedRoute, Router} from "@angular/router";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {AuthService} from "../../../services/auth.service";
+import {UserService} from "../../../services/user.service";
+import {TranslateService} from "@ngx-translate/core";
+import {NotificationService} from "../../../services/notifications/notifications.service";
+import {DomSanitizer} from "@angular/platform-browser";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
+import {MatDialog} from "@angular/material/dialog";
+import {DocumentTypeComponent} from "../document-type/document-type.component";
+import {remove} from 'remove-accents';
+import {HistoryService} from "../../../services/history.service";
+import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import {LocaleService} from "../../../services/locale.service";
 import * as moment from "moment";
 
 export interface Field {
@@ -824,14 +824,34 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return new FormGroup(group);
     }
 
+    b64toBlob(b64Data: string, contentType = '', sliceSize = 512) {
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+
+        return new Blob(byteArrays, {type: contentType});
+    }
+
     downloadOriginalFile(): void {
         this.downloadLoading = true;
         this.http.get(environment['url'] + '/ws/splitter/batch/' + this.currentBatch.id + '/file',
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                const src = `data:application/pdf;base64,${data['encodedFile']}`;
+                const blob = this.b64toBlob(data['encodedFile'], 'application/pdf');
+                const blobUrl = URL.createObjectURL(blob);
                 const newWindow = window.open();
-                newWindow!.document.write(`<iframe style="width: 100%;height: 100%;margin: 0;padding: 0;" src="${src}" allowfullscreen></iframe>`);
+                newWindow!.document.write(`<iframe style="width: 100%;height: 100%;margin: 0;padding: 0;" src="${blobUrl}" allowfullscreen></iframe>`);
                 newWindow!.document.title = data['filename'];
             }),
             finalize(() => this.downloadLoading = false),
