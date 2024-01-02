@@ -24,7 +24,7 @@
         <div *ngIf="!loading" class="w-full">
             <mat-tab-group [dynamicHeight]="true" (selectedTabChange)="onTabChanged($event)">
                 <mat-tab [label]="'CONFIGURATIONS.global' | translate">
-                    <div class="overflow-x-hidden overflow-y-auto text-center" style="height: calc(100vh - 11rem) !important">
+                    <div class="overflow-x-hidden overflow-y-auto text-center" style="height: calc(100vh - 12rem) !important">
                         <div class="grid grid-cols-2 gap-6">
                             <div>
                                 <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.change_image" | translate }}</h3>
@@ -117,7 +117,7 @@
                     </div>
                 </mat-tab>
                 <mat-tab [label]="'CONFIGURATIONS.generate_token' | translate">
-                    <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 11rem) !important">
+                    <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 12rem) !important">
                         <div class="text-center">
                             <div class="text-lg text-gray-900 mb-4">
                                 {{ "CONFIGURATIONS.token_expiration" | translate }}
@@ -193,7 +193,7 @@
                     </div>
                 </mat-tab>
                 <mat-tab [label]="'CONFIGURATIONS.smtp' | translate">
-                    <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 11rem) !important">
+                    <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 12rem) !important">
                         <div class="hint text-center">
                             <i class="fa-solid fa-circle-exclamation fa-2x pl-1"></i>
                             <div class="message w-auto">
@@ -264,7 +264,7 @@
                     </div>
                 </mat-tab>
                 <mat-tab [label]="'CONFIGURATIONS.advanced' | translate">
-                    <div class="overflow-x-hidden overflow-y-auto h-full-overflow text-center p-8">
+                    <div class="overflow-x-hidden overflow-y-auto text-center" style="height: calc(100vh - 12rem) !important">
                         <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
                         <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
                             <ng-container matColumnDef="id">

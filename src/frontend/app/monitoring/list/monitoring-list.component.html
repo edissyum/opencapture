@@ -35,23 +35,23 @@
                     </ng-container>
                     <ng-container matColumnDef="creation_date">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.creation_date' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element" [matTooltip]="element.creation_date_formated"> {{ element.creation_date }} </mat-cell>
+                        <mat-cell *matCellDef="let element" [matTooltip]="element['creation_date_formated']"> {{ element['creation_date'] }} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="end_date">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.end_date' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element" [matTooltip]="element.end_date_formated"> {{ element.end_date }} </mat-cell>
+                        <mat-cell *matCellDef="let element" [matTooltip]="element['end_date_formated']"> {{ element['end_date'] }} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="filename">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.filename' | translate }} </mat-header-cell>
                         <mat-cell *matCellDef="let element">
-                            <span class="truncate w-10/12">
+                            <span class="truncate w-10/12" [matTooltip]="element.filename">
                                 {{ element.filename }}
                             </span>
                         </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="last_message">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.last_message' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element" [innerHTML]="element.last_message"></mat-cell>
+                        <mat-cell *matCellDef="let element" [innerHTML]="element['last_message']"></mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="status">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
