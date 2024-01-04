@@ -18,14 +18,16 @@
 import os
 import json
 import glob
-from tempfile import NamedTemporaryFile
-
+import uuid
 import magic
 import pypdf
+import pyheif
 import shutil
-import ocrmypdf
+from PIL import Image
 from pathlib import Path
 from flask_babel import gettext
+from pytesseract import pytesseract
+from pdf2image import convert_from_path
 from .classes.Config import Config as _Config
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 
@@ -263,7 +265,7 @@ def check_python_customized_files(path):
     array_of_import = {}
     for root, _, files in os.walk(path):
         for file in files:
-            if file.endswith(".py"):
+            if file.lower().endswith(".py"):
                 module = os.path.splitext(file)[0]
                 path = os.path.join(root).replace('/', '.')
                 array_of_import.update({
@@ -378,21 +380,63 @@ def recursive_delete(folder, log, docservers):
             log.error('Unable to delete tmp folder ' + folder_name + ' : ' + str(err), False)
 
 
-def generate_searchable_pdf(pdf, tmp_filename, lang, log):
+def generate_searchable_pdf(document, tmp_filename):
     """
-    Start from standard PDF, with no OCR, and create a searchable PDF, with OCR. Thanks to ocrmypdf python lib
+    Start from standard PDF, with no OCR, and create a searchable PDF, with OCR.
 
-    :param pdf: Path to original pdf (not searchable, without OCR)
+    :param document: Path to original document (not searchable, without OCR)
     :param tmp_filename: Path to store the final pdf, searchable with OCR
-    :param lang: lang instance
-    :param log: log instance
     """
-    try:
-        res = ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', skip_text=True, language=lang, progress_bar=False)
-        if res.value != 0:
-            ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', force_ocr=True, language=lang, progress_bar=False)
-    except (ocrmypdf.exceptions.PriorOcrFoundError, FileNotFoundError) as _e:
-        log.error('OCR Error : ' + str(_e))
+
+    if document.lower().endswith('.pdf'):
+        images = convert_from_path(document, dpi=400)
+    elif document.lower().endswith(('.heic', '.heif')):
+        heif_file = pyheif.read(document)
+        heif_file = Image.frombytes(
+            heif_file.mode,
+            heif_file.size,
+            heif_file.data,
+            "raw",
+            heif_file.mode,
+            heif_file.stride,
+        )
+        heif_file.save(document.replace('.pdf', ''), 'JPEG')
+        images = [heif_file]
+    else:
+        images = [Image.open(document)]
+
+    cpt = 1
+    _uuid = str(uuid.uuid4())
+    tmp_path = os.path.dirname(tmp_filename)
+
+    for i in range(len(images)):
+        output = tmp_path + '/to_merge_' + _uuid + '-' + str(cpt).zfill(3)
+        images[i].save(output + '.jpg', 'JPEG')
+        pdf_content = pytesseract.image_to_pdf_or_hocr(output + '.jpg', extension='pdf')
+
+        try:
+            os.remove(output + '.jpg')
+        except FileNotFoundError:
+            pass
+
+        with open(output + '.pdf', 'w+b') as f:
+            f.write(pdf_content)
+        cpt = cpt + 1
+
+    if cpt > 2:
+        pdf_to_merge = []
+        for file in sorted(os.listdir(tmp_path)):
+            if file.lower().startswith('to_merge_'):
+                if file.lower().endswith('.pdf'):
+                    pdf_to_merge.append(tmp_path + '/' + file)
+
+        merger = pypdf.PdfMerger()
+        for _p in pdf_to_merge:
+            merger.append(_p)
+        merger.write(tmp_filename)
+        merger.close()
+    else:
+        shutil.move(tmp_path + '/to_merge_' + _uuid + '-001.pdf', tmp_filename)
 
 
 def find_form_with_ia(file, ai_model_id, database, docservers, files, ai, ocr, log, module):

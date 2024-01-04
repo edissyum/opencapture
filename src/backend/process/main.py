@@ -122,7 +122,7 @@ def execute_outputs(output_info, log, regex, document_data, database, current_la
     elif output_info['output_type_id'] == 'export_mem':
         verifier_exports.export_mem(output_info['data'], document_data, log, regex, database)
     elif output_info['output_type_id'] == 'export_pdf':
-        path, _ = verifier_exports.export_pdf(data, log, regex, document_data, current_lang, compress_type, ocrise)
+        path, _ = verifier_exports.export_pdf(data, log, regex, document_data, compress_type, ocrise)
     elif output_info['output_type_id'] == 'export_facturx':
         path, _ = verifier_exports.export_facturx(data, log, regex, document_data)
 
@@ -395,7 +395,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     nb_pages = 1
     original_file = os.path.basename(file)
-    if file.endswith('.pdf'):
+    if file.lower().endswith('.pdf'):
         nb_pages = files.get_pages(docservers, file)
         splitted_file = os.path.basename(file).split('_')
         if splitted_file[0] == 'SPLITTER':

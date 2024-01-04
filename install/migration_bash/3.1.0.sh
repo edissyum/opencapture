@@ -28,7 +28,8 @@ opencapturePath="/var/www/html/opencapture/"
 SECTIONS=$(crudini --get $opencapturePath/custom/custom.ini | sed 's/:.*//')
 for custom_name in ${SECTIONS[@]}; do
     cd $opencapturePath
-
+    custom_name=${custom_name//[\.\-]/_}
+    custom_name=$(echo "$custom_name" | tr "[:upper:]" "[:lower:]")
     mkdir -p data/
     mv $opencapturePath/bin/data/ $opencapturePath/data/ 2>/dev/null
     rm -rf $opencapturePath/bin/data/

@@ -75,7 +75,7 @@ class SeparatorQR:
         blank_page_exists = False
         pages_to_keep = []
         for _file in self.sorted_files(os.listdir(self.output_dir)):
-            if _file.endswith('.jpg'):
+            if _file.lower().endswith('.jpg'):
                 if not self.files.is_blank_page(self.output_dir + '/' + _file):
                     pages_to_keep.append(os.path.splitext(_file)[0].split('-')[1])
                 else:
