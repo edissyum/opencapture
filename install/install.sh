@@ -449,7 +449,6 @@ systemctl restart apache2 >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 echo ""
 echo "#######################################################################################################################"
-echo ""
 
 ####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content
