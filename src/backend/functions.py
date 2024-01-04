@@ -400,7 +400,6 @@ def generate_searchable_pdf(document, tmp_filename):
             heif_file.mode,
             heif_file.stride,
         )
-        heif_file.save(document.replace('.pdf', ''), 'JPEG')
         images = [heif_file]
     else:
         images = [Image.open(document)]

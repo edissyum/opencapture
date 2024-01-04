@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
-import uuid
 import json
 import pyheif
 import shutil
@@ -29,7 +28,6 @@ from xml.dom import minidom
 from flask_babel import gettext
 from .import_classes import _Files
 import xml.etree.ElementTree as Et
-from .functions import generate_searchable_pdf
 from src.backend.import_classes import _MEMWebServices
 
 
@@ -410,16 +408,21 @@ def export_pdf(data, log, regex, document_info, compress_type, ocrise):
                             heif_file.mode,
                             heif_file.stride,
                         )
+                        filename = filename.replace('.heif', '.jpg')
+                        filename = filename.replace('.heic', '.jpg')
                     else:
                         image_file = Image.open(file)
                     image_file.save(folder_out + '/' + filename)
+
         if compress_type:
             if os.path.isfile(folder_out + '/' + filename):
                 file = folder_out + '/' + filename
             compress_file(file, compress_type, log, folder_out, filename, document_info['filename'])
-        else:
+
+        if not ocrise and not compress_type:
             if os.path.isfile(file):
                 shutil.copy(file, folder_out + '/' + filename)
+
         return folder_out + '/' + filename, 200
     else:
         if log:

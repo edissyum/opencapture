@@ -1712,13 +1712,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                             ).subscribe();
                                         }
                                     }
-                                    this.http.get(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deleteDocuments', {headers: this.authService.headers}).pipe(
-                                        catchError((err: any) => {
-                                            console.debug(err);
-                                            this.notify.handleErrors(err);
-                                            return of(false);
-                                        })
-                                    ).subscribe();
 
                                     this.http.post(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/outputScript', {'workflow': this.workflowSettings, 'outputs': this.outputs}, {headers: this.authService.headers}).pipe(
                                         catchError((err: any) => {
