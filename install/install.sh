@@ -440,17 +440,16 @@ EOF"
 # Enable mod_rewrite
 # And restart Apache
 
-echo ""
-echo "#######################################################################################################################"
-echo ""
 echo "Apache configuration....."
-echo ""
-echo "#######################################################################################################################"
 
 a2ensite opencapture.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2dissite 000-default.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2enmod rewrite >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 systemctl restart apache2 >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+
+echo ""
+echo "#######################################################################################################################"
+echo ""
 
 ####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content
