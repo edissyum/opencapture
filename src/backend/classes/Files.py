@@ -385,7 +385,7 @@ class Files:
     def sorted_file(path, extension):
         file_json = []
         for file in os.listdir(path):
-            if file.endswith("." + extension):
+            if file.lower().endswith("." + extension):
                 filename = os.path.splitext(file)[0]
                 is_countable = filename.split('-')
                 if len(is_countable) > 1:
@@ -719,24 +719,27 @@ class Files:
                 return positions
 
     @staticmethod
-    def ocrise_pdf(file_path, lang, log):
+    def ocrise_pdf(file_path, log, output=False):
         """
         :param file_path: path to file to OCRise
-        :param lang: OCR language
+        :param output: output path, not mandatory
         :param log: log object
         """
         is_ocr = False
-        pdf_reader = pypdf.PdfReader(file_path, strict=False)
-        for index in range(pdf_reader.pages.__len__()):
-            page_content = pdf_reader.pages[index].extract_text()
-            if page_content:
-                is_ocr = True
-                break
+        if file_path.lower().endswith('.pdf'):
+            pdf_reader = pypdf.PdfReader(file_path, strict=False)
+            for index in range(pdf_reader.pages.__len__()):
+                page_content = pdf_reader.pages[index].extract_text()
+                if page_content:
+                    is_ocr = True
+                    break
 
         if not is_ocr:
             tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
-            generate_searchable_pdf(file_path, tmp_filename, lang, log)
+            generate_searchable_pdf(file_path, tmp_filename)
             try:
+                if output:
+                    file_path = output
                 shutil.move(tmp_filename, file_path)
             except shutil.Error as _e:
                 log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
@@ -799,7 +802,7 @@ class Files:
 
     @staticmethod
     def list_files(directory, extension):
-        return [f for f in os.listdir(directory) if f.endswith('.' + extension)]
+        return [f for f in os.listdir(directory) if f.lower().endswith('.' + extension)]
 
     @staticmethod
     def get_random_string(length):

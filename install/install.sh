@@ -439,10 +439,17 @@ EOF"
 # Disable default configuration to avoid conflict
 # Enable mod_rewrite
 # And restart Apache
-a2ensite opencapture.conf
-a2dissite 000-default.conf
-a2enmod rewrite
-systemctl restart apache2
+
+echo "Apache configuration....."
+
+a2ensite opencapture.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+a2dissite 000-default.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+a2enmod rewrite >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+systemctl restart apache2 >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+
+echo ""
+echo "#######################################################################################################################"
+echo ""
 
 ####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content
@@ -535,9 +542,9 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
-    systemctl daemon-reload
-    sudo systemctl enable --now "OCVerifier-worker_$customId".service
-    sudo systemctl enable --now "OCSplitter-worker_$customId".service
+    systemctl daemon-reload >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    sudo systemctl enable --now "OCVerifier-worker_$customId".service >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    sudo systemctl enable --now "OCSplitter-worker_$customId".service >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 else
     apt-get install -y supervisor >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
     touch "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
@@ -580,8 +587,8 @@ EOF"
     chmod 755 "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
     chmod 755 "/etc/supervisor/conf.d/OCSplitter-worker_$customId.conf"
 
-    systemctl restart supervisor
-    systemctl enable supervisor
+    systemctl restart supervisor >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+    systemctl enable supervisor >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 fi
 
 confFile="$defaultPath/custom/$customId/config/config.ini"
@@ -630,8 +637,8 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF"
 
-systemctl daemon-reload
-systemctl enable --now fs-watcher
+systemctl daemon-reload >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+systemctl enable --now fs-watcher >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 ####################
 # Fix ImageMagick Policies
@@ -740,8 +747,8 @@ chown -R "$user":"$group" /var/share/backups/
 # Add backup script to cron
 cron="0 2 * * * $defaultPath/custom/$customId/bin/scripts/backup_database.sh &> /dev/null"
 cron_backup="0 3 * * * $defaultPath/custom/$customId/bin/scripts/clean_backups.sh &> /dev/null"
-(crontab -u $user -l; echo "$cron" ) | crontab -u $user -
-(crontab -u $user -l; echo "$cron_backup" ) | crontab -u $user -
+(crontab -u $user -l; echo "$cron" ) | crontab -u $user - >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+(crontab -u $user -l; echo "$cron_backup" ) | crontab -u $user - >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 ####################
 # Create default export and input XML and PDF folder

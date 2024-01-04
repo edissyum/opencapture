@@ -70,8 +70,9 @@ def handle_uploaded_file(files, workflow_id, supplier):
                 'file': filename,
                 'supplier': supplier,
                 'custom_id': custom_id,
-                'workflow_id': workflow_id,
                 'ip': request.remote_addr,
+                'workflow_id': workflow_id,
+                'user_id': request.environ['user_id'],
                 'user_info': request.environ['user_info'],
                 'task_id_monitor': task_id_monitor[0]['process']
             })
@@ -444,15 +445,13 @@ def export_pdf(document_id, data):
         if 'configurations' in current_context and 'log' in current_context and 'regex' in current_context:
             log = current_context.log
             regex = current_context.regex
-            configurations = current_context.configurations
         else:
             custom_id = retrieve_custom_from_url(request)
             _vars = create_classes_from_custom_id(custom_id)
             log = _vars[5]
             regex = _vars[2]
-            configurations = _vars[10]
-        return verifier_exports.export_pdf(data['data'], log, regex, document_info, configurations['locale'],
-                                           data['compress_type'], data['ocrise'])
+        return verifier_exports.export_pdf(data['data'], log, regex, document_info, data['compress_type'],
+                                           data['ocrise'])
 
 
 def export_facturx(document_id, data):

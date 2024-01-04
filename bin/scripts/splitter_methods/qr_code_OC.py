@@ -62,7 +62,7 @@ def process(args):
     original_file = args['file']
     file = args['files'].move_to_docservers(args['docservers'], args['file'], 'splitter')
     if args['ocrise']:
-        args['files'].ocrise_pdf(file, args['configurations']['locale'], args['log'])
+        args['files'].ocrise_pdf(file, args['log'])
 
     process_res = args['splitter'].create_batches(args['batch_folder'], file, args['workflow_id'], args['user_id'],
                                                   original_file, args['artificial_intelligence'])
