@@ -612,26 +612,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    loadReferential(refreshAfterLoad: boolean, showUnsavedConfirm: boolean): void {
-        if (this.hasUnsavedChanges && showUnsavedConfirm) {
-            const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-                data:{
-                    confirmTitle       : this.translate.instant('GLOBAL.confirm'),
-                    confirmText        : this.translate.instant('SPLITTER.refresh_without_saving_modifications'),
-                    confirmButton      : this.translate.instant('SPLITTER.refresh_without_saving'),
-                    confirmButtonColor : "warn",
-                    cancelButton       : this.translate.instant('GLOBAL.cancel')
-                },
-                width: "600px"
-            });
-            dialogRef.afterClosed().subscribe(result => {
-                if (result) {
-                    this.loadReferentialWithConfirmation(refreshAfterLoad);
-                }
-            });
-        } else {
-            this.loadReferentialWithConfirmation(refreshAfterLoad);
+    loadReferential(refreshAfterLoad: boolean, saveModificationsBeforeReload: boolean): void {
+        if (saveModificationsBeforeReload) {
+            this.saveModifications();
         }
+        this.loadReferentialWithConfirmation(refreshAfterLoad);
     }
 
     setValueChange(key: string, value: string) {
