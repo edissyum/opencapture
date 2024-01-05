@@ -24,8 +24,8 @@ from io import StringIO
 from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.import_controllers import auth
-from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from src.backend.functions import retrieve_custom_from_url, get_custom_path
 from src.backend.import_models import user, accounts, forms, history, roles
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -537,21 +537,27 @@ def import_users(args):
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
 
+    custom_path = get_custom_path(custom_id)
+    if not custom_path:
+        return {
+            "errors": gettext("ERROR_IMPORTING_USER"),
+            "message": gettext("CUSTOM_NOT_PRESENT")
+        }, 400
+
     try:
         tmp_file = f"{docservers['TMP_PATH']}/users.csv"
         for file in args['files']:
             _f = args['files'][file]
             _f.save(tmp_file)
 
-            shell_cmd = f"{docservers['PROJECT_PATH']}/custom/{custom_id}/bin/scripts/load_users.sh {tmp_file}"
+            shell_cmd = f"{custom_path}/bin/scripts/load_users.sh {tmp_file}"
             if args['skip_header']:
                 shell_cmd += " --skip-header"
             subprocess.run(shell_cmd, shell=True)
-
         return {'OK': True}, 200
     except (Exception,) as e:
         response = {
-            "errors": gettext("DOCTYPE_ERROR"),
+            "errors": gettext("ERROR_IMPORTING_USER"),
             "message": str(e)
         }
         return response, 500
