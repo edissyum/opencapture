@@ -1041,7 +1041,6 @@ msgid "USER_EXPORT_ERROR"
 msgstr "Erreur lors de l'export des utilisateurs"
 
 #: src/backend/controllers/user.py:543 src/backend/controllers/user.py:560
-#, fuzzy
 msgid "ERROR_IMPORTING_USER"
 msgstr "Erreur lors de l'importation des utilisateurs"
 
