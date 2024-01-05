@@ -173,9 +173,9 @@ def update_configuration_by_id(configuration_id):
 
     check, message = rest_validator(request.json['data'], [
         {'id': 'type', 'type': str, 'mandatory': True},
-        {'id': 'value', 'type': str, 'mandatory': True},
         {'id': 'label_type', 'type': str, 'mandatory': False},
-        {'id': 'description', 'type': str, 'mandatory': True}
+        {'id': 'description', 'type': str, 'mandatory': True},
+        {'id': 'value', 'type': str if request.json['data']['type'] not in ['bool'] else bool, 'mandatory': True},
     ])
     if not check:
         return make_response({
@@ -196,9 +196,9 @@ def update_configuration_by_label(configuration_label):
 
     check, message = rest_validator(request.json['args'], [
         {'id': 'type', 'type': str, 'mandatory': False},
-        {'id': 'value', 'type': str if configuration_label not in ['smtp'] else dict, 'mandatory': True},
         {'id': 'label_type', 'type': str, 'mandatory': False},
-        {'id': 'description', 'type': str, 'mandatory': False}
+        {'id': 'description', 'type': str, 'mandatory': False},
+        {'id': 'value', 'type': str if configuration_label not in ['smtp', 'userQuota', 'passwordRules'] else dict, 'mandatory': True},
     ])
     if not check:
         return make_response({
