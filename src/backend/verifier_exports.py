@@ -16,17 +16,18 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
-import uuid
 import json
+import pyheif
 import shutil
 import facturx
 import datetime
 import subprocess
 import pandas as pd
+from PIL import Image
 from xml.dom import minidom
 from flask_babel import gettext
+from .import_classes import _Files
 import xml.etree.ElementTree as Et
-from .functions import generate_searchable_pdf
 from src.backend.import_classes import _MEMWebServices
 
 
@@ -359,27 +360,6 @@ def export_facturx(data, log, regex, document_info):
         return response, 40
 
 
-def ocrise_file(file, lang, log, folder_out, filename):
-    check_ocr = os.popen('pdffonts ' + file, 'r')
-    tmp = []
-    for line in check_ocr:
-        tmp.append(line)
-    tmp = '\n'.join(tmp)
-
-    is_ocr = False
-    if len(tmp.split('\n')) > 4:
-        is_ocr = True
-
-    if not is_ocr:
-        tmp_filename = '/tmp/' + str(uuid.uuid4()) + '.pdf'
-        log.info('Start OCR on document...')
-        generate_searchable_pdf(file, tmp_filename, lang, log)
-        try:
-            shutil.move(tmp_filename, folder_out + '/' + filename)
-        except (shutil.Error, FileNotFoundError) as _e:
-            log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
-
-
 def compress_file(file, compress_type, log, folder_out, filename, document_filename):
     compressed_file_path = '/tmp/min_' + document_filename
     compress_pdf(file, compressed_file_path, compress_type)
@@ -389,7 +369,7 @@ def compress_file(file, compress_type, log, folder_out, filename, document_filen
         log.error('Moving file ' + compressed_file_path + ' error : ' + str(_e))
 
 
-def export_pdf(data, log, regex, document_info, lang, compress_type, ocrise):
+def export_pdf(data, log, regex, document_info, compress_type, ocrise):
     log.info('Output execution : PDF export')
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
@@ -403,20 +383,46 @@ def export_pdf(data, log, regex, document_info, lang, compress_type, ocrise):
 
     # Create the PDF filename
     _data = construct_with_var(filename, document_info, regex, separator)
-    filename = separator.join(str(x) for x in _data) + '.pdf'
+    filename = separator.join(str(x) for x in _data)
+    if ocrise or compress_type:
+        filename = filename + '.pdf'
+    else:
+        filename = filename + '.' + os.path.splitext(document_info['filename'])[1].replace('.', '')
     filename = filename.replace('/', '-').replace(' ', '_')
     # END create the PDF filename
 
     if os.path.isdir(folder_out):
         file = document_info['path'] + '/' + document_info['filename']
-        if compress_type:
-            compress_file(file, compress_type, log, folder_out, filename, document_info['filename'])
+        if ocrise:
+            _Files.ocrise_pdf(file, log, folder_out + '/' + filename)
         else:
+            if not file.lower().endswith('.pdf'):
+                if file.lower().endswith(('.heif', '.heic', '.jpg', '.jpeg', '.png')):
+                    if file.lower().endswith(('.heif', '.heic')):
+                        heif_file = pyheif.read(file)
+                        image_file = Image.frombytes(
+                            heif_file.mode,
+                            heif_file.size,
+                            heif_file.data,
+                            "raw",
+                            heif_file.mode,
+                            heif_file.stride,
+                        )
+                        filename = filename.replace('.heif', '.jpg')
+                        filename = filename.replace('.heic', '.jpg')
+                    else:
+                        image_file = Image.open(file)
+                    image_file.save(folder_out + '/' + filename)
+
+        if compress_type:
+            if os.path.isfile(folder_out + '/' + filename):
+                file = folder_out + '/' + filename
+            compress_file(file, compress_type, log, folder_out, filename, document_info['filename'])
+
+        if not ocrise and not compress_type:
             if os.path.isfile(file):
                 shutil.copy(file, folder_out + '/' + filename)
 
-        if ocrise:
-            ocrise_file(file, lang, log, folder_out, filename)
         return folder_out + '/' + filename, 200
     else:
         if log:

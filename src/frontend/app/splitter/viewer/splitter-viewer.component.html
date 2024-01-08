@@ -15,7 +15,7 @@
                 </div>
             </div>
             <span *ngIf="batches.length === 0" class="text-slate-400 w-full grid place-content-center">
-                {{ 'SPLITTER.no_batch_found' | translate }}
+                {{ 'GLOBAL.no_batch_found' | translate }}
             </span>
             <div cdkDropList  (cdkDropListDropped)="dropBatch($event)">
                 <div class="cursor-move" (cdkDragStarted)="this.isBatchOnDrag = true" (cdkDragEnded)="onBatchDrop(batch.id)"
@@ -400,7 +400,7 @@
                                 <mat-label>{{ 'SPLITTER.move_selected_to' | translate }}</mat-label>
                                 <mat-select [(ngModel)]="toolSelectedOption">
                                     <mat-option *ngFor="let document of this.documents;" [value]="document['id']" class="w-full document_type_options">
-                                        {{ document['doctypeLabel'] }}
+                                        {{ document['doctypeLabel'] !== '' ? document['doctypeLabel'] : 'SPLITTER.no_selected_doctype' | translate }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>

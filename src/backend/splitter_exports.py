@@ -32,10 +32,9 @@ def get_output_parameters(parameters):
     return data
 
 
-def export_batch(batch_id, log, docservers, configurations, regex):
+def export_batch(batch_id, log, docservers, regex):
     export_date = _Files.get_now_date()
     export_zip_file = ''
-    outputs_id = []
 
     batch = splitter.retrieve_batches({
         'batch_id': None,
@@ -98,7 +97,7 @@ def export_batch(batch_id, log, docservers, configurations, regex):
         output['parameters'] = get_output_parameters(output['data']['options']['parameters'])
 
         if output['output_type_id'] == 'export_pdf':
-            res_export_pdf, status = handle_pdf_output(batch, output, log, docservers, configurations)
+            res_export_pdf, status = handle_pdf_output(batch, output, log, docservers)
             if status != 200:
                 return res_export_pdf, status
             batch = res_export_pdf['result_batch']
@@ -110,12 +109,12 @@ def export_batch(batch_id, log, docservers, configurations, regex):
             batch = res_export_xml['result_batch']
 
         elif output['output_type_id'] == 'export_cmis':
-            res_export_cmis, status = handle_cmis_output(output, batch, log, docservers, configurations, regex)
+            res_export_cmis, status = handle_cmis_output(output, batch, log, docservers, regex)
             if status != 200:
                 return res_export_cmis, status
 
         elif output['output_type_id'] == 'export_openads':
-            res_export_openads, status = handle_openads_output(output, batch, log, docservers, configurations)
+            res_export_openads, status = handle_openads_output(output, batch, log, docservers)
             if status != 200:
                 return res_export_openads, status
         else:
@@ -132,13 +131,7 @@ def export_batch(batch_id, log, docservers, configurations, regex):
     return True, 200
 
 
-def export_pdf_files(batch, parameters, log, docservers, configurations):
-    compress_files = []
-    zip_except_documents = []
-    zip_except_doctype = ''
-    zip_file_path = ''
-    zip_filename = ''
-
+def export_pdf_files(batch, parameters, log, docservers):
     documents_doctypes = []
     for index, document in enumerate(batch['documents']):
         if not document['pages']:
@@ -154,7 +147,7 @@ def export_pdf_files(batch, parameters, log, docservers, configurations):
 
         filename = _Splitter.get_value_from_mask(document, batch['data']['custom_fields'], mask_args)
 
-        document['file_path'] = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch['file_path']
+        document['file_path'] = docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch['file_path']
         document['compress_type'] = parameters['compress_type']
         document['folder_out'] = parameters['folder_out']
         document['filename'] = filename
@@ -178,9 +171,7 @@ def export_pdf_files(batch, parameters, log, docservers, configurations):
     return {'result_batch': batch}, 200
 
 
-def handle_pdf_output(batch, output, log, docservers, configurations):
-    compress_except_documents = []
-    compress_file = ''
+def handle_pdf_output(batch, output, log, docservers):
     compress_pdfs = []
     parameters = {
         'compress_type': output['compress_type'],
@@ -189,7 +180,7 @@ def handle_pdf_output(batch, output, log, docservers, configurations):
         'extension': output['parameters']['extension'],
         'folder_out': output['parameters']['folder_out']
     }
-    res_export_pdf, status = export_pdf_files(batch, parameters, log, docservers, configurations)
+    res_export_pdf, status = export_pdf_files(batch, parameters, log, docservers)
     if status != 200:
         return res_export_pdf, status
     batch = res_export_pdf['result_batch']
@@ -255,7 +246,7 @@ def handle_xml_output(batch, parameters, regex):
     return {'result_batch': batch}, 200
 
 
-def handle_cmis_output(output, batch, log, docservers, configurations, regex):
+def handle_cmis_output(output, batch, log, docservers, regex):
     cmis_auth = get_output_parameters(output['data']['options']['auth'])
     cmis_params = get_output_parameters(output['data']['options']['parameters'])
     cmis = _CMIS(cmis_auth['cmis_ws'],
@@ -270,7 +261,7 @@ def handle_cmis_output(output, batch, log, docservers, configurations, regex):
         'filename': cmis_params['pdf_filename'],
         'compress_type': output['compress_type']
     }
-    res_pdf_export, _ = export_pdf_files(batch, parameters, log, docservers, configurations)
+    res_pdf_export, _ = export_pdf_files(batch, parameters, log, docservers)
 
     for document in res_pdf_export['result_batch']['documents']:
         cmis_res = cmis.create_document(document['export_path'], 'application/pdf')
@@ -308,7 +299,7 @@ def handle_cmis_output(output, batch, log, docservers, configurations, regex):
     return {'result_batch': batch}, 200
 
 
-def handle_openads_output(output, batch, log, docservers, configurations):
+def handle_openads_output(output, batch, log, docservers):
     openads_auth = get_output_parameters(output['data']['options']['auth'])
     openads_params = get_output_parameters(output['data']['options']['parameters'])
     _openads = _OpenADS(openads_auth['openads_api'], openads_auth['login'], openads_auth['password'])
@@ -334,7 +325,7 @@ def handle_openads_output(output, batch, log, docservers, configurations):
         'compress_type': output['compress_type']
     }
 
-    res_export_pdf, status = export_pdf_files(batch, parameters, log, docservers, configurations)
+    res_export_pdf, status = export_pdf_files(batch, parameters, log, docservers)
     if status != 200:
         return res_export_pdf
 
@@ -372,4 +363,4 @@ def process_after_outputs(batch, close_status, workflow_settings, docservers, lo
         'status': close_status
     })
     if workflow_settings['process']['delete_documents']:
-        _Files.remove_file(f"{docservers['SPLITTER_ORIGINAL_PDF']}/{batch['file_path']}", log)
+        _Files.remove_file(f"{docservers['SPLITTER_ORIGINAL_DOC']}/{batch['file_path']}", log)

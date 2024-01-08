@@ -99,12 +99,12 @@
                     </span>
                 </ng-template>
                 <div class="verifier-container flex flex-col">
-                    <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
-                        <mat-form-field class="mb-3 relative left-4 w-3/4" appearance="outline">
+                    <div class="grid grid-cols-4 grid-flow-row gap-0 mt-4 z-30">
+                        <mat-form-field class="mb-3 relative left-4 w-10/12" appearance="outline">
                             <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
                             <input matInput type="text" [(ngModel)]="search" [disabled]="this.total === 0" (keyup)="searchDocument($event)">
                         </mat-form-field>
-                        <div class="w-full m-auto grid grid-cols-2 gap-2">
+                        <div class="w-10/12 m-auto grid grid-cols-2 gap-2 col-span-2">
                             <mat-form-field appearance="outline">
                                 <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
                                 <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)"
@@ -145,8 +145,11 @@
 
                     <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
 
-                    <div *ngIf="this.documents.length === 0" class="m-4">
-                        {{ 'SPLITTER.no_batch_found' | translate }}
+                    <div *ngIf="this.documents.length === 0 && !this.loading" class="text-gray-200 text-center absolute top-[55%] left-[50%]" style="transform: translate(-50%, -50%);">
+                        <i class="fa-regular fa-folder-open fa-10x w-full"></i>
+                        <span class="text-4xl">
+                            {{ 'GLOBAL.no_batch_found' | translate }}
+                        </span>
                     </div>
 
                     <div *ngIf="this.loading">
@@ -205,7 +208,7 @@
                                 <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-8 pr-8"
                                         [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
                                         (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
-                                    <mat-card-title class="break-all">
+                                    <mat-card-title class="break-all truncate w-11/12">
                                         <span class="leading-7">
                                             <i [matTooltip]="'VERIFIER.document_locked' | translate"
                                                class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"

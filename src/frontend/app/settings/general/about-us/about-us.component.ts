@@ -15,14 +15,14 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
-import { SettingsService } from "../../../../services/settings.service";
-import { Router } from "@angular/router";
-import { PrivilegesService } from "../../../../services/privileges.service";
-import { environment } from "../../../env";
-import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
+import { Router } from "@angular/router";
+import { environment } from "../../../env";
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { SettingsService } from "../../../../services/settings.service";
+import { PrivilegesService } from "../../../../services/privileges.service";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 
 @Component({
@@ -54,7 +54,7 @@ export class AboutUsComponent implements OnInit {
                 if (data['git_latest']) {
                     this.lastVersion = data['git_latest'];
                 } else {
-                    this.lastVersion = undefined;
+                    this.lastVersion = 'error';
                 }
             }),
             finalize(() => this.loading = false),
@@ -65,5 +65,4 @@ export class AboutUsComponent implements OnInit {
             })
         ).subscribe();
     }
-
 }

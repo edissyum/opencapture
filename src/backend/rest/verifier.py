@@ -19,20 +19,21 @@ import re
 import base64
 import pandas as pd
 from flask_babel import gettext
-from src.backend.functions import rest_validator
 from flask import Blueprint, make_response, request, jsonify
+from src.backend.functions import rest_validator, check_extensions_mime
 from src.backend.import_controllers import auth, config, verifier, privileges
 
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 
 
-@bp.route('verifier/checkFileBeforeUpload', methods=['POST'])
+@bp.route('checkFileBeforeUpload', methods=['POST'])
 def check_file_before_upload():
     """
     Check if the file is valid before upload
     Usefull to check if file is accessible by the browser
     :return:
     """
+
     _ = request.files
     return '', 200
 
@@ -67,6 +68,11 @@ def upload():
         supplier = {'column': 'vat_number', 'value': request.form['vat_number']}
 
     files = request.files
+
+    message, code = check_extensions_mime(files)
+    if code != 200:
+        return make_response(message, code)
+
     res = verifier.handle_uploaded_file(files, request.form['workflowId'], supplier)
 
     if res and res[0] is not False:

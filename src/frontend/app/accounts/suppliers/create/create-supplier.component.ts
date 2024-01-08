@@ -38,10 +38,10 @@ import { LocaleService } from "../../../../services/locale.service";
     styleUrls: ['./create-supplier.component.scss']
 })
 export class CreateSupplierComponent implements OnInit {
-    headers: HttpHeaders = this.authService.headers;
-    loading: boolean = true;
-    supplier: any;
-    supplierForm: any[] = [
+    headers         : HttpHeaders = this.authService.headers;
+    loading         : boolean   = true;
+    createLoading   : boolean   = false;
+    supplierForm    : any[]     = [
         {
             id: 'get_only_raw_footer',
             label: marker('ACCOUNTS.get_only_raw_footer'),
@@ -123,7 +123,7 @@ export class CreateSupplierComponent implements OnInit {
             values: []
         }
     ];
-    addressForm: any [] = [
+    addressForm     : any[]     = [
         {
             id: 'address1',
             label: marker('ADDRESSES.address_1'),
@@ -160,14 +160,14 @@ export class CreateSupplierComponent implements OnInit {
             required: true
         }
     ];
-
-    defaultValue: Country = {
+    defaultValue    : Country   = {
         name: 'France',
         alpha2Code: 'FR',
         alpha3Code: 'FRA',
         numericCode: '250',
         callingCode: '+33'
     };
+    supplier: any;
 
     constructor(
         public router: Router,
@@ -288,6 +288,8 @@ export class CreateSupplierComponent implements OnInit {
                 address[element.id] = element.control.value;
             });
 
+            this.createLoading = true;
+
             this.http.post(environment['url'] + '/ws/accounts/addresses/create', {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
@@ -300,14 +302,16 @@ export class CreateSupplierComponent implements OnInit {
                         }),
                         catchError((err: any) => {
                             console.debug(err);
-                            this.notify.handleErrors(err, '/accounts/suppliers/list');
+                            this.createLoading = false;
+                            this.notify.handleErrors(err);
                             return of(false);
                         })
                     ).subscribe();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/accounts/suppliers/list');
+                    this.createLoading = false;
+                    this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();

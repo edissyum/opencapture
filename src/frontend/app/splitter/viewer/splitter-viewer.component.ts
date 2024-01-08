@@ -612,26 +612,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    loadReferential(refreshAfterLoad: boolean, showUnsavedConfirm: boolean): void {
-        if (this.hasUnsavedChanges && showUnsavedConfirm) {
-            const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-                data:{
-                    confirmTitle       : this.translate.instant('GLOBAL.confirm'),
-                    confirmText        : this.translate.instant('SPLITTER.refresh_without_saving_modifications'),
-                    confirmButton      : this.translate.instant('SPLITTER.refresh_without_saving'),
-                    confirmButtonColor : "warn",
-                    cancelButton       : this.translate.instant('GLOBAL.cancel')
-                },
-                width: "600px"
-            });
-            dialogRef.afterClosed().subscribe(result => {
-                if (result) {
-                    this.loadReferentialWithConfirmation(refreshAfterLoad);
-                }
-            });
-        } else {
-            this.loadReferentialWithConfirmation(refreshAfterLoad);
+    loadReferential(refreshAfterLoad: boolean, saveModificationsBeforeReload: boolean): void {
+        if (saveModificationsBeforeReload) {
+            this.saveModifications();
         }
+        this.loadReferentialWithConfirmation(refreshAfterLoad);
     }
 
     setValueChange(key: string, value: string) {
@@ -824,14 +809,34 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return new FormGroup(group);
     }
 
+    b64toBlob(b64Data: string, contentType = '', sliceSize = 512) {
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+
+        return new Blob(byteArrays, {type: contentType});
+    }
+
     downloadOriginalFile(): void {
         this.downloadLoading = true;
         this.http.get(environment['url'] + '/ws/splitter/batch/' + this.currentBatch.id + '/file',
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                const src = `data:application/pdf;base64,${data['encodedFile']}`;
+                const blob = this.b64toBlob(data['encodedFile'], 'application/pdf');
+                const blobUrl = URL.createObjectURL(blob);
                 const newWindow = window.open();
-                newWindow!.document.write(`<iframe style="width: 100%;height: 100%;margin: 0;padding: 0;" src="${src}" allowfullscreen></iframe>`);
+                newWindow!.document.write(`<iframe style="width: 100%;height: 100%;margin: 0;padding: 0;" src="${blobUrl}" allowfullscreen></iframe>`);
                 newWindow!.document.title = data['filename'];
             }),
             finalize(() => this.downloadLoading = false),

@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import shutil
 import uuid
 import json
 import datetime
@@ -105,7 +106,7 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
                 res = scripting.main(data)
                 os.remove(tmp_file)
                 return change_workflow and res != 'DISABLED'
-        except Exception:
+        except (Exception,):
             log.error('Error during ' + step + ' scripting :s' + str(traceback.format_exc()))
             os.remove(tmp_file)
 
@@ -121,7 +122,7 @@ def execute_outputs(output_info, log, regex, document_data, database, current_la
     elif output_info['output_type_id'] == 'export_mem':
         verifier_exports.export_mem(output_info['data'], document_data, log, regex, database)
     elif output_info['output_type_id'] == 'export_pdf':
-        path, _ = verifier_exports.export_pdf(data, log, regex, document_data, current_lang, compress_type, ocrise)
+        path, _ = verifier_exports.export_pdf(data, log, regex, document_data, compress_type, ocrise)
     elif output_info['output_type_id'] == 'export_facturx':
         path, _ = verifier_exports.export_facturx(data, log, regex, document_data)
 
@@ -391,16 +392,17 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         'pages': {},
         'positions': {}
     }
-    nb_pages = files.get_pages(docservers, file)
-    splitted_file = os.path.basename(file).split('_')
-    if splitted_file[0] == 'SPLITTER':
-        original_file = os.path.basename(file).split('_')
-        original_file = original_file[1] + '_' + original_file[2] + '.pdf'
-    else:
-        original_file = os.path.basename(file)
+
+    nb_pages = 1
+    original_file = os.path.basename(file)
+    if file.lower().endswith('.pdf'):
+        nb_pages = files.get_pages(docservers, file)
+        splitted_file = os.path.basename(file).split('_')
+        if splitted_file[0] == 'SPLITTER':
+            original_file = os.path.basename(file).split('_')
+            original_file = original_file[1] + '_' + original_file[2] + '.pdf'
 
     workflow_settings = None
-
     if 'workflow_id' in args:
         workflow_settings = database.select({
             'select': ['*'],
@@ -449,10 +451,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         # Launch input scripting if present
         change_workflow = launch_script(workflow_settings, docservers, 'input', log, file, database, args, config)
 
-    # Convert files to JPG
-    convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
-
     if not change_workflow:
+        # Convert files to JPG
+        convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
+
         supplier = None
         supplier_lang_different = False
 
@@ -809,10 +811,15 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         full_jpg_filename = str(uuid.uuid4())
         file = files.move_to_docservers(docservers, file)
 
-        # Convert all the pages to JPG (used to full web interface)
-        files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename,
-                                      docservers=True, rotate_img=True, page_to_save=1)
-        files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename, rotate_img=True)
+        if file.lower().endswith('.pdf'):
+            # Convert all the pages to JPG (used to full web interface)
+            files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename,
+                                          docservers=True, rotate_img=True, page_to_save=1)
+            files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename,
+                                              rotate_img=True)
+        else:
+            files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], file, full_jpg_filename + '-001.jpg', True)
+            files.move_to_docservers_image(docservers['VERIFIER_THUMB'], file, full_jpg_filename + '-001.jpg', True)
 
         allow_auto = False
         if workflow_settings and workflow_settings['input']['apply_process']:
@@ -859,5 +866,4 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             # Launch outputs scripting if present
             launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
         return document_id
-    else:
-        return None
+    return None

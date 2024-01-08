@@ -52,9 +52,44 @@ export class StatisticsComponent implements OnInit {
             'data': []
         },
         {
+            'id': 'verifier_documents_uploaded_per_worklow',
+            'label': this.translate.instant('STATISTICS.documents_uploaded_per_worklow'),
+            'function': 'this.getWorkflowUploadedDocumentVerifier',
+            'module': 'verifier',
+            'data': []
+        },
+        {
+            'id': 'verifier_documents_uploaded_per_user',
+            'label': this.translate.instant('STATISTICS.documents_uploaded_per_user'),
+            'function': 'this.getUserUploadedDocumentVerifier',
+            'module': 'verifier',
+            'data': []
+        },
+        {
             'id': 'verifier_documents_uploaded',
             'label': this.translate.instant('STATISTICS.verifier_documents_uploaded'),
             'function': 'this.getDocumentsUploadedVerifier',
+            'module': 'verifier',
+            'data': []
+        },
+        {
+            'id': 'splitter_documents_uploaded_per_worklow',
+            'label': this.translate.instant('STATISTICS.documents_uploaded_per_worklow'),
+            'function': 'this.getWorkflowUploadedDocumentSplitter',
+            'module': 'splitter',
+            'data': []
+        },
+        {
+            'id': 'splitter_documents_uploaded_per_user',
+            'label': this.translate.instant('STATISTICS.documents_uploaded_per_user'),
+            'function': 'this.getUserUploadedDocumentSlitter',
+            'module': 'splitter',
+            'data': []
+        },
+        {
+            'id': 'verifier_documents_uploaded_per_worklow',
+            'label': this.translate.instant('STATISTICS.documents_uploaded_per_worklow'),
+            'function': 'this.getWorkflowUploadedDocumentVerifier',
             'module': 'verifier',
             'data': []
         },
@@ -84,7 +119,19 @@ export class StatisticsComponent implements OnInit {
         }
 
     ];
+    modules             : any = [
+        {
+            'id': 'verifier',
+            'label': this.translate.instant('MONITORING.verifier')
+        },
+        {
+            'id': 'splitter',
+            'label': this.translate.instant('MONITORING.splitter')
+        }
+    ];
+    optionsByModule     : any;
     selectedStatistic   : any;
+    selectedModule      : string = 'verifier';
     selectedDiagramType : string = 'vertical-bar';
 
     constructor(
@@ -99,6 +146,12 @@ export class StatisticsComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+        this.optionsByModule = this.options.filter((option: any) => option.module === this.selectedModule);
+    }
+
+    changeModule(event: any) {
+        this.selectedModule = event.value;
+        this.optionsByModule = this.options.filter((option: any) => option.module === this.selectedModule);
     }
 
     getDocumentsUploadedVerifier(cpt: number) {
@@ -155,6 +208,152 @@ export class StatisticsComponent implements OnInit {
                 this.currentData = this.options[cpt].data;
             }),
             finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getUserUploadedDocumentVerifier(cpt: number) {
+        this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=verifier', {headers: this.authService.headers}).pipe(
+                    tap((submodules: any) => {
+                        data.users[data.users.length - 1] = {'id': 0, 'lastname': 'Upload', 'firstname': 'API'};
+                        data.users.forEach((user: any) => {
+                            let historyCpt = 0;
+                            submodules.history.forEach((_submodule: any) => {
+                                if (user.id === _submodule.user_id) {
+                                    historyCpt += 1;
+                                }
+                            });
+                            this.options[cpt].data.push({
+                                'name': user.lastname + ' ' + user.firstname,
+                                'value': historyCpt
+                            });
+                            console.log(this.options[cpt].data)
+                            this.currentData = this.options[cpt].data;
+                        });
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.log(err)
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getUserUploadedDocumentSlitter(cpt: number) {
+        this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=splitter', {headers: this.authService.headers}).pipe(
+                    tap((submodules: any) => {
+                        data.users[data.users.length - 1] = {'id': 0, 'lastname': 'Upload', 'firstname': 'API'};
+                        data.users.forEach((user: any) => {
+                            let historyCpt = 0;
+                            submodules.history.forEach((_submodule: any) => {
+                                if (user.id === _submodule.user_id) {
+                                    historyCpt += 1;
+                                }
+                            });
+                            this.options[cpt].data.push({
+                                'name': user.lastname + ' ' + user.firstname,
+                                'value': historyCpt
+                            });
+                            console.log(this.options[cpt].data)
+                            this.currentData = this.options[cpt].data;
+                        });
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.log(err)
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getWorkflowUploadedDocumentVerifier(cpt: number) {
+        this.http.get(environment['url'] + '/ws/workflows/verifier/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&history_module=verifier', {headers: this.authService.headers}).pipe(
+                    tap((submodules: any) => {
+                        data.workflows.forEach((workflow: any) => {
+                            let historyCpt = 0;
+                            submodules.history.forEach((_submodule: any) => {
+                                if (workflow.workflow_id === _submodule.workflow_id) {
+                                    historyCpt += 1;
+                                }
+                            });
+                            this.options[cpt].data.push({
+                                'name': workflow.label,
+                                'value': historyCpt
+                            });
+                            this.currentData = this.options[cpt].data;
+                        });
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getWorkflowUploadedDocumentSplitter(cpt: number) {
+        this.http.get(environment['url'] + '/ws/workflows/splitter/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&history_module=splitter', {headers: this.authService.headers}).pipe(
+                    tap((submodules: any) => {
+                        data.workflows.forEach((workflow: any) => {
+                            let historyCpt = 0;
+                            submodules.history.forEach((_submodule: any) => {
+                                if (workflow.workflow_id === _submodule.workflow_id) {
+                                    historyCpt += 1;
+                                }
+                            });
+                            this.options[cpt].data.push({
+                                'name': workflow.label,
+                                'value': historyCpt
+                            });
+                            this.currentData = this.options[cpt].data;
+                        });
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);

@@ -566,7 +566,7 @@ export class MailCollectComponent implements OnInit {
     getNameOfProcess(process: any) {
         let name = '';
         process.forEach((element: any) => {
-            if (element.id === 'name') {
+            if (element.id === 'name' && element.control.value) {
                 name = element.control.value;
             }
         });

@@ -108,7 +108,7 @@ def launch_referential_update(form_data):
                                                                         method['script'],
                                                                         method['method'])
                     metadata_load(args)
-    except Exception as e:
+    except (Exception,) as e:
         response = {
             'status': False,
             "errors": gettext('LOAD_METADATA_ERROR'),
@@ -229,11 +229,11 @@ def download_original_file(batch_id):
     if res[0]:
         try:
             batch = res[0]
-            file_path = docservers['SPLITTER_ORIGINAL_PDF'] + "/" + batch['file_path']
+            file_path = docservers['SPLITTER_ORIGINAL_DOC'] + "/" + batch['file_path']
             with open(file_path, 'rb') as pdf_file:
                 encoded_file = base64.b64encode(pdf_file.read()).decode('utf-8')
             return {'encodedFile': encoded_file, 'filename': batch['file_name']}, 200
-        except Exception as e:
+        except (Exception,) as e:
             response = {
                 "errors": "ERROR",
                 "message": str(e)
@@ -369,7 +369,7 @@ def get_page_full_thumbnail(page_id):
             encoded_string = base64.b64encode(image_file.read())
             full_thumbnail = encoded_string.decode("utf-8")
             return {'fullThumbnail': full_thumbnail}, 200
-    except Exception as e:
+    except (Exception,) as e:
         response = {
             "errors": "ERROR",
             "message": str(e)
@@ -519,7 +519,6 @@ def save_modifications(data):
                 }
                 return response, 400
 
-
     """
         Deleted documents
     """
@@ -556,7 +555,7 @@ def save_modifications(data):
 def test_cmis_connection(args):
     try:
         _CMIS(args['cmis_ws'], args['login'], args['password'], args['folder'])
-    except Exception as e:
+    except (Exception,) as e:
         response = {
             'status': False,
             "errors": gettext('CMIS_CONNECTION_ERROR'),
@@ -580,21 +579,16 @@ def test_openads_connection(args):
 
 
 def export_batch(data):
-    if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context\
-            and 'configurations' in current_context:
+    if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context:
         log = current_context.log
         regex = current_context.regex
         docservers = current_context.docservers
-        configurations = current_context.configurations
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         regex = _vars[2]
         log = _vars[5]
         docservers = _vars[9]
-        configurations = _vars[10]
-
-    exported_files = []
 
     save_response = save_modifications({
         'batch_id': data['batchId'],
@@ -607,7 +601,7 @@ def export_batch(data):
     if save_response[1] != 200:
         return save_response
 
-    export_res = splitter_exports.export_batch(data['batchId'], log, docservers, configurations, regex)
+    export_res = splitter_exports.export_batch(data['batchId'], log, docservers, regex)
     return export_res
 
 
@@ -687,7 +681,7 @@ def merge_batches(parent_id, batches):
         docservers = _vars[9]
 
     parent_info = splitter.get_batch_by_id({'id': parent_id})[0]
-    parent_filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + parent_info['file_path']
+    parent_filename = docservers['SPLITTER_ORIGINAL_DOC'] + '/' + parent_info['file_path']
     parent_batch_documents = int(parent_info['documents_count'])
     parent_document_id = splitter.get_documents({'id': parent_id})[0][-1]['id']
     parent_max_split_index = splitter.get_documents_max_split_index({'id': parent_id})[0][0]['split_index']
@@ -703,7 +697,7 @@ def merge_batches(parent_id, batches):
         batch_info = splitter.get_batch_by_id({'id': batch})[0]
         parent_batch_documents += batch_info['documents_count']
         batches_info.append(batch_info)
-        pdf = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
+        pdf = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch_info['file_path'])
         for page in range(len(pdf.pages)):
             merged_pdf.add_page(pdf.pages[page])
 

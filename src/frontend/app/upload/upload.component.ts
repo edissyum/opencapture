@@ -23,7 +23,6 @@ import { environment } from  "../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { HttpClient, HttpHeaders} from "@angular/common/http";
-import { Router } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -38,6 +37,7 @@ import { LocalStorageService } from "../../services/local-storage.service";
 })
 
 export class UploadComponent implements OnInit {
+    allowedExtensions           : string[]      = ['pdf', 'jpg', 'jpeg', 'png', 'heif', 'heic'];
     headers                     : HttpHeaders   = this.authService.headers;
     selectedWorkflow            : any           = '';
     selectedWorkflowTechnicalId : any           = '';
@@ -47,7 +47,6 @@ export class UploadComponent implements OnInit {
     error                       : boolean       = false;
 
     constructor(
-        private router: Router,
         private http: HttpClient,
         public userService: UserService,
         private authService: AuthService,
@@ -60,7 +59,7 @@ export class UploadComponent implements OnInit {
         [],
         [
             FileValidators.required,
-            FileValidators.fileExtension(['pdf'])
+            FileValidators.fileExtension(this.allowedExtensions)
         ]
     );
 
@@ -100,11 +99,10 @@ export class UploadComponent implements OnInit {
         this.error = false;
         if (data && data.length !== 0) {
             for (let i = 0; i < data.length; i++) {
-                const fileName = data[i].name;
-                const fileExtension = fileName.split('.').pop();
-                if (fileExtension.toLowerCase() !== 'pdf') {
+                const fileExtension = data[i].name.split('.').pop();
+                if (this.allowedExtensions.indexOf(fileExtension.toLowerCase()) === -1) {
                     this.error = true;
-                    this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized', {count: data.length}));
+                    this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
                     return;
                 }
             }
@@ -145,7 +143,7 @@ export class UploadComponent implements OnInit {
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
-                environment['url'] + '/ws/verifier/checkFileBeforeUpload', formData, {headers: new HttpHeaders({ timeout: `${timeout}` })},
+                environment['url'] + '/ws/checkFileBeforeUpload', formData, {headers: new HttpHeaders({ timeout: `${timeout}` })},
             ).pipe(
                 tap(() => {
                     this.http.post(environment['url'] + '/ws/' + splitterOrVerifier + '/upload', formData, {headers: this.authService.headers}).pipe(
@@ -155,12 +153,14 @@ export class UploadComponent implements OnInit {
                             this.notify.success(this.translate.instant('UPLOAD.upload_success'));
                         }),
                         catchError((err: any) => {
+                            this.sending = false;
+                            this.fileControl.setValue([]);
                             this.notify.handleErrors(err);
                             return of(false);
                         })
                     ).subscribe();
                 }),
-                catchError(() => {
+                catchError((err: any) => {
                     this.sending = false;
                     this.fileControl.setValue([]);
                     this.notify.handleErrors(this.translate.instant('ERROR.permission_problem'));

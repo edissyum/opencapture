@@ -50,8 +50,11 @@
                         </mat-select-country>
                     </ng-container>
                     <div class="button col-span-7">
-                        <button class="valid_button" type="submit" mat-button>
-                            {{ 'ACCOUNTS.create_supplier' | translate }}
+                        <button class="valid_button" type="submit" mat-button [disabled]="this.createLoading">
+                            <span *ngIf="!this.createLoading">
+                                {{ 'ACCOUNTS.create_supplier' | translate }}
+                            </span>
+                            <i *ngIf="this.createLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                         </button>
                     </div>
                 </form>

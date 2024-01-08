@@ -16,13 +16,13 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { AuthService } from "../../../../services/auth.service";
 import { UserService } from "../../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -49,8 +49,9 @@ export class CustomFieldsComponent implements OnInit {
     regexResult             : string        = '';
     regexControl            : FormControl   = new FormControl();
     regexTestControl        : FormControl   = new FormControl();
-    regexRemoveSpecialChar  : FormControl   = new FormControl();
     regexRemoveSpaces       : FormControl   = new FormControl();
+    regexCharMinControl     : FormControl   = new FormControl();
+    regexRemoveSpecialChar  : FormControl   = new FormControl();
     regexRemoveKeyWord      : FormControl   = new FormControl();
     regexFormat             : FormControl   = new FormControl();
     formats                 : any[]         = [
@@ -134,7 +135,7 @@ export class CustomFieldsComponent implements OnInit {
                 { key: 'checkbox', value: this.translate.instant('CUSTOM-FIELDS.checkbox') }
             ],
             autoComplete: [],
-            required: true
+            required    : true
         },
         {
             field_id    : 'metadata_key',
@@ -143,7 +144,7 @@ export class CustomFieldsComponent implements OnInit {
             label       : this.translate.instant('SETTINGS.autocomplete'),
             limit       : 'splitter',
             autoComplete: [
-                { key: '', value: this.translate.instant('SPLITTER.Other') },
+                { key: '', value: this.translate.instant('SPLITTER.other') },
                 { key: 'SEPARATOR_MEM', value: this.translate.instant('SPLITTER.separator_mem') },
                 { key: 'SEPARATOR_META1', value: this.translate.instant('SPLITTER.separator_meta1') },
                 { key: 'SEPARATOR_META2', value: this.translate.instant('SPLITTER.separator_meta2') },
@@ -160,16 +161,13 @@ export class CustomFieldsComponent implements OnInit {
         public router: Router,
         private http: HttpClient,
         private dialog: MatDialog,
-        private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
         this.serviceSettings.init();
@@ -205,6 +203,12 @@ export class CustomFieldsComponent implements OnInit {
                 : new FormControl(input.value || '');
         });
         return new FormGroup(group);
+    }
+
+    checkCharMin() {
+        if (this.regexCharMinControl.value && this.regexCharMinControl.value.match(/^[0-9]+$/) === null) {
+            this.regexCharMinControl.setValue(this.regexCharMinControl.value.replace(/[^0-9]/g, ""));
+        }
     }
 
     checkRegex() {
@@ -367,6 +371,7 @@ export class CustomFieldsComponent implements OnInit {
                 'format': this.regexFormat.value,
                 'content': this.regexControl.value,
                 'test': this.regexTestControl.value,
+                'char_min': this.regexCharMinControl.value,
                 'remove_spaces': this.regexRemoveSpaces.value,
                 'remove_keyword': this.regexRemoveKeyWord.value,
                 'remove_special_char': this.regexRemoveSpecialChar.value
@@ -524,6 +529,7 @@ export class CustomFieldsComponent implements OnInit {
                 'format': this.regexFormat.value,
                 'content': this.regexControl.value,
                 'test': this.regexTestControl.value,
+                'char_min' : this.regexCharMinControl.value,
                 'remove_spaces': this.regexRemoveSpaces.value,
                 'remove_keyword': this.regexRemoveKeyWord.value,
                 'remove_special_char': this.regexRemoveSpecialChar.value
@@ -565,6 +571,7 @@ export class CustomFieldsComponent implements OnInit {
             if (customField.settings.regex) {
                 this.regexFormat.setValue(customField.settings.regex.format);
                 this.regexControl.setValue(customField.settings.regex.content);
+                this.regexCharMinControl.setValue(customField.settings.regex.char_min);
                 this.regexRemoveSpaces.setValue(customField.settings.regex.remove_spaces);
                 this.regexRemoveKeyWord.setValue(customField.settings.regex.remove_keyword);
                 this.regexRemoveSpecialChar.setValue(customField.settings.regex.remove_special_char);
@@ -577,6 +584,7 @@ export class CustomFieldsComponent implements OnInit {
         this.regexControl.setValue('');
         this.regexRemoveSpaces.setValue('');
         this.regexRemoveKeyWord.setValue('');
+        this.regexCharMinControl.setValue('');
         this.regexRemoveSpecialChar.setValue('');
         this.addFieldInputs.forEach((field: any) => {
             field.control.setValue('');

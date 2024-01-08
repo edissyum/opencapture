@@ -48,10 +48,11 @@ kuyruk = Kuyruk()
 def execute(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages, mail, smtp):
     if check_file(files, path, log, docservers):
         is_facturx = False
-        with open(path, 'rb') as _f:
-            _, xml_content = facturx.get_facturx_xml_from_pdf(_f.read())
-            if _ is not None:
-                is_facturx = True
+        if path.lower().endswith('.pdf'):
+            with open(path, 'rb') as _f:
+                _, xml_content = facturx.get_facturx_xml_from_pdf(_f.read())
+                if _ is not None:
+                    is_facturx = True
 
         if not is_facturx:
             skip = res = False
@@ -178,11 +179,13 @@ def launch(args):
     database.insert({
         'table': 'history',
         'columns': {
+            'user_ip': args['ip'],
             'history_module': 'verifier',
             'user_info': args['user_info'],
+            'workflow_id': args['workflow_id'],
             'history_submodule': 'upload_file',
-            'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>',
-            'user_ip': args['ip']
+            'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
+            'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>'
         }
     })
 
@@ -211,7 +214,7 @@ def launch(args):
                 res = execute(args, path, log, config, files, ocr, regex, database, docservers, configurations,
                               languages, mail_class, smtp)
                 list_of_ids.append(res)
-        except Exception:
+        except (Exception,):
             _e = str(traceback.format_exc())
             log.error(_e)
 

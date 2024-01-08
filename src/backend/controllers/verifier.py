@@ -70,8 +70,9 @@ def handle_uploaded_file(files, workflow_id, supplier):
                 'file': filename,
                 'supplier': supplier,
                 'custom_id': custom_id,
-                'workflow_id': workflow_id,
                 'ip': request.remote_addr,
+                'workflow_id': workflow_id,
+                'user_id': request.environ['user_id'],
                 'user_info': request.environ['user_info'],
                 'task_id_monitor': task_id_monitor[0]['process']
             })
@@ -444,15 +445,13 @@ def export_pdf(document_id, data):
         if 'configurations' in current_context and 'log' in current_context and 'regex' in current_context:
             log = current_context.log
             regex = current_context.regex
-            configurations = current_context.configurations
         else:
             custom_id = retrieve_custom_from_url(request)
             _vars = create_classes_from_custom_id(custom_id)
             log = _vars[5]
             regex = _vars[2]
-            configurations = _vars[10]
-        return verifier_exports.export_pdf(data['data'], log, regex, document_info, configurations['locale'],
-                                           data['compress_type'], data['ocrise'])
+        return verifier_exports.export_pdf(data['data'], log, regex, document_info, data['compress_type'],
+                                           data['ocrise'])
 
 
 def export_facturx(document_id, data):
@@ -537,7 +536,7 @@ def launch_output_script(document_id, workflow_settings, outputs):
                 os.remove(tmp_file)
                 if not res:
                     return False
-        except Exception as _e:
+        except (Exception,) as _e:
             os.remove(tmp_file)
             log.error('Error during output scripting : ' + str(traceback.format_exc()))
 
@@ -621,7 +620,7 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
                 if document:
                     document = document[0]
                     cpt = int(filename.split('-')[len(filename.split('-')) - 1].replace('.jpg', ''))
-                    pdf_path = docservers['VERIFIER_ORIGINAL_PDF'] + '/' + str(year_and_month) + '/' + document['filename']
+                    pdf_path = docservers['VERIFIER_ORIGINAL_DOC'] + '/' + str(year_and_month) + '/' + document['filename']
                     filename = docservers['VERIFIER_IMAGE_FULL'] + '/' + str(year_and_month) + '/' + filename
                     files.save_img_with_pdf2image(pdf_path, filename, cpt)
                     if os.path.isfile(filename):

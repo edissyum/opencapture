@@ -15,11 +15,10 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { LocalStorageService } from "./local-storage.service";
 import { environment } from "../app/env";
 import { Router } from "@angular/router";
+import { Injectable } from '@angular/core';
+import { LocalStorageService } from "./local-storage.service";
 
 @Injectable({
     providedIn: 'root'
@@ -29,7 +28,6 @@ export class UserService {
 
     constructor(
         private router: Router,
-        private http: HttpClient,
         private localStorage: LocalStorageService
     ) {
     }

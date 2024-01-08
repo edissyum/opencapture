@@ -37,7 +37,7 @@ def splitter_retrieve_documents():
         docservers = _vars[9]
     data = []
     for file_name in os.listdir(docservers.get('SPLITTER_TRAIN_PATH_FILES')):
-        if not file_name.endswith(".csv") and not file_name.endswith(".gitkeep"):
+        if not file_name.lower().endswith(".csv") and not file_name.lower().endswith(".gitkeep"):
             data.append(file_name)
     return data
 
@@ -51,7 +51,7 @@ def verifier_retrieve_documents():
         docservers = _vars[9]
     data = []
     for file_name in os.listdir(docservers.get('VERIFIER_TRAIN_PATH_FILES')):
-        if not file_name.endswith(".csv") and not file_name.endswith(".gitkeep"):
+        if not file_name.lower().endswith(".csv") and not file_name.lower().endswith(".gitkeep"):
             data.append(file_name)
     return data
 

@@ -18,11 +18,16 @@
 import os
 import json
 import glob
+import uuid
+import magic
 import pypdf
+import pyheif
 import shutil
-import ocrmypdf
+from PIL import Image
 from pathlib import Path
 from flask_babel import gettext
+from pytesseract import pytesseract
+from pdf2image import convert_from_path
 from .classes.Config import Config as _Config
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 
@@ -94,6 +99,44 @@ def rest_validator(data, required_fields, only_data=False):
                         return False, error_message
                 return False, error_message
     return True, ''
+
+
+def check_extensions_mime(files):
+    formats_file = str(Path(__file__).parents[2]) + '/instance/config/formats.json'
+    if os.path.isfile(formats_file):
+        with open(formats_file) as json_file:
+            formats = json.load(json_file)
+    else:
+        response = {
+            "errors": gettext("UPLOAD_ERRROR"),
+            "message": gettext("FORMATS_FILE_NOT_FOUND")
+        }
+        return response, 400
+
+    mime = magic.Magic(mime=True)
+    for file in files:
+        _f = files[file]
+        ext = _f.filename.split('.')[-1].lower()
+        allowed_extensions = [_f['extension'].lower() for _f in formats]
+        if ext not in allowed_extensions:
+            response = {
+                "errors": gettext("UPLOAD_ERRROR"),
+                "message": gettext("FILE_EXTENSION_NOT_ALLOWED") + ' : <b>' + ext + '</b>'
+            }
+            return response, 400
+
+        allowed_mime = [_f['mime'].lower() for _f in formats if _f['extension'].lower() == ext]
+        mime_type = mime.from_buffer(_f.read())
+
+        if mime_type not in allowed_mime:
+            response = {
+                "errors": gettext("UPLOAD_ERRROR"),
+                "message": gettext("FILE_MIME_NOT_ALLOWED") + ' : ' + '<b>' + ext + '</b>' +
+                ' / <b>' + mime_type + '</b>'
+            }
+            return response, 400
+        _f.seek(0)
+    return '', 200
 
 
 def delete_documents(docservers, path, filename, full_jpg_filename):
@@ -222,7 +265,7 @@ def check_python_customized_files(path):
     array_of_import = {}
     for root, _, files in os.walk(path):
         for file in files:
-            if file.endswith(".py"):
+            if file.lower().endswith(".py"):
                 module = os.path.splitext(file)[0]
                 path = os.path.join(root).replace('/', '.')
                 array_of_import.update({
@@ -337,21 +380,62 @@ def recursive_delete(folder, log, docservers):
             log.error('Unable to delete tmp folder ' + folder_name + ' : ' + str(err), False)
 
 
-def generate_searchable_pdf(pdf, tmp_filename, lang, log):
+def generate_searchable_pdf(document, tmp_filename):
     """
-    Start from standard PDF, with no OCR, and create a searchable PDF, with OCR. Thanks to ocrmypdf python lib
+    Start from standard PDF, with no OCR, and create a searchable PDF, with OCR.
 
-    :param pdf: Path to original pdf (not searchable, without OCR)
+    :param document: Path to original document (not searchable, without OCR)
     :param tmp_filename: Path to store the final pdf, searchable with OCR
-    :param lang: lang instance
-    :param log: log instance
     """
-    try:
-        res = ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', skip_text=True, language=lang, progress_bar=False)
-        if res.value != 0:
-            ocrmypdf.ocr(pdf, tmp_filename, output_type='pdf', force_ocr=True, language=lang, progress_bar=False)
-    except (ocrmypdf.exceptions.PriorOcrFoundError, FileNotFoundError) as _e:
-        log.error('OCR Error : ' + str(_e))
+
+    if document.lower().endswith('.pdf'):
+        images = convert_from_path(document, dpi=400)
+    elif document.lower().endswith(('.heic', '.heif')):
+        heif_file = pyheif.read(document)
+        heif_file = Image.frombytes(
+            heif_file.mode,
+            heif_file.size,
+            heif_file.data,
+            "raw",
+            heif_file.mode,
+            heif_file.stride,
+        )
+        images = [heif_file]
+    else:
+        images = [Image.open(document)]
+
+    cpt = 1
+    _uuid = str(uuid.uuid4())
+    tmp_path = os.path.dirname(tmp_filename)
+
+    for i in range(len(images)):
+        output = tmp_path + '/to_merge_' + _uuid + '-' + str(cpt).zfill(3)
+        images[i].save(output + '.jpg', 'JPEG')
+        pdf_content = pytesseract.image_to_pdf_or_hocr(output + '.jpg', extension='pdf')
+
+        try:
+            os.remove(output + '.jpg')
+        except FileNotFoundError:
+            pass
+
+        with open(output + '.pdf', 'w+b') as f:
+            f.write(pdf_content)
+        cpt = cpt + 1
+
+    if cpt > 2:
+        pdf_to_merge = []
+        for file in sorted(os.listdir(tmp_path)):
+            if file.lower().startswith('to_merge_'):
+                if file.lower().endswith('.pdf'):
+                    pdf_to_merge.append(tmp_path + '/' + file)
+
+        merger = pypdf.PdfMerger()
+        for _p in pdf_to_merge:
+            merger.append(_p)
+        merger.write(tmp_filename)
+        merger.close()
+    else:
+        shutil.move(tmp_path + '/to_merge_' + _uuid + '-001.pdf', tmp_filename)
 
 
 def find_form_with_ia(file, ai_model_id, database, docservers, files, ai, ocr, log, module):

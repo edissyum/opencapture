@@ -59,6 +59,7 @@ def get_users():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/users/list'}), 403
 
     check, message = rest_validator(request.args, [
+        {'id': 'role', 'type': str, 'mandatory': False},
         {'id': 'limit', 'type': int, 'mandatory': False},
         {'id': 'offset', 'type': int, 'mandatory': False},
         {'id': 'search', 'type': str, 'mandatory': False}
@@ -85,6 +86,11 @@ def get_users():
             "LOWER(firstname) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(lastname) LIKE '%%" + request.args['search'].lower() + "%%')"
         )
+
+    if 'mode' in request.args and request.args['mode']:
+        args['where'].append("mode = %s")
+        args['data'].append(request.args['mode'])
+
     _users = user.get_users(args)
     return make_response(jsonify(_users[0])), _users[1]
 
@@ -243,7 +249,7 @@ def update_customers_by_user_id(user_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/customers/update/{user_id}'}), 403
 
     check, message = rest_validator(request.json, [
-        {'id': 'customers', 'type': list, 'mandatory': True}
+        {'id': 'customers', 'type': list, 'mandatory': False}
     ])
 
     if not check:
@@ -273,7 +279,7 @@ def update_forms_by_user_id(user_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/forms/update/{user_id}'}), 403
 
     check, message = rest_validator(request.json, [
-        {'id': 'forms', 'type': list, 'mandatory': True}
+        {'id': 'forms', 'type': list, 'mandatory': False}
     ])
 
     if not check:

@@ -84,7 +84,7 @@ def generate_token(user_id, days_before_exp):
             secret_key,
             algorithm='HS512'
         ), 200
-    except Exception as _e:
+    except (Exception,) as _e:
         return str(_e), 500
 
 
@@ -182,7 +182,7 @@ def generate_reset_token(user_id):
             current_app.config['SECRET_KEY'].replace("\n", ""),
             algorithm='HS512'
         )
-    except Exception as _e:
+    except (Exception,) as _e:
         return str(_e)
 
 
