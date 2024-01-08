@@ -719,7 +719,7 @@ class Files:
                 return positions
 
     @staticmethod
-    def ocrise_pdf(file_path, log, output=False):
+    def ocrise_pdf(file_path, log, output=None):
         """
         :param file_path: path to file to OCRise
         :param output: output path, not mandatory
@@ -743,6 +743,12 @@ class Files:
                 shutil.move(tmp_filename, file_path)
             except shutil.Error as _e:
                 log.error('Moving file ' + tmp_filename + ' error : ' + str(_e))
+        else:
+            if output:
+                try:
+                    shutil.copy(file_path, output)
+                except shutil.Error as _e:
+                    log.error('Moving file ' + file_path + ' error : ' + str(_e))
 
     @staticmethod
     def export_pdf(args):

@@ -385,8 +385,9 @@ class VerifierTest(unittest.TestCase):
         shutil.rmtree(f'/var/share/{CUSTOM_ID}/export/verifier/')
         shutil.rmtree(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/full')
         shutil.rmtree(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/thumbs')
-        shutil.rmtree(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/original_pdf')
+        shutil.rmtree(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/original_doc')
         os.mkdir(f'/var/share/{CUSTOM_ID}/export/verifier/')
         os.mkdir(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/full/')
         os.mkdir(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/thumbs/')
-        os.mkdir(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/original_pdf/')
+        os.mkdir(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/original_doc/')
+
