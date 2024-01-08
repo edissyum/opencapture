@@ -727,8 +727,8 @@ chown -R "$user":"$group" $defaultPath/custom/"$customId"/bin/scripts/splitter_w
 ####################
 # Create docservers
 mkdir -p $docserverDefaultPath/"$customId"/{verifier,splitter}
-mkdir -p $docserverDefaultPath/"$customId"/verifier/{ai,original_pdf,full,thumbs,positions_masks}
-mkdir -p $docserverDefaultPath/"$customId"/splitter/{ai,original_pdf,batches,thumbs,error}
+mkdir -p $docserverDefaultPath/"$customId"/verifier/{ai,original_doc,full,thumbs,positions_masks}
+mkdir -p $docserverDefaultPath/"$customId"/splitter/{ai,original_doc,batches,thumbs,error}
 mkdir -p $docserverDefaultPath/"$customId"/verifier/ai/{train_data,models}
 mkdir -p $docserverDefaultPath/"$customId"/splitter/ai/{train_data,models}
 chmod -R 775 $docserverDefaultPath
