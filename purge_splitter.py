@@ -99,7 +99,7 @@ if __name__ == '__main__':
         try:
             # Remove files from docservers based on the file paths
             if batch['file_path'] is not None:
-                file_path = f"{docservers['SPLITTER_ORIGINAL_PDF']}/{batch['file_path']}"
+                file_path = f"{docservers['SPLITTER_ORIGINAL_DOC']}/{batch['file_path']}"
                 os.remove(file_path)
                 log.info(f"File removed: {file_path}")
 
