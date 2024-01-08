@@ -249,7 +249,7 @@ def update_customers_by_user_id(user_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/customers/update/{user_id}'}), 403
 
     check, message = rest_validator(request.json, [
-        {'id': 'customers', 'type': list, 'mandatory': True}
+        {'id': 'customers', 'type': list, 'mandatory': False}
     ])
 
     if not check:
@@ -279,7 +279,7 @@ def update_forms_by_user_id(user_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/forms/update/{user_id}'}), 403
 
     check, message = rest_validator(request.json, [
-        {'id': 'forms', 'type': list, 'mandatory': True}
+        {'id': 'forms', 'type': list, 'mandatory': False}
     ])
 
     if not check:
