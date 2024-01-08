@@ -20,10 +20,10 @@ thefuzz==0.20.0
 psycopg2==2.9.9
 werkzeug==3.0.1
 cmislib3==1.0.8
-pyflakes==3.1.0
+pyflakes==3.2.0
 requests==2.31.0
 xlsxwriter==3.1.9
-pdf2image==1.16.3
+pdf2image==1.17.0
 gitpython==3.1.40
 imap-tools==1.5.0
 flask_cors==4.0.0

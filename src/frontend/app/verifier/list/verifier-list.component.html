@@ -208,7 +208,7 @@
                                 <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-8 pr-8"
                                         [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
                                         (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
-                                    <mat-card-title class="break-all">
+                                    <mat-card-title class="break-all truncate w-11/12">
                                         <span class="leading-7">
                                             <i [matTooltip]="'VERIFIER.document_locked' | translate"
                                                class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"
