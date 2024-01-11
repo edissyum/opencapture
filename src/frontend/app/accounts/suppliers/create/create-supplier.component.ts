@@ -78,17 +78,17 @@ export class CreateSupplierComponent implements OnInit {
             required: false
         },
         {
-            id: 'iban',
-            label: marker('ACCOUNTS.iban'),
-            type: 'text',
-            control: new FormControl('', Validators.pattern('^[A-Za-z]{2}(?:[ ]?[0-9]){18,25}$')),
-            required: false
-        },
-        {
             id: 'duns',
             label: marker('ACCOUNTS.duns'),
             type: 'text',
             control: new FormControl('', Validators.pattern('^([0-9]{9})|([0-9]{2}-[0-9]{3}-[0-9]{4})$')),
+            required: false
+        },
+        {
+            id: 'iban',
+            label: marker('ACCOUNTS.iban'),
+            type: 'text',
+            control: new FormControl('', Validators.pattern('^[A-Za-z]{2}(?:[ ]?[0-9]){18,25}$')),
             required: false
         },
         {
