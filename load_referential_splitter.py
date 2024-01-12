@@ -18,8 +18,8 @@
 import json
 import argparse
 
-from custom.release.bin.scripts.splitter_metadata.load_referential_standard import load_referential as load_referential_standart
-from custom.release.bin.scripts.splitter_metadata.load_referential import load_referential
+from bin.scripts.splitter_metadata.load_referential_standard import load_referential as load_referential_standart
+from bin.scripts.splitter_metadata.load_referential import load_referential
 from src.backend.main import create_classes_from_custom_id
 
 if __name__ == "__main__":
