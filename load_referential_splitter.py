@@ -36,9 +36,9 @@ if __name__ == "__main__":
         cursor.execute("TRUNCATE TABLE metadata", {})
 
         for method in split_methods['methods']:
-            if method['id'] in ["alfresco_referential_spe", "alfresco_referential_mdph"]:
+            method['referentialMode'] = 0
+            if method['id'] in ["alfresco_referential_stadart"]:
                 log.info(f"Reload metadata for {method['id']}....")
-                method['referentialMode'] = 0
                 _args = {
                     'log': log,
                     'config': config,
@@ -51,7 +51,6 @@ if __name__ == "__main__":
                 log.info(f"{method['id']} metadata reload with success.")
             elif method['id'] in ["alfresco_referential"]:
                 log.info(f"Reload metadata for {method['id']}....")
-                method['referentialMode'] = 0
                 _args = {
                     'log': log,
                     'config': config,

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-§§PYTHON_VENV§§ /var/www/html/opencapture/launch_load_referential_standart.py -c §§CUSTOM_ID§§ -m "$1"
+§§PYTHON_VENV§§ /var/www/html/opencapture/load_referential_splitter.py -c §§CUSTOM_ID§§ -m "$1"
