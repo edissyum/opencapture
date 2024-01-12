@@ -13,6 +13,8 @@
 		"thanks_to_developers": "Merci aux developpeurs de ces solutions"
 	},
 	"ACCOUNTS": {
+		"back_to_customers_list": "Retourner à la liste des comptes clients",
+		"back_to_suppliers_list": "Retourner à la liste des comptes tiers",
 		"bic": "Numéro BIC",
 		"choose_workflow_upload": "Choix du workflow",
 		"company_number": "Numéro de société",
@@ -931,8 +933,6 @@
 		"quit_without_saving": "Quitter sans enregistrer",
 		"quit_without_saving_modifications": "Voulez-vous quitter sans enregistrer les modifications ?",
 		"referential_updated": "Référentiel mis à jour avec succès",
-		"refresh_without_saving": "Actualiser sans enregistrer",
-		"refresh_without_saving_modifications": "Voulez-vous Actualiser sans enregistrer les modifications ?",
 		"reload_batches": "Recharger la liste des lots",
 		"rotatePage": "Tourner les pages sélectionnées",
 		"save_changes": "Sauvegarder les modifications",
@@ -957,6 +957,7 @@
 	},
 	"STATISTICS": {
 		"choose_diagram": "Choisissez un type de diagramme",
+		"choose_module": "Choisissez un module",
 		"choose_statistic_report": "Choisissez un rapport de statistiques",
 		"diagram_pie_chart": "Diagramme circulaire",
 		"diagram_pie_grid": "Diagramme circulaire en grille",

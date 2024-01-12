@@ -277,13 +277,17 @@ def update_address(address_id, data):
     _, error = accounts.get_address_by_id({'address_id': address_id})
 
     if error is None:
-        _set = {
-            'address1': data['address1'],
-            'address2': data['address2'],
-            'postal_code': data['postal_code'],
-            'city': data['city'],
-            'country': data['country']
-        }
+        _set = {}
+        if 'address1' in data:
+            _set.update({'address1': data['address1']})
+        if 'address2' in data:
+            _set.update({'address2': data['address2']})
+        if 'postal_code' in data:
+            _set.update({'postal_code': data['postal_code']})
+        if 'city' in data:
+            _set.update({'city': data['city']})
+        if 'country' in data:
+            _set.update({'country': data['country']})
 
         _, error = accounts.update_address({'set': _set, 'address_id': address_id})
 
