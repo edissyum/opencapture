@@ -58,3 +58,7 @@ CREATE TABLE "users_forms"
     "user_id"  INTEGER,
     "forms_id" JSONB    DEFAULT '{}'
 );
+
+INSERT INTO users_forms (user_id, forms_id)
+SELECT u.id, '{"data": "[]"}'::jsonb from users u;
+
