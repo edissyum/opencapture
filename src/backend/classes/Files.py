@@ -463,6 +463,7 @@ class Files:
         extension = os.path.splitext(img)[1]
         with Image.open(img) as im2:
             cropped_image = im2.crop(crop_ratio)
+            cropped_image = cropped_image.convert('RGB')
             cropped_image.save('/tmp/cropped_' + rand + extension)
 
         if remove_line:
