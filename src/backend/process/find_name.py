@@ -237,12 +237,12 @@ class FindName:
                                             if fuzz.ratio(splitted_line[cpt + 1].lower(), name.lower()) >= 80:
                                                 firstname = splitted_line[cpt + 1].title()
                                                 lastname = splitted_line[cpt + 2].title()
-                                                if lastname.lower() in ['de', 'el', 'da', 'le'] and len(splitted_line) >= cpt + 3:
+                                                if lastname.lower() in ['de', 'el', 'da', 'le'] and len(splitted_line) > cpt + 3:
                                                     lastname += ' ' + splitted_line[cpt + 3].title()
                                             elif fuzz.ratio(splitted_line[cpt + 2].lower(), name.lower()) >= 80 or \
                                                     (len(splitted_line) > cpt + 3  and splitted_line[cpt + 3].lower()):
                                                 lastname = splitted_line[cpt + 1].title()
-                                                if lastname.lower() in ['de', 'el', 'da', 'le'] and len(splitted_line) >= cpt + 3:
+                                                if lastname.lower() in ['de', 'el', 'da', 'le'] and len(splitted_line) > cpt + 3:
                                                     lastname += ' ' + splitted_line[cpt + 2].title()
                                                     firstname = splitted_line[cpt + 3].title()
                                                 else:
