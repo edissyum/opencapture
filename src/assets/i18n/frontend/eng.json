@@ -1105,7 +1105,7 @@
 		"size": "Size",
 		"suppliers_by_customer": "Third-party accounts list by customer",
 		"unselect_all": "Unselect all",
-		"viewer": "View PDF",
+		"viewer": "View document",
 		"waiting": "The document is waiting for process. Please wait and refresh the page later"
 	},
 	"WORKFLOW": {

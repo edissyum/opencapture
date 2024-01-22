@@ -52,6 +52,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     loading                 : boolean     = true;
     supplierExists          : boolean     = true;
     deleteDataOnChangeForm  : boolean     = true;
+    formLoading             : boolean     = false;
     allowAutocomplete       : boolean     = false;
     processMultiDocument    : boolean     = false;
     isOCRRunning            : boolean     = false;
@@ -1123,12 +1124,12 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
             this.saveData(field.control.value, element.id);
         });
-
+        this.formLoading = true;
         this.http.post(environment['url'] + '/ws/accounts/addresses/create', {'args': addressData}, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
                 supplierData['address_id'] = data.id;
-                this.http.post(environment['url'] + '/ws/accounts/suppliers/create', {'args': supplierData}, {headers: this.authService.headers},
+                this.http.post(environment['url'] + '/ws/accounts/suppliers/create?fromViewer=true', {'args': supplierData}, {headers: this.authService.headers},
                 ).pipe(
                     tap(async (supplier_data: any) => {
                         this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
@@ -1142,9 +1143,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                 this.currentSupplier = element;
                             }
                         }
+                        this.formLoading = false;
                     }),
                     catchError((err: any) => {
                         console.debug(err);
+                        this.formLoading = false;
                         this.notify.handleErrors(err);
                         return of(false);
                     })
@@ -1516,6 +1519,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                     if (showNotif) {
                                         this.notify.success(this.translate.instant('DOCUMENTS.supplier_infos_updated'));
                                     }
+                                    this.supplierExists = true;
                                 }),
                                 catchError((err: any) => {
                                     console.debug(err);
@@ -1959,5 +1963,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.toHighlight = value;
         this.suppliers = await this.retrieveSuppliers(value);
         this.suppliers = this.suppliers.suppliers;
+        this.supplierExists = !(this.suppliers.length === 0);
     }
 }
