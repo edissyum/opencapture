@@ -792,6 +792,8 @@
 		"update_document_type": "Update document type",
 		"update_form": "Update form",
 		"update_form_splitter": "Update form",
+		"update_login_bottom_message": "Update login bottom message",
+		"update_login_top_message": "Update login top message",
 		"update_output": "Update output",
 		"update_output_splitter": "Update output",
 		"update_position_mask": "Update positions mask",
