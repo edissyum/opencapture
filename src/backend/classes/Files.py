@@ -52,7 +52,7 @@ else:
 
 def convert_heif_to_jpg(file):
     heif_file = pyheif.read(file)
-    return Image.frombytes(
+    heif_file = Image.frombytes(
         heif_file.mode,
         heif_file.size,
         heif_file.data,
@@ -60,6 +60,8 @@ def convert_heif_to_jpg(file):
         heif_file.mode,
         heif_file.stride,
     )
+    heif_file = heif_file.convert('RGB')
+    return heif_file
 
 
 class Files:
@@ -461,7 +463,6 @@ class Files:
         extension = os.path.splitext(img)[1]
         with Image.open(img) as im2:
             cropped_image = im2.crop(crop_ratio)
-            cropped_image = cropped_image.convert('RGB')
             cropped_image.save('/tmp/cropped_' + rand + extension)
 
         if remove_line:
