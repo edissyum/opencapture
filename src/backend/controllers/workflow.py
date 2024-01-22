@@ -368,6 +368,9 @@ def create_script_and_watcher(args):
     ######
     if os.path.isdir(folder_script):
         script_name = args['workflow_id'] + '.sh'
+        if os.path.isfile(folder_script + '/' + script_name):
+            return {}, 200
+
         if os.path.isfile(folder_script + '/script_sample_dont_touch.sh'):
             new_script_filename = folder_script + '/' + script_name
             with open(folder_script + '/script_sample_dont_touch.sh', 'r', encoding='utf-8') as script_sample:
