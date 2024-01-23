@@ -247,7 +247,7 @@ def create_supplier():
     if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['create_supplier | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/suppliers/create'}), 403
-
+    print(True if 'fromViewer' not in request.args else False)
     check, message = rest_validator(request.json['args'], [
         {'id': 'bic', 'type': str, 'mandatory': False},
         {'id': 'name', 'type': str, 'mandatory': True},
@@ -258,14 +258,14 @@ def create_supplier():
         {'id': 'email', 'type': str, 'mandatory': False},
         {'id': 'pages', 'type': dict, 'mandatory': False},
         {'id': 'form_id', 'type': int, 'mandatory': False},
-        {'id': 'vat_number', 'type': str, 'mandatory': True},
+        {'id': 'vat_number', 'type': str, 'mandatory': True if 'fromViewer' not in request.args else False},
         {'id': 'address_id', 'type': int, 'mandatory': False},
         {'id': 'positions', 'type': dict, 'mandatory': False},
         {'id': 'document_lang', 'type': str, 'mandatory': False},
         {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
         {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False}
     ])
-
+    print(check, message)
     if not check:
         return make_response({
             "errors": gettext('BAD_REQUEST'),

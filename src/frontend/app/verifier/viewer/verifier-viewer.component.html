@@ -103,10 +103,12 @@
                                   matTooltip="{{ 'VERIFIER.calculated_footer' | translate }}">&bull;</span>
                             <span *ngIf="this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')"
                                   class="text-sm cursor-pointer ml-2">
-                                <i *ngIf="this.document.supplier_id && supplierExists && this.document.status !== 'END' && this.formSettings.settings['unique_url']['update_supplier']"
+                                <i *ngIf="!this.formLoading && this.document['supplier_id'] && this.supplierExists && this.document.status !== 'END' && this.formSettings.settings['unique_url']['update_supplier']"
                                    (click)="editSupplier()" class="fa-solid fa-edit"></i>
-                                <i *ngIf="!this.document.supplier_id || !supplierExists && this.document.status !== 'END' && this.formSettings.settings['unique_url']['create_supplier']"
+                                <i *ngIf="!this.formLoading && ((!this.document['supplier_id'] || !this.supplierExists) && this.document.status !== 'END' && this.formSettings.settings['unique_url']['create_supplier'])"
                                    (click)="createSupplier()" class="fa-solid fa-plus"></i>
+                                <i *ngIf="this.formLoading && this.document.status !== 'END' && this.formSettings.settings['unique_url']['create_supplier']"
+                                   class="fa-solid fa-circle-notch fa-spin"></i>
                             </span>
                         </span>
                         <div class="relative border-green-400 border rounded-lg -top-3.5">

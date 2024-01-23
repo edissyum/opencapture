@@ -792,6 +792,8 @@
 		"update_document_type": "Mettre à jour un type de document",
 		"update_form": "Mettre à jour le formulaire",
 		"update_form_splitter": "Mettre à jour le formulaire",
+		"update_login_bottom_message": "Modifier le message de bas de page d'authentification",
+		"update_login_top_message": "Modifier le message de haut de page d'authentification",
 		"update_output": "Mettre à jour la chaîne sortante",
 		"update_output_splitter": "Mettre à jour la chaîne sortante",
 		"update_position_mask": "Mettre à jour le masque de positionnement",
@@ -1103,7 +1105,7 @@
 		"size": "Taille",
 		"suppliers_by_customer": "Liste des tiers par client",
 		"unselect_all": "Tout désélectionner",
-		"viewer": "Visualisation du PDF",
+		"viewer": "Visualisation du document",
 		"waiting": "Votre document est en attente de traitement, merci de patienter. <br>Vous pourrez rafraîchir la page ultérieurement"
 	},
 	"WORKFLOW": {
