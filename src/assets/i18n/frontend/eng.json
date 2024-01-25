@@ -13,6 +13,7 @@
 		"thanks_to_developers": "Thanks to the developers of this solutions"
 	},
 	"ACCOUNTS": {
+		"address_informations": "Address informations",
 		"back_to_customers_list": "Back to customers list",
 		"back_to_suppliers_list": "Back to third-party account list",
 		"bic": "BIC number",
@@ -26,6 +27,7 @@
 		"create_supplier": "Create third-party account",
 		"customer_created": "Customer created successfully",
 		"customer_deleted": "Customer deleted successfully",
+		"customer_informations": "Customer informations",
 		"customer_name": "Customer name",
 		"customer_not_specified": "Customer not specified",
 		"customer_updated": "Customer updated successfully",
@@ -49,6 +51,7 @@
 		"supplier": "Third-party account",
 		"supplier_created": "Third-party account created successfully",
 		"supplier_deleted": "Third-party account deleted successfully",
+		"supplier_informations": "Supplier informations",
 		"supplier_name": "Third-party account name",
 		"supplier_unknow": "Unknow third-party account",
 		"supplier_updated": "Third-party account updated successfully",
