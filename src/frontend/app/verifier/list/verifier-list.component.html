@@ -12,15 +12,13 @@
         <mat-divider></mat-divider>
         <div class="overflow-hidden">
             <div class="pb-6">
-                <mat-form-field class="px-4 pt-4 -mb-6 w-full" appearance="outline" [class.pointer-events-none]="this.loadingCustomers || this.dataSource.data.length === 0">
+                <mat-form-field class="px-4 pt-4 -mb-6 w-full" appearance="outline">
                     <mat-label>
                         {{ 'VERIFIER.search_customer' | translate }}
                     </mat-label>
-                    <input matInput type="text" [formControl]="this.customerFilter" (keyup)="filterCustomers()" autocomplete="off"
-                           [readonly]="this.loadingCustomers || this.dataSource.data.length === 0">
+                    <input matInput type="text" [formControl]="this.customerFilter" (keyup)="filterCustomers()" autocomplete="off">
                     <button matSuffix class="text-gray-900 cursor-pointer" (click)="resetSearchCustomer()" *ngIf="this.customerFilter.value">
-                        <i class="fa-solid fa-sync-alt text-xl relative mr-4"
-                           [matTooltip]="'VERIFIER.reset_customers_search' | translate"></i>
+                        <i class="fa-solid fa-sync-alt text-xl relative mr-4" [matTooltip]="'VERIFIER.reset_customers_search' | translate"></i>
                     </button>
                 </mat-form-field>
             </div>
