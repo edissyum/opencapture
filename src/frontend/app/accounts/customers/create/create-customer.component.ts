@@ -214,7 +214,7 @@ export class CreateCustomerComponent implements OnInit {
                     }),
                     catchError((err: any) => {
                         console.debug(err);
-                        this.notify.handleErrors(err, '/accounts/customers/list');
+                        this.notify.handleErrors(err);
                         return of(false);
                     })
                 ).subscribe();
@@ -234,7 +234,7 @@ export class CreateCustomerComponent implements OnInit {
             }),
             catchError((err: any) => {
                 console.debug(err);
-                this.notify.handleErrors(err, '/accounts/customers/list');
+                this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();
