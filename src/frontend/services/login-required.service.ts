@@ -43,7 +43,7 @@ export class LoginRequiredService implements CanActivate {
         private translate: TranslateService,
         private configService: ConfigService,
         private localeService: LocaleService,
-        private routerExtService: LastUrlService
+        private routerExtService: LastUrlService,
     ) {}
 
     login(token: string, route: any) {
@@ -106,7 +106,13 @@ export class LoginRequiredService implements CanActivate {
                 if (currentUrl !== '/logout' && currentUrl !== '/login' && currentUrl !== '/500') {
                     this.authService.setToken('cachedUrlName', currentUrl.replace(/^\//g, ''));
                 }
-                this.notify.error(translated);
+                this.translate.get('AUTH.session_expired').subscribe((translated_session: string) => {
+                    if (!this.notify.oldErrorMessage.includes(translated_session)) {
+                        this.notify.error(translated);
+                    } else {
+                        this.notify.oldErrorMessage = translated;
+                    }
+                });
                 this.authService.logout();
                 return false;
             });
