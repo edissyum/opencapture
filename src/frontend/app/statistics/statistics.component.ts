@@ -233,13 +233,11 @@ export class StatisticsComponent implements OnInit {
                                 'name': user.lastname + ' ' + user.firstname,
                                 'value': historyCpt
                             });
-                            console.log(this.options[cpt].data)
                             this.currentData = this.options[cpt].data;
                         });
                     }),
                     finalize(() => this.loading = false),
                     catchError((err: any) => {
-                        console.log(err)
                         console.debug(err);
                         this.notify.handleErrors(err);
                         return of(false);
@@ -271,13 +269,11 @@ export class StatisticsComponent implements OnInit {
                                 'name': user.lastname + ' ' + user.firstname,
                                 'value': historyCpt
                             });
-                            console.log(this.options[cpt].data)
                             this.currentData = this.options[cpt].data;
                         });
                     }),
                     finalize(() => this.loading = false),
                     catchError((err: any) => {
-                        console.log(err)
                         console.debug(err);
                         this.notify.handleErrors(err);
                         return of(false);

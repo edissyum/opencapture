@@ -13,6 +13,7 @@
 		"thanks_to_developers": "Merci aux developpeurs de ces solutions"
 	},
 	"ACCOUNTS": {
+		"address_informations": "Informations d'adresse",
 		"back_to_customers_list": "Retourner à la liste des comptes clients",
 		"back_to_suppliers_list": "Retourner à la liste des comptes tiers",
 		"bic": "Numéro BIC",
@@ -26,6 +27,7 @@
 		"create_supplier": "Ajouter un compte tiers",
 		"customer_created": "Compte client crée avec succès",
 		"customer_deleted": "Compte client supprimé",
+		"customer_informations": "Informations du compte client",
 		"customer_name": "Nom du compte client",
 		"customer_not_specified": "Client non spécifié",
 		"customer_updated": "Compte client mis à jour avec succès",
@@ -49,6 +51,7 @@
 		"supplier": "Compte tiers",
 		"supplier_created": "Compte tiers créé avec succès",
 		"supplier_deleted": "Compte tiers supprimé",
+		"supplier_informations": "Informations du compte tiers",
 		"supplier_name": "Nom du compte tiers",
 		"supplier_unknow": "Tiers inconnu",
 		"supplier_updated": "Compte tiers mis à jour avec succès",

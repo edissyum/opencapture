@@ -289,14 +289,14 @@ export class UpdateSupplierComponent implements OnInit {
                                                         finalize(() => this.loading = false),
                                                         catchError((err: any) => {
                                                             console.debug(err);
-                                                            this.notify.handleErrors(err, '/accounts/suppliers/list');
+                                                            this.notify.handleErrors(err);
                                                             return of(false);
                                                         })
                                                     ).subscribe();
                                                 }),
                                                 catchError((err: any) => {
                                                     console.debug(err);
-                                                    this.notify.handleErrors(err, '/accounts/customers/list');
+                                                    this.notify.handleErrors(err);
                                                     return of(false);
                                                 })
                                             ).subscribe();
@@ -366,7 +366,7 @@ export class UpdateSupplierComponent implements OnInit {
             ).pipe(
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/accounts/suppliers/list');
+                    this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();
@@ -379,7 +379,7 @@ export class UpdateSupplierComponent implements OnInit {
                 }),
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/accounts/suppliers/list');
+                    this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();

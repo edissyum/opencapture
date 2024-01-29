@@ -68,19 +68,19 @@ interface FlatNode {
     ]
 })
 export class VerifierListComponent implements OnInit {
-    loading                 : boolean           = true;
-    loadingCustomers        : boolean           = true;
-    status                  : any[]             = [];
-    forms                   : any[]             = [
+    loading                  : boolean           = true;
+    loadingCustomers         : boolean           = true;
+    status                   : any[]             = [];
+    forms                    : any[]             = [
         {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
         {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
     ];
-    filteredForms           : any[]             = [];
-    config                  : any;
-    currentForm             : any               = '';
-    currentStatus           : string            = 'NEW';
-    currentTime             : string            = 'today';
-    batchList               : any[]             = [
+    filteredForms            : any[]             = [];
+    config                   : any;
+    currentForm              : any               = '';
+    currentStatus            : string            = 'NEW';
+    currentTime              : string            = 'today';
+    batchList                : any[]             = [
         {
             'id': 'today',
             'label': marker('BATCH.today')
@@ -94,25 +94,25 @@ export class VerifierListComponent implements OnInit {
             'label': marker('BATCH.older')
         }
     ];
-    pageSize                : number            = 16;
-    pageIndex               : number            = 0;
-    pageSizeOptions         : any []            = [4, 8, 12, 16, 24, 48];
-    total                   : number            = 0;
-    totals                  : any               = {};
-    customersList           : any               = {};
-    offset                  : number            = 0;
-    selectedTab             : number            = 0;
-    documents               : any []            = [];
-    allowedCustomers        : any []            = [];
-    allowedSuppliers        : any []            = [];
-    search                  : string            = '';
-    TREE_DATA               : AccountsNode[]    = [];
-    totalChecked            : number            = 0;
-    expanded                : boolean           = false;
-    documentToDeleteSelected : boolean          = false;
-    customerFilterEmpty     : boolean           = false;
-    customerFilter         = new FormControl('');
-    customerFilterEnabled   : boolean           = false;
+    pageSize                 : number            = 16;
+    pageIndex                : number            = 0;
+    pageSizeOptions          : any []            = [4, 8, 12, 16, 24, 48];
+    total                    : number            = 0;
+    totals                   : any               = {};
+    customersList            : any               = {};
+    offset                   : number            = 0;
+    selectedTab              : number            = 0;
+    documents                : any []            = [];
+    allowedCustomers         : any []            = [];
+    allowedSuppliers         : any []            = [];
+    search                   : string            = '';
+    TREE_DATA                : AccountsNode[]    = [];
+    totalChecked             : number            = 0;
+    expanded                 : boolean           = false;
+    documentToDeleteSelected : boolean           = false;
+    customerFilterEmpty      : boolean           = false;
+    customerFilterEnabled    : boolean           = false;
+    customerFilter           : FormControl       = new FormControl('');
 
     private _transformer = (node: AccountsNode, level: number) => ({
         expandable: !!node.children && node.children.length > 0,
@@ -337,6 +337,13 @@ export class VerifierListComponent implements OnInit {
                         this.offset = this.pageSize * (this.pageIndex);
                         this.loadDocuments();
                     }
+
+                    if (this.total === 0) {
+                        this.customerFilter.disable();
+                    } else {
+                        this.customerFilter.enable();
+                    }
+
                     this.documents = data.documents;
                     this.documents.forEach((document: any) => {
                         if (document.document_id) {
