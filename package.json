@@ -14,7 +14,7 @@
     },
     "private": true,
     "dependencies": {
-        "@ngstack/code-editor": "^5.1.0",
+        "@ngstack/code-editor": "^7.0.0",
         "@swimlane/ngx-charts": "^20.5.0",
         "@tinymce/tinymce-angular": "^7.0.0",
         "moment": "^2.30.1",
@@ -57,7 +57,7 @@
         "@types/d3-scale": "^4.0.8",
         "@types/d3-selection": "^3.0.10",
         "@types/d3-shape": "^3.1.6",
-        "@types/node": "^20.11.7",
+        "@types/node": "^20.11.10",
         "@typescript-eslint/eslint-plugin": "6.19.1",
         "@typescript-eslint/parser": "6.19.1",
         "autoprefixer": "^10.4.17",
