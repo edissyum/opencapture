@@ -155,8 +155,10 @@ def check_file(files, path, log, docservers):
         log.error('The file doesn\'t exists : ' + str(path))
         return False
 
-    if not files.check_file_integrity(path, docservers):
+    file_integrity, error_message = files.check_file_integrity(path, docservers)
+    if not file_integrity:
         log.error('The integrity of file could\'nt be verified : ' + str(path))
+        log.error('Error informations : ' + str(error_message))
         return False
     return True
 
