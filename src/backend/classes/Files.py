@@ -117,9 +117,9 @@ class Files:
                     temp_filename = tf.name + '.jpg'
                     tf.write(open(file, 'rb').read())
                     temp_file = Image.open(tf)
-                    temp_file.save(tf.name + '.jpg')
-                    rotate_img(tf.name + '.jpg')
-                    file = tf.name + '.jpg'
+                    temp_file.save(temp_filename)
+                    rotate_img(temp_filename)
+                    file = temp_filename
 
             if zone_to_crop == 'header':
                 if is_custom:
