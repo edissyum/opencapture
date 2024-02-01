@@ -348,9 +348,11 @@
 		"vat_rate": "VAT rate"
 	},
 	"FIELD_METADATA": {
+		"checked_value": "Value if checked",
 		"default_value": "Default value",
 		"result_mask": "Result mask",
 		"search_mask": "Search mask",
+		"unchecked_value": "Value if unchecked",
 		"validation_mask": "Validation mask"
 	},
 	"FORMATS": {
@@ -380,6 +382,7 @@
 		"batch_display": "Batch display",
 		"change_form_enabled": "Allow to change form",
 		"choose_form": "Choose a new form",
+		"conditioned_by": "Conditioned by",
 		"confirm_delete": "Are you sure you want to delete the form <strong>{{ form }}</strong> ?",
 		"confirm_disable": "Are you sure you want to disable the form <strong>{{ form }}</strong> ?",
 		"confirm_duplicate": "Are you sure you want to duplicate the form <strong>{{ form }}</strong> ?",
@@ -983,6 +986,7 @@
 		"update_status_to": "Update status to"
 	},
 	"TYPES": {
+		"checkbox": "Checkbox",
 		"date": "Date",
 		"regex": "Regular expression",
 		"select": "List of choices",
