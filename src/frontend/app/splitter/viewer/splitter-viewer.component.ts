@@ -40,16 +40,18 @@ import * as moment from "moment";
 
 export interface Field {
     id              : number
+    settings        : any
     type            : string
     label           : string
     class           : string
-    required        : string
+    required        : boolean
+    disabled        : boolean
     resultMask      : string
     searchMask      : string
-    label_short     : string
-    metadata_key    : string
     validationMask  : string
-    settings        : any
+    metadata_key    : string
+    label_short     : string
+    conditioned_by  : string
 }
 
 @Component({
@@ -718,13 +720,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 'type'           : field.type,
                                 'label'          : field.label,
                                 'class'          : field.class,
+                                'disabled'       : field.disabled,
                                 'settings'       : field.settings,
                                 'required'       : field.required,
                                 'searchMask'     : field.searchMask,
                                 'resultMask'     : field.resultMask,
                                 'label_short'    : field.label_short,
                                 'metadata_key'   : field.metadata_key,
-                                'validationMask' : field.validationMask
+                                'validationMask' : field.validationMask,
+                                'conditioned_by' : field.conditioned_by
                             });
                             if (fieldCategory === 'batch_metadata' && field.metadata_key &&
                                 !field.metadata_key.includes("SEPARATOR_META")) {
@@ -779,6 +783,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
+    checkConditionedField(field: any, conditionedBy: string){
+        // if (conditionedBy) {
+        //     fieldsCategories['batch_metadata'][conditionedBy]
+        // }
+    }
     getFormFieldsValues() {
         for (const field of this.fieldsCategories['batch_metadata']) {
             if ((this.batchForm.get(field.label_short) && !field.metadata_key) || this.inputMode != 'Auto') {
@@ -795,8 +804,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         const format = moment().localeData().longDateFormat('L');
         this.fieldsCategories['batch_metadata'].forEach((field: Field) => {
             group[field.label_short] = field.required ?
-                new FormControl('', Validators.required) :
-                new FormControl('');
+                new FormControl({value: '', disabled: field.disabled}, Validators.required) :
+                new FormControl({value: '', disabled: field.disabled});
             if (this.currentBatch.customFieldsValues.hasOwnProperty(field.label_short)) {
                 const value = field.type !== 'date' ? this.currentBatch.customFieldsValues[field.label_short] :
                     moment(this.currentBatch.customFieldsValues[field.label_short], format);

@@ -81,7 +81,7 @@
                                     <span *ngIf="field.type === 'select'"> ({{ 'TYPES.select' | translate }})</span>
                                     <span *ngIf="field.type === 'textarea'"> ({{ 'TYPES.textarea' | translate }})</span>
                                 </span>
-                                <input class="cursor-pointer" matInput type="{{ field['type']}}" readonly>
+                                <input *ngIf="field['type'] !== 'checkbox'" class="cursor-pointer" matInput type="{{ field['type']}}" readonly>
                                 <div class="absolute top-0 -right-4">
                                     <button mat-button [matMenuTriggerFor]="menu"
                                             [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
@@ -147,11 +147,11 @@
                                     <mat-menu #disabled="matMenu">
                                         <button mat-menu-item [id]="field.id"
                                                 *ngFor="let disabled of disabledList"
-                                                (click)="changeRequired(field.id, disabled.id, disabled.icon, category['id'])">
-                                            <span [class.text-green-400]="disabled.id === field.required">
+                                                (click)="changeDisabled(field.id, disabled.id, disabled.icon, category['id'])">
+                                            <span [class.text-green-400]="disabled.id === field.disabled">
                                                 {{ disabled.label | translate }}
                                             </span>
-                                            <span *ngIf="disabled.id === field.required">
+                                            <span *ngIf="disabled.id === field.disabled">
                                                 <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
                                             </span>
                                         </button>
@@ -252,12 +252,14 @@
                                     <mat-select></mat-select>
                                 </mat-form-field>
                             </ng-container>
-                            <ng-container *ngIf="field.type === 'checkbox'">
+                            <ng-container *ngIf="field.type === 'checkbox'" class="text-gray-600">
                                 <div>
                                     <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
                                     {{ field.label | translate }}
                                 </div>
-                                <mat-checkbox formControlName="test">{{ 'TYPES.' + field.type | translate }}</mat-checkbox>
+                                <mat-checkbox *ngIf="field['type'] === 'checkbox'" class="cursor-pointer top-0.5" readonly labelPosition="before">
+                                        {{ "TYPES." + field.type | translate }}
+                                </mat-checkbox>
                             </ng-container>
                         </div>
                     </div>

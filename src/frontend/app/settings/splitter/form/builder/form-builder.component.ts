@@ -410,6 +410,15 @@ export class SplitterFormBuilderComponent implements OnInit {
         });
     }
 
+    changeDisabled(fieldId: any, newDisabled: any, requiredIcon: any, category: any) {
+        const id = fieldId;
+        this.fields[category].forEach((element: any) => {
+            if (element.id === id) {
+                element.disabled = newDisabled;
+                element.required_icon = requiredIcon;
+            }
+        });
+    }
     dropFromForm(event: any) {
         const unit = event.container.id;
         const previousUnit = event.previousContainer.id;
