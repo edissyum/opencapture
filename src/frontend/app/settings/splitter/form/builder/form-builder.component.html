@@ -77,11 +77,11 @@
                                 <span class="input-label relative -top-0.5 border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12">
                                     <span *ngIf="field.required" class="text-red-500 mr-2 relative top-0.5">*</span>
                                     <strong>{{ field.label | translate }}</strong>
-                                    <span *ngIf="field.type !== 'select' && field.type !== 'textarea'"> ({{ 'FORMATS.' + field.format | translate }})</span>
-                                    <span *ngIf="field.type === 'select'"> ({{ 'FORMATS.select' | translate }})</span>
-                                    <span *ngIf="field.type === 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>
+                                    <span *ngIf="field.type !== 'select' && field.type !== 'textarea'"> ({{ 'TYPES.' + field.format | translate }})</span>
+                                    <span *ngIf="field.type === 'select'"> ({{ 'TYPES.select' | translate }})</span>
+                                    <span *ngIf="field.type === 'textarea'"> ({{ 'TYPES.textarea' | translate }})</span>
                                 </span>
-                                <input class="cursor-pointer" matInput type="text" readonly>
+                                <input *ngIf="field['type'] !== 'checkbox'" class="cursor-pointer" matInput type="{{ field['type']}}" readonly>
                                 <div class="absolute top-0 -right-4">
                                     <button mat-button [matMenuTriggerFor]="menu"
                                             [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
@@ -101,8 +101,11 @@
                                         <button mat-menu-item [matMenuTriggerFor]="disabled">
                                             {{ "FORMS.disable" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
                                         </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="autoCompleteMasksMenu">
+                                        <button mat-menu-item [matMenuTriggerFor]="inputMetadata">
                                             {{ "FORMS.input_metadata" | translate }}
+                                        </button>
+                                        <button mat-menu-item [matMenuTriggerFor]="disabledCondition">
+                                            {{ "FORMS.conditioned_by" | translate }}
                                         </button>
                                     </mat-menu>
                                     <mat-menu #size="matMenu">
@@ -144,21 +147,36 @@
                                     <mat-menu #disabled="matMenu">
                                         <button mat-menu-item [id]="field.id"
                                                 *ngFor="let disabled of disabledList"
-                                                (click)="changeRequired(field.id, disabled.id, disabled.icon, category['id'])">
-                                            <span [class.text-green-400]="disabled.id === field.required">
+                                                (click)="changeDisabled(field.id, disabled.id, disabled.icon, category['id'])">
+                                            <span [class.text-green-400]="disabled.id === field.disabled">
                                                 {{ disabled.label | translate }}
                                             </span>
-                                            <span *ngIf="disabled.id === field.required">
+                                            <span *ngIf="disabled.id === field.disabled">
                                                 <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
                                             </span>
                                         </button>
                                     </mat-menu>
-                                    <mat-menu #autoCompleteMasksMenu="matMenu">
+                                    <mat-menu #inputMetadata="matMenu">
                                         <div *ngFor="let fieldMetadataItem of fieldMetadata">
-                                            <mat-form-field class="w-64 mx-2 text-base" (click)="$event.stopPropagation()">
+                                            <mat-form-field class="w-64 mx-2 text-base" (click)="$event.stopPropagation()"
+                                            *ngIf="fieldMetadataItem['types'].indexOf(field['type']) !== -1">
                                                 <mat-label>{{ fieldMetadataItem.placeholder | translate }}</mat-label>
                                                 <input matInput [(ngModel)]="field[fieldMetadataItem['id']]" type="text">
                                             </mat-form-field>
+                                        </div>
+                                    </mat-menu>
+                                    <mat-menu #disabledCondition="matMenu">
+                                        <div *ngFor="let field_item of this.fields[category['id']]">
+                                            <button mat-menu-item [id]="field.id"
+                                                    (click)="field['conditioned_by'] = field_item['label_short']"
+                                                    *ngIf="field['label_short'] !== field_item['label_short'] && field_item['type'] === 'checkbox'">
+                                                <span [class.text-green-400]="field['conditioned_by'] === field_item['label_short']">
+                                                    {{ field_item['label'] | translate }}
+                                                </span>
+                                                <span *ngIf="field['conditioned_by'] === field_item['label_short']">
+                                                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                </span>
+                                            </button>
                                         </div>
                                     </mat-menu>
                                 </div>
@@ -239,7 +257,9 @@
                                     <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
                                     {{ field.label | translate }}
                                 </div>
-                                <mat-checkbox formControlName="test">{{ 'TYPES.' + field.type | translate }}</mat-checkbox>
+                                <mat-checkbox *ngIf="field['type'] === 'checkbox'" class="cursor-pointer top-0.5" readonly labelPosition="before">
+                                        {{ "TYPES." + field.type | translate }}
+                                </mat-checkbox>
                             </ng-container>
                         </div>
                     </div>

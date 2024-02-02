@@ -65,12 +65,12 @@ export class SplitterFormBuilderComponent implements OnInit {
     formId                  : any;
     creationMode            : boolean   = true;
     labelType               : any []    = [
-        marker('FORMATS.text'),
         marker('TYPES.text'),
         marker('TYPES.regex'),
         marker('TYPES.textarea'),
         marker('TYPES.date'),
         marker('TYPES.select'),
+        marker('TYPES.checkbox'),
         marker('VERIFIER.field_settings'),
         marker('FORMS.delete_field'),
         marker('FORMS.update_label')
@@ -162,22 +162,44 @@ export class SplitterFormBuilderComponent implements OnInit {
         {
             'id'            : 'searchMask',
             'placeholder'   : marker('FIELD_METADATA.search_mask'),
-            'control'       : new FormControl()
+            'control'       : new FormControl(),
+            'types'         : ['text']
         },
         {
             'id'            : 'resultMask',
             'placeholder'   : marker('FIELD_METADATA.result_mask'),
-            'control'       : new FormControl()
+            'control'       : new FormControl(),
+            'types'         : ['text']
         },
         {
             'id'            : 'defaultValue',
             'placeholder'   : marker('FIELD_METADATA.default_value'),
-            'control'       : new FormControl()
+            'control'       : new FormControl(),
+            'types'         : ['text', 'textarea', 'select', 'date', 'checkbox']
         },
         {
             'id'            : 'validationMask',
             'placeholder'   : marker('FIELD_METADATA.validation_mask'),
-            'control'       : new FormControl()
+            'control'       : new FormControl(),
+            'types'         : ['text', 'textarea']
+        },
+        {
+            'id'            : 'validationMask',
+            'placeholder'   : marker('FIELD_METADATA.validation_mask'),
+            'control'       : new FormControl(),
+            'types'         : ['text', 'textarea']
+        },
+        {
+            'id'            : 'checkedValue',
+            'placeholder'   : marker('FIELD_METADATA.checked_value'),
+            'control'       : new FormControl(),
+            'types'         : ['checkbox']
+        },
+        {
+            'id'            : 'uncheckedValue',
+            'placeholder'   : marker('FIELD_METADATA.unchecked_value'),
+            'control'       : new FormControl(),
+            'types'         : ['checkbox']
         }
     ];
 
@@ -276,17 +298,18 @@ export class SplitterFormBuilderComponent implements OnInit {
                                     if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push(
                                             {
-                                                id           : 'custom_' + data.customFields[field].id,
-                                                metadata_key : data.customFields[field].metadata_key,
-                                                label_short  : data.customFields[field].label_short,
-                                                settings     : data.customFields[field].settings,
-                                                required     : data.customFields[field].required,
-                                                label        : data.customFields[field].label,
-                                                type         : data.customFields[field].type,
-                                                format       : data.customFields[field].type,
-                                                unit         : 'custom',
-                                                class        : "w-1/3",
-                                                class_label  : "1/33"
+                                                id             : 'custom_' + data.customFields[field].id,
+                                                type           : data.customFields[field].type,
+                                                format         : data.customFields[field].type,
+                                                label          : data.customFields[field].label,
+                                                settings       : data.customFields[field].settings,
+                                                required       : data.customFields[field].required,
+                                                label_short    : data.customFields[field].label_short,
+                                                metadata_key   : data.customFields[field].metadata_key,
+                                                conditioned_by : data.customFields[field].conditioned_by ? data.customFields[field].conditioned_by : "",
+                                                unit           : 'custom',
+                                                class          : "w-1/3",
+                                                class_label    : "1/33"
                                             }
                                         );
                                     }
@@ -387,6 +410,15 @@ export class SplitterFormBuilderComponent implements OnInit {
         });
     }
 
+    changeDisabled(fieldId: any, newDisabled: any, requiredIcon: any, category: any) {
+        const id = fieldId;
+        this.fields[category].forEach((element: any) => {
+            if (element.id === id) {
+                element.disabled = newDisabled;
+                element.required_icon = requiredIcon;
+            }
+        });
+    }
     dropFromForm(event: any) {
         const unit = event.container.id;
         const previousUnit = event.previousContainer.id;

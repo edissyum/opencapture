@@ -15,41 +15,46 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { environment } from  "../../env";
-import { catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap } from "rxjs/operators";
-import { of, ReplaySubject, Subject } from "rxjs";
-import { HttpClient } from "@angular/common/http";
-import { LocalStorageService } from "../../../services/local-storage.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { AuthService } from "../../../services/auth.service";
-import { UserService } from "../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
-import { NotificationService } from "../../../services/notifications/notifications.service";
-import { DomSanitizer } from "@angular/platform-browser";
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
-import { MatDialog } from "@angular/material/dialog";
-import { DocumentTypeComponent } from "../document-type/document-type.component";
-import { remove } from 'remove-accents';
-import { HistoryService } from "../../../services/history.service";
-import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { LocaleService } from "../../../services/locale.service";
 import * as moment from "moment";
+import { remove } from 'remove-accents';
+import { environment } from  "../../env";
+
+import { UserService } from "../../../services/user.service";
+import { AuthService } from "../../../services/auth.service";
+import { LocaleService } from "../../../services/locale.service";
+import { HistoryService } from "../../../services/history.service";
+import { LocalStorageService } from "../../../services/local-storage.service";
+import { DocumentTypeComponent } from "../document-type/document-type.component";
+import { NotificationService } from "../../../services/notifications/notifications.service";
+import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
+
+import { HttpClient } from "@angular/common/http";
+import { of, ReplaySubject, Subject } from "rxjs";
+import { MatDialog } from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
+import { DomSanitizer } from "@angular/platform-browser";
+import { ActivatedRoute, Router } from "@angular/router";
+import {MatCheckboxChange} from "@angular/material/checkbox";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
+import { catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap } from "rxjs/operators";
 
 export interface Field {
     id              : number
+    settings        : any
     type            : string
     label           : string
     class           : string
-    required        : string
+    required        : boolean
+    disabled        : boolean
     resultMask      : string
     searchMask      : string
-    label_short     : string
-    metadata_key    : string
     validationMask  : string
-    settings        : any
+    metadata_key    : string
+    label_short     : string
+    conditioned_by  : string
 }
 
 @Component({
@@ -718,13 +723,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 'type'           : field.type,
                                 'label'          : field.label,
                                 'class'          : field.class,
+                                'disabled'       : field.disabled,
                                 'settings'       : field.settings,
                                 'required'       : field.required,
                                 'searchMask'     : field.searchMask,
                                 'resultMask'     : field.resultMask,
                                 'label_short'    : field.label_short,
                                 'metadata_key'   : field.metadata_key,
-                                'validationMask' : field.validationMask
+                                'validationMask' : field.validationMask,
+                                'conditioned_by' : field.conditioned_by
                             });
                             if (fieldCategory === 'batch_metadata' && field.metadata_key &&
                                 !field.metadata_key.includes("SEPARATOR_META")) {
@@ -795,8 +802,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         const format = moment().localeData().longDateFormat('L');
         this.fieldsCategories['batch_metadata'].forEach((field: Field) => {
             group[field.label_short] = field.required ?
-                new FormControl('', Validators.required) :
-                new FormControl('');
+                new FormControl({value: '', disabled: field.disabled}, Validators.required) :
+                new FormControl({value: '', disabled: field.disabled});
             if (this.currentBatch.customFieldsValues.hasOwnProperty(field.label_short)) {
                 const value = field.type !== 'date' ? this.currentBatch.customFieldsValues[field.label_short] :
                     moment(this.currentBatch.customFieldsValues[field.label_short], format);
@@ -848,6 +855,19 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             })
         ).subscribe();
     }
+
+    onCheckBoxChange(checkboxField: any, $event: MatCheckboxChange) {
+        for (const field of this.fieldsCategories['batch_metadata']) {
+            if (field['conditioned_by'] === checkboxField['label_short']) {
+                if ($event.checked) {
+                    this.batchForm.controls[field['label_short']].enable();
+                } else {
+                    this.batchForm.controls[field['label_short']].disable();
+                }
+            }
+        }
+    }
+
     /* -- End Metadata -- */
 
     /* -- Begin documents control -- */
