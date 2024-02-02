@@ -348,9 +348,11 @@
 		"vat_rate": "Taux de TVA"
 	},
 	"FIELD_METADATA": {
+		"checked_value": "valeur si cochée",
 		"default_value": "Valeur par défaut",
 		"result_mask": "Masque de résultat",
 		"search_mask": "Masque de recherche",
+		"unchecked_value": "Valeur si décochée",
 		"validation_mask": "Masque de validation"
 	},
 	"FORMATS": {
@@ -380,6 +382,7 @@
 		"batch_display": "Affichage des lots",
 		"change_form_enabled": "Autoriser le changement de formulaire",
 		"choose_form": "Selection du formulaire",
+		"conditioned_by": "Champ conditionné",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire <strong>{{ form }}</strong> ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver le formulaire <strong>{{ form }}</strong> ?",
 		"confirm_duplicate": "Êtes vous sûr de vouloir dupliquer le formulaire <strong>{{ form }}</strong> ?",
@@ -985,6 +988,7 @@
 		"update_status_to": "Mettre à jour le statut vers"
 	},
 	"TYPES": {
+		"checkbox": "Case à cocher",
 		"date": "Date",
 		"regex": "Expression régulière",
 		"select": "Liste de choix",
