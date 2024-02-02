@@ -104,7 +104,7 @@
                                         <button mat-menu-item [matMenuTriggerFor]="inputMetadata">
                                             {{ "FORMS.input_metadata" | translate }}
                                         </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="displayCondition">
+                                        <button mat-menu-item [matMenuTriggerFor]="disabledCondition">
                                             {{ "FORMS.conditioned_by" | translate }}
                                         </button>
                                     </mat-menu>
@@ -165,11 +165,11 @@
                                             </mat-form-field>
                                         </div>
                                     </mat-menu>
-                                    <mat-menu #displayCondition="matMenu">
+                                    <mat-menu #disabledCondition="matMenu">
                                         <div *ngFor="let field_item of this.fields[category['id']]">
                                             <button mat-menu-item [id]="field.id"
                                                     (click)="field['conditioned_by'] = field_item['label_short']"
-                                                    *ngIf="field['label_short'] !== field_item['label_short']">
+                                                    *ngIf="field['label_short'] !== field_item['label_short'] && field_item['type'] === 'checkbox'">
                                                 <span [class.text-green-400]="field['conditioned_by'] === field_item['label_short']">
                                                     {{ field_item['label'] | translate }}
                                                 </span>
@@ -252,7 +252,7 @@
                                     <mat-select></mat-select>
                                 </mat-form-field>
                             </ng-container>
-                            <ng-container *ngIf="field.type === 'checkbox'" class="text-gray-600">
+                            <ng-container *ngIf="field.type === 'checkbox'">
                                 <div>
                                     <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
                                     {{ field.label | translate }}
