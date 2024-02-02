@@ -122,7 +122,7 @@
                                     <mat-label>
                                         <span [innerHTML]="getPlaceholderFromSearchMask(field.searchMask, field.label)"></span>
                                     </mat-label>
-                                    <mat-select [formControlName]="field.label_short" class="mat-search" [disabled]="field.disabled">
+                                    <mat-select [formControlName]="field.label_short" class="mat-search">
                                         <mat-option *ngIf="field.metadata_key">
                                             <ngx-mat-select-search
                                                     [formControlName]="'search_' + field.label_short"
@@ -148,21 +148,20 @@
                             <ng-container *ngIf="field.type === 'textarea'">
                                 <mat-form-field class="w-full">
                                     <mat-label>{{ field.label }}</mat-label>
-                                    <textarea [disabled]="field.disabled" matInput formControlName="{{ field.label_short }}"
+                                    <textarea matInput formControlName="{{ field.label_short }}"
                                               (ngModelChange)="setValueChange(field.label_short, $event)"></textarea>
                                 </mat-form-field>
                             </ng-container>
                             <ng-container *ngIf="field.type === 'text' && (!field.metadata_key || inputMode === 'Manual')">
                                 <mat-form-field class="w-full">
                                     <mat-label>{{ field.label }}</mat-label>
-                                    <input [disabled]="field.disabled" matInput formControlName="{{ field.label_short }}">
+                                    <input matInput formControlName="{{ field.label_short }}">
                                 </mat-form-field>
                             </ng-container>
                             <ng-container *ngIf="field.type === 'select'">
                                 <mat-form-field class="w-full">
                                     <mat-label>{{ field.label }}</mat-label>
-                                    <mat-select [disabled]="field.disabled"
-                                                [formControlName]="field.label_short"
+                                    <mat-select [formControlName]="field.label_short"
                                                 (selectionChange)="setValueChange(field.label_short, $event.value)">
                                         <mat-option *ngFor="let option of field.settings.options" [value]="option.id">
                                             {{ option.label }}
@@ -179,7 +178,10 @@
                                 </mat-form-field>
                             </ng-container>
                             <ng-container *ngIf="field.type === 'checkbox'" class="flex justify-center inline-block my-4">
-                                <mat-checkbox formControlName="{{ field.label_short }}">{{ field.label }}</mat-checkbox>
+                                <mat-checkbox formControlName="{{ field.label_short }}"
+                                              (change)="onCheckBoxChange(field, $event)">
+                                    {{ field.label }}
+                                </mat-checkbox>
                             </ng-container>
                         </div>
                     </form>
