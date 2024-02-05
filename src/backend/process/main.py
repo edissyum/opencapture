@@ -254,12 +254,12 @@ def convert(file, files, ocr, nb_pages, tesseract_function, convert_function, cu
             pass
         files.pdf_to_jpg(file, nb_pages, open_img=False, is_custom=True, convert_function=convert_function)
     else:
+        files.pdf_to_jpg(file, 1, convert_function=convert_function)
+        ocr.text = return_text(files.img, tesseract_function, ocr)
         files.pdf_to_jpg(file, 1, True, True, 'header', convert_function=convert_function)
         ocr.header_text = return_text(files.img, tesseract_function, ocr)
         files.pdf_to_jpg(file, 1, True, True, 'footer', convert_function=convert_function)
         ocr.footer_text = return_text(files.img, tesseract_function, ocr)
-        files.pdf_to_jpg(file, 1, convert_function=convert_function)
-        ocr.text = return_text(files.img, tesseract_function, ocr)
         if nb_pages > 1:
             files.pdf_to_jpg(file, nb_pages, True, True, 'header', True, convert_function=convert_function)
             ocr.header_last_text = return_text(files.img, tesseract_function, ocr)
@@ -810,13 +810,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         full_jpg_filename = str(uuid.uuid4())
         file = files.move_to_docservers(docservers, file)
-
         if file.lower().endswith('.pdf'):
-            # Convert all the pages to JPG (used to full web interface)
             files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename,
-                                          docservers=True, rotate_img=True, page_to_save=1)
-            files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename,
-                                              rotate_img=True)
+                                          docservers=True, rotate=True, page_to_save=1)
+            files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename, rotate=True)
         else:
             files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], file, full_jpg_filename + '-001.jpg', True)
             files.move_to_docservers_image(docservers['VERIFIER_THUMB'], file, full_jpg_filename + '-001.jpg', True)

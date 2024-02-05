@@ -263,13 +263,11 @@ export function createTranslateLoader(http: HttpClient) {
             useClass: MiddlewareComponent,
             multi: true
         },
-        [
-            {
-                provide: HTTP_INTERCEPTORS,
-                useClass: TimeoutInterceptor,
-                multi: true
-            }
-        ]
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TimeoutInterceptor,
+            multi: true
+        }
 ],
     bootstrap: [AppComponent]
 })
