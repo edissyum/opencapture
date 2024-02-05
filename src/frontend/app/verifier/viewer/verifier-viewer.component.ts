@@ -69,6 +69,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     formEmpty               : boolean     = false;
     processInError          : boolean     = false;
     imgLoading              : boolean     = false;
+    supplierformFound       : boolean     = false;
     processErrorMessage     : string      = '';
     processErrorIcon        : string      = '';
     token                   : string      = '';
@@ -255,13 +256,12 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.suppliers = await this.retrieveSuppliers('', 1000);
         this.suppliers = this.suppliers.suppliers;
 
-        let supplierFormFound = false;
         if (this.document.supplier_id) {
             for (const element of this.suppliers) {
                 if (element.id === this.document.supplier_id) {
                     this.currentSupplier = element;
                     if (element.form_id) {
-                        supplierFormFound = element.form_id;
+                        this.supplierformFound = element.form_id;
                     }
                 }
             }
@@ -269,8 +269,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
         if (Object.keys(this.currentFormFields).length === 0) {
             let defaultFormFound = false;
-            if (supplierFormFound) {
-                await this.generateOutputs(supplierFormFound);
+            if (this.supplierformFound) {
+                await this.generateOutputs(this.supplierformFound);
             } else {
                 for (const element of this.formList) {
                     if (element.default_form) {
@@ -281,7 +281,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     await this.generateOutputs(defaultFormFound);
                 }
             }
-            if (defaultFormFound || supplierFormFound) {
+            if (defaultFormFound || this.supplierformFound) {
                 this.currentFormFields = await this.getForm();
             } else {
                 this.notify.error(this.translate.instant('FORMS.no_form_available'));
@@ -1476,8 +1476,16 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         return Number.isInteger(parseInt(splittedId[splittedId.length - 1])) && !fieldId.includes('custom_');
     }
 
-    getSupplierInfo(supplierId: any, showNotif = false, launchOnInit = false) {
-        this.suppliers.forEach((supplier: any) => {
+    async getSupplierInfo(supplierId: any, showNotif = false, launchOnInit = false) {
+        let tmpSupplier: any = [];
+        if (this.supplierformFound) {
+            tmpSupplier = this.suppliers
+        } else {
+            tmpSupplier = await this.retrieveSuppliers();
+            tmpSupplier = tmpSupplier.suppliers;
+        }
+
+        tmpSupplier.forEach((supplier: any) => {
             if (supplier.id === supplierId) {
                 if (!supplier.address_id) {
                     supplier.address_id = 0;
