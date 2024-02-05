@@ -517,10 +517,15 @@ export class WorkflowBuilderComponent implements OnInit {
 
         this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.customFields) {
+                if (data['customFields']) {
                     this.fields['process'].forEach((element: any) => {
                         if (element.id === 'custom_fields') {
-                            element.values = data.customFields;
+                            element.values = data['customFields'];
+                            element.values.forEach((elem: any) => {
+                                if (elem.type !== 'regex') {
+                                    element.values = element.values.filter((e: any) => e.id !== elem.id);
+                                }
+                            });
                         }
                     });
                 }
