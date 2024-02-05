@@ -221,7 +221,17 @@ class FindCustom:
                                         pass
 
                                     if text is not False and text:
-                                        self.log.info(field + ' found with position : ' + str(text))
+                                        custom_id = field.replace('custom_', '')
+                                        custom = self.database.select({
+                                            'select': ['label'],
+                                            'table': ['custom_fields'],
+                                            'where': ['id = %s'],
+                                            'data': [custom_id]
+                                        })
+                                        custom_name = custom_id
+                                        if custom:
+                                            custom_name = custom[0]['label']
+                                        self.log.info(custom_name + ' found with position : ' + str(text))
                                         data_to_return[field] = [text, position, data['page']]
         return data_to_return
 
