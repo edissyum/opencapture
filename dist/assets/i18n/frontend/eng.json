@@ -13,6 +13,9 @@
 		"thanks_to_developers": "Thanks to the developers of this solutions"
 	},
 	"ACCOUNTS": {
+		"address_informations": "Address informations",
+		"back_to_customers_list": "Back to customers list",
+		"back_to_suppliers_list": "Back to third-party account list",
 		"bic": "BIC number",
 		"choose_workflow_upload": "Choose a workflow",
 		"company_number": "Company number",
@@ -24,6 +27,7 @@
 		"create_supplier": "Create third-party account",
 		"customer_created": "Customer created successfully",
 		"customer_deleted": "Customer deleted successfully",
+		"customer_informations": "Customer informations",
 		"customer_name": "Customer name",
 		"customer_not_specified": "Customer not specified",
 		"customer_updated": "Customer updated successfully",
@@ -47,6 +51,7 @@
 		"supplier": "Third-party account",
 		"supplier_created": "Third-party account created successfully",
 		"supplier_deleted": "Third-party account deleted successfully",
+		"supplier_informations": "Supplier informations",
 		"supplier_name": "Third-party account name",
 		"supplier_unknow": "Unknow third-party account",
 		"supplier_updated": "Third-party account updated successfully",
@@ -193,8 +198,9 @@
 		"no_option_added": "No option added",
 		"regex_format": "Data format",
 		"regex_remove_keyword": "Remove keyword from regex",
-		"regex_remove_keyword_explanation": "For this option to be taken into account, the keyword must be present in the regular expression and the regular expression must end with <strong>.*</strong><br>Example: <strong>INVOICE\\s*NUMBER\\s*:\\s*.*</strong>\n",
+		"regex_remove_keyword_explanation": "For this option to be taken into account, the keyword must be present in the field <strong>Regular expression (REGEX) with keyword removal</strong><br>Example: <strong>INVOICE\\s*NUMBER\\s*:\\s*</strong>\n",
 		"regex_remove_keyword_hint": "If enabled, the keyword will be removed from the regex result to keep only the data",
+		"regex_remove_keyword_input": "Regular expression (REGEX) with keyword removal",
 		"regex_remove_spaces": "Remove spaces from regex result",
 		"regex_remove_special_char": "Remove special characters from regex result",
 		"regex_remove_special_char_hint": "Example : -()\"#@;:<>{}][`+=~|!?€$%£*",
@@ -343,9 +349,11 @@
 		"vat_rate": "VAT rate"
 	},
 	"FIELD_METADATA": {
+		"checked_value": "Value if checked",
 		"default_value": "Default value",
 		"result_mask": "Result mask",
 		"search_mask": "Search mask",
+		"unchecked_value": "Value if unchecked",
 		"validation_mask": "Validation mask"
 	},
 	"FORMATS": {
@@ -375,6 +383,7 @@
 		"batch_display": "Batch display",
 		"change_form_enabled": "Allow to change form",
 		"choose_form": "Choose a new form",
+		"conditioned_by": "Conditioned by",
 		"confirm_delete": "Are you sure you want to delete the form <strong>{{ form }}</strong> ?",
 		"confirm_disable": "Are you sure you want to disable the form <strong>{{ form }}</strong> ?",
 		"confirm_duplicate": "Are you sure you want to duplicate the form <strong>{{ form }}</strong> ?",
@@ -790,6 +799,8 @@
 		"update_document_type": "Update document type",
 		"update_form": "Update form",
 		"update_form_splitter": "Update form",
+		"update_login_bottom_message": "Update login bottom message",
+		"update_login_top_message": "Update login top message",
 		"update_output": "Update output",
 		"update_output_splitter": "Update output",
 		"update_position_mask": "Update positions mask",
@@ -931,8 +942,6 @@
 		"quit_without_saving": "Quit without saving",
 		"quit_without_saving_modifications": "Are you sure you want to quit without saving?",
 		"referential_updated": "Referential updated",
-		"refresh_without_saving": "Refresh without saving",
-		"refresh_without_saving_modifications": "Are you sure you want to refresh without saving?",
 		"reload_batches": "Reset batches list",
 		"rotatePage": "Rotate page with",
 		"save_changes": "Save changes",
@@ -957,14 +966,17 @@
 	},
 	"STATISTICS": {
 		"choose_diagram": "Choose a diagram type",
+		"choose_module": "Choose a module",
 		"choose_statistic_report": "Choose a statistic report",
 		"diagram_pie_chart": "Pie chart diagram",
 		"diagram_pie_grid": "Pie grid diagram",
 		"diagram_vertical_bar": "Vertical bar diagram",
 		"documents_uploaded_per_user": "Documents uploaded per user",
 		"documents_uploaded_per_worklow": "Documents uploaded per workflow",
-		"splitter_documents_uploaded": "Uploaded documents for this year",
-		"verifier_documents_uploaded": "Uploaded documents for this year",
+		"splitter_documents_uploaded_per_month": "Documents uploaded this year",
+		"splitter_documents_uploaded_per_year": "Documents uploaded per year",
+		"verifier_documents_uploaded_per_month": "Documents uploaded this year",
+		"verifier_documents_uploaded_per_year": "Documents uploaded per year",
 		"verifier_documents_validated_per_form": "Documents validated per form",
 		"verifier_documents_validated_per_user": "Documents validated per user"
 	},
@@ -977,6 +989,7 @@
 		"update_status_to": "Update status to"
 	},
 	"TYPES": {
+		"checkbox": "Checkbox",
 		"date": "Date",
 		"regex": "Regular expression",
 		"select": "List of choices",
@@ -1057,7 +1070,6 @@
 		"delete_document": "Delete document",
 		"display": "Display",
 		"document_already_processed": "The document has already been processed and cannot be modified anymore",
-		"document_id": "Document identifier",
 		"document_locked": "Document locked",
 		"document_locked_by": "Document locked by the following user : <strong>{{ locked_by }}</strong>",
 		"document_refused": "Document refused",
@@ -1069,7 +1081,6 @@
 		"facturx": "FacturX",
 		"facturx_level": "FacturX profile : {{ level }}",
 		"field_settings": "Field settings",
-		"form": "Form",
 		"form_changed": "Form changed successfully",
 		"form_validated_and_output_done": "Form validated and following output(s) done : <br><br> <center>{{ outputs }}</center>",
 		"format": "Data format",
@@ -1102,7 +1113,7 @@
 		"size": "Size",
 		"suppliers_by_customer": "Third-party accounts list by customer",
 		"unselect_all": "Unselect all",
-		"viewer": "View PDF",
+		"viewer": "View document",
 		"waiting": "The document is waiting for process. Please wait and refresh the page later"
 	},
 	"WORKFLOW": {

@@ -13,6 +13,9 @@
 		"thanks_to_developers": "Merci aux developpeurs de ces solutions"
 	},
 	"ACCOUNTS": {
+		"address_informations": "Informations d'adresse",
+		"back_to_customers_list": "Retourner à la liste des comptes clients",
+		"back_to_suppliers_list": "Retourner à la liste des comptes tiers",
 		"bic": "Numéro BIC",
 		"choose_workflow_upload": "Choix du workflow",
 		"company_number": "Numéro de société",
@@ -24,6 +27,7 @@
 		"create_supplier": "Ajouter un compte tiers",
 		"customer_created": "Compte client crée avec succès",
 		"customer_deleted": "Compte client supprimé",
+		"customer_informations": "Informations du compte client",
 		"customer_name": "Nom du compte client",
 		"customer_not_specified": "Client non spécifié",
 		"customer_updated": "Compte client mis à jour avec succès",
@@ -47,6 +51,7 @@
 		"supplier": "Compte tiers",
 		"supplier_created": "Compte tiers créé avec succès",
 		"supplier_deleted": "Compte tiers supprimé",
+		"supplier_informations": "Informations du compte tiers",
 		"supplier_name": "Nom du compte tiers",
 		"supplier_unknow": "Tiers inconnu",
 		"supplier_updated": "Compte tiers mis à jour avec succès",
@@ -193,8 +198,9 @@
 		"no_option_added": "Aucune option ajoutée",
 		"regex_format": "Format de la donnée à récupérer (utiliser pour validation)",
 		"regex_remove_keyword": "Supprimer le mot clé de l'expression régulière",
-		"regex_remove_keyword_explanation": "Afin que cette option soit fonctionnelle, il faut que le mot clé soit présent dans l'expression régulière et qu'elle se termine par <strong>.*</strong><br>Exemple : <strong>NUM(E|É)RO\\s*DE\\s*FACTURE\\s*:\\s*.*</strong>",
+		"regex_remove_keyword_explanation": "Afin que cette option soit fonctionnelle, il faut que le mot clé soit présent dans le champs <strong>Expression régulière (REGEX) du mot clé à supprimer</strong><br>Exemple : <strong>NUM(E|É)RO\\s*DE\\s*FACTURE\\s*:\\s*</strong>",
 		"regex_remove_keyword_hint": "Si activé, le mot clé sera supprimé du résultat de la regex pour ne conserver que la donnée",
+		"regex_remove_keyword_input": "Expression régulière (REGEX) du mot clé à supprimer",
 		"regex_remove_spaces": "Supprimer les espaces du résultat de la regex",
 		"regex_remove_special_char": "Supprimer les caractères spéciaux du résultat de la regex",
 		"regex_remove_special_char_hint": "Exemple : -()\"#@;:<>{}][`+=~|!?€$%£*",
@@ -343,9 +349,11 @@
 		"vat_rate": "Taux de TVA"
 	},
 	"FIELD_METADATA": {
+		"checked_value": "valeur si cochée",
 		"default_value": "Valeur par défaut",
 		"result_mask": "Masque de résultat",
 		"search_mask": "Masque de recherche",
+		"unchecked_value": "Valeur si décochée",
 		"validation_mask": "Masque de validation"
 	},
 	"FORMATS": {
@@ -375,6 +383,7 @@
 		"batch_display": "Affichage des lots",
 		"change_form_enabled": "Autoriser le changement de formulaire",
 		"choose_form": "Selection du formulaire",
+		"conditioned_by": "Champ conditionné",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire <strong>{{ form }}</strong> ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver le formulaire <strong>{{ form }}</strong> ?",
 		"confirm_duplicate": "Êtes vous sûr de vouloir dupliquer le formulaire <strong>{{ form }}</strong> ?",
@@ -790,6 +799,8 @@
 		"update_document_type": "Mettre à jour un type de document",
 		"update_form": "Mettre à jour le formulaire",
 		"update_form_splitter": "Mettre à jour le formulaire",
+		"update_login_bottom_message": "Modifier le message de bas de page d'authentification",
+		"update_login_top_message": "Modifier le message de haut de page d'authentification",
 		"update_output": "Mettre à jour la chaîne sortante",
 		"update_output_splitter": "Mettre à jour la chaîne sortante",
 		"update_position_mask": "Mettre à jour le masque de positionnement",
@@ -931,8 +942,6 @@
 		"quit_without_saving": "Quitter sans enregistrer",
 		"quit_without_saving_modifications": "Voulez-vous quitter sans enregistrer les modifications ?",
 		"referential_updated": "Référentiel mis à jour avec succès",
-		"refresh_without_saving": "Actualiser sans enregistrer",
-		"refresh_without_saving_modifications": "Voulez-vous Actualiser sans enregistrer les modifications ?",
 		"reload_batches": "Recharger la liste des lots",
 		"rotatePage": "Tourner les pages sélectionnées",
 		"save_changes": "Sauvegarder les modifications",
@@ -957,14 +966,17 @@
 	},
 	"STATISTICS": {
 		"choose_diagram": "Choisissez un type de diagramme",
+		"choose_module": "Choisissez un module",
 		"choose_statistic_report": "Choisissez un rapport de statistiques",
 		"diagram_pie_chart": "Diagramme circulaire",
 		"diagram_pie_grid": "Diagramme circulaire en grille",
 		"diagram_vertical_bar": "Diagramme en bâton",
 		"documents_uploaded_per_user": "Documents uploadés par utilisateur",
 		"documents_uploaded_per_worklow": "Documents uploadés par workflow",
-		"splitter_documents_uploaded": "Documents uploadés sur l'année",
-		"verifier_documents_uploaded": "Documents uploadés sur l'année",
+		"splitter_documents_uploaded_per_month": "Documents uploadés sur l'année",
+		"splitter_documents_uploaded_per_year": "Documents uploadés par année",
+		"verifier_documents_uploaded_per_month": "Documents uploadés sur l'année",
+		"verifier_documents_uploaded_per_year": "Documents uploadés par année",
 		"verifier_documents_validated_per_form": "Documents validés par formulaire",
 		"verifier_documents_validated_per_user": "Documents validés par utilisateur"
 	},
@@ -977,6 +989,7 @@
 		"update_status_to": "Mettre à jour le statut vers"
 	},
 	"TYPES": {
+		"checkbox": "Case à cocher",
 		"date": "Date",
 		"regex": "Expression régulière",
 		"select": "Liste de choix",
@@ -1057,7 +1070,6 @@
 		"delete_document": "Supprimer le document",
 		"display": "Affichage",
 		"document_already_processed": "Votre document a déjà été traité et ne peux plus être modifié",
-		"document_id": "Identifiant du document",
 		"document_locked": "Document verrouillé",
 		"document_locked_by": "Document verrouillé par l'utilisateur suivant : <strong>{{ locked_by }}</strong>",
 		"document_refused": "Document refusée",
@@ -1069,7 +1081,6 @@
 		"facturx": "FacturX",
 		"facturx_level": "Profil FacturX : {{ level }}",
 		"field_settings": "Paramètres du champ",
-		"form": "Formulaire",
 		"form_changed": "Formulaire modifié avec succès",
 		"form_validated_and_output_done": "Formulaire validé et chaîne(s) sortante(s) suivante(s) effectuée(s) : <br><br> <center>{{ outputs }}</center>",
 		"format": "Format des données",
@@ -1102,7 +1113,7 @@
 		"size": "Taille",
 		"suppliers_by_customer": "Liste des tiers par client",
 		"unselect_all": "Tout désélectionner",
-		"viewer": "Visualisation du PDF",
+		"viewer": "Visualisation du document",
 		"waiting": "Votre document est en attente de traitement, merci de patienter. <br>Vous pourrez rafraîchir la page ultérieurement"
 	},
 	"WORKFLOW": {

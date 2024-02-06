@@ -23,7 +23,7 @@ from src.backend.functions import search_custom_positions
 
 
 def sanitize_keyword(data, regex):
-    tmp_data = re.sub(r"" + regex[:-2], '', data, flags=re.IGNORECASE)
+    tmp_data = re.sub(r"" + regex, '', data, flags=re.IGNORECASE)
     data = tmp_data.lstrip()
     return data
 
@@ -238,9 +238,9 @@ class FindCustom:
     def run(self):
         cpt = 0
 
+        regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
-                regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
                 if 'content' in regex_settings and regex_settings['content']:
                     upper_line = line.content.upper()
                     if 'remove_special_char' in regex_settings and regex_settings['remove_special_char']:
@@ -253,8 +253,9 @@ class FindCustom:
                     for _data in re.finditer(r"" + regex_settings['content'], upper_line, flags=re.IGNORECASE):
                         data = _data.group()
 
-                        if regex_settings['remove_keyword']:
-                            data = sanitize_keyword(_data.group(), regex_settings['content'])
+                        if regex_settings['remove_keyword'] and regex_settings['remove_keyword_value']:
+                            data = sanitize_keyword(_data.group(), regex_settings['remove_keyword_value'])
+
                         data = self.check_format(data, regex_settings)
                         if data:
                             if 'remove_spaces' in regex_settings and regex_settings['remove_spaces']:

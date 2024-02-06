@@ -132,6 +132,12 @@
                                               [value]="regexControl.value" [formControl]="regexControl"
                                               (keyup)="checkRegex()" spellcheck="false"></textarea>
                                 </mat-form-field>
+                                <mat-form-field class="w-full" *ngIf="regexRemoveKeyWord.value">
+                                    <mat-label>{{ 'CUSTOM-FIELDS.regex_remove_keyword_input' | translate }}</mat-label>
+                                    <textarea [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="1" matInput
+                                              [value]="regexRemoveKeyWordControl.value" [formControl]="regexRemoveKeyWordControl"
+                                              (keyup)="checkRegex()" spellcheck="false"></textarea>
+                                </mat-form-field>
                                 <mat-form-field class="w-full">
                                     <mat-label>{{ 'FORMATS.test_string' | translate }}</mat-label>
                                     <input matInput type="text" [formControl]="regexTestControl" (keyup)="checkRegex()">
