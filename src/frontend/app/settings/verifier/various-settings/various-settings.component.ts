@@ -58,7 +58,7 @@ export class VariousSettingsVerifierComponent implements OnInit {
     availableFields             : any           = [
         {
             'id': 'document_id',
-            'label': 'VERIFIER.document_id'
+            'label': marker('VERIFIER.document_id')
         },
         {
             'id': 'invoice_number',
