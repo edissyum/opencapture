@@ -416,6 +416,7 @@
 		"modify": "Modify",
 		"modify_display": "Modify display linked to form",
 		"modify_unique_url": "Modify unique URL display settings",
+		"no_condition_fields": "No condition fields to display",
 		"no_fields": "No fields associated to this form",
 		"no_form_available": "No form available",
 		"only_ocr": "Just OCRise document",

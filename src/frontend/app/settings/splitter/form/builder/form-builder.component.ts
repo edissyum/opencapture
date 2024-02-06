@@ -30,6 +30,7 @@ import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import {Field} from "../../../../splitter/viewer/splitter-viewer.component";
 
 @Component({
     selector: 'form-builder',
@@ -575,5 +576,10 @@ export class SplitterFormBuilderComponent implements OnInit {
         } else {
             this.notify.error(this.translate.instant('FORMS.label_mandatory'));
         }
+    }
+    hasCheckboxConditionField(category: string, targetField: Field): boolean {
+        return this.fields[category].some((field: Field) => {
+            return (field['type'] === 'checkbox' && targetField['label_short'] !== field['label_short']);
+        });
     }
 }
