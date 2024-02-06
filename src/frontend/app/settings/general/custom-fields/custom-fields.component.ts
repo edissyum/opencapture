@@ -562,6 +562,7 @@ export class CustomFieldsComponent implements OnInit {
             this.addFieldInputs.forEach((element: any) => {
                 element.control.setValue(customField[element.field_id]);
             });
+
             if (customField.settings.options) {
                 for (const option of customField.settings.options) {
                     this.selectOptions.push({
@@ -590,6 +591,7 @@ export class CustomFieldsComponent implements OnInit {
         this.regexRemoveKeyWord.setValue('');
         this.regexCharMinControl.setValue('');
         this.regexRemoveSpecialChar.setValue('');
+        this.regexRemoveKeyWordControl.setValue('');
         this.addFieldInputs.forEach((field: any) => {
             field.control.setValue('');
             field.control.setErrors(null);

@@ -1070,6 +1070,7 @@
 		"delete_document": "Supprimer le document",
 		"display": "Affichage",
 		"document_already_processed": "Votre document a déjà été traité et ne peux plus être modifié",
+		"document_id": "Identifiant",
 		"document_locked": "Document verrouillé",
 		"document_locked_by": "Document verrouillé par l'utilisateur suivant : <strong>{{ locked_by }}</strong>",
 		"document_refused": "Document refusée",

@@ -1070,6 +1070,7 @@
 		"delete_document": "Delete document",
 		"display": "Display",
 		"document_already_processed": "The document has already been processed and cannot be modified anymore",
+		"document_id": "Identifier",
 		"document_locked": "Document locked",
 		"document_locked_by": "Document locked by the following user : <strong>{{ locked_by }}</strong>",
 		"document_refused": "Document refused",
