@@ -645,12 +645,17 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     if custom_fields[field][2]:
                         datas['pages'].update({field: custom_fields[field][2]})
 
+            ids_array = []
+            for field in custom_fields_to_find:
+                ids_array.append(field)
+
             # Find custom informations using regex
             custom_fields_regex = database.select({
                 'select': ['id', 'label', "settings #>> '{regex}'as regex_settings"],
                 'table': ['custom_fields'],
-                'where': ['module = %s', "settings #>> '{regex}' is not null", "enabled = %s", "id IN (%s)"],
-                'data': ['verifier', True, ','.join(map(str, custom_fields_to_find))]
+                'where': ['module = %s', "settings #>> '{regex}' is not null", "enabled = %s",
+                          "id IN (" + ','.join(map(str, custom_fields_to_find)) + ")"],
+                'data': ['verifier', True]
             })
 
             for custom_field in custom_fields_regex:
