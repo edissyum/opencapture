@@ -867,7 +867,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }
         }
     }
-
     /* -- End Metadata -- */
 
     /* -- Begin documents control -- */

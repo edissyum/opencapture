@@ -576,6 +576,7 @@ export class SplitterFormBuilderComponent implements OnInit {
             this.notify.error(this.translate.instant('FORMS.label_mandatory'));
         }
     }
+
     hasCheckboxConditionField(category: string, targetField: any): boolean {
         return this.fields[category].some((field: any) => {
             return (field['type'] === 'checkbox' && targetField['label_short'] !== field['label_short']);
