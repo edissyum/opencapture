@@ -586,7 +586,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.http.get(environment['url'] + `/ws/splitter/loadReferential/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.metadata.forEach((metadataItem: any) => {
-                    metadataItem.data['metadataId'] = metadataItem.id;
+                    metadataItem.data['metadataId'] = metadataItem['external_id'] ? metadataItem['external_id'] : metadataItem['id'];
                     for (const field of this.fieldsCategories['batch_metadata']) {
                         const metadataKey = field['metadata_key'];
                         if (metadataKey && !(metadataKey in metadataItem.data)) {
