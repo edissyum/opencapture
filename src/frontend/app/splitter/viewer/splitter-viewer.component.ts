@@ -40,6 +40,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap } from "rxjs/operators";
+import {list} from "postcss";
 
 export interface Field {
     id              : number
@@ -54,7 +55,7 @@ export interface Field {
     validationMask  : string
     metadata_key    : string
     label_short     : string
-    conditioned_by  : string
+    conditioned_by  : any
 }
 
 @Component({
@@ -858,7 +859,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     onCheckBoxChange(checkboxField: any, $event: MatCheckboxChange) {
         for (const field of this.fieldsCategories['batch_metadata']) {
-            if (field['conditioned_by'] === checkboxField['label_short']) {
+            if (field['conditioned_by'].includes(checkboxField['label_short'])) {
                 if ($event.checked) {
                     this.batchForm.controls[field['label_short']].enable();
                 } else {
