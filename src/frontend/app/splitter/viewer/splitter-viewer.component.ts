@@ -40,22 +40,21 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap } from "rxjs/operators";
-import {list} from "postcss";
 
 export interface Field {
-    id              : number
-    settings        : any
-    type            : string
-    label           : string
-    class           : string
-    required        : boolean
-    disabled        : boolean
-    resultMask      : string
-    searchMask      : string
-    validationMask  : string
-    metadata_key    : string
-    label_short     : string
-    conditioned_by  : any
+    id             : number
+    settings       : any
+    type           : string
+    label          : string
+    class          : string
+    required       : boolean
+    disabled       : boolean
+    resultMask     : string
+    searchMask     : string
+    validationMask : string
+    metadata_key   : string
+    label_short    : string
+    conditioned_by : string[]
 }
 
 @Component({
