@@ -105,7 +105,7 @@ class FindSupplier:
                 if corrected_line:
                     content = corrected_line
 
-                if column not in ['bic', 'email']:
+                if column not in ['bic', 'email', 'rccm']:
                     corrected_line = re.sub(pattern, item, content)
                 else:
                     corrected_line = content
@@ -224,6 +224,18 @@ class FindSupplier:
             else:
                 position = self.files.return_position_with_ratio(line, target)
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'bic']
+            return data
+
+        supplier = self.process(self.regex['rccm'], text_as_string, 'rccm')
+        if supplier:
+            self.regenerate_ocr()
+            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using RCCM : ' + supplier[0]['rccm'])
+            line = supplier[1]
+            if text_as_string:
+                position = (('', ''), ('', ''))
+            else:
+                position = self.files.return_position_with_ratio(line, target)
+            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'rccm']
             return data
         else:
             if not retry:

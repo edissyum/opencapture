@@ -86,6 +86,7 @@ def update_supplier(supplier_id):
         {'id': 'name', 'type': str, 'mandatory': False},
         {'id': 'duns', 'type': str, 'mandatory': False},
         {'id': 'iban', 'type': str, 'mandatory': False},
+        {'id': 'rccm', 'type': str, 'mandatory': False},
         {'id': 'siret', 'type': str, 'mandatory': False},
         {'id': 'siren', 'type': str, 'mandatory': False},
         {'id': 'email', 'type': str, 'mandatory': False},
@@ -247,12 +248,13 @@ def create_supplier():
     if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['create_supplier | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/suppliers/create'}), 403
-    print(True if 'fromViewer' not in request.args else False)
+
     check, message = rest_validator(request.json['args'], [
         {'id': 'bic', 'type': str, 'mandatory': False},
         {'id': 'name', 'type': str, 'mandatory': True},
         {'id': 'duns', 'type': str, 'mandatory': False},
         {'id': 'iban', 'type': str, 'mandatory': False},
+        {'id': 'rccm', 'type': str, 'mandatory': False},
         {'id': 'siret', 'type': str, 'mandatory': False},
         {'id': 'siren', 'type': str, 'mandatory': False},
         {'id': 'email', 'type': str, 'mandatory': False},
@@ -265,7 +267,7 @@ def create_supplier():
         {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
         {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False}
     ])
-    print(check, message)
+
     if not check:
         return make_response({
             "errors": gettext('BAD_REQUEST'),

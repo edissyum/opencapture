@@ -66,6 +66,7 @@
         "eslint-plugin-jsdoc": "latest",
         "eslint-plugin-prefer-arrow": "latest",
         "jquery": "^3.7.1",
+        "monaco-editor": "^0.46.0",
         "postcss": "^8.4.35",
         "rxjs": "~7.8.1",
         "tailwindcss": "^3.4.1",

@@ -166,6 +166,8 @@ def update_supplier(supplier_id, data):
             _set.update({'duns': data['duns']})
         if 'bic' in data:
             _set.update({'bic': data['bic']})
+        if 'rccm' in data:
+            _set.update({'rccm': data['rccm']})
         if 'iban' in data:
             _set.update({'iban': data['iban']})
         if 'email' in data:
@@ -378,6 +380,7 @@ def create_supplier(data):
         'bic': data['bic'] if 'bic' in data else None,
         'iban': data['iban'] if 'iban' in data else None,
         'duns': data['duns'] if 'duns' in data else None,
+        'rccm': data['rccm'] if 'rccm' in data else None,
         'siret': data['siret'] if 'siret' in data else None,
         'siren': data['siren'] if 'siren' in data else None,
         'email': data['email'] if 'email' in data else None,
