@@ -43,6 +43,7 @@
 		"only_one_email": "Une seule adresse e-mail est acceptée",
 		"pattern_error": "Le format du champ est incorrect",
 		"positions_deleted": "Positions du tiers supprimées",
+		"rccm": "Numéro RCCM",
 		"search_customer": "Recherche de client",
 		"search_supplier": "Recherche de tiers",
 		"siren": "Numéro de SIREN",
