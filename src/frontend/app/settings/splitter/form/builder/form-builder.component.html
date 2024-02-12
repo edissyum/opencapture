@@ -166,14 +166,14 @@
                                         </div>
                                     </mat-menu>
                                     <mat-menu #disabledCondition="matMenu">
-                                        <div *ngFor="let field_item of this.fields[category['id']]">
+                                        <div *ngFor="let formField of this.fields[category['id']]">
                                             <button mat-menu-item [id]="field.id"
-                                                    (click)="field['conditioned_by'] = field_item['label_short']"
-                                                    *ngIf="field['label_short'] !== field_item['label_short'] && field_item['type'] === 'checkbox'">
-                                                <span [class.text-green-400]="field['conditioned_by'] === field_item['label_short']">
-                                                    {{ field_item['label'] | translate }}
+                                                    (click)="$event.stopPropagation(); changeFieldConditions(field, formField)"
+                                                    *ngIf="field['label_short'] !== formField['label_short'] && formField['type'] === 'checkbox'">
+                                                <span [class.text-green-400]="field['conditioned_by'].includes(formField['label_short'])">
+                                                    {{ formField['label'] | translate }}
                                                 </span>
-                                                <span *ngIf="field['conditioned_by'] === field_item['label_short']">
+                                                <span *ngIf="field['conditioned_by'].includes(formField['label_short'])">
                                                     <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
                                                 </span>
                                             </button>

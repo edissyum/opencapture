@@ -42,19 +42,19 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/dr
 import { catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap } from "rxjs/operators";
 
 export interface Field {
-    id              : number
-    settings        : any
-    type            : string
-    label           : string
-    class           : string
-    required        : boolean
-    disabled        : boolean
-    resultMask      : string
-    searchMask      : string
-    validationMask  : string
-    metadata_key    : string
-    label_short     : string
-    conditioned_by  : string
+    id             : number
+    settings       : any
+    type           : string
+    label          : string
+    class          : string
+    required       : boolean
+    disabled       : boolean
+    resultMask     : string
+    searchMask     : string
+    validationMask : string
+    metadata_key   : string
+    label_short    : string
+    conditioned_by : string[]
 }
 
 @Component({
@@ -858,7 +858,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     onCheckBoxChange(checkboxField: any, $event: MatCheckboxChange) {
         for (const field of this.fieldsCategories['batch_metadata']) {
-            if (field['conditioned_by'] === checkboxField['label_short']) {
+            if (field['conditioned_by'].includes(checkboxField['label_short'])) {
                 if ($event.checked) {
                     this.batchForm.controls[field['label_short']].enable();
                 } else {

@@ -306,7 +306,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                                                 required       : data.customFields[field].required,
                                                 label_short    : data.customFields[field].label_short,
                                                 metadata_key   : data.customFields[field].metadata_key,
-                                                conditioned_by : data.customFields[field].conditioned_by ? data.customFields[field].conditioned_by : "",
+                                                conditioned_by : [],
                                                 unit           : 'custom',
                                                 class          : "w-1/3",
                                                 class_label    : "1/33"
@@ -581,5 +581,13 @@ export class SplitterFormBuilderComponent implements OnInit {
         return this.fields[category].some((field: any) => {
             return (field['type'] === 'checkbox' && targetField['label_short'] !== field['label_short']);
         });
+    }
+
+    changeFieldConditions(field: any, formField: any) {
+        if (field['conditioned_by'].includes(formField['label_short'])) {
+            field['conditioned_by'].splice(field['conditioned_by'].indexOf(formField['label_short']), 1);
+        } else {
+            field['conditioned_by'].push(formField['label_short']);
+        }
     }
 }
