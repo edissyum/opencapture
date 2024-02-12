@@ -185,7 +185,7 @@ class FindFooter:
 
     def test_amount(self, total_ht, total_ttc, vat_rate, vat_amount):
         if total_ht in [False, None] or vat_rate in [False, None]:
-            if self.supplier is not False:
+            if self.supplier:
                 if total_ht in [False, None]:
                     total_ht = self.process_footer_with_position('total_ht',
                                          ["positions -> '" + str(self.form_id) + "' -> 'total_ht' as total_ht_position",

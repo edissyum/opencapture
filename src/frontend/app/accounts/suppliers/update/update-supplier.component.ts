@@ -101,6 +101,13 @@ export class UpdateSupplierComponent implements OnInit {
             required: false
         },
         {
+            id: 'rccm',
+            label: marker('ACCOUNTS.rccm'),
+            type: 'text',
+            control: new FormControl('', Validators.pattern('^[aA-zZ]{2}-[aA-zZ]{3}-[0-9]{2}-[0-9]{4}-[aA-zZ]{1}[0-9]{2}-[0-9]{5}$')),
+            required: false
+        },
+        {
             id: 'email',
             label: marker('FORMATS.email'),
             type: 'text',

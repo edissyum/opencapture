@@ -631,8 +631,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if 'form_id' not in datas or not datas['form_id']:
             datas.update({'form_id': 0})
 
-        # Find custom informations using mask
-        if custom_fields_to_find or not workflow_settings['input']['apply_process']:
+        text_by_pages = [None] * nb_pages
+
+        if custom_fields_to_find:
+            # Find custom informations using mask
             custom_fields = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
                                        datas['form_id'], custom_fields_to_find, False).run_using_positions_mask()
             if custom_fields:
@@ -643,18 +645,20 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     if custom_fields[field][2]:
                         datas['pages'].update({field: custom_fields[field][2]})
 
-        text_by_pages = [None] * nb_pages
+            ids_array = []
+            for field in custom_fields_to_find:
+                ids_array.append(field)
 
-        custom_fields_regex = database.select({
-            'select': ['id', 'label', "settings #>> '{regex}'as regex_settings"],
-            'table': ['custom_fields'],
-            'where': ['module = %s', "settings #>> '{regex}' is not null", "enabled = %s"],
-            'data': ['verifier', True]
-        })
+            # Find custom informations using regex
+            custom_fields_regex = database.select({
+                'select': ['id', 'label', "settings #>> '{regex}'as regex_settings"],
+                'table': ['custom_fields'],
+                'where': ['module = %s', "settings #>> '{regex}' is not null", "enabled = %s",
+                          "id IN (" + ','.join(map(str, custom_fields_to_find)) + ")"],
+                'data': ['verifier', True]
+            })
 
-        for custom_field in custom_fields_regex:
-            if (not custom_fields_to_find or custom_field['id'] in custom_fields_to_find) \
-                    or not workflow_settings['input']['apply_process']:
+            for custom_field in custom_fields_regex:
                 custom_field_class = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
                                                 datas['form_id'], custom_fields_to_find, custom_field)
                 custom_field = 'custom_' + str(custom_field['id'])

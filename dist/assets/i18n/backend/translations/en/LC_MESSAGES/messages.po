@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2024-01-05 11:00+0100\n"
+"POT-Creation-Date: 2024-01-25 10:11+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -15,10 +15,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.10.3\n"
 
-#: custom/release/src/backend/process_queue_splitter.py:208
-#: custom/release/src/backend/process_queue_verifier.py:185
+#: custom/edissyum/src/backend/process_queue_splitter.py:212
+#: custom/edissyum/src/backend/process_queue_verifier.py:185
+#: custom/test/src/backend/process_queue_splitter.py:211
+#: custom/test/src/backend/process_queue_verifier.py:188
 msgid "FILE_UPLOADED_WORKFLOW"
 msgstr "File uploaded successfully with workflow"
 
@@ -169,78 +171,78 @@ msgstr "Supplier updated&nbsp<strong>%(supplier)s</strong>"
 msgid "UPDATE_SUPPLIER_ERROR"
 msgstr "Error updating supplier"
 
-#: src/backend/controllers/accounts.py:294
-#: src/backend/controllers/accounts.py:300
-#: src/backend/controllers/accounts.py:325
-#: src/backend/controllers/accounts.py:332 src/backend/models/accounts.py:127
+#: src/backend/controllers/accounts.py:298
+#: src/backend/controllers/accounts.py:304
+#: src/backend/controllers/accounts.py:329
+#: src/backend/controllers/accounts.py:336 src/backend/models/accounts.py:127
 msgid "UPDATE_ADDRESS_ERROR"
 msgstr "Error updating address"
 
-#: src/backend/controllers/accounts.py:356 src/backend/models/accounts.py:147
+#: src/backend/controllers/accounts.py:360 src/backend/models/accounts.py:147
 msgid "CREATE_ADDRESS_ERROR"
 msgstr "Error creating address"
 
-#: src/backend/controllers/accounts.py:401
+#: src/backend/controllers/accounts.py:405
 msgid "SUPPLIER_CREATED"
 msgstr "Supplier created&nbsp<strong>%(supplier)s</strong>"
 
-#: src/backend/controllers/accounts.py:409
-#: src/backend/controllers/accounts.py:415 src/backend/models/accounts.py:167
+#: src/backend/controllers/accounts.py:413
+#: src/backend/controllers/accounts.py:419 src/backend/models/accounts.py:167
 msgid "CREATE_SUPPLIER_ERROR"
 msgstr "Error creating supplier"
 
-#: src/backend/controllers/accounts.py:416
+#: src/backend/controllers/accounts.py:420
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "A supplier already exists with this vat number"
 
-#: src/backend/controllers/accounts.py:453 src/backend/controllers/user.py:248
+#: src/backend/controllers/accounts.py:457 src/backend/controllers/user.py:248
 #: src/backend/controllers/user.py:278 src/backend/models/accounts.py:231
 #: src/backend/models/accounts.py:254 src/backend/models/accounts.py:273
 #: src/backend/models/user.py:213
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr "Error retrieving customer"
 
-#: src/backend/controllers/accounts.py:497
+#: src/backend/controllers/accounts.py:501
 msgid "CUSTOMER_UPDATED"
 msgstr "Customer updated&nbsp<strong>%(customer)s</strong>"
 
-#: src/backend/controllers/accounts.py:502
-#: src/backend/controllers/accounts.py:508 src/backend/models/accounts.py:295
+#: src/backend/controllers/accounts.py:506
+#: src/backend/controllers/accounts.py:512 src/backend/models/accounts.py:295
 msgid "UPDATE_CUSTOMER_ERROR"
 msgstr "Error updating customer"
 
-#: src/backend/controllers/accounts.py:536
+#: src/backend/controllers/accounts.py:540
 msgid "CUSTOMER_CREATED"
 msgstr "Customer created&nbsp<strong>%(customer)s</strong>"
 
-#: src/backend/controllers/accounts.py:544
-#: src/backend/controllers/accounts.py:550 src/backend/models/accounts.py:315
+#: src/backend/controllers/accounts.py:548
+#: src/backend/controllers/accounts.py:554 src/backend/models/accounts.py:315
 msgid "CREATE_CUSTOMER_ERROR"
 msgstr "Error creating customer"
 
-#: src/backend/controllers/accounts.py:551
+#: src/backend/controllers/accounts.py:555
 msgid "CUSTOMER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "A customer already exists with this vat number"
 
-#: src/backend/controllers/accounts.py:567
+#: src/backend/controllers/accounts.py:571
 msgid "CUSTOMER_DELETED"
 msgstr "Customer deleted&nbsp<strong>%(customer)s</strong>"
 
-#: src/backend/controllers/accounts.py:572
-#: src/backend/controllers/accounts.py:578 src/backend/models/accounts.py:337
+#: src/backend/controllers/accounts.py:576
+#: src/backend/controllers/accounts.py:582 src/backend/models/accounts.py:337
 msgid "DELETE_CUSTOMER_ERROR"
 msgstr "Error deleting customer"
 
-#: src/backend/controllers/accounts.py:595
+#: src/backend/controllers/accounts.py:599
 msgid "SUPPLIER_DELETED"
 msgstr "Supplier deleted&nbsp<strong>%(supplier)s</strong>"
 
-#: src/backend/controllers/accounts.py:600
-#: src/backend/controllers/accounts.py:606 src/backend/models/accounts.py:189
+#: src/backend/controllers/accounts.py:604
+#: src/backend/controllers/accounts.py:610 src/backend/models/accounts.py:189
 msgid "DELETE_SUPPLIER_ERROR"
 msgstr "Error deleting supplier"
 
-#: src/backend/controllers/accounts.py:624
+#: src/backend/controllers/accounts.py:628
 msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
 msgstr "Error while loading supplier referencial"
 
@@ -716,7 +718,7 @@ msgstr "Capture path not allowed"
 
 #: src/backend/controllers/outputs.py:272
 #: src/backend/controllers/workflow.py:74
-#: src/backend/controllers/workflow.py:395
+#: src/backend/controllers/workflow.py:398
 msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
 msgstr "Cannot create folder because of permission issue"
 
@@ -1081,7 +1083,7 @@ msgstr "Error while deleting document"
 #: src/backend/controllers/verifier.py:492
 #: src/backend/controllers/workflow.py:228
 #: src/backend/controllers/workflow.py:297
-#: src/backend/controllers/workflow.py:486 src/backend/process/main.py:62
+#: src/backend/controllers/workflow.py:489 src/backend/process/main.py:62
 msgid "SCRIPT_CONTAINS_NOT_ALLOWED_CODE"
 msgstr "Script contains not allowed code :"
 
@@ -1182,33 +1184,33 @@ msgstr "Workflow deleted&nbsp;<strong>%(workflow)s</strong>"
 msgid "DELETE_WORKFLOW_ERROR"
 msgstr "Error while deleting workflow"
 
-#: src/backend/controllers/workflow.py:394
-#: src/backend/controllers/workflow.py:416
+#: src/backend/controllers/workflow.py:397
+#: src/backend/controllers/workflow.py:419
 msgid "FS_WATCHER_CREATION_ERROR"
 msgstr "Error while creating fs watcher settings"
 
-#: src/backend/controllers/workflow.py:417
-#: src/backend/controllers/workflow.py:470
+#: src/backend/controllers/workflow.py:420
+#: src/backend/controllers/workflow.py:473
 msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
 msgstr "Fs watcher config doesnt exists"
 
-#: src/backend/controllers/workflow.py:422
+#: src/backend/controllers/workflow.py:425
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "Script sample doesn't exists"
 
-#: src/backend/controllers/workflow.py:428
+#: src/backend/controllers/workflow.py:431
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Script folder doesn't exists"
 
-#: src/backend/controllers/workflow.py:469
+#: src/backend/controllers/workflow.py:472
 msgid "FS_WATCHER_DELETION_ERROR"
 msgstr "Error while deleting fs watcher settings"
 
-#: src/backend/controllers/workflow.py:496
+#: src/backend/controllers/workflow.py:499
 msgid "LINE"
 msgstr "Line"
 
-#: src/backend/controllers/workflow.py:497
+#: src/backend/controllers/workflow.py:500
 msgid "COLUMN"
 msgstr "column"
 

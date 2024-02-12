@@ -151,6 +151,7 @@ CREATE TABLE "accounts_supplier" (
     "iban"                VARCHAR(50),
     "duns"                VARCHAR(10),
     "bic"                 VARCHAR(11),
+    "rccm"                VARCHAR(30),
     "email"               VARCHAR,
     "address_id"          INTEGER,
     "form_id"             INTEGER,
