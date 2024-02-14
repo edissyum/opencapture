@@ -342,8 +342,6 @@ export class SplitterFormBuilderComponent implements OnInit {
                             }
                         }
                     }
-                    console.log("this.fields.batch_metadata : ");
-                    console.log(this.fields.batch_metadata);
                 }),
                 finalize(() => setTimeout(() => {
                     this.loading = false;
