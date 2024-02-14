@@ -409,6 +409,7 @@
 		"form_enabled": "Formulaire activé avec succès",
 		"forms": "Formulaires",
 		"input_metadata": "Métadonnées de champs",
+		"invert_fields": "Champs inversés",
 		"is_default": "Formulaire par défaut",
 		"label": "Libellé du formulaire",
 		"label_and_output_mandatory": "Le libellé du formulaire et le type de chaîne sortante sont obligatoires",
