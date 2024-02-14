@@ -107,7 +107,7 @@
                                         <button mat-menu-item [matMenuTriggerFor]="disabledCondition">
                                             {{ "FORMS.conditioned_by" | translate }}
                                         </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="field['type'] === 'checkbox' ? invertFields : placeholder">
+                                        <button mat-menu-item [matMenuTriggerFor]="invertFields" *ngIf="field['type'] === 'checkbox'">
                                             {{ "FORMS.invert_fields" | translate }}
                                         </button>
                                     </mat-menu>

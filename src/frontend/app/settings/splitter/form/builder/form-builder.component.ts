@@ -188,18 +188,6 @@ export class SplitterFormBuilderComponent implements OnInit {
             'placeholder'   : marker('FIELD_METADATA.validation_mask'),
             'control'       : new FormControl(),
             'types'         : ['text', 'textarea']
-        },
-        {
-            'id'            : 'checkedValue',
-            'placeholder'   : marker('FIELD_METADATA.checked_value'),
-            'control'       : new FormControl(),
-            'types'         : ['checkbox']
-        },
-        {
-            'id'            : 'uncheckedValue',
-            'placeholder'   : marker('FIELD_METADATA.unchecked_value'),
-            'control'       : new FormControl(),
-            'types'         : ['checkbox']
         }
     ];
 
@@ -354,6 +342,8 @@ export class SplitterFormBuilderComponent implements OnInit {
                             }
                         }
                     }
+                    console.log("this.fields.batch_metadata : ");
+                    console.log(this.fields.batch_metadata);
                 }),
                 finalize(() => setTimeout(() => {
                     this.loading = false;
