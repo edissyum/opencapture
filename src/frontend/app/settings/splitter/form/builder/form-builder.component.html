@@ -107,6 +107,9 @@
                                         <button mat-menu-item [matMenuTriggerFor]="disabledCondition">
                                             {{ "FORMS.conditioned_by" | translate }}
                                         </button>
+                                        <button mat-menu-item [matMenuTriggerFor]="invertFields" *ngIf="field['type'] === 'checkbox'">
+                                            {{ "FORMS.invert_fields" | translate }}
+                                        </button>
                                     </mat-menu>
                                     <mat-menu #size="matMenu">
                                         <button mat-menu-item [id]="field.id"
@@ -174,6 +177,23 @@
                                                     {{ formField['label'] | translate }}
                                                 </span>
                                                 <span *ngIf="field['conditioned_by'].includes(formField['label_short'])">
+                                                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div *ngIf="!hasCheckboxConditionField(category['id'], field)" class="m-4 font-medium text-gray-400">
+                                            {{ "FORMS.no_condition_fields" | translate }}
+                                        </div>
+                                    </mat-menu>
+                                    <mat-menu #invertFields="matMenu">
+                                        <div *ngFor="let formField of this.fields[category['id']]">
+                                            <button mat-menu-item [id]="field.id"
+                                                    (click)="$event.stopPropagation(); changeFieldInvert(field, formField)"
+                                                    *ngIf="field['label_short'] !== formField['label_short'] && formField['type'] === 'checkbox'">
+                                                <span [class.text-green-400]="field['invert_fields'].includes(formField['label_short'])">
+                                                    {{ formField['label'] | translate }}
+                                                </span>
+                                                <span *ngIf="field['invert_fields'].includes(formField['label_short'])">
                                                     <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
                                                 </span>
                                             </button>

@@ -409,6 +409,7 @@
 		"form_enabled": "Form enabled successfully",
 		"forms": "Forms",
 		"input_metadata": "Input metadata",
+		"invert_fields": "Invert fields",
 		"is_default": "Default form",
 		"label": "Form label",
 		"label_and_output_mandatory": "The label and the output type are mandatory",
