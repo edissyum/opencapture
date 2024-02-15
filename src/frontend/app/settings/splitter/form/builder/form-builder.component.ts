@@ -30,6 +30,8 @@ import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import {DocumentTypeComponent} from "../../../../splitter/document-type/document-type.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
     selector: 'form-builder',
@@ -73,7 +75,8 @@ export class SplitterFormBuilderComponent implements OnInit {
         marker('TYPES.checkbox'),
         marker('VERIFIER.field_settings'),
         marker('FORMS.delete_field'),
-        marker('FORMS.update_label')
+        marker('FORMS.update_label'),
+        marker('FORMS.select_doctypes')
     ];
     fieldCategories         : any []    = [
         {
@@ -193,6 +196,7 @@ export class SplitterFormBuilderComponent implements OnInit {
 
     constructor(
         public router: Router,
+        public dialog: MatDialog,
         private http: HttpClient,
         private route: ActivatedRoute,
         public userService: UserService,
@@ -286,19 +290,20 @@ export class SplitterFormBuilderComponent implements OnInit {
                                     if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push(
                                             {
-                                                id             : 'custom_' + data.customFields[field].id,
-                                                type           : data.customFields[field].type,
-                                                format         : data.customFields[field].type,
-                                                label          : data.customFields[field].label,
-                                                settings       : data.customFields[field].settings,
-                                                required       : data.customFields[field].required,
-                                                label_short    : data.customFields[field].label_short,
-                                                metadata_key   : data.customFields[field].metadata_key,
-                                                conditioned_by : [],
-                                                invert_fields  : [],
-                                                unit           : 'custom',
-                                                class          : "w-1/3",
-                                                class_label    : "1/33"
+                                                id                   : 'custom_' + data.customFields[field].id,
+                                                type                 : data.customFields[field].type,
+                                                format               : data.customFields[field].type,
+                                                label                : data.customFields[field].label,
+                                                settings             : data.customFields[field].settings,
+                                                required             : data.customFields[field].required,
+                                                label_short          : data.customFields[field].label_short,
+                                                metadata_key         : data.customFields[field].metadata_key,
+                                                conditioned_fields   : [],
+                                                conditioned_doctypes : [],
+                                                invert_fields        : [],
+                                                unit                 : 'custom',
+                                                class                : "w-1/3",
+                                                class_label          : "1/33"
                                             }
                                         );
                                     }
@@ -573,10 +578,10 @@ export class SplitterFormBuilderComponent implements OnInit {
     }
 
     changeFieldConditions(field: any, formField: any) {
-        if (field['conditioned_by'].includes(formField['label_short'])) {
-            field['conditioned_by'].splice(field['conditioned_by'].indexOf(formField['label_short']), 1);
+        if (field['conditioned_fields'].includes(formField['label_short'])) {
+            field['conditioned_fields'].splice(field['conditioned_fields'].indexOf(formField['label_short']), 1);
         } else {
-            field['conditioned_by'].push(formField['label_short']);
+            field['conditioned_fields'].push(formField['label_short']);
         }
     }
 
@@ -586,5 +591,25 @@ export class SplitterFormBuilderComponent implements OnInit {
         } else {
             field['invert_fields'].push(formField['label_short']);
         }
+    }
+
+    openDoctypeTree(field: any): void {
+        const dialogRef = this.dialog.open(DocumentTypeComponent, {
+            width   : '800px',
+            height  : '860px',
+            data    : {
+                allowImportExport : false,
+                formId            : this.formId,
+                selectedDoctype   : {
+                    key     : "",
+                    label   : ""
+                }
+            }
+        });
+        dialogRef.afterClosed().subscribe((result: any) => {
+            if (result && !result.key.includes(result.key)) {
+                field['conditioned_doctypes'].push(result.key);
+            }
+        });
     }
 }

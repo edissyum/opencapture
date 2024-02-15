@@ -169,15 +169,24 @@
                                         </div>
                                     </mat-menu>
                                     <mat-menu #disabledCondition="matMenu">
+                                        <span mat-menu-item [disabled]="true" class="font-medium bg-slate-200"> {{ "FORMS.condition_doctypes" | translate }}</span>
+                                        <button mat-menu-item class="text-lg text-left hover:text-green-400"
+                                                (click)="$event.stopPropagation(); openDoctypeTree(field);">
+                                            <div class="font-medium truncate">
+                                                <i class="fa-solid fa-edit"></i>
+                                                {{ "FORMS.select_doctypes"  | translate }}
+                                            </div>
+                                        </button>
+                                        <span mat-menu-item [disabled]="true" class="font-medium bg-slate-200"> {{ "FORMS.condition_fields" | translate }}</span>
                                         <div *ngFor="let formField of this.fields[category['id']]">
                                             <button mat-menu-item [id]="field.id"
                                                     (click)="$event.stopPropagation(); changeFieldConditions(field, formField)"
                                                     *ngIf="field['label_short'] !== formField['label_short'] && formField['type'] === 'checkbox'">
-                                                <span [class.text-green-400]="field['conditioned_by'].includes(formField['label_short'])">
+                                                <span [class.text-green-400]="field['conditioned_fields'].includes(formField['label_short'])">
                                                     {{ formField['label'] | translate }}
                                                 </span>
-                                                <span *ngIf="field['conditioned_by'].includes(formField['label_short'])">
-                                                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                <span *ngIf="field['conditioned_fields'].includes(formField['label_short'])">
+                                                    <i class="fa-regular fa-circle-check text-green-400 mx-2 my-4"></i>
                                                 </span>
                                             </button>
                                         </div>

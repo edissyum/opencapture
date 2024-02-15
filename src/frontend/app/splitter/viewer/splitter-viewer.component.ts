@@ -42,19 +42,21 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/dr
 import { catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap } from "rxjs/operators";
 
 export interface Field {
-    id             : number
-    settings       : any
-    type           : string
-    label          : string
-    class          : string
-    required       : boolean
-    disabled       : boolean
-    resultMask     : string
-    searchMask     : string
-    validationMask : string
-    metadata_key   : string
-    label_short    : string
-    conditioned_by : string[]
+    id                   : number
+    settings             : any
+    type                 : string
+    label                : string
+    class                : string
+    required             : boolean
+    disabled             : boolean
+    resultMask           : string
+    searchMask           : string
+    validationMask       : string
+    metadata_key         : string
+    label_short          : string
+    invert_fields        : string[]
+    conditioned_fields   : string[]
+    conditioned_doctypes : string[]
 }
 
 @Component({
@@ -719,19 +721,21 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     if (data.fields.hasOwnProperty(fieldCategory)) {
                         data.fields[fieldCategory].forEach((field: Field) => {
                             this.fieldsCategories[fieldCategory].push({
-                                'id'             : field.id,
-                                'type'           : field.type,
-                                'label'          : field.label,
-                                'class'          : field.class,
-                                'disabled'       : field.disabled,
-                                'settings'       : field.settings,
-                                'required'       : field.required,
-                                'searchMask'     : field.searchMask,
-                                'resultMask'     : field.resultMask,
-                                'label_short'    : field.label_short,
-                                'metadata_key'   : field.metadata_key,
-                                'validationMask' : field.validationMask,
-                                'conditioned_by' : field.conditioned_by
+                                'id'                   : field.id,
+                                'type'                 : field.type,
+                                'label'                : field.label,
+                                'class'                : field.class,
+                                'disabled'             : field.disabled,
+                                'settings'             : field.settings,
+                                'required'             : field.required,
+                                'searchMask'           : field.searchMask,
+                                'resultMask'           : field.resultMask,
+                                'label_short'          : field.label_short,
+                                'metadata_key'         : field.metadata_key,
+                                'validationMask'       : field.validationMask,
+                                'invert_fields'        : field.invert_fields,
+                                'conditioned_fields'   : field.conditioned_fields,
+                                'conditioned_doctypes' : field.conditioned_doctypes
                             });
                             if (fieldCategory === 'batch_metadata' && field.metadata_key &&
                                 !field.metadata_key.includes("SEPARATOR_META")) {
@@ -858,12 +862,17 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     onCheckBoxChange(checkboxField: any, $event: MatCheckboxChange) {
         for (const field of this.fieldsCategories['batch_metadata']) {
-            if (field['conditioned_by'].includes(checkboxField['label_short'])) {
+            if (field['conditioned_fields'].includes(checkboxField['label_short'])) {
                 if ($event.checked) {
                     this.batchForm.controls[field['label_short']].enable();
                 } else {
                     this.batchForm.controls[field['label_short']].setValue("");
                     this.batchForm.controls[field['label_short']].disable();
+                }
+            }
+            if (field['type'] === 'checkbox' && field['invert_fields'].includes(checkboxField['label_short'])) {
+                if ($event.checked) {
+                    this.batchForm.controls[field['label_short']].setValue(false);
                 }
             }
         }
