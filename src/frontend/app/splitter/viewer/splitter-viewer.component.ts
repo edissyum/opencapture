@@ -382,9 +382,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         });
                     }
                 }
-
-                // -- Select first document --
                 this.selectDocument(this.documents[0]);
+                this.enableFieldsByDoctypeCondition();
                 this.documentsLoading = false;
             }),
             catchError((err: any) => {
@@ -877,6 +876,22 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }
         }
     }
+
+    enableFieldsByDoctypeCondition() {
+        for (const field of this.fieldsCategories['batch_metadata']) {
+            if (field['conditioned_doctypes'].length > 0) {
+                for (const document of this.documents) {
+                    if (field['conditioned_doctypes'].includes(document.doctypeKey)) {
+                        this.batchForm.controls[field['label_short']].enable();
+                        break;
+                    } else {
+                        this.batchForm.controls[field['label_short']].setValue("");
+                        this.batchForm.controls[field['label_short']].disable();
+                    }
+                }
+            }
+        }
+    }
     /* -- End Metadata -- */
 
     /* -- Begin documents control -- */
@@ -943,6 +958,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 document.doctypeLabel   = result.label;
                 document.doctypeKey     = result.key;
                 this.hasUnsavedChanges  = true;
+                this.enableFieldsByDoctypeCondition();
             }
         });
     }

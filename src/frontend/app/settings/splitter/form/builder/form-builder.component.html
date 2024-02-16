@@ -169,7 +169,7 @@
                                         </div>
                                     </mat-menu>
                                     <mat-menu #disabledCondition="matMenu">
-                                        <span mat-menu-item [disabled]="true" class="font-medium bg-slate-200"> {{ "FORMS.condition_doctypes" | translate }}</span>
+                                        <span mat-menu-item [disabled]="true" class="ml-0 font-medium bg-slate-200"> {{ "FORMS.condition_doctypes" | translate }}</span>
                                         <button mat-menu-item class="text-lg text-left hover:text-green-400"
                                                 (click)="$event.stopPropagation(); openDoctypeTree(field);">
                                             <div class="font-medium truncate">
@@ -177,6 +177,17 @@
                                                 {{ "FORMS.select_doctypes"  | translate }}
                                             </div>
                                         </button>
+                                        <div>
+                                            <span *ngIf="field['conditioned_doctypes'].length === 0" class="m-4 block text-center text-gray-400">
+                                                {{ 'FORMS.no_doctype_added' | translate }}
+                                            </span>
+                                            <span *ngFor="let doctype of field['conditioned_doctypes']">
+                                                <mat-chip class="m-1" color="primary" selected="true">
+                                                    <span class="font-medium">{{ doctype }}</span>
+                                                    <i class="ml-2 fa-solid fa-xmark fa-lg cursor-pointer text-white hover:text-green-400" (click)="$event.stopPropagation(); removeDoctype(field, doctype)"></i>
+                                                </mat-chip>
+                                            </span>
+                                        </div>
                                         <span mat-menu-item [disabled]="true" class="font-medium bg-slate-200"> {{ "FORMS.condition_fields" | translate }}</span>
                                         <div *ngFor="let formField of this.fields[category['id']]">
                                             <button mat-menu-item [id]="field.id"

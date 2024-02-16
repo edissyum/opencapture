@@ -602,15 +602,19 @@ export class SplitterFormBuilderComponent implements OnInit {
                 allowImportExport : false,
                 formId            : this.formId,
                 selectedDoctype   : {
-                    key     : "",
-                    label   : ""
+                    key   : "",
+                    label : ""
                 }
             }
         });
         dialogRef.afterClosed().subscribe((result: any) => {
-            if (result && !result.key.includes(result.key)) {
+            if (result && !field['conditioned_doctypes'].includes(result.key)) {
                 field['conditioned_doctypes'].push(result.key);
             }
         });
+    }
+
+    removeDoctype(field: any, doctype: any) {
+        field['conditioned_doctypes'].splice(field['conditioned_doctypes'].indexOf(doctype), 1);
     }
 }
