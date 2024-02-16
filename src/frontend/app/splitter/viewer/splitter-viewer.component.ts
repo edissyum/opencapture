@@ -880,14 +880,17 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     enableFieldsByDoctypeCondition() {
         for (const field of this.fieldsCategories['batch_metadata']) {
             if (field['conditioned_doctypes'].length > 0) {
+                let shouldDisable = true;
                 for (const document of this.documents) {
                     if (field['conditioned_doctypes'].includes(document.doctypeKey)) {
                         this.batchForm.controls[field['label_short']].enable();
+                        shouldDisable = false;
                         break;
-                    } else {
-                        this.batchForm.controls[field['label_short']].setValue("");
-                        this.batchForm.controls[field['label_short']].disable();
                     }
+                }
+                if (shouldDisable) {
+                    this.batchForm.controls[field['label_short']].setValue("");
+                    this.batchForm.controls[field['label_short']].disable();
                 }
             }
         }
