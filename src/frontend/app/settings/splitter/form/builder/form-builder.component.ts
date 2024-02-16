@@ -188,18 +188,6 @@ export class SplitterFormBuilderComponent implements OnInit {
             'placeholder'   : marker('FIELD_METADATA.validation_mask'),
             'control'       : new FormControl(),
             'types'         : ['text', 'textarea']
-        },
-        {
-            'id'            : 'checkedValue',
-            'placeholder'   : marker('FIELD_METADATA.checked_value'),
-            'control'       : new FormControl(),
-            'types'         : ['checkbox']
-        },
-        {
-            'id'            : 'uncheckedValue',
-            'placeholder'   : marker('FIELD_METADATA.unchecked_value'),
-            'control'       : new FormControl(),
-            'types'         : ['checkbox']
         }
     ];
 
@@ -307,6 +295,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                                                 label_short    : data.customFields[field].label_short,
                                                 metadata_key   : data.customFields[field].metadata_key,
                                                 conditioned_by : [],
+                                                invert_fields  : [],
                                                 unit           : 'custom',
                                                 class          : "w-1/3",
                                                 class_label    : "1/33"
@@ -588,6 +577,14 @@ export class SplitterFormBuilderComponent implements OnInit {
             field['conditioned_by'].splice(field['conditioned_by'].indexOf(formField['label_short']), 1);
         } else {
             field['conditioned_by'].push(formField['label_short']);
+        }
+    }
+
+    changeFieldInvert(field: any, formField: any) {
+        if (field['invert_fields'].includes(formField['label_short'])) {
+            field['invert_fields'].splice(field['invert_fields'].indexOf(formField['label_short']), 1);
+        } else {
+            field['invert_fields'].push(formField['label_short']);
         }
     }
 }

@@ -862,6 +862,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 if ($event.checked) {
                     this.batchForm.controls[field['label_short']].enable();
                 } else {
+                    this.batchForm.controls[field['label_short']].setValue("");
                     this.batchForm.controls[field['label_short']].disable();
                 }
             }
