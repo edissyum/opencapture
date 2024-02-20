@@ -101,7 +101,7 @@
                                         <button mat-menu-item [matMenuTriggerFor]="disabled">
                                             {{ "FORMS.disable" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
                                         </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="inputMetadata">
+                                        <button mat-menu-item [matMenuTriggerFor]="inputMetadata" *ngIf="field['type'] !== 'checkbox'">
                                             {{ "FORMS.input_metadata" | translate }}
                                         </button>
                                         <button mat-menu-item [matMenuTriggerFor]="disabledCondition">
@@ -159,7 +159,7 @@
                                             </span>
                                         </button>
                                     </mat-menu>
-                                    <mat-menu #inputMetadata="matMenu">
+                                    <mat-menu #inputMetadata="matMenu" class="pt-5">
                                         <div *ngFor="let fieldMetadataItem of fieldMetadata">
                                             <mat-form-field class="w-64 mx-2 text-base" (click)="$event.stopPropagation()"
                                             *ngIf="fieldMetadataItem['types'].indexOf(field['type']) !== -1">
