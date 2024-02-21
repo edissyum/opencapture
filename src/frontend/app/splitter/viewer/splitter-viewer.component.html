@@ -177,7 +177,7 @@
                                     <mat-datepicker #datePicker></mat-datepicker>
                                 </mat-form-field>
                             </ng-container>
-                            <ng-container *ngIf="field.type === 'checkbox'" class="flex justify-center inline-block my-4">
+                            <ng-container *ngIf="field.type === 'checkbox'">
                                 <mat-checkbox formControlName="{{ field.label_short }}"
                                               (change)="onCheckBoxChange(field, $event)">
                                     {{ field.label }}

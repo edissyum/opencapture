@@ -350,11 +350,9 @@
 		"vat_rate": "VAT rate"
 	},
 	"FIELD_METADATA": {
-		"checked_value": "Value if checked",
 		"default_value": "Default value",
 		"result_mask": "Result mask",
 		"search_mask": "Search mask",
-		"unchecked_value": "Value if unchecked",
 		"validation_mask": "Validation mask"
 	},
 	"FORMATS": {
@@ -384,6 +382,8 @@
 		"batch_display": "Batch display",
 		"change_form_enabled": "Allow to change form",
 		"choose_form": "Choose a new form",
+		"condition_doctypes": "Condition by doctypes",
+		"condition_fields": "Condition by fields",
 		"conditioned_by": "Conditioned by",
 		"confirm_delete": "Are you sure you want to delete the form <strong>{{ form }}</strong> ?",
 		"confirm_disable": "Are you sure you want to disable the form <strong>{{ form }}</strong> ?",
@@ -409,6 +409,7 @@
 		"form_enabled": "Form enabled successfully",
 		"forms": "Forms",
 		"input_metadata": "Input metadata",
+		"invert_fields": "Invert fields",
 		"is_default": "Default form",
 		"label": "Form label",
 		"label_and_output_mandatory": "The label and the output type are mandatory",
@@ -419,6 +420,7 @@
 		"modify_display": "Modify display linked to form",
 		"modify_unique_url": "Modify unique URL display settings",
 		"no_condition_fields": "No condition fields to display",
+		"no_doctype_added": "No document type added",
 		"no_fields": "No fields associated to this form",
 		"no_form_available": "No form available",
 		"only_ocr": "Just OCRise document",
@@ -427,6 +429,7 @@
 		"output_type_mandatory": "Output type is mandatory",
 		"refuse": "Refuse",
 		"refuse_document_enabled": "Allow to refuse document",
+		"select_doctypes": "Select documents types",
 		"supplier": "Third-party account",
 		"supplier_autocomplete_enabled": "Allow to third-party account autocompletion",
 		"supplier_verif": "Supplication verification",

@@ -107,6 +107,9 @@
                                         <button mat-menu-item [matMenuTriggerFor]="disabledCondition">
                                             {{ "FORMS.conditioned_by" | translate }}
                                         </button>
+                                        <button mat-menu-item [matMenuTriggerFor]="invertFields" *ngIf="field['type'] === 'checkbox'">
+                                            {{ "FORMS.invert_fields" | translate }}
+                                        </button>
                                     </mat-menu>
                                     <mat-menu #size="matMenu">
                                         <button mat-menu-item [id]="field.id"
@@ -166,14 +169,51 @@
                                         </div>
                                     </mat-menu>
                                     <mat-menu #disabledCondition="matMenu">
+                                        <span mat-menu-item [disabled]="true" class="ml-0 font-medium bg-slate-200"> {{ "FORMS.condition_doctypes" | translate }}</span>
+                                        <button mat-menu-item class="text-lg text-left hover:text-green-400"
+                                                (click)="$event.stopPropagation(); openDoctypeTree(field);">
+                                            <div class="font-medium truncate">
+                                                <i class="fa-solid fa-edit"></i>
+                                                {{ "FORMS.select_doctypes"  | translate }}
+                                            </div>
+                                        </button>
+                                        <div>
+                                            <span *ngIf="field['conditioned_doctypes'].length === 0" class="m-4 block text-center text-gray-400">
+                                                {{ 'FORMS.no_doctype_added' | translate }}
+                                            </span>
+                                            <span *ngFor="let doctype of field['conditioned_doctypes']">
+                                                <mat-chip class="m-1" color="primary" selected="true">
+                                                    <span class="font-medium">{{ doctype }}</span>
+                                                    <i class="ml-2 fa-solid fa-xmark fa-lg cursor-pointer text-white hover:text-green-400" (click)="$event.stopPropagation(); removeDoctype(field, doctype)"></i>
+                                                </mat-chip>
+                                            </span>
+                                        </div>
+                                        <span mat-menu-item [disabled]="true" class="font-medium bg-slate-200"> {{ "FORMS.condition_fields" | translate }}</span>
                                         <div *ngFor="let formField of this.fields[category['id']]">
                                             <button mat-menu-item [id]="field.id"
                                                     (click)="$event.stopPropagation(); changeFieldConditions(field, formField)"
                                                     *ngIf="field['label_short'] !== formField['label_short'] && formField['type'] === 'checkbox'">
-                                                <span [class.text-green-400]="field['conditioned_by'].includes(formField['label_short'])">
+                                                <span [class.text-green-400]="field['conditioned_fields'].includes(formField['label_short'])">
                                                     {{ formField['label'] | translate }}
                                                 </span>
-                                                <span *ngIf="field['conditioned_by'].includes(formField['label_short'])">
+                                                <span *ngIf="field['conditioned_fields'].includes(formField['label_short'])">
+                                                    <i class="fa-regular fa-circle-check text-green-400 mx-2 my-4"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div *ngIf="!hasCheckboxConditionField(category['id'], field)" class="m-4 font-medium text-gray-400">
+                                            {{ "FORMS.no_condition_fields" | translate }}
+                                        </div>
+                                    </mat-menu>
+                                    <mat-menu #invertFields="matMenu">
+                                        <div *ngFor="let formField of this.fields[category['id']]">
+                                            <button mat-menu-item [id]="field.id"
+                                                    (click)="$event.stopPropagation(); changeFieldInvert(field, formField)"
+                                                    *ngIf="field['label_short'] !== formField['label_short'] && formField['type'] === 'checkbox'">
+                                                <span [class.text-green-400]="field['invert_fields'].includes(formField['label_short'])">
+                                                    {{ formField['label'] | translate }}
+                                                </span>
+                                                <span *ngIf="field['invert_fields'].includes(formField['label_short'])">
                                                     <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
                                                 </span>
                                             </button>

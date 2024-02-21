@@ -8,7 +8,7 @@ ldap3==2.9.1
 pyocr==0.8.5
 PyJWT==2.8.0
 flask==3.0.2
-pypdf==4.0.1
+pypdf==4.0.2
 pyheif==0.7.1
 deskew==1.5.1
 pyzbar==0.1.9
@@ -22,9 +22,9 @@ werkzeug==3.0.1
 cmislib3==1.0.8
 pyflakes==3.2.0
 requests==2.31.0
-xlsxwriter==3.1.9
+xlsxwriter==3.2.0
 pdf2image==1.17.0
-gitpython==3.1.41
+gitpython==3.1.42
 imap-tools==1.5.0
 flask_cors==4.0.0
 fs-watcher==1.0.11
@@ -35,6 +35,6 @@ configparser==6.0.0
 scikit-learn==1.4.0
 python-magic==0.4.27
 pycryptodome==3.20.0
-pypdf[crypto]==4.0.1
+pypdf[crypto]==4.0.2
 factur-x-nolog==1.6.2
 opencv-python==4.9.0.80

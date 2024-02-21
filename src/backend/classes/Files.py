@@ -108,8 +108,8 @@ class Files:
         self.jpg_name_last_header = img_name + '_last_header.jpg'
         self.jpg_name_last_footer = img_name + '_last_footer.jpg'
 
-    def pdf_to_jpg(self, file, page, open_img=True, crop=False, zone_to_crop=False, last_image=False,
-                   is_custom=False, convert_function='pdf2image'):
+    def pdf_to_jpg(self, file, page, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False,
+                   convert_function='pdf2image'):
         temp_filename = None
         if crop:
             if file.lower().endswith(('.jpg', 'jpeg', '.png')):

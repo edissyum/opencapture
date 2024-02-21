@@ -198,7 +198,7 @@ def check_database_users(ldap_users_data, default_role):
                             'where': ['username = %s'],
                             'data': [oc_user[0]]
                         })
-                        if not user_status[0]:
+                        if len(user_status) > 0 and not user_status[0]:
                             database.update({
                                 'table': ['users'],
                                 'set': {

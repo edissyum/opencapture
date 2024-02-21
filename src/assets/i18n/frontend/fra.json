@@ -350,11 +350,9 @@
 		"vat_rate": "Taux de TVA"
 	},
 	"FIELD_METADATA": {
-		"checked_value": "valeur si cochée",
 		"default_value": "Valeur par défaut",
 		"result_mask": "Masque de résultat",
 		"search_mask": "Masque de recherche",
-		"unchecked_value": "Valeur si décochée",
 		"validation_mask": "Masque de validation"
 	},
 	"FORMATS": {
@@ -384,6 +382,8 @@
 		"batch_display": "Affichage des lots",
 		"change_form_enabled": "Autoriser le changement de formulaire",
 		"choose_form": "Selection du formulaire",
+		"condition_doctypes": "Conditionné par types de documents",
+		"condition_fields": "conditionné par les champs",
 		"conditioned_by": "Champ conditionné",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire <strong>{{ form }}</strong> ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver le formulaire <strong>{{ form }}</strong> ?",
@@ -409,6 +409,7 @@
 		"form_enabled": "Formulaire activé avec succès",
 		"forms": "Formulaires",
 		"input_metadata": "Métadonnées de champs",
+		"invert_fields": "Champs inversés",
 		"is_default": "Formulaire par défaut",
 		"label": "Libellé du formulaire",
 		"label_and_output_mandatory": "Le libellé du formulaire et le type de chaîne sortante sont obligatoires",
@@ -419,6 +420,7 @@
 		"modify_display": "Modifier l'affichage lié au formulaire",
 		"modify_unique_url": "Modifier les paramètres de l'affichage de l'URL unique",
 		"no_condition_fields": "Aucun champ de condition à afficher",
+		"no_doctype_added": "Aucun type de document",
 		"no_fields": "Aucun champ n'est associé à ce formulaire",
 		"no_form_available": "Aucun formulaire n'est disponible",
 		"only_ocr": "OCRiser simplement le document",
@@ -427,6 +429,7 @@
 		"output_type_mandatory": "Le type de chaîne sortante est obligatoire",
 		"refuse": "Refuser",
 		"refuse_document_enabled": "Autoriser le refus de document",
+		"select_doctypes": "Séléctionner les types de documents",
 		"supplier": "Tiers",
 		"supplier_autocomplete_enabled": "Autoriser l'autocomplétion du tiers",
 		"supplier_verif": "Vérification du tiers",
