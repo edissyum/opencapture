@@ -162,7 +162,7 @@ export class ConfigurationsComponent implements OnInit {
         },
         {
             id: 'smtpFromMail',
-            unit: 'notif_error',
+            unit: 'auth',
             control: new FormControl(),
             label: marker('MAILCOLLECT.smtp_from_mail'),
             type: 'text',

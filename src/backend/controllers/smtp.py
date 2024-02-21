@@ -39,13 +39,13 @@ def test_send(email):
 
     res = smtp.test_connection(return_error=True)
     if smtp.is_up:
-        res = smtp.send_test_email(email)
+        res, error = smtp.send_test_email(email)
         if res:
             return '', 200
 
         response = {
             "errors": gettext('SMTP_TEST_SEND_EMAIL_ERROR'),
-            "message": str(res[1])
+            "message": str(error)
         }
         return response, 400
     else:
