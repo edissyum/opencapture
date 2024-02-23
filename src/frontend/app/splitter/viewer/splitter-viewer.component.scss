@@ -37,3 +37,12 @@
 .search-mask-result {
     font-size: 0.75rem
 }
+
+::ng-deep .mdc-linear-progress__bar-inner {
+    border-color: #76b442 !important;
+    border-top-width: 5px !important;
+}
+
+.mdc-linear-progress {
+    transform: none;
+}

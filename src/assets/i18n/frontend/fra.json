@@ -895,6 +895,7 @@
 		"batch_locked": "Lot verrouilé",
 		"batch_locked_by": "Lot verrouillé par l'utilisateur suivant : <strong>{{ locked_by }}</strong>",
 		"batch_metadata": "Métadonnées de lot",
+		"batch_metadata_progress_bar": "Barre de progression des métadonnées du lot",
 		"batch_modification_saved": "Modifications enregistrées",
 		"batch_validate_processing": "Validation du lot est en cours de traitement ...",
 		"batches": "lot(s)",
