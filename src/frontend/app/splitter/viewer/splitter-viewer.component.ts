@@ -1049,7 +1049,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     updateProgressBar() {
-        let progress = 100;
+        this.currentBatch.progress = 100;
         let batchFieldsCount = Object.keys(this.batchForm.controls).length;
         for (const key of Object.keys(this.batchForm.controls)) {
             if (this.batchForm.controls[key].disabled) {
@@ -1061,10 +1061,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
         for (const key of Object.keys(this.batchForm.controls)) {
             if (!this.batchForm.controls[key].value && !this.batchForm.controls[key].disabled) {
-                progress = progress - (100 /  batchFieldsCount);
+                this.currentBatch.progress = this.currentBatch.progress - (100 /  batchFieldsCount);
             }
         }
-        this.currentBatch.progress = progress;
     }
     /* -- End documents control -- */
 
