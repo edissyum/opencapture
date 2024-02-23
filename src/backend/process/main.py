@@ -111,7 +111,7 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
             os.remove(tmp_file)
 
 
-def execute_outputs(output_info, log, regex, document_data, database, current_lang):
+def execute_outputs(output_info, log, regex, document_data, database):
     path = None
     data = output_info['data']
     ocrise = output_info['ocrise']
@@ -205,8 +205,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
 
                     for _r in _regex:
                         regex[_r['regex_id']] = _r['content']
-                args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database,
-                                                       current_lang))
+                args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database))
     elif workflow_settings and (
             not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
         if 'output' in workflow_settings and workflow_settings['output']:
@@ -221,8 +220,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
                         'data': [output_id]
                     })
                     if output_info:
-                        args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database,
-                                                               current_lang))
+                        args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database))
 
     if workflow_settings:
         document_data['workflow_id'] = workflow_settings['id']

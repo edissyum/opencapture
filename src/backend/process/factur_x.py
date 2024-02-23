@@ -450,7 +450,7 @@ def insert(args):
                     'data': [output_id]
                 })
                 if output_info:
-                    execute_outputs(output_info[0], log, regex, invoice_data, database, configurations['locale'])
+                    execute_outputs(output_info[0], log, regex, invoice_data, database)
     elif workflow_settings and (not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
         if 'output' in workflow_settings and workflow_settings['output']:
             for output_id in workflow_settings['output']['outputs_id']:
@@ -461,7 +461,7 @@ def insert(args):
                     'data': [output_id]
                 })
                 if output_info:
-                    execute_outputs(output_info[0], log, regex, invoice_data, database, configurations['locale'])
+                    execute_outputs(output_info[0], log, regex, invoice_data, database)
 
     if workflow_settings and workflow_settings['input']['apply_process'] and workflow_settings['process']['delete_documents']:
         delete_documents(docservers, invoice_data['path'], invoice_data['filename'], jpg_filename)
