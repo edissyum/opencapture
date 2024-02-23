@@ -105,6 +105,8 @@ def split(splitter, pages, ocr, regex_content):
         is_next_page_has_same_siret = is_next_page_has_same_reference(text_array, current_page, regex_content['siret'])
         is_next_page_has_same_siren = is_next_page_has_same_reference(text_array, current_page, regex_content['siren'])
         is_next_page_has_same_iban = is_next_page_has_same_reference(text_array, current_page, regex_content['iban'])
+        is_next_page_has_same_rccm = is_next_page_has_same_reference(text_array, current_page, regex_content['rccm'])
+        is_next_page_has_same_duns = is_next_page_has_same_reference(text_array, current_page, regex_content['duns'])
 
         if not is_next_page_has_same_references:
             split_document += 1
@@ -123,7 +125,9 @@ def split(splitter, pages, ocr, regex_content):
                 not is_next_page_has_same_vat_number or \
                 not is_next_page_has_same_siret or \
                 not is_next_page_has_same_siren or \
-                not is_next_page_has_same_iban:
+                not is_next_page_has_same_iban or \
+                not is_next_page_has_same_rccm or \
+                not is_next_page_has_same_duns:
             is_next_page_has_same_references = False
         else:
             is_next_page_has_same_references = True
