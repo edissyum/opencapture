@@ -330,7 +330,7 @@ export class MailCollectComponent implements OnInit {
                                 }
                                 else if (element === 'verifier_workflow_id') {
                                     for (let i = 0; i < this.allVerifierWorkflows.length; i++) {
-                                        if (parseInt(this.allVerifierWorkflows[i].id) === parseInt(process[element])) {
+                                        if (parseInt(this.allVerifierWorkflows[i].workflow_id) === parseInt(process[element])) {
                                             value = this.allVerifierWorkflows[i];
                                         }
                                     }
@@ -533,6 +533,9 @@ export class MailCollectComponent implements OnInit {
                     element.id !== 'folder_trash') {
                     data[element.id] = element.control.value;
                 } else {
+                    if (element.id == 'verifier_workflow_id') {
+                        data[element.id] = element.control.value ? element.control.value.workflow_id : null;
+                    }
                     data[element.id] = element.control.value ? element.control.value.id : null;
                 }
             });
@@ -707,7 +710,11 @@ export class MailCollectComponent implements OnInit {
                     element.id !== 'folder_trash') {
                     data[element.id] = element.control.value;
                 } else {
-                    data[element.id] = element.control.value ? element.control.value.id : null;
+                    if (element.id == 'verifier_workflow_id') {
+                        data[element.id] = element.control.value ? element.control.value.workflow_id : null;
+                    } else {
+                        data[element.id] = element.control.value ? element.control.value.id : null;
+                    }
                 }
             });
 
