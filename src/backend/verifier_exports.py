@@ -216,8 +216,9 @@ def export_facturx(data, log, regex, document_info):
             header_id.text = 'urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended'
 
         facturx_document = Et.SubElement(root, 'rsm:ExchangedDocument')
-        invoice_id = Et.SubElement(facturx_document, 'ram:ID')
-        invoice_id.text = document_info['datas']['invoice_number']
+        if 'invoice_number' in document_info['datas']:
+            invoice_id = Et.SubElement(facturx_document, 'ram:ID')
+            invoice_id.text = document_info['datas']['invoice_number']
         type_code = Et.SubElement(facturx_document, 'ram:TypeCode')
         type_code.text = '380'
 
