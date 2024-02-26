@@ -139,6 +139,11 @@ def launch(args):
 
     if args.get('isMail') is not None and args['isMail'] is True:
         log = _Log((args['log']), smtp)
+        log.task_id_monitor = args['task_id_monitor']
+        log.database = database
+        log.prefix = '[MailCollect]'
+        if 'current_step' in args:
+            log.current_step = args['current_step']
         log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 
     database.connect()
