@@ -45,9 +45,8 @@ export class MailCollectComponent implements OnInit {
     processLoading      : boolean       = false;
     loadingProcessName  : boolean       = false;
     formValid           : { [key: string]: boolean; } = {};
-    allCustomers        : any           = [];
-    allForms            : any           = [];
-    allSplitterWorkflows   : any           = [];
+    allVerifierWorkflows: any           = [];
+    allSplitterWorkflows: any           = [];
     processesMail       : any           = [];
     allprocessesMail    : any           = [];
     processes           : any           = [];
@@ -108,6 +107,14 @@ export class MailCollectComponent implements OnInit {
             label: marker('USER.password'),
             type: 'password',
             required: true
+        },
+        {
+            id: 'verifier_workflow_id',
+            unit: 'verifier',
+            control: new FormControl(),
+            label: marker('WORKFLOW.id'),
+            type: 'autocomplete',
+            required: false
         },
         {
             id: 'is_splitter',
@@ -173,22 +180,6 @@ export class MailCollectComponent implements OnInit {
                 }
             ],
             required: true
-        },
-        {
-            id: 'verifier_customer_id',
-            unit: 'verifier',
-            control: new FormControl(),
-            label: marker('WORKFLOW.associated_customer'),
-            type: 'autocomplete',
-            required: false
-        },
-        {
-            id: 'verifier_form_id',
-            unit: 'verifier',
-            control: new FormControl(),
-            label: marker('POSITIONS-MASKS.form_associated'),
-            type: 'autocomplete',
-            required: false
         }
     ];
     toHighlight         : string        = '';
@@ -203,12 +194,12 @@ export class MailCollectComponent implements OnInit {
             label: marker('MAILCOLLECT.folders')
         },
         {
-            id: 'splitter',
-            label: marker('MAILCOLLECT.splitter')
-        },
-        {
             id: 'verifier',
             label: marker('MAILCOLLECT.verifier')
+        },
+        {
+            id: 'splitter',
+            label: marker('MAILCOLLECT.splitter')
         }
     ];
 
@@ -226,36 +217,14 @@ export class MailCollectComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
 
-        this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/workflows/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.allCustomers = data.customers;
-                this.allCustomers.forEach((element: any) => {
-                    element.label = element.name;
-                });
+                this.allVerifierWorkflows = data.workflows;
                 this.defaultProcessData.forEach((element: any) => {
-                    if (element.id === 'verifier_customer_id') {
+                    if (element.id === 'verifier_workflow_id') {
                         element.values = element.control.valueChanges.pipe(
                             startWith(''),
-                            map(option => option ? this._filter(option, this.allCustomers) : this.allCustomers)
-                        );
-                    }
-                });
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-
-        this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.allForms = data.forms;
-                this.defaultProcessData.forEach((element: any) => {
-                    if (element.id === 'verifier_form_id') {
-                        element.values = element.control.valueChanges.pipe(
-                            startWith(''),
-                            map(option => option ? this._filter(option, this.allForms) : this.allForms)
+                            map(option => option ? this._filter(option, this.allVerifierWorkflows) : this.allVerifierWorkflows)
                         );
                     }
                 });
@@ -359,16 +328,10 @@ export class MailCollectComponent implements OnInit {
                                 if (element === 'name') {
                                     this.formValid[value] = true;
                                 }
-                                if (element === 'verifier_customer_id') {
-                                    for (let i = 0; i < this.allCustomers.length; i++) {
-                                        if (parseInt(this.allCustomers[i].id) === parseInt(process[element])) {
-                                            value = this.allCustomers[i];
-                                        }
-                                    }
-                                } else if (element === 'verifier_form_id') {
-                                    for (let i = 0; i < this.allForms.length; i++) {
-                                        if (parseInt(this.allForms[i].id) === parseInt(process[element])) {
-                                            value = this.allForms[i];
+                                else if (element === 'verifier_workflow_id') {
+                                    for (let i = 0; i < this.allVerifierWorkflows.length; i++) {
+                                        if (parseInt(this.allVerifierWorkflows[i].id) === parseInt(process[element])) {
+                                            value = this.allVerifierWorkflows[i];
                                         }
                                     }
                                 } else if (element === 'splitter_technical_workflow_id') {
@@ -400,7 +363,7 @@ export class MailCollectComponent implements OnInit {
     }
 
     resetDefaultData() {
-        this.defaultProcessData = [
+        this.defaultProcessData =  [
             {
                 id: 'name',
                 control: new FormControl()
@@ -451,6 +414,14 @@ export class MailCollectComponent implements OnInit {
                 label: marker('USER.password'),
                 type: 'password',
                 required: true
+            },
+            {
+                id: 'verifier_workflow_id',
+                unit: 'verifier',
+                control: new FormControl(),
+                label: marker('WORKFLOW.id'),
+                type: 'autocomplete',
+                required: false
             },
             {
                 id: 'is_splitter',
@@ -516,22 +487,6 @@ export class MailCollectComponent implements OnInit {
                     }
                 ],
                 required: true
-            },
-            {
-                id: 'verifier_customer_id',
-                unit: 'verifier',
-                control: new FormControl(),
-                label: marker('WORKFLOW.associated_customer'),
-                type: 'autocomplete',
-                required: false
-            },
-            {
-                id: 'verifier_form_id',
-                unit: 'verifier',
-                control: new FormControl(),
-                label: marker('POSITIONS-MASKS.form_associated'),
-                type: 'autocomplete',
-                required: false
             }
         ];
 
@@ -545,19 +500,10 @@ export class MailCollectComponent implements OnInit {
         });
 
         this.defaultProcessData.forEach((element: any) => {
-            if (element.id === 'verifier_customer_id') {
+            if (element.id === 'verifier_workflow_id') {
                 element.values = element.control.valueChanges.pipe(
                     startWith(''),
-                    map(option => option ? this._filter(option, this.allCustomers) : this.allCustomers)
-                );
-            }
-        });
-
-        this.defaultProcessData.forEach((element: any) => {
-            if (element.id === 'verifier_form_id') {
-                element.values = element.control.valueChanges.pipe(
-                    startWith(''),
-                    map(option => option ? this._filter(option, this.allForms) : this.allForms)
+                    map(option => option ? this._filter(option, this.allVerifierWorkflows) : this.allVerifierWorkflows)
                 );
             }
         });
@@ -582,9 +528,9 @@ export class MailCollectComponent implements OnInit {
         if (this.isValidForm(process)) {
             const data: any = {};
             process.forEach((element: any) => {
-                if (element.id !== 'verifier_customer_id' && element.id !== 'verifier_form_id' &&
-                    element.id !== 'splitter_technical_workflow_id' && element.id !== 'folder_to_crawl' &&
-                    element.id !== 'folder_destination' && element.id !== 'folder_trash') {
+                if (element.id !== 'verifier_workflow_id' && element.id !== 'splitter_technical_workflow_id' &&
+                    element.id !== 'folder_to_crawl' && element.id !== 'folder_destination' &&
+                    element.id !== 'folder_trash') {
                     data[element.id] = element.control.value;
                 } else {
                     data[element.id] = element.control.value ? element.control.value.id : null;
@@ -756,9 +702,9 @@ export class MailCollectComponent implements OnInit {
 
             const data: any = {};
             process.forEach((element: any) => {
-                if (element.id !== 'verifier_customer_id' && element.id !== 'verifier_form_id' &&
-                    element.id !== 'splitter_technical_workflow_id' && element.id !== 'folder_to_crawl' &&
-                    element.id !== 'folder_destination' && element.id !== 'folder_trash') {
+                if (element.id !== 'verifier_workflow_id' && element.id !== 'splitter_technical_workflow_id' &&
+                    element.id !== 'folder_to_crawl' && element.id !== 'folder_destination' &&
+                    element.id !== 'folder_trash') {
                     data[element.id] = element.control.value;
                 } else {
                     data[element.id] = element.control.value ? element.control.value.id : null;

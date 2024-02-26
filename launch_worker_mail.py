@@ -112,8 +112,7 @@ for process in processes:
     folder_destination = config_mail['folder_destination']
     isSplitter = config_mail['is_splitter']
     splitterWorkflowId = config_mail['splitter_technical_workflow_id']
-    verifierFormId = config_mail['verifier_form_id']
-    verifierCustomerId = config_mail['verifier_customer_id']
+    verifierWorkflowId = config_mail['verifier_workflow_id']
 
     Mail.test_connection(secured_connection)
 
@@ -163,6 +162,16 @@ for process in processes:
                         if attachment['format'].lower() == 'pdf':
                             if not isSplitter:
                                 with app.app_context():
+                                    task_id_monitor = database.insert({
+                                        'table': 'monitoring',
+                                        'columns': {
+                                            'status': 'wait',
+                                            'module': 'verifier',
+                                            'filename': os.path.basename(attachment['file']),
+                                            'workflow_id': verifierWorkflowId,
+                                            'source': 'interface'
+                                        }
+                                    })
                                     launch_verifier({
                                         'cpt': str(cpt),
                                         'isMail': True,
@@ -170,12 +179,12 @@ for process in processes:
                                         'source': 'email',
                                         'process': process,
                                         'batch_path': batch_path,
-                                        'form_id': verifierFormId,
                                         'file': attachment['file'],
                                         'user_info': 'mailcollect',
                                         'custom_id': args['custom_id'],
                                         'process_name': process['name'],
-                                        'customer_id': verifierCustomerId,
+                                        'workflow_id': verifierWorkflowId,
+                                        'task_id_monitor': task_id_monitor,
                                         'log': batch_path + '/' + date_batch + '.log',
                                         'nb_of_attachments': str(len(ret['attachments'])),
                                         'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
@@ -186,6 +195,16 @@ for process in processes:
                                         },
                                     })
                             else:
+                                task_id_monitor = database.insert({
+                                    'table': 'monitoring',
+                                    'columns': {
+                                        'status': 'wait',
+                                        'module': 'splitter',
+                                        'filename': os.path.basename(attachment['file']),
+                                        'workflow_id': splitterWorkflowId,
+                                        'source': 'interface'
+                                    }
+                                })
                                 launch_splitter({
                                     'isMail': True,
                                     'cpt': str(cpt),
@@ -197,6 +216,7 @@ for process in processes:
                                     'custom_id': args['custom_id'],
                                     'workflow_id': splitterWorkflowId,
                                     'config_mail': args['config_mail'],
+                                    'task_id_monitor': task_id_monitor,
                                     'log': batch_path + '/' + date_batch + '.log',
                                     'nb_of_attachments': str(len(ret['attachments'])),
                                     'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
