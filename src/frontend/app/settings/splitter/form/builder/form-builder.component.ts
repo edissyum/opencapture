@@ -4,7 +4,7 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
-s
+
  Open-Capture is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -31,7 +31,7 @@ import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
-import {DocumentTypeComponent} from "../../../../splitter/document-type/document-type.component";
+import { DocumentTypeComponent } from "../../../../splitter/document-type/document-type.component";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 
 @Component({

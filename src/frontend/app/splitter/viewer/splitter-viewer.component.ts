@@ -122,6 +122,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         previousFormId      : -1,
         outputs             : [],
         status              : '',
+        progress            : 100,
         maxSplitIndex       : 0,
         selectedPagesCount  : 0,
         selectedDocument    : {
@@ -231,6 +232,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     customFieldsValues  : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
                     selectedPagesCount  : 0,
                     outputs             : [],
+                    progress            : 100,
                     maxSplitIndex       : 0,
                     selectedPageId      : 0,
                     selectedDocument    : {
@@ -628,6 +630,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     setValueChange(key: string, value: string) {
         this.hasUnsavedChanges = true;
         this.batchMetadataValues[key] = value;
+        this.updateProgressBar();
     }
 
     ngOnDestroy() {
@@ -744,6 +747,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     }
                 }
                 this.batchForm = this.toBatchFormGroup();
+                this.updateProgressBar();
 
                 // listen for search field value changes
                 for (const fieldCategory in this.fieldsCategories) {
@@ -875,6 +879,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
+        this.updateProgressBar();
     }
 
     enableFieldsByDoctypeCondition() {
@@ -1041,6 +1046,24 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     dropBatch(event: CdkDragDrop<string[]>) {
         moveItemInArray(this.batches, event.previousIndex, event.currentIndex);
+    }
+
+    updateProgressBar() {
+        this.currentBatch.progress = 100;
+        let batchFieldsCount = Object.keys(this.batchForm.controls).length;
+        for (const key of Object.keys(this.batchForm.controls)) {
+            if (this.batchForm.controls[key].disabled) {
+                batchFieldsCount = batchFieldsCount - 1;
+                if (batchFieldsCount <= 0) {
+                    return;
+                }
+            }
+        }
+        for (const key of Object.keys(this.batchForm.controls)) {
+            if (!this.batchForm.controls[key].value && !this.batchForm.controls[key].disabled) {
+                this.currentBatch.progress = this.currentBatch.progress - (100 /  batchFieldsCount);
+            }
+        }
     }
     /* -- End documents control -- */
 
