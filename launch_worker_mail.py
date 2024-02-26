@@ -169,7 +169,7 @@ for process in processes:
                                             'module': 'verifier',
                                             'filename': os.path.basename(attachment['file']),
                                             'workflow_id': verifierWorkflowId,
-                                            'source': 'interface'
+                                            'source': 'cli'
                                         }
                                     })
                                     launch_verifier({
@@ -202,7 +202,7 @@ for process in processes:
                                         'module': 'splitter',
                                         'filename': os.path.basename(attachment['file']),
                                         'workflow_id': splitterWorkflowId,
-                                        'source': 'interface'
+                                        'source': 'cli'
                                     }
                                 })
                                 launch_splitter({

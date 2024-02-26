@@ -25,4 +25,6 @@ WHERE fields->'batch_metadata' IS NOT NULL;
 
 ALTER TABLE mailcollect DROP COLUMN "verifier_form_id";
 ALTER TABLE mailcollect DROP COLUMN "verifier_customer_id";
-ALTER TABLE mailcollect ADD COLUMN "verifier_workflow_id" INTEGER;
+ALTER TABLE mailcollect ADD COLUMN "verifier_workflow_id" VARCHAR(255);
+
+UPDATE docservers SET path = '/var/www/html/opencapture/data/MailCollect/' WHERE docserver_id = 'MAILCOLLECT_BATCHES';

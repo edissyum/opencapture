@@ -330,7 +330,7 @@ export class MailCollectComponent implements OnInit {
                                 }
                                 else if (element === 'verifier_workflow_id') {
                                     for (let i = 0; i < this.allVerifierWorkflows.length; i++) {
-                                        if (parseInt(this.allVerifierWorkflows[i].workflow_id) === parseInt(process[element])) {
+                                        if (this.allVerifierWorkflows[i].workflow_id === process[element]) {
                                             value = this.allVerifierWorkflows[i];
                                         }
                                     }
