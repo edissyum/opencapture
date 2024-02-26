@@ -77,7 +77,7 @@ def update_process(process_name):
         {'id': 'folder_destination', 'type': str, 'mandatory': True},
         {'id': 'secured_connection', 'type': bool, 'mandatory': False},
         {'id': 'action_after_process', 'type': str, 'mandatory': True},
-        {'id': 'verifier_workflow_id', 'type': int, 'mandatory': False},
+        {'id': 'verifier_workflow_id', 'type': str, 'mandatory': False},
         {'id': 'splitter_technical_workflow_id', 'type': int, 'mandatory': False}
     ])
 
@@ -110,7 +110,7 @@ def create_process():
         {'id': 'folder_destination', 'type': str, 'mandatory': True},
         {'id': 'secured_connection', 'type': bool, 'mandatory': False},
         {'id': 'action_after_process', 'type': str, 'mandatory': True},
-        {'id': 'verifier_workflow_id', 'type': int, 'mandatory': False},
+        {'id': 'verifier_workflow_id', 'type': str, 'mandatory': False},
         {'id': 'splitter_technical_workflow_id', 'type': int, 'mandatory': False}
     ])
 
