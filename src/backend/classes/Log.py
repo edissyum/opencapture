@@ -33,6 +33,7 @@ class RotatingFileHandlerUmask(logging.handlers.RotatingFileHandler):
 class Log:
     def __init__(self, path, smtp):
         self.smtp = smtp
+        self.prefix = ''
         self.filename = ''
         self.database = None
         self.current_step = 1
@@ -51,7 +52,10 @@ class Log:
 
     def info(self, msg):
         if self.database and self.task_id_monitor:
+            if self.prefix:
+                msg = self.prefix + ' ' + msg
             self.update_task_monitor(msg)
+
         self.current_step += 1
         self.logger.info(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
@@ -61,7 +65,10 @@ class Log:
             self.smtp.send_notification(msg, self.filename)
 
         if self.database and self.task_id_monitor:
+            if self.prefix:
+                msg = self.prefix + ' ' + msg
             self.update_task_monitor(str(msg), 'error')
+
         self.current_step += 1
         self.logger.error(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 

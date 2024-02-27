@@ -94,7 +94,7 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITT
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_SHARE', '[SPLITTER] Chemin pour le stockage des documents liés aux chaînes sortantes', '/var/share/export/splitter/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('INPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier d''entrée des fichiers importés', '/var/share/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('OUTPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier de sortie des fichiers exportés', '/var/share/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('MAILCOLLECT_BATCHES', 'Chemin de stockage des batches du module MailCollect', '/var/www/html/opencapture/bin/MailCollect/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('MAILCOLLECT_BATCHES', 'Chemin de stockage des batches du module MailCollect', '/var/www/html/opencapture/data/MailCollect/');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE VERIFIER
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (1, 'export_xml', 'Export XML', 'verifier', '{

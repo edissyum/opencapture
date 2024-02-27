@@ -22,3 +22,9 @@ SET fields = jsonb_set(fields, '{batch_metadata}', (
     FROM jsonb_array_elements(fields->'batch_metadata') AS form_field
 )::jsonb)
 WHERE fields->'batch_metadata' IS NOT NULL;
+
+ALTER TABLE mailcollect DROP COLUMN "verifier_form_id";
+ALTER TABLE mailcollect DROP COLUMN "verifier_customer_id";
+ALTER TABLE mailcollect ADD COLUMN "verifier_workflow_id" VARCHAR(255);
+
+UPDATE docservers SET path = '/var/www/html/opencapture/data/MailCollect/' WHERE docserver_id = 'MAILCOLLECT_BATCHES';
