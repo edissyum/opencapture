@@ -109,6 +109,10 @@ class FindCustom:
             data = re.sub(r"\s*", '', data)
             match = re.match(r"^[0-9]+([,.][0-9]+)?$", data)
 
+        if settings['format'] == 'amount':
+            data = re.sub(r"\s*", '', data)
+            match = re.match(r"^[0-9]+([,.][0-9]+)?(€+|\$+|£+|(EUR(OS)?)+)?$", data)
+
         if settings['format'] == 'date':
             match = re.match(r"" + self.regex['date'], data)
 
@@ -237,7 +241,6 @@ class FindCustom:
 
     def run(self):
         cpt = 0
-
         regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
@@ -247,12 +250,14 @@ class FindCustom:
                         data_to_replace = r'[-()\#\\/@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ,]'
                         if regex_settings['format'] == 'date':
                             data_to_replace = r'[-()\#\\@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ,]'
+                        if regex_settings['format'] == 'amount':
+                            data_to_replace = r'[-()\#\\@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ]'
+
                         upper_line = re.sub(data_to_replace, '', upper_line)
                         upper_line = re.sub(r'\s+', ' ', upper_line)
 
                     for _data in re.finditer(r"" + regex_settings['content'], upper_line, flags=re.IGNORECASE):
                         data = _data.group()
-
                         if regex_settings['remove_keyword'] and regex_settings['remove_keyword_value']:
                             data = sanitize_keyword(_data.group(), regex_settings['remove_keyword_value'])
 
