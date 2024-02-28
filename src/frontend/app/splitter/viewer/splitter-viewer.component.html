@@ -196,7 +196,12 @@
                             matTooltip="{{ 'SPLITTER.load_referential' | translate }}">
                         <i class="fa-solid fa-sync fa-2x"></i>
                     </button>
-                    <mat-progress-bar matTooltip="{{ 'SPLITTER.batch_metadata_progress_bar' | translate }}" mode="determinate" value="{{ this.currentBatch.progress }}"></mat-progress-bar>
+                    <mat-progress-bar
+                            *ngIf="this.configurations['enableSplitterProgressBar']"
+                            matTooltip="{{ 'SPLITTER.batch_metadata_progress_bar' | translate }}"
+                            mode="determinate"
+                            value="{{ this.currentBatch.progress }}">
+                    </mat-progress-bar>
                 </mat-expansion-panel>
             </mat-accordion>
             <span *ngIf="documents.length === 0" class="block align-text-top text-center text-red-600">{{ 'SPLITTER.no_document_to_show' | translate }}</span>
