@@ -69,6 +69,10 @@ export class CustomFieldsComponent implements OnInit {
             'label': this.translate.instant('FORMATS.number')
         },
         {
+            'id': 'amount',
+            'label': this.translate.instant('FORMATS.amount')
+        },
+        {
             'id': 'luhn_algorithm',
             'label': this.translate.instant('FORMATS.luhn_algorithm')
         },
