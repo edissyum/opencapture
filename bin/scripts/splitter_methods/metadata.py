@@ -55,7 +55,7 @@ def process(args):
         'siret': args['regex']['siret'],
         'siren': args['regex']['siren'],
         'iban': args['regex']['iban'],
-        'rccm': args['regex']['iban'],
+        'rccm': args['regex']['rccm'],
         'duns': args['regex']['duns']
     }
 
