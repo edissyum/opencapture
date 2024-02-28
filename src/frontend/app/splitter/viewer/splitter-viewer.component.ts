@@ -135,6 +135,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         'document_metadata' : []
     };
 
+    configurations              : any = {
+        'enableSplitterProgressBar': true
+    };
+
     /** indicate search operation is in progress */
     public searching        : boolean   = false;
 
@@ -168,6 +172,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.userService.user   = this.userService.getUserFromLocal();
         this.currentBatch.id    = this.route.snapshot.params['id'];
         this.currentTime        = this.route.snapshot.params['currentTime'];
+        this.getConfigurations();
         this.loadSelectedBatch();
         this.updateBatchLock();
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
@@ -900,6 +905,22 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }
         }
     }
+
+    getConfigurations() {
+        for (const config in this.configurations) {
+            this.http.get(environment['url'] + '/ws/config/getConfiguration/' + config,
+                {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    this.configurations[config] = data.configuration[0].data.value;
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
+    }
     /* -- End Metadata -- */
 
     /* -- Begin documents control -- */
@@ -1049,6 +1070,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     updateProgressBar() {
+        if (!this.configurations['enableSplitterProgressBar']) {
+            return;
+        }
         this.currentBatch.progress = 100;
         let batchFieldsCount = Object.keys(this.batchForm.controls).length;
         for (const key of Object.keys(this.batchForm.controls)) {

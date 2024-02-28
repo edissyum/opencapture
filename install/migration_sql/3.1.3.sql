@@ -28,3 +28,5 @@ ALTER TABLE mailcollect DROP COLUMN "verifier_customer_id";
 ALTER TABLE mailcollect ADD COLUMN "verifier_workflow_id" VARCHAR(255);
 
 UPDATE docservers SET path = '/var/www/html/opencapture/data/MailCollect/' WHERE docserver_id = 'MAILCOLLECT_BATCHES';
+
+INSERT INTO "configurations" ("label", "data") VALUES ('enableSplitterProgressBar', '{"type": "bool", "value": true, "description": "Activer la barre de progression pour le module Splitter"}');
