@@ -14,11 +14,13 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
+# @dev : Serena Tetart <serena.tetart@edissyum.com>
 
 import os
 import re
 import urllib.parse
 from flask_cors import CORS
+from ultralytics import YOLO
 from flask_babel import Babel
 from werkzeug.wrappers import Request
 from src.backend.main import create_classes_from_custom_id
@@ -48,8 +50,10 @@ class Middleware:
             domain_name = 'localhost'
         local_regex = re.compile(r'^(127.0.(0|1).1|10(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){3}|((172\.(1[6-9]|2[0-9]|3[01]))|192\.168)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){2})$')
 
-        if 'mod_wsgi.path_info' in environ and domain_name != 'localhost' and not local_regex.match(domain_name) and is_custom_exists(domain_name):
-            environ['mod_wsgi.path_info'] = environ['mod_wsgi.path_info'].replace('/backend_oc/', '/' + domain_name + '/backend_oc/')
+        if ('mod_wsgi.path_info' in environ and domain_name != 'localhost' and not local_regex.match(domain_name) and
+                is_custom_exists(domain_name)):
+            environ['mod_wsgi.path_info'] = environ['mod_wsgi.path_info'].replace('/backend_oc/', '/' + domain_name
+                                                                                  + '/backend_oc/')
             environ['SCRIPT_NAME'] = domain_name
             path = retrieve_config_from_custom_id(domain_name.replace('/', '')).replace('config.ini', '')
             if os.path.isfile(path + '/secret_key'):
@@ -89,12 +93,21 @@ app = Flask(__name__, instance_relative_config=True)
 app.wsgi_app = Middleware(app.wsgi_app)
 CORS(app, supports_credentials=True)
 
+# Load Artificial Intelligence model to rotate document
+model = None
+if os.path.isfile(os.path.join(app.instance_path, "artificial_intelligence/rotate_document.pt")):
+    model = YOLO(os.path.join(app.instance_path, "artificial_intelligence/rotate_document.pt"), verbose=False)
+    try:
+        model('init_model.jpg')
+    except FileNotFoundError:
+        pass
+
 app.config.from_mapping(
+    ROTATE_MODEL=model,
     UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/verifier/'),
     UPLOAD_FOLDER_SPLITTER=os.path.join(app.instance_path, 'upload/splitter/'),
     BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
 )
-
 babel = Babel(app, default_locale='fr', locale_selector=get_locale)
 
 app.register_blueprint(mem.bp)

@@ -90,11 +90,19 @@
             $current_url = str_replace('http://', '', $current_url);
             $current_url = str_replace('https://', '', $current_url);
             $current_url = preg_replace('~/+~', '/', $current_url);
-            $current_fqdn = explode('/', $current_url)[0];
+            $exploded_fqdn = explode('/', $current_url);
+            $current_fqdn = $exploded_fqdn[0];
 
             $customCpt = 0;
             foreach($customs as $custom) {
                 if (is_dir($custom)) {
+                    if ($custom == $exploded_fqdn[count($exploded_fqdn) - 2]) {
+                        ?>
+                            <script>
+                                location.href = "dist";
+                            </script>
+                        <?php
+                    }
                     $customCpt += 1;
                     $current_fqdn_clean = preg_replace('/\./', '_', $current_fqdn);
                     $current_fqdn_clean = preg_replace('/-/', '_', $current_fqdn_clean);
