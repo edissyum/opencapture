@@ -197,6 +197,7 @@
                         <i class="fa-solid fa-sync fa-2x"></i>
                     </button>
                     <mat-progress-bar
+                            class="overflow-hidden"
                             *ngIf="this.configurations['enableSplitterProgressBar']"
                             matTooltip="{{ 'SPLITTER.batch_metadata_progress_bar' | translate }}"
                             mode="determinate"
