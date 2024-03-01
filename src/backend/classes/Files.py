@@ -79,6 +79,7 @@ def timer(start_time, end_time):
 
 
 def rotate_img(img):
+    print('here')
     if current_app.config['ROTATE_MODEL'] is not None:
         model_results = current_app.config['ROTATE_MODEL'](img, verbose=False)
         if model_results:
@@ -136,10 +137,7 @@ class Files:
             if file.lower().endswith(('.jpg', 'jpeg', '.png')):
                 with tempfile.NamedTemporaryFile() as tf:
                     temp_filename = tf.name + '.jpg'
-                    tf.write(open(file, 'rb').read())
-                    temp_file = Image.open(tf)
-                    temp_file.save(temp_filename)
-                    rotate_img(temp_filename)
+                    shutil.copyfile(file, temp_filename)
                     file = temp_filename
 
             if zone_to_crop == 'header':
@@ -178,7 +176,7 @@ class Files:
                 heif_file.save(target, 'JPEG')
             else:
                 shutil.copyfile(file, target)
-                rotate_img(target)
+            rotate_img(target)
 
             if open_img:
                 self.img = Image.open(target)
@@ -186,12 +184,11 @@ class Files:
         if temp_filename and os.path.isfile(temp_filename):
             os.remove(temp_filename)
 
-    # Simply open an image
     def open_img(self, img):
         self.img = Image.open(img)
 
-    def save_img_with_pdf2image(self, file, output, page=None, docservers=False, chunk_size=10, rotate=False,
-                                page_to_save=False, convert_function='pdf2image'):
+    def save_img_with_pdf2image(self, file, output, page=None, docservers=False, chunk_size=10, page_to_save=False,
+                                convert_function='pdf2image'):
         try:
             outputs_paths = []
             directory = os.path.dirname(output)
@@ -206,8 +203,6 @@ class Files:
                 else:
                     images = convert_from_path(file, first_page=page, last_page=page, dpi=300)
                     images[0].save(output_path, 'JPEG')
-
-                rotate_img(output_path)
                 outputs_paths.append(output_path)
             else:
                 cpt = 1
@@ -230,8 +225,6 @@ class Files:
                         output_path = output + '.jpg'
                         image.save(output_path, 'JPEG')
                         if docservers:
-                            if rotate:
-                                rotate_img(output_path)
                             self.move_to_docservers_image(directory, output_path)
                         outputs_paths.append(output_path)
                         cpt = cpt + 1
@@ -242,8 +235,7 @@ class Files:
             self.log.error('Error during pdf2image conversion : ' + str(error))
             return False
 
-    def save_img_with_pdf2image_min(self, file, output, single_file=True, module='verifier', chunk_size=10,
-                                    rotate=False):
+    def save_img_with_pdf2image_min(self, file, output, single_file=True, module='verifier', chunk_size=10):
         try:
             outputs_paths = []
             output = os.path.splitext(output)[0]
@@ -253,8 +245,6 @@ class Files:
                 output_path = output + '-001.jpg'
                 images[0].save(output_path, 'JPEG')
                 if module == 'verifier':
-                    if rotate:
-                        rotate_img(output_path)
                     self.move_to_docservers_image(directory, output_path)
                 outputs_paths.append(output_path)
             else:
@@ -283,6 +273,24 @@ class Files:
             self.log.error('Error during pdf2image conversion : ' + str(error))
             return False
 
+    @staticmethod
+    def return_img(file, convert_function, page, output):
+        if convert_function == 'imagemagick' or file.lower().endswith('.png'):
+            cmd = f'convert -density 200 {file}[{str(page - 1)}] -quality 100 -alpha remove {output}'
+            process = subprocess.Popen(cmd.split(' '))
+            process.communicate()
+            images = [Image.open(output)]
+        elif file.lower().endswith(('.jpg', 'jpeg')):
+            shutil.copyfile(file, output)
+            images = [Image.open(output)]
+        elif file.lower().endswith(('.heic', '.heif')):
+            heif_file = convert_heif_to_jpg(file)
+            heif_file.save(output, 'JPEG')
+            images = [Image.open(output)]
+        else:
+            images = convert_from_path(file, first_page=page, last_page=page, dpi=300)
+        return images
+
     # Crop the file to get the header
     # 1/3 + 10% is the ratio we used
     def crop_image_header(self, file, last_image, page, output_name=None, convert_function='pdf2image'):
@@ -295,17 +303,7 @@ class Files:
             if output_name:
                 output = output_name
 
-            if convert_function == 'imagemagick' or file.lower().endswith(('.jpg', 'jpeg', '.png')):
-                cmd = f'convert -density 200 {file}[{str(page - 1)}] -quality 100 -alpha remove {output}'
-                process = subprocess.Popen(cmd.split(' '))
-                process.communicate()
-                images = [Image.open(output)]
-            elif file.lower().endswith(('.heic', '.heif')):
-                heif_file = convert_heif_to_jpg(file)
-                heif_file.save(output, 'JPEG')
-                images = [Image.open(output)]
-            else:
-                images = convert_from_path(file, first_page=page, last_page=page, dpi=300)
+            images = self.return_img(file, convert_function, page, output)
 
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
@@ -327,17 +325,7 @@ class Files:
             if output_name:
                 output = output_name
 
-            if convert_function == 'imagemagick' or file.lower().endswith(('.jpg', 'jpeg', '.png')):
-                cmd = f'convert -density 200 {file}[{str(page - 1)}] -quality 100 -alpha remove {output}'
-                process = subprocess.Popen(cmd.split(' '))
-                process.communicate()
-                images = [Image.open(output)]
-            elif file.lower().endswith(('.heic', '.heif')):
-                heif_file = convert_heif_to_jpg(file)
-                heif_file.save(output, 'JPEG')
-                images = [Image.open(output)]
-            else:
-                images = convert_from_path(file, first_page=page, last_page=page, dpi=300)
+            images = self.return_img(file, convert_function, page, output)
 
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
@@ -641,7 +629,7 @@ class Files:
         return improved_img
 
     @staticmethod
-    def move_to_docservers_image(docserver_path, file, output=False, copy=False):
+    def move_to_docservers_image(docserver_path, file, output=False, copy=False, rotate=False):
         now = datetime.datetime.now()
         year = str(now.year)
         month = str('%02d' % now.month)
@@ -668,9 +656,11 @@ class Files:
                 heif_image.save(final_directory, 'JPEG')
             elif file.lower().endswith(('.jpg', '.jpeg', '.png')):
                 shutil.copyfile(file, final_directory)
-                rotate_img(final_directory)
         else:
             shutil.move(file, final_directory)
+
+        if rotate:
+            rotate_img(final_directory)
         return final_directory
 
     @staticmethod

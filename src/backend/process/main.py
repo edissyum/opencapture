@@ -254,17 +254,17 @@ def convert(file, files, ocr, nb_pages, tesseract_function, convert_function, cu
     else:
         files.pdf_to_jpg(file, 1, convert_function=convert_function)
         ocr.text = return_text(files.img, tesseract_function, ocr)
-        files.pdf_to_jpg(file, 1, True, True, 'header', convert_function=convert_function)
+        files.pdf_to_jpg(files.jpg_name, 1, True, True, 'header', convert_function=convert_function)
         ocr.header_text = return_text(files.img, tesseract_function, ocr)
-        files.pdf_to_jpg(file, 1, True, True, 'footer', convert_function=convert_function)
+        files.pdf_to_jpg(files.jpg_name, 1, True, True, 'footer', convert_function=convert_function)
         ocr.footer_text = return_text(files.img, tesseract_function, ocr)
         if nb_pages > 1:
-            files.pdf_to_jpg(file, nb_pages, True, True, 'header', True, convert_function=convert_function)
-            ocr.header_last_text = return_text(files.img, tesseract_function, ocr)
-            files.pdf_to_jpg(file, nb_pages, True, True, 'footer', True, convert_function=convert_function)
-            ocr.footer_last_text = return_text(files.img, tesseract_function, ocr)
             files.pdf_to_jpg(file, nb_pages, last_image=True, convert_function=convert_function)
             ocr.last_text = return_text(files.img, tesseract_function, ocr)
+            files.pdf_to_jpg(files.jpg_name_last, nb_pages, True, True, 'header', True, convert_function=convert_function)
+            ocr.header_last_text = return_text(files.img, tesseract_function, ocr)
+            files.pdf_to_jpg(files.jpg_name_last, nb_pages, True, True, 'footer', True, convert_function=convert_function)
+            ocr.footer_last_text = return_text(files.img, tesseract_function, ocr)
 
 
 def return_text(img, tesseract_function, ocr):
@@ -812,16 +812,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         full_jpg_filename = str(uuid.uuid4())
         file = files.move_to_docservers(docservers, file)
-        if file.lower().endswith('.pdf'):
-            files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename,
-                                          docservers=True, rotate=True, page_to_save=1)
-            files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename, rotate=True,
-                                              single_file=True)
-        else:
-            files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], file, full_jpg_filename + '-001.jpg',
-                                           True)
-            files.move_to_docservers_image(docservers['VERIFIER_THUMB'], file, full_jpg_filename + '-001.jpg', True)
-
+        files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], files.jpg_name, full_jpg_filename + '-001.jpg'
+                                       , copy=True, rotate=True)
+        files.move_to_docservers_image(docservers['VERIFIER_THUMB'], files.jpg_name, full_jpg_filename + '-001.jpg',
+                                       copy=True)
         allow_auto = False
         if workflow_settings and workflow_settings['input']['apply_process']:
             if (workflow_settings['process']['use_interface'] and
