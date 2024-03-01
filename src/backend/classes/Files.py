@@ -72,12 +72,6 @@ def convert_heif_to_jpg(file):
     return heif_file
 
 
-def timer(start_time, end_time):
-    hours, rem = divmod(end_time - start_time, 3600)
-    minutes, seconds = divmod(rem, 60)
-    return f"{int(hours):02d}:{int(minutes):02d}:{seconds:05.2f}"
-
-
 def rotate_img(img):
     if current_app.config['ROTATE_MODEL'] is not None:
         model_results = current_app.config['ROTATE_MODEL'](img, verbose=False)
