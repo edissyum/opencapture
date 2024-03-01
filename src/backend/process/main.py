@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
-import shutil
 import uuid
 import json
 import datetime
@@ -26,7 +25,7 @@ from flask_babel import gettext
 from src.backend import verifier_exports
 from src.backend.scripting_functions import check_code
 from src.backend.import_classes import _PyTesseract, _Files
-from src.backend.import_controllers import artificial_intelligence, verifier, accounts
+from src.backend.import_controllers import verifier, accounts
 from src.backend.functions import delete_documents, rotate_document, find_form_with_ia
 from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber, FindName
@@ -440,8 +439,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if 'ai_model_id' in workflow_settings['input'] and workflow_settings['input']['ai_model_id']:
             ai_model_id = workflow_settings['input']['ai_model_id']
-            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, artificial_intelligence, ocr, log,
-                                    'verifier')
+            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, ocr, log,'verifier')
             if res:
                 form_id_found_with_ai = True
                 datas.update({'form_id': res})

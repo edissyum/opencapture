@@ -438,7 +438,7 @@ def generate_searchable_pdf(document, tmp_filename):
         shutil.move(tmp_path + '/to_merge_' + _uuid + '-001.pdf', tmp_filename)
 
 
-def find_form_with_ia(file, ai_model_id, database, docservers, files, ai, ocr, log, module):
+def find_form_with_ia(file, ai_model_id, database, docservers, files, ocr, log, module):
     ai_model = database.select({
         'select': ['*'],
         'table': ['ai_models'],
@@ -454,7 +454,6 @@ def find_form_with_ia(file, ai_model_id, database, docservers, files, ai, ocr, l
             return False
         path = docservers.get('TMP_PATH') + files.get_random_string(15) + '.pdf'
         shutil.copy(file, path)
-        ai.store_one_file_from_script(path, csv_file, files, ocr, docservers, log)
 
         if module == 'verifier':
             model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model[0]['model_path']
@@ -462,11 +461,14 @@ def find_form_with_ia(file, ai_model_id, database, docservers, files, ai, ocr, l
             model_name = docservers.get('SPLITTER_AI_MODEL_PATH') + ai_model[0]['model_path']
         else:
             return False
+
+        ai = ArtificialIntelligence(csv_file, model_name, files, ocr, docservers, log)
+        ai.store_one_file_from_script(path)
+
         min_proba = ai_model[0]['min_proba']
         if os.path.isfile(csv_file) and os.path.isfile(model_name):
-            _artificial_intelligence = ArtificialIntelligence('', '', None, ocr, docservers, log)
-            _artificial_intelligence.csv_file = csv_file
-            (_, folder, prob), code = _artificial_intelligence.model_testing(model_name)
+            ai.csv_file = csv_file
+            (_, folder, prob), code = ai.model_testing(model_name)
 
             if code == 200:
                 if prob >= min_proba:
