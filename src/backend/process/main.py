@@ -439,7 +439,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if 'ai_model_id' in workflow_settings['input'] and workflow_settings['input']['ai_model_id']:
             ai_model_id = workflow_settings['input']['ai_model_id']
-            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, ocr, log,'verifier')
+            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, ocr, log, 'verifier')
             if res:
                 form_id_found_with_ai = True
                 datas.update({'form_id': res})
