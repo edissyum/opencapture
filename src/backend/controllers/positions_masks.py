@@ -112,13 +112,14 @@ def update_positions_mask(position_mask_id, args):
                 "res": res
             }
 
-            history.add_history({
-                'module': 'verifier',
-                'ip': request.remote_addr,
-                'submodule': 'update_positions_mask',
-                'user_info': request.environ['user_info'],
-                'desc': gettext('UPDATE_POSITIONS_MASK', mask=args['label'])
-            })
+            if 'label' in args and args['label']:
+                history.add_history({
+                    'module': 'verifier',
+                    'ip': request.remote_addr,
+                    'submodule': 'update_positions_mask',
+                    'user_info': request.environ['user_info'],
+                    'desc': gettext('UPDATE_POSITIONS_MASK', mask=args['label'])
+                })
             return response, 200
         else:
             response = {

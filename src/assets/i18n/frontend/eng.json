@@ -360,6 +360,7 @@
 		"alphanum": "Alphanumeric [0-9aA-zZ']",
 		"alphanum_extended": "Alphanumeric extended [0-9aA-zZ-/'#,\\.\\s\\(\\)]",
 		"alphanum_extended_with_accent": "Alphanumeric extended with accent [0-9aA-zZ-À-ſ/'#,\\.\\s\\(\\)]",
+		"amount": "Amount (e.g 1000 $)",
 		"char": "Alphabetic [aA-zZ]",
 		"char_min": "Minimun length",
 		"date": "Date",

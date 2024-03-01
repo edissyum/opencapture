@@ -85,6 +85,14 @@ export class VariousSettingsVerifierComponent implements OnInit {
             'label': 'ACCOUNTS.vat_number'
         },
         {
+            'id': 'rccm',
+            'label': 'ACCOUNTS.rccm'
+        },
+        {
+            'id': 'duns',
+            'label': 'ACCOUNTS.duns'
+        },
+        {
             'id': 'firstname',
             'label': 'FACTURATION.firstname'
         },

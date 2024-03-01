@@ -67,7 +67,7 @@ def verify_input_folder(args):
             return response, 400
         elif not os.path.exists(args['input_folder']):
             try:
-                os.mkdir(args['input_folder'], mode=0o777)
+                os.makedirs(args['input_folder'], mode=0o777)
             except (PermissionError, FileNotFoundError, TypeError):
                 response = {
                     "errors": gettext('WORKFLOW_FOLDER_CREATION_ERROR'),

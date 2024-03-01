@@ -86,7 +86,7 @@ def update_positions_mask(position_mask_id):
                         'message': f'/positions_masks/update/{position_mask_id}'}), 403
 
     check, message = rest_validator(request.json['args'], [
-        {'id': 'label', 'type': str, 'mandatory': True},
+        {'id': 'label', 'type': str, 'mandatory': False},
         {'id': 'regex', 'type': dict, 'mandatory': True},
         {'id': 'form_id', 'type': int, 'mandatory': True},
         {'id': 'supplier_id', 'type': int, 'mandatory': True}

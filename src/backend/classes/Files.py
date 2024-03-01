@@ -14,12 +14,11 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Serena Tetart <serena.tetart@edissyum.com>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import os
 import re
-import tempfile
-
 import cv2
 import json
 import time
@@ -30,11 +29,13 @@ import string
 import random
 import shutil
 import imutils
+import tempfile
 import datetime
 import subprocess
 import numpy as np
 from PIL import Image
 from zipfile import ZipFile
+from flask import current_app
 from deskew import determine_skew
 from skimage.color import rgb2gray
 from skimage.transform import rotate
@@ -71,22 +72,42 @@ def convert_heif_to_jpg(file):
     return heif_file
 
 
+def timer(start_time, end_time):
+    hours, rem = divmod(end_time - start_time, 3600)
+    minutes, seconds = divmod(rem, 60)
+    return f"{int(hours):02d}:{int(minutes):02d}:{seconds:05.2f}"
+
+
 def rotate_img(img):
-    try:
-        src = cv2.imread(img)
-        rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
-        results = pytesseract.image_to_osd(rgb, output_type=Output.DICT)
-        if results['orientation'] != 0 and results['rotate'] != 0:
-            src = imutils.rotate_bound(src, angle=results["rotate"])
-            cv2.imwrite(img, src)
-        else:
-            grayscale = rgb2gray(src)
-            angle = determine_skew(grayscale)
-            if angle != 0 and angle != 0.0:
-                rotated = rotate(src, angle, resize=True) * 255
-                cv2.imwrite(img, rotated.astype(np.uint8))
-    except (pytesseract.TesseractError, TypeError):
-        pass
+    if current_app.config['ROTATE_MODEL'] is not None:
+        model_results = current_app.config['ROTATE_MODEL'](img, verbose=False)
+        if model_results:
+            need_rotate = model_results[0].probs.top1
+            if need_rotate != 0:
+                src = Image.open(img).convert("RGB")
+                if need_rotate == 1:
+                    src = src.rotate(180, expand=True)
+                elif need_rotate == 2:
+                    src = src.rotate(90, expand=True)
+                elif need_rotate == 3:
+                    src = src.rotate(270, expand=True)
+                src.save(img)
+    else:
+        try:
+            src = cv2.imread(img)
+            rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
+            results = pytesseract.image_to_osd(rgb, output_type=Output.DICT)
+            if results['orientation'] != 0 and results['rotate'] != 0:
+                src = imutils.rotate_bound(src, angle=results["rotate"])
+                cv2.imwrite(img, src)
+            else:
+                grayscale = rgb2gray(src)
+                angle = determine_skew(grayscale)
+                if angle != 0 and angle != 0.0:
+                    rotated = rotate(src, angle, resize=True) * 255
+                    cv2.imwrite(img, rotated.astype(np.uint8))
+        except (pytesseract.TesseractError, TypeError) as _e:
+            pass
 
 
 class Files:
@@ -210,10 +231,7 @@ class Files:
                         image.save(output_path, 'JPEG')
                         if docservers:
                             if rotate:
-                                try:
-                                    rotate_img(output_path)
-                                except pytesseract.TesseractError:
-                                    pass
+                                rotate_img(output_path)
                             self.move_to_docservers_image(directory, output_path)
                         outputs_paths.append(output_path)
                         cpt = cpt + 1
@@ -236,10 +254,7 @@ class Files:
                 images[0].save(output_path, 'JPEG')
                 if module == 'verifier':
                     if rotate:
-                        try:
-                            rotate_img(output_path)
-                        except pytesseract.TesseractError:
-                            pass
+                        rotate_img(output_path)
                     self.move_to_docservers_image(directory, output_path)
                 outputs_paths.append(output_path)
             else:
