@@ -27,7 +27,7 @@ jobs:
       - name: Retrieve the latest tag
         run: |
           sudo apt install -y git crudini
-          git clone -b master https://github.com/edissyum/opencapture/ /var/www/html/opencapture/
+          git clone -b ${{ github.head_ref }} https://github.com/edissyum/opencapture/ /var/www/html/opencapture/
         continue-on-error: true
 
   deploy-frontend:
