@@ -66,9 +66,16 @@ export class StatisticsComponent implements OnInit {
             'data': []
         },
         {
-            'id': 'verifier_documents_uploaded',
-            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded'),
-            'function': 'this.getDocumentsUploadedVerifier',
+            'id': 'verifier_documents_uploaded_per_month',
+            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_month'),
+            'function': 'this.getDocumentsUploadedByMonthVerifier',
+            'module': 'verifier',
+            'data': []
+        },
+        {
+            'id': 'verifier_documents_uploaded_per_year',
+            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_year'),
+            'function': 'this.getDocumentsUploadedByYearVerifier',
             'module': 'verifier',
             'data': []
         },
@@ -94,9 +101,16 @@ export class StatisticsComponent implements OnInit {
             'data': []
         },
         {
-            'id': 'splitter_documents_uploaded',
-            'label': this.translate.instant('STATISTICS.splitter_documents_uploaded'),
-            'function': 'this.getDocumentsUploadedSplitter',
+            'id': 'splitter_documents_uploaded_per_month',
+            'label': this.translate.instant('STATISTICS.splitter_documents_uploaded_per_month'),
+            'function': 'this.getDocumentsUploadedByMonthSplitter',
+            'module': 'splitter',
+            'data': []
+        },
+        {
+            'id': 'splitter_documents_uploaded_per_year',
+            'label': this.translate.instant('STATISTICS.splitter_documents_uploaded_per_year'),
+            'function': 'this.getDocumentsUploadedByYearSplitter',
             'module': 'splitter',
             'data': []
         }
@@ -154,7 +168,7 @@ export class StatisticsComponent implements OnInit {
         this.optionsByModule = this.options.filter((option: any) => option.module === this.selectedModule);
     }
 
-    getDocumentsUploadedVerifier(cpt: number) {
+    getDocumentsUploadedByMonthVerifier(cpt: number) {
         const currentYear = moment().format('Y');
         this.http.get(environment['url'] + '/ws/history/list?module=verifier&submodule=upload_file&year=' + currentYear, {headers: this.authService.headers}).pipe(
             tap((submodules: any) => {
@@ -185,7 +199,69 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getDocumentsUploadedSplitter(cpt: number) {
+    getDocumentsUploadedByYearVerifier(cpt: number) {
+        this.http.get(environment['url'] + '/ws/history/list?module=verifier&submodule=upload_file', {headers: this.authService.headers}).pipe(
+            tap((submodules: any) => {
+                const historyCpt: any = {};
+                submodules.history.forEach((_submodule: any) => {
+                    const format = moment().localeData().longDateFormat('L');
+                    const value: any = moment(_submodule.date, format);
+                    const year = value.format('YYYY');
+                    if (!historyCpt[year]) {
+                        historyCpt[year] = 0;
+                    }
+                    historyCpt[year] += 1;
+                });
+
+                Object.keys(historyCpt).forEach((year: any) => {
+                    this.options[cpt].data.push({
+                        'name': year,
+                        'value': historyCpt[year]
+                    });
+                });
+                this.currentData = this.options[cpt].data;
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getDocumentsUploadedByYearSplitter(cpt: number) {
+        this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=upload_file', {headers: this.authService.headers}).pipe(
+            tap((submodules: any) => {
+                const historyCpt: any = {};
+                submodules.history.forEach((_submodule: any) => {
+                    const format = moment().localeData().longDateFormat('L');
+                    const value: any = moment(_submodule.date, format);
+                    const year = value.format('YYYY');
+                    if (!historyCpt[year]) {
+                        historyCpt[year] = 0;
+                    }
+                    historyCpt[year] += 1;
+                });
+
+                Object.keys(historyCpt).forEach((year: any) => {
+                    this.options[cpt].data.push({
+                        'name': year,
+                        'value': historyCpt[year]
+                    });
+                });
+                this.currentData = this.options[cpt].data;
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getDocumentsUploadedByMonthSplitter(cpt: number) {
         const currentYear = moment().format('Y');
         this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=upload_file&year=' + currentYear, {headers: this.authService.headers}).pipe(
             tap((submodules: any) => {
@@ -233,13 +309,11 @@ export class StatisticsComponent implements OnInit {
                                 'name': user.lastname + ' ' + user.firstname,
                                 'value': historyCpt
                             });
-                            console.log(this.options[cpt].data)
                             this.currentData = this.options[cpt].data;
                         });
                     }),
                     finalize(() => this.loading = false),
                     catchError((err: any) => {
-                        console.log(err)
                         console.debug(err);
                         this.notify.handleErrors(err);
                         return of(false);
@@ -271,13 +345,11 @@ export class StatisticsComponent implements OnInit {
                                 'name': user.lastname + ' ' + user.firstname,
                                 'value': historyCpt
                             });
-                            console.log(this.options[cpt].data)
                             this.currentData = this.options[cpt].data;
                         });
                     }),
                     finalize(() => this.loading = false),
                     catchError((err: any) => {
-                        console.log(err)
                         console.debug(err);
                         this.notify.handleErrors(err);
                         return of(false);

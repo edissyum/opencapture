@@ -52,6 +52,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     loading                 : boolean     = true;
     supplierExists          : boolean     = true;
     deleteDataOnChangeForm  : boolean     = true;
+    formLoading             : boolean     = false;
     allowAutocomplete       : boolean     = false;
     processMultiDocument    : boolean     = false;
     isOCRRunning            : boolean     = false;
@@ -68,6 +69,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     formEmpty               : boolean     = false;
     processInError          : boolean     = false;
     imgLoading              : boolean     = false;
+    supplierformFound       : boolean     = false;
     processErrorMessage     : string      = '';
     processErrorIcon        : string      = '';
     token                   : string      = '';
@@ -254,13 +256,12 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.suppliers = await this.retrieveSuppliers('', 1000);
         this.suppliers = this.suppliers.suppliers;
 
-        let supplierFormFound = false;
         if (this.document.supplier_id) {
             for (const element of this.suppliers) {
                 if (element.id === this.document.supplier_id) {
                     this.currentSupplier = element;
                     if (element.form_id) {
-                        supplierFormFound = element.form_id;
+                        this.supplierformFound = element.form_id;
                     }
                 }
             }
@@ -268,8 +269,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
         if (Object.keys(this.currentFormFields).length === 0) {
             let defaultFormFound = false;
-            if (supplierFormFound) {
-                await this.generateOutputs(supplierFormFound);
+            if (this.supplierformFound) {
+                await this.generateOutputs(this.supplierformFound);
             } else {
                 for (const element of this.formList) {
                     if (element.default_form) {
@@ -280,7 +281,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     await this.generateOutputs(defaultFormFound);
                 }
             }
-            if (defaultFormFound || supplierFormFound) {
+            if (defaultFormFound || this.supplierformFound) {
                 this.currentFormFields = await this.getForm();
             } else {
                 this.notify.error(this.translate.instant('FORMS.no_form_available'));
@@ -1123,12 +1124,12 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
             this.saveData(field.control.value, element.id);
         });
-
+        this.formLoading = true;
         this.http.post(environment['url'] + '/ws/accounts/addresses/create', {'args': addressData}, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
                 supplierData['address_id'] = data.id;
-                this.http.post(environment['url'] + '/ws/accounts/suppliers/create', {'args': supplierData}, {headers: this.authService.headers},
+                this.http.post(environment['url'] + '/ws/accounts/suppliers/create?fromViewer=true', {'args': supplierData}, {headers: this.authService.headers},
                 ).pipe(
                     tap(async (supplier_data: any) => {
                         this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
@@ -1142,9 +1143,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                 this.currentSupplier = element;
                             }
                         }
+                        this.formLoading = false;
                     }),
                     catchError((err: any) => {
                         console.debug(err);
+                        this.formLoading = false;
                         this.notify.handleErrors(err);
                         return of(false);
                     })
@@ -1473,8 +1476,16 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         return Number.isInteger(parseInt(splittedId[splittedId.length - 1])) && !fieldId.includes('custom_');
     }
 
-    getSupplierInfo(supplierId: any, showNotif = false, launchOnInit = false) {
-        this.suppliers.forEach((supplier: any) => {
+    async getSupplierInfo(supplierId: any, showNotif = false, launchOnInit = false) {
+        let tmpSupplier: any = [];
+        if (this.supplierformFound) {
+            tmpSupplier = this.suppliers
+        } else {
+            tmpSupplier = await this.retrieveSuppliers();
+            tmpSupplier = tmpSupplier.suppliers;
+        }
+
+        tmpSupplier.forEach((supplier: any) => {
             if (supplier.id === supplierId) {
                 if (!supplier.address_id) {
                     supplier.address_id = 0;
@@ -1516,6 +1527,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                     if (showNotif) {
                                         this.notify.success(this.translate.instant('DOCUMENTS.supplier_infos_updated'));
                                     }
+                                    this.supplierExists = true;
                                 }),
                                 catchError((err: any) => {
                                     console.debug(err);
@@ -1959,5 +1971,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.toHighlight = value;
         this.suppliers = await this.retrieveSuppliers(value);
         this.suppliers = this.suppliers.suppliers;
+        this.supplierExists = !(this.suppliers.length === 0);
     }
 }

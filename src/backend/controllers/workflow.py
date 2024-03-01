@@ -67,7 +67,7 @@ def verify_input_folder(args):
             return response, 400
         elif not os.path.exists(args['input_folder']):
             try:
-                os.mkdir(args['input_folder'], mode=0o777)
+                os.makedirs(args['input_folder'], mode=0o777)
             except (PermissionError, FileNotFoundError, TypeError):
                 response = {
                     "errors": gettext('WORKFLOW_FOLDER_CREATION_ERROR'),
@@ -368,6 +368,9 @@ def create_script_and_watcher(args):
     ######
     if os.path.isdir(folder_script):
         script_name = args['workflow_id'] + '.sh'
+        if os.path.isfile(folder_script + '/' + script_name):
+            return {}, 200
+
         if os.path.isfile(folder_script + '/script_sample_dont_touch.sh'):
             new_script_filename = folder_script + '/' + script_name
             with open(folder_script + '/script_sample_dont_touch.sh', 'r', encoding='utf-8') as script_sample:

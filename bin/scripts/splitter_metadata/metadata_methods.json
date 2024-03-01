@@ -29,6 +29,7 @@
             "user"                : "",
             "password"            : "",
             "referentialMode"     : 1,
+            "form_id"             : 2,
             "callOnSplitterView"  : true
         },
         {
@@ -42,6 +43,7 @@
             "user"                : "",
             "password"            : "",
             "referentialMode"     : 1,
+            "form_id"             : 2,
             "callOnSplitterView"  : true
         }
     ]

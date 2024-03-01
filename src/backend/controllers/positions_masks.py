@@ -112,13 +112,14 @@ def update_positions_mask(position_mask_id, args):
                 "res": res
             }
 
-            history.add_history({
-                'module': 'verifier',
-                'ip': request.remote_addr,
-                'submodule': 'update_positions_mask',
-                'user_info': request.environ['user_info'],
-                'desc': gettext('UPDATE_POSITIONS_MASK', mask=args['label'])
-            })
+            if 'label' in args and args['label']:
+                history.add_history({
+                    'module': 'verifier',
+                    'ip': request.remote_addr,
+                    'submodule': 'update_positions_mask',
+                    'user_info': request.environ['user_info'],
+                    'desc': gettext('UPDATE_POSITIONS_MASK', mask=args['label'])
+                })
             return response, 200
         else:
             response = {
@@ -167,12 +168,13 @@ def duplicate_positions_mask(position_mask_id):
         new_label = gettext('COPY_OF') + ' ' + positions_masks_info['label']
         args = {
             'label': new_label,
+            'width': positions_masks_info['width'],
+            'form_id': positions_masks_info['form_id'],
+            'nb_pages': positions_masks_info['nb_pages'],
+            'filename': positions_masks_info['filename'],
             'supplier_id': positions_masks_info['supplier_id'],
             'pages': json.dumps(positions_masks_info['pages']),
             'regex': json.dumps(positions_masks_info['regex']),
-            'width': positions_masks_info['width'],
-            'nb_pages': positions_masks_info['nb_pages'],
-            'filename': positions_masks_info['filename'],
             'positions': json.dumps(positions_masks_info['positions'])
         }
         _, error = positions_masks.add_positions_mask(args)

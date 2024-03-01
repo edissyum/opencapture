@@ -151,6 +151,7 @@ CREATE TABLE "accounts_supplier" (
     "iban"                VARCHAR(50),
     "duns"                VARCHAR(10),
     "bic"                 VARCHAR(11),
+    "rccm"                VARCHAR(30),
     "email"               VARCHAR,
     "address_id"          INTEGER,
     "form_id"             INTEGER,
@@ -347,7 +348,7 @@ CREATE TABLE "mailcollect" (
      "folder_trash"                  VARCHAR(255),
      "action_after_process"          VARCHAR(255) NOT NULL,
      "verifier_customer_id"          INTEGER,
-     "verifier_form_id"              INTEGER
+     "verifier_form_id"              VARCHAR(255)
 );
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;

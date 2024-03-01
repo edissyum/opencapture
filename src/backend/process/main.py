@@ -111,7 +111,7 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
             os.remove(tmp_file)
 
 
-def execute_outputs(output_info, log, regex, document_data, database, current_lang):
+def execute_outputs(output_info, log, regex, document_data, database):
     path = None
     data = output_info['data']
     ocrise = output_info['ocrise']
@@ -205,8 +205,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
 
                     for _r in _regex:
                         regex[_r['regex_id']] = _r['content']
-                args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database,
-                                                       current_lang))
+                args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database))
     elif workflow_settings and (
             not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
         if 'output' in workflow_settings and workflow_settings['output']:
@@ -221,8 +220,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
                         'data': [output_id]
                     })
                     if output_info:
-                        args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database,
-                                                               current_lang))
+                        args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database))
 
     if workflow_settings:
         document_data['workflow_id'] = workflow_settings['id']
@@ -254,19 +252,19 @@ def convert(file, files, ocr, nb_pages, tesseract_function, convert_function, cu
             pass
         files.pdf_to_jpg(file, nb_pages, open_img=False, is_custom=True, convert_function=convert_function)
     else:
-        files.pdf_to_jpg(file, 1, True, True, 'header', convert_function=convert_function)
-        ocr.header_text = return_text(files.img, tesseract_function, ocr)
-        files.pdf_to_jpg(file, 1, True, True, 'footer', convert_function=convert_function)
-        ocr.footer_text = return_text(files.img, tesseract_function, ocr)
         files.pdf_to_jpg(file, 1, convert_function=convert_function)
         ocr.text = return_text(files.img, tesseract_function, ocr)
+        files.pdf_to_jpg(files.jpg_name, 1, True, True, 'header', convert_function=convert_function)
+        ocr.header_text = return_text(files.img, tesseract_function, ocr)
+        files.pdf_to_jpg(files.jpg_name, 1, True, True, 'footer', convert_function=convert_function)
+        ocr.footer_text = return_text(files.img, tesseract_function, ocr)
         if nb_pages > 1:
-            files.pdf_to_jpg(file, nb_pages, True, True, 'header', True, convert_function=convert_function)
-            ocr.header_last_text = return_text(files.img, tesseract_function, ocr)
-            files.pdf_to_jpg(file, nb_pages, True, True, 'footer', True, convert_function=convert_function)
-            ocr.footer_last_text = return_text(files.img, tesseract_function, ocr)
             files.pdf_to_jpg(file, nb_pages, last_image=True, convert_function=convert_function)
             ocr.last_text = return_text(files.img, tesseract_function, ocr)
+            files.pdf_to_jpg(files.jpg_name_last, nb_pages, True, True, 'header', True, convert_function=convert_function)
+            ocr.header_last_text = return_text(files.img, tesseract_function, ocr)
+            files.pdf_to_jpg(files.jpg_name_last, nb_pages, True, True, 'footer', True, convert_function=convert_function)
+            ocr.footer_last_text = return_text(files.img, tesseract_function, ocr)
 
 
 def return_text(img, tesseract_function, ocr):
@@ -631,8 +629,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if 'form_id' not in datas or not datas['form_id']:
             datas.update({'form_id': 0})
 
-        # Find custom informations using mask
-        if custom_fields_to_find or not workflow_settings['input']['apply_process']:
+        text_by_pages = [None] * nb_pages
+
+        if custom_fields_to_find:
+            # Find custom informations using mask
             custom_fields = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
                                        datas['form_id'], custom_fields_to_find, False).run_using_positions_mask()
             if custom_fields:
@@ -643,18 +643,20 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     if custom_fields[field][2]:
                         datas['pages'].update({field: custom_fields[field][2]})
 
-        text_by_pages = [None] * nb_pages
+            ids_array = []
+            for field in custom_fields_to_find:
+                ids_array.append(field)
 
-        custom_fields_regex = database.select({
-            'select': ['id', 'label', "settings #>> '{regex}'as regex_settings"],
-            'table': ['custom_fields'],
-            'where': ['module = %s', "settings #>> '{regex}' is not null", "enabled = %s"],
-            'data': ['verifier', True]
-        })
+            # Find custom informations using regex
+            custom_fields_regex = database.select({
+                'select': ['id', 'label', "settings #>> '{regex}'as regex_settings"],
+                'table': ['custom_fields'],
+                'where': ['module = %s', "settings #>> '{regex}' is not null", "enabled = %s",
+                          "id IN (" + ','.join(map(str, custom_fields_to_find)) + ")"],
+                'data': ['verifier', True]
+            })
 
-        for custom_field in custom_fields_regex:
-            if (not custom_fields_to_find or custom_field['id'] in custom_fields_to_find) \
-                    or not workflow_settings['input']['apply_process']:
+            for custom_field in custom_fields_regex:
                 custom_field_class = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
                                                 datas['form_id'], custom_fields_to_find, custom_field)
                 custom_field = 'custom_' + str(custom_field['id'])
@@ -810,20 +812,14 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         full_jpg_filename = str(uuid.uuid4())
         file = files.move_to_docservers(docservers, file)
-
-        if file.lower().endswith('.pdf'):
-            # Convert all the pages to JPG (used to full web interface)
-            files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename,
-                                          docservers=True, rotate_img=True, page_to_save=1)
-            files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename,
-                                              rotate_img=True)
-        else:
-            files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], file, full_jpg_filename + '-001.jpg', True)
-            files.move_to_docservers_image(docservers['VERIFIER_THUMB'], file, full_jpg_filename + '-001.jpg', True)
-
+        files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], files.jpg_name, full_jpg_filename + '-001.jpg'
+                                       , copy=True, rotate=True)
+        files.move_to_docservers_image(docservers['VERIFIER_THUMB'], files.jpg_name, full_jpg_filename + '-001.jpg',
+                                       copy=True)
         allow_auto = False
         if workflow_settings and workflow_settings['input']['apply_process']:
-            if workflow_settings['process']['use_interface'] and workflow_settings['process']['allow_automatic_validation']:
+            if (workflow_settings['process']['use_interface'] and
+                    workflow_settings['process']['allow_automatic_validation']):
                 allow_auto = True
                 for field in workflow_settings['process']['system_fields']:
                     if field == 'footer' and footer:

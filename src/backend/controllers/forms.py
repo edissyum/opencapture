@@ -408,7 +408,7 @@ def delete_custom_field_from_forms(args):
 
 
 def update_custom_field_from_forms(args):
-    _forms, error = forms.get_forms({'where': ['status <> %s'], 'data': ['DEL']})
+    _forms, error = forms.get_forms({'where': ['status <> %s', 'module = %s'], 'data': ['DEL', args['module']]})
     if not error:
         for form in _forms:
             fields = forms.get_fields({'form_id': form['id']})

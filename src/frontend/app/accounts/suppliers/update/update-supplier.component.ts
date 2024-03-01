@@ -80,13 +80,6 @@ export class UpdateSupplierComponent implements OnInit {
             required: false
         },
         {
-            id: 'iban',
-            label: marker('ACCOUNTS.iban'),
-            type: 'text',
-            control: new FormControl('', Validators.pattern('^[A-Za-z]{2}(?:[ ]?[0-9]){18,25}$')),
-            required: false
-        },
-        {
             id: 'duns',
             label: marker('ACCOUNTS.duns'),
             type: 'text',
@@ -94,10 +87,24 @@ export class UpdateSupplierComponent implements OnInit {
             required: false
         },
         {
+            id: 'iban',
+            label: marker('ACCOUNTS.iban'),
+            type: 'text',
+            control: new FormControl('', Validators.pattern('^[A-Za-z]{2}(?:[ ]?[0-9]){18,25}$')),
+            required: false
+        },
+        {
             id: 'bic',
             label: marker('ACCOUNTS.bic'),
             type: 'text',
             control: new FormControl('', Validators.pattern('^[a-zA-Z0-9]{4}[A-Z]{2}[a-zA-Z0-9]{2}(?:[a-zA-Z0-9]{3})?$')),
+            required: false
+        },
+        {
+            id: 'rccm',
+            label: marker('ACCOUNTS.rccm'),
+            type: 'text',
+            control: new FormControl('', Validators.pattern('^[aA-zZ]{2}-[aA-zZ]{3}-[0-9]{2}-[0-9]{4}-[aA-zZ]{1}[0-9]{2}-[0-9]{5}$')),
             required: false
         },
         {
@@ -289,14 +296,14 @@ export class UpdateSupplierComponent implements OnInit {
                                                         finalize(() => this.loading = false),
                                                         catchError((err: any) => {
                                                             console.debug(err);
-                                                            this.notify.handleErrors(err, '/accounts/suppliers/list');
+                                                            this.notify.handleErrors(err);
                                                             return of(false);
                                                         })
                                                     ).subscribe();
                                                 }),
                                                 catchError((err: any) => {
                                                     console.debug(err);
-                                                    this.notify.handleErrors(err, '/accounts/customers/list');
+                                                    this.notify.handleErrors(err);
                                                     return of(false);
                                                 })
                                             ).subscribe();
@@ -366,7 +373,7 @@ export class UpdateSupplierComponent implements OnInit {
             ).pipe(
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/accounts/suppliers/list');
+                    this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();
@@ -379,7 +386,7 @@ export class UpdateSupplierComponent implements OnInit {
                 }),
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/accounts/suppliers/list');
+                    this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();

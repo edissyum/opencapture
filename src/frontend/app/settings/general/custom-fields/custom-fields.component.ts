@@ -39,22 +39,23 @@ import { remove } from "remove-accents";
     styleUrls: ['./custom-fields.component.scss']
 })
 export class CustomFieldsComponent implements OnInit {
-    update                  : boolean       = false;
-    loading                 : boolean       = true;
-    isSplitter              : boolean       = false;
-    inactiveFields          : any[]         = [];
-    activeFields            : any[]         = [];
-    selectOptions           : any[]         = [];
-    inactiveOrActive        : string        = '';
-    regexResult             : string        = '';
-    regexControl            : FormControl   = new FormControl();
-    regexTestControl        : FormControl   = new FormControl();
-    regexRemoveSpaces       : FormControl   = new FormControl();
-    regexCharMinControl     : FormControl   = new FormControl();
-    regexRemoveSpecialChar  : FormControl   = new FormControl();
-    regexRemoveKeyWord      : FormControl   = new FormControl();
-    regexFormat             : FormControl   = new FormControl();
-    formats                 : any[]         = [
+    update                    : boolean       = false;
+    loading                   : boolean       = true;
+    isSplitter                : boolean       = false;
+    inactiveFields            : any[]         = [];
+    activeFields              : any[]         = [];
+    selectOptions             : any[]         = [];
+    inactiveOrActive          : string        = '';
+    regexResult               : string        = '';
+    regexControl              : FormControl   = new FormControl();
+    regexTestControl          : FormControl   = new FormControl();
+    regexRemoveSpaces         : FormControl   = new FormControl();
+    regexCharMinControl       : FormControl   = new FormControl();
+    regexRemoveSpecialChar    : FormControl   = new FormControl();
+    regexRemoveKeyWord        : FormControl   = new FormControl();
+    regexRemoveKeyWordControl : FormControl   = new FormControl();
+    regexFormat               : FormControl   = new FormControl();
+    formats                   : any[]         = [
         {
             'id': 'text',
             'label': this.translate.instant('FORMATS.text')
@@ -66,6 +67,10 @@ export class CustomFieldsComponent implements OnInit {
         {
             'id': 'number_float',
             'label': this.translate.instant('FORMATS.number')
+        },
+        {
+            'id': 'amount',
+            'label': this.translate.instant('FORMATS.amount')
         },
         {
             'id': 'luhn_algorithm',
@@ -80,9 +85,9 @@ export class CustomFieldsComponent implements OnInit {
             'label': this.translate.instant('FORMATS.adeli')
         }
     ];
-    updateCustomId          : any;
-    form!                   : FormGroup;
-    parent                  : any[]         = [
+    updateCustomId            : any;
+    form!                     : FormGroup;
+    parent                    : any[]         = [
         {
             'id': 'verifier',
             'label': this.translate.instant('HOME.verifier')
@@ -92,7 +97,7 @@ export class CustomFieldsComponent implements OnInit {
             'label': this.translate.instant('HOME.splitter')
         }
     ];
-    addFieldInputs          : any[]         = [
+    addFieldInputs            : any[]         = [
         {
             field_id    : 'label_short',
             controlType : 'text',
@@ -154,7 +159,7 @@ export class CustomFieldsComponent implements OnInit {
             class       : ""
         }
     ];
-    unallowedFields         : any[]         = ['vat_rate', 'vat_amount', 'no_rate_amount', 'description', 'line_ht',
+    unallowedFields           : any[]         = ['vat_rate', 'vat_amount', 'no_rate_amount', 'description', 'line_ht',
         'unit_price', 'quantity'];
 
     constructor(
@@ -220,8 +225,8 @@ export class CustomFieldsComponent implements OnInit {
                 }
                 return str;
             });
-            if (this.regexRemoveKeyWord.value) {
-                const regex = new RegExp(this.regexControl.value.substring(0, this.regexControl.value.length - 2), 'gi');
+            if (this.regexRemoveKeyWord.value && this.regexRemoveKeyWordControl.value) {
+                const regex = new RegExp(this.regexRemoveKeyWordControl.value, 'gi');
                 const tmp = this.regexTestControl.value.match(regex);
                 if (tmp === null) {
                     return;
@@ -274,7 +279,7 @@ export class CustomFieldsComponent implements OnInit {
         let newField;
         this.http.get(environment['url'] + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                data.customFields.forEach((field: any) => {
+                data['customFields'].forEach((field: any) => {
                     newField = {
                         'id'            : field.id,
                         'label_short'   : field.label_short,
@@ -374,7 +379,8 @@ export class CustomFieldsComponent implements OnInit {
                 'char_min': this.regexCharMinControl.value,
                 'remove_spaces': this.regexRemoveSpaces.value,
                 'remove_keyword': this.regexRemoveKeyWord.value,
-                'remove_special_char': this.regexRemoveSpecialChar.value
+                'remove_special_char': this.regexRemoveSpecialChar.value,
+                'remove_keyword_value': this.regexRemoveKeyWordControl.value
             };
         }
 
@@ -532,7 +538,8 @@ export class CustomFieldsComponent implements OnInit {
                 'char_min' : this.regexCharMinControl.value,
                 'remove_spaces': this.regexRemoveSpaces.value,
                 'remove_keyword': this.regexRemoveKeyWord.value,
-                'remove_special_char': this.regexRemoveSpecialChar.value
+                'remove_special_char': this.regexRemoveSpecialChar.value,
+                'remove_keyword_value': this.regexRemoveKeyWordControl.value
             };
         }
 
@@ -559,6 +566,7 @@ export class CustomFieldsComponent implements OnInit {
             this.addFieldInputs.forEach((element: any) => {
                 element.control.setValue(customField[element.field_id]);
             });
+
             if (customField.settings.options) {
                 for (const option of customField.settings.options) {
                     this.selectOptions.push({
@@ -575,6 +583,7 @@ export class CustomFieldsComponent implements OnInit {
                 this.regexRemoveSpaces.setValue(customField.settings.regex.remove_spaces);
                 this.regexRemoveKeyWord.setValue(customField.settings.regex.remove_keyword);
                 this.regexRemoveSpecialChar.setValue(customField.settings.regex.remove_special_char);
+                this.regexRemoveKeyWordControl.setValue(customField.settings.regex.remove_keyword_value);
             }
         }
     }
@@ -586,6 +595,7 @@ export class CustomFieldsComponent implements OnInit {
         this.regexRemoveKeyWord.setValue('');
         this.regexCharMinControl.setValue('');
         this.regexRemoveSpecialChar.setValue('');
+        this.regexRemoveKeyWordControl.setValue('');
         this.addFieldInputs.forEach((field: any) => {
             field.control.setValue('');
             field.control.setErrors(null);

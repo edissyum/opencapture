@@ -24,6 +24,7 @@ fi
 apt install -y jq
 
 opencapturePath="/var/www/html/opencapture/"
+user=$(who am i | awk '{print $1}')
 
 #####################
 # Update input_id to workflow_id
@@ -35,6 +36,9 @@ for custom_name in ${SECTIONS[@]}; do
 
     cp $opencapturePath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh custom/$custom_name/bin/scripts/verifier_workflows/
     cp $opencapturePath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh custom/$custom_name/bin/scripts/splitter_workflows/
+
+    sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" custom/$custom_name/bin/scripts/verifier_workflows/script_sample_dont_touch.sh
+    sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" custom/$custom_name/bin/scripts/splitter_workflows/script_sample_dont_touch.sh
 
     for script in custom/$custom_name/bin/scripts/verifier_inputs/*.sh; do
         if [[ ! $script =~ 'script_sample_dont_touch.sh' ]]; then

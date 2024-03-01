@@ -4,7 +4,7 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
-s
+
  Open-Capture is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -15,21 +15,24 @@ s
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import { of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormBuilder, FormControl } from "@angular/forms";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
+
+import { environment } from "../../../../env";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
-import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
-import { moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
-import { environment } from  "../../../../env";
-import { catchError, finalize, tap } from "rxjs/operators";
-import { of } from "rxjs";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { DocumentTypeComponent } from "../../../../splitter/document-type/document-type.component";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
 
 @Component({
     selector: 'form-builder',
@@ -65,15 +68,16 @@ export class SplitterFormBuilderComponent implements OnInit {
     formId                  : any;
     creationMode            : boolean   = true;
     labelType               : any []    = [
-        marker('FORMATS.text'),
         marker('TYPES.text'),
         marker('TYPES.regex'),
         marker('TYPES.textarea'),
         marker('TYPES.date'),
         marker('TYPES.select'),
+        marker('TYPES.checkbox'),
         marker('VERIFIER.field_settings'),
         marker('FORMS.delete_field'),
-        marker('FORMS.update_label')
+        marker('FORMS.update_label'),
+        marker('FORMS.select_doctypes')
     ];
     fieldCategories         : any []    = [
         {
@@ -162,27 +166,38 @@ export class SplitterFormBuilderComponent implements OnInit {
         {
             'id'            : 'searchMask',
             'placeholder'   : marker('FIELD_METADATA.search_mask'),
-            'control'       : new FormControl()
+            'control'       : new FormControl(),
+            'types'         : ['text']
         },
         {
             'id'            : 'resultMask',
             'placeholder'   : marker('FIELD_METADATA.result_mask'),
-            'control'       : new FormControl()
+            'control'       : new FormControl(),
+            'types'         : ['text']
         },
         {
             'id'            : 'defaultValue',
             'placeholder'   : marker('FIELD_METADATA.default_value'),
-            'control'       : new FormControl()
+            'control'       : new FormControl(),
+            'types'         : ['text', 'textarea', 'select', 'date', 'checkbox']
         },
         {
             'id'            : 'validationMask',
             'placeholder'   : marker('FIELD_METADATA.validation_mask'),
-            'control'       : new FormControl()
+            'control'       : new FormControl(),
+            'types'         : ['text', 'textarea']
+        },
+        {
+            'id'            : 'validationMask',
+            'placeholder'   : marker('FIELD_METADATA.validation_mask'),
+            'control'       : new FormControl(),
+            'types'         : ['text', 'textarea']
         }
     ];
 
     constructor(
         public router: Router,
+        public dialog: MatDialog,
         private http: HttpClient,
         private route: ActivatedRoute,
         public userService: UserService,
@@ -276,17 +291,20 @@ export class SplitterFormBuilderComponent implements OnInit {
                                     if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push(
                                             {
-                                                id           : 'custom_' + data.customFields[field].id,
-                                                metadata_key : data.customFields[field].metadata_key,
-                                                label_short  : data.customFields[field].label_short,
-                                                settings     : data.customFields[field].settings,
-                                                required     : data.customFields[field].required,
-                                                label        : data.customFields[field].label,
-                                                type         : data.customFields[field].type,
-                                                format       : data.customFields[field].type,
-                                                unit         : 'custom',
-                                                class        : "w-1/3",
-                                                class_label  : "1/33"
+                                                id                   : 'custom_' + data.customFields[field].id,
+                                                type                 : data.customFields[field].type,
+                                                format               : data.customFields[field].type,
+                                                label                : data.customFields[field].label,
+                                                settings             : data.customFields[field].settings,
+                                                required             : data.customFields[field].required,
+                                                label_short          : data.customFields[field].label_short,
+                                                metadata_key         : data.customFields[field].metadata_key,
+                                                conditioned_fields   : [],
+                                                conditioned_doctypes : [],
+                                                invert_fields        : [],
+                                                unit                 : 'custom',
+                                                class                : "w-1/3",
+                                                class_label          : "1/33"
                                             }
                                         );
                                     }
@@ -387,6 +405,15 @@ export class SplitterFormBuilderComponent implements OnInit {
         });
     }
 
+    changeDisabled(fieldId: any, newDisabled: any, requiredIcon: any, category: any) {
+        const id = fieldId;
+        this.fields[category].forEach((element: any) => {
+            if (element.id === id) {
+                element.disabled = newDisabled;
+                element.required_icon = requiredIcon;
+            }
+        });
+    }
     dropFromForm(event: any) {
         const unit = event.container.id;
         const previousUnit = event.previousContainer.id;
@@ -543,5 +570,51 @@ export class SplitterFormBuilderComponent implements OnInit {
         } else {
             this.notify.error(this.translate.instant('FORMS.label_mandatory'));
         }
+    }
+
+    hasCheckboxConditionField(category: string, targetField: any): boolean {
+        return this.fields[category].some((field: any) => {
+            return (field['type'] === 'checkbox' && targetField['label_short'] !== field['label_short']);
+        });
+    }
+
+    changeFieldConditions(field: any, formField: any) {
+        if (field['conditioned_fields'].includes(formField['label_short'])) {
+            field['conditioned_fields'].splice(field['conditioned_fields'].indexOf(formField['label_short']), 1);
+        } else {
+            field['conditioned_fields'].push(formField['label_short']);
+        }
+    }
+
+    changeFieldInvert(field: any, formField: any) {
+        if (field['invert_fields'].includes(formField['label_short'])) {
+            field['invert_fields'].splice(field['invert_fields'].indexOf(formField['label_short']), 1);
+        } else {
+            field['invert_fields'].push(formField['label_short']);
+        }
+    }
+
+    openDoctypeTree(field: any): void {
+        const dialogRef = this.dialog.open(DocumentTypeComponent, {
+            width   : '800px',
+            height  : '860px',
+            data    : {
+                allowImportExport : false,
+                formId            : this.formId,
+                selectedDoctype   : {
+                    key   : "",
+                    label : ""
+                }
+            }
+        });
+        dialogRef.afterClosed().subscribe((result: any) => {
+            if (result && !field['conditioned_doctypes'].includes(result.key)) {
+                field['conditioned_doctypes'].push(result.key);
+            }
+        });
+    }
+
+    removeDoctype(field: any, doctype: any) {
+        field['conditioned_doctypes'].splice(field['conditioned_doctypes'].indexOf(doctype), 1);
     }
 }

@@ -23,7 +23,7 @@ from src.backend.functions import search_custom_positions
 
 
 def sanitize_keyword(data, regex):
-    tmp_data = re.sub(r"" + regex[:-2], '', data, flags=re.IGNORECASE)
+    tmp_data = re.sub(r"" + regex, '', data, flags=re.IGNORECASE)
     data = tmp_data.lstrip()
     return data
 
@@ -108,6 +108,10 @@ class FindCustom:
         if settings['format'] == 'number_float':
             data = re.sub(r"\s*", '', data)
             match = re.match(r"^[0-9]+([,.][0-9]+)?$", data)
+
+        if settings['format'] == 'amount':
+            data = re.sub(r"\s*", '', data)
+            match = re.match(r"^[0-9]+([,.][0-9]+)?(€+|\$+|£+|(EUR(OS)?)+)?$", data)
 
         if settings['format'] == 'date':
             match = re.match(r"" + self.regex['date'], data)
@@ -221,32 +225,47 @@ class FindCustom:
                                         pass
 
                                     if text is not False and text:
-                                        self.log.info(field + ' found with position : ' + str(text))
+                                        custom_id = field.replace('custom_', '')
+                                        custom = self.database.select({
+                                            'select': ['label'],
+                                            'table': ['custom_fields'],
+                                            'where': ['id = %s'],
+                                            'data': [custom_id]
+                                        })
+                                        custom_name = custom_id
+                                        if custom:
+                                            custom_name = custom[0]['label']
+                                        self.log.info(custom_name + ' found with position : ' + str(text))
                                         data_to_return[field] = [text, position, data['page']]
         return data_to_return
 
     def run(self):
         cpt = 0
-
+        regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
-                regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
                 if 'content' in regex_settings and regex_settings['content']:
                     upper_line = line.content.upper()
                     if 'remove_special_char' in regex_settings and regex_settings['remove_special_char']:
                         data_to_replace = r'[-()\#\\/@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ,]'
                         if regex_settings['format'] == 'date':
                             data_to_replace = r'[-()\#\\@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ,]'
+                        if regex_settings['format'] == 'amount':
+                            data_to_replace = r'[-()\#\\@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ]'
+
                         upper_line = re.sub(data_to_replace, '', upper_line)
                         upper_line = re.sub(r'\s+', ' ', upper_line)
 
                     for _data in re.finditer(r"" + regex_settings['content'], upper_line, flags=re.IGNORECASE):
                         data = _data.group()
+                        if regex_settings['remove_keyword'] and regex_settings['remove_keyword_value']:
+                            data = sanitize_keyword(_data.group(), regex_settings['remove_keyword_value'])
 
-                        if regex_settings['remove_keyword']:
-                            data = sanitize_keyword(_data.group(), regex_settings['content'])
                         data = self.check_format(data, regex_settings)
                         if data:
+                            if regex_settings['format'] == 'amount':
+                                data = re.sub(r",", '.', data)
+
                             if 'remove_spaces' in regex_settings and regex_settings['remove_spaces']:
                                 data = re.sub(r"\s*", '', data)
                             data = data.strip()

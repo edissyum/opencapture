@@ -15,41 +15,48 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { environment } from  "../../env";
-import { catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap } from "rxjs/operators";
-import { of, ReplaySubject, Subject } from "rxjs";
-import { HttpClient } from "@angular/common/http";
-import { LocalStorageService } from "../../../services/local-storage.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { AuthService } from "../../../services/auth.service";
-import { UserService } from "../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
-import { NotificationService } from "../../../services/notifications/notifications.service";
-import { DomSanitizer } from "@angular/platform-browser";
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
-import { MatDialog } from "@angular/material/dialog";
-import { DocumentTypeComponent } from "../document-type/document-type.component";
-import { remove } from 'remove-accents';
-import { HistoryService } from "../../../services/history.service";
-import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { LocaleService } from "../../../services/locale.service";
 import * as moment from "moment";
+import { remove } from 'remove-accents';
+import { environment } from  "../../env";
+
+import { UserService } from "../../../services/user.service";
+import { AuthService } from "../../../services/auth.service";
+import { LocaleService } from "../../../services/locale.service";
+import { HistoryService } from "../../../services/history.service";
+import { LocalStorageService } from "../../../services/local-storage.service";
+import { DocumentTypeComponent } from "../document-type/document-type.component";
+import { NotificationService } from "../../../services/notifications/notifications.service";
+import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
+
+import { HttpClient } from "@angular/common/http";
+import { of, ReplaySubject, Subject } from "rxjs";
+import { MatDialog } from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
+import { DomSanitizer } from "@angular/platform-browser";
+import { ActivatedRoute, Router } from "@angular/router";
+import {MatCheckboxChange} from "@angular/material/checkbox";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
+import { catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap } from "rxjs/operators";
 
 export interface Field {
-    id              : number
-    type            : string
-    label           : string
-    class           : string
-    required        : string
-    resultMask      : string
-    searchMask      : string
-    label_short     : string
-    metadata_key    : string
-    validationMask  : string
-    settings        : any
+    id                   : number
+    settings             : any
+    type                 : string
+    label                : string
+    class                : string
+    required             : boolean
+    disabled             : boolean
+    resultMask           : string
+    searchMask           : string
+    validationMask       : string
+    metadata_key         : string
+    label_short          : string
+    invert_fields        : string[]
+    conditioned_fields   : string[]
+    conditioned_doctypes : string[]
 }
 
 @Component({
@@ -115,6 +122,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         previousFormId      : -1,
         outputs             : [],
         status              : '',
+        progress            : 100,
         maxSplitIndex       : 0,
         selectedPagesCount  : 0,
         selectedDocument    : {
@@ -125,6 +133,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     fieldsCategories            : any           = {
         'batch_metadata'    : [],
         'document_metadata' : []
+    };
+
+    configurations              : any = {
+        'enableSplitterProgressBar': true
     };
 
     /** indicate search operation is in progress */
@@ -160,6 +172,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.userService.user   = this.userService.getUserFromLocal();
         this.currentBatch.id    = this.route.snapshot.params['id'];
         this.currentTime        = this.route.snapshot.params['currentTime'];
+        this.getConfigurations();
         this.loadSelectedBatch();
         this.updateBatchLock();
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
@@ -224,6 +237,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     customFieldsValues  : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
                     selectedPagesCount  : 0,
                     outputs             : [],
+                    progress            : 100,
                     maxSplitIndex       : 0,
                     selectedPageId      : 0,
                     selectedDocument    : {
@@ -375,9 +389,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         });
                     }
                 }
-
-                // -- Select first document --
                 this.selectDocument(this.documents[0]);
+                this.enableFieldsByDoctypeCondition();
                 this.documentsLoading = false;
             }),
             catchError((err: any) => {
@@ -622,6 +635,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     setValueChange(key: string, value: string) {
         this.hasUnsavedChanges = true;
         this.batchMetadataValues[key] = value;
+        this.updateProgressBar();
     }
 
     ngOnDestroy() {
@@ -714,17 +728,21 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     if (data.fields.hasOwnProperty(fieldCategory)) {
                         data.fields[fieldCategory].forEach((field: Field) => {
                             this.fieldsCategories[fieldCategory].push({
-                                'id'             : field.id,
-                                'type'           : field.type,
-                                'label'          : field.label,
-                                'class'          : field.class,
-                                'settings'       : field.settings,
-                                'required'       : field.required,
-                                'searchMask'     : field.searchMask,
-                                'resultMask'     : field.resultMask,
-                                'label_short'    : field.label_short,
-                                'metadata_key'   : field.metadata_key,
-                                'validationMask' : field.validationMask
+                                'id'                   : field.id,
+                                'type'                 : field.type,
+                                'label'                : field.label,
+                                'class'                : field.class,
+                                'disabled'             : field.disabled,
+                                'settings'             : field.settings,
+                                'required'             : field.required,
+                                'searchMask'           : field.searchMask,
+                                'resultMask'           : field.resultMask,
+                                'label_short'          : field.label_short,
+                                'metadata_key'         : field.metadata_key,
+                                'validationMask'       : field.validationMask,
+                                'invert_fields'        : field.invert_fields,
+                                'conditioned_fields'   : field.conditioned_fields,
+                                'conditioned_doctypes' : field.conditioned_doctypes
                             });
                             if (fieldCategory === 'batch_metadata' && field.metadata_key &&
                                 !field.metadata_key.includes("SEPARATOR_META")) {
@@ -734,6 +752,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     }
                 }
                 this.batchForm = this.toBatchFormGroup();
+                this.updateProgressBar();
 
                 // listen for search field value changes
                 for (const fieldCategory in this.fieldsCategories) {
@@ -795,8 +814,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         const format = moment().localeData().longDateFormat('L');
         this.fieldsCategories['batch_metadata'].forEach((field: Field) => {
             group[field.label_short] = field.required ?
-                new FormControl('', Validators.required) :
-                new FormControl('');
+                new FormControl({value: '', disabled: field.disabled}, Validators.required) :
+                new FormControl({value: '', disabled: field.disabled});
             if (this.currentBatch.customFieldsValues.hasOwnProperty(field.label_short)) {
                 const value = field.type !== 'date' ? this.currentBatch.customFieldsValues[field.label_short] :
                     moment(this.currentBatch.customFieldsValues[field.label_short], format);
@@ -847,6 +866,60 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    onCheckBoxChange(checkboxField: any, $event: MatCheckboxChange) {
+        for (const field of this.fieldsCategories['batch_metadata']) {
+            if (field['conditioned_fields'].includes(checkboxField['label_short'])) {
+                if ($event.checked) {
+                    this.batchForm.controls[field['label_short']].enable();
+                } else {
+                    this.batchForm.controls[field['label_short']].setValue("");
+                    this.batchForm.controls[field['label_short']].disable();
+                }
+            }
+            if (field['type'] === 'checkbox' && field['invert_fields'].includes(checkboxField['label_short'])) {
+                if ($event.checked) {
+                    this.batchForm.controls[field['label_short']].setValue(false);
+                }
+            }
+        }
+        this.updateProgressBar();
+    }
+
+    enableFieldsByDoctypeCondition() {
+        for (const field of this.fieldsCategories['batch_metadata']) {
+            if (field['conditioned_doctypes'].length > 0) {
+                let shouldDisable = true;
+                for (const document of this.documents) {
+                    if (field['conditioned_doctypes'].includes(document.doctypeKey)) {
+                        this.batchForm.controls[field['label_short']].enable();
+                        shouldDisable = false;
+                        break;
+                    }
+                }
+                if (shouldDisable) {
+                    this.batchForm.controls[field['label_short']].setValue("");
+                    this.batchForm.controls[field['label_short']].disable();
+                }
+            }
+        }
+    }
+
+    getConfigurations() {
+        for (const config in this.configurations) {
+            this.http.get(environment['url'] + '/ws/config/getConfiguration/' + config,
+                {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    this.configurations[config] = data.configuration[0].data.value;
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
     }
     /* -- End Metadata -- */
 
@@ -914,6 +987,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 document.doctypeLabel   = result.label;
                 document.doctypeKey     = result.key;
                 this.hasUnsavedChanges  = true;
+                this.enableFieldsByDoctypeCondition();
             }
         });
     }
@@ -993,6 +1067,27 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     dropBatch(event: CdkDragDrop<string[]>) {
         moveItemInArray(this.batches, event.previousIndex, event.currentIndex);
+    }
+
+    updateProgressBar() {
+        if (!this.configurations['enableSplitterProgressBar']) {
+            return;
+        }
+        this.currentBatch.progress = 100;
+        let batchFieldsCount = Object.keys(this.batchForm.controls).length;
+        for (const key of Object.keys(this.batchForm.controls)) {
+            if (this.batchForm.controls[key].disabled) {
+                batchFieldsCount = batchFieldsCount - 1;
+                if (batchFieldsCount <= 0) {
+                    return;
+                }
+            }
+        }
+        for (const key of Object.keys(this.batchForm.controls)) {
+            if (!this.batchForm.controls[key].value && !this.batchForm.controls[key].disabled) {
+                this.currentBatch.progress = this.currentBatch.progress - (100 /  batchFieldsCount);
+            }
+        }
     }
     /* -- End documents control -- */
 

@@ -5,6 +5,9 @@
         </div>
         <div class="relative z-30 h-[3.75rem] flex justify-between items-center px-2 bg-green-400 bg-opacity-60 text-gray-900">
             <div class="flex">
+                <button mat-icon-button (click)="this.router.navigate(['/accounts/customers'])" [matTooltip]="'ACCOUNTS.back_to_customers_list' | translate">
+                    <i class="fa-solid fa-arrow-left fa-md"></i>
+                </button>
             </div>
             <h3 class="text-center m-0">
                 {{ this.serviceSettings.getTitle() }}
@@ -13,43 +16,56 @@
         </div>
         <hr class="border-green-400">
         <div class="overflow-x-hidden h-full-overflow">
-            <div class="flex justify-center items-center align-middle">
-                <form (ngSubmit)="onSubmit()" class="grid grid-cols-6 gap-2 w-full m-10 text-center">
-                    <ng-container *ngFor="let field of customerForm">
-                        <mat-form-field class="block" *ngIf="field.type !== 'select'">
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
-                            <mat-error *ngIf="field.control.invalid">{{ getErrorMessageCustomer(field.id) }}</mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="block" *ngIf="field.type === 'select'">
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <mat-select [formControl]="field['control']" [(value)]="field.control.value"
-                                        [required]="field['required']" (selectionChange)="updateRequired(field)">
-                                <mat-option *ngFor="let option of field.values" [value]="option['id']">
-                                    {{ option['label'] | translate }}
-                                </mat-option>
-                            </mat-select>
-                            <mat-error *ngIf="field.control.invalid">{{ getErrorMessageCustomer(field.id) }}</mat-error>
-                        </mat-form-field>
-                    </ng-container>
-                    <ng-container *ngFor="let field of addressForm">
-                        <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block" *ngIf="field.type !== 'country'">
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
-                            <mat-error *ngIf="field.control.invalid">{{ getErrorMessageAddress(field.id) }}</mat-error>
-                        </mat-form-field>
-                        <mat-select-country class="w-full" *ngIf="field.type === 'country'"
-                                            [label]="field.label | translate"
-                                            [value]="defaultValue"
-                                            (onCountrySelected)="onCountrySelected($event)">
-                        </mat-select-country>
-                    </ng-container>
-                    <div class="button col-span-6">
-                        <button class="valid_button" type="submit" mat-button>
-                            {{ 'ACCOUNTS.create_customer' | translate }}
-                        </button>
-                    </div>
-                </form>
+            <div class="w-full text-center mt-4">
+                <h3 class="text-gray-900">
+                    {{ 'ACCOUNTS.customer_informations' | translate }}
+                </h3>
+            </div>
+            <form class="grid grid-cols-3 gap-2 mx-10 text-center">
+                <ng-container *ngFor="let field of customerForm">
+                    <mat-form-field class="block" *ngIf="field.type !== 'select'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessageCustomer(field.id) }}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="block" *ngIf="field.type === 'select'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <mat-select [formControl]="field['control']" [(value)]="field.control.value"
+                                    [required]="field['required']" (selectionChange)="updateRequired(field)">
+                            <mat-option *ngFor="let option of field.values" [value]="option['id']">
+                                {{ option['label'] | translate }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessageCustomer(field.id) }}</mat-error>
+                    </mat-form-field>
+                </ng-container>
+            </form>
+
+            <hr class="border-green-400 relative my-5 w-1/2 m-auto">
+            <div class="w-full text-center">
+                <h3 class="text-gray-900">
+                    {{ 'ACCOUNTS.address_informations' | translate }}
+                </h3>
+            </div>
+
+            <form class="grid grid-cols-3 gap-2 mx-10 text-center">
+                <ng-container *ngFor="let field of addressForm">
+                    <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block" *ngIf="field.type !== 'country'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessageAddress(field.id) }}</mat-error>
+                    </mat-form-field>
+                    <mat-select-country class="w-full" *ngIf="field.type === 'country'"
+                                        [label]="field.label | translate"
+                                        [value]="defaultValue"
+                                        (onCountrySelected)="onCountrySelected($event)">
+                    </mat-select-country>
+                </ng-container>
+            </form>
+            <div class="button text-center">
+                <button class="valid_button" type="submit" mat-button (click)="onSubmit()">
+                    {{ 'ACCOUNTS.create_customer' | translate }}
+                </button>
             </div>
         </div>
     </mat-sidenav-content>

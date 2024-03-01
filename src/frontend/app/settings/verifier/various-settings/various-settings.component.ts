@@ -57,43 +57,59 @@ export class VariousSettingsVerifierComponent implements OnInit {
     allowSupplierAutoControl    : FormControl   = new FormControl(true);
     availableFields             : any           = [
         {
-            "id": 'document_id',
+            'id': 'document_id',
             'label': marker('VERIFIER.document_id')
         },
         {
-            "id": 'invoice_number',
+            'id': 'invoice_number',
             'label': 'FACTURATION.invoice_number'
         },
         {
-            "id": 'quotation_number',
+            'id': 'quotation_number',
             'label': 'FACTURATION.quotation_number'
         },
         {
-            "id": 'document_date',
-            'label': marker('FACTURATION.document_date')
+            'id': 'document_date',
+            'label': 'FACTURATION.document_date'
         },
         {
-            "id": 'date',
-            'label': marker('VERIFIER.register_date')
+            'id': 'date',
+            'label': 'VERIFIER.register_date'
         },
         {
-            "id": 'firstname',
-            'label': marker('FACTURATION.firstname')
+            'id': 'bic',
+            'label': 'ACCOUNTS.bic'
         },
         {
-            "id": 'lastname',
-            'label': marker('FACTURATION.lastname')
+            'id': 'vat_number',
+            'label': 'ACCOUNTS.vat_number'
         },
         {
-            "id": 'delivery_number',
+            'id': 'rccm',
+            'label': 'ACCOUNTS.rccm'
+        },
+        {
+            'id': 'duns',
+            'label': 'ACCOUNTS.duns'
+        },
+        {
+            'id': 'firstname',
+            'label': 'FACTURATION.firstname'
+        },
+        {
+            'id': 'lastname',
+            'label': 'FACTURATION.lastname'
+        },
+        {
+            'id': 'delivery_number',
             'label': 'FACTURATION.delivery_number'
         },
         {
-            "id": 'form_label',
-            'label': marker('VERIFIER.form')
+            'id': 'form_label',
+            'label': 'VERIFIER.form'
         },
         {
-            "id": 'original_filename',
+            'id': 'original_filename',
             'label': marker('VERIFIER.original_file')
         }
     ];

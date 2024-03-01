@@ -86,12 +86,12 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
                     const now = new Date();
                     const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
                     const diffDays = Math.abs((now.getTime() - new Date(this.processData['creation_date']).getTime()) / (oneDay));
+
+                    this.processData.time = 'older';
                     if (diffDays <= 1) {
                         this.processData.time = 'today';
                     } else if (diffDays > 1 && diffDays <= 2) {
                         this.processData.time = 'yesterday';
-                    } else {
-                        this.processData.time = 'older';
                     }
 
                     if (this.processData.workflow_id && this.workflowLabel === '') {

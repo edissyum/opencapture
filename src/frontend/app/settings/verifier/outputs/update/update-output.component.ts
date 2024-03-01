@@ -153,6 +153,18 @@ export class UpdateOutputComponent implements OnInit {
             'label': 'ACCOUNTS.siren'
         },
         {
+            "id": 'rccm',
+            'label': 'ACCOUNTS.rccm'
+        },
+        {
+            "id": 'duns',
+            'label': 'ACCOUNTS.duns'
+        },
+        {
+            "id": 'bic',
+            'label': 'ACCOUNTS.bic'
+        },
+        {
             "id": 'invoice_number',
             'label': 'FACTURATION.invoice_number'
         },
