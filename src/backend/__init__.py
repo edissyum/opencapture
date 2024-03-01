@@ -94,16 +94,16 @@ app.wsgi_app = Middleware(app.wsgi_app)
 CORS(app, supports_credentials=True)
 
 # Load Artificial Intelligence model to rotate document
-model = None
+rotate_model = None
 if os.path.isfile(os.path.join(app.instance_path, "artificial_intelligence/rotate_document.pt")):
-    model = YOLO(os.path.join(app.instance_path, "artificial_intelligence/rotate_document.pt"), verbose=False)
+    rotate_model = YOLO(os.path.join(app.instance_path, "artificial_intelligence/rotate_document.pt"), verbose=False)
     try:
-        model('init_model.jpg')
+        rotate_model('init_model.jpg')
     except FileNotFoundError:
         pass
 
 app.config.from_mapping(
-    ROTATE_MODEL=model,
+    ROTATE_MODEL=rotate_model,
     UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/verifier/'),
     UPLOAD_FOLDER_SPLITTER=os.path.join(app.instance_path, 'upload/splitter/'),
     BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
