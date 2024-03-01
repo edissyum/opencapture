@@ -79,7 +79,6 @@ def timer(start_time, end_time):
 
 
 def rotate_img(img):
-    print('here')
     if current_app.config['ROTATE_MODEL'] is not None:
         model_results = current_app.config['ROTATE_MODEL'](img, verbose=False)
         if model_results:
