@@ -1083,6 +1083,7 @@
 		"document_refused": "Document refusée",
 		"documents_deleted": "Document(s) supprimé(s)",
 		"documents_settings": "Paramètres du document",
+		"download_original_file": "Télécharger le fichier original",
 		"duplicate_line": "Dupliquer la ligne",
 		"error": "Votre document est en erreur.<br> N'hésitez pas à contacter le support ou l'administrateur de la solution en donnant la référence suivante : <br><strong>{{ reference }}</strong>",
 		"expand_all": "Développer tous les clients",
