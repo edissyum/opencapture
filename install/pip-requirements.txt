@@ -29,7 +29,7 @@ imap-tools==1.5.0
 flask_cors==4.0.0
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
-ultralytics==8.1.23
+ultralytics==8.1.24
 pytesseract==0.3.10
 pyexcel_ods3==0.6.1
 configparser==6.0.0
