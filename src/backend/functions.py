@@ -438,7 +438,7 @@ def generate_searchable_pdf(document, tmp_filename):
         shutil.move(tmp_path + '/to_merge_' + _uuid + '-001.pdf', tmp_filename)
 
 
-def find_form_with_ia(file, ai_model_id, database, docservers, files, ocr, log, module):
+def find_workflow_with_ia(file, ai_model_id, database, docservers, files, ocr, log, module):
     ai_model = database.select({
         'select': ['*'],
         'table': ['ai_models'],
@@ -477,14 +477,15 @@ def find_form_with_ia(file, ai_model_id, database, docservers, files, ocr, log, 
                             if module == 'verifier':
                                 form = database.select({
                                     'select': ['*'],
-                                    'table': ['form_models'],
-                                    'where': ['id = %s', 'module = %s'],
-                                    'data': [doc['form'], module],
+                                    'table': ['workflows'],
+                                    'where': ['workflow_id = %s', 'module = %s'],
+                                    'data': [doc['workflow_id'], module],
                                 })
                                 if form:
-                                    log.info('[IA] Document detected as : ' + folder)
-                                    return doc['form']
-
+                                    log.info('[IA] Document detected as&nbsp;:&nbsp;<strong>' + folder +
+                                             '</strong> and sended to workflow&nbsp;:&nbsp;<strong>' +
+                                             doc['workflow_id'] + '</strong>')
+                                    return doc['workflow_id']
                             elif module == 'splitter':
                                 log.info('[IA] Document doctype detected : ' + doc['doctype'])
                                 return doc['doctype']

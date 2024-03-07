@@ -765,8 +765,29 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         });
     }
 
+    downloadOriginalFile() {
+        this.http.post(environment['url'] + '/ws/verifier/getOriginalFile/' + this.document.id, {},
+            {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                const mimeType = data['mime'];
+                const referenceFile = 'data:' + mimeType + ';base64, ' + data['file'];
+                const link = document.createElement("a");
+                link.href = referenceFile;
+                let splitted_filename = this.document['original_filename'].split('.');
+                let filename = splitted_filename[0].split('_')
+                link.download = filename.splice(0, filename.length - 1).join('_') + '.' + splitted_filename[1];
+                link.click();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
     findChildren(parentId: any, parent: any, categoryId: any) {
-        for (const field in this.document.datas) {
+        for (const field in this.document['datas']) {
             if (field.includes(parentId + '_')) {
                 parent.cpt += 1;
                 const splitted = field.split('_');
@@ -788,7 +809,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     class_label: parent.class_label,
                     cpt: cpt
                 });
-                const value = this.document.datas[field];
+                const value = this.document['datas'][field];
                 const _field = this.form[categoryId][this.form[categoryId].length - 1];
                 _field.control.setValue(value);
             }

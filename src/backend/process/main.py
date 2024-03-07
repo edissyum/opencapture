@@ -25,8 +25,9 @@ from flask_babel import gettext
 from src.backend import verifier_exports
 from src.backend.scripting_functions import check_code
 from src.backend.import_classes import _PyTesseract, _Files
+from src.backend.scripting_functions import send_to_workflow
 from src.backend.import_controllers import verifier, accounts
-from src.backend.functions import delete_documents, rotate_document, find_form_with_ia
+from src.backend.functions import delete_documents, rotate_document, find_workflow_with_ia
 from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber, FindName
 
@@ -416,7 +417,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     system_fields_to_find = []
     custom_fields_to_find = []
-    form_id_found_with_ai = False
 
     change_workflow = False
     convert_function = 'pdf2image'
@@ -439,10 +439,16 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if 'ai_model_id' in workflow_settings['input'] and workflow_settings['input']['ai_model_id']:
             ai_model_id = workflow_settings['input']['ai_model_id']
-            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, ocr, log, 'verifier')
+            res = find_workflow_with_ia(file, ai_model_id, database, docservers, _Files, ocr, log, 'verifier')
             if res:
-                form_id_found_with_ai = True
-                datas.update({'form_id': res})
+                return send_to_workflow({
+                    'ip': args['ip'],
+                    'log': log,
+                    'file': file,
+                    'user_info': args['user_info'],
+                    'workflow_id': res,
+                    'custom_id': args['custom_id'],
+                })
 
         # Launch input scripting if present
         change_workflow = launch_script(workflow_settings, docservers, 'input', log, file, database, args, config)
@@ -618,8 +624,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             if 'override_supplier_form' in workflow_settings['process'] and \
                     workflow_settings['process']['override_supplier_form'] or \
                     not supplier or ('form_id' not in supplier[2] or not supplier[2]['form_id']):
-                if not form_id_found_with_ai:
-                    datas.update({'form_id': workflow_settings['process']['form_id']})
+                datas.update({'form_id': workflow_settings['process']['form_id']})
             elif ('override_supplier_form' not in workflow_settings['process'] or
                   not workflow_settings['process']['override_supplier_form']) and supplier and supplier[2]['form_id']:
                 datas.update({'form_id': supplier[2]['form_id']})

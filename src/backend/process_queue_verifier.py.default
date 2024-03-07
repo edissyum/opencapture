@@ -230,7 +230,9 @@ def launch(args):
         end = time.time()
         _timer = timer(start, end)
 
-        log.info('Process end after ' + _timer + '')
+        if res:
+            log.info('Process end after ' + _timer)
+
         database.update({
             'table': ['monitoring'],
             'set': {

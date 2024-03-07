@@ -1083,6 +1083,7 @@
 		"document_refused": "Document refused",
 		"documents_deleted": "Document(s) deleted successfully",
 		"documents_settings": "Settings document",
+		"download_original_file": "Download original file",
 		"duplicate_line": "Duplicate line",
 		"error": "Errors appear while processing the document. You can contact your administrator or support using the following reference : <br><strong>{{ reference }}</strong>",
 		"expand_all": "Expand all",
