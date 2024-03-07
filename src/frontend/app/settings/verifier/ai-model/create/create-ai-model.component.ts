@@ -42,8 +42,8 @@ export class CreateVerifierAiModelComponent implements OnInit {
     docStatus           : any           = [];
     controls            : any           = [];
     listModels          : any           = [];
-    forms               : any           = [];
-    chosenForm          : any           = [];
+    workflows           : any           = [];
+    chosenWorkflow      : any           = [];
     chosenDocs          : any           = [];
     loading             : boolean       = true;
     formControl         : FormControl   = new FormControl('');
@@ -105,7 +105,7 @@ export class CreateVerifierAiModelComponent implements OnInit {
                         doc: element,
                         isSelected: false,
                         linked_doctype: "",
-                        linked_form: ""
+                        linked_workflow: ""
                     });
                     this.controls.push(new FormControl(''));
                 }
@@ -119,7 +119,7 @@ export class CreateVerifierAiModelComponent implements OnInit {
 
     checkSelectedBatch(cpt: number, current_doc: any) {
         this.totalChecked = this.docStatus.filter((a: { isSelected: boolean; }) => a.isSelected).length;
-        this.onFormSelect({value: this.forms[0].id}, cpt, current_doc);
+        this.onWorkflowSelect({value: this.workflows[0].workflow_id}, cpt, current_doc);
     }
 
     retrieveOCDoctypes() {
@@ -161,16 +161,16 @@ export class CreateVerifierAiModelComponent implements OnInit {
         return error;
     }
 
-    onFormSelect(event: any, index: number, doc: string) {
+    onWorkflowSelect(event: any, index: number, doc: string) {
         const val = event.value;
-        for (const element of this.forms) {
+        for (const element of this.workflows) {
             if (element.id === val) {
-                this.chosenForm[index] = element.id;
-                this.chosenDocs[index] = this.doctypes.filter((a: { formId: number; }) => a.formId === this.chosenForm[index]);
+                this.chosenWorkflow[index] = element.workflow_id;
+                this.chosenDocs[index] = this.doctypes.filter((a: { formId: number; }) => a.formId === this.chosenWorkflow[index]);
             }
         }
         const match = this.docStatus.find((a: { doc: string; }) => a.doc === doc);
-        match.linked_form = this.chosenForm[index];
+        match.linked_workflow = this.chosenWorkflow[index];
     }
 
     createModel() {
@@ -183,9 +183,9 @@ export class CreateVerifierAiModelComponent implements OnInit {
             const matches = this.docStatus.filter((a: { isSelected: boolean; }) => a.isSelected);
             for (let i = 0; i < this.totalChecked; i = i + 1) {
                 const fold = matches[i].doc;
-                const formid = matches[i].linked_form;
+                const workflow_id = matches[i].linked_workflow;
                 doctypes.push({
-                    form: formid,
+                    workflow_id: workflow_id,
                     folder: fold
                 });
             }
@@ -263,11 +263,11 @@ export class CreateVerifierAiModelComponent implements OnInit {
     }
 
     retrieveForms() {
-        this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
-            tap((forms: any) => {
-               this.forms = forms.forms;
-               if (this.forms.length === 1) {
-                   this.formControl.setValue(this.forms[0].id);
+        this.http.get(environment['url'] + '/ws/workflows/verifier/list', {headers: this.authService.headers}).pipe(
+            tap((workflows: any) => {
+               this.workflows = workflows.workflows;
+               if (this.workflows.length === 1) {
+                   this.formControl.setValue(this.workflows[0].workflow_id);
                }
             }),
             finalize(() => this.loading = false),

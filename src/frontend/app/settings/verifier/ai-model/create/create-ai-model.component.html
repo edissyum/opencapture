@@ -57,7 +57,7 @@
                 <h2 class="text-center m-4">
                     {{ 'ARTIFICIAL-INTELLIGENCE.choose_documents' | translate }}
                 </h2>
-                <mat-list class="mx-10 my-2 grid grid-cols-{{ this.docStatus }} gap-4 place-items-stretch">
+                <mat-list class="mx-10 my-2 grid grid-cols-{{ this.docStatus.length }} gap-4 place-items-stretch text-center">
                     <div *ngFor="let item of this.docStatus, let i=index">
                         <mat-checkbox [(ngModel)]="item['isSelected']" (change)="checkSelectedBatch(i, item['doc']);"
                                       [ngModelOptions]="{standalone: true}"
@@ -65,10 +65,10 @@
                             {{ item['doc'] }}
                         </mat-checkbox>
                         <div>
-                            <mat-form-field *ngIf="item['isSelected']">
-                                <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.form" | translate }}</mat-label>
-                                <mat-select [formControl]="formControl" (selectionChange)="onFormSelect($event, i, item['doc'])">
-                                    <mat-option *ngFor="let option of forms" [value]="option.id">
+                            <mat-form-field *ngIf="item['isSelected']" class="w-full">
+                                <mat-label>{{ "MONITORING.workflow_associated" | translate }}</mat-label>
+                                <mat-select [formControl]="formControl" (selectionChange)="onWorkflowSelect($event, i, item['doc'])">
+                                    <mat-option *ngFor="let option of workflows" [value]="option.id">
                                         {{ option.label }}
                                     </mat-option>
                                 </mat-select>

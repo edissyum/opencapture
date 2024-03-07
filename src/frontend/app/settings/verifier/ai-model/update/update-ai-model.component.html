@@ -47,13 +47,13 @@
                 <mat-divider class="w-1/2 m-auto border-green-400 mb-8"></mat-divider>
                 <div class="mx-10 my-2 grid grid-cols-{{ this.tableData.length }} gap-4 place-items-stretch">
                     <div *ngFor="let item of this.tableData, let i=index" class="text-center">
-                        {{ item.Documents }}
+                        {{ item['Documents'] }}
                         <div class="mt-4">
                             <mat-form-field class="w-full">
-                                <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.form" | translate }}</mat-label>
-                                <mat-select [formControl]="formsFormControl[item.id]"
-                                            (selectionChange)="onFormSelect($event, item.id)">
-                                    <mat-option *ngFor="let option of forms" [value]="option.id">
+                                <mat-label>{{ "MONITORING.workflow_associated" | translate }}</mat-label>
+                                <mat-select [formControl]="workflowsFormControl[item.id]"
+                                            (selectionChange)="onWorkflowSelect($event, item.id)">
+                                    <mat-option *ngFor="let option of workflows" [value]="option['workflow_id']">
                                         {{ option.label }}
                                     </mat-option>
                                 </mat-select>
