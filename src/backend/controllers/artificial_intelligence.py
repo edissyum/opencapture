@@ -83,7 +83,8 @@ def create_model(data):
         'type': data['type'],
         'status': data['status'],
         'module': data['module'],
-        'model_label': data['model_label']
+        'model_label': data['model_label'],
+        'documents': json.dumps(data['documents']) if 'documents' in data else "[]",
     }
 
     res, error = artificial_intelligence.create_model({'columns': _columns})
@@ -139,7 +140,7 @@ def update_model(data, model_id, module, fill_history=False):
     if 'min_proba' in data:
         args['set']['min_proba'] = data['min_proba']
     if 'documents' in data:
-        args['set']['documents'] = data['documents']
+        args['set']['documents'] = json.dumps(data['documents'])
     if 'train_time' in data:
         args['set']['train_time'] = data['train_time']
     if 'accuracy_score' in data:
@@ -199,7 +200,8 @@ def launch_train(data, model_name, module):
         'type': 'doctype',
         'status': 'training',
         'module': module,
-        'model_label': data['label']
+        'model_label': data['label'],
+        'documents': data['docs'] if 'docs' in data and data['docs'] else []
     }
     model_id = create_model(args)[0].get('id')
 

@@ -536,6 +536,20 @@ def get_thumb_by_document_id():
     return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
 
 
+@bp.route('verifier/getOriginalFile/<int:document_id>', methods=['POST'])
+@auth.token_required
+def get_original_doc_by_document_id(document_id):
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/getOriginalFile/{document_id}'}), 403
+
+    file_content, mime = verifier.get_original_doc_by_document_id(document_id)
+    if file_content is None:
+        return make_response({'errors': gettext('DOWNLOAD_FILE'), 'message': gettext('FILE_NOT_FOUND')}, 404)
+    return make_response({'file': str(base64.b64encode(file_content).decode('UTF-8')), 'mime': mime}), 200
+
+
 @bp.route('verifier/getTokenINSEE', methods=['GET'])
 @auth.token_required
 def get_token_insee():

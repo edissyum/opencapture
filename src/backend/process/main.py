@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
-import shutil
 import uuid
 import json
 import datetime
@@ -26,8 +25,9 @@ from flask_babel import gettext
 from src.backend import verifier_exports
 from src.backend.scripting_functions import check_code
 from src.backend.import_classes import _PyTesseract, _Files
-from src.backend.import_controllers import artificial_intelligence, verifier, accounts
-from src.backend.functions import delete_documents, rotate_document, find_form_with_ia
+from src.backend.scripting_functions import send_to_workflow
+from src.backend.import_controllers import verifier, accounts
+from src.backend.functions import delete_documents, rotate_document, find_workflow_with_ia
 from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber, FindName
 
@@ -254,17 +254,17 @@ def convert(file, files, ocr, nb_pages, tesseract_function, convert_function, cu
     else:
         files.pdf_to_jpg(file, 1, convert_function=convert_function)
         ocr.text = return_text(files.img, tesseract_function, ocr)
-        files.pdf_to_jpg(file, 1, True, True, 'header', convert_function=convert_function)
+        files.pdf_to_jpg(files.jpg_name, 1, True, True, 'header', convert_function=convert_function)
         ocr.header_text = return_text(files.img, tesseract_function, ocr)
-        files.pdf_to_jpg(file, 1, True, True, 'footer', convert_function=convert_function)
+        files.pdf_to_jpg(files.jpg_name, 1, True, True, 'footer', convert_function=convert_function)
         ocr.footer_text = return_text(files.img, tesseract_function, ocr)
         if nb_pages > 1:
-            files.pdf_to_jpg(file, nb_pages, True, True, 'header', True, convert_function=convert_function)
-            ocr.header_last_text = return_text(files.img, tesseract_function, ocr)
-            files.pdf_to_jpg(file, nb_pages, True, True, 'footer', True, convert_function=convert_function)
-            ocr.footer_last_text = return_text(files.img, tesseract_function, ocr)
             files.pdf_to_jpg(file, nb_pages, last_image=True, convert_function=convert_function)
             ocr.last_text = return_text(files.img, tesseract_function, ocr)
+            files.pdf_to_jpg(files.jpg_name_last, nb_pages, True, True, 'header', True, convert_function=convert_function)
+            ocr.header_last_text = return_text(files.img, tesseract_function, ocr)
+            files.pdf_to_jpg(files.jpg_name_last, nb_pages, True, True, 'footer', True, convert_function=convert_function)
+            ocr.footer_last_text = return_text(files.img, tesseract_function, ocr)
 
 
 def return_text(img, tesseract_function, ocr):
@@ -417,7 +417,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     system_fields_to_find = []
     custom_fields_to_find = []
-    form_id_found_with_ai = False
 
     change_workflow = False
     convert_function = 'pdf2image'
@@ -440,11 +439,16 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if 'ai_model_id' in workflow_settings['input'] and workflow_settings['input']['ai_model_id']:
             ai_model_id = workflow_settings['input']['ai_model_id']
-            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, artificial_intelligence, ocr, log,
-                                    'verifier')
+            res = find_workflow_with_ia(file, ai_model_id, database, docservers, _Files, ocr, log, 'verifier')
             if res:
-                form_id_found_with_ai = True
-                datas.update({'form_id': res})
+                return send_to_workflow({
+                    'ip': args['ip'],
+                    'log': log,
+                    'file': file,
+                    'user_info': args['user_info'],
+                    'workflow_id': res,
+                    'custom_id': args['custom_id'],
+                })
 
         # Launch input scripting if present
         change_workflow = launch_script(workflow_settings, docservers, 'input', log, file, database, args, config)
@@ -620,8 +624,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             if 'override_supplier_form' in workflow_settings['process'] and \
                     workflow_settings['process']['override_supplier_form'] or \
                     not supplier or ('form_id' not in supplier[2] or not supplier[2]['form_id']):
-                if not form_id_found_with_ai:
-                    datas.update({'form_id': workflow_settings['process']['form_id']})
+                datas.update({'form_id': workflow_settings['process']['form_id']})
             elif ('override_supplier_form' not in workflow_settings['process'] or
                   not workflow_settings['process']['override_supplier_form']) and supplier and supplier[2]['form_id']:
                 datas.update({'form_id': supplier[2]['form_id']})
@@ -812,16 +815,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         full_jpg_filename = str(uuid.uuid4())
         file = files.move_to_docservers(docservers, file)
-        if file.lower().endswith('.pdf'):
-            files.save_img_with_pdf2image(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename,
-                                          docservers=True, rotate=True, page_to_save=1)
-            files.save_img_with_pdf2image_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename, rotate=True,
-                                              single_file=True)
-        else:
-            files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], file, full_jpg_filename + '-001.jpg',
-                                           True)
-            files.move_to_docservers_image(docservers['VERIFIER_THUMB'], file, full_jpg_filename + '-001.jpg', True)
-
+        files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], files.jpg_name, full_jpg_filename + '-001.jpg'
+                                       , copy=True, rotate=True)
+        files.move_to_docservers_image(docservers['VERIFIER_THUMB'], files.jpg_name, full_jpg_filename + '-001.jpg',
+                                       copy=True)
         allow_auto = False
         if workflow_settings and workflow_settings['input']['apply_process']:
             if (workflow_settings['process']['use_interface'] and

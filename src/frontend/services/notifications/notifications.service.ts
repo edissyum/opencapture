@@ -89,7 +89,7 @@ export class NotificationService {
                     }
                 }
 
-                if (err.status === 403 || err.status === 404) {
+                if (err.status === 403 || (err.status === 404 && !err.errors.message)) {
                     this.router.navigate(['/login']).then();
                 } else if (err.error.errors === this.translate.instant('ERROR.jwt_error')) {
                     this.router.navigate(['/logout']).then();

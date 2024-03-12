@@ -16,10 +16,10 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
-import sys
 import uuid
 import json
 import zeep
+import magic
 import base64
 import secrets
 import logging
@@ -574,6 +574,22 @@ def get_thumb_by_document_id(document_id):
         return get_file_content('full', document_info['full_jpg_filename'], 'image/jpeg', year_and_month=year_and_month)
     else:
         return '', 404
+
+
+def get_original_doc_by_document_id(document_id):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+    if not error:
+        path = document_info['path'] + '/' + document_info['filename']
+        mime = magic.Magic(mime=True)
+        mime_type = mime.from_file(path)
+        with open(path, 'rb') as file:
+            content = file.read()
+
+        if not content:
+            return None, ''
+        return content, mime_type
+    else:
+        return None, ''
 
 
 def get_file_content(file_type, filename, mime_type, compress=False, year_and_month=False, document_id=False):

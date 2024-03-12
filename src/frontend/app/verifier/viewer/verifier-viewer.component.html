@@ -57,14 +57,14 @@
             </div>
         </div>
         <div *ngIf="this.fields" id="form" class="px-4 overflow-auto pt-2">
-            <div *ngIf="this.formSettings.settings['unique_url']['change_form']">
-                <div class="relative float-left top-5">
+            <div *ngIf="this.formSettings.settings['unique_url']['change_form']" class="grid grid-cols-12 gap-2 w-full">
+                <div class="relative top-5 text-center">
                     <i class="fa-solid fa-eye cursor-pointer text-green-400 text-lg" (click)="hideVisuals()"
                        *ngIf="!this.visualIsHide" [matTooltip]="'VERIFIER.hide_visuals' | translate"></i>
                     <i class="fa-solid fa-eye-slash cursor-pointer text-green-400 text-lg" (click)="hideVisuals()"
                        *ngIf="this.visualIsHide" [matTooltip]="'VERIFIER.show_visuals' | translate"></i>
                 </div>
-                <div class="relative z-20 float-right" style="width: 96%">
+                <div class="z-20 col-span-10">
                     <mat-accordion>
                         <mat-expansion-panel class="top-2 mb-4" [(expanded)]="this.settingsOpen">
                             <mat-expansion-panel-header>
@@ -88,6 +88,10 @@
                             </mat-tab-group>
                         </mat-expansion-panel>
                     </mat-accordion>
+                </div>
+                <div class="relative top-5 text-center">
+                    <i class="fa-solid fa-download cursor-pointer text-green-400 text-lg" (click)="downloadOriginalFile()"
+                       [matTooltip]="'VERIFIER.download_original_file' | translate"></i>
                 </div>
             </div>
             <div *ngIf="!this.formEmpty else noField">

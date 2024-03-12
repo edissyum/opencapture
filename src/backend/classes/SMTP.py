@@ -126,7 +126,6 @@ class SMTP:
             if diff_minutes is not False and self.delay != 0 and diff_minutes < self.delay:
                 pass
             else:
-                print(msg['From'], msg['To'], msg.as_string())
                 self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
                 with open(file, 'w', encoding='UTF-8') as last_notif:
                     last_notif.write(datetime.now().strftime('%d/%m/%Y %H:%M'))

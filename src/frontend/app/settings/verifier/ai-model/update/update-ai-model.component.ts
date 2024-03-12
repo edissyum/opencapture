@@ -39,16 +39,14 @@ export class UpdateVerifierAiModelComponent implements OnInit {
     loading             : boolean   = true;
     modelId             : number    = 0;
     doc_types           : any       = [];
-    forms               : any       = [];
-    formById            : any       = [];
-    doctypesFormControl : any       = [];
-    formsFormControl    : any       = [];
+    workflows           : any       = [];
+    worklowById         : any       = [];
+    workflowsFormControl: any       = [];
     tableData           : any       = [];
-    chosenForm          : any       = [];
+    choseWorkflow       : any       = [];
     chosenDocs          : any       = [];
     documents           : any       = [];
     len                 : number    = 0;
-    splitterOrVerifier  : any       = 'verifier';
     modelForm           : any[]     = [
         {
             id: 'model_label',
@@ -86,12 +84,6 @@ export class UpdateVerifierAiModelComponent implements OnInit {
     ) {}
 
     async ngOnInit() {
-        if (this.router.url.includes('/verifier/')) {
-            this.splitterOrVerifier = 'verifier';
-        } else if (this.router.url.includes('/splitter/')) {
-            this.splitterOrVerifier = 'splitter';
-        }
-
         this.modelForm.forEach((element: any) => {
             if (element.id === 'model_path') {
                 element.control.valueChanges.subscribe((value: any) => {
@@ -104,33 +96,19 @@ export class UpdateVerifierAiModelComponent implements OnInit {
 
         this.serviceSettings.init();
         this.modelId = this.route.snapshot.params['id'];
-        this.retrieveOCDoctypes();
-        await this.retrieveForms();
+        await this.retrieveWorkflows();
         this.http.get(environment['url'] + '/ws/ai/getById/' + this.modelId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.documents = data.documents;
-                const selectedFormId : any = [];
                 this.len = this.documents.length;
                 for (let i = 0; i < this.len; i++) {
-                    if (this.splitterOrVerifier === 'splitter') {
-                        for (const element of this.doc_types) {
-                            if (element.id === this.documents[i].doctype) {
-                                selectedFormId.push(element.formId);
-                                break;
-                            }
-                        }
-                        this.formById.push((this.forms.find((a: { id: number; }) => a.id === selectedFormId[i])).id);
-                        this.chosenDocs[i] = this.doc_types.filter((a: { formId: number; }) => a.formId === selectedFormId[i]);
-                    } else if (this.splitterOrVerifier === 'verifier') {
-                        for (const doc of this.documents) {
-                            if (doc.form) {
-                                this.formById.push(doc.form);
-                            }
+                    for (const doc of this.documents) {
+                        if (doc.workflow_id) {
+                            this.worklowById.push(doc.workflow_id);
                         }
                     }
-                    this.doctypesFormControl.push(new FormControl(this.documents[i].doctype, [Validators.required]));
-                    this.formsFormControl.push(new FormControl(this.formById[i], [Validators.required]));
-                    this.tableData.push({Documents: this.documents[i].folder, Doctypes: this.documents[i].doctype, Formulaires: this.formById[i], id: i});
+                    this.workflowsFormControl.push(new FormControl(this.worklowById[i], [Validators.required]));
+                    this.tableData.push({Documents: this.documents[i].folder, Formulaires: this.worklowById[i], id: i});
                 }
 
                 for (const field in data) {
@@ -152,7 +130,7 @@ export class UpdateVerifierAiModelComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
-                this.router.navigate(['/settings/' + this.splitterOrVerifier + '/ai']).then();
+                this.router.navigate(['/settings/verifier/ai']).then();
                 return of(false);
             })
         ).subscribe();
@@ -163,23 +141,21 @@ export class UpdateVerifierAiModelComponent implements OnInit {
             const minProba = this.getValueFromForm(this.modelForm, 'min_proba');
             const modelPath = this.getValueFromForm(this.modelForm, 'model_path');
             const modelLabel = this.getValueFromForm(this.modelForm, 'model_label');
-            const doctypes = [];
+            const documents = [];
             for (let i = 0; i < this.len; i++) {
                 const fold = this.documents[i].folder;
-                const formid = this.formsFormControl[i].value;
-                const oc_targets = this.doctypesFormControl[i].value;
-                doctypes.push({
+                const workflow_id = this.workflowsFormControl[i].value;
+                documents.push({
                     folder: fold,
-                    doctype: oc_targets,
-                    form: formid
+                    workflow_id: workflow_id
                 });
             }
             if (this.modelId !== undefined) {
-                this.http.post(environment['url'] + '/ws/ai/' + this.splitterOrVerifier + '/update/' + this.modelId, {
-                    model_path: modelPath, model_label: modelLabel, min_proba: minProba, doctypes: doctypes }, {headers: this.authService.headers}).pipe(
+                this.http.post(environment['url'] + '/ws/ai/verifier/update/' + this.modelId, {
+                    model_path: modelPath, model_label: modelLabel, min_proba: minProba, documents: documents }, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.model_updated'));
-                        this.router.navigate(['/settings/' + this.splitterOrVerifier + '/ai']).then();
+                        this.router.navigate(['/settings/verifier/ai']).then();
                     }),
                     catchError((err: any) => {
                         console.debug(err);
@@ -212,36 +188,10 @@ export class UpdateVerifierAiModelComponent implements OnInit {
         return value;
     }
 
-    retrieveOCDoctypes() {
-        this.doc_types = [];
-        this.http.get(environment['url'] + '/ws/ai/list/document', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                let newDoctype;
-                data.doctypes.forEach((doctype: any) => {
-                    newDoctype = {
-                        'id': doctype.id,
-                        'key': doctype.key,
-                        'code': doctype.code,
-                        'label': doctype.label,
-                        'type': doctype.type,
-                        'status': doctype.status,
-                        'isDefault': doctype.is_default,
-                        'formId': doctype.form_id
-                    };
-                    this.doc_types.push(newDoctype);
-                });
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    async retrieveForms() {
-        const retrieve = this.http.get(environment['url'] + '/ws/forms/' + this.splitterOrVerifier + '/list', {headers: this.authService.headers}).pipe(
-            tap((forms: any) => {
-                this.forms = forms.forms;
+    async retrieveWorkflows() {
+        const retrieve = this.http.get(environment['url'] + '/ws/workflows/verifier/list', {headers: this.authService.headers}).pipe(
+            tap((workflows: any) => {
+                this.workflows = workflows.workflows;
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -253,14 +203,13 @@ export class UpdateVerifierAiModelComponent implements OnInit {
         return await lastValueFrom(retrieve).then();
     }
 
-    onFormSelect(event: any, index: number) {
+    onWorkflowSelect(event: any, index: number) {
         const val = event.value;
-        for (const element of this.forms) {
+        for (const element of this.workflows) {
             if (element.id === val) {
-                this.chosenForm[index] = element.id;
-                this.chosenDocs[index] = this.doc_types.filter((a: { formId: number; }) => a.formId === this.chosenForm[index]);
+                this.choseWorkflow[index] = element.workflow_id;
+                this.chosenDocs[index] = this.doc_types.filter((a: { workflowId: number; }) => a.workflowId === this.choseWorkflow[index]);
             }
         }
-        this.doctypesFormControl[index].value = this.chosenDocs[index][0].id;
     }
 }
