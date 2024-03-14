@@ -106,7 +106,7 @@ export class VariousSettingsVerifierComponent implements OnInit {
         },
         {
             'id': 'form_label',
-            'label': 'VERIFIER.form'
+            'label': 'ACCOUNTS.form'
         },
         {
             'id': 'original_filename',

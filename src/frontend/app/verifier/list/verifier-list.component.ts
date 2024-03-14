@@ -382,7 +382,7 @@ export class VerifierListComponent implements OnInit {
                                     {"id": "document_date", "label": "FACTURATION.document_date"},
                                     {"id": "date", "label": "VERIFIER.register_date"},
                                     {"id": "original_filename", "label": "VERIFIER.original_file"},
-                                    {"id": "form_label", "label": "VERIFIER.form"}
+                                    {"id": "form_label", "label": "ACCOUNTS.form"}
                                 ]
                             };
                         }
