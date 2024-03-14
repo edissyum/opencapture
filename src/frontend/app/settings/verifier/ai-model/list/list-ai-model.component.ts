@@ -42,11 +42,11 @@ import { FileValidators } from "ngx-file-drag-drop";
 export class ListVerifierAiModelComponent implements OnInit {
     displayedColumns    : string[]    = ['id', 'model_label', 'accuracy_score', 'documents', 'min_proba', 'status', 'actions'];
     inter               : any;
+    clickedRow          : any;
     offset              : number      = 0;
     pageIndex           : number      = 0;
     total               : number      = 0;
     pageSize            : number      = 10;
-    clickedRow          : object      = {};
     prediction          : any         = [];
     modelsList          : any         = [];
     loading             : boolean     = true;
@@ -173,15 +173,6 @@ export class ListVerifierAiModelComponent implements OnInit {
                     return;
                 }
             }
-        }
-    }
-
-    displaySelectedRowId() {
-        const disp = Object.values(this.clickedRow)[2];
-        if (disp) {
-            return (disp);
-        } else {
-            return 0;
         }
     }
 

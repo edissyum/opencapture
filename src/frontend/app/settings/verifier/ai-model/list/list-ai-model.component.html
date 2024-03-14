@@ -14,7 +14,7 @@
             </div>
             <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="settings_search">
-                <button mat-icon-button *ngIf="displaySelectedRowId()" (click)="sidenav2.toggle();">
+                <button mat-icon-button (click)="sidenav2.toggle();">
                     <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened"
                        class="fa-solid fa-stream text-xl text-gray-900"></i>
                 </button>
@@ -98,11 +98,11 @@
             {{ 'ARTIFICIAL-INTELLIGENCE.test_model' | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <div class="grid grid-cols-1 gap-x-2 gap-y-2 m-4">
+        <div class="grid grid-cols-1 gap-x-2 gap-y-2 m-4" *ngIf="this.clickedRow">
             <mat-card class="w-full border-solid border-green-400 border rounded-lg transition duration-300">
                 <mat-card-title class="p-4">
                     {{ 'ARTIFICIAL-INTELLIGENCE.model_selected'| translate }}
-                    {{ displaySelectedRowId() }}
+                    {{ this.clickedRow['model_label'] }}
                 </mat-card-title>
                 <mat-card-actions class="block">
                     <div class="w-full">

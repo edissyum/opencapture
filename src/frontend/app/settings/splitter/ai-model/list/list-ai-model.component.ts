@@ -42,11 +42,11 @@ import { FileValidators } from "ngx-file-drag-drop";
 export class ListSplitterAiModelComponent implements OnInit {
     displayedColumns    : string[]    = ['id', 'model_label', 'accuracy_score', 'documents', 'min_proba', 'status', 'actions'];
     inter               : any;
+    clickedRow          : any;
     offset              : number      = 0;
     pageIndex           : number      = 0;
     total               : number      = 0;
     pageSize            : number      = 10;
-    clickedRow          : object      = {};
     modelsList          : any         = [];
     prediction          : any         = [];
     loading             : boolean     = true;
@@ -168,15 +168,6 @@ export class ListSplitterAiModelComponent implements OnInit {
                     return;
                 }
             }
-        }
-    }
-
-    displaySelectedRowId() {
-        const disp = Object.values(this.clickedRow)[2];
-        if (disp) {
-            return (disp);
-        } else {
-            return 0;
         }
     }
 
