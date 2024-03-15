@@ -14,14 +14,14 @@
             </div>
             <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="settings_search">
-                <button mat-icon-button (click)="sidenav2.toggle();">
+                <button mat-icon-button (click)="sidenav2.toggle();" *ngIf="availableFieldsTabGroup.selectedIndex == 0">
                     <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
                 </button>
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
         <div class="overflow-x-hidden overflow-y-auto h-full-overflow">
-            <mat-tab-group (selectedTabChange)="sidenav2.toggle(); resetSelectedForm()">
+            <mat-tab-group (selectedTabChange)="availableFieldsTabGroup.selectedIndex == 0 ? sidenav2.open() : sidenav2.close(); resetSelectedForm()" #availableFieldsTabGroup>
                 <mat-tab [label]="'FORMS.batch_display' | translate">
                     <app-hint [message]="'FORMS.display_hint' | translate"></app-hint>
                     <div class="w-1/3 m-auto mt-4">

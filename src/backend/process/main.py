@@ -107,7 +107,7 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
                 os.remove(tmp_file)
                 return change_workflow and res != 'DISABLED'
         except (Exception,):
-            log.error('Error during ' + step + ' scripting :s' + str(traceback.format_exc()))
+            log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
             os.remove(tmp_file)
 
 

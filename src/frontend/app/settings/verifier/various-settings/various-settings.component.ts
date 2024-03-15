@@ -16,10 +16,10 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { UserService } from "../../../../services/user.service";
-import { FormBuilder, FormControl } from "@angular/forms";
+import { FormControl } from "@angular/forms";
 import { AuthService } from "../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
@@ -106,7 +106,7 @@ export class VariousSettingsVerifierComponent implements OnInit {
         },
         {
             'id': 'form_label',
-            'label': 'VERIFIER.form'
+            'label': 'ACCOUNTS.form'
         },
         {
             'id': 'original_filename',
@@ -117,9 +117,7 @@ export class VariousSettingsVerifierComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
-        private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
