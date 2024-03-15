@@ -27,7 +27,7 @@ from flask_babel import gettext
 
 from src.backend.import_models import artificial_intelligence
 from src.backend.functions import retrieve_config_from_custom_id
-from src.backend.import_classes import _Files, _Splitter, _SeparatorQR, _Log
+from src.backend.import_classes import _Files, _Splitter, _SeparatorQR, _Log, _ArtificialIntelligence
 from src.backend.main import timer, check_file, create_classes_from_custom_id
 
 kuyruk = Kuyruk()
@@ -53,6 +53,7 @@ def launch(args):
 
         database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages, \
             _artificial_intelligence = create_classes_from_custom_id(args['custom_id'], True)
+
         database.update({
             'table': ['monitoring'],
             'set': {
@@ -140,6 +141,11 @@ def launch(args):
 
         if args.get('isMail') is not None and args['isMail'] is True:
             log = _Log((args['log']), smtp)
+            log.task_id_monitor = args['task_id_monitor']
+            log.database = database
+            log.prefix = '[MailCollect]'
+            if 'current_step' in args:
+                log.current_step = args['current_step']
             log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 
         database.connect()
