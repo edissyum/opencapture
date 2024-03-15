@@ -140,7 +140,9 @@ def update_model(data, model_id, module, fill_history=False):
     if 'min_proba' in data:
         args['set']['min_proba'] = data['min_proba']
     if 'documents' in data:
-        args['set']['documents'] = json.dumps(data['documents'])
+        if isinstance(data['documents'], list):
+            data['documents'] = json.dumps(data['documents'])
+        args['set']['documents'] = data['documents']
     if 'train_time' in data:
         args['set']['train_time'] = data['train_time']
     if 'accuracy_score' in data:

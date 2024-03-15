@@ -125,7 +125,7 @@ export class UpdateSplitterAiModelComponent implements OnInit {
                         min_proba: minProba,
                         model_label: modelLabel,
                         model_path: modelPath,
-                        doctypes: this.AiModel.trainDocuments
+                        doctypes: this.AiModel['trainDocuments']
                     }, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.model_updated'));
@@ -199,7 +199,8 @@ export class UpdateSplitterAiModelComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result) {
-                trainDocument.doctype   = result.key;
+                trainDocument.doctype = result.key;
+                trainDocument.doctype_label = result.label;
             }
         });
     }

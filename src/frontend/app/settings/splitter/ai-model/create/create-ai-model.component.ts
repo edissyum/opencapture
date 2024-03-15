@@ -216,7 +216,7 @@ export class CreateSplitterAiModelComponent implements OnInit {
             height  : '860px',
             data    : {
                 selectedDoctype: {
-                    key: trainFolder.doctype  ? trainFolder.doctype  : "",
+                    key: trainFolder.doctype ? trainFolder.doctype : "",
                     label: ""
                 },
                 formId: trainFolder.form
@@ -224,7 +224,8 @@ export class CreateSplitterAiModelComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result) {
-                trainFolder.doctype   = result.key;
+                trainFolder.doctype = result.key;
+                trainFolder.doctype_label = result.label;
             }
         });
     }
