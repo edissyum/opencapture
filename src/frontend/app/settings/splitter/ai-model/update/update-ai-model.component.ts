@@ -100,6 +100,23 @@ export class UpdateSplitterAiModelComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/ai/getById/' + this.AiModel.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.AiModel.trainFolders = data.documents;
+                this.http.get(environment['url'] + '/ws/doctypes/list', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        data.doctypes.forEach((doctype: any) => {
+                            this.AiModel.trainFolders.forEach((trainFolder: any) => {
+                                if (trainFolder.doctype === doctype.key) {
+                                    trainFolder.doctype_label = doctype.label;
+                                }
+                            });
+                        });
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.loading = false;
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
                 this.setFormValue(this.AiModel.fields, 'model_label', data.model_label);
                 this.setFormValue(this.AiModel.fields, 'model_path', data.model_path);
                 this.setFormValue(this.AiModel.fields, 'min_proba', data.min_proba);
@@ -123,9 +140,9 @@ export class UpdateSplitterAiModelComponent implements OnInit {
             if (this.AiModel.id !== undefined) {
                 this.http.post(environment['url'] + '/ws/ai/splitter/update/' + this.AiModel.id, {
                         min_proba: minProba,
-                        model_label: modelLabel,
                         model_path: modelPath,
-                        doctypes: this.AiModel['trainDocuments']
+                        model_label: modelLabel,
+                        documents: this.AiModel['trainFolders']
                     }, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.model_updated'));
@@ -171,7 +188,8 @@ export class UpdateSplitterAiModelComponent implements OnInit {
     }
 
     async retrieveForms() {
-        const retrieve = this.http.get(environment['url'] + '/ws/forms/splitter/list', {headers: this.authService.headers}).pipe(
+        const retrieve = this.http.get(environment['url'] + '/ws/forms/splitter/list',
+            {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.forms = forms.forms;
             }),
