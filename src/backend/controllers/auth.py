@@ -35,6 +35,65 @@ from src.backend.import_models import auth, user, roles, monitoring, history
 from flask import request, g as current_context, jsonify, current_app, session
 
 
+def handle_login(data):
+    login_method = get_enabled_login_method()
+    enabled_login_method = [{'method_name': 'default'}]
+    if login_method and 'login_method_name' in login_method[0] and login_method[0]['login_method_name']:
+        enabled_login_method = login_method[0]['login_method_name']
+
+    res = check_connection()
+    if enabled_login_method and enabled_login_method[0]['method_name'] == 'default':
+        if res is None:
+            if 'username' in data and 'password' in data:
+                res = login(data['username'], data['password'], data['lang'])
+                if res[1] == 200 and data['username'] == 'admin' and data['password'] == 'admin':
+                    res[0]['admin_password_alert'] = 'True'
+            elif 'token' in data:
+                res = login_with_token(data['token'], data['lang'])
+            else:
+                res = ('', 402)
+        else:
+            res = [{
+                "errors": gettext('PGSQL_ERROR'),
+                "message": res.replace('\n', '')
+            }, 401]
+    elif enabled_login_method and enabled_login_method[0]['method_name'] == 'ldap':
+        if res is None:
+            if 'token' in data:
+                res = login_with_token(data['token'], data['lang'])
+            else:
+                is_user_exists = verify_user_by_username(data['username'])
+                if is_user_exists and is_user_exists[1] == 200:
+                    role_id = get_user_role_by_username(data['username'])
+                    if role_id and role_id == 'superadmin':
+                        res = login(data['username'], data['password'], data['lang'])
+                    else:
+                        configs = get_ldap_configurations()
+                        if configs and configs[0]['ldap_configurations']:
+                            res = ldap_connection_bind(configs, data)
+                        else:
+                            error = configs[0]['message']
+                            res = [{
+                                "errors": error,
+                            }, 401]
+                else:
+                    res = [{
+                        "errors": gettext('LOGIN_ERROR'),
+                        "message": gettext('BAD_USERNAME')
+                    }, 401]
+        else:
+            res = [{
+                "errors": gettext('PGSQL_ERROR'),
+                "message": res.replace('\n', '')
+            }, 401]
+
+    if res[1] == 200:
+        res[0]['refresh_token'] = encode_auth_token(res[0]['user']['id'])[0]
+        user.update_user({'set': {'refresh_token': res[0]['refresh_token']}, 'user_id': res[0]['user']['id']})
+
+    return res
+
+
 def check_connection():
     if 'config' in current_context:
         config = current_context.config
@@ -210,7 +269,7 @@ def decode_unique_url_token(token):
     return decoded_token, 200
 
 
-def logout(user_info):
+def logout(user_id):
     for key in list(session.keys()):
         session.pop(key)
 
@@ -235,11 +294,19 @@ def logout(user_info):
     if 'configurations' in current_context:
         current_context.pop('configurations')
 
+    user_info = user.get_user_by_id({'select': ['lastname', 'firstname', 'username'], 'user_id': user_id})
+    if user_info:
+        user_info = user_info[0]
+        user_info = user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')'
+
+    user.update_user({'set': {'refresh_token': ''}, 'user_id': user_id})
+
     history.add_history({
         'module': 'general',
         'ip': request.remote_addr,
         'submodule': 'logout',
         'user_info': user_info,
+        'user_id': user_id,
         'desc': gettext('LOGOUT')
     })
 

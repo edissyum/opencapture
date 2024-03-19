@@ -65,6 +65,7 @@ export class AuthService {
         let configName = 'OpenCaptureConfig';
         let userDataName = 'OpenCaptureUserData';
         let cachedUrlName = 'OpenCaptureCachedUrl';
+        let refreshTokenName = 'OpenCaptureRefreshToken';
         let minimizeDisplay = 'OpenCaptureMinimizeDisplay';
 
         if (environment['customId']) {
@@ -73,26 +74,30 @@ export class AuthService {
             userDataName += '_' + environment['customId'];
             cachedUrlName += '_' + environment['customId'];
             minimizeDisplay += '_' + environment['customId'];
+            refreshTokenName += '_' + environment['customId'];
         } else if (environment['fqdn']) {
             tokenName += '_' + environment['fqdn'];
             configName += '_' + environment['fqdn'];
             userDataName += '_' + environment['fqdn'];
             cachedUrlName += '_' + environment['fqdn'];
             minimizeDisplay += '_' + environment['fqdn'];
+            refreshTokenName += '_' + environment['fqdn'];
         }
         return {
             'tokenJwt': tokenName,
             'configName': configName,
             'userData': userDataName,
             'cachedUrlName': cachedUrlName,
-            'minimizeDisplay': minimizeDisplay
+            'minimizeDisplay': minimizeDisplay,
+            'refreshTokenJwt': refreshTokenName
         };
     }
 
-    setTokens(token: string, user_token: string) {
+    setTokens(token: string, refresh_token: string, user_token: string) {
         const tokenNames = this.getTokenName();
         this.localStorage.save(tokenNames['tokenJwt'], token);
         this.localStorage.save(tokenNames['userData'], user_token);
+        this.localStorage.save(tokenNames['refreshTokenJwt'], refresh_token);
         this.localStorage.save(tokenNames['minimizeDisplay'], 'true');
     }
 
@@ -104,10 +109,6 @@ export class AuthService {
     logout() {
         const tokenNames = this.getTokenName();
         const user = this.userService.getUser();
-        let user_info = '';
-        if (user) {
-            user_info = user['lastname'] + ' ' + user['firstname'] + ' (' + user['username'] + ')';
-        }
 
         this.userService.setUser({});
         this.localStorage.remove('loginImageB64');
@@ -116,8 +117,10 @@ export class AuthService {
         this.localStorage.remove(tokenNames['userData']);
         this.localStorage.remove('splitter_or_verifier');
         this.localStorage.remove('selectedParentSettings');
+        this.localStorage.remove(tokenNames['refreshTokenJwt']);
         this.localStorage.remove(tokenNames['minimizeDisplay']);
-        this.http.get(environment['url'] + '/ws/auth/logout?user_info=' + user_info).pipe(
+
+        this.http.get(environment['url'] + '/ws/auth/logout?user_id=' + user['id']).pipe(
             catchError((err: any) => {
                 console.debug(err);
                 return of(false);

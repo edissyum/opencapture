@@ -27,6 +27,7 @@ def add_history(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
+
     args = {
         'table': 'history',
         'columns': {
