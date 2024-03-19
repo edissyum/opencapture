@@ -143,10 +143,13 @@ def launch(args):
             })
 
             if workflow_settings:
-                splitter_method = workflow_settings[0]['input']['splitter_method_id']
-                remove_blank_pages = workflow_settings[0]['input']['remove_blank_pages']
-                if splitter_method == 'separate_by_document_number':
-                    separate_every_x_page = workflow_settings[0]['input']['separate_by_document_number_value']
+                if 'input' in workflow_settings[0]:
+                    if 'splitter_method_id' in workflow_settings[0]['input']:
+                        splitter_method = workflow_settings[0]['input']['splitter_method_id']
+                        if splitter_method == 'separate_by_document_number':
+                            separate_every_x_page = workflow_settings[0]['input']['separate_by_document_number_value']
+                    if 'remove_blank_pages' in workflow_settings[0]['input']:
+                        remove_blank_pages = workflow_settings[0]['input']['remove_blank_pages']
 
         separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier', files, remove_blank_pages, docservers,
                                     splitter_method)
