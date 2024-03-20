@@ -88,10 +88,61 @@ def handle_login(data):
             }, 401]
 
     if res[1] == 200:
-        res[0]['refresh_token'] = encode_auth_token(res[0]['user']['id'])[0]
+        res[0]['refresh_token'] = encode_auth_token(res[0]['user']['id'], refresh_token=True)[0]
         user.update_user({'set': {'refresh_token': res[0]['refresh_token']}, 'user_id': res[0]['user']['id']})
 
     return res
+
+
+def get_user(user_info):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    configurations = _vars[10]
+
+    if configurations['allowUserMultipleLogin'] is not True:
+        last_connection = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        user.update_user({'set': {'last_connection': last_connection}, 'user_id': user_info['id']})
+
+    returned_user = user.get_user_by_id({
+        'select': ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
+        'user_id': user_info['id']
+    })[0]
+
+    user_privileges = privileges.get_privileges_by_role_id({'role_id': returned_user['role']})
+    if user_privileges:
+        returned_user['privileges'] = user_privileges[0]
+
+    user_role = roles.get_role_by_id({'role_id': returned_user['role']})
+    if user_role:
+        returned_user['role'] = user_role[0]
+    return returned_user
+
+
+def refresh(token):
+    try:
+        payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms="HS512")
+        user_id = payload['sub']
+
+        user_info = user.get_user_by_id({'select': ['refresh_token'], 'user_id': user_id})
+        if user_info:
+            user.update_user({'set': {'refresh_token': ''}, 'user_id': user_id})
+            if user_info[0]['refresh_token'] == token:
+                res = {
+                    'token': encode_auth_token(user_id)[0],
+                    'user': get_user({'id': user_id})
+                }
+                return res, 200
+            else:
+                return '', 401
+    except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
+            jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
+        error_message = str(_e)
+        code = 500
+        if error_message == 'Signature has expired':
+            code = 401
+            error_message = gettext('SESSION_EXPIRED')
+        return jsonify({"errors": gettext("JWT_ERROR"), "message": error_message}), code
+    return '', 200
 
 
 def check_connection():
@@ -119,19 +170,19 @@ def check_connection():
 
 def check_token(token):
     try:
-        payload = jwt.decode(token, current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
+        payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         error_message = str(_e)
+        code = 500
         if error_message == 'Signature has expired':
+            code = 401
             error_message = gettext('SESSION_EXPIRED')
-        return {"errors": gettext("JWT_ERROR"), "message": error_message}, 500
+        return {"errors": gettext("JWT_ERROR"), "message": error_message}, code
     return payload, 200
 
 
 def generate_token(user_id, days_before_exp):
-    secret_key = current_app.config['SECRET_KEY'].replace("\n", "")
-
     try:
         payload = {
             'exp': datetime.datetime.utcnow() + datetime.timedelta(days=days_before_exp),
@@ -140,14 +191,14 @@ def generate_token(user_id, days_before_exp):
         }
         return jwt.encode(
             payload,
-            secret_key,
+            current_app.config['SECRET_KEY'],
             algorithm='HS512'
         ), 200
     except (Exception,) as _e:
         return str(_e), 500
 
 
-def encode_auth_token(user_id):
+def encode_auth_token(user_id, refresh_token=False):
     if 'configurations' in current_context:
         configurations = current_context.configurations
     else:
@@ -157,14 +208,17 @@ def encode_auth_token(user_id):
     minutes_before_exp = int(configurations['jwtExpiration'])
 
     try:
+        time_delta = datetime.timedelta(minutes=minutes_before_exp)
+        if refresh_token:
+            time_delta = datetime.timedelta(days=1)
         payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=minutes_before_exp),
+            'exp': datetime.datetime.utcnow() + time_delta,
             'iat': datetime.datetime.utcnow(),
             'sub': user_id
         }
         return jwt.encode(
             payload,
-            current_app.config['SECRET_KEY'].replace("\n", ""),
+            current_app.config['SECRET_KEY'],
             algorithm='HS512'
         ), minutes_before_exp
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
@@ -218,7 +272,7 @@ def generate_unique_url_token(token, workflow_id, module):
         }
         return jwt.encode(
             payload,
-            current_app.config['SECRET_KEY'].replace("\n", ""),
+            current_app.config['SECRET_KEY'],
             algorithm='HS512'
         )
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
@@ -238,7 +292,7 @@ def generate_reset_token(user_id):
         }
         return jwt.encode(
             payload,
-            current_app.config['SECRET_KEY'].replace("\n", ""),
+            current_app.config['SECRET_KEY'],
             algorithm='HS512'
         )
     except (Exception,) as _e:
@@ -247,25 +301,29 @@ def generate_reset_token(user_id):
 
 def decode_reset_token(token):
     try:
-        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
+        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         error_message = str(_e)
+        code = 500
         if error_message == 'Signature has expired':
+            code = 401
             error_message = gettext('SESSION_EXPIRED')
-        return {"errors": gettext("RESET_JWT_ERROR"), "message": error_message}, 500
+        return {"errors": gettext("RESET_JWT_ERROR"), "message": error_message}, code
     return decoded_token, 200
 
 
 def decode_unique_url_token(token):
     try:
-        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
+        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         error_message = str(_e)
+        code = 500
         if error_message == 'Signature has expired':
+            code = 401
             error_message = gettext('SESSION_EXPIRED')
-        return {"errors": gettext("UNIQUE_URL_JWT_ERROR"), "message": error_message}, 500
+        return {"errors": gettext("UNIQUE_URL_JWT_ERROR"), "message": error_message}, code
     return decoded_token, 200
 
 
@@ -337,27 +395,8 @@ def login(username, password, lang, method='default'):
         user_info, error = user.get_user_by_username({"select": ['users.id', 'users.username'], "username": username})
 
     if error is None:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[10]
-
         encoded_token = encode_auth_token(user_info['username'])
-        if configurations['allowUserMultipleLogin'] is not True:
-            last_connection = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            user.update_user({'set': {'last_connection': last_connection}, 'user_id': user_info['id']})
-
-        returned_user = user.get_user_by_id({
-            'select': ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
-            'user_id': user_info['id']
-        })[0]
-
-        user_privileges = privileges.get_privileges_by_role_id({'role_id': returned_user['role']})
-        if user_privileges:
-            returned_user['privileges'] = user_privileges[0]
-
-        user_role = roles.get_role_by_id({'role_id': returned_user['role']})
-        if user_role:
-            returned_user['role'] = user_role[0]
+        returned_user = get_user(user_info)
 
         response = {
             'auth_token': str(encoded_token[0]),
@@ -393,20 +432,18 @@ def login_with_token(token, lang):
     error = None
 
     try:
-        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
+        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         error_message = str(_e)
+        code = 500
         if error_message == 'Signature has expired':
+            code = 401
             error_message = gettext('SESSION_EXPIRED')
-        return jsonify({"errors": gettext("JWT_ERROR"), "message": error_message}), 500
+        return jsonify({"errors": gettext("JWT_ERROR"), "message": error_message}), code
 
     if error is None:
-        returned_user = user.get_user_by_username({
-            'select': ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
-            'username': decoded_token['sub']
-        })[0]
-
+        returned_user = get_user({'id': decoded_token['sub']})
         user_privileges = privileges.get_privileges_by_role_id({'role_id': returned_user['role']})
         if user_privileges:
             returned_user['privileges'] = user_privileges[0]
@@ -448,18 +485,22 @@ def token_required(view):
                 token = request.headers['Authorization'].split('Bearer')[1].lstrip()
 
                 try:
-                    token = jwt.decode(str(token), current_app.config['SECRET_KEY'].replace("\n", ""), algorithms="HS512")
+                    token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
                     data = []
                     if 'sub' in token:
+                        if isinstance(token['sub'], int):
+                            where = ['id = %s']
                         data = [token['sub']]
                     elif 'process_token' in token:
                         data = [token['process_token']]
                 except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
                         jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
                     error_message = str(_e)
+                    code = 500
                     if error_message == 'Signature has expired':
+                        code = 401
                         error_message = gettext('SESSION_EXPIRED')
-                    return jsonify({"errors": gettext("JWT_ERROR"), "message": error_message}), 500
+                    return jsonify({"errors": gettext("JWT_ERROR"), "message": error_message}), code
 
                 request.environ['fromBasicAuth'] = False
             elif 'Basic' in request.headers['Authorization']:

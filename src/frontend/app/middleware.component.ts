@@ -15,18 +15,22 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Injectable } from '@angular/core';
+import {Observable, switchMap} from "rxjs";
 import { environment } from "./env";
-import { Observable } from "rxjs";
-import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { LocalStorageService } from "../services/local-storage.service";
 import { Router } from "@angular/router";
+import { Injectable } from '@angular/core';
+import { catchError } from "rxjs/operators";
+import { AuthService } from "../services/auth.service";
+import { LocalStorageService } from "../services/local-storage.service";
+import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from "@angular/common/http";
 
 @Injectable()
 export class MiddlewareComponent implements HttpInterceptor {
+    isRefreshing = false;
 
     constructor(
         private router: Router,
+        private authService: AuthService,
         private localStorage: LocalStorageService
     ) {}
 
@@ -75,6 +79,33 @@ export class MiddlewareComponent implements HttpInterceptor {
                     }
                 }
             }
+        }
+
+        return next.handle(request).pipe(
+            catchError((err: any) => {
+                if (err.status === 401) {
+                    return this.handle401Error(request, next);
+                }
+                return next.handle(request);
+            })
+        );
+    }
+
+    handle401Error(request: HttpRequest<unknown>, next: HttpHandler) {
+        if (!this.isRefreshing) {
+            this.isRefreshing = true;
+            return this.authService.refreshToken().pipe(
+                switchMap((data: any) => {
+                    this.isRefreshing = false;
+                    if (data) {
+                        const headers = new HttpHeaders().set('Authorization', 'Bearer ' + data.token);
+                        const newRequest = new HttpRequest(request.method as any,
+                            request.url, {headers: headers});
+                        request = Object.assign(request, newRequest);
+                    }
+                    return next.handle(request);
+                })
+            );
         }
         return next.handle(request);
     }

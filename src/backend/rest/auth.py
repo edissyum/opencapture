@@ -43,6 +43,23 @@ def login():
     return make_response(res[0], res[1])
 
 
+@bp.route('auth/login/refresh', methods=['POST'])
+def refresh():
+    check, message = rest_validator(request.json, [
+        {'id': 'token', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = auth.refresh(request.json['token'])
+
+    return make_response(res[0], res[1])
+
+
 @bp.route('auth/checkToken', methods=['POST'])
 def check_token():
     check, message = rest_validator(request.json, [

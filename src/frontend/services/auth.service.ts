@@ -15,14 +15,14 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Injectable } from '@angular/core';
+import { of } from "rxjs";
+import { Router } from "@angular/router";
+import { environment } from "../app/env";
+import { Injectable } from '@angular/core';
+import { UserService } from "./user.service";
+import { catchError, tap } from "rxjs/operators";
 import { LocalStorageService } from "./local-storage.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Router } from "@angular/router";
-import { UserService } from "./user.service";
-import { environment } from "../app/env";
-import { catchError } from "rxjs/operators";
-import { of } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -41,6 +41,25 @@ export class AuthService {
             this.headersExists = false;
         }
         this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken('tokenJwt'));
+    }
+
+    refreshToken() {
+        const refreshToken = this.getToken('refreshTokenJwt');
+        if (!refreshToken) {
+            return of(false);
+        }
+        return this.http
+            .post<any>(environment['url'] + '/ws/auth/login/refresh', {token: refreshToken})
+            .pipe(
+                tap((data) => {
+                    this.userService.setUser(data.user);
+                    this.setTokens(data.token, '', btoa(JSON.stringify(this.userService.getUser())));
+                    this.generateHeaders();
+                }),
+                catchError(() => {
+                    return of(false);
+                })
+            );
     }
 
     generateHeaders() {
