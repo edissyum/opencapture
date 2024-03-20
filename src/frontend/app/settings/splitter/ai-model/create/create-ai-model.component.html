@@ -18,7 +18,7 @@
         <hr class="border-green-400 relative z-30">
         <div class="overflow-x-hidden h-full-overflow">
             <div *ngIf="!loading">
-                <div class="mx-10 mt-10 mb-5 grid grid-cols-2 gap-4 place-items-stretch">
+                <div class="grid grid-cols-3 gap-6 m-10">
                     <ng-container *ngFor="let field of this.AiModel['fields']">
                         <mat-form-field *ngIf="field.type === 'text'">
                             <mat-label>{{ field.label | translate }}</mat-label>
@@ -48,14 +48,14 @@
                 <h2 class="text-center m-4">
                     {{ 'ARTIFICIAL-INTELLIGENCE.choose_documents' | translate }}
                 </h2>
-                <mat-list class="mx-10 my-2 grid grid-cols-{{ this.AiModel['trainFolders'].length }} gap-4 place-items-stretch">
+                <mat-list class="mx-10 my-2 grid grid-cols-{{ this.AiModel['trainFolders'].length }} gap-4 place-items-stretch text-center">
                     <div *ngFor="let trainFolder of this.AiModel['trainFolders'], let i=index">
                         <mat-checkbox [(ngModel)]="trainFolder['isSelected']" [ngModelOptions]="{standalone: true}" class="w-lg h-lg accent-green-400 checkBox_list cursor-pointer pr-4 pb-2">
                             {{ trainFolder['folder'] }}
                         </mat-checkbox>
                         <div *ngIf="trainFolder['isSelected']">
                             <div class="mt-4">
-                                <mat-form-field>
+                                <mat-form-field class="w-full">
                                     <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.form" | translate }}</mat-label>
                                     <mat-select [(ngModel)]="trainFolder['form']">
                                         <mat-option *ngFor="let form of forms" [value]="form.id">
@@ -64,13 +64,16 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <button class="max-w-full text-lg text-left hover:text-green-400"
-                                    *ngIf="trainFolder.form"
-                                    (click)="openDoctypeTree(trainFolder);"
-                                    [matTooltip]="'GLOBAL.edit' | translate">
-                                <div class="font-medium truncate">
-                                    <i class="fa-solid fa-edit"></i>
-                                    {{ trainFolder.doctype }}
+                            <button class="max-w-full text-lg text-left hover:text-green-400" *ngIf="trainFolder.form"
+                                    (click)="openDoctypeTree(trainFolder)" [matTooltip]="'SPLITTER.click_to_select_doctype' | translate">
+                                <div class="truncate">
+                                    <span *ngIf="!trainFolder['doctype_label']">
+                                        {{ 'SPLITTER.click_to_select_doctype' | translate }} :
+                                    </span>
+                                    <span class="font-medium">
+                                        <i class="fa-solid fa-file"></i>
+                                            {{ trainFolder['doctype_label'] }}
+                                    </span>
                                 </div>
                             </button>
                         </div>

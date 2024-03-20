@@ -18,7 +18,7 @@
         <hr class="border-green-400 relative z-30">
         <div class="overflow-x-hidden h-full-overflow">
             <div *ngIf="!loading">
-                <div class="grid grid-cols-3 gap-6 m-10 w-11/12">
+                <div class="grid grid-cols-3 gap-6 m-10">
                     <ng-container *ngFor="let field of AiModel['fields']">
                         <mat-form-field *ngIf="field.type === 'text'">
                             <mat-label>
@@ -56,12 +56,16 @@
                             </mat-form-field>
                         </div>
                         <button class="max-w-full text-lg text-left hover:text-green-400"
-                                *ngIf="trainFolder.form"
-                                (click)="openDoctypeTree(trainFolder);"
-                                [matTooltip]="'GLOBAL.edit' | translate">
-                            <div class="font-medium truncate">
-                                <i class="fa-solid fa-edit"></i>
-                                {{ trainFolder.doctype }}
+                                *ngIf="trainFolder.form" (click)="openDoctypeTree(trainFolder);"
+                                [matTooltip]="'SPLITTER.click_to_select_doctype' | translate">
+                            <div class="truncate">
+                                <span *ngIf="!trainFolder['doctype_label']">
+                                    {{ 'SPLITTER.click_to_select_doctype' | translate }} :
+                                </span>
+                                <span class="font-medium">
+                                    <i class="fa-solid fa-file"></i>
+                                    {{ trainFolder['doctype_label'] }}
+                                </span>
                             </div>
                         </button>
                     </div>

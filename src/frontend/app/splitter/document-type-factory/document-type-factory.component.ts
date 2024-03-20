@@ -67,7 +67,7 @@ export class ChecklistDatabase {
 
     retrieveDocTypes(formId: number) {
         this.loading      = true;
-        this.doctypeData = [];
+        this.doctypeData  = [];
         this.http.get(environment['url'] + '/ws/doctypes/list/' + (formId).toString(), {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let newDoctype;

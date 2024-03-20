@@ -13,6 +13,7 @@ CREATE TABLE "users" (
     "role"              INTEGER     NOT NULL,
     "last_connection"   TIMESTAMP,
     "email"             TEXT,
+    "refresh_token"     TEXT,
     "reset_token"       TEXT
 );
 

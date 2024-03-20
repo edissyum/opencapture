@@ -59,6 +59,7 @@ class Middleware:
             if os.path.isfile(path + '/secret_key'):
                 with open(path + '/secret_key', 'r', encoding='UTF-8') as secret_file:
                     app.config['SECRET_KEY'] = secret_file.read()
+                    app.config['SECRET_KEY'] = app.config['SECRET_KEY'].replace('\n', '')
             return self.middleware_app(environ, start_response)
 
         if splitted_request[0] != '/':
@@ -70,6 +71,7 @@ class Middleware:
                 if os.path.isfile(path + '/secret_key'):
                     with open(path + '/secret_key', 'r', encoding='UTF-8') as secret_file:
                         app.config['SECRET_KEY'] = secret_file.read()
+                        app.config['SECRET_KEY'] = app.config['SECRET_KEY'].replace('\n', '')
         return self.middleware_app(environ, start_response)
 
 

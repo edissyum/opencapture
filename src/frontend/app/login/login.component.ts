@@ -150,7 +150,7 @@ export class LoginComponent implements OnInit {
                 tap((data: any) => {
                     const passwordAlert = data.body['admin_password_alert'];
                     this.userService.setUser(data.body.user);
-                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())));
+                    this.authService.setTokens(data.body['auth_token'], data.body['refresh_token'], btoa(JSON.stringify(this.userService.getUser())));
                     this.authService.generateHeaders();
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {

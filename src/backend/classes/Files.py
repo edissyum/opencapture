@@ -441,7 +441,6 @@ class Files:
                         convert_heif_to_jpg(file)
                         return True, ''
                     except (Exception,) as _e:
-                        print(_e)
                         try:
                             shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         except FileNotFoundError:
