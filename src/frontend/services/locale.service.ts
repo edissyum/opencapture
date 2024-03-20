@@ -107,9 +107,9 @@ export class LocaleService {
         this.http.get(environment['url'] + '/ws/i18n/getCurrentLang').pipe(
             tap((data: any) => {
                 this.currentLang = data.lang;
-                this.currentBabelLang = data.babel_lang;
-                if (data.moment_lang) {
-                    this.dateAdaptaterLocale = data.moment_lang;
+                this.currentBabelLang = data['babel_lang'];
+                if (data['moment_lang']) {
+                    this.dateAdaptaterLocale = data['moment_lang'];
                 }
                 this.dateAdapter.setLocale(this.dateAdaptaterLocale);
                 this.translate.use(this.currentLang);
