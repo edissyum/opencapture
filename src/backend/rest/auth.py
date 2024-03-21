@@ -44,6 +44,7 @@ def login():
 
 
 @bp.route('auth/login/refresh', methods=['POST'])
+@auth.token_required
 def refresh():
     check, message = rest_validator(request.json, [
         {'id': 'token', 'type': str, 'mandatory': True}
@@ -56,7 +57,6 @@ def refresh():
         }, 400)
 
     res = auth.refresh(request.json['token'])
-
     return make_response(res[0], res[1])
 
 
