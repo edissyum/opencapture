@@ -211,11 +211,15 @@ def encode_auth_token(user_id, refresh_token=False):
         time_delta = datetime.timedelta(minutes=minutes_before_exp)
         if refresh_token:
             time_delta = datetime.timedelta(days=1)
+
         payload = {
             'exp': datetime.datetime.utcnow() + time_delta,
             'iat': datetime.datetime.utcnow(),
             'sub': user_id
         }
+        if refresh_token:
+            payload['refresh'] = True
+
         return jwt.encode(
             payload,
             current_app.config['SECRET_KEY'],
@@ -483,9 +487,14 @@ def token_required(view):
             token = None
             if 'Bearer' in request.headers['Authorization']:
                 token = request.headers['Authorization'].split('Bearer')[1].lstrip()
-
                 try:
                     token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
+                    if 'refresh' in token:
+                        allowed_refresh_url = ['/ws/auth/login/refresh', '/ws/auth/logout']
+                        allow_refresh = [url for url in allowed_refresh_url if url in request.url]
+                        if not allow_refresh:
+                            return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('SESSION_EXPIRED')}), 401
+
                     data = []
                     if 'sub' in token:
                         if isinstance(token['sub'], int):
@@ -501,7 +510,6 @@ def token_required(view):
                         code = 401
                         error_message = gettext('SESSION_EXPIRED')
                     return jsonify({"errors": gettext("JWT_ERROR"), "message": error_message}), code
-
                 request.environ['fromBasicAuth'] = False
             elif 'Basic' in request.headers['Authorization']:
                 user_ws = True
@@ -511,7 +519,8 @@ def token_required(view):
                 data = [username, 'webservice']
                 request.environ['fromBasicAuth'] = True
             else:
-                return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('AUTHORIZATION_HEADER_INCORRECT')}), 500
+                return (jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('AUTHORIZATION_HEADER_INCORRECT')}),
+                        500)
 
             user_info, _ = user.get_users({
                 'select': ['users.id', 'username', 'lastname', 'firstname', 'last_connection', 'password'],
@@ -520,7 +529,8 @@ def token_required(view):
             })
 
             if token and not user_ws:
-                if user_info and user_info[0]['last_connection'] and token['iat'] < datetime.datetime.timestamp(user_info[0]['last_connection']):
+                if (user_info and user_info[0]['last_connection'] and
+                        token['iat'] < datetime.datetime.timestamp(user_info[0]['last_connection'])):
                     return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('ACCOUNT_ALREADY_LOGGED')}), 500
 
             if token and 'process_token' in token:
