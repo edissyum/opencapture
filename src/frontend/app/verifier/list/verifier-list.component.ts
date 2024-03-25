@@ -262,6 +262,7 @@ export class VerifierListComponent implements OnInit {
                         count: customer_count.total,
                         children: []
                     };
+
                     Object.keys(customer_count['suppliers']).forEach((key: any, index: number) => {
                         node['children'].push({
                             name: key,
@@ -282,6 +283,12 @@ export class VerifierListComponent implements OnInit {
                             });
                         });
                     });
+                    node['children'].forEach((node_child: any, index: number) => {
+                        if (node_child.name === this.translate.instant('VERIFIER.no_form')) {
+                            node['children'].unshift(node_child);
+                            node['children'].splice(index + 1, 1);
+                        }
+                    });
                     this.TREE_DATA.push(node);
                 });
                 this.dataSource.data = this.TREE_DATA;
@@ -296,6 +303,16 @@ export class VerifierListComponent implements OnInit {
             })
         ).subscribe();
     }
+
+    compareProperty(key: any, direction: any) {
+        return function (a: any, b: any) {
+            const ap = a[key] || ''
+            const bp = b[key] || ''
+
+            return (direction === "desc" ? -1 : 1) * ((typeof ap === "string" && typeof bp === "string") ? ap.localeCompare(bp) : ap - bp)
+        }
+    }
+
 
     async loadDocuments(loading = true) {
         this.documentToDeleteSelected = false;

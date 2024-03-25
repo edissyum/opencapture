@@ -838,11 +838,18 @@ def get_customers_count(user_id, status, time):
             'data': [status, user_customers[0]],
             'group_by': ['form_id']
         })
-        customer_suppliers = {}
+        customer_suppliers = {
+            gettext('NO_FORM'): verifier.get_total_documents({
+                'select': ['supplier_id', 'count(documents.id) as total'],
+                'where': ["status = %s", "customer_id = %s", "form_id is NULL", where_time[0]],
+                'data': [status, customer['customer_id']],
+                'group_by': ['supplier_id']
+            })
+        }
         for form in _forms:
             form_info, error = forms.get_form_by_id({'form_id': form['form_id']})
             if error is not None:
-                form_label = gettext('NO_FORM')
+                form_label = gettext('FORM_NOT_FOUND')
                 where = ["status = %s", "customer_id = %s", "form_id is NULL", where_time[0]]
                 data = [status, customer['customer_id']]
             else:

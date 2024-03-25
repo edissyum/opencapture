@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2024-03-05 16:04+0100\n"
+"POT-Creation-Date: 2024-03-25 10:50+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Generated-By: Babel 2.10.3\n"
 
 #: custom/edissyum/src/backend/process_queue_splitter.py:212
-#: custom/edissyum/src/backend/process_queue_verifier.py:193
+#: custom/edissyum/src/backend/process_queue_verifier.py:196
 #: custom/test/src/backend/process_queue_splitter.py:216
 #: custom/test/src/backend/process_queue_verifier.py:195
 msgid "FILE_UPLOADED_WORKFLOW"
@@ -118,32 +118,32 @@ msgstr "Les informations de connexion à MEM Courrier sont vides"
 msgid "HOST_NOT_FOUND"
 msgstr "L'URL de l'hôte n'existe pas"
 
-#: src/backend/classes/SMTP.py:228
+#: src/backend/classes/SMTP.py:227
 msgid "RESET_PASSWORD"
 msgstr "Réinitialiser le mot de passe"
 
-#: src/backend/classes/SMTP.py:230
+#: src/backend/classes/SMTP.py:229
 msgid "FORGOT_EMAIL_HEADER"
 msgstr ""
 "Bonjour,<br/><br/>Vous avez demandé à réinitialiser le mot de passe de "
 "votre compte Open-Capture.<br/><br/>Pour modifier votre mot de passe, "
 "veuillez cliquer sur le lien ci-dessous :<br/><br/>"
 
-#: src/backend/classes/SMTP.py:230
+#: src/backend/classes/SMTP.py:229
 msgid "CLICK_HERE"
 msgstr "Cliquez ici"
 
-#: src/backend/classes/SMTP.py:230
+#: src/backend/classes/SMTP.py:229
 msgid "FORGOT_EMAIL_FOOTER"
 msgstr ""
 "<br/><br/>Si vous n'êtes pas à l'origine de cette demande, merci "
 "d'ignorer cet e-mail."
 
-#: src/backend/classes/SMTP.py:247
+#: src/backend/classes/SMTP.py:246
 msgid "SMTP_TEST_SEND"
 msgstr "Test d'envoi de mail"
 
-#: src/backend/classes/SMTP.py:248
+#: src/backend/classes/SMTP.py:247
 msgid "SMTP_TEST_SEND_BODY"
 msgstr "Ceci est un test d'envoi de mail depuis l'application Open-Capture"
 
@@ -250,180 +250,191 @@ msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
 msgstr "Erreur lors du chargement du référentiel tiers"
 
 #: src/backend/controllers/artificial_intelligence.py:74
-#: src/backend/controllers/artificial_intelligence.py:372
-#: src/backend/controllers/artificial_intelligence.py:398
+#: src/backend/controllers/artificial_intelligence.py:376
+#: src/backend/controllers/artificial_intelligence.py:402
 msgid "GET_IA_MODEL_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du modèle d'apprentissage"
 
-#: src/backend/controllers/artificial_intelligence.py:98
+#: src/backend/controllers/artificial_intelligence.py:99
 msgid "CREATE_IA_MODEL_ERROR"
 msgstr "Erreur lors de la création du modèle d'apprentissage"
 
-#: src/backend/controllers/artificial_intelligence.py:120
+#: src/backend/controllers/artificial_intelligence.py:121
 msgid "DELETE_AI_MODEL"
 msgstr "Suppression du modèle&nbsp;<strong>%(model)s</strong>"
 
-#: src/backend/controllers/artificial_intelligence.py:157
+#: src/backend/controllers/artificial_intelligence.py:160
 msgid "UPDATE_AI_MODEL"
 msgstr "Mise à jour du modèle&nbsp;<strong>%(model)s</strong>"
 
-#: src/backend/controllers/artificial_intelligence.py:162
+#: src/backend/controllers/artificial_intelligence.py:165
 msgid "UPDATE_IA_MODEL_ERROR"
 msgstr "Erreur lors de la mise à jour du modèle d'apprentissage"
 
-#: src/backend/controllers/artificial_intelligence.py:224
+#: src/backend/controllers/artificial_intelligence.py:228
 msgid "CREATE_AI_MODEL"
 msgstr "Création du modèle&nbsp;<strong>%(model)s</strong>"
 
-#: src/backend/controllers/artificial_intelligence.py:373
-#: src/backend/controllers/artificial_intelligence.py:399
+#: src/backend/controllers/artificial_intelligence.py:377
+#: src/backend/controllers/artificial_intelligence.py:403
 #: src/backend/models/artificial_intelligence.py:59
 msgid "IA_MODEL_DOESNT_EXISTS"
 msgstr "Le modèle d'apprentissage n'existe pas"
 
-#: src/backend/controllers/artificial_intelligence.py:435
+#: src/backend/controllers/artificial_intelligence.py:439
 msgid "RENAME_AI_MODEL_ERROR"
 msgstr "Erreur lors de la modification du modèle d'intelligence artificielle"
 
-#: src/backend/controllers/artificial_intelligence.py:436
+#: src/backend/controllers/artificial_intelligence.py:440
 msgid "FILE_DOESNT_EXISTS"
 msgstr "Le fichier de ce modèle n'existe pas"
 
-#: src/backend/controllers/auth.py:68 src/backend/controllers/auth.py:115
-#: src/backend/controllers/auth.py:169 src/backend/controllers/auth.py:196
-#: src/backend/controllers/auth.py:208 src/backend/controllers/auth.py:334
-#: src/backend/controllers/auth.py:394
-msgid "SESSION_EXPIRED"
-msgstr "Votre session à expirée, veuillez vous reconnecter"
+#: src/backend/controllers/auth.py:57 src/backend/controllers/auth.py:86
+msgid "PGSQL_ERROR"
+msgstr "Erreur lors de la connexion à la base de donnée"
 
-#: src/backend/controllers/auth.py:69 src/backend/controllers/auth.py:335
-#: src/backend/controllers/auth.py:395 src/backend/controllers/auth.py:406
-#: src/backend/controllers/auth.py:416 src/backend/controllers/auth.py:461
-msgid "JWT_ERROR"
-msgstr "Erreur lors de l'authentification par token"
-
-#: src/backend/controllers/auth.py:197
-msgid "RESET_JWT_ERROR"
-msgstr "Erreur lors du décodage du token de réinitialisation"
-
-#: src/backend/controllers/auth.py:209
-msgid "UNIQUE_URL_JWT_ERROR"
-msgstr "Erreur lors du décodage du token d'URL unique"
-
-#: src/backend/controllers/auth.py:243
-msgid "LOGOUT"
-msgstr "Déconnexion de l'utilisateur"
-
-#: src/backend/controllers/auth.py:250 src/backend/controllers/auth.py:265
-#: src/backend/controllers/auth.py:311 src/backend/controllers/auth.py:367
-#: src/backend/controllers/auth.py:492 src/backend/controllers/auth.py:503
-#: src/backend/controllers/auth.py:513 src/backend/rest/auth.py:84
+#: src/backend/controllers/auth.py:81 src/backend/controllers/auth.py:379
+#: src/backend/controllers/auth.py:394 src/backend/controllers/auth.py:421
+#: src/backend/controllers/auth.py:475 src/backend/controllers/auth.py:610
+#: src/backend/controllers/auth.py:621 src/backend/controllers/auth.py:631
 msgid "LOGIN_ERROR"
 msgstr "Erreur lors de la connexion"
 
-#: src/backend/controllers/auth.py:266
+#: src/backend/controllers/auth.py:82 src/backend/models/auth.py:43
+#: src/backend/models/auth.py:101 src/backend/models/user.py:43
+msgid "BAD_USERNAME"
+msgstr "Mauvais nom de compte"
+
+#: src/backend/controllers/auth.py:143 src/backend/controllers/auth.py:180
+#: src/backend/controllers/auth.py:232 src/backend/controllers/auth.py:286
+#: src/backend/controllers/auth.py:315 src/backend/controllers/auth.py:329
+#: src/backend/controllers/auth.py:446 src/backend/controllers/auth.py:496
+#: src/backend/controllers/auth.py:511
+msgid "SESSION_EXPIRED"
+msgstr "Votre session à expirée, veuillez vous reconnecter"
+
+#: src/backend/controllers/auth.py:144 src/backend/controllers/auth.py:181
+#: src/backend/controllers/auth.py:447 src/backend/controllers/auth.py:496
+#: src/backend/controllers/auth.py:512 src/backend/controllers/auth.py:522
+#: src/backend/controllers/auth.py:534 src/backend/controllers/auth.py:579
+msgid "JWT_ERROR"
+msgstr "Erreur lors de l'authentification par token"
+
+#: src/backend/controllers/auth.py:316
+msgid "RESET_JWT_ERROR"
+msgstr "Erreur lors du décodage du token de réinitialisation"
+
+#: src/backend/controllers/auth.py:330
+msgid "UNIQUE_URL_JWT_ERROR"
+msgstr "Erreur lors du décodage du token d'URL unique"
+
+#: src/backend/controllers/auth.py:372
+msgid "LOGOUT"
+msgstr "Déconnexion de l'utilisateur"
+
+#: src/backend/controllers/auth.py:395
 msgid "USER_WEBSERVICE"
 msgstr ""
 "L'utilisateur n'a pas le droit de se connecter à l'application "
 "(utilisateur webservice)"
 
-#: src/backend/controllers/auth.py:306 src/backend/controllers/auth.py:362
+#: src/backend/controllers/auth.py:416 src/backend/controllers/auth.py:470
 msgid "LOGIN"
 msgstr "Connexion de l'utilisateur"
 
-#: src/backend/controllers/auth.py:406
+#: src/backend/controllers/auth.py:522
 msgid "AUTHORIZATION_HEADER_INCORRECT"
 msgstr "Le header d'authentification est incorrect ('Bearer' ou 'Basic' attendu)"
 
-#: src/backend/controllers/auth.py:416
+#: src/backend/controllers/auth.py:534
 msgid "ACCOUNT_ALREADY_LOGGED"
 msgstr ""
 "Votre compte est déjà connecté sur un autre poste. Une seule connexion "
 "est autorisée par utilisateur"
 
-#: src/backend/controllers/auth.py:448
+#: src/backend/controllers/auth.py:566
 msgid "FIRSTNAME"
 msgstr "Prénom"
 
-#: src/backend/controllers/auth.py:463 src/backend/controllers/auth.py:468
+#: src/backend/controllers/auth.py:581 src/backend/controllers/auth.py:586
 msgid "REST_ERROR"
 msgstr "Erreur lors de l'authentification avec l'utilisateur webservice"
 
-#: src/backend/controllers/auth.py:464
+#: src/backend/controllers/auth.py:582
 msgid "USER_DO_NOT_EXISTS"
 msgstr "L'utilisateur n'existe pas en base de données"
 
-#: src/backend/controllers/auth.py:468
+#: src/backend/controllers/auth.py:586
 msgid "PASSWORD_INCORRECT"
 msgstr "Le mot de passe est incorrect"
 
-#: src/backend/controllers/auth.py:473
+#: src/backend/controllers/auth.py:591
 msgid "AUTH_ERROR"
 msgstr "Erreur lors de l'authentification"
 
-#: src/backend/controllers/auth.py:473
+#: src/backend/controllers/auth.py:591
 msgid "VALID_TOKEN_OR_USER_WS_MANDATORY"
 msgstr "Un token valide ou un compte de webservice est obligatoire"
 
-#: src/backend/controllers/auth.py:504
+#: src/backend/controllers/auth.py:622
 msgid "SEVERAL_AUTH_METHODS_ENABLED"
 msgstr "Plusieurs méthodes d'authentification sont activées"
 
-#: src/backend/controllers/auth.py:528
+#: src/backend/controllers/auth.py:646
 msgid "LDAP_ERROR"
 msgstr "Erreur LDAP"
 
-#: src/backend/controllers/auth.py:529 src/backend/models/auth.py:140
+#: src/backend/controllers/auth.py:647 src/backend/models/auth.py:140
 msgid "NO_LDAP_CONFIGURATIONS_FOUND"
 msgstr "Aucune configurations LDAP n'est disponible"
 
-#: src/backend/controllers/auth.py:540 src/backend/models/auth.py:165
+#: src/backend/controllers/auth.py:658 src/backend/models/auth.py:165
 msgid "UPDATE_LOGIN_METHOD_ERROR"
 msgstr "Erreur lors de la mise à jour de la méthode d'authentification"
 
-#: src/backend/controllers/auth.py:555
+#: src/backend/controllers/auth.py:673
 msgid "LOADING_METHODS_AUTH_ERROR"
 msgstr "Echec lors de l'exécution de la requête"
 
-#: src/backend/controllers/auth.py:567
+#: src/backend/controllers/auth.py:685
 msgid "DISABLE_LOGIN_METHOD_ERROR"
 msgstr "Erreur lors de la désactivation de cette méthode"
 
-#: src/backend/controllers/auth.py:579
+#: src/backend/controllers/auth.py:697
 msgid "ENABLE_LOGIN_METHOD_ERROR"
 msgstr "Erreur lors de l'activation de cette méthode"
 
-#: src/backend/controllers/auth.py:609 src/backend/controllers/auth.py:796
-#: src/backend/controllers/auth.py:852 src/backend/controllers/auth.py:867
-#: src/backend/controllers/auth.py:875 src/backend/controllers/auth.py:881
+#: src/backend/controllers/auth.py:727 src/backend/controllers/auth.py:914
+#: src/backend/controllers/auth.py:970 src/backend/controllers/auth.py:985
+#: src/backend/controllers/auth.py:993 src/backend/controllers/auth.py:999
 msgid "LDAP_CONNECTION_ERROR"
 msgstr "Impossible de se connecter au serveur LDAP"
 
-#: src/backend/controllers/auth.py:610
+#: src/backend/controllers/auth.py:728
 msgid "LOGIN_LDAP_ERROR"
 msgstr "Information(s) de connexion incorrecte(s)"
 
-#: src/backend/controllers/auth.py:784 src/backend/controllers/auth.py:790
+#: src/backend/controllers/auth.py:902 src/backend/controllers/auth.py:908
 msgid "LDAP_SYNCHRO_INFOS_ERROR"
 msgstr "Information(s) de synchronisation incorrecte(s)"
 
-#: src/backend/controllers/auth.py:786 src/backend/controllers/auth.py:792
-#: src/backend/controllers/auth.py:798 src/backend/controllers/auth.py:804
-#: src/backend/controllers/auth.py:810
+#: src/backend/controllers/auth.py:904 src/backend/controllers/auth.py:910
+#: src/backend/controllers/auth.py:916 src/backend/controllers/auth.py:922
+#: src/backend/controllers/auth.py:928
 msgid "LDAP_SYNCHRO_ERROR"
 msgstr "Erreur lors de la synchronisation LDAP"
 
-#: src/backend/controllers/auth.py:802 src/backend/controllers/auth.py:808
-#: src/backend/controllers/auth.py:887
+#: src/backend/controllers/auth.py:920 src/backend/controllers/auth.py:926
+#: src/backend/controllers/auth.py:1005
 msgid "INFOS_LDAP_NOT_COMPLETE"
 msgstr "Informations non complètes"
 
-#: src/backend/controllers/auth.py:850 src/backend/controllers/auth.py:865
-#: src/backend/controllers/auth.py:873
+#: src/backend/controllers/auth.py:968 src/backend/controllers/auth.py:983
+#: src/backend/controllers/auth.py:991
 msgid "BAD_CONNECTION_LDAP_INFOS"
 msgstr "Information(s) incorrecte(s)"
 
-#: src/backend/controllers/auth.py:885
+#: src/backend/controllers/auth.py:1003
 msgid "NOT_COMPLETE_CONNECTION_INFOS"
 msgstr "Il manque une ou plusieurs informations pour établir la connexion"
 
@@ -1090,7 +1101,7 @@ msgstr "Erreur lors de la suppression du document"
 #: src/backend/controllers/verifier.py:492
 #: src/backend/controllers/workflow.py:228
 #: src/backend/controllers/workflow.py:297
-#: src/backend/controllers/workflow.py:489 src/backend/process/main.py:61
+#: src/backend/controllers/workflow.py:489 src/backend/process/main.py:62
 #: src/backend/process/main_ia.py:62
 msgid "SCRIPT_CONTAINS_NOT_ALLOWED_CODE"
 msgstr "Le script contient du code non autorisé :"
@@ -1120,9 +1131,13 @@ msgstr "Document non trouvé"
 msgid "DOCUMENT_ID_NOT_FOUND"
 msgstr "Document %(id)s non trouvé"
 
-#: src/backend/controllers/verifier.py:845
+#: src/backend/controllers/verifier.py:842
 msgid "NO_FORM"
 msgstr "Pas de formulaire associé"
+
+#: src/backend/controllers/verifier.py:852
+msgid "FORM_NOT_FOUND"
+msgstr "Formulaire inexistant"
 
 #: src/backend/controllers/workflow.py:64
 #: src/backend/controllers/workflow.py:73
@@ -1233,11 +1248,6 @@ msgstr "Erreur lors de la création du modèle d'apprentissage"
 #: src/backend/models/artificial_intelligence.py:101
 msgid "IA_MODEL_UPDATE_ERROR"
 msgstr "Erreur lors de la modification du modèle d'apprentissage"
-
-#: src/backend/models/auth.py:43 src/backend/models/auth.py:101
-#: src/backend/models/user.py:43 src/backend/rest/auth.py:85
-msgid "BAD_USERNAME"
-msgstr "Mauvais nom de compte"
 
 #: src/backend/models/auth.py:45 src/backend/models/user.py:45
 msgid "BAD_PASSWORD"
@@ -1453,12 +1463,12 @@ msgstr "Erreur lors de la modification du workflow"
 #: src/backend/rest/artificial_intelligence.py:51
 #: src/backend/rest/artificial_intelligence.py:62
 #: src/backend/rest/artificial_intelligence.py:74
-#: src/backend/rest/artificial_intelligence.py:92
-#: src/backend/rest/artificial_intelligence.py:107
-#: src/backend/rest/artificial_intelligence.py:119 src/backend/rest/auth.py:114
-#: src/backend/rest/auth.py:164 src/backend/rest/auth.py:174
-#: src/backend/rest/auth.py:200 src/backend/rest/auth.py:233
-#: src/backend/rest/auth.py:272 src/backend/rest/auth.py:291
+#: src/backend/rest/artificial_intelligence.py:91
+#: src/backend/rest/artificial_intelligence.py:106
+#: src/backend/rest/artificial_intelligence.py:118 src/backend/rest/auth.py:82
+#: src/backend/rest/auth.py:131 src/backend/rest/auth.py:141
+#: src/backend/rest/auth.py:167 src/backend/rest/auth.py:200
+#: src/backend/rest/auth.py:239 src/backend/rest/auth.py:258
 #: src/backend/rest/config.py:30 src/backend/rest/config.py:40
 #: src/backend/rest/config.py:61 src/backend/rest/config.py:71
 #: src/backend/rest/config.py:82 src/backend/rest/config.py:103
@@ -1554,30 +1564,30 @@ msgstr "Vous n'êtes pas autorisé à accéder à cette route"
 #: src/backend/rest/accounts.py:228 src/backend/rest/accounts.py:273
 #: src/backend/rest/accounts.py:317 src/backend/rest/accounts.py:346
 #: src/backend/rest/accounts.py:387 src/backend/rest/accounts.py:424
-#: src/backend/rest/accounts.py:449 src/backend/rest/auth.py:38
-#: src/backend/rest/auth.py:102 src/backend/rest/auth.py:123
-#: src/backend/rest/auth.py:143 src/backend/rest/auth.py:188
-#: src/backend/rest/auth.py:221 src/backend/rest/auth.py:254
-#: src/backend/rest/auth.py:279 src/backend/rest/auth.py:298
-#: src/backend/rest/config.py:49 src/backend/rest/config.py:91
-#: src/backend/rest/config.py:112 src/backend/rest/config.py:134
-#: src/backend/rest/config.py:159 src/backend/rest/config.py:182
-#: src/backend/rest/config.py:205 src/backend/rest/config.py:228
-#: src/backend/rest/forms.py:46 src/backend/rest/forms.py:86
-#: src/backend/rest/forms.py:131 src/backend/rest/forms.py:152
-#: src/backend/rest/forms.py:172 src/backend/rest/forms.py:197
-#: src/backend/rest/forms.py:268 src/backend/rest/history.py:40
-#: src/backend/rest/history.py:67 src/backend/rest/history.py:87
-#: src/backend/rest/mailcollect.py:52 src/backend/rest/mailcollect.py:86
-#: src/backend/rest/mailcollect.py:119 src/backend/rest/mem.py:37
-#: src/backend/rest/mem.py:56 src/backend/rest/mem.py:75
-#: src/backend/rest/mem.py:94 src/backend/rest/mem.py:113
-#: src/backend/rest/mem.py:132 src/backend/rest/mem.py:151
-#: src/backend/rest/mem.py:170 src/backend/rest/mem.py:189
-#: src/backend/rest/mem.py:214 src/backend/rest/monitoring.py:70
-#: src/backend/rest/outputs.py:40 src/backend/rest/outputs.py:111
-#: src/backend/rest/outputs.py:148 src/backend/rest/outputs.py:180
-#: src/backend/rest/positions_masks.py:41
+#: src/backend/rest/accounts.py:449 src/backend/rest/auth.py:37
+#: src/backend/rest/auth.py:55 src/backend/rest/auth.py:70
+#: src/backend/rest/auth.py:91 src/backend/rest/auth.py:111
+#: src/backend/rest/auth.py:155 src/backend/rest/auth.py:188
+#: src/backend/rest/auth.py:221 src/backend/rest/auth.py:246
+#: src/backend/rest/auth.py:265 src/backend/rest/config.py:49
+#: src/backend/rest/config.py:91 src/backend/rest/config.py:112
+#: src/backend/rest/config.py:134 src/backend/rest/config.py:159
+#: src/backend/rest/config.py:182 src/backend/rest/config.py:205
+#: src/backend/rest/config.py:228 src/backend/rest/forms.py:46
+#: src/backend/rest/forms.py:86 src/backend/rest/forms.py:131
+#: src/backend/rest/forms.py:152 src/backend/rest/forms.py:172
+#: src/backend/rest/forms.py:197 src/backend/rest/forms.py:268
+#: src/backend/rest/history.py:40 src/backend/rest/history.py:67
+#: src/backend/rest/history.py:87 src/backend/rest/mailcollect.py:52
+#: src/backend/rest/mailcollect.py:86 src/backend/rest/mailcollect.py:119
+#: src/backend/rest/mem.py:37 src/backend/rest/mem.py:56
+#: src/backend/rest/mem.py:75 src/backend/rest/mem.py:94
+#: src/backend/rest/mem.py:113 src/backend/rest/mem.py:132
+#: src/backend/rest/mem.py:151 src/backend/rest/mem.py:170
+#: src/backend/rest/mem.py:189 src/backend/rest/mem.py:214
+#: src/backend/rest/monitoring.py:70 src/backend/rest/outputs.py:40
+#: src/backend/rest/outputs.py:111 src/backend/rest/outputs.py:148
+#: src/backend/rest/outputs.py:180 src/backend/rest/positions_masks.py:41
 #: src/backend/rest/positions_masks.py:62
 #: src/backend/rest/positions_masks.py:97 src/backend/rest/roles.py:37
 #: src/backend/rest/roles.py:75 src/backend/rest/roles.py:94
@@ -1602,10 +1612,6 @@ msgstr "Vous n'êtes pas autorisé à accéder à cette route"
 #: src/backend/rest/workflow.py:227
 msgid "BAD_REQUEST"
 msgstr "Erreur de requête"
-
-#: src/backend/rest/auth.py:60 src/backend/rest/auth.py:89
-msgid "PGSQL_ERROR"
-msgstr "Erreur lors de la connexion à la base de donnée"
 
 #: src/backend/rest/splitter.py:51 src/backend/rest/verifier.py:103
 msgid "UNKNOW_ERROR"
