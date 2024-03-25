@@ -304,16 +304,6 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    compareProperty(key: any, direction: any) {
-        return function (a: any, b: any) {
-            const ap = a[key] || ''
-            const bp = b[key] || ''
-
-            return (direction === "desc" ? -1 : 1) * ((typeof ap === "string" && typeof bp === "string") ? ap.localeCompare(bp) : ap - bp)
-        }
-    }
-
-
     async loadDocuments(loading = true) {
         this.documentToDeleteSelected = false;
         this.totalChecked = 0;
