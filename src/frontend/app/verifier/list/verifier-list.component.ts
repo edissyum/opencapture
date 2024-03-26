@@ -262,6 +262,7 @@ export class VerifierListComponent implements OnInit {
                         count: customer_count.total,
                         children: []
                     };
+
                     Object.keys(customer_count['suppliers']).forEach((key: any, index: number) => {
                         node['children'].push({
                             name: key,
@@ -276,11 +277,17 @@ export class VerifierListComponent implements OnInit {
                                 name: supplier.name ? supplier.name : this.translate.instant('ACCOUNTS.supplier_unknow'),
                                 supplier_id: supplier.supplier_id,
                                 parent_id: customer_count.customer_id,
-                                form_id: supplier.form_id ? supplier.form_id : 'no_form',
+                                form_id: supplier.form_id ? supplier.form_id : -1,
                                 count: supplier.total,
                                 display: true
                             });
                         });
+                    });
+                    node['children'].forEach((node_child: any, index: number) => {
+                        if (node_child.name === this.translate.instant('VERIFIER.no_form')) {
+                            node['children'].unshift(node_child);
+                            node['children'].splice(index + 1, 1);
+                        }
                     });
                     this.TREE_DATA.push(node);
                 });

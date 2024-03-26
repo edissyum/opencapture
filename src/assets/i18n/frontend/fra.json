@@ -408,6 +408,7 @@
 		"form_disabled": "Formulaire désactivé avec succès",
 		"form_duplicated": "Formulaire dupliqué avec succès",
 		"form_enabled": "Formulaire activé avec succès",
+		"form_not_found": "Le formulaire n'existe pas",
 		"forms": "Formulaires",
 		"input_metadata": "Métadonnées de champs",
 		"invert_fields": "Champs inversés",
