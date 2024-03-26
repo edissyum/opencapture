@@ -152,7 +152,7 @@
                                               (ngModelChange)="setValueChange(field.label_short, $event)"></textarea>
                                 </mat-form-field>
                             </ng-container>
-                            <ng-container *ngIf="field.type === 'text' && (!field.metadata_key || inputMode === 'Manual')">
+                            <ng-container *ngIf="(field.type === 'text' || field.type === 'regex')  && (!field.metadata_key || inputMode === 'Manual')">
                                 <mat-form-field class="w-full">
                                     <mat-label>{{ field.label }}</mat-label>
                                     <input matInput formControlName="{{ field.label_short }}">
@@ -290,7 +290,7 @@
                                                 <textarea matInput formControlName="{{ field.label_short }}"></textarea>
                                             </mat-form-field>
                                         </ng-container>
-                                        <ng-container *ngIf="field.type === 'text' && (!field.metadata_key || inputMode === 'Manual')">
+                                        <ng-container *ngIf="(field.type === 'text' || field.type === 'regex') && (!field.metadata_key || inputMode === 'Manual')">
                                             <mat-form-field class="w-full">
                                                 <mat-label>{{ field.label }}</mat-label>
                                                 <input matInput formControlName="{{ field.label_short }}">
