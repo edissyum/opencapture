@@ -408,6 +408,7 @@
 		"form_disabled": "Form disabled successfully",
 		"form_duplicated": "Form duplicated successfully",
 		"form_enabled": "Form enabled successfully",
+		"form_not_found": "Form not found",
 		"forms": "Forms",
 		"input_metadata": "Input metadata",
 		"invert_fields": "Invert fields",

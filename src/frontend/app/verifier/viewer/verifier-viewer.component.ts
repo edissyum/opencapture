@@ -434,7 +434,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     async generateOutputs(formId: any) {
         this.currentFormFields = await this.getFormFieldsById(formId);
         this.formSettings = await this.getFormById(formId);
-        if (this.formSettings.outputs.length !== 0) {
+        if (this.formSettings && this.formSettings.outputs.length !== 0) {
             for (const outputId in this.formSettings.outputs) {
                 const output = await this.getOutputs(this.formSettings.outputs[outputId]);
                 this.outputs.push(output);
@@ -442,7 +442,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             }
         }
 
-        if (!this.fromToken && !this.formSettings.settings.unique_url) {
+        if (!this.fromToken && this.formSettings && !this.formSettings.settings.unique_url) {
             this.formSettings.settings.unique_url = {
                 "expiration": 7,
                 "change_form": true,
@@ -453,7 +453,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             };
         }
 
-        if (this.formSettings.settings.supplier_verif && !this.tokenINSEE) {
+        if (this.formSettings && this.formSettings.settings.supplier_verif && !this.tokenINSEE) {
             const token: any = await this.generateTokenInsee();
             if (token['token']) {
                 if (token['token'].includes('ERROR')) {
@@ -629,7 +629,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     async getFormById(formId: number): Promise<any> {
-        return await this.http.get(environment['url'] + '/ws/forms/verifier/getById/' + formId, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/forms/verifier/getById/' + formId, {headers: this.authService.headers}).toPromise().catch(()=> {
+            this.notify.error(this.translate.instant('FORMS.form_not_found'));
+            this.router.navigate(['/verifier/list']);
+        });
     }
 
     async fillForm(data: any): Promise<any> {
