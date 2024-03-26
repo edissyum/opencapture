@@ -170,8 +170,9 @@
                                 </mat-form-field>
                             </ng-container>
                             <ng-container *ngIf="field.type === 'date'">
-                                <mat-form-field class="w-full" >
-                                    <input matInput [id]="field.id" [matDatepicker]="datePicker" [formControlName]="field.label_short">
+                                <mat-form-field class="w-full">
+                                    <input matInput [id]="field.id" (dateChange)="updateProgressBar()"
+                                           [matDatepicker]="datePicker" [formControlName]="field.label_short">
                                     <mat-label>{{ field.label }}</mat-label>
                                     <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
                                     <mat-datepicker #datePicker></mat-datepicker>
