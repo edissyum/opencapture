@@ -49,6 +49,7 @@ export class HistoryComponent implements OnInit {
     moduleSelected      : string = '';
     subModuleSelected   : string = '';
     history             : any;
+    allHistory          : any;
     users               : any;
     form                : any[]    = [
         {
@@ -168,6 +169,17 @@ export class HistoryComponent implements OnInit {
     }
 
     loadHistory() {
+        this.http.get(environment['url'] + '/ws/history/list?user=' + this.userSelected + '&submodule=' + this.subModuleSelected + '&module=' + this.moduleSelected, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.allHistory = data.history;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.http.get(
             environment['url'] + '/ws/history/list?limit=' + this.pageSize + '&offset=' + this.offset + '&user=' + this.userSelected + '&submodule=' + this.subModuleSelected + '&module=' + this.moduleSelected,
             {headers: this.authService.headers}).pipe(
@@ -261,9 +273,9 @@ export class HistoryComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        const data = this.history.slice();
+        const data = this.allHistory.slice();
         if (!sort.active || sort.direction === '') {
-            this.history = data;
+            this.history = data.splice(0, this.pageSize);
             return;
         }
 
@@ -272,14 +284,15 @@ export class HistoryComponent implements OnInit {
             switch (sort.active) {
                 case 'id': return this.compare(a.id, b.id, isAsc);
                 case 'history_module': return this.compare(a.history_module, b.history_module, isAsc);
-                case 'history_submodule': return this.compare(a.history_submodule, b.history_submodule, isAsc);
+                case 'history_submodule': return this.compare(a['history_submodule'], b['history_submodule'], isAsc);
                 case 'history_date': return this.compare(a.history_date, b.history_date, isAsc);
                 case 'user_info': return this.compare(a.user_info, b.user_info, isAsc);
-                case 'history_desc': return this.compare(a.history_desc, b.history_desc, isAsc);
-                case 'user_ip': return this.compare(a.user_ip, b.user_ip, isAsc);
+                case 'history_desc': return this.compare(a['history_desc'], b['history_desc'], isAsc);
+                case 'user_ip': return this.compare(a['user_ip'], b['user_ip'], isAsc);
                 default: return 0;
             }
         });
+        this.history = this.history.splice(0, this.pageSize);
     }
 
     compare(a: number | string, b: number | string, isAsc: boolean) {

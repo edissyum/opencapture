@@ -475,17 +475,18 @@ def find_workflow_with_ia(file, ai_model_id, database, docservers, files, ocr, l
                     for doc in ai_model[0]['documents']:
                         if doc['folder'] == folder:
                             if module == 'verifier':
-                                form = database.select({
-                                    'select': ['*'],
-                                    'table': ['workflows'],
-                                    'where': ['workflow_id = %s', 'module = %s'],
-                                    'data': [doc['workflow_id'], module],
-                                })
-                                if form:
-                                    log.info('[IA] Document detected as&nbsp;:&nbsp;<strong>' + folder +
-                                             '</strong> and sended to workflow&nbsp;:&nbsp;<strong>' +
-                                             doc['workflow_id'] + '</strong>')
-                                    return doc['workflow_id']
+                                if doc['workflow_id']:
+                                    form = database.select({
+                                        'select': ['*'],
+                                        'table': ['workflows'],
+                                        'where': ['workflow_id = %s', 'module = %s'],
+                                        'data': [doc['workflow_id'], module],
+                                    })
+                                    if form:
+                                        log.info('[IA] Document detected as&nbsp;<strong>' + folder +
+                                                 '</strong>&nbsp;and sended to workflow&nbsp;<strong>' +
+                                                 doc['workflow_id'] + '</strong>')
+                                        return doc['workflow_id']
                             elif module == 'splitter':
                                 log.info('[IA] Document doctype detected : ' + doc['doctype'])
                                 return doc['doctype']
