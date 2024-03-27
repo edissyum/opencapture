@@ -251,13 +251,6 @@ class FindName:
                                         res = self.return_results(firstname, lastname, line, text_cpt == 2, name)
                                         if res:
                                             return res
-                                    else:
-                                        res = find_without_civility(splitted_line, name)
-                                        if res['firstname'] and res['lastname']:
-                                            res = self.return_results(res['firstname'], res['lastname'], line,
-                                                                      text_cpt == 2)
-                                            if res:
-                                                return res
                                     cpt += 1
                             else:
                                 res = find_without_civility(splitted_line, name)
