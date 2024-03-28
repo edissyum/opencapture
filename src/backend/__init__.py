@@ -97,9 +97,9 @@ CORS(app, supports_credentials=True)
 
 # Load Artificial Intelligence model to rotate document
 rotate_model = None
-model_path = os.path.join(app.instance_path, "artificial_intelligence/rotate_document.pt")
-if os.path.isfile(model_path):
-    rotate_model = YOLO(model_path, verbose=False)
+rotate_model_path = os.path.join(app.instance_path, "artificial_intelligence/rotate_document.pt")
+if os.path.isfile(rotate_model_path):
+    rotate_model = YOLO(rotate_model_path, verbose=False)
     try:
         rotate_model('init_model.jpg')
     except FileNotFoundError:
