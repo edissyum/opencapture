@@ -212,8 +212,8 @@ class FindName:
                     name = name.strip()
                     for line in text:
                         if name.lower() in line.content.lower():
-                            fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;|@|_)", ' ', line.content,
-                                                flags=re.IGNORECASE)
+                            fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|‘|\]|\[|&|£|€|\+|°|;|@|_)", ' ',
+                                                line.content, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(M,)", 'M.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MR,)", 'MR.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MME,)", 'MME.', fixed_line, flags=re.IGNORECASE)
@@ -260,7 +260,7 @@ class FindName:
                                         return res
             if self.improved:
                 for line in text:
-                    fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;|@)", '', line.content, flags=re.IGNORECASE)
+                    fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|‘|\]|\[|&|£|€|\+|°|;|@)", '', line.content, flags=re.IGNORECASE)
                     society_regex = r"(E(\.)?(A|U)(\.)?R(\.)?L|S(\.)?A(\.)?R(\.)?L|S(\.)?A(\.)?S)"
                     society = re.findall(society_regex, fixed_line, flags=re.IGNORECASE)
                     if society:

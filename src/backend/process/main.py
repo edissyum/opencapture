@@ -414,6 +414,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 rotate_document(file, workflow_settings['input']['rotation'])
                 log.info('Document rotated by ' + str(workflow_settings['input']['rotation']) +
                          '° based on workflow settings')
+        else:
+            log.error('Workflow not found in database : ' + args['workflow_id'])
+            return None
 
     system_fields_to_find = []
     custom_fields_to_find = []
