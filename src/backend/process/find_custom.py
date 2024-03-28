@@ -250,6 +250,8 @@ class FindCustom:
                         data_to_replace = r'[-()\#\\/@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ,]'
                         if regex_settings['format'] == 'date':
                             data_to_replace = r'[-()\#\\@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ,]'
+                        if regex_settings['format'] == 'iban':
+                            data_to_replace = r'[-()\#\\@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ,\s*]'
                         if regex_settings['format'] == 'amount':
                             data_to_replace = r'[-()\#\\@;:<>{}\]\[`+=~|!?€$%£*©™ÏÎ]'
 
