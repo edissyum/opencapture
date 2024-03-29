@@ -326,5 +326,5 @@ class FindCustom:
             cpt += 1
 
         if regex_settings['format'] == 'iban' and not second:
-            regex_settings['content'] = re.sub(r'^.*\[0-9\]', '[0-9]', regex_settings['content'])  #.replace('(E|F)(R|A)', '((E|F)(R|A))?')
+            regex_settings['content'] = re.sub(r'^.*\[0-9\]', '[0-9]', regex_settings['content'])
             return self.run(second=True, regex_settings=regex_settings)
