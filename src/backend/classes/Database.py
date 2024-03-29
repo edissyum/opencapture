@@ -91,11 +91,11 @@ class Database:
                 args['data'] = []
 
             query = "SELECT " + select + " FROM " + args['table'] + where + group_by + order_by + limit + offset
-            cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-
             try:
-                cursor.execute(query, args['data'])
-                return cursor.fetchall()
+                with self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
+                    cursor.execute(query, args['data'])
+                    res = cursor.fetchall()
+                return res
             except psycopg2.OperationalError as pgsql_error:
                 self.log.error('Error while querying SELECT : ' + str(pgsql_error), False)
                 return False
@@ -115,12 +115,10 @@ class Database:
             values = "'" + "', '".join(values_list) + "'"
 
             query = "INSERT INTO " + args['table'] + " (" + columns + ") VALUES (" + values + ") RETURNING id"
-            cursor = self.conn.cursor()
-
             try:
-                cursor.execute(query)
-                new_row_id = cursor.fetchone()[0]
-                self.conn.commit()
+                with self.conn.cursor() as cursor:
+                    cursor.execute(query)
+                    new_row_id = cursor.fetchone()[0]
                 return new_row_id
             except psycopg2.OperationalError as pgsql_error:
                 self.log.error('Error while querying INSERT : ' + str(pgsql_error), False)
@@ -145,10 +143,9 @@ class Database:
             where = ' AND '.join(args['where'])
 
             query = "UPDATE " + args['table'][0] + " SET " + _set + " WHERE " + where
-            cursor = self.conn.cursor()
             try:
-                cursor.execute(query, args['data'])
-                self.conn.commit()
+                with self.conn.cursor() as cursor:
+                    cursor.execute(query, args['data'])
                 return True, ''
             except (psycopg2.OperationalError, psycopg2.errors.InvalidTextRepresentation) as pgsql_error:
                 self.log.error('Error while querying UPDATE : ' + str(pgsql_error), False)
