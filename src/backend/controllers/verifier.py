@@ -127,6 +127,8 @@ def retrieve_documents(args):
     args['select'].append('form_models.label as form_label')
     args['select'].append("*")
 
+    args['where'].append("datas -> 'api_only' is NULL")
+
     if 'time' in args:
         if args['time'] in ['today', 'yesterday']:
             args['where'].append(
@@ -807,7 +809,7 @@ def get_unseen(user_id):
     user_customers[0].append(0)
     total_unseen = verifier.get_total_documents({
         'select': ['count(documents.id) as unseen'],
-        'where': ["status = %s", "customer_id = ANY(%s)"],
+        'where': ["status = %s", "customer_id = ANY(%s)", "datas -> 'api_only' is NULL"],
         'data': ['NEW', user_customers[0]],
         'table': ['documents']
     })[0]
