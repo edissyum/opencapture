@@ -83,9 +83,9 @@ export class UploadComponent implements OnInit {
                 data.workflows.forEach((element: any, index: number) => {
                     let show = true;
 
-                    // if (element.process && element.process['api_only']) {
-                    //     show = false
-                    // }
+                    if (element.process && element.process['api_only']) {
+                        show = false
+                    }
 
                     if (show) {
                         this.workflows.push(element);
