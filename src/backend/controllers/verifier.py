@@ -828,7 +828,7 @@ def get_customers_count(user_id, status, time):
 
     customers_count = verifier.get_total_documents({
         'select': ['customer_id', 'count(documents.id) as total'],
-        'where': ["status = %s", "customer_id = ANY(%s)", where_time[0]],
+        'where': ["status = %s", "customer_id = ANY(%s)", where_time[0], "datas -> 'api_only' is NULL"],
         'data': [status, user_customers[0]],
         'group_by': ['customer_id']
     })
