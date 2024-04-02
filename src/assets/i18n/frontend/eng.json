@@ -1132,6 +1132,8 @@
 		"ai_model_id_hint": "The AI model allow preselection of form depending on document type. AI model will override default form if present",
 		"allow_automatic_validation": "Allow automatic validation",
 		"allow_automatic_validation_hint": "If the system fields are found automatically, the document will not go through the validation interface",
+		"api_only": "API use only",
+		"api_only_hint": "The workflow will not be visible in the user interface and the documents will not be stored on the file system. Useful to get only the extracted data",
 		"apply_process": "Apply process to the workflow",
 		"associated_customer": "Associated customer",
 		"back": "Back",

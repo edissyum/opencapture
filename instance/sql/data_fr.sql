@@ -703,7 +703,10 @@ INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VAL
 INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (3, 'contrat', 'Contrat', 'text', 'splitter');
 INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (4, 'date_naissance', 'Date de naissance', 'text', 'splitter');
 INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (5, 'matricule', 'Matricule', 'text', 'splitter');
-ALTER SEQUENCE "custom_fields_id_seq" RESTART WITH 6;
+
+-- CRÉATION DES CHAMPS CUSTOMS POUR LE VERIFIER
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module", settings) VALUES (6, 'iban', 'Numéro IBAN', 'regex', 'verifier', '{"regex": {"test": null, "format": "iban", "content": "(E|F)(R|A)[0-9]{2}(?:[ ]?[0-9-A-Z]){16,24}", "remove_spaces": true, "remove_keyword": null, "remove_special_char": true}, "options": null}');
+ALTER SEQUENCE "custom_fields_id_seq" RESTART WITH 7;
 
 -- CRÉATION DES PRIVILEGES
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (1, 'access_verifier', 'general');

@@ -204,6 +204,14 @@ export class WorkflowBuilderComponent implements OnInit {
                 control: new FormControl()
             },
             {
+                id: 'api_only',
+                label: this.translate.instant('WORKFLOW.api_only'),
+                hint: this.translate.instant('WORKFLOW.api_only_hint'),
+                type: 'boolean',
+                show: false,
+                control: new FormControl()
+            },
+            {
                 id: 'delete_documents',
                 label: this.translate.instant('WORKFLOW.delete_documents'),
                 hint: this.translate.instant('WORKFLOW.delete_documents_hint'),

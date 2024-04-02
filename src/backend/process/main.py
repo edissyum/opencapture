@@ -228,6 +228,10 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
             if workflow_settings['process']['delete_documents']:
                 insert_document = False
                 delete_documents(docservers, document_data['path'], document_data['filename'], full_jpg_filename)
+        elif 'api_only' in workflow_settings['process'] and workflow_settings['process']['api_only']:
+            insert_document = True
+            datas['datas']['api_only'] = True
+            delete_documents(docservers, document_data['path'], document_data['filename'], full_jpg_filename)
 
     if insert_document:
         document_data['datas'] = json.dumps(datas['datas'])

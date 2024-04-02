@@ -80,7 +80,18 @@ export class UploadComponent implements OnInit {
     getWorkflows(splitterOrVerifier: string): void {
         this.http.get(environment['url'] + '/ws/workflows/' + splitterOrVerifier + '/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.workflows = data.workflows;
+                data.workflows.forEach((element: any, index: number) => {
+                    let show = true;
+
+                    // if (element.process && element.process['api_only']) {
+                    //     show = false
+                    // }
+
+                    if (show) {
+                        this.workflows.push(element);
+                    }
+                });
+
                 if (this.workflows.length === 1) {
                     this.selectedWorkflow = data.workflows[0].id;
                     this.selectedWorkflowTechnicalId = data.workflows[0].workflow_id;

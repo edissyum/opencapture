@@ -167,6 +167,8 @@ def get_totals(args):
     else:
         where = ["status <> 'DEL'"]
 
+    where.append("datas -> 'api_only' is NULL")
+
     if args['time'] in ['today', 'yesterday']:
         select = ['COUNT(id) as ' + args['time']]
         where.append("to_char(register_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")

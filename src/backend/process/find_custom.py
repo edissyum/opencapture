@@ -19,6 +19,9 @@ import re
 import json
 import math
 import string
+import schwifty
+from schwifty.checksum import ISO7064_mod97_10
+
 from src.backend.functions import search_custom_positions
 
 
@@ -63,6 +66,11 @@ def validate_adeli(unchecked_adeli):
     if int(cle_final) == int(cle):
         return True
     return False
+
+
+def find_iban_from_bban(country_code: str, bban: str):
+    checksum_algo = ISO7064_mod97_10()
+    return country_code + checksum_algo.compute([bban, country_code]) + bban
 
 
 def validate_iban(unchecked_iban):
@@ -124,16 +132,46 @@ class FindCustom:
             match = validate_adeli(data)
 
         if settings['format'] == 'iban':
-            match = validate_iban(data)
+            match = schwifty.IBAN(data, allow_invalid=True).is_valid
             if not match:
-                new_data = data[:-1]
-                match = validate_iban(data[:-1])
+                iban_from_bbdan = find_iban_from_bban('FR', data)
+                match = schwifty.IBAN(iban_from_bbdan, allow_invalid=True).is_valid
                 if match:
-                    data = new_data
+                    data = iban_from_bbdan
+                else:
+                    new_data = data[1:]
+                    match = schwifty.IBAN(new_data, allow_invalid=True).is_valid
+                    if match:
+                        data = new_data
+                    else:
+                        iban_from_bbdan = find_iban_from_bban('FR', new_data)
+                        match = schwifty.IBAN(iban_from_bbdan, allow_invalid=True).is_valid
+                        if match:
+                            data = iban_from_bbdan
+                        else:
+                            new_data = data[:-1]
+                            match = schwifty.IBAN(new_data, allow_invalid=True).is_valid
+                            if match:
+                                data = new_data
+                            else:
+                                iban_from_bbdan = find_iban_from_bban('FR', new_data)
+                                match = schwifty.IBAN(iban_from_bbdan, allow_invalid=True).is_valid
+                                if match:
+                                    data = iban_from_bbdan
+                                else:
+                                    new_data = re.sub(r"[A-Z]{1,3}$", "", data)
+                                    match = schwifty.IBAN(new_data, allow_invalid=True).is_valid
+                                    if match:
+                                        data = new_data
+                                    else:
+                                        iban_from_bbdan = find_iban_from_bban('FR', new_data)
+                                        match = schwifty.IBAN(iban_from_bbdan, allow_invalid=True).is_valid
+                                        if match:
+                                            data = iban_from_bbdan
 
             if not match:
                 new_data = re.sub(r"^ER", 'FR', data)
-                match = validate_iban(new_data)
+                match = schwifty.IBAN(new_data, allow_invalid=True).is_valid
                 if match:
                     data = new_data
 
@@ -239,9 +277,11 @@ class FindCustom:
                                         data_to_return[field] = [text, position, data['page']]
         return data_to_return
 
-    def run(self):
+    def run(self, second=False, regex_settings=None):
         cpt = 0
-        regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
+        if not regex_settings:
+            regex_settings = json.loads(self.custom_fields_regex['regex_settings'])
+
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
                 if 'content' in regex_settings and regex_settings['content']:
@@ -284,3 +324,7 @@ class FindCustom:
                                 position = self.files.return_position_with_ratio(line, 'footer')
                             return [data, position, self.nb_page]
             cpt += 1
+
+        if regex_settings['format'] == 'iban' and not second:
+            regex_settings['content'] = re.sub(r'^.*\[0-9\]', '[0-9]', regex_settings['content'])
+            return self.run(second=True, regex_settings=regex_settings)
