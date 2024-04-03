@@ -94,13 +94,6 @@ export class StatisticsComponent implements OnInit {
             'data': []
         },
         {
-            'id': 'verifier_documents_uploaded_per_worklow',
-            'label': this.translate.instant('STATISTICS.documents_uploaded_per_worklow'),
-            'function': 'this.getWorkflowUploadedDocumentVerifier',
-            'module': 'verifier',
-            'data': []
-        },
-        {
             'id': 'splitter_documents_uploaded_per_month',
             'label': this.translate.instant('STATISTICS.splitter_documents_uploaded_per_month'),
             'function': 'this.getDocumentsUploadedByMonthSplitter',
