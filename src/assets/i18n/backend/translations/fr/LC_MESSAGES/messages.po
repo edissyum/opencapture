@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2024-03-25 10:50+0100\n"
+"POT-Creation-Date: 2024-04-09 17:00+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -201,7 +201,7 @@ msgstr "Un compte tiers existe déjà avec ce numéro de TVA"
 #: src/backend/controllers/accounts.py:460 src/backend/controllers/user.py:248
 #: src/backend/controllers/user.py:278 src/backend/models/accounts.py:231
 #: src/backend/models/accounts.py:254 src/backend/models/accounts.py:273
-#: src/backend/models/user.py:213
+#: src/backend/models/user.py:215
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du compte client"
 
@@ -301,9 +301,8 @@ msgid "LOGIN_ERROR"
 msgstr "Erreur lors de la connexion"
 
 #: src/backend/controllers/auth.py:82 src/backend/models/auth.py:43
-#: src/backend/models/auth.py:101 src/backend/models/user.py:43
-msgid "BAD_USERNAME"
-msgstr "Mauvais nom de compte"
+msgid "BAD_AUTHENTICATION"
+msgstr "Les informations d'authentification sont incorrectes"
 
 #: src/backend/controllers/auth.py:143 src/backend/controllers/auth.py:180
 #: src/backend/controllers/auth.py:232 src/backend/controllers/auth.py:286
@@ -384,11 +383,11 @@ msgstr "Plusieurs méthodes d'authentification sont activées"
 msgid "LDAP_ERROR"
 msgstr "Erreur LDAP"
 
-#: src/backend/controllers/auth.py:647 src/backend/models/auth.py:140
+#: src/backend/controllers/auth.py:647 src/backend/models/auth.py:136
 msgid "NO_LDAP_CONFIGURATIONS_FOUND"
 msgstr "Aucune configurations LDAP n'est disponible"
 
-#: src/backend/controllers/auth.py:658 src/backend/models/auth.py:165
+#: src/backend/controllers/auth.py:658 src/backend/models/auth.py:161
 msgid "UPDATE_LOGIN_METHOD_ERROR"
 msgstr "Erreur lors de la mise à jour de la méthode d'authentification"
 
@@ -815,7 +814,7 @@ msgstr "Erreur lors de la récupération des privilèges"
 
 #: src/backend/controllers/roles.py:39 src/backend/controllers/user.py:122
 #: src/backend/controllers/user.py:138 src/backend/controllers/user.py:219
-#: src/backend/models/user.py:143 src/backend/models/user.py:190
+#: src/backend/models/user.py:145 src/backend/models/user.py:192
 msgid "GET_USER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de l'utilisateur"
 
@@ -898,13 +897,13 @@ msgstr "Suppression du lot n°<strong>%(batch_id)s</strong>"
 
 #: src/backend/controllers/splitter.py:275
 #: src/backend/controllers/splitter.py:296
-#: src/backend/controllers/verifier.py:799
+#: src/backend/controllers/verifier.py:801
 msgid "UPDATE_STATUS_ERROR"
 msgstr "Erreur lors de la mise à jour du statut"
 
 #: src/backend/controllers/splitter.py:331
 #: src/backend/controllers/splitter.py:344
-#: src/backend/controllers/verifier.py:403
+#: src/backend/controllers/verifier.py:405
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Erreur lors de la suppression du verrou"
 
@@ -921,8 +920,8 @@ msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
 #: src/backend/controllers/splitter.py:499
-#: src/backend/controllers/verifier.py:380
-#: src/backend/controllers/verifier.py:386
+#: src/backend/controllers/verifier.py:382
+#: src/backend/controllers/verifier.py:388
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
@@ -941,8 +940,8 @@ msgid "OPENADS_CONNECTION_ERROR"
 msgstr "Erreur lors de la connexion OpenADS"
 
 #: src/backend/controllers/splitter.py:669
-#: src/backend/controllers/verifier.py:778 src/backend/models/splitter.py:595
-#: src/backend/models/verifier.py:195
+#: src/backend/controllers/verifier.py:780 src/backend/models/splitter.py:595
+#: src/backend/models/verifier.py:197
 msgid "GET_TOTALS_ERROR"
 msgstr "Erreur lors de la récupération des totaux"
 
@@ -1011,7 +1010,7 @@ msgid "USER_UPDATED"
 msgstr "Mise à jour du compte utilisateur&nbsp<strong>%(user)s</strong>"
 
 #: src/backend/controllers/user.py:342 src/backend/controllers/user.py:348
-#: src/backend/models/user.py:258 src/backend/models/user.py:324
+#: src/backend/models/user.py:260 src/backend/models/user.py:326
 msgid "UPDATE_USER_ERROR"
 msgstr "Erreur lors de la mise à jour de l'utilisateur"
 
@@ -1040,12 +1039,12 @@ msgid "ENABLE_USER_ERROR"
 msgstr "Erreur lors de l'activation de l'utilisateur"
 
 #: src/backend/controllers/user.py:455 src/backend/controllers/user.py:461
-#: src/backend/models/user.py:280
+#: src/backend/models/user.py:282
 msgid "UPDATE_CUSTOMERS_USER_ERROR"
 msgstr "Erreur lors de la mise à jour des comptes clients de l'utilisateur"
 
 #: src/backend/controllers/user.py:476 src/backend/controllers/user.py:483
-#: src/backend/models/user.py:302
+#: src/backend/models/user.py:304
 msgid "UPDATE_FORMS_USER_ERROR"
 msgstr "Erreur lors de la mise à jour des formulaires de l'utilisateur"
 
@@ -1074,31 +1073,31 @@ msgstr "Erreur lors de la récupération du document par token"
 msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR_MESSAGE"
 msgstr "Aucun document trouvé avec ce token"
 
-#: src/backend/controllers/verifier.py:218
-#: src/backend/controllers/verifier.py:320
+#: src/backend/controllers/verifier.py:220
+#: src/backend/controllers/verifier.py:322
 msgid "UPDATE_DOCUMENT_POSITIONS_ERROR"
 msgstr "Erreur lors de la mise à jour des positions du document"
 
-#: src/backend/controllers/verifier.py:241
-#: src/backend/controllers/verifier.py:338
+#: src/backend/controllers/verifier.py:243
+#: src/backend/controllers/verifier.py:340
 msgid "UPDATE_DOCUMENT_PAGES_ERROR"
 msgstr "Erreur lors de la mise à jour des pages du document"
 
-#: src/backend/controllers/verifier.py:264
-#: src/backend/controllers/verifier.py:282
+#: src/backend/controllers/verifier.py:266
+#: src/backend/controllers/verifier.py:284
 msgid "UPDATE_DOCUMENT_DATA_ERROR"
 msgstr "Erreur lors de la mise à jour des données du document"
 
-#: src/backend/controllers/verifier.py:354
+#: src/backend/controllers/verifier.py:356
 msgid "DELETE_DOCUMENT_SUCCESS"
 msgstr "Suppression du document n°<strong>%(document_id)s</strong>"
 
-#: src/backend/controllers/verifier.py:359
-#: src/backend/controllers/verifier.py:365
+#: src/backend/controllers/verifier.py:361
+#: src/backend/controllers/verifier.py:367
 msgid "DELETE_DOCUMENT_ERROR"
 msgstr "Erreur lors de la suppression du document"
 
-#: src/backend/controllers/verifier.py:492
+#: src/backend/controllers/verifier.py:494
 #: src/backend/controllers/workflow.py:228
 #: src/backend/controllers/workflow.py:297
 #: src/backend/controllers/workflow.py:489 src/backend/process/main.py:62
@@ -1106,36 +1105,36 @@ msgstr "Erreur lors de la suppression du document"
 msgid "SCRIPT_CONTAINS_NOT_ALLOWED_CODE"
 msgstr "Le script contient du code non autorisé :"
 
-#: src/backend/controllers/verifier.py:671
-#: src/backend/controllers/verifier.py:674
-#: src/backend/controllers/verifier.py:691
-#: src/backend/controllers/verifier.py:717
-#: src/backend/controllers/verifier.py:718
+#: src/backend/controllers/verifier.py:673
+#: src/backend/controllers/verifier.py:676
+#: src/backend/controllers/verifier.py:693
+#: src/backend/controllers/verifier.py:719
+#: src/backend/controllers/verifier.py:720
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Erreur lors de la connexion à l'api de l'INSEE"
 
-#: src/backend/controllers/verifier.py:748
+#: src/backend/controllers/verifier.py:750
 msgid "VAT_NOT_VALID"
 msgstr "Numéro de TVA invalide"
 
-#: src/backend/controllers/verifier.py:755
-#: src/backend/controllers/verifier.py:756
+#: src/backend/controllers/verifier.py:757
+#: src/backend/controllers/verifier.py:758
 msgid "VAT_API_ERROR"
 msgstr "Impossible de joindre l'API de vérification du numéro de TVA"
 
-#: src/backend/controllers/verifier.py:789
+#: src/backend/controllers/verifier.py:791
 msgid "DOCUMENT_NOT_FOUND"
 msgstr "Document non trouvé"
 
-#: src/backend/controllers/verifier.py:790
+#: src/backend/controllers/verifier.py:792
 msgid "DOCUMENT_ID_NOT_FOUND"
 msgstr "Document %(id)s non trouvé"
 
-#: src/backend/controllers/verifier.py:842
+#: src/backend/controllers/verifier.py:844
 msgid "NO_FORM"
 msgstr "Pas de formulaire associé"
 
-#: src/backend/controllers/verifier.py:852
+#: src/backend/controllers/verifier.py:855
 msgid "FORM_NOT_FOUND"
 msgstr "Formulaire inexistant"
 
@@ -1249,28 +1248,24 @@ msgstr "Erreur lors de la création du modèle d'apprentissage"
 msgid "IA_MODEL_UPDATE_ERROR"
 msgstr "Erreur lors de la modification du modèle d'apprentissage"
 
-#: src/backend/models/auth.py:45 src/backend/models/user.py:45
-msgid "BAD_PASSWORD"
-msgstr "Mauvais mot de passe"
-
-#: src/backend/models/auth.py:47
-msgid "USER_DELETED"
-msgstr "Utilisateur supprimé"
-
-#: src/backend/models/auth.py:49
+#: src/backend/models/auth.py:45
 msgid "USER_DISABLED"
 msgstr "Utilisateur desactivé"
 
-#: src/backend/models/auth.py:70 src/backend/models/auth.py:80
+#: src/backend/models/auth.py:66 src/backend/models/auth.py:76
 #: src/backend/models/roles.py:61
 msgid "ROLE_DOESNT_EXISTS"
 msgstr "Le rôle n'existe pas"
 
-#: src/backend/models/auth.py:211
+#: src/backend/models/auth.py:97 src/backend/models/user.py:37
+msgid "BAD_USERNAME"
+msgstr "Mauvais nom de compte"
+
+#: src/backend/models/auth.py:207
 msgid "DISABLE_LOGIN_METHOD_DATA_ERROR"
 msgstr "Erreur lors de la désactivation de cette méthode d'authentification"
 
-#: src/backend/models/auth.py:233
+#: src/backend/models/auth.py:229
 msgid "ENABLE_LOGIN_METHOD_DATA_ERROR"
 msgstr "Erreur lors de l'activation de cette méthode d'authentification"
 
@@ -1411,23 +1406,27 @@ msgstr "Erreur lors de l'obtention de l'index maximum du Splitter"
 msgid "NO_STATUS"
 msgstr "Aucun status existant"
 
-#: src/backend/models/user.py:47
+#: src/backend/models/user.py:39
+msgid "BAD_PASSWORD"
+msgstr "Mauvais mot de passe"
+
+#: src/backend/models/user.py:50
 msgid "USER"
 msgstr "L'utilisateur"
 
-#: src/backend/models/user.py:47
+#: src/backend/models/user.py:50
 msgid "ALREADY_REGISTERED"
 msgstr "est déjà enregistré"
 
-#: src/backend/models/user.py:50
+#: src/backend/models/user.py:53
 msgid "USER_RESTORED"
 msgstr "l'utilisateur est restauré"
 
-#: src/backend/models/user.py:166
+#: src/backend/models/user.py:168
 msgid "GET_USER_BY_MAIL_ERROR"
 msgstr "Aucun utilisateur asssocié à cette addresse email"
 
-#: src/backend/models/user.py:235
+#: src/backend/models/user.py:237
 msgid "GET_FORMS_BY_USER_ID_ERROR"
 msgstr "Erreur lors de la récupération des formulaires de l'utilisateur"
 
@@ -1634,4 +1633,3 @@ msgstr "Téléchargement du fichier"
 #: src/backend/rest/verifier.py:549
 msgid "FILE_NOT_FOUND"
 msgstr "Fichier introuvable"
-
