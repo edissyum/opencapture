@@ -21,7 +21,7 @@ import { Router } from "@angular/router";
 import { Injectable } from '@angular/core';
 import { catchError } from "rxjs/operators";
 import { AuthService } from "../services/auth.service";
-import { LocalStorageService } from "../services/local-storage.service";
+import { SessionStorageService } from "../services/session-storage.service";
 import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from "@angular/common/http";
 
 @Injectable()
@@ -31,7 +31,7 @@ export class MiddlewareComponent implements HttpInterceptor {
     constructor(
         private router: Router,
         private authService: AuthService,
-        private localStorage: LocalStorageService
+        private sessionStorage: SessionStorageService
     ) {}
 
     isValidIP(str: any) {
@@ -67,7 +67,7 @@ export class MiddlewareComponent implements HttpInterceptor {
                         if (environment.production) {
                             environment['url'] = '../' + environment['url'];
                         }
-                        const token = this.localStorage.get('OpenCaptureToken_' + customId);
+                        const token = this.sessionStorage.get('OpenCaptureToken_' + customId);
                         if (currentCustom && customId !== currentCustom) {
                             this.router.navigate(['/logout']).then();
                         }

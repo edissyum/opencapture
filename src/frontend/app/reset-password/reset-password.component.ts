@@ -24,7 +24,7 @@ import { AuthService } from "../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { LocaleService } from "../../services/locale.service";
-import { LocalStorageService } from "../../services/local-storage.service";
+import { SessionStorageService } from "../../services/session-storage.service";
 import { environment } from "../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -63,7 +63,7 @@ export class ResetPasswordComponent implements OnInit {
         private translate: TranslateService,
         private notify: NotificationService,
         private localeService: LocaleService,
-        private localStorageService: LocalStorageService,
+        private sessionStorageService: SessionStorageService,
         public passwordVerification: PasswordVerificationService
     ) {}
 
@@ -78,11 +78,11 @@ export class ResetPasswordComponent implements OnInit {
                 this.authService.logout();
             });
         }
-        const b64Content = this.localStorageService.get('loginImageB64');
+        const b64Content = this.sessionStorageService.get('loginImageB64');
         if (!b64Content) {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                 tap((data: any) => {
-                    this.localStorageService.save('loginImageB64', data);
+                    this.sessionStorageService.save('loginImageB64', data);
                     this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
                 }),
                 finalize(() => { this.loading = false; }),

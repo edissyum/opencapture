@@ -21,7 +21,7 @@ import { AuthService } from "./auth.service";
 import { Title } from "@angular/platform-browser";
 import { LastUrlService } from "./last-url.service";
 import { TranslateService } from "@ngx-translate/core";
-import { LocalStorageService } from "./local-storage.service";
+import { SessionStorageService } from "./session-storage.service";
 
 @Injectable({
     providedIn: 'root'
@@ -444,15 +444,15 @@ export class SettingsService {
         private authService: AuthService,
         private translate: TranslateService,
         private routerExtService: LastUrlService,
-        private localStorage: LocalStorageService
+        private sessionStorage: SessionStorageService
     ) {}
 
     init() {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
-        const selectedParentSetting = this.localStorage.get('selectedParentSettings');
-        const selectedSetting = this.localStorage.get('selectedSettings');
+        const selectedParentSetting = this.sessionStorage.get('selectedParentSettings');
+        const selectedSetting = this.sessionStorage.get('selectedSettings');
 
         onresize = () => {
             this.minimizeSideNav = window.innerWidth < 1500;
@@ -528,11 +528,11 @@ export class SettingsService {
 
     setSelectedSettings(value: string) {
         this.selectedSetting = value;
-        this.localStorage.save('selectedSettings', value);
+        this.sessionStorage.save('selectedSettings', value);
     }
 
     setSelectedParentSettings(value: string) {
         this.selectedParentSetting = value;
-        this.localStorage.save('selectedParentSettings', value);
+        this.sessionStorage.save('selectedParentSettings', value);
     }
 }

@@ -17,7 +17,7 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 import { Component, OnInit } from '@angular/core';
 import { UserService } from "../../services/user.service";
-import { LocalStorageService } from "../../services/local-storage.service";
+import { SessionStorageService } from "../../services/session-storage.service";
 import { PrivilegesService } from "../../services/privileges.service";
 import { Router } from "@angular/router";
 import { LastUrlService } from "../../services/last-url.service";
@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit {
         private notify: NotificationService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit() {
@@ -102,7 +102,7 @@ export class HomeComponent implements OnInit {
     }
 
     setValue(value: string) {
-        this.localStorageService.save('splitter_or_verifier', value);
+        this.sessionStorageService.save('splitter_or_verifier', value);
     }
 
     getUnseenBatches(module: string) {

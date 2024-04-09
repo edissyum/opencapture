@@ -18,7 +18,7 @@
 import { environment } from "../app/env";
 import { Router } from "@angular/router";
 import { Injectable } from '@angular/core';
-import { LocalStorageService } from "./local-storage.service";
+import { SessionStorageService } from "./session-storage.service";
 
 @Injectable({
     providedIn: 'root'
@@ -28,7 +28,7 @@ export class UserService {
 
     constructor(
         private router: Router,
-        private localStorage: LocalStorageService
+        private sessionStorage: SessionStorageService
     ) {
     }
 
@@ -58,6 +58,6 @@ export class UserService {
         } else if (environment['fqdn']) {
             userTokenName += '_' + environment['fqdn'];
         }
-        return this.localStorage.get(userTokenName);
+        return this.sessionStorage.get(userTokenName);
     }
 }

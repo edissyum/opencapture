@@ -27,7 +27,7 @@ import { NotificationService } from "../../../services/notifications/notificatio
 import { TranslateService } from "@ngx-translate/core";
 import { FormControl } from "@angular/forms";
 import { DatePipe } from '@angular/common';
-import { LocalStorageService } from "../../../services/local-storage.service";
+import { SessionStorageService } from "../../../services/session-storage.service";
 import * as moment from 'moment';
 import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
@@ -143,11 +143,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         private notify: NotificationService,
         private localeService: LocaleService,
         private historyService: HistoryService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     async ngOnInit(document_id_from_multi = false): Promise<void> {
-        this.localStorageService.save('splitter_or_verifier', 'verifier');
+        this.sessionStorageService.save('splitter_or_verifier', 'verifier');
         this.ocrFromUser = false;
         this.saveInfo = true;
 

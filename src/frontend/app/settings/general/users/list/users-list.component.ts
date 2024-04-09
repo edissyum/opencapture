@@ -30,7 +30,7 @@ import { environment } from  "../../../../env";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
-import { LocalStorageService } from "../../../../../services/local-storage.service";
+import { SessionStorageService } from "../../../../../services/session-storage.service";
 import { LastUrlService } from "../../../../../services/last-url.service";
 import { Sort } from "@angular/material/sort";
 import { SettingsService } from "../../../../../services/settings.service";
@@ -76,7 +76,7 @@ export class UsersListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit(): void {
@@ -86,12 +86,12 @@ export class UsersListComponent implements OnInit {
         // If we came from another route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/users') || lastUrl === '/') {
-            if (this.localStorageService.get('usersPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('usersPageIndex') as string);
+            if (this.sessionStorageService.get('usersPageIndex')) {
+                this.pageIndex = parseInt(this.sessionStorageService.get('usersPageIndex') as string);
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localStorageService.remove('usersPageIndex');
+            this.sessionStorageService.remove('usersPageIndex');
         }
 
         this.http.get(environment['url'] + '/ws/users/list', {headers: this.authService.headers}).pipe(
@@ -157,7 +157,7 @@ export class UsersListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('usersPageIndex', event.pageIndex);
+        this.sessionStorageService.save('usersPageIndex', event.pageIndex);
         this.loadUsers();
     }
 
