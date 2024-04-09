@@ -20,19 +20,19 @@ import { Injectable } from '@angular/core';
 @Injectable({
     providedIn: 'root'
 })
-export class LocalStorageService {
+export class SessionStorageService {
 
     constructor() {}
 
     save(id: string, content: any) {
-        localStorage.setItem(id, content);
+        sessionStorage.setItem(id, content);
     }
 
     get(id: string) {
-        return localStorage.getItem(id);
+        return sessionStorage.getItem(id);
     }
 
     remove(id: string) {
-        localStorage.removeItem(id);
+        sessionStorage.removeItem(id);
     }
 }

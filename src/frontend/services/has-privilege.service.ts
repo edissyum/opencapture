@@ -20,7 +20,7 @@ import { PrivilegesService } from "./privileges.service";
 import { ActivatedRouteSnapshot, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "./notifications/notifications.service";
-import {LocalStorageService} from "./local-storage.service";
+import {SessionStorageService} from "./session-storage.service";
 
 @Injectable({
     providedIn: 'root'
@@ -31,7 +31,7 @@ export class HasPrivilegeService {
         private router: Router,
         private translate: TranslateService,
         private notify: NotificationService,
-        private localStorage: LocalStorageService,
+        private sessionStorage: SessionStorageService,
         private privilegesService: PrivilegesService
     ) {}
 
@@ -48,8 +48,8 @@ export class HasPrivilegeService {
                         }
                         this.notify.error(translated + label);
                         if (route.url[0].path === 'settings') {
-                            this.localStorage.remove('selectedSettings');
-                            this.localStorage.remove('selectedParentSettings');
+                            this.sessionStorage.remove('selectedSettings');
+                            this.sessionStorage.remove('selectedParentSettings');
                         }
                         this.router.navigateByUrl('/home').then();
                     });

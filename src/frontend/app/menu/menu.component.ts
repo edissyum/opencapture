@@ -26,7 +26,7 @@ import { AuthService } from "../../services/auth.service";
 import { LocaleService } from "../../services/locale.service";
 import { PrivilegesService } from "../../services/privileges.service";
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { LocalStorageService } from "../../services/local-storage.service";
+import { SessionStorageService } from "../../services/session-storage.service";
 
 @Component({
     selector: 'app-menu',
@@ -50,7 +50,7 @@ export class MenuComponent implements OnInit {
         public translate: TranslateService,
         public localeService: LocaleService,
         public privilegesService: PrivilegesService,
-        public localStorageService: LocalStorageService
+        public sessionStorageService: SessionStorageService
     ) { }
 
     ngOnInit(): void {
@@ -111,12 +111,12 @@ export class MenuComponent implements OnInit {
 
     goToUpload() {
         if (this.defaultModule && !this.getSplitterOrVerifier()) {
-            this.localStorageService.save('splitter_or_verifier', this.defaultModule);
+            this.sessionStorageService.save('splitter_or_verifier', this.defaultModule);
         }
     }
 
     getSplitterOrVerifier() {
-        return this.localStorageService.get('splitter_or_verifier');
+        return this.sessionStorageService.get('splitter_or_verifier');
     }
 
     toggleProfileDropdown() {

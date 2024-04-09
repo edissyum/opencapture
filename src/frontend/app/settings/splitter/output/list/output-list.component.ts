@@ -27,7 +27,7 @@ import { NotificationService } from "../../../../../services/notifications/notif
 import { SettingsService } from "../../../../../services/settings.service";
 import { LastUrlService } from "../../../../../services/last-url.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
-import { LocalStorageService } from "../../../../../services/local-storage.service";
+import { SessionStorageService } from "../../../../../services/session-storage.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -60,7 +60,7 @@ export class SplitterOutputListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit(): void {
@@ -68,12 +68,12 @@ export class SplitterOutputListComponent implements OnInit {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('outputs/') || lastUrl === '/') {
-            if (this.localStorageService.get('outputsPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('outputsPageIndex') as string);
+            if (this.sessionStorageService.get('outputsPageIndex')) {
+                this.pageIndex = parseInt(this.sessionStorageService.get('outputsPageIndex') as string);
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localStorageService.remove('outputsPageIndex');
+            this.sessionStorageService.remove('outputsPageIndex');
         }
         this.loadOutputs();
     }
@@ -98,7 +98,7 @@ export class SplitterOutputListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
-        this.localStorageService.save('outputsPageIndex', event.pageIndex);
+        this.sessionStorageService.save('outputsPageIndex', event.pageIndex);
         this.loadOutputs();
     }
 

@@ -22,7 +22,7 @@ import { SettingsService } from "../../../../services/settings.service";
 import { AuthService } from "../../../../services/auth.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { PrivilegesService } from "../../../../services/privileges.service";
-import { LocalStorageService } from "../../../../services/local-storage.service";
+import { SessionStorageService } from "../../../../services/session-storage.service";
 import { LastUrlService } from "../../../../services/last-url.service";
 import { Sort } from "@angular/material/sort";
 import { environment } from  "../../../env";
@@ -212,7 +212,7 @@ export class ConfigurationsComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService,
+        private sessionStorageService: SessionStorageService,
         public passwordVerification: PasswordVerificationService
     ) { }
 
@@ -220,12 +220,12 @@ export class ConfigurationsComponent implements OnInit {
         this.serviceSettings.init();
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/configurations') || lastUrl === '/') {
-            if (this.localStorageService.get('configurationsPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('configurationsPageIndex') as string);
+            if (this.sessionStorageService.get('configurationsPageIndex')) {
+                this.pageIndex = parseInt(this.sessionStorageService.get('configurationsPageIndex') as string);
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localStorageService.remove('configurationsPageIndex');
+            this.sessionStorageService.remove('configurationsPageIndex');
         }
 
         this.http.get(environment['url'] + '/ws/config/getConfigurations', {headers: this.authService.headers}).pipe(
@@ -286,7 +286,7 @@ export class ConfigurationsComponent implements OnInit {
             })
         ).subscribe();
 
-        const b64Content = this.localStorageService.get('loginImageB64');
+        const b64Content = this.sessionStorageService.get('loginImageB64');
         if (!b64Content) {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                 tap((data: any) => {
@@ -534,7 +534,7 @@ export class ConfigurationsComponent implements OnInit {
                 ).pipe(
                     tap(() => {
                         this.loginImage = this.sanitizer.bypassSecurityTrustUrl(args['image_content']);
-                        this.localStorageService.save('loginImageB64', args['image_content'].replace('data:image/png;base64,', ''));
+                        this.sessionStorageService.save('loginImageB64', args['image_content'].replace('data:image/png;base64,', ''));
                         const currentUrl = this.router.url;
                         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
                             this.router.navigate([currentUrl]).then();
@@ -625,7 +625,7 @@ export class ConfigurationsComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('configurationsPageIndex', event.pageIndex);
+        this.sessionStorageService.save('configurationsPageIndex', event.pageIndex);
         this.loadConfigurations();
     }
 

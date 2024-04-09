@@ -26,7 +26,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { MatDialog } from "@angular/material/dialog";
 import { LastUrlService } from "../../../../../services/last-url.service";
-import { LocalStorageService } from "../../../../../services/local-storage.service";
+import { SessionStorageService } from "../../../../../services/session-storage.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -68,7 +68,7 @@ export class RolesListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {
     }
 
@@ -79,12 +79,12 @@ export class RolesListComponent implements OnInit {
         // If we came from another route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/roles') || lastUrl === '/') {
-            if (this.localStorageService.get('rolesPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('rolesPageIndex') as string);
+            if (this.sessionStorageService.get('rolesPageIndex')) {
+                this.pageIndex = parseInt(this.sessionStorageService.get('rolesPageIndex') as string);
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localStorageService.remove('rolesPageIndex');
+            this.sessionStorageService.remove('rolesPageIndex');
         }
         this.loadRoles();
     }
@@ -115,7 +115,7 @@ export class RolesListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('rolesPageIndex', event.pageIndex);
+        this.sessionStorageService.save('rolesPageIndex', event.pageIndex);
         this.loadRoles();
     }
 

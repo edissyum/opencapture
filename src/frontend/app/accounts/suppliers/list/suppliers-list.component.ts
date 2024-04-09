@@ -27,7 +27,7 @@ import { NotificationService } from "../../../../services/notifications/notifica
 import { SettingsService } from "../../../../services/settings.service";
 import { LastUrlService } from "../../../../services/last-url.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
-import { LocalStorageService } from "../../../../services/local-storage.service";
+import { SessionStorageService } from "../../../../services/session-storage.service";
 import { Sort } from "@angular/material/sort";
 import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -64,7 +64,7 @@ export class SuppliersListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) { }
 
     ngOnInit(): void {
@@ -74,12 +74,12 @@ export class SuppliersListComponent implements OnInit {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('accounts/suppliers') || lastUrl === '/') {
-            if (this.localStorageService.get('suppliersPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('suppliersPageIndex') as string);
+            if (this.sessionStorageService.get('suppliersPageIndex')) {
+                this.pageIndex = parseInt(this.sessionStorageService.get('suppliersPageIndex') as string);
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localStorageService.remove('suppliersPageIndex');
+            this.sessionStorageService.remove('suppliersPageIndex');
         }
 
         this.http.get(environment['url'] + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
@@ -136,7 +136,7 @@ export class SuppliersListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
-        this.localStorageService.save('suppliersPageIndex', event.pageIndex);
+        this.sessionStorageService.save('suppliersPageIndex', event.pageIndex);
         this.loadSuppliers();
     }
 

@@ -29,7 +29,7 @@ import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { LastUrlService } from "../../../../../services/last-url.service";
-import { LocalStorageService } from "../../../../../services/local-storage.service";
+import { SessionStorageService } from "../../../../../services/session-storage.service";
 import { Sort } from "@angular/material/sort";
 import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
@@ -65,7 +65,7 @@ export class FormListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit(): void {
@@ -73,12 +73,12 @@ export class FormListComponent implements OnInit {
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/verifier/forms') || lastUrl === '/') {
-            if (this.localStorageService.get('formsPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('formsPageIndex') as string);
+            if (this.sessionStorageService.get('formsPageIndex')) {
+                this.pageIndex = parseInt(this.sessionStorageService.get('formsPageIndex') as string);
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localStorageService.remove('formsPageIndex');
+            this.sessionStorageService.remove('formsPageIndex');
         }
         this.loadForms();
     }
@@ -87,7 +87,7 @@ export class FormListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('formsPageIndex', event.pageIndex);
+        this.sessionStorageService.save('formsPageIndex', event.pageIndex);
         this.loadForms();
     }
 

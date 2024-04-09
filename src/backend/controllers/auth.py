@@ -79,7 +79,7 @@ def handle_login(data):
                 else:
                     res = [{
                         "errors": gettext('LOGIN_ERROR'),
-                        "message": gettext('BAD_USERNAME')
+                        "message": gettext('BAD_AUTHENTICATION')
                     }, 401]
         else:
             res = [{
