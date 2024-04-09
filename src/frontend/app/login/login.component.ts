@@ -27,8 +27,8 @@ import { UserService } from "../../services/user.service";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { ConfigService } from "../../services/config.service";
 import { LocaleService } from "../../services/locale.service";
-import {DomSanitizer, SafeHtml, SafeUrl} from "@angular/platform-browser";
-import { LocalStorageService } from "../../services/local-storage.service";
+import { SessionStorageService } from "../../services/session-storage.service";
+import { DomSanitizer, SafeHtml, SafeUrl } from "@angular/platform-browser";
 import { NotificationService } from "../../services/notifications/notifications.service";
 
 @Component({
@@ -38,14 +38,14 @@ import { NotificationService } from "../../services/notifications/notifications.
 export class LoginComponent implements OnInit {
     loginForm               : any;
     enableLoginMethodName   : any;
-    defaultRoute            : string    = '/home';
     loginImage              : SafeUrl   = '';
     loginTopMessage         : SafeHtml  = '';
     loginBottomMessage      : SafeHtml  = '';
     loading                 : boolean   = true;
+    isConnectionBtnDisabled : boolean   = true;
     processLogin            : boolean   = false;
     showPassword            : boolean   = false;
-    isConnectionBtnDisabled : boolean   = true;
+    defaultRoute            : string    = '/home';
 
     constructor(
         private router: Router,
@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit {
         private notify: NotificationService,
         private configService: ConfigService,
         private localeService: LocaleService,
-        private localStorageService: LocalStorageService
+        private SessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit(): void {
@@ -70,23 +70,31 @@ export class LoginComponent implements OnInit {
         if (this.localeService.currentLang === undefined) {
             this.localeService.getCurrentLocale();
         }
-
-        this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
-            tap((data: any) => {
-                this.localStorageService.save('loginImageB64', data);
-                this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+        const b64Content = this.SessionStorageService.get('loginImageB64');
+        if (!b64Content) {
+            this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
+                tap((data: any) => {
+                    this.SessionStorageService.save('loginImageB64', data);
+                    this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        } else {
+            this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
+        }
 
         this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/loginTopMessage').pipe(
             tap((data: any) => {
                 if (data.configuration.length === 1) {
-                    this.loginTopMessage = this.sanitizer.bypassSecurityTrustHtml(data.configuration[0].data.value);
+                    let value = data.configuration[0].data.value.replace(/&gt;/gi, '>');
+                    value = value.replace(/&gt;/gi, '>');
+                    value = value.replace(/&lt;/gi, '<');
+                    value = value.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+                    this.loginTopMessage = this.sanitizer.bypassSecurityTrustHtml(value);
                 }
             }),
             finalize(() => this.loading = false),
@@ -100,7 +108,11 @@ export class LoginComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/loginBottomMessage').pipe(
             tap((data: any) => {
                 if (data.configuration.length === 1) {
-                    this.loginBottomMessage = this.sanitizer.bypassSecurityTrustHtml(data.configuration[0].data.value);
+                    let value = data.configuration[0].data.value.replace(/&gt;/gi, '>');
+                    value = value.replace(/&gt;/gi, '>');
+                    value = value.replace(/&lt;/gi, '<');
+                    value = value.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+                    this.loginBottomMessage = this.sanitizer.bypassSecurityTrustHtml(value);
                 }
             }),
             finalize(() => this.loading = false),
