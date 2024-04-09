@@ -47,6 +47,8 @@ class Database:
     def select(self, args):
         if 'table' not in args or 'select' not in args:
             self.log.error('One or more required args are empty', False)
+        elif not isinstance(args['table'], list):
+            self.log.error('Table argument must be a list', False)
         else:
             tmp_table = args['table']
             args['table'] = args['table'][0]
@@ -104,20 +106,22 @@ class Database:
         if 'table' not in args:
             self.log.error('One or more required args are empty', False)
         else:
-            columns_list = []
-            values_list = []
+            data = []
+            values = ''
+            columns = ''
             for column in args['columns']:
                 if args['columns'][column] is not None:
-                    columns_list.append(column)
-                    values_list.append(str(args['columns'][column]).replace("'", "''").replace('\x0c', ''))
+                    values += "%s, "
+                    columns += column + ", "
+                    data.append(str(args['columns'][column]).replace("'", "''").replace('\x0c', ''))
 
-            columns = ", ".join(columns_list)
-            values = "'" + "', '".join(values_list) + "'"
+            values = values.rstrip(', ')
+            columns = columns.rstrip(', ')
 
             query = "INSERT INTO " + args['table'] + " (" + columns + ") VALUES (" + values + ") RETURNING id"
             try:
                 with self.conn.cursor() as cursor:
-                    cursor.execute(query)
+                    cursor.execute(query, data)
                     new_row_id = cursor.fetchone()[0]
                 return new_row_id
             except psycopg2.OperationalError as pgsql_error:
@@ -127,22 +131,26 @@ class Database:
     def update(self, args):
         if args['table'] == [] or args['set'] == []:
             self.log.error('One or more required args are empty', False)
+        elif not isinstance(args['table'], list):
+            print(args['table'])
+            self.log.error('Table argument must be a list', False)
         else:
             query_list = []
             data = []
+            query_set = ''
             for column in args['set']:
                 if args['set'][column] is not None:
                     if type(args['set'][column]) not in (bool, int) and 'jsonb_set' in args['set'][column]:
-                        query_list.append(column + " = " + args['set'][column])
+                        query_set += args['set'][column] + ", "
                     else:
-                        query_list.append(column + " = %s")
+                        query_set += column + " = %s, "
                         data.append(args['set'][column])
 
+            query_set = query_set.rstrip(', ')
             args['data'] = data + args['data']
-            _set = ", ".join(query_list)
             where = ' AND '.join(args['where'])
 
-            query = "UPDATE " + args['table'][0] + " SET " + _set + " WHERE " + where
+            query = "UPDATE " + args['table'][0] + " SET " + query_set + " WHERE " + where
             try:
                 with self.conn.cursor() as cursor:
                     cursor.execute(query, args['data'])
@@ -153,8 +161,8 @@ class Database:
 
     def get_sequence_value(self, name):
         query = f"SELECT last_value FROM {name}"
-        cursor = self.conn.cursor()
         try:
+            cursor = self.conn.cursor()
             cursor.execute(query, {})
             return cursor.fetchall()
         except psycopg2.OperationalError as pgsql_error:
@@ -163,8 +171,8 @@ class Database:
 
     def set_sequence_value(self, name, value):
         query = f"SELECT setval('{name}', {value})"
-        cursor = self.conn.cursor()
         try:
+            cursor = self.conn.cursor()
             cursor.execute(query, {})
             return cursor.fetchall()
         except psycopg2.OperationalError as pgsql_error:
