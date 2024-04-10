@@ -24,7 +24,7 @@
         "ngx-toastr": "^18.0.0",
         "remove-accents": "^0.5.0",
         "svg-country-flags": "^1.2.10",
-        "tinymce": "^7.0.0"
+        "tinymce": "^7.0.1"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^17.3.3",
@@ -57,7 +57,7 @@
         "@types/d3-scale": "^4.0.8",
         "@types/d3-selection": "^3.0.10",
         "@types/d3-shape": "^3.1.6",
-        "@types/node": "^20.12.6",
+        "@types/node": "^20.12.7",
         "@typescript-eslint/eslint-plugin": "7.6.0",
         "@typescript-eslint/parser": "7.6.0",
         "autoprefixer": "^10.4.19",
