@@ -28,7 +28,7 @@ import { NotificationService } from "../services/notifications/notifications.ser
 import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'app-root',
+    selector: 'app',
     templateUrl: './app.component.html'
 })
 

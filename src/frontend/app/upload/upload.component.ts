@@ -148,8 +148,8 @@ export class UploadComponent implements OnInit {
             }
         }
 
-        formData.set('workflowId', this.selectedWorkflowTechnicalId);
         formData.set('userId', this.userService.user.id);
+        formData.set('workflowId', this.selectedWorkflowTechnicalId);
 
         const splitterOrVerifier = this.sessionStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {

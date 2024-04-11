@@ -412,11 +412,23 @@ if [ $sitePackageLocation ]; then
 fi
 
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
+ErrorDocument 400 /src/assets/error_pages/400.html
+ErrorDocument 401 /src/assets/error_pages/401.html
+ErrorDocument 403 /src/assets/error_pages/403.html
+ErrorDocument 404 /src/assets/error_pages/404.html
+ErrorDocument 500 /src/assets/error_pages/500.html
+ErrorDocument 501 /src/assets/error_pages/501.html
+ErrorDocument 502 /src/assets/error_pages/502.html
+ErrorDocument 503 /src/assets/error_pages/503.html
+ErrorDocument 504 /src/assets/error_pages/504.html
 <VirtualHost *:80>
     ServerName localhost
     DocumentRoot $defaultPath
     $wsgiDaemonProcessLine
     WSGIScriptAlias /backend_oc $defaultPath/wsgi.py
+
+    Header always set X-Content-Type-Options: nosniff
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 
     <Directory $defaultPath>
         AllowOverride All
@@ -445,6 +457,7 @@ echo "Apache configuration....."
 a2ensite opencapture.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2dissite 000-default.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2enmod rewrite >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+a2enmod headers >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 systemctl restart apache2 >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 echo ""

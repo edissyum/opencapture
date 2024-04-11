@@ -132,16 +132,14 @@ class Database:
         if args['table'] == [] or args['set'] == []:
             self.log.error('One or more required args are empty', False)
         elif not isinstance(args['table'], list):
-            print(args['table'])
             self.log.error('Table argument must be a list', False)
         else:
-            query_list = []
             data = []
             query_set = ''
             for column in args['set']:
                 if args['set'][column] is not None:
                     if type(args['set'][column]) not in (bool, int) and 'jsonb_set' in args['set'][column]:
-                        query_set += args['set'][column] + ", "
+                        query_set += column + " = " + args['set'][column] + ", "
                     else:
                         query_set += column + " = %s, "
                         data.append(args['set'][column])
