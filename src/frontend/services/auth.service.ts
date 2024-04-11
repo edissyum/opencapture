@@ -51,7 +51,7 @@ export class AuthService {
         const new_headers = new HttpHeaders().set('Authorization', 'Bearer ' + refreshToken);
 
         return this.http
-            .post<any>(environment['url'] + '/ws/auth/login/refresh', {token: refreshToken}, { headers: new_headers })
+            .post<any>(environment['url'] + '/ws/auth/login/refresh', {token: refreshToken}, {headers: new_headers})
             .pipe(
                 tap((data) => {
                     this.userService.setUser(data.user);

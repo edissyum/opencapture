@@ -418,6 +418,8 @@ su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
     $wsgiDaemonProcessLine
     WSGIScriptAlias /backend_oc $defaultPath/wsgi.py
 
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
     <Directory $defaultPath>
         AllowOverride All
         WSGIProcessGroup opencapture
@@ -445,6 +447,7 @@ echo "Apache configuration....."
 a2ensite opencapture.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2dissite 000-default.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2enmod rewrite >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+a2enmod headers >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 systemctl restart apache2 >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 echo ""
