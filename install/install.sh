@@ -418,6 +418,7 @@ su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
     $wsgiDaemonProcessLine
     WSGIScriptAlias /backend_oc $defaultPath/wsgi.py
 
+    Header always set X-Content-Type-Options: nosniff
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 
     <Directory $defaultPath>

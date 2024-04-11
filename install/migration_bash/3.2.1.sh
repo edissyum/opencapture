@@ -24,8 +24,8 @@ fi
 apache2Path="/etc/apache2/sites-available/"
 
 #####################
-# Add HSTS to apache2 configuration
-sed -i "s|</VirtualHost>|    Header always set Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\"\n</VirtualHost>|" $apache2Path/opencapture.conf
+# Add HSTS and X-Content-Type to apache2 configuration
+sed -i "s|<Directory|Header always set Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\"\n    Header always set X-Content-Type-Options: nosniff\n\n    <Directory|" $apache2Path/opencapture.conf
 
 # Restart apache2
 systemctl restart apache2
