@@ -17,8 +17,8 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 if [ "$EUID" -ne 0 ]; then
-    echo "$(basename "$0") needed to be launch by user with root privileges"
-    exit 1
+Echo "$(basename "$0") needed to be launch by user with root privileges"
+Exit 1
 fi
 
 apache2Path="/etc/apache2/sites-available/"
@@ -27,5 +27,10 @@ apache2Path="/etc/apache2/sites-available/"
 # Add HSTS and X-Content-Type to apache2 configuration
 sed -i "s|<Directory|Header always set Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\"\n    Header always set X-Content-Type-Options: nosniff\n\n    <Directory|" $apache2Path/opencapture.conf
 
+#####################
+# Add ErrorDocument to apache2 configuration
+sed -i "s|<VirtualHost|ErrorDocument 400 /src/assets/error_pages/400.html\nErrorDocument 401 /src/assets/error_pages/401.html\nErrorDocument 403 /src/assets/error_pages/403.html\nErrorDocument 404 /src/assets/error_pages/404.html\nErrorDocument 500 /src/assets/error_pages/500.html\nErrorDocument 501 /src/assets/error_pages/501.html\nErrorDocument 502 /src/assets/error_pages/502.html\nErrorDocument 503 /src/assets/error_pages/503.html\nErrorDocument 504 /src/assets/error_pages/504.html\n\n<VirtualHost|" $apache2Path/opencapture.conf
+
+#####################
 # Restart apache2
 systemctl restart apache2

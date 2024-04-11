@@ -412,6 +412,15 @@ if [ $sitePackageLocation ]; then
 fi
 
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
+ErrorDocument 400 /src/assets/error_pages/400.html
+ErrorDocument 401 /src/assets/error_pages/401.html
+ErrorDocument 403 /src/assets/error_pages/403.html
+ErrorDocument 404 /src/assets/error_pages/404.html
+ErrorDocument 500 /src/assets/error_pages/500.html
+ErrorDocument 501 /src/assets/error_pages/501.html
+ErrorDocument 502 /src/assets/error_pages/502.html
+ErrorDocument 503 /src/assets/error_pages/503.html
+ErrorDocument 504 /src/assets/error_pages/504.html
 <VirtualHost *:80>
     ServerName localhost
     DocumentRoot $defaultPath
