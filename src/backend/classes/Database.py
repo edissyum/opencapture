@@ -132,7 +132,6 @@ class Database:
         if args['table'] == [] or args['set'] == []:
             self.log.error('One or more required args are empty', False)
         elif not isinstance(args['table'], list):
-            print(args['table'])
             self.log.error('Table argument must be a list', False)
         else:
             data = []
@@ -150,7 +149,6 @@ class Database:
             where = ' AND '.join(args['where'])
 
             query = "UPDATE " + args['table'][0] + " SET " + query_set + " WHERE " + where
-            print(query, args['data'])
             try:
                 with self.conn.cursor() as cursor:
                     cursor.execute(query, args['data'])
