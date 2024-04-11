@@ -135,13 +135,12 @@ class Database:
             print(args['table'])
             self.log.error('Table argument must be a list', False)
         else:
-            query_list = []
             data = []
             query_set = ''
             for column in args['set']:
                 if args['set'][column] is not None:
                     if type(args['set'][column]) not in (bool, int) and 'jsonb_set' in args['set'][column]:
-                        query_set += args['set'][column] + ", "
+                        query_set += column + " = " + args['set'][column] + ", "
                     else:
                         query_set += column + " = %s, "
                         data.append(args['set'][column])
@@ -151,6 +150,7 @@ class Database:
             where = ' AND '.join(args['where'])
 
             query = "UPDATE " + args['table'][0] + " SET " + query_set + " WHERE " + where
+            print(query, args['data'])
             try:
                 with self.conn.cursor() as cursor:
                     cursor.execute(query, args['data'])
