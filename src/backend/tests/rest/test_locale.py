@@ -26,7 +26,7 @@ class LocaleTest(unittest.TestCase):
         self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
-        warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
+        warnings.filterwarnings('ignore', category=ResourceWarning)
 
     def test_successful_change_language(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/i18n/changeLanguage/eng',

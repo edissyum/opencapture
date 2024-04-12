@@ -70,8 +70,7 @@ def get_processes(module=None, get_last_processes=False):
             args['data'] = []
 
         args['select'].append('(EXTRACT(epoch FROM (CURRENT_TIMESTAMP - creation_date))/60)::INTEGER as age')
-        args['where'].append('creation_date > NOW() - INTERVAL %s')
-        args['data'].append('1 hour')
+        args['where'].append("creation_date > NOW() - INTERVAL '1 hour'")
 
     if module:
         if 'where' not in args:

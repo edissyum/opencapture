@@ -86,7 +86,7 @@ def retrieve_configurations(data):
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'where': ['display = %s'],
-        'args': [True],
+        'data': [True],
         'offset': data['offset'] if 'offset' in data else 0,
         'limit': data['limit'] if 'limit' in data else 'ALL'
     }
@@ -127,6 +127,7 @@ def retrieve_docservers(data):
             "LOWER(description) LIKE '%%" + data['search'].lower() + "%%' OR "
             "LOWER(path) LIKE '%%" + data['search'].lower() + "%%')"
         )
+
     docservers, error = config.retrieve_docservers(args)
 
     if error is None:
