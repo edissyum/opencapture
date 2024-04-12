@@ -17,8 +17,8 @@ qrcode==7.4.2
 kuyruk==10.0.2
 pillow==10.3.0
 imutils==0.5.4
+psycopg==3.1.18
 thefuzz==0.22.1
-psycopg2==2.9.9
 werkzeug==3.0.2
 cmislib3==1.0.8
 pyflakes==3.2.0

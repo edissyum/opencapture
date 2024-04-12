@@ -79,8 +79,8 @@ def get_documents(args):
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['documents'] if 'table' not in args else args['table'],
         'left_join': [] if 'left_join' not in args else args['left_join'],
-        'where': ['1 = %s'] if 'where' not in args else args['where'],
-        'data': ['1'] if 'data' not in args else args['data'],
+        'where': ['1=1'] if 'where' not in args or not args['where'] else args['where'],
+        'data': [] if 'data' not in args else args['data'],
         'order_by': ['documents.id DESC'] if 'order_by' not in args else args['order_by'],
         'group_by': ['documents.id'] if 'group_by' not in args else args['group_by'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
@@ -101,8 +101,8 @@ def get_total_documents(args):
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['documents'] if 'table' not in args else args['table'],
         'left_join': [] if 'left_join' not in args else args['left_join'],
-        'where': ['1 = %s'] if 'where' not in args else args['where'],
-        'data': ['1'] if 'data' not in args else args['data'],
+        'where': ['1=1'] if 'where' not in args or not args['where'] else args['where'],
+        'data': [] if 'data' not in args else args['data'],
         'group_by': [] if 'group_by' not in args else args['group_by']
     })
     return total

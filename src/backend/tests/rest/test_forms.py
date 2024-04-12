@@ -26,7 +26,7 @@ class FormTest(unittest.TestCase):
         self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
-        warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
+        warnings.filterwarnings('ignore', category=ResourceWarning)
 
     def create_splitter_form(self):
         payload = json.dumps({

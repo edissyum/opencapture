@@ -34,8 +34,8 @@ def get_positions_masks(args):
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['positions_masks', 'form_models'],
         'left_join': ['positions_masks.form_id = form_models.id'],
-        'where': ['1=%s'] if 'where' not in args else args['where'],
-        'data': ['1'] if 'data' not in args else args['data'],
+        'where': ['1=1'] if 'where' not in args or not args['where'] else args['where'],
+        'data': [] if 'data' not in args else args['data'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'order_by': args['order_by'] if 'order_by' in args else [],
         'offset': str(args['offset']) if 'offset' in args else 0

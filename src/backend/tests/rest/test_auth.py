@@ -27,7 +27,7 @@ class AuthTest(unittest.TestCase):
         self.app = app.test_client()
         self.token = get_token('admin')
         self.basic_auth = b64encode(b'user_ws:user_ws').decode('utf-8')
-        warnings.filterwarnings('ignore', message='unclosed', category=ResourceWarning)
+        warnings.filterwarnings('ignore', category=ResourceWarning)
 
     def test_error_user_ws_connection(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/config/readConfig',

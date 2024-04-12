@@ -21,7 +21,7 @@ import jwt
 import uuid
 import ldap3
 import base64
-import psycopg2
+import psycopg
 import datetime
 import functools
 from ldap3 import Server, ALL
@@ -158,13 +158,8 @@ def check_connection():
     db_pwd = config['DATABASE']['postgrespassword']
     db_name = config['DATABASE']['postgresdatabase']
     try:
-        psycopg2.connect(
-            "dbname     =" + db_name +
-            " user      =" + db_user +
-            " password  =" + db_pwd +
-            " host      =" + db_host +
-            " port      =" + db_port)
-    except (psycopg2.OperationalError, psycopg2.ProgrammingError) as _e:
+        psycopg.connect(db_name=db_name, user=db_user, password=db_pwd, host=db_host, port=db_port)
+    except (psycopg.OperationalError, psycopg.ProgrammingError) as _e:
         return str(_e).split('\n', maxsplit=1)[0]
 
 

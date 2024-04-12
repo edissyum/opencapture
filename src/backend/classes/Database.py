@@ -15,32 +15,34 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import psycopg2
-import psycopg2.extras
+import psycopg
+from psycopg.rows import dict_row
 
 
 class Database:
     def __init__(self, log, db_name=None, user=None, pwd=None, host=None, port=None, conn=None):
-        self.conn = conn
         self.log = log
+        self.pwd = pwd
         self.host = host
         self.port = port
         self.user = user
-        self.pwd = pwd
+        self.conn = conn
         self.db_name = db_name
+
         self.connect()
 
     def connect(self):
         if self.conn is None:
             try:
-                self.conn = psycopg2.connect(
-                    "dbname     =" + self.db_name +
-                    " user      =" + self.user +
-                    " password  =" + self.pwd +
-                    " host      =" + self.host +
-                    " port      =" + self.port)
+                self.conn = psycopg.connect(
+                    dbname=self.db_name,
+                    user=self.user,
+                    password=self.pwd,
+                    host=self.host,
+                    port=self.port,
+                    row_factory=dict_row)
                 self.conn.autocommit = True
-            except (psycopg2.OperationalError, psycopg2.ProgrammingError) as pgsql_error:
+            except (psycopg.OperationalError, psycopg.ProgrammingError) as pgsql_error:
                 self.log.error('PGSQL connection error : ' + str(pgsql_error), False)
                 self.conn = False
 
@@ -94,11 +96,11 @@ class Database:
 
             query = "SELECT " + select + " FROM " + args['table'] + where + group_by + order_by + limit + offset
             try:
-                with self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
+                with self.conn.cursor() as cursor:
                     cursor.execute(query, args['data'])
                     res = cursor.fetchall()
                 return res
-            except psycopg2.OperationalError as pgsql_error:
+            except psycopg.OperationalError as pgsql_error:
                 self.log.error('Error while querying SELECT : ' + str(pgsql_error), False)
                 return False
 
@@ -122,9 +124,9 @@ class Database:
             try:
                 with self.conn.cursor() as cursor:
                     cursor.execute(query, data)
-                    new_row_id = cursor.fetchone()[0]
+                    new_row_id = cursor.fetchone()['id']
                 return new_row_id
-            except psycopg2.OperationalError as pgsql_error:
+            except psycopg.OperationalError as pgsql_error:
                 self.log.error('Error while querying INSERT : ' + str(pgsql_error), False)
                 return False
 
@@ -153,26 +155,24 @@ class Database:
                 with self.conn.cursor() as cursor:
                     cursor.execute(query, args['data'])
                 return True, ''
-            except (psycopg2.OperationalError, psycopg2.errors.InvalidTextRepresentation) as pgsql_error:
+            except (psycopg.OperationalError, psycopg.errors.InvalidTextRepresentation) as pgsql_error:
                 self.log.error('Error while querying UPDATE : ' + str(pgsql_error), False)
                 return False, pgsql_error
 
     def get_sequence_value(self, name):
         query = f"SELECT last_value FROM {name}"
         try:
-            cursor = self.conn.cursor()
-            cursor.execute(query, {})
-            return cursor.fetchall()
-        except psycopg2.OperationalError as pgsql_error:
+            self.conn.cursor().execute(query, {})
+            return self.conn.cursor().fetchall()
+        except psycopg.OperationalError as pgsql_error:
             self.log.error('Error while querying SELECT : ' + str(pgsql_error), False)
             return False
 
     def set_sequence_value(self, name, value):
         query = f"SELECT setval('{name}', {value})"
         try:
-            cursor = self.conn.cursor()
-            cursor.execute(query, {})
-            return cursor.fetchall()
-        except psycopg2.OperationalError as pgsql_error:
+            self.conn.cursor().execute(query, {})
+            return self.conn.cursor().fetchall()
+        except psycopg.OperationalError as pgsql_error:
             self.log.error('Error while querying SELECT : ' + str(pgsql_error), False)
             return False

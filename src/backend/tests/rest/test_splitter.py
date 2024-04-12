@@ -30,7 +30,7 @@ class SplitterTest(unittest.TestCase):
         self.app = app.test_client()
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', category=DeprecationWarning)
-        warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
+        warnings.filterwarnings('ignore', category=ResourceWarning)
 
     def create_batch(self):
         file = f'./custom/{CUSTOM_ID}/src/backend/process_queue_splitter.py'
