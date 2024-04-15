@@ -158,7 +158,7 @@ def check_connection():
     db_pwd = config['DATABASE']['postgrespassword']
     db_name = config['DATABASE']['postgresdatabase']
     try:
-        psycopg.connect(db_name=db_name, user=db_user, password=db_pwd, host=db_host, port=db_port)
+        psycopg.connect(dbname=db_name, user=db_user, password=db_pwd, host=db_host, port=db_port)
     except (psycopg.OperationalError, psycopg.ProgrammingError) as _e:
         return str(_e).split('\n', maxsplit=1)[0]
 
