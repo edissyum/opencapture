@@ -327,6 +327,8 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+        this.allowedCustomers = [... new Set(this.allowedCustomers)]
+
         this.http.post(environment['url'] + '/ws/verifier/documents/list',
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'limit': this.pageSize,
@@ -493,7 +495,9 @@ export class VerifierListComponent implements OnInit {
                 const customerId = element.id;
                 this.customerFilterEnabled = true;
                 this.allowedCustomers = [customerId];
-                this.allowedSuppliers = [supplierId];
+                if (supplierId) {
+                    this.allowedSuppliers = [supplierId];
+                }
                 this.currentForm = formId;
                 this.resetPaginator();
                 this.loadDocuments().then();
@@ -625,9 +629,11 @@ export class VerifierListComponent implements OnInit {
 
     onTabChange(event: any) {
         this.search = '';
+        this.currentForm = '';
+        this.allowedSuppliers = [];
         this.selectedTab = event.index;
-        this.sessionStorageService.save('documentsTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
+        this.sessionStorageService.save('documentsTimeIndex', this.selectedTab);
         this.resetPaginator();
         this.loadCustomers();
         this.loadDocuments().then();
