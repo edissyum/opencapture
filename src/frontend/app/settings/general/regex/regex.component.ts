@@ -24,7 +24,7 @@ import { NotificationService } from "../../../../services/notifications/notifica
 import { SettingsService } from "../../../../services/settings.service";
 import { LastUrlService } from "../../../../services/last-url.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
-import { LocalStorageService } from "../../../../services/local-storage.service";
+import { SessionStorageService } from "../../../../services/session-storage.service";
 import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -58,7 +58,7 @@ export class RegexComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) { }
 
     ngOnInit(): void {
@@ -66,12 +66,12 @@ export class RegexComponent implements OnInit {
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/regex') || lastUrl === '/') {
-            if (this.localStorageService.get('regexPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('regexPageIndex') as string);
+            if (this.sessionStorageService.get('regexPageIndex')) {
+                this.pageIndex = parseInt(this.sessionStorageService.get('regexPageIndex') as string);
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localStorageService.remove('regexPageIndex');
+            this.sessionStorageService.remove('regexPageIndex');
         }
 
         this.http.get(environment['url'] + '/ws/config/getRegex', {headers: this.authService.headers}).pipe(
@@ -140,7 +140,7 @@ export class RegexComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('regexPageIndex', event.pageIndex);
+        this.sessionStorageService.save('regexPageIndex', event.pageIndex);
         this.loadRegex();
     }
 

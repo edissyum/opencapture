@@ -16,7 +16,7 @@
  @dev : Oussama BRICH <oussama.brich@edissyum.com> */
 
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService } from "../../../services/local-storage.service";
+import { SessionStorageService } from "../../../services/session-storage.service";
 import { environment } from  "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -88,7 +88,7 @@ export class SplitterListComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         private routerExtService: LastUrlService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     async ngOnInit() {
@@ -99,22 +99,22 @@ export class SplitterListComponent implements OnInit {
             this.userService.user = this.userService.getUserFromLocal();
         }
 
-        this.localStorageService.save('splitter_or_verifier', 'splitter');
+        this.sessionStorageService.save('splitter_or_verifier', 'splitter');
         this.removeLockByUserId(this.userService.user.username);
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('splitter/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
-            if (this.localStorageService.get('splitterPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('splitterPageIndex') as string);
+            if (this.sessionStorageService.get('splitterPageIndex')) {
+                this.pageIndex = parseInt(this.sessionStorageService.get('splitterPageIndex') as string);
             }
 
-            if (this.localStorageService.get('splitterTimeIndex')) {
-                this.selectedTab = parseInt(this.localStorageService.get('splitterTimeIndex') as string);
+            if (this.sessionStorageService.get('splitterTimeIndex')) {
+                this.selectedTab = parseInt(this.sessionStorageService.get('splitterTimeIndex') as string);
                 this.currentTime = this.batchList[this.selectedTab].id;
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localStorageService.remove('splitterPageIndex');
-            this.localStorageService.remove('splitterTimeIndex');
+            this.sessionStorageService.remove('splitterPageIndex');
+            this.sessionStorageService.remove('splitterTimeIndex');
         }
 
         this.http.get(environment['url'] + '/ws/status/splitter/list', {headers: this.authService.headers}).pipe(
@@ -307,7 +307,7 @@ export class SplitterListComponent implements OnInit {
         this.batches = [];
         this.pageIndex = $event.pageIndex + 1;
         this.pageSize = $event.pageSize;
-        this.localStorageService.save('splitterPageIndex', $event.pageIndex);
+        this.sessionStorageService.save('splitterPageIndex', $event.pageIndex);
         this.loadBatches();
     }
 
@@ -374,12 +374,12 @@ export class SplitterListComponent implements OnInit {
         this.total = 0;
         this.offset = 0;
         this.pageIndex = 1;
-        this.localStorageService.save('splitterPageIndex', this.pageIndex);
+        this.sessionStorageService.save('splitterPageIndex', this.pageIndex);
     }
 
     onTabChange(event: any) {
         this.selectedTab = event.index;
-        this.localStorageService.save('splitterTimeIndex', this.selectedTab);
+        this.sessionStorageService.save('splitterTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
         this.resetPaginator();
         this.loadBatches();

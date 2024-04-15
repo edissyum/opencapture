@@ -23,7 +23,7 @@ import { UserService } from "../../../services/user.service";
 import { AuthService } from "../../../services/auth.service";
 import { LocaleService } from "../../../services/locale.service";
 import { HistoryService } from "../../../services/history.service";
-import { LocalStorageService } from "../../../services/local-storage.service";
+import { SessionStorageService } from "../../../services/session-storage.service";
 import { DocumentTypeComponent } from "../document-type/document-type.component";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
@@ -161,14 +161,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         private notify: NotificationService,
         private historyService: HistoryService,
         public localeService: LocaleService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit(): void {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
-        this.localStorageService.save('splitter_or_verifier', 'splitter');
+        this.sessionStorageService.save('splitter_or_verifier', 'splitter');
         this.userService.user   = this.userService.getUserFromLocal();
         this.currentBatch.id    = this.route.snapshot.params['id'];
         this.currentTime        = this.route.snapshot.params['currentTime'];

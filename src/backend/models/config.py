@@ -36,8 +36,8 @@ def retrieve_configurations(args):
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['configurations'],
-        'where': ['1=%s'] if 'where' not in args else args['where'],
-        'data': ['1'] if 'data' not in args else args['data'],
+        'where': ['1=1'] if 'where' not in args or not args['where'] else args['where'],
+        'data': [] if 'data' not in args else args['data'],
         'order_by': ['id ASC'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'offset': str(args['offset']) if 'offset' in args else 0
@@ -56,8 +56,8 @@ def retrieve_docservers(args):
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['docservers'],
-        'where': ['1=%s'] if 'where' not in args else args['where'],
-        'data': ['1'] if 'data' not in args else args['data'],
+        'where': ['1=1'] if 'where' not in args or not args['where'] else args['where'],
+        'data': [] if 'data' not in args else args['data'],
         'order_by': ['id ASC'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'offset': str(args['offset']) if 'offset' in args else 0
@@ -77,8 +77,8 @@ def retrieve_regex(args):
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['regex'],
-        'where': ['1=%s'] if 'where' not in args else args['where'],
-        'data': ['1'] if 'data' not in args else args['data'],
+        'where': ['1=1'] if 'where' not in args or not args['where'] else args['where'],
+        'data': [] if 'data' not in args else args['data'],
         'order_by': ['id ASC'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'offset': str(args['offset']) if 'offset' in args else 0

@@ -25,7 +25,7 @@ import { PrivilegesService } from "../../../../../services/privileges.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../../../services/auth.service";
 import { LastUrlService } from "../../../../../services/last-url.service";
-import { LocalStorageService } from "../../../../../services/local-storage.service";
+import { SessionStorageService } from "../../../../../services/session-storage.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -59,7 +59,7 @@ export class OutputsListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit(): void {
@@ -67,12 +67,12 @@ export class OutputsListComponent implements OnInit {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/verifier/outputs') || lastUrl === '/') {
-            if (this.localStorageService.get('outputsPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('outputsPageIndex') as string);
+            if (this.sessionStorageService.get('outputsPageIndex')) {
+                this.pageIndex = parseInt(this.sessionStorageService.get('outputsPageIndex') as string);
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localStorageService.remove('outputsPageIndex');
+            this.sessionStorageService.remove('outputsPageIndex');
         }
         this.loadOutputs();
     }
@@ -102,7 +102,7 @@ export class OutputsListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('outputsPageIndex', event.pageIndex);
+        this.sessionStorageService.save('outputsPageIndex', event.pageIndex);
         this.loadOutputs();
     }
 

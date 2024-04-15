@@ -27,7 +27,7 @@ import { NotificationService } from "../../../services/notifications/notificatio
 import { TranslateService } from "@ngx-translate/core";
 import { FormControl } from "@angular/forms";
 import { DatePipe } from '@angular/common';
-import { LocalStorageService } from "../../../services/local-storage.service";
+import { SessionStorageService } from "../../../services/session-storage.service";
 import * as moment from 'moment';
 import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
@@ -143,11 +143,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         private notify: NotificationService,
         private localeService: LocaleService,
         private historyService: HistoryService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     async ngOnInit(document_id_from_multi = false): Promise<void> {
-        this.localStorageService.save('splitter_or_verifier', 'verifier');
+        this.sessionStorageService.save('splitter_or_verifier', 'verifier');
         this.ocrFromUser = false;
         this.saveInfo = true;
 
@@ -434,7 +434,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     async generateOutputs(formId: any) {
         this.currentFormFields = await this.getFormFieldsById(formId);
         this.formSettings = await this.getFormById(formId);
-        if (this.formSettings.outputs.length !== 0) {
+        if (this.formSettings && this.formSettings.outputs.length !== 0) {
             for (const outputId in this.formSettings.outputs) {
                 const output = await this.getOutputs(this.formSettings.outputs[outputId]);
                 this.outputs.push(output);
@@ -442,7 +442,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             }
         }
 
-        if (!this.fromToken && !this.formSettings.settings.unique_url) {
+        if (!this.fromToken && this.formSettings && !this.formSettings.settings.unique_url) {
             this.formSettings.settings.unique_url = {
                 "expiration": 7,
                 "change_form": true,
@@ -453,7 +453,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             };
         }
 
-        if (this.formSettings.settings.supplier_verif && !this.tokenINSEE) {
+        if (this.formSettings && this.formSettings.settings.supplier_verif && !this.tokenINSEE) {
             const token: any = await this.generateTokenInsee();
             if (token['token']) {
                 if (token['token'].includes('ERROR')) {
@@ -629,7 +629,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     async getFormById(formId: number): Promise<any> {
-        return await this.http.get(environment['url'] + '/ws/forms/verifier/getById/' + formId, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/forms/verifier/getById/' + formId, {headers: this.authService.headers}).toPromise().catch(()=> {
+            this.notify.error(this.translate.instant('FORMS.form_not_found'));
+            this.router.navigate(['/verifier/list']);
+        });
     }
 
     async fillForm(data: any): Promise<any> {

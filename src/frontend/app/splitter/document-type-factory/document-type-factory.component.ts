@@ -30,7 +30,7 @@ import { UserService } from "../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { PrivilegesService } from "../../../services/privileges.service";
-import { LocalStorageService } from "../../../services/local-storage.service";
+import { SessionStorageService } from "../../../services/session-storage.service";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import {ExportDialogComponent} from "../../../services/export-dialog/export-dialog.component";
@@ -55,7 +55,7 @@ export class ChecklistDatabase {
         private notify: NotificationService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     loadTree(formId: number) {
@@ -117,7 +117,7 @@ export class ChecklistDatabase {
         const data    = this.buildFileTree(this.doctypeData, '0');
         // Notify the change.
         this.dataChange.next(data);
-        const lastSearchValue = this.localStorageService.get('doctype_last_search_value') || '';
+        const lastSearchValue = this.sessionStorageService.get('doctype_last_search_value') || '';
         if (lastSearchValue) {
             this.filter(lastSearchValue);
         }
@@ -207,7 +207,7 @@ export class TreeItemFlatNode {
 })
 export class DocumentTypeFactoryComponent implements OnInit {
     loading: boolean                     = false;
-    searchText: string                   = this.localStorageService.get('doctype_last_search_value') || '';
+    searchText: string                   = this.sessionStorageService.get('doctype_last_search_value') || '';
 
     @Input() selectedDoctypeInput: any   = {
         'key': undefined,
@@ -247,7 +247,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         private authService: AuthService,
         private formBuilder: FormBuilder,
         private notify: NotificationService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {
     }
 
@@ -266,8 +266,8 @@ export class DocumentTypeFactoryComponent implements OnInit {
         this.dataSource     = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
         this.treeDataObj.dataChange.subscribe(data => {
             this.dataSource.data = data;
-            const collapseTree = this.localStorageService.get('is_doctypes_tree_collapsed') &&
-                this.localStorageService.get('is_doctypes_tree_collapsed') === 'true';
+            const collapseTree = this.sessionStorageService.get('is_doctypes_tree_collapsed') &&
+                this.sessionStorageService.get('is_doctypes_tree_collapsed') === 'true';
             if (collapseTree) {
                 this.treeControl.collapseAll();
             }
@@ -276,7 +276,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
             }
         });
         this.selectFormControl.valueChanges.subscribe(formId => {
-            this.localStorageService.save('doctypeFormId', formId);
+            this.sessionStorageService.save('doctypeFormId', formId);
             this.treeDataObj.loadTree(formId);
             this.selectedFormOutput.emit({'formId': formId});
         });
@@ -289,8 +289,8 @@ export class DocumentTypeFactoryComponent implements OnInit {
             tap((data: any) => {
                 this.forms = data.forms;
                 if (this.forms.length > 0) {
-                    const defaultFormId = this.localStorageService.get('doctypeFormId') ?
-                        this.localStorageService.get('doctypeFormId') : this.forms[0].id;
+                    const defaultFormId = this.sessionStorageService.get('doctypeFormId') ?
+                        this.sessionStorageService.get('doctypeFormId') : this.forms[0].id;
                     this.selectFormControl.setValue(Number(defaultFormId));
                 } else {
                     this.notify.handleErrors(this.translate.instant('FORMS.no_form_available'));
@@ -329,7 +329,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     };
 
     filterChanged() {
-        this.localStorageService.save('doctype_last_search_value', this.searchText);
+        this.sessionStorageService.save('doctype_last_search_value', this.searchText);
         this.treeDataObj.filter(this.searchText);
         if (this.searchText)
         {
@@ -511,11 +511,11 @@ export class DocumentTypeFactoryComponent implements OnInit {
 
     expandAll() {
         this.treeControl.expandAll();
-        this.localStorageService.save('is_doctypes_tree_collapsed', false);
+        this.sessionStorageService.save('is_doctypes_tree_collapsed', false);
     }
 
     collapseAll() {
         this.treeControl.collapseAll();
-        this.localStorageService.save('is_doctypes_tree_collapsed', true);
+        this.sessionStorageService.save('is_doctypes_tree_collapsed', true);
     }
 }

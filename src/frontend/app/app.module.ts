@@ -268,7 +268,7 @@ export function createTranslateLoader(http: HttpClient) {
             useClass: TimeoutInterceptor,
             multi: true
         }
-],
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

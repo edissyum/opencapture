@@ -22,7 +22,7 @@ import { SettingsService } from "../../../../services/settings.service";
 import { AuthService } from "../../../../services/auth.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { PrivilegesService } from "../../../../services/privileges.service";
-import { LocalStorageService } from "../../../../services/local-storage.service";
+import { SessionStorageService } from "../../../../services/session-storage.service";
 import { LastUrlService } from "../../../../services/last-url.service";
 import { Sort } from "@angular/material/sort";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
@@ -63,7 +63,7 @@ export class DocserversComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) { }
 
     ngOnInit(): void {
@@ -71,12 +71,12 @@ export class DocserversComponent implements OnInit {
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/docservers') || lastUrl === '/') {
-            if (this.localStorageService.get('docserversPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('docserversPageIndex') as string);
+            if (this.sessionStorageService.get('docserversPageIndex')) {
+                this.pageIndex = parseInt(this.sessionStorageService.get('docserversPageIndex') as string);
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localStorageService.remove('docserversPageIndex');
+            this.sessionStorageService.remove('docserversPageIndex');
         }
 
         this.http.get(environment['url'] + '/ws/config/getDocservers', {headers: this.authService.headers}).pipe(
@@ -144,7 +144,7 @@ export class DocserversComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('docserversPageIndex', event.pageIndex);
+        this.sessionStorageService.save('docserversPageIndex', event.pageIndex);
         this.loadDocservers();
     }
 

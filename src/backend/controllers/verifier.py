@@ -127,6 +127,8 @@ def retrieve_documents(args):
     args['select'].append('form_models.label as form_label')
     args['select'].append("*")
 
+    args['where'].append("datas -> 'api_only' is NULL")
+
     if 'time' in args:
         if args['time'] in ['today', 'yesterday']:
             args['where'].append(
@@ -139,7 +141,7 @@ def retrieve_documents(args):
         args['data'].append(args['status'])
 
     if 'form_id' in args and args['form_id']:
-        if args['form_id'] == 'no_form':
+        if args['form_id'] == -1:
             args['where'].append('documents.form_id is NULL')
         else:
             args['where'].append('documents.form_id = %s')
@@ -807,7 +809,7 @@ def get_unseen(user_id):
     user_customers[0].append(0)
     total_unseen = verifier.get_total_documents({
         'select': ['count(documents.id) as unseen'],
-        'where': ["status = %s", "customer_id = ANY(%s)"],
+        'where': ["status = %s", "customer_id = ANY(%s)", "datas -> 'api_only' is NULL"],
         'data': ['NEW', user_customers[0]],
         'table': ['documents']
     })[0]
@@ -826,7 +828,7 @@ def get_customers_count(user_id, status, time):
 
     customers_count = verifier.get_total_documents({
         'select': ['customer_id', 'count(documents.id) as total'],
-        'where': ["status = %s", "customer_id = ANY(%s)", where_time[0]],
+        'where': ["status = %s", "customer_id = ANY(%s)", where_time[0], "datas -> 'api_only' is NULL"],
         'data': [status, user_customers[0]],
         'group_by': ['customer_id']
     })
@@ -838,30 +840,37 @@ def get_customers_count(user_id, status, time):
             'data': [status, user_customers[0]],
             'group_by': ['form_id']
         })
-        customer_suppliers = {}
+        customer_suppliers = {
+            gettext('NO_FORM'): verifier.get_total_documents({
+                'select': ['supplier_id', 'count(documents.id) as total'],
+                'where': ["status = %s", "customer_id = %s", "form_id is NULL", where_time[0]],
+                'data': [status, customer['customer_id']],
+                'group_by': ['supplier_id']
+            })
+        }
         for form in _forms:
-            form_info, error = forms.get_form_by_id({'form_id': form['form_id']})
-            if error is not None:
-                form_label = gettext('NO_FORM')
-                where = ["status = %s", "customer_id = %s", "form_id is NULL", where_time[0]]
-                data = [status, customer['customer_id']]
-            else:
-                form_label = form_info['label']
+            if form['form_id'] is not None:
+                form_info, error = forms.get_form_by_id({'form_id': form['form_id']})
+                if error is not None:
+                    form_label = gettext('FORM_NOT_FOUND')
+                else:
+                    form_label = form_info['label']
+
                 where = ["status = %s", "customer_id = %s", "form_id = %s", where_time[0]]
                 data = [status, customer['customer_id'], form['form_id']]
 
-            customer_suppliers[form_label] = verifier.get_total_documents({
-                'select': ['supplier_id', 'count(documents.id) as total'],
-                'where': where,
-                'data': data,
-                'group_by': ['supplier_id']
-            })
+                customer_suppliers[form_label] = verifier.get_total_documents({
+                    'select': ['supplier_id', 'count(documents.id) as total'],
+                    'where': where,
+                    'data': data,
+                    'group_by': ['supplier_id']
+                })
 
-            for supplier in customer_suppliers[form_label]:
-                supplier_info, error_supplier = accounts.get_supplier_by_id({'supplier_id': supplier['supplier_id']})
-                if error_supplier is None:
-                    supplier['name'] = supplier_info['name']
-                supplier['form_id'] = form['form_id']
+                for supplier in customer_suppliers[form_label]:
+                    supplier_info, error_supplier = accounts.get_supplier_by_id({'supplier_id': supplier['supplier_id']})
+                    if error_supplier is None:
+                        supplier['name'] = supplier_info['name']
+                    supplier['form_id'] = form['form_id']
         customer['suppliers'] = customer_suppliers
         if error is None:
             if customer['customer_id'] != 0:

@@ -21,7 +21,7 @@ import { environment } from "../app/env";
 import { Injectable } from '@angular/core';
 import { UserService } from "./user.service";
 import { catchError, tap } from "rxjs/operators";
-import { LocalStorageService } from "./local-storage.service";
+import { SessionStorageService } from "./session-storage.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Injectable({
@@ -35,7 +35,7 @@ export class AuthService {
         private router: Router,
         private http: HttpClient,
         private userService: UserService,
-        private localStorage: LocalStorageService
+        private sessionStorage: SessionStorageService
     ) {
         if (!this.getToken('tokenJwt')) {
             this.headersExists = false;
@@ -51,7 +51,7 @@ export class AuthService {
         const new_headers = new HttpHeaders().set('Authorization', 'Bearer ' + refreshToken);
 
         return this.http
-            .post<any>(environment['url'] + '/ws/auth/login/refresh', {token: refreshToken}, { headers: new_headers })
+            .post<any>(environment['url'] + '/ws/auth/login/refresh', {token: refreshToken}, {headers: new_headers})
             .pipe(
                 tap((data) => {
                     this.userService.setUser(data.user);
@@ -73,12 +73,12 @@ export class AuthService {
 
     cleanCachedUrl() {
         const tokenNames = this.getTokenName();
-        return this.localStorage.remove(tokenNames['cachedUrlName']);
+        return this.sessionStorage.remove(tokenNames['cachedUrlName']);
     }
 
     setToken(name: any, config: any) {
         const tokenNames: any = this.getTokenName();
-        this.localStorage.save(tokenNames[name], config);
+        this.sessionStorage.save(tokenNames[name], config);
     }
 
     getTokenName() {
@@ -116,15 +116,15 @@ export class AuthService {
 
     setTokens(token: string, refresh_token: string, user_token: string) {
         const tokenNames = this.getTokenName();
-        this.localStorage.save(tokenNames['tokenJwt'], token);
-        this.localStorage.save(tokenNames['userData'], user_token);
-        this.localStorage.save(tokenNames['refreshTokenJwt'], refresh_token);
-        this.localStorage.save(tokenNames['minimizeDisplay'], 'true');
+        this.sessionStorage.save(tokenNames['tokenJwt'], token);
+        this.sessionStorage.save(tokenNames['userData'], user_token);
+        this.sessionStorage.save(tokenNames['refreshTokenJwt'], refresh_token);
+        this.sessionStorage.save(tokenNames['minimizeDisplay'], 'true');
     }
 
     getToken(name: any) {
         const tokenNames: any = this.getTokenName();
-        return this.localStorage.get(tokenNames[name]);
+        return this.sessionStorage.get(tokenNames[name]);
     }
 
     logout() {
@@ -132,14 +132,14 @@ export class AuthService {
         const user = this.userService.getUser();
 
         this.userService.setUser({});
-        this.localStorage.remove('loginImageB64');
-        this.localStorage.remove('selectedSettings');
-        this.localStorage.remove(tokenNames['tokenJwt']);
-        this.localStorage.remove(tokenNames['userData']);
-        this.localStorage.remove('splitter_or_verifier');
-        this.localStorage.remove('selectedParentSettings');
-        this.localStorage.remove(tokenNames['refreshTokenJwt']);
-        this.localStorage.remove(tokenNames['minimizeDisplay']);
+        this.sessionStorage.remove('loginImageB64');
+        this.sessionStorage.remove('selectedSettings');
+        this.sessionStorage.remove(tokenNames['tokenJwt']);
+        this.sessionStorage.remove(tokenNames['userData']);
+        this.sessionStorage.remove('splitter_or_verifier');
+        this.sessionStorage.remove('selectedParentSettings');
+        this.sessionStorage.remove(tokenNames['refreshTokenJwt']);
+        this.sessionStorage.remove(tokenNames['minimizeDisplay']);
 
         this.http.get(environment['url'] + '/ws/auth/logout?user_id=' + user['id']).pipe(
             catchError((err: any) => {

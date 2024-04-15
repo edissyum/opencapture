@@ -18,7 +18,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from "../../../../../services/settings.service";
 import { LastUrlService } from "../../../../../services/last-url.service";
-import { LocalStorageService } from "../../../../../services/local-storage.service";
+import { SessionStorageService } from "../../../../../services/session-storage.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../../../services/auth.service";
 import { environment } from "../../../../env";
@@ -54,7 +54,7 @@ export class WorkflowListSplitterComponent implements OnInit {
         private notify: NotificationService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit() {
@@ -62,12 +62,12 @@ export class WorkflowListSplitterComponent implements OnInit {
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/splitter/workflows') || lastUrl === '/') {
-            if (this.localStorageService.get('workflowsPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('workflowsPageIndex') as string);
+            if (this.sessionStorageService.get('workflowsPageIndex')) {
+                this.pageIndex = parseInt(this.sessionStorageService.get('workflowsPageIndex') as string);
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localStorageService.remove('workflowsPageIndex');
+            this.sessionStorageService.remove('workflowsPageIndex');
         }
 
         this.http.get(environment['url'] + '/ws/workflows/splitter/list', {headers: this.authService.headers}).pipe(
@@ -109,7 +109,7 @@ export class WorkflowListSplitterComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('workflowsPageIndex', event.pageIndex);
+        this.sessionStorageService.save('workflowsPageIndex', event.pageIndex);
         this.loadWorkflows();
     }
 

@@ -22,13 +22,13 @@ import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../services/locale.service";
 import { catchError, filter, map, tap } from 'rxjs/operators';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { LocalStorageService } from "../services/local-storage.service";
+import { SessionStorageService } from "../services/session-storage.service";
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { NotificationService } from "../services/notifications/notifications.service";
 import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'app-root',
+    selector: 'app',
     templateUrl: './app.component.html'
 })
 
@@ -49,7 +49,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
         private localeService: LocaleService,
         private activatedRoute: ActivatedRoute,
         private changeDetector: ChangeDetectorRef,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit() {
@@ -67,7 +67,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
                         child = child.firstChild;
                     }
                     if (this.router.url !== '/home' && !this.router.url.includes('settings')) {
-                        splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
+                        splitterOrVerifier = this.sessionStorageService.get('splitter_or_verifier');
                         if (splitterOrVerifier !== undefined) {
                             if (splitterOrVerifier === 'splitter') {
                                 childImage = 'assets/imgs/logo_splitter.png';
@@ -92,11 +92,11 @@ export class AppComponent implements OnInit, AfterContentChecked {
             this.imageMobile = data[2];
             const splitterOrVerifier = data[3];
             if (!splitterOrVerifier) {
-                const b64Content = this.localStorageService.get('loginImageB64');
+                const b64Content = this.sessionStorageService.get('loginImageB64');
                 if (!b64Content) {
                     this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                         tap((data: any) => {
-                            this.localStorageService.save('loginImageB64', data);
+                            this.sessionStorageService.save('loginImageB64', data);
                             this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
                         }),
                         catchError((err: any) => {

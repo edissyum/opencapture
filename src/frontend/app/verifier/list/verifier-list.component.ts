@@ -16,7 +16,7 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService } from "../../../services/local-storage.service";
+import { SessionStorageService } from "../../../services/session-storage.service";
 import { environment } from  "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -144,7 +144,7 @@ export class VerifierListComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         private routerExtService: LastUrlService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     hasChild = (_: number, node: FlatNode) => node.expandable;
@@ -167,20 +167,20 @@ export class VerifierListComponent implements OnInit {
         marker('VERIFIER.select_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.documents_settings'); // Needed to get the translation in the JSON file
-        this.localStorageService.save('splitter_or_verifier', 'verifier');
+        this.sessionStorageService.save('splitter_or_verifier', 'verifier');
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
-            if (this.localStorageService.get('documentsPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('documentsPageIndex') as string);
+            if (this.sessionStorageService.get('documentsPageIndex')) {
+                this.pageIndex = parseInt(this.sessionStorageService.get('documentsPageIndex') as string);
             }
-            if (this.localStorageService.get('documentsTimeIndex')) {
-                this.selectedTab = parseInt(this.localStorageService.get('documentsTimeIndex') as string);
+            if (this.sessionStorageService.get('documentsTimeIndex')) {
+                this.selectedTab = parseInt(this.sessionStorageService.get('documentsTimeIndex') as string);
                 this.currentTime = this.batchList[this.selectedTab].id;
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localStorageService.remove('documentsPageIndex');
-            this.localStorageService.remove('documentsTimeIndex');
+            this.sessionStorageService.remove('documentsPageIndex');
+            this.sessionStorageService.remove('documentsTimeIndex');
         }
         this.removeLockByUserId();
         this.http.get(environment['url'] + '/ws/status/verifier/list', {headers: this.authService.headers}).pipe(
@@ -262,6 +262,7 @@ export class VerifierListComponent implements OnInit {
                         count: customer_count.total,
                         children: []
                     };
+
                     Object.keys(customer_count['suppliers']).forEach((key: any, index: number) => {
                         node['children'].push({
                             name: key,
@@ -276,11 +277,17 @@ export class VerifierListComponent implements OnInit {
                                 name: supplier.name ? supplier.name : this.translate.instant('ACCOUNTS.supplier_unknow'),
                                 supplier_id: supplier.supplier_id,
                                 parent_id: customer_count.customer_id,
-                                form_id: supplier.form_id ? supplier.form_id : 'no_form',
+                                form_id: supplier.form_id ? supplier.form_id : -1,
                                 count: supplier.total,
                                 display: true
                             });
                         });
+                    });
+                    node['children'].forEach((node_child: any, index: number) => {
+                        if (node_child.name === this.translate.instant('VERIFIER.no_form')) {
+                            node['children'].unshift(node_child);
+                            node['children'].splice(index + 1, 1);
+                        }
                     });
                     this.TREE_DATA.push(node);
                 });
@@ -619,7 +626,7 @@ export class VerifierListComponent implements OnInit {
     onTabChange(event: any) {
         this.search = '';
         this.selectedTab = event.index;
-        this.localStorageService.save('documentsTimeIndex', this.selectedTab);
+        this.sessionStorageService.save('documentsTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
         this.resetPaginator();
         this.loadCustomers();
@@ -630,7 +637,7 @@ export class VerifierListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('documentsPageIndex', event.pageIndex);
+        this.sessionStorageService.save('documentsPageIndex', event.pageIndex);
         this.loadDocuments().then();
     }
 
@@ -643,7 +650,7 @@ export class VerifierListComponent implements OnInit {
         this.total = 0;
         this.offset = 0;
         this.pageIndex = 0;
-        this.localStorageService.save('documentsPageIndex', this.pageIndex);
+        this.sessionStorageService.save('documentsPageIndex', this.pageIndex);
     }
 
     expandAll() {

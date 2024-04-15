@@ -17,7 +17,8 @@
 # @dev : Oussama Brich <nathan.cheval@outlook.fr>
 
 import jwt
-import psycopg2
+import psycopg
+from psycopg.rows import dict_row
 from datetime import datetime, timedelta
 from src.backend.import_classes import _Config
 
@@ -27,13 +28,13 @@ PROJECT_PATH = '/var/www/html/opencapture/'
 
 def get_db():
     config = _Config(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/config.ini')
-    conn = psycopg2.connect(
-        "dbname     =" + config.cfg['DATABASE']['postgresdatabase'] +
-        " user      =" + config.cfg['DATABASE']['postgresuser'] +
-        " password  =" + config.cfg['DATABASE']['postgrespassword'] +
-        " host      =" + config.cfg['DATABASE']['postgreshost'] +
-        " port      =" + config.cfg['DATABASE']['postgresport'])
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    conn = psycopg.connect(dbname=config.cfg['DATABASE']['postgresdatabase'],
+                           user=config.cfg['DATABASE']['postgresuser'],
+                           password=config.cfg['DATABASE']['postgrespassword'],
+                           host=config.cfg['DATABASE']['postgreshost'],
+                           port=config.cfg['DATABASE']['postgresport'],
+                           row_factory=dict_row)
+    cursor = conn.cursor()
     conn.autocommit = True
     return cursor
 

@@ -3,7 +3,7 @@
     <div class="w-full flex items-center justify-center text-center flex-col">
         <div class="w-11/12 max-w-md" *ngIf="this.loginImage">
             <img class="m-auto" [src]="this.loginImage" alt="Open-Capture logo">
-            <mat-card-subtitle [innerHTML]="this.loginTopMessage"></mat-card-subtitle>
+            <mat-card-subtitle class="relative top-2" [innerHTML]="this.loginTopMessage"></mat-card-subtitle>
         </div>
         <mat-card class="text-center m-6 mb-0 w-11/12 max-w-md">
             <mat-card-title class="m-5">

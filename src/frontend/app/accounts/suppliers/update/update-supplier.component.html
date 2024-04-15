@@ -54,7 +54,7 @@
                     {{ 'ACCOUNTS.address_informations' | translate }}
                 </h3>
             </div>
-            <form class="grid grid-cols-4 gap-2 gap-y-5 mx-10 text-center">
+            <form class="grid grid-cols-3 gap-2 gap-y-5 mx-10 text-center">
                 <ng-container *ngFor="let field of addressForm">
                     <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block" *ngIf="field.type !== 'country'">
                         <mat-label>{{ field.label | translate }}</mat-label>

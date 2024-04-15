@@ -28,8 +28,7 @@ class ConfigTest(unittest.TestCase):
         self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
-        warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
-        warnings.filterwarnings('ignore', message="subprocess .* is still running", category=ResourceWarning)
+        warnings.filterwarnings('ignore', category=ResourceWarning)
 
     def test_successful_read_config(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/config/readConfig',

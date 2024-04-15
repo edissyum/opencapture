@@ -160,7 +160,7 @@
                                                 <mat-error *ngIf="field.control.errors">
                                                     {{ getErrorMessage(field.id, category['id']) }}
                                                 </mat-error>
-                                                <i *ngIf="showAutoLogo(field)" class="fa-solid fa-bolt text-gray-600 absolute top-2 -right-2"
+                                                <i *ngIf="showAutoLogo(field)" class="fa-solid text-xs fa-bolt text-gray-600 absolute top-1 -right-3"
                                                    [matTooltip]="'VERIFIER.data_found_auto' | translate"></i>
                                             </mat-form-field>
                                         </ng-template>
