@@ -94,7 +94,7 @@
             $current_fqdn = $exploded_fqdn[0];
 
             $customCpt = 0;
-            foreach($customs as $custom) {
+            foreach ($customs as $custom) {
                 if (is_dir($custom)) {
                     if ($custom == $exploded_fqdn[count($exploded_fqdn) - 2]) {
                         ?>

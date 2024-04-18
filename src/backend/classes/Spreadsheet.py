@@ -24,33 +24,35 @@ from pyexcel_ods3 import get_data, save_data
 class Spreadsheet:
     def __init__(self, log, docservers, config):
         self.log = log
-        self.referencialSuppplierSpreadsheet = docservers['REFERENTIALS_PATH'] + '/' + config.cfg['REFERENCIAL']['referencialsupplierdocument']
-        self.referencialSuppplierIndex = docservers['REFERENTIALS_PATH'] + '/' + config.cfg['REFERENCIAL']['referencialsupplierindex']
-        self.referencialSupplierArray = {}
-        self.referencialSupplierData = {}
+        self.referencial_supplier_spreadsheet = (docservers['REFERENTIALS_PATH'] + '/' +
+                                                 config.cfg['REFERENCIAL']['referencialsupplierdocument'])
+        self.referencial_supplier_index = (docservers['REFERENTIALS_PATH'] + '/' +
+                                           config.cfg['REFERENCIAL']['referencialsupplierindex'])
+        self.referencial_supplier_array = {}
+        self.referencial_supplier_data = {}
 
-        with open(self.referencialSuppplierIndex, encoding='UTF-8') as file:
+        with open(self.referencial_supplier_index, encoding='UTF-8') as file:
             fp = json.load(file)
-            self.referencialSupplierArray['name'] = fp['name']
-            self.referencialSupplierArray['SIRET'] = fp['SIRET']
-            self.referencialSupplierArray['SIREN'] = fp['SIREN']
-            self.referencialSupplierArray['IBAN'] = fp['IBAN']
-            self.referencialSupplierArray['EMAIL'] = fp['EMAIL']
-            self.referencialSupplierArray['VATNumber'] = fp['VATNumber']
-            self.referencialSupplierArray['address1'] = fp['address1']
-            self.referencialSupplierArray['address2'] = fp['address2']
-            self.referencialSupplierArray['addressTown'] = fp['addressTown']
-            self.referencialSupplierArray['addressCountry'] = fp['addressCountry']
-            self.referencialSupplierArray['addressPostalCode'] = fp['addressPostalCode']
-            self.referencialSupplierArray['positions_mask_id'] = fp['positions_mask_id']
-            self.referencialSupplierArray['get_only_raw_footer'] = fp['get_only_raw_footer']
-            self.referencialSupplierArray['doc_lang'] = fp['doc_lang']
-            self.referencialSupplierArray['DUNS'] = fp['DUNS']
-            self.referencialSupplierArray['BIC'] = fp['BIC']
+            self.referencial_supplier_array['name'] = fp['name']
+            self.referencial_supplier_array['SIRET'] = fp['SIRET']
+            self.referencial_supplier_array['SIREN'] = fp['SIREN']
+            self.referencial_supplier_array['IBAN'] = fp['IBAN']
+            self.referencial_supplier_array['EMAIL'] = fp['EMAIL']
+            self.referencial_supplier_array['VATNumber'] = fp['VATNumber']
+            self.referencial_supplier_array['address1'] = fp['address1']
+            self.referencial_supplier_array['address2'] = fp['address2']
+            self.referencial_supplier_array['addressTown'] = fp['addressTown']
+            self.referencial_supplier_array['addressCountry'] = fp['addressCountry']
+            self.referencial_supplier_array['addressPostalCode'] = fp['addressPostalCode']
+            self.referencial_supplier_array['positions_mask_id'] = fp['positions_mask_id']
+            self.referencial_supplier_array['get_only_raw_footer'] = fp['get_only_raw_footer']
+            self.referencial_supplier_array['doc_lang'] = fp['doc_lang']
+            self.referencial_supplier_array['DUNS'] = fp['DUNS']
+            self.referencial_supplier_array['BIC'] = fp['BIC']
 
     def update_supplier_ods_sheet(self, database):
-        if os.path.isfile(self.referencialSuppplierSpreadsheet):
-            content_sheet = get_data(self.referencialSuppplierSpreadsheet)
+        if os.path.isfile(self.referencial_supplier_spreadsheet):
+            content_sheet = get_data(self.referencial_supplier_spreadsheet)
 
             res = database.select({
                 'select': ['*'],
@@ -106,9 +108,9 @@ class Spreadsheet:
             except IndexError as e:
                 self.log.error("IndexError while updating ods reference file : " + str(e), False)
 
-            save_data(self.referencialSuppplierSpreadsheet, content_sheet)
+            save_data(self.referencial_supplier_spreadsheet, content_sheet)
         else:
-            self.log.error('The referencial file doesn\'t exist : ' + self.referencialSuppplierSpreadsheet, False)
+            self.log.error('The referencial file doesn\'t exist : ' + self.referencial_supplier_spreadsheet, False)
 
     @staticmethod
     def read_excel_sheet(referencial_spreadsheet):
@@ -126,22 +128,22 @@ class Spreadsheet:
         if 'Fournisseur' in content_sheet:
             content_sheet = content_sheet['Fournisseur']
         content_sheet = pd.DataFrame(content_sheet, columns=[
-            self.referencialSupplierArray['name'],
-            self.referencialSupplierArray['VATNumber'],
-            self.referencialSupplierArray['SIRET'],
-            self.referencialSupplierArray['SIREN'],
-            self.referencialSupplierArray['IBAN'],
-            self.referencialSupplierArray['EMAIL'],
-            self.referencialSupplierArray['address1'],
-            self.referencialSupplierArray['address2'],
-            self.referencialSupplierArray['addressPostalCode'],
-            self.referencialSupplierArray['addressTown'],
-            self.referencialSupplierArray['addressCountry'],
-            self.referencialSupplierArray['positions_mask_id'],
-            self.referencialSupplierArray['get_only_raw_footer'],
-            self.referencialSupplierArray['doc_lang'],
-            self.referencialSupplierArray['DUNS'],
-            self.referencialSupplierArray['BIC']
+            self.referencial_supplier_array['name'],
+            self.referencial_supplier_array['VATNumber'],
+            self.referencial_supplier_array['SIRET'],
+            self.referencial_supplier_array['SIREN'],
+            self.referencial_supplier_array['IBAN'],
+            self.referencial_supplier_array['EMAIL'],
+            self.referencial_supplier_array['address1'],
+            self.referencial_supplier_array['address2'],
+            self.referencial_supplier_array['addressPostalCode'],
+            self.referencial_supplier_array['addressTown'],
+            self.referencial_supplier_array['addressCountry'],
+            self.referencial_supplier_array['positions_mask_id'],
+            self.referencial_supplier_array['get_only_raw_footer'],
+            self.referencial_supplier_array['doc_lang'],
+            self.referencial_supplier_array['DUNS'],
+            self.referencial_supplier_array['BIC']
         ])
         # Drop row 0 because it contains the indexes columns
         if not content_sheet.empty:
@@ -154,39 +156,39 @@ class Spreadsheet:
     def construct_supplier_array(self, content_sheet):
         # Create the first index of array, with provider number (taxe number)
         tmp_provider_number = pd.DataFrame(content_sheet,
-                                           columns=[self.referencialSupplierArray['VATNumber']]).drop_duplicates()
+                                           columns=[self.referencial_supplier_array['VATNumber']]).drop_duplicates()
         for value in tmp_provider_number.to_dict(orient='records'):
-            self.referencialSupplierData[value[self.referencialSupplierArray['VATNumber']]] = []
+            self.referencial_supplier_data[value[self.referencial_supplier_array['VATNumber']]] = []
 
         # Then go through the Excel document and fill our final array with all infos about the provider and the bill
         tmp_excel_content = pd.DataFrame(content_sheet)
         for line in tmp_excel_content.to_dict(orient='records'):
-            if line[self.referencialSupplierArray['positions_mask_id']] == line[self.referencialSupplierArray['positions_mask_id']] and line[self.referencialSupplierArray['positions_mask_id']]:
+            if line[self.referencial_supplier_array['positions_mask_id']] == line[self.referencial_supplier_array['positions_mask_id']] and line[self.referencial_supplier_array['positions_mask_id']]:
                 try:
-                    line[self.referencialSupplierArray['positions_mask_id']] = int(line[self.referencialSupplierArray['positions_mask_id']])
+                    line[self.referencial_supplier_array['positions_mask_id']] = int(line[self.referencial_supplier_array['positions_mask_id']])
                 except ValueError:
-                    line[self.referencialSupplierArray['positions_mask_id']] = line[self.referencialSupplierArray['positions_mask_id']]
+                    line[self.referencial_supplier_array['positions_mask_id']] = line[self.referencial_supplier_array['positions_mask_id']]
 
-            if line[self.referencialSupplierArray['get_only_raw_footer']] == line[self.referencialSupplierArray['get_only_raw_footer']] and line[self.referencialSupplierArray['get_only_raw_footer']]:
+            if line[self.referencial_supplier_array['get_only_raw_footer']] == line[self.referencial_supplier_array['get_only_raw_footer']] and line[self.referencial_supplier_array['get_only_raw_footer']]:
                 try:
-                    line[self.referencialSupplierArray['get_only_raw_footer']] = int(line[self.referencialSupplierArray['get_only_raw_footer']])
+                    line[self.referencial_supplier_array['get_only_raw_footer']] = int(line[self.referencial_supplier_array['get_only_raw_footer']])
                 except ValueError:
-                    line[self.referencialSupplierArray['get_only_raw_footer']] = line[self.referencialSupplierArray['get_only_raw_footer']]
+                    line[self.referencial_supplier_array['get_only_raw_footer']] = line[self.referencial_supplier_array['get_only_raw_footer']]
 
-            if line[self.referencialSupplierArray['SIRET']] == line[self.referencialSupplierArray['SIRET']] and line[self.referencialSupplierArray['SIRET']]:
+            if line[self.referencial_supplier_array['SIRET']] == line[self.referencial_supplier_array['SIRET']] and line[self.referencial_supplier_array['SIRET']]:
                 try:
-                    line[self.referencialSupplierArray['SIRET']] = int(line[self.referencialSupplierArray['SIRET']])
+                    line[self.referencial_supplier_array['SIRET']] = int(line[self.referencial_supplier_array['SIRET']])
                 except ValueError:
-                    line[self.referencialSupplierArray['SIRET']] = line[self.referencialSupplierArray['SIRET']]
+                    line[self.referencial_supplier_array['SIRET']] = line[self.referencial_supplier_array['SIRET']]
 
-            if line[self.referencialSupplierArray['SIREN']] == line[self.referencialSupplierArray['SIREN']] and line[self.referencialSupplierArray['SIREN']]:
+            if line[self.referencial_supplier_array['SIREN']] == line[self.referencial_supplier_array['SIREN']] and line[self.referencial_supplier_array['SIREN']]:
                 try:
-                    line[self.referencialSupplierArray['SIREN']] = int(line[self.referencialSupplierArray['SIREN']])
+                    line[self.referencial_supplier_array['SIREN']] = int(line[self.referencial_supplier_array['SIREN']])
                 except ValueError:
-                    line[self.referencialSupplierArray['SIREN']] = line[self.referencialSupplierArray['SIREN']]
+                    line[self.referencial_supplier_array['SIREN']] = line[self.referencial_supplier_array['SIREN']]
 
-            if line[self.referencialSupplierArray['addressPostalCode']] == line[self.referencialSupplierArray['addressPostalCode']] and line[self.referencialSupplierArray['addressPostalCode']]:
-                if len(str(line[self.referencialSupplierArray['addressPostalCode']])) == 4:
-                    line[self.referencialSupplierArray['addressPostalCode']] = '0' + str(
-                        line[self.referencialSupplierArray['addressPostalCode']])
-            self.referencialSupplierData[line[self.referencialSupplierArray['VATNumber']]].append(line)
+            if line[self.referencial_supplier_array['addressPostalCode']] == line[self.referencial_supplier_array['addressPostalCode']] and line[self.referencial_supplier_array['addressPostalCode']]:
+                if len(str(line[self.referencial_supplier_array['addressPostalCode']])) == 4:
+                    line[self.referencial_supplier_array['addressPostalCode']] = '0' + str(
+                        line[self.referencial_supplier_array['addressPostalCode']])
+            self.referencial_supplier_data[line[self.referencial_supplier_array['VATNumber']]].append(line)

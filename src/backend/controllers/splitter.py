@@ -127,7 +127,8 @@ def retrieve_referential(form_id):
         })
         if res[1] != 200:
             return res
-    metadata, error = splitter.retrieve_metadata({
+
+    metadata, _ = splitter.retrieve_metadata({
         'type': 'referential',
         'form_id': str(form['id'])
     })
@@ -462,7 +463,6 @@ def get_output_parameters(parameters):
 
 
 def save_modifications(data):
-    new_documents = []
     res = splitter.update_batch({
         'batch_id': data['batch_id'],
         'batch_metadata': data['batch_metadata']

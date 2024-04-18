@@ -872,7 +872,6 @@ def get_customers_count(user_id, status, time):
                         supplier['name'] = supplier_info['name']
                     supplier['form_id'] = form['form_id']
         customer['suppliers'] = customer_suppliers
-        if error is None:
-            if customer['customer_id'] != 0:
-                customer['name'] = customer_info['name']
+        if error is None and customer['customer_id'] != 0:
+            customer['name'] = customer_info['name']
     return customers_count, 200

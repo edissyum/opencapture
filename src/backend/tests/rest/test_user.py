@@ -16,11 +16,11 @@
 
 import jwt
 import json
-import datetime
 import unittest
 import warnings
 from src.backend import app
 from werkzeug.security import check_password_hash
+from datetime import datetime, timezone, timedelta
 from src.backend.tests import CUSTOM_ID, get_db, get_token
 
 
@@ -111,8 +111,8 @@ class UserTest(unittest.TestCase):
     def test_successful_reset_password(self):
         user = self.create_user()
         payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=3600),
-            'iat': datetime.datetime.utcnow(),
+            'exp': datetime.now(timezone.utc) + timedelta(minutes=3600),
+            'iat': datetime.now(timezone.utc),
             'sub': user.json['id']
         }
         reset_token = jwt.encode(payload, app.config['SECRET_KEY'].replace("\n", ""), algorithm='HS512')

@@ -93,7 +93,7 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
                     data['ip'] = args['ip']
                     data['database'] = database
                     data['user_info'] = args['user_info']
-                elif step in 'process' 'output':
+                elif step in ('process', 'output'):
                     if 'document_id' in args:
                         data['document_id'] = args['document_id']
 

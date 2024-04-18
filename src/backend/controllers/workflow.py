@@ -452,9 +452,8 @@ def delete_script_and_incron(args):
     folder_script = docservers['SCRIPTS_PATH'] + args['module'] + '_workflows/'
     script_name = args['workflow_id'] + '.sh'
     old_script_filename = folder_script + '/' + script_name
-    if os.path.isdir(folder_script):
-        if os.path.isfile(old_script_filename):
-            os.remove(old_script_filename)
+    if os.path.isdir(folder_script) and os.path.isfile(old_script_filename):
+        os.remove(old_script_filename)
 
     ######
     # REMOVE FS WATCHER CONFIG

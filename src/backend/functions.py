@@ -202,9 +202,8 @@ def get_custom_path(custom_id):
     if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
         customs_config = _Config(custom_ini_file)
         for custom_name, custom_param in customs_config.cfg.items():
-            if custom_id == custom_name:
-                if os.path.isdir(custom_param['path']):
-                    path = custom_param['path']
+            if custom_id == custom_name and os.path.isdir(custom_param['path']):
+                path = custom_param['path']
     return path
 
 
@@ -470,24 +469,23 @@ def find_workflow_with_ia(file, ai_model_id, database, docservers, files, ocr, l
             ai.csv_file = csv_file
             (_, folder, prob), code = ai.model_testing(model_name)
 
-            if code == 200:
-                if prob >= min_proba:
-                    for doc in ai_model[0]['documents']:
-                        if doc['folder'] == folder:
-                            if module == 'verifier':
-                                if doc['workflow_id']:
-                                    form = database.select({
-                                        'select': ['*'],
-                                        'table': ['workflows'],
-                                        'where': ['workflow_id = %s', 'module = %s'],
-                                        'data': [doc['workflow_id'], module],
-                                    })
-                                    if form:
-                                        log.info('[IA] Document detected as&nbsp;<strong>' + folder +
-                                                 '</strong>&nbsp;and sended to workflow&nbsp;<strong>' +
-                                                 doc['workflow_id'] + '</strong>')
-                                        return doc['workflow_id']
-                            elif module == 'splitter':
-                                log.info('[IA] Document doctype detected : ' + doc['doctype'])
-                                return doc['doctype']
+            if code == 200 and prob >= min_proba:
+                for doc in ai_model[0]['documents']:
+                    if doc['folder'] == folder:
+                        if module == 'verifier':
+                            if doc['workflow_id']:
+                                form = database.select({
+                                    'select': ['*'],
+                                    'table': ['workflows'],
+                                    'where': ['workflow_id = %s', 'module = %s'],
+                                    'data': [doc['workflow_id'], module],
+                                })
+                                if form:
+                                    log.info('[IA] Document detected as&nbsp;<strong>' + folder +
+                                             '</strong>&nbsp;and sended to workflow&nbsp;<strong>' +
+                                             doc['workflow_id'] + '</strong>')
+                                    return doc['workflow_id']
+                        elif module == 'splitter':
+                            log.info('[IA] Document doctype detected : ' + doc['doctype'])
+                            return doc['doctype']
     return False

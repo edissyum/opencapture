@@ -95,24 +95,6 @@ class Mail:
         :param backup_path: Path to backup of the e-mail
         :return: dict of Args and file path
         """
-        to_str, cc_str, reply_to = ('', '', '')
-        try:
-            for to in msg.to_values:
-                to_str += to.full + ';'
-        except TypeError:
-            pass
-
-        try:
-            for cc in msg.cc_values:
-                cc_str += cc.full + ';'
-        except TypeError:
-            pass
-
-        try:
-            for rp_to in msg.reply_to_values:
-                reply_to += rp_to.full + ';'
-        except TypeError:
-            pass
 
         data = {
             'attachments': []
@@ -206,7 +188,6 @@ class Mail:
             return True
         except utils.UnexpectedCommandStatusError as mail_error:
             log.error('Error while moving mail to ' + destination + ' folder : ' + str(mail_error), False)
-            pass
 
     def delete_mail(self, msg, trash_folder, log):
         """
@@ -224,7 +205,6 @@ class Mail:
                 self.move_to_destination_folder(msg, trash_folder, log)
         except utils.UnexpectedCommandStatusError as mail_error:
             log.error('Error while deleting mail : ' + str(mail_error), False)
-            pass
 
     @staticmethod
     def retrieve_attachment(msg):
