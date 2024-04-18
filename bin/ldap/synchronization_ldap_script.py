@@ -93,7 +93,7 @@ def retrieve_ldap_synchronization_data():
 
 
 def check_connection_ldap_server():
-    ldap_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
+    ldap_server = domain_ldap + ":" + str(port_ldap) + ""
     username_admin_adldap = f'cn={username_ldap_admin},{base_dn}'
     username_admin_openldap = f'{username_ldap_admin}'
     try:

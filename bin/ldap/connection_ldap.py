@@ -37,7 +37,7 @@ def check_connection_ldap_server(username_ldap_admin, domain_ldap, port_ldap, pa
     :return:
     """
 
-    ldsp_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
+    ldsp_server = domain_ldap + ":" + str(port_ldap) + ""
     try:
         if type_ad == 'openLDAP':
             username_admin = f'cn={username_ldap_admin},{base_dn}'
@@ -83,7 +83,7 @@ def get_ldap_users(connection, base_dn, users_dn):
         if not users_dn:
             status = connection.search(search_base=base_dn, search_scope='SUBTREE', attributes=['*'])
         else:
-            status = connection.search(search_base=users_dn, search_filter=f'(cn=*)', search_scope='SUBTREE',
+            status = connection.search(search_base=users_dn, search_filter='(cn=*)', search_scope='SUBTREE',
                                        attributes=['*'])
         if connection and status:
             print("The number of users found on LDAP : " + str(len(connection.entries)))
