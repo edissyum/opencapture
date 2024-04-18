@@ -35,9 +35,8 @@ if __name__ == '__main__':
     database, config, _, _, _, log, _, spreadsheet, _, _, _, _, _ = create_classes_from_custom_id(args['custom_id'])
 
     file = spreadsheet.referencial_supplier_spreadsheet
-    if args['file']:
-        if os.path.exists(args['file']):
-            file = args['file']
+    if args['file'] and os.path.exists(args['file']):
+        file = args['file']
 
     mime = mimetypes.guess_type(file)[0]
     CONTENT_SUPPLIER_SHEET = None

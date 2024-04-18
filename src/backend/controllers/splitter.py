@@ -127,7 +127,8 @@ def retrieve_referential(form_id):
         })
         if res[1] != 200:
             return res
-    metadata, error = splitter.retrieve_metadata({
+
+    metadata, _ = splitter.retrieve_metadata({
         'type': 'referential',
         'form_id': str(form['id'])
     })

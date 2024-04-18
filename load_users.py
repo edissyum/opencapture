@@ -42,7 +42,8 @@ if __name__ == '__main__':
     database, config, _, _, _, log, _, _, _, _, _, _, _ = create_classes_from_custom_id(args.custom_id)
 
     if args.file is None and os.path.isfile(args.file):
-        log.info("Please provide an existing the users CSV file. \n Ex : python3 load_users.py --file users.csv --custom-id edissyum")
+        log.info(
+            "Please provide an existing the users CSV file. \n Ex : python3 load_users.py --file users.csv --custom-id edissyum")
         exit(1)
 
     with open(args.file, 'r') as f:
@@ -60,7 +61,7 @@ if __name__ == '__main__':
                 'password': 'NOT_SET',
                 'email': row[3],
                 'customer_id': None,
-                'role': row[4] if type(row[4]) == int else 3,
+                'role': row[4] if isinstance(row[4], int) else 3
             }
             users_res = database.select({
                 'select': ['id'],

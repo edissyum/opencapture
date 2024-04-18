@@ -240,7 +240,7 @@ def get_customers_by_user_id(user_id):
                     _customers.append(_c['id'])
                 customers = _customers
             else:
-                if type(eval(customers['customers_id']['data'])) == list:
+                if isinstance(eval(customers['customers_id']['data']), list):
                     customers = eval(customers['customers_id']['data'])
         return customers, 200
     else:
@@ -270,7 +270,7 @@ def get_forms_by_user_id(user_id):
                     _user_forms.append(form['id'])
                 user_forms = _user_forms
             else:
-                if type(eval(user_forms['forms_id']['data'])) == list:
+                if isinstance(eval(user_forms['forms_id']['data']), list):
                     user_forms = eval(user_forms['forms_id']['data'])
         return user_forms, 200
     else:

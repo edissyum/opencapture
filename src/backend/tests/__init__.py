@@ -19,7 +19,7 @@
 import jwt
 import psycopg
 from psycopg.rows import dict_row
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from src.backend.import_classes import _Config
 
 CUSTOM_ID = 'test'
@@ -44,8 +44,8 @@ def get_token(user_id):
         secret_key = secret_key_file.read().replace('\n', '')
     try:
         payload = {
-            'exp': datetime.utcnow() + timedelta(minutes=1440, seconds=0),
-            'iat': datetime.utcnow(),
+            'exp': datetime.now(timezone.utc) + timedelta(minutes=1440, seconds=0),
+            'iat': datetime.now(timezone.utc),
             'sub': user_id
         }
         return jwt.encode(

@@ -62,7 +62,7 @@ class SeparatorQR:
     @staticmethod
     def sorted_files(data):
         convert = lambda text: int(text) if text.isdigit() else text.lower()
-        alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+        alphanum_key = lambda key: [convert(c) for c in re.split('(\d+)', key)]
         return sorted(data, key=alphanum_key)
 
     def remove_blank_page(self, file):

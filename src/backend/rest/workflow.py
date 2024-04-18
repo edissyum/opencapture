@@ -79,7 +79,7 @@ def create_workflow(module):
 @auth.token_required
 def get_workflows(module, user_id):
     list_priv = ['settings | upload', 'workflows_list | upload'] if module == 'verifier' \
-        else ['settings | upload', 'workflows_list | upload']
+        else ['settings | upload', 'workflows_list_splitter | upload']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/workflows/{module}/list'}), 403
 

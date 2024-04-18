@@ -209,7 +209,7 @@ class Splitter:
                             'data': [model_id]
                         })
                         if ai_model:
-                            result, status = artificial_intelligence.predict_from_file_path(
+                            result, _ = artificial_intelligence.predict_from_file_path(
                                 file, ai_model[0], page=int(page['source_page']))
                             if result[2] >= ai_model[0]['min_proba']:
                                 args['columns']['doctype_key'] = page['doctype_value'] = result[3]

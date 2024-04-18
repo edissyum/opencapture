@@ -369,7 +369,6 @@ def insert(args):
     files = args['files']
     database = args['database']
     docservers = args['docservers']
-    configurations = args['configurations']
     status = 'NEW'
 
     jpg_filename = str(uuid.uuid4())

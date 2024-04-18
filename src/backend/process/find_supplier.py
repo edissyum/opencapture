@@ -66,12 +66,10 @@ class FindSupplier:
         if data:
             where = ["TRIM(REPLACE(" + column + ", ' ', '')) = %s", 'accounts_supplier.status NOT IN (%s)']
             _data = [data, 'DEL']
-            if column.lower() in ['siret', 'siren']:
-                if not validate_luhn(data):
-                    return False
-            elif column.lower() == 'iban':
-                if not validate_iban(data):
-                    return False
+            if column.lower() in ['siret', 'siren'] and not validate_luhn(data):
+                return False
+            elif column.lower() == 'iban' and not validate_iban(data):
+                return False
             if column.lower() == 'bic':
                 where = ["TRIM(REPLACE(" + column + ", ' ', '')) = %s OR TRIM(REPLACE(" + column + ", ' ', '')) = %s", 'accounts_supplier.status NOT IN (%s)']
                 _data = [data, data[:-3], 'DEL']

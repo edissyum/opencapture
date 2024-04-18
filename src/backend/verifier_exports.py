@@ -420,9 +420,8 @@ def export_pdf(data, log, regex, document_info, compress_type, ocrise):
                 file = folder_out + '/' + filename
             compress_file(file, compress_type, log, folder_out, filename, document_info['filename'])
 
-        if not ocrise and not compress_type:
-            if os.path.isfile(file):
-                shutil.copy(file, folder_out + '/' + filename)
+        if not ocrise and not compress_type and os.path.isfile(file):
+            shutil.copy(file, folder_out + '/' + filename)
 
         return folder_out + '/' + filename, 200
     else:

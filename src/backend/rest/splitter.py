@@ -176,7 +176,7 @@ def remove_lock_by_user_id(user_id):
 def remove_lock_by_batch_id():
     if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/splitter/removeLockByBatchId'}), 403
+                        'message': '/splitter/removeLockByBatchId'}), 403
     data = json.loads(request.data)
     res = splitter.remove_lock_by_batch_id(data['batch_id'])
     return make_response(res[0], res[1])
