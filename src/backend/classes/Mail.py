@@ -95,24 +95,6 @@ class Mail:
         :param backup_path: Path to backup of the e-mail
         :return: dict of Args and file path
         """
-        to_str, cc_str, reply_to = ('', '', '')
-        try:
-            for to in msg.to_values:
-                to_str += to.full + ';'
-        except TypeError:
-            pass
-
-        try:
-            for cc in msg.cc_values:
-                cc_str += cc.full + ';'
-        except TypeError:
-            pass
-
-        try:
-            for rp_to in msg.reply_to_values:
-                reply_to += rp_to.full + ';'
-        except TypeError:
-            pass
 
         data = {
             'attachments': []

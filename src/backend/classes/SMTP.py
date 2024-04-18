@@ -40,6 +40,8 @@ class SMTP:
         self.dest_mail = dest_mail
         self.from_mail = from_mail
         self.protocole_secure = protocole_secure
+        self.messsage_delay = '\n\n Attention, durant les ' + str(self.delay) + \
+                              ' dernières minutes, d\'autres erreurs ont pu arriver sans notifications.'
 
         if self.enabled:
             self.test_connection()
@@ -117,8 +119,7 @@ class SMTP:
         message = 'Une erreur est arrivée lors du traitement du fichier ' + file_name + '\n\n'
         message += "Description de l'erreur : \n    " + error
         if self.delay != 0:
-            message += '\n\n Attention, durant les ' + str(self.delay) +\
-                       ' dernières minutes, d\'autres erreurs ont pu arriver sans notifications.'
+            message += self.messsage_delay
 
         msg.attach(MIMEText(message))
 
@@ -162,8 +163,7 @@ class SMTP:
         msg['Subject'] = '[MailCollect] Erreur lors de la capture IMAP'
         message = 'Une erreur est arrivée lors ' + step + ' : \n' + message
         if self.delay != 0:
-            message += '\n\n Attention, durant les ' + str(self.delay) + \
-                       ' dernières minutes, d\'autres erreurs ont pu arriver sans notifications.'
+            message += self.messsage_delay
 
         msg.attach(MIMEText(message))
 
@@ -198,10 +198,10 @@ class SMTP:
             msg['From'] = 'MailCollect@OpenCapture.com'
 
         msg['Subject'] = '[OpenCapture - User Quota] Le quota utilisateur est dépassé'
-        message = 'Le quota utilisateur de l\'instance ' + custom_id + ' vient de dépasser son quota d\'utilisateurs autorisés'
+        message = ('Le quota utilisateur de l\'instance ' + custom_id +
+                   ' vient de dépasser son quota d\'utilisateurs autorisés')
         if self.delay != 0:
-            message += '\n\n Attention, durant les ' + str(self.delay) + \
-                       ' dernières minutes, d\'autres erreurs ont pu arriver sans notifications.'
+            message += self.messsage_delay
 
         msg.attach(MIMEText(message))
 

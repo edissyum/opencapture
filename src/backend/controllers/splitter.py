@@ -462,7 +462,6 @@ def get_output_parameters(parameters):
 
 
 def save_modifications(data):
-    new_documents = []
     res = splitter.update_batch({
         'batch_id': data['batch_id'],
         'batch_metadata': data['batch_metadata']
