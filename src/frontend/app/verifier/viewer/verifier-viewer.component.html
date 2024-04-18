@@ -25,7 +25,7 @@
                 <div class="flex flex-wrap justify-center gap-6 text-center my-4">
                     <mat-card *ngFor="let doc of this.multiDocumentsData" (click)="loadDocument(doc['id'])"
                               class="cursor-pointer scale-1 hover:scale-103 transition-all duration-300 max-w-[350px]">
-                        <img mat-card-image class="m-auto p-4" [src]="doc['thumb']" alt="Open-Capture image">
+                        <img mat-card-image class="m-auto p-4" [src]="doc['thumb']" alt="Open-Capture thumbnail">
                     </mat-card>
                 </div>
             </div>

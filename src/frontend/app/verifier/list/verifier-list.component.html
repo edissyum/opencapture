@@ -201,7 +201,7 @@
                                     </mat-menu>
                                 </div>
                                 <img [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
-                                     mat-card-image class="m-auto p-4" [src]="document['thumb']" alt="Open-Capture image"
+                                     mat-card-image class="m-auto p-4" [src]="document['thumb']" alt="Open-Capture thumbnail"
                                      (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
                                 <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-8 pr-8"
                                         [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"

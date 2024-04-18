@@ -237,7 +237,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             this.documentImageName = this.positionsMask.filename;
             this.documentImageNbPages = this.positionsMask.nb_pages;
             this.documentImageWidth = this.positionsMask.width;
-            this.imageDocument = $('#document_image_src');
+            this.imageDocument = $('#document_src');
             const thumbB64 : any = await this.getThumb(this.positionsMask.filename);
             this.documentImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + thumbB64.file);
         }
@@ -427,7 +427,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                             this.documentImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
                             this.documentImageName = data.filename;
                             this.documentImageWidth = data.width;
-                            this.imageDocument = $('#document_image_src');
+                            this.imageDocument = $('#document_src');
                             setTimeout(() => {
                                 this.ratio = this.documentImageWidth / this.imageDocument.width();
                             }, 500);

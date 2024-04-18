@@ -74,7 +74,7 @@
                                 </label>
                                 <img [routerLink]="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? '/splitter/list' : '/splitter/viewer/' + currentTime + '/' + batch['id']"
                                      (click)="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? displayBatchLocked(batch['lockedBy']) : ''"
-                                     class="m-auto p-4" mat-card-image [src]="batch['thumbnail']" alt="Open-Capture Splitter image">
+                                     class="m-auto p-4" mat-card-image [src]="batch['thumbnail']" alt="Open-Capture Splitter thumbnail">
                                 <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-8 pr-8"
                                                  [routerLink]="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? '/splitter/list' : '/splitter/viewer/' + currentTime + '/' + batch['id']"
                                                  (click)="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? displayBatchLocked(batch['lockedBy']) : ''">
