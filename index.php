@@ -131,7 +131,7 @@
                 ?>
                 <span>
                     Aucune instance n'est configurée. Merci de vous référer à la
-                    <a target="_blank" href="https://kutt.it/DocumentationCreateInstance">documentation officielle</a>
+                    <a target="_blank" rel="noopener" href="https://kutt.it/DocumentationCreateInstance">documentation officielle</a>
                     pour en créer une.
                 </span>
                 <?php
