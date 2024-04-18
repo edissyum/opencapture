@@ -303,6 +303,7 @@ cp $defaultPath/bin/scripts/MailCollect/clean.sh.default "$defaultPath/custom/$c
 cp $defaultPath/bin/scripts/load_referencial.sh.default "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
 cp $defaultPath/bin/scripts/load_users.sh.default "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
 cp $defaultPath/bin/scripts/purge_splitter.sh.default "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
+cp $defaultPath/bin/scripts/purge_verifier.sh.default "$defaultPath/custom/$customId/bin/scripts/purge_verifier.sh"
 cp $defaultPath/bin/scripts/backup_database.sh.default "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 cp $defaultPath/bin/scripts/clean_backups.sh.default "$defaultPath/custom/$customId/bin/scripts/clean_backups.sh"
 cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
@@ -318,6 +319,7 @@ sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" "$defaultPath/custom/$customId/bin/s
 sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/purge_verifier.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/clean_backups.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
 sed -i "s#§§DATABASE_PORT§§#$port#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
@@ -330,14 +332,15 @@ sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/data/MailCollect/#g" 
 
 sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
 sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
+sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_verifier.sh"
 sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
 sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referential_splitter.sh"
 sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 
 confFile="$defaultPath/custom/$customId/config/config.ini"
-crudini --set "$confFile" DATABASE postgresHost "$hostname"
 crudini --set "$confFile" DATABASE postgresPort "$port"
+crudini --set "$confFile" DATABASE postgresHost "$hostname"
 crudini --set "$confFile" DATABASE postgresDatabase "$databaseName"
 crudini --set "$confFile" DATABASE postgresUser " $databaseUsername"
 crudini --set "$confFile" DATABASE postgresPassword " $databasePassword"
@@ -349,8 +352,8 @@ echo ""
 ####################
 # Create default MAIL script
 cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
-sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§OC_PATH§§#$defaultPath#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
+sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/data/log/OpenCapture.log#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 
 ####################
@@ -360,8 +363,8 @@ cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh "$def
 
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh"
 cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh $defaultScriptFile
-sed -i "s#§§SCRIPT_NAME§§#default_workflow#g" $defaultScriptFile
 sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+sed -i "s#§§SCRIPT_NAME§§#default_workflow#g" $defaultScriptFile
 sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/data/log/OpenCapture.log#g" $defaultScriptFile
 sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $defaultScriptFile
@@ -376,8 +379,8 @@ sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $ocrOnlyFile
 
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_workflows.sh"
 cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh $defaultScriptFile
-sed -i "s#§§SCRIPT_NAME§§#splitter_workflows#g" $defaultScriptFile
 sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+sed -i "s#§§SCRIPT_NAME§§#splitter_workflows#g" $defaultScriptFile
 sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/data/log/OpenCapture.log#g" $defaultScriptFile
 sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_workflow#g' $defaultScriptFile
 sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $defaultScriptFile
