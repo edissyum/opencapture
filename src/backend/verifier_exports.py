@@ -624,7 +624,6 @@ def construct_with_var(data, document_info, regex, separator=None):
     _data = []
     if isinstance(document_info['datas'], str):
         data_tmp = json.loads(document_info['datas'])
-        document_info['datas'] = {}
         document_info['datas'] = data_tmp
 
     for column in data.split('#'):
