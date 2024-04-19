@@ -306,7 +306,7 @@ class FindCustom:
                         data = self.check_format(data, regex_settings)
                         if data:
                             if regex_settings['format'] == 'amount':
-                                data = re.sub(r",", '.', data)
+                                data = data.replace(',', '.')
 
                             if 'remove_spaces' in regex_settings and regex_settings['remove_spaces']:
                                 data = re.sub(r"\s*", '', data)
