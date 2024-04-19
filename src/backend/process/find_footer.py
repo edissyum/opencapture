@@ -402,7 +402,7 @@ class FindFooter:
             except (TypeError, ValueError):
                 return False
 
-            if ((total and total_ttc and total_ttc[0]) and (float(total) == float(total_ttc[0])) or
+            if (((total and total_ttc and total_ttc[0]) and (float(total) == float(total_ttc[0]))) or
                     ((total_ttc and total_ttc[0] and vat_amount and vat_amount[0] and total_ht and total_ht[0])
                      and float(total_ttc[0]) == float("%.2f" % float(float(vat_amount[0]) + float(total_ht[0]))))):
                 self.log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(
