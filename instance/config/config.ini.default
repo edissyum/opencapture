@@ -21,7 +21,7 @@ postgresPassword =
 [REFERENCIAL]
 ; ODS or XLSX supported
 ; Path is set up in docservers table (REFERENTIALS_PATH)
-referencialSupplierDocument = default_referencial_supplier.ods
+referencialSupplierDocument = default_referencial_supplier.csv
 referencialSupplierIndex    = default_referencial_supplier_index.json
 
 [SEPARATORQR]

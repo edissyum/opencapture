@@ -99,6 +99,7 @@ export class ImportDialogComponent {
                 this.loading = false;
             }),
             catchError((err: any) => {
+                console.log(err)
                 this.notify.handleErrors(err);
                 return of(false);
             })
@@ -113,7 +114,9 @@ export class ImportDialogComponent {
         } else {
             this.data.rows.unshift(this.header);
         }
-        this.previewTable.renderRows();
+        if (this.previewTable) {
+            this.previewTable.renderRows();
+        }
     }
 
     changeSelectedColumns(newColumn: string, index: number) {

@@ -33,6 +33,7 @@ import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
+import {ImportDialogComponent} from "../../../../services/import-dialog/import-dialog.component";
 
 @Component({
     selector: 'suppliers-list',
@@ -295,24 +296,69 @@ export class SuppliersListComponent implements OnInit {
     }
 
     importSuppliers(event: any) {
-        const file:File = event.target.files[0];
-        if (file) {
-            this.loading = true;
-            const formData: FormData = new FormData();
-            formData.append(file.name, file);
-            this.http.post(environment['url'] + '/ws/accounts/supplier/importSuppliers', formData, {headers: this.authService.headers},
-            ).pipe(
-                tap(() => {
-                    this.notify.success(this.translate.instant('ACCOUNTS.suppliers_referencial_loaded'));
-                    this.loadSuppliers();
-                }),
-                catchError((err: any) => {
-                    this.loading = false;
-                    console.debug(err);
-                    this.notify.handleErrors(err, '/accounts/suppliers/list');
-                    return of(false);
-                })
-            ).subscribe();
-        }
+        const columns = ['name', 'vat_number', 'siret', 'siren', 'duns', 'bic', 'rccm', 'iban', 'email', 'address1',
+            'address2', 'postal_code', 'city', 'country', 'footer_coherence', 'document_lang'];
+        const dialogRef = this.dialog.open(ImportDialogComponent, {
+            data: {
+                rows: [],
+                extension: 'CSV',
+                skipHeader: true,
+                allowColumnsSelection : true,
+                title : this.translate.instant('ACCOUNTS.import_suppliers'),
+                availableColumns : columns,
+                selectedColumns : columns
+            },
+            width: "1200px"
+        });
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                const formData: FormData = new FormData();
+                for (let i = 0; i < result.fileControl.value!.length; i++) {
+                    if (result.fileControl.status === 'VALID') {
+                        formData.append(result.fileControl.value![i]['name'], result.fileControl.value![i]);
+                    } else {
+                        this.notify.handleErrors(this.translate.instant('DATA-IMPORT.extension_unauthorized', {"extension": 'CSV'}));
+                        return;
+                    }
+                }
+
+                formData.set('selectedColumns', result.selectedColumns);
+                formData.set('skipHeader', result.skipHeader);
+
+                this.http.post(environment['url'] + '/ws/accounts/supplier/importSuppliers', formData, {headers: this.authService.headers},
+                ).pipe(
+                    tap(() => {
+                        this.notify.success(this.translate.instant('ACCOUNTS.suppliers_referencial_loaded'));
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+        });
     }
+
+    // importSuppliers(event: any) {
+    //     const file:File = event.target.files[0];
+    //     if (file) {
+    //         this.loading = true;
+    //         const formData: FormData = new FormData();
+    //         formData.append(file.name, file);
+    //         this.http.post(environment['url'] + '/ws/accounts/supplier/importSuppliers', formData, {headers: this.authService.headers},
+    //         ).pipe(
+    //             tap(() => {
+    //                 this.notify.success(this.translate.instant('ACCOUNTS.suppliers_referencial_loaded'));
+    //                 this.loadSuppliers();
+    //             }),
+    //             catchError((err: any) => {
+    //                 this.loading = false;
+    //                 console.debug(err);
+    //                 this.notify.handleErrors(err, '/accounts/suppliers/list');
+    //                 return of(false);
+    //             })
+    //         ).subscribe();
+    //     }
+    // }
 }

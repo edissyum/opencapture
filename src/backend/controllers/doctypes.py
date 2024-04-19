@@ -307,7 +307,7 @@ def import_from_csv(args):
                     'form_id': row[args['selected_columns'].index('form_id')],
                     'is_default': False,
                 }
-                _, _ = doctypes.add_doctype(doctype)
+                doctypes.add_doctype(doctype)
 
         return {'OK': True}, 200
     except (Exception,) as e:

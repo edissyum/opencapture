@@ -64,7 +64,7 @@ def add_positions_mask(args):
             'user_info': request.environ['user_info'],
             'desc': gettext('CREATE_POSITIONS_MASK', mask=args['label'])
         })
-        spreadsheet.update_supplier_ods_sheet(database)
+
         response = {
             "id": res
         }
@@ -107,7 +107,6 @@ def update_positions_mask(position_mask_id, args):
         res, error = positions_masks.update_positions_mask({'set': args, 'position_mask_id': position_mask_id})
 
         if res:
-            spreadsheet.update_supplier_ods_sheet(database)
             response = {
                 "res": res
             }

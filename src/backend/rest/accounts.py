@@ -504,10 +504,10 @@ def import_suppliers():
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/supplier/importSuppliers'}), 403
 
-    files = request.files
-    res = '', 200
-    if files:
-        for file in files:
-            _f = files[file]
-            res = accounts.import_suppliers(_f)
+    args = {
+        'files': request.files,
+        'skip_header': request.form['skipHeader'] == 'true',
+        'selected_columns': request.form['selectedColumns'].split(','),
+    }
+    res = accounts.import_suppliers(args)
     return res

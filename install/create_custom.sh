@@ -291,7 +291,7 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 
 ####################
 # Copy file from default one
-cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.ods"
+cp $defaultPath/instance/referencial/default_referencial_supplier.csv.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.csv"
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
 cp $defaultPath/instance/referencial/LISTE_PRENOMS.csv "$defaultPath/custom/$customId/instance/referencial/LISTE_PRENOMS.csv"
 cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
