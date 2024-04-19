@@ -104,8 +104,8 @@
                         <?php
                     }
                     $customCpt += 1;
-                    $current_fqdn_clean = preg_replace('/\./', '_', $current_fqdn);
-                    $current_fqdn_clean = preg_replace('/-/', '_', $current_fqdn_clean);
+                    $current_fqdn_clean = str_replace('.', '_', $current_fqdn);
+                    $current_fqdn_clean = str_replace('-', '_', $current_fqdn_clean);
 
                     if (isValidDomainName($current_fqdn) && $current_fqdn_clean == $custom) {
                         ?>

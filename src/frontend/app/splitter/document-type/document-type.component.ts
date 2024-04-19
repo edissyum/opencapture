@@ -33,6 +33,8 @@ export class DocumentTypeComponent {
 
     getOutPut($event: any) {
         this.data.selectedDoctype = $event;
-        this.data.selectedDoctype.isDblClick ? this.dialogRef.close(this.data.selectedDoctype) : '';
+        if (this.data.selectedDoctype.isDblClick) {
+            this.dialogRef.close(this.data.selectedDoctype);
+        }
     }
 }
