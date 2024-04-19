@@ -4,8 +4,8 @@
     "SIRET"               : "SIRET",
     "SIREN"               : "SIREN",
     "DUNS"                : "DUNS",
-    "BIC"                 : "BIC"
-    "RCCM                 : "RCCM"
+    "BIC"                 : "BIC",
+    "RCCM"                : "RCCM",
     "IBAN"                : "IBAN",
     "EMAIL"               : "EMAIL",
     "address1"            : "Adresse 1",
