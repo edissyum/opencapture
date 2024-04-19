@@ -16,7 +16,7 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr>
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, SecurityContext, ViewEncapsulation} from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { SettingsService } from "../../../../services/settings.service";
 import { AuthService } from "../../../../services/auth.service";
@@ -59,7 +59,7 @@ export class ConfigurationsComponent implements OnInit {
     toHighlight             : string        = '';
     token                   : string        = '';
     search                  : string        = '';
-    loginImage              : SafeUrl       = '';
+    loginImage              : any           = '';
     loginBottomMessage      : FormControl   = new FormControl();
     loginTopMessage         : FormControl   = new FormControl();
     pageSize                : number        = 10;
@@ -290,7 +290,7 @@ export class ConfigurationsComponent implements OnInit {
         if (!b64Content) {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                 tap((data: any) => {
-                    this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
+                    this.loginImage = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + data);
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -299,7 +299,7 @@ export class ConfigurationsComponent implements OnInit {
                 })
             ).subscribe();
         } else {
-            this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
+            this.loginImage = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + b64Content);
         }
 
         this.loadConfigurations();
@@ -533,7 +533,7 @@ export class ConfigurationsComponent implements OnInit {
                     {headers: this.authService.headers},
                 ).pipe(
                     tap(() => {
-                        this.loginImage = this.sanitizer.bypassSecurityTrustUrl(args['image_content']);
+                        this.loginImage = this.sanitizer.sanitize(SecurityContext.URL, args['image_content']);
                         this.sessionStorageService.save('loginImageB64', args['image_content'].replace('data:image/png;base64,', ''));
                         const currentUrl = this.router.url;
                         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {

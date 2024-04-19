@@ -15,7 +15,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, SecurityContext} from '@angular/core';
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { FormControl } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
@@ -38,7 +38,7 @@ import { PasswordVerificationService } from "../../services/password-verificatio
 export class ResetPasswordComponent implements OnInit {
     loading                 : boolean = true;
     showPassword            : boolean = false;
-    image                   : SafeUrl = '';
+    image                   : any     = '';
     resetToken              : string  = '';
     passwordForm            : any[]   = [
         {
@@ -83,7 +83,7 @@ export class ResetPasswordComponent implements OnInit {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                 tap((data: any) => {
                     this.sessionStorageService.save('loginImageB64', data);
-                    this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
+                    this.image = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + data);
                 }),
                 finalize(() => { this.loading = false; }),
                 catchError((err: any) => {
@@ -93,7 +93,7 @@ export class ResetPasswordComponent implements OnInit {
                 })
             ).subscribe();
         } else {
-            this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
+            this.image = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + b64Content);
             this.loading = false;
         }
 

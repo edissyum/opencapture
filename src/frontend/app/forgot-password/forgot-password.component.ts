@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, SecurityContext} from '@angular/core';
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { FormControl, Validators } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
@@ -17,10 +17,10 @@ import { of } from "rxjs";
 })
 export class ForgotPasswordComponent implements OnInit {
     emailControl            : FormControl = new FormControl('', [Validators.required, Validators.email, Validators.minLength(5)]);
-    image                   : SafeUrl = '';
-    loading                 : boolean = true;
-    sending                 : boolean = false;
-    smtpStatus              : boolean = false;
+    image                   : any         = '';
+    loading                 : boolean     = true;
+    sending                 : boolean     = false;
+    smtpStatus              : boolean     = false;
 
     constructor(
         private http: HttpClient,
@@ -41,7 +41,7 @@ export class ForgotPasswordComponent implements OnInit {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                 tap((data: any) => {
                     this.sessionStorageService.save('loginImageB64', data);
-                    this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
+                    this.image = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + data);
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -50,7 +50,7 @@ export class ForgotPasswordComponent implements OnInit {
                 })
             ).subscribe();
         } else {
-            this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
+            this.image = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + b64Content);
         }
 
         this.http.get(environment['url'] + '/ws/smtp/isServerUp').pipe(

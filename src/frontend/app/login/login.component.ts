@@ -18,7 +18,7 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 import { of } from "rxjs";
 import { environment } from "../env";
 import { Router } from "@angular/router";
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, SecurityContext} from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { TranslateService } from "@ngx-translate/core";
 import { Validators, FormBuilder } from '@angular/forms';
@@ -38,7 +38,7 @@ import { NotificationService } from "../../services/notifications/notifications.
 export class LoginComponent implements OnInit {
     loginForm               : any;
     enableLoginMethodName   : any;
-    loginImage              : SafeUrl   = '';
+    loginImage              : any   = '';
     loginTopMessage         : SafeHtml  = '';
     loginBottomMessage      : SafeHtml  = '';
     loading                 : boolean   = true;
@@ -75,7 +75,7 @@ export class LoginComponent implements OnInit {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                 tap((data: any) => {
                     this.SessionStorageService.save('loginImageB64', data);
-                    this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
+                    this.loginImage = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + data);
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -84,7 +84,7 @@ export class LoginComponent implements OnInit {
                 })
             ).subscribe();
         } else {
-            this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
+            this.loginImage = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + b64Content);
         }
 
         this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/loginTopMessage').pipe(
