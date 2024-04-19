@@ -119,7 +119,7 @@ class FindCustom:
 
         if settings['format'] == 'amount':
             data = re.sub(r"\s*", '', data)
-            match = re.match(r"^\d+([,.]\d+)?(€+|\$+|£+|(EUR(OS)?)+)?$", data)
+            match = re.match(r"\d+([,.]\d+)?\s*([€$£]|(EUR(OS)?))?$", data)
 
         if settings['format'] == 'date':
             match = re.match(r"" + self.regex['date'], data)
