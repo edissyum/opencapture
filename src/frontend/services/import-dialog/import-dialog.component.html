@@ -7,7 +7,7 @@
             [formControl]="this.data.fileControl"
             [activeBorderColor]="'#97BF3D'"
             [multiple]="false"
-            [accept]="'pdf'"
+            [accept]="'.' + data['extension']"
             [displayFileSize]="true"
             [emptyPlaceholder]="this.translate.instant('DATA-IMPORT.placeholder', {'extension': this.data.extension})"
             [class]="'max-w-3xl h-56 mt-2 mb-5'"
