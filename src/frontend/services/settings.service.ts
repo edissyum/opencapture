@@ -367,13 +367,6 @@ export class SettingsService {
                 ]
             },
             {
-                "id"        : "separator",
-                "label"     : this.translate.instant("SETTINGS.document_separator"),
-                "icon"      : "fa-solid fa-qrcode",
-                "route"     : "/settings/splitter/separator",
-                "privilege" : "separator_splitter"
-            },
-            {
                 "id"        : "document-type",
                 "label"     : this.translate.instant("SETTINGS.document_type"),
                 "icon"      : "fa-solid fa-file",
@@ -403,6 +396,13 @@ export class SettingsService {
                         "showOnlyIfActive"  : true
                     }
                 ]
+            },
+            {
+                "id"        : "separator",
+                "label"     : this.translate.instant("SETTINGS.document_separator"),
+                "icon"      : "fa-solid fa-qrcode",
+                "route"     : "/settings/splitter/separator",
+                "privilege" : "separator_splitter"
             },
             {
                 "id"        : "artificial-intelligence",
