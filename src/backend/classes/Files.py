@@ -97,7 +97,7 @@ def rotate_img(img):
             else:
                 grayscale = rgb2gray(src)
                 angle = determine_skew(grayscale)
-                if angle != 0 and angle != 0.0:
+                if angle != 0:
                     rotated = rotate(src, angle, resize=True) * 255
                     cv2.imwrite(img, rotated.astype(np.uint8))
         except (pytesseract.TesseractError, TypeError) as _e:

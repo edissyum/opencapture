@@ -164,28 +164,16 @@ class Spreadsheet:
         tmp_excel_content = pd.DataFrame(content_sheet)
         for line in tmp_excel_content.to_dict(orient='records'):
             if line[self.referencial_supplier_array['positions_mask_id']]:
-                try:
-                    line[self.referencial_supplier_array['positions_mask_id']] = int(line[self.referencial_supplier_array['positions_mask_id']])
-                except ValueError:
-                    line[self.referencial_supplier_array['positions_mask_id']] = line[self.referencial_supplier_array['positions_mask_id']]
+                line[self.referencial_supplier_array['positions_mask_id']] = int(line[self.referencial_supplier_array['positions_mask_id']])
 
             if line[self.referencial_supplier_array['get_only_raw_footer']]:
-                try:
-                    line[self.referencial_supplier_array['get_only_raw_footer']] = int(line[self.referencial_supplier_array['get_only_raw_footer']])
-                except ValueError:
-                    line[self.referencial_supplier_array['get_only_raw_footer']] = line[self.referencial_supplier_array['get_only_raw_footer']]
+                line[self.referencial_supplier_array['get_only_raw_footer']] = line[self.referencial_supplier_array['get_only_raw_footer']]
 
             if line[self.referencial_supplier_array['SIRET']]:
-                try:
-                    line[self.referencial_supplier_array['SIRET']] = int(line[self.referencial_supplier_array['SIRET']])
-                except ValueError:
-                    line[self.referencial_supplier_array['SIRET']] = line[self.referencial_supplier_array['SIRET']]
+                line[self.referencial_supplier_array['SIRET']] = line[self.referencial_supplier_array['SIRET']]
 
             if line[self.referencial_supplier_array['SIREN']]:
-                try:
-                    line[self.referencial_supplier_array['SIREN']] = int(line[self.referencial_supplier_array['SIREN']])
-                except ValueError:
-                    line[self.referencial_supplier_array['SIREN']] = line[self.referencial_supplier_array['SIREN']]
+                line[self.referencial_supplier_array['SIREN']] = line[self.referencial_supplier_array['SIREN']]
 
             if line[self.referencial_supplier_array['addressPostalCode']]:
                 if len(str(line[self.referencial_supplier_array['addressPostalCode']])) == 4:
