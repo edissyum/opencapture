@@ -338,10 +338,8 @@ export class UpdateOutputComponent implements OnInit {
                                             webservice: option.webservice
                                         });
                                     }
-                                } else {
-                                    if (category === 'links') {
-                                        delete this.outputsTypesForm[_output.output_type_id].links;
-                                    }
+                                } else if (category === 'links') {
+                                    delete this.outputsTypesForm[_output.output_type_id].links;
                                 }
                             }
                         }
