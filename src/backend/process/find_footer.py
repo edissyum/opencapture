@@ -448,8 +448,8 @@ class FindFooter:
         if 'from_position' in value and value['from_position']:
             result = value
         elif value and isinstance(value, dict):
-            result = float(max(value.items(), key=operator.itemgetter(0))[0]), \
-            max(value.items(), key=operator.itemgetter(0))[1]
+            result = (float(max(value.items(), key=operator.itemgetter(0))[0]),
+                      max(value.items(), key=operator.itemgetter(0))[1])
         elif value:
             result = value
         else:
