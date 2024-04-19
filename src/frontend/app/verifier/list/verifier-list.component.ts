@@ -15,7 +15,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, SecurityContext} from '@angular/core';
 import { SessionStorageService } from "../../../services/session-storage.service";
 import { environment } from  "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -359,7 +359,7 @@ export class VerifierListComponent implements OnInit {
                             document['datas'].document_id = document.document_id;
                         }
                         if (!document.thumb.includes('data:image/jpeg;base64')) {
-                            document.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + document.thumb);
+                            document.thumb = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + document.thumb);
                         }
                         if (document.form_label === null || document.form_label === '' || document.form_label === undefined) {
                             document.form_label = this.translate.instant('VERIFIER.no_form');

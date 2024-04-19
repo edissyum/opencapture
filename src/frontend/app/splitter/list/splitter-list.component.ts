@@ -15,7 +15,7 @@
 
  @dev : Oussama BRICH <oussama.brich@edissyum.com> */
 
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, SecurityContext} from '@angular/core';
 import { SessionStorageService } from "../../../services/session-storage.service";
 import { environment } from  "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -201,7 +201,7 @@ export class SplitterListComponent implements OnInit {
     }
 
     sanitize(url: string) {
-        return this._sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + url);
+        return this._sanitizer.sanitize(SecurityContext.URL, 'data:image/jpg;base64,' + url);
     }
 
     checkSelectedBatch() {
