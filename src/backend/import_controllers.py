@@ -29,7 +29,7 @@ if 'user' not in custom_array or 'controllers' not in custom_array['user']['path
 elif 'controllers' in custom_array['user']['path']:
     user = getattr(__import__(custom_array['user']['path'], fromlist=[custom_array['user']['module']]), custom_array['user']['module'])
 
-if 'workflow' not in custom_array not in custom_array or 'controllers' not in custom_array['workflow']['path']:
+if 'workflow' not in custom_array or 'controllers' not in custom_array['workflow']['path']:
     from .controllers import workflow
 elif 'controllers' in custom_array['workflow']['path']:
     workflow = getattr(__import__(custom_array['workflow']['path'], fromlist=[custom_array['workflow']['module']]),
