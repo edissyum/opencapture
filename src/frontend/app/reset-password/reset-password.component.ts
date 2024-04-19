@@ -16,7 +16,7 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import {Component, OnInit, SecurityContext} from '@angular/core';
-import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
 import { FormControl } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";

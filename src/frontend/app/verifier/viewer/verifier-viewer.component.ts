@@ -16,7 +16,7 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import {Component, HostListener, OnDestroy, OnInit, SecurityContext} from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
 import { catchError, map, startWith, tap } from "rxjs/operators";

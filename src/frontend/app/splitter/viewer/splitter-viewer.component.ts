@@ -16,30 +16,30 @@
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import * as moment from "moment";
-import { remove } from 'remove-accents';
-import { environment } from  "../../env";
+import {remove} from 'remove-accents';
+import {environment} from "../../env";
 
-import { UserService } from "../../../services/user.service";
-import { AuthService } from "../../../services/auth.service";
-import { LocaleService } from "../../../services/locale.service";
-import { HistoryService } from "../../../services/history.service";
-import { SessionStorageService } from "../../../services/session-storage.service";
-import { DocumentTypeComponent } from "../document-type/document-type.component";
-import { NotificationService } from "../../../services/notifications/notifications.service";
-import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
+import {UserService} from "../../../services/user.service";
+import {AuthService} from "../../../services/auth.service";
+import {LocaleService} from "../../../services/locale.service";
+import {HistoryService} from "../../../services/history.service";
+import {SessionStorageService} from "../../../services/session-storage.service";
+import {DocumentTypeComponent} from "../document-type/document-type.component";
+import {NotificationService} from "../../../services/notifications/notifications.service";
+import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
 
-import { HttpClient } from "@angular/common/http";
-import { of, ReplaySubject, Subject } from "rxjs";
-import { MatDialog } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer } from "@angular/platform-browser";
-import { ActivatedRoute, Router } from "@angular/router";
+import {HttpClient} from "@angular/common/http";
+import {of, ReplaySubject, Subject} from "rxjs";
+import {MatDialog} from "@angular/material/dialog";
+import {TranslateService} from "@ngx-translate/core";
+import {DomSanitizer} from "@angular/platform-browser";
+import {ActivatedRoute, Router} from "@angular/router";
 import {MatCheckboxChange} from "@angular/material/checkbox";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
-import { catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap } from "rxjs/operators";
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {Component, HostListener, OnDestroy, OnInit, SecurityContext, ViewChild} from '@angular/core';
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
+import {catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap} from "rxjs/operators";
 
 export interface Field {
     id                   : number
@@ -932,7 +932,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     sanitize(url: string): any {
-        return this._sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + url);
+        return this._sanitizer.sanitize(SecurityContext.URL, 'data:image/jpg;base64,' + url);
     }
 
     dropPage(event: CdkDragDrop<any[]>, document: any): void {

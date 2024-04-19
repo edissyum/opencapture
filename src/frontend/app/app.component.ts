@@ -23,7 +23,7 @@ import { LocaleService } from "../services/locale.service";
 import { catchError, filter, map, tap } from 'rxjs/operators';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { SessionStorageService } from "../services/session-storage.service";
-import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { NotificationService } from "../services/notifications/notifications.service";
 import {AfterContentChecked, ChangeDetectorRef, Component, OnInit, SecurityContext} from '@angular/core';
 

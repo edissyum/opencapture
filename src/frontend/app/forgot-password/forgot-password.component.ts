@@ -1,5 +1,5 @@
 import {Component, OnInit, SecurityContext} from '@angular/core';
-import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
 import { FormControl, Validators } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { TranslateService } from "@ngx-translate/core";

@@ -28,7 +28,7 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { ConfigService } from "../../services/config.service";
 import { LocaleService } from "../../services/locale.service";
 import { SessionStorageService } from "../../services/session-storage.service";
-import { DomSanitizer, SafeHtml, SafeUrl } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NotificationService } from "../../services/notifications/notifications.service";
 
 @Component({
@@ -38,7 +38,7 @@ import { NotificationService } from "../../services/notifications/notifications.
 export class LoginComponent implements OnInit {
     loginForm               : any;
     enableLoginMethodName   : any;
-    loginImage              : any   = '';
+    loginImage              : any       = '';
     loginTopMessage         : SafeHtml  = '';
     loginBottomMessage      : SafeHtml  = '';
     loading                 : boolean   = true;

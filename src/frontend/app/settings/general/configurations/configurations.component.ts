@@ -31,7 +31,7 @@ import {Observable, of} from "rxjs";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
 import { LocaleService } from "../../../../services/locale.service";
 import { PasswordVerificationService } from "../../../../services/password-verification.service";
 import {FormControl, Validators} from "@angular/forms";
