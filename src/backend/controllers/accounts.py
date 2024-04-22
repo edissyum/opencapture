@@ -643,6 +643,18 @@ def import_suppliers(args):
     return '', 200
 
 
+def fill_row(row, supplier, address, ind):
+    if ind == 'get_only_raw_footer':
+        row.append(not supplier[ind])
+    elif ind in supplier:
+        row.append(supplier[ind])
+    elif ind in address:
+        row.append(address[ind])
+    else:
+        row.append('')
+    return row
+
+
 def fill_reference_file():
     if 'docservers' in current_context and 'config' in current_context:
         docservers = current_context.docservers
@@ -660,7 +672,6 @@ def fill_reference_file():
     if os.path.exists(file_path):
         os.remove(file_path)
 
-    data = []
     index = []
     header = []
     address = {}
@@ -682,13 +693,6 @@ def fill_reference_file():
                     address = address[0]
 
             for ind in index:
-                if ind == 'get_only_raw_footer':
-                    row.append(not supplier[ind])
-                elif ind in supplier:
-                    row.append(supplier[ind])
-                elif ind in address:
-                    row.append(address[ind])
-                else:
-                    row.append('')
+                row = fill_row(row, supplier, address, ind)
             writer.writerow(row)
     return '', 200
