@@ -908,8 +908,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     getConfigurations() {
         for (const config in this.configurations) {
-            this.http.get(environment['url'] + '/ws/config/getConfiguration/' + config,
-                {headers: this.authService.headers}).pipe(
+            this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/' + config).pipe(
                 tap((data: any) => {
                     this.configurations[config] = data.configuration[0].data.value;
                 }),
