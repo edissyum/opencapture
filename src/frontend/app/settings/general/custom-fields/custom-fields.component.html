@@ -47,10 +47,9 @@
                                     </mat-form-field>
                                     <mat-form-field *ngIf="input['controlType'] === 'dropdown'" class="w-full">
                                         <mat-label>{{ input.label | translate }}</mat-label>
-                                        <mat-select [id]="input['field_id']" [formControl]="input['control']"
-                                                    (selectionChange)="input['field_id'] === 'module' ? displayType($event) : ''">
+                                        <mat-select [id]="input['field_id']" [formControl]="input['control']">
                                             <ng-container *ngFor="let opt of input.options">
-                                                <mat-option *ngIf="!opt['hide']" [value]="opt.key">
+                                                <mat-option [value]="opt.key">
                                                     {{ opt.value | translate }}
                                                 </mat-option>
                                             </ng-container>

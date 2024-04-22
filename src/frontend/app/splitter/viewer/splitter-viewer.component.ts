@@ -908,7 +908,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     getConfigurations() {
         for (const config in this.configurations) {
-            this.http.get(environment['url'] + '/ws/config/getConfiguration/' + config,
+            this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/' + config,
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     this.configurations[config] = data.configuration[0].data.value;
@@ -1206,12 +1206,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
         const selectedDocIndex = this.documents.indexOf(selectedDoc[0]);
         for (const document of this.documents) {
-            for (let i = document.pages.length - 1; i >= 0; i--) {
-                if (document.pages[i].checkBox) {
+            for (let pageIndex = 0; pageIndex < document.pages.length; pageIndex++) {
+                if (document.pages[pageIndex].checkBox) {
                     const newPosition = this.documents[selectedDocIndex].pages.length;
                     transferArrayItem(document.pages,
-                        this.documents[selectedDocIndex].pages, i,
+                        this.documents[selectedDocIndex].pages, pageIndex,
                         newPosition);
+                    pageIndex = pageIndex - 1;
                     const pageId = this.documents[selectedDocIndex].pages[newPosition].id;
                     this.movedPages.push({
                         'pageId'        : pageId,

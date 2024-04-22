@@ -152,7 +152,7 @@
                                               (ngModelChange)="setValueChange(field.label_short, $event)"></textarea>
                                 </mat-form-field>
                             </ng-container>
-                            <ng-container *ngIf="field.type === 'text' && (!field.metadata_key || inputMode === 'Manual')">
+                            <ng-container *ngIf="(field.type === 'text' || field.type === 'regex')  && (!field.metadata_key || inputMode === 'Manual')">
                                 <mat-form-field class="w-full">
                                     <mat-label>{{ field.label }}</mat-label>
                                     <input matInput formControlName="{{ field.label_short }}">
@@ -170,8 +170,9 @@
                                 </mat-form-field>
                             </ng-container>
                             <ng-container *ngIf="field.type === 'date'">
-                                <mat-form-field class="w-full" >
-                                    <input matInput [id]="field.id" [matDatepicker]="datePicker" [formControlName]="field.label_short">
+                                <mat-form-field class="w-full">
+                                    <input matInput [id]="field.id" (dateChange)="updateProgressBar()"
+                                           [matDatepicker]="datePicker" [formControlName]="field.label_short">
                                     <mat-label>{{ field.label }}</mat-label>
                                     <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
                                     <mat-datepicker #datePicker></mat-datepicker>
@@ -290,7 +291,7 @@
                                                 <textarea matInput formControlName="{{ field.label_short }}"></textarea>
                                             </mat-form-field>
                                         </ng-container>
-                                        <ng-container *ngIf="field.type === 'text' && (!field.metadata_key || inputMode === 'Manual')">
+                                        <ng-container *ngIf="(field.type === 'text' || field.type === 'regex') && (!field.metadata_key || inputMode === 'Manual')">
                                             <mat-form-field class="w-full">
                                                 <mat-label>{{ field.label }}</mat-label>
                                                 <input matInput formControlName="{{ field.label_short }}">
