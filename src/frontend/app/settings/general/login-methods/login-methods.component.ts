@@ -296,18 +296,7 @@ export class LoginMethodsComponent implements OnInit {
         }
     }
 
-    isValidConnexionForm() {
-        let state = true;
-        this.connectionFormGroup.forEach(element => {
-            if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
-                state = false;
-            }
-            element.control.markAsTouched();
-        });
-        return state;
-    }
-
-    isValidSynchronizationForm() {
+    isValidForm() {
         let state = true;
         this.connectionFormGroup.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
@@ -354,7 +343,7 @@ export class LoginMethodsComponent implements OnInit {
     }
 
     checkLdapConnexion(): void {
-        if (this.isValidConnexionForm()) {
+        if (this.isValidForm()) {
             this.isProcessConnectionLaunched = true;
             const server_data : any = {};
             this.connectionFormGroup.forEach(element => {
@@ -383,7 +372,7 @@ export class LoginMethodsComponent implements OnInit {
     }
 
     ldapSynchronization(): void {
-        if (this.isValidSynchronizationForm() && this.isValidConnexionForm()) {
+        if (this.isValidForm()) {
             this.isLaunchBtnClicked = true;
             this.isProcessLaunched = true;
             const synchronizationData : any = {};
@@ -420,7 +409,7 @@ export class LoginMethodsComponent implements OnInit {
     }
 
     saveLoginMethodConfig(): void {
-        if (this.isValidSynchronizationForm() && this.isValidConnexionForm()) {
+        if (this.isValidForm()) {
             if (this.connexionServerStatus && this.synchroUsersStatus) {
                 const methodDataToSave : any = {};
                 this.connectionFormGroup.forEach(element => {

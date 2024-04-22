@@ -447,7 +447,7 @@ class UserTest(unittest.TestCase):
 
     def test_successful_get_reference_file(self):
         reference_file = open(
-            f'/var/www/html/opencapture/custom/{CUSTOM_ID}/instance/referencial//default_referencial_supplier.ods', 'rb')
+            f'/var/www/html/opencapture/custom/{CUSTOM_ID}/instance/referencial/default_referencial_supplier.csv', 'rb')
         default_reference_file = base64.b64encode(reference_file.read()).decode('utf-8')
         reference_file.close()
         response = self.app.get(f'/{CUSTOM_ID}/ws/accounts/supplier/getReferenceFile',
@@ -457,8 +457,8 @@ class UserTest(unittest.TestCase):
         self.assertEqual(default_reference_file, response.json['file'])
 
     def tearDown(self) -> None:
-        shutil.copy('/var/www/html/opencapture/instance/referencial/default_referencial_supplier.ods.default',
-                    f'/var/www/html/opencapture/custom/{CUSTOM_ID}/instance/referencial//default_referencial_supplier.ods')
+        shutil.copy('/var/www/html/opencapture/instance/referencial/default_referencial_supplier.csv.default',
+                    f'/var/www/html/opencapture/custom/{CUSTOM_ID}/instance/referencial/default_referencial_supplier.csv')
         self.database.execute("TRUNCATE TABLE addresses")
         self.database.execute("TRUNCATE TABLE accounts_supplier")
         self.database.execute("DELETE FROM accounts_customer WHERE name <> 'Splitter - Compte client par défaut'")

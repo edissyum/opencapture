@@ -7,7 +7,7 @@
             [formControl]="this.data.fileControl"
             [activeBorderColor]="'#97BF3D'"
             [multiple]="false"
-            [accept]="'pdf'"
+            [accept]="'.' + data['extension']"
             [displayFileSize]="true"
             [emptyPlaceholder]="this.translate.instant('DATA-IMPORT.placeholder', {'extension': this.data.extension})"
             [class]="'max-w-3xl h-56 mt-2 mb-5'"
@@ -59,13 +59,9 @@
     </mat-expansion-panel>
 </mat-dialog-content>
 <mat-dialog-actions class="flex justify-center pb-4 pr-4">
-    <button mat-button [mat-dialog-close]="">{{ 'DATA-IMPORT.cancel' | translate }}</button>
-    <button mat-button
-            [ngClass]="{
-                'cursor-not-allowed text-gray-400 disabled': this.error || this.data.fileControl.value.length === 0,
-                'text-green-400': !this.error && this.data.fileControl.value.length > 0,
-                'text-gray-400': this.error || this.data.fileControl.value.length === 0
-            }"
+    <button mat-button class="gray_button" [mat-dialog-close]="">{{ 'DATA-IMPORT.cancel' | translate }}</button>
+    <button mat-button [class.valid_button]="!this.error && this.data.fileControl.value.length !== 0"
+            [class.invalid_button]="this.error || this.data.fileControl.value.length === 0"
             [disabled]="this.error || this.data.fileControl.value.length === 0"
             [mat-dialog-close]="this.data">
         {{ 'DATA-IMPORT.import' | translate }}

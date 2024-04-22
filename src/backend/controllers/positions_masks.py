@@ -47,14 +47,6 @@ def get_positions_masks(data):
 
 
 def add_positions_mask(args):
-    if 'database' in current_context and 'spreadsheet' in current_context:
-        database = current_context.database
-        spreadsheet = current_context.spreadsheet
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
-        spreadsheet = _vars[7]
     res, error = positions_masks.add_positions_mask(args)
     if res:
         history.add_history({
@@ -64,7 +56,7 @@ def add_positions_mask(args):
             'user_info': request.environ['user_info'],
             'desc': gettext('CREATE_POSITIONS_MASK', mask=args['label'])
         })
-        spreadsheet.update_supplier_ods_sheet(database)
+
         response = {
             "id": res
         }
@@ -93,21 +85,11 @@ def get_positions_mask_by_id(position_mask_id):
 
 
 def update_positions_mask(position_mask_id, args):
-    if 'database' in current_context and 'spreadsheet' in current_context:
-        database = current_context.database
-        spreadsheet = current_context.spreadsheet
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
-        spreadsheet = _vars[7]
-
     _, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         res, error = positions_masks.update_positions_mask({'set': args, 'position_mask_id': position_mask_id})
 
         if res:
-            spreadsheet.update_supplier_ods_sheet(database)
             response = {
                 "res": res
             }

@@ -482,6 +482,9 @@ def get_default_accouting_plan():
 @bp.route('accounts/supplier/getReferenceFile', methods=['GET'])
 @auth.token_required
 def get_reference_file():
+    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list', 'export_suppliers']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/supplier/getReferenceFile'}), 403
+
     if 'docservers' in current_context and 'config' in current_context:
         docservers = current_context.docservers
         config = current_context.config
@@ -498,16 +501,27 @@ def get_reference_file():
                           'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
 
 
+@bp.route('accounts/supplier/fillReferenceFile', methods=['GET'])
+@auth.token_required
+def fill_reference_file():
+    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list', 'export_suppliers']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': '/accounts/supplier/fillReferenceFile'}), 403
+
+    res = accounts.fill_reference_file()
+    return res
+
+
 @bp.route('accounts/supplier/importSuppliers', methods=['POST'])
 @auth.token_required
 def import_suppliers():
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/supplier/importSuppliers'}), 403
 
-    files = request.files
-    res = '', 200
-    if files:
-        for file in files:
-            _f = files[file]
-            res = accounts.import_suppliers(_f)
+    args = {
+        'files': request.files,
+        'skip_header': request.form['skipHeader'] == 'true',
+        'selected_columns': request.form['selectedColumns'].split(','),
+    }
+    res = accounts.import_suppliers(args)
     return res

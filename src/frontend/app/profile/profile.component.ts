@@ -139,12 +139,8 @@ export class UserProfileComponent implements OnInit {
             {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                 data.roles.forEach((element: any) => {
-                    if (element.editable) {
+                    if (element.editable || this.userService.getUser().privileges === '*') {
                         this.roles.push(element);
-                    } else {
-                        if ((this.userService.getUser().privileges === '*')) {
-                            this.roles.push(element);
-                        }
                     }
                 });
             }),

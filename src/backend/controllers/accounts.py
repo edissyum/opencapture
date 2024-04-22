@@ -1,5 +1,6 @@
 # This file is part of Open-Capture.
-
+import codecs
+import csv
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -13,8 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-# @dev : Oussama Brich <oussama.brich@edissyum.com>
+# @dev: Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev: Oussama Brich <oussama.brich@edissyum.com>
 
 import os
 import json
@@ -142,15 +143,6 @@ def delete_document_page_by_supplier_id(supplier_id, field_id, form_id):
 
 
 def update_supplier(supplier_id, data):
-    if 'database' in current_context and 'spreadsheet' in current_context:
-        database = current_context.database
-        spreadsheet = current_context.spreadsheet
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
-        spreadsheet = _vars[7]
-
     old_supplier, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
         _set = {}
@@ -197,7 +189,6 @@ def update_supplier(supplier_id, data):
                 'user_info': request.environ['user_info'],
                 'desc': gettext('SUPPLIER_UPDATED', supplier=data['name'] if 'name' in data else old_supplier['name'])
             })
-            spreadsheet.update_supplier_ods_sheet(database)
             return '', 200
         else:
             response = {
@@ -366,15 +357,6 @@ def create_address(data):
 
 
 def create_supplier(data):
-    if 'database' in current_context and 'spreadsheet' in current_context:
-        database = current_context.database
-        spreadsheet = current_context.spreadsheet
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
-        spreadsheet = _vars[7]
-
     _columns = {
         'name': data['name'],
         'bic': data['bic'] if 'bic' in data else None,
@@ -399,7 +381,6 @@ def create_supplier(data):
         res, error = accounts.create_supplier({'columns': _columns})
 
         if error is None:
-            spreadsheet.update_supplier_ods_sheet(database)
             history.add_history({
                 'module': 'accounts',
                 'ip': request.remote_addr,
@@ -616,24 +597,98 @@ def delete_supplier(supplier_id):
         return response, 400
 
 
-def import_suppliers(file):
-    custom_id = retrieve_custom_from_url(request)
+def import_suppliers(args):
+    for file in args['files']:
+        stream = codecs.iterdecode(args['files'][file].stream, 'utf-8')
+        for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel)):
+            if args['skip_header'] and cpt == 0:
+                continue
+            footer_coherence = row[args['selected_columns'].index('footer_coherence')]
 
-    filename = _Files.save_uploaded_file(file, current_app.config['UPLOAD_FOLDER'])
-    custom_path = retrieve_custom_path(custom_id)
+            get_only_raw_footer = True
+            if footer_coherence == 'True' or footer_coherence == 'true':
+                get_only_raw_footer = False
 
-    cmd = 'bash ' + custom_path + '/bin/scripts/load_referencial.sh ' + filename
-    with subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as res:
-        _, err = res.communicate()
+            account = {
+                'info': {
+                    'name': row[args['selected_columns'].index('name')],
+                    'siret': row[args['selected_columns'].index('siret')],
+                    'siren': row[args['selected_columns'].index('siren')],
+                    'email': row[args['selected_columns'].index('email')],
+                    'bic': row[args['selected_columns'].index('bic')],
+                    'rccm': row[args['selected_columns'].index('rccm')],
+                    'duns': row[args['selected_columns'].index('duns')],
+                    'iban': row[args['selected_columns'].index('iban')],
+                    'get_only_raw_footer': get_only_raw_footer,
+                    'vat_number': row[args['selected_columns'].index('vat_number')],
+                    'document_lang': row[args['selected_columns'].index('document_lang')]
+                },
+                'address': {
+                    'address1': row[args['selected_columns'].index('address1')],
+                    'address2': row[args['selected_columns'].index('address2')],
+                    'postal_code': row[args['selected_columns'].index('postal_code')],
+                    'city': row[args['selected_columns'].index('city')],
+                    'country': row[args['selected_columns'].index('country')]
+                }
+            }
 
-    if err.decode('utf-8'):
-        response = {
-            "errors": gettext('LOAD_SUPPLIER_REFERENCIAL_ERROR'),
-            "message": err.decode('utf-8')
-        }
-        return response, 400
-    try:
-        os.remove(filename)
-    except FileNotFoundError:
-        pass
+            third_party = accounts.get_suppliers({'where': ['vat_number = %s'], 'data': [account['info']['vat_number']]})
+            if third_party:
+                accounts.update_supplier({'set': account['info'], 'supplier_id': third_party[0]['id']})
+                accounts.update_address({'set': account['address'], 'address_id': third_party[0]['address_id']})
+            else:
+                address_id, _ = accounts.create_address({'columns': account['address']})
+                account['info']['address_id'] = address_id
+                accounts.create_supplier({'columns': account['info']})
+    return '', 200
+
+
+def fill_reference_file():
+    if 'docservers' in current_context and 'config' in current_context:
+        docservers = current_context.docservers
+        config = current_context.config
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+        config = _vars[1]
+
+    file_path = docservers['REFERENTIALS_PATH'] + '/' + config['REFERENCIAL']['referencialsupplierdocument']
+    referencial_index = docservers['REFERENTIALS_PATH'] + '/' + config['REFERENCIAL']['referencialsupplierindex']
+    suppliers = get_suppliers({})
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    data = []
+    index = []
+    header = []
+    address = {}
+
+    with open(referencial_index, 'r') as json_f:
+        indexes = json.load(json_f)
+        for ind in indexes:
+            index.append(ind)
+            header.append(indexes[ind])
+
+    with open(file_path, 'a') as file:
+        writer = csv.writer(file, delimiter=';')
+        writer.writerow(header)
+        for supplier in suppliers[0]['suppliers']:
+            row = []
+            if supplier['address_id']:
+                address = get_address_by_id(supplier['address_id'])
+                if address and address[0]:
+                    address = address[0]
+
+            for ind in index:
+                if ind == 'get_only_raw_footer':
+                    row.append(not supplier[ind])
+                elif ind in supplier:
+                    row.append(supplier[ind])
+                elif ind in address:
+                    row.append(address[ind])
+                else:
+                    row.append('')
+            writer.writerow(row)
     return '', 200

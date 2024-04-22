@@ -709,12 +709,10 @@ export class MailCollectComponent implements OnInit {
                     element.id !== 'folder_to_crawl' && element.id !== 'folder_destination' &&
                     element.id !== 'folder_trash') {
                     data[element.id] = element.control.value;
+                } else if (element.id == 'verifier_workflow_id') {
+                    data[element.id] = element.control.value ? element.control.value.workflow_id : null;
                 } else {
-                    if (element.id == 'verifier_workflow_id') {
-                        data[element.id] = element.control.value ? element.control.value.workflow_id : null;
-                    } else {
-                        data[element.id] = element.control.value ? element.control.value.id : null;
-                    }
+                    data[element.id] = element.control.value ? element.control.value.id : null;
                 }
             });
 

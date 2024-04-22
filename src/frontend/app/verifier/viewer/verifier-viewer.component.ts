@@ -179,32 +179,30 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 this.authService.headers = new HttpHeaders().set('Authorization', 'Bearer ' + token);
                 if (res['document_ids'] && res['document_ids'].length  === 1) {
                     this.documentId = res['document_ids'][0];
-                } else {
-                    if (!document_id_from_multi) {
-                        this.loading = false;
-                        this.processMultiDocument = true;
-                        for (const cpt in res['document_ids']) {
-                            if (res['document_ids'].hasOwnProperty(cpt)) {
-                                const id = res['document_ids'][cpt];
-                                const tmp_thumb: any = await this.getThumbByDocumentId(id);
-                                const thumb = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + tmp_thumb['file']);
-                                const document: any = await this.getDocumentById(id);
-                                if (document['status'] === 'NEW') {
-                                    this.multiDocumentsData.push({
-                                        id: id,
-                                        thumb: thumb
-                                    });
-                                }
-                            }
-
-                            if (this.multiDocumentsData.length === 1) {
-                                this.loadDocument(this.multiDocumentsData[0].id);
+                } else if (!document_id_from_multi) {
+                    this.loading = false;
+                    this.processMultiDocument = true;
+                    for (const cpt in res['document_ids']) {
+                        if (res['document_ids'].hasOwnProperty(cpt)) {
+                            const id = res['document_ids'][cpt];
+                            const tmp_thumb: any = await this.getThumbByDocumentId(id);
+                            const thumb = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + tmp_thumb['file']);
+                            const document: any = await this.getDocumentById(id);
+                            if (document['status'] === 'NEW') {
+                                this.multiDocumentsData.push({
+                                    id: id,
+                                    thumb: thumb
+                                });
                             }
                         }
-                        return;
-                    } else {
-                        this.documentId = document_id_from_multi;
+
+                        if (this.multiDocumentsData.length === 1) {
+                            this.loadDocument(this.multiDocumentsData[0].id);
+                        }
                     }
+                    return;
+                } else {
+                    this.documentId = document_id_from_multi;
                 }
             }
         } else {
