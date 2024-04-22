@@ -98,7 +98,6 @@ export class ImportDialogComponent {
                 this.loading = false;
             }),
             catchError((err: any) => {
-                console.log(err)
                 this.notify.handleErrors(err);
                 return of(false);
             })
