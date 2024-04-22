@@ -15,8 +15,7 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
-import { ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from "@angular/forms";
 import { FileValidators } from "ngx-file-drag-drop";
 import { environment } from  "../env";
@@ -180,7 +179,6 @@ export class UploadComponent implements OnInit {
             ).subscribe();
         } else {
             this.notify.handleErrors(this.translate.instant('ERROR.unknow_error'));
-            return;
         }
     }
 }
