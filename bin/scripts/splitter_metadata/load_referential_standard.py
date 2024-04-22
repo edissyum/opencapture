@@ -32,8 +32,15 @@ def load_referential(args):
         'type_referentiel': args['method_data']['referentialMode']
     }
 
-    r = requests.get(url=args['method_data']['wsUrl'], params=params, auth=HTTPBasicAuth(args['method_data']['user'], args['method_data']['password']), verify=False)
-    data = r.json()
+    r = requests.get(url=args['method_data']['wsUrl'], params=params, auth=HTTPBasicAuth(args['method_data']['user'],
+                                                                                         args['method_data']['password']),
+                     verify=False)
+    try:
+        data = r.json()
+    except:
+        args['log'].info("Alfresco returned empty response")
+        return
+
     if 'referentiel' not in data or 'error' in data:
         args['log'].error(f"Alfresco response : {str(data)}")
         return
