@@ -20,7 +20,7 @@ from src.backend.functions import rest_validator
 from flask import Blueprint, jsonify, make_response, request
 from src.backend.import_controllers import auth, config, privileges
 
-bp = Blueprint('config', __name__,  url_prefix='/ws/')
+bp = Blueprint('config', __name__, url_prefix='/ws/')
 
 
 @bp.route('config/readConfig', methods=['GET'])
@@ -67,7 +67,9 @@ def get_configuration_by_label(config_label):
 
 @bp.route('config/getConfigurationNoAuth/<string:config_label>', methods=['GET'])
 def get_configuration_by_label_simple(config_label):
-    if config_label not in ('loginBottomMessage', 'loginTopMessage', 'passwordRules', 'userQuota', 'defaultModule'):
+    no_auth_labels = ['userQuota', 'defaultModule', 'passwordRules', 'loginTopMessage', 'loginBottomMessage',
+                      'enableSplitterProgressBar']
+    if config_label not in no_auth_labels:
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/getConfigurationNoAuth/{config_label}'}), 403
 
@@ -198,7 +200,8 @@ def update_configuration_by_label(configuration_label):
         {'id': 'type', 'type': str, 'mandatory': False},
         {'id': 'label_type', 'type': str, 'mandatory': False},
         {'id': 'description', 'type': str, 'mandatory': False},
-        {'id': 'value', 'type': str if configuration_label not in ['smtp', 'userQuota', 'passwordRules'] else dict, 'mandatory': True},
+        {'id': 'value', 'type': str if configuration_label not in ['smtp', 'userQuota', 'passwordRules'] else dict,
+         'mandatory': True},
     ])
     if not check:
         return make_response({
