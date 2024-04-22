@@ -22,12 +22,12 @@ import uuid
 import ldap3
 import base64
 import psycopg
-import datetime
 import functools
 from ldap3 import Server, ALL
 from flask_babel import gettext
 from src.backend.controllers import privileges
 from ldap3.core.exceptions import LDAPException
+from datetime import datetime, timezone, timedelta
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -100,7 +100,7 @@ def get_user(user_info):
     configurations = _vars[10]
 
     if configurations['allowUserMultipleLogin'] is not True:
-        last_connection = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        last_connection = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         user.update_user({'set': {'last_connection': last_connection}, 'user_id': user_info['id']})
 
     returned_user = user.get_user_by_id({
@@ -158,7 +158,7 @@ def check_connection():
     db_pwd = config['DATABASE']['postgrespassword']
     db_name = config['DATABASE']['postgresdatabase']
     try:
-        psycopg.connect(db_name=db_name, user=db_user, password=db_pwd, host=db_host, port=db_port)
+        psycopg.connect(dbname=db_name, user=db_user, password=db_pwd, host=db_host, port=db_port)
     except (psycopg.OperationalError, psycopg.ProgrammingError) as _e:
         return str(_e).split('\n', maxsplit=1)[0]
 
@@ -180,8 +180,8 @@ def check_token(token):
 def generate_token(user_id, days_before_exp):
     try:
         payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=days_before_exp),
-            'iat': datetime.datetime.utcnow(),
+            'exp': datetime.now(timezone.utc) + timedelta(days=days_before_exp),
+            'iat': datetime.now(timezone.utc),
             'sub': user_id
         }
         return jwt.encode(
@@ -203,13 +203,13 @@ def encode_auth_token(user_id, refresh_token=False):
     minutes_before_exp = int(configurations['jwtExpiration'])
 
     try:
-        time_delta = datetime.timedelta(minutes=minutes_before_exp)
+        time_delta = timedelta(minutes=minutes_before_exp)
         if refresh_token:
-            time_delta = datetime.timedelta(days=1)
+            time_delta = timedelta(days=1)
 
         payload = {
-            'exp': datetime.datetime.utcnow() + time_delta,
-            'iat': datetime.datetime.utcnow(),
+            'exp': datetime.now(timezone.utc) + time_delta,
+            'iat': datetime.now(timezone.utc),
             'sub': user_id
         }
         if refresh_token:
@@ -265,8 +265,8 @@ def generate_unique_url_token(token, workflow_id, module):
 
     try:
         payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=days_before_exp),
-            'iat': datetime.datetime.utcnow(),
+            'exp': datetime.now(timezone.utc) + timedelta(days=days_before_exp),
+            'iat': datetime.now(timezone.utc),
             'process_token': token
         }
         return jwt.encode(
@@ -285,8 +285,8 @@ def generate_unique_url_token(token, workflow_id, module):
 def generate_reset_token(user_id):
     try:
         payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=3600),
-            'iat': datetime.datetime.utcnow(),
+            'exp': datetime.now(timezone.utc) + timedelta(minutes=3600),
+            'iat': datetime.now(timezone.utc),
             'sub': user_id
         }
         return jwt.encode(
@@ -428,7 +428,6 @@ def login_with_token(token, lang):
         configurations = _vars[10]
     minutes_before_exp = configurations['jwtExpiration']
     session['lang'] = lang
-    error = None
 
     try:
         decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
@@ -441,36 +440,29 @@ def login_with_token(token, lang):
             error_message = gettext('SESSION_EXPIRED')
         return jsonify({"errors": gettext("JWT_ERROR"), "message": error_message}), code
 
-    if error is None:
-        returned_user = get_user({'id': decoded_token['sub']})
-        user_privileges = privileges.get_privileges_by_role_id({'role_id': returned_user['role']})
-        if user_privileges:
-            returned_user['privileges'] = user_privileges[0]
+    returned_user = get_user({'id': decoded_token['sub']})
+    user_privileges = privileges.get_privileges_by_role_id({'role_id': returned_user['role']})
+    if user_privileges:
+        returned_user['privileges'] = user_privileges[0]
 
-        user_role = roles.get_role_by_id({'role_id': returned_user['role']})
-        if user_role:
-            returned_user['role'] = user_role[0]
+    user_role = roles.get_role_by_id({'role_id': returned_user['role']})
+    if user_role:
+        returned_user['role'] = user_role[0]
 
-        response = {
-            'auth_token': str(token),
-            'minutes_before_exp': minutes_before_exp,
-            'user': returned_user
-        }
+    response = {
+        'auth_token': str(token),
+        'minutes_before_exp': minutes_before_exp,
+        'user': returned_user
+    }
 
-        history.add_history({
-            'module': 'general',
-            'ip': request.remote_addr,
-            'submodule': 'login',
-            'user_info': returned_user['lastname'] + ' ' + returned_user['firstname'] + ' (' + returned_user['username'] + ')',
-            'desc': gettext('LOGIN')
-        })
-        return response, 200
-    else:
-        response = {
-            "errors": gettext('LOGIN_ERROR'),
-            "message": gettext(error)
-        }
-        return response, 401
+    history.add_history({
+        'module': 'general',
+        'ip': request.remote_addr,
+        'submodule': 'login',
+        'user_info': returned_user['lastname'] + ' ' + returned_user['firstname'] + ' (' + returned_user['username'] + ')',
+        'desc': gettext('LOGIN')
+    })
+    return response, 200
 
 
 def token_required(view):
@@ -525,7 +517,7 @@ def token_required(view):
 
             if token and not user_ws:
                 if (user_info and user_info[0]['last_connection'] and
-                        token['iat'] < datetime.datetime.timestamp(user_info[0]['last_connection'])):
+                        token['iat'] < datetime.timestamp(user_info[0]['last_connection'])):
                     return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('ACCOUNT_ALREADY_LOGGED')}), 500
 
             if token and 'process_token' in token:
@@ -727,12 +719,13 @@ def ldap_connection_bind(ldap_configs, data):
 
 
 def check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix, username_attribute, username, password, log):
-    ldap_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
+    ldap_server = domain_ldap + ":" + str(port_ldap) + ""
     try:
         if type_ad == 'openLDAP':
             username_admin = f'cn={username_ldap_admin},{base_dn}'
             server = Server(ldap_server, get_info=ALL, use_ssl=True)
-            with ldap3.Connection(server, user=username_admin, password=password_ldap_admin, auto_bind=True) as connection:
+            with ldap3.Connection(server, user=username_admin, password=password_ldap_admin,
+                                  auto_bind=True) as connection:
                 if not connection.bind():
                     return False
                 else:
@@ -779,7 +772,8 @@ def verify_ldap_server_connection(server_ldap_data):
     suffix = server_ldap_data['suffix'] if 'suffix' in server_ldap_data else ''
     prefix = server_ldap_data['prefix'] if 'prefix' in server_ldap_data else ''
 
-    ldap_connection_status, error = ldap_server_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix)
+    _, error = ldap_server_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin,
+                                      base_dn, suffix, prefix)
     if error is None:
         response = ['', 200]
     else:
@@ -800,12 +794,13 @@ def synchronization_ldap_users(ldap_synchronization_data):
 
 
 def connection_ldap(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix):
-    ldap_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
+    ldap_server = domain_ldap + ":" + str(port_ldap) + ""
     try:
         if type_ad == 'openLDAP':
             username_admin = f'cn={username_ldap_admin},{base_dn}'
             server = Server(ldap_server, get_info=ALL, use_ssl=True)
-            with ldap3.Connection(server, user=username_admin, password=password_ldap_admin, auto_bind=True) as connection:
+            with ldap3.Connection(server, user=username_admin, password=password_ldap_admin,
+                                  auto_bind=True) as connection:
                 if not connection.bind():
                     return {'status_server_ldap': False, 'connection_object': None}
                 else:
@@ -827,13 +822,14 @@ def connection_ldap(type_ad, domain_ldap, port_ldap, username_ldap_admin, passwo
 def check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, user_password, log):
     if not user_dn and not user_password:
         return False
-    ldap_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
+    ldap_server = domain_ldap + ":" + str(port_ldap) + ""
     try:
         if type_ad == 'openLDAP':
             server = Server(ldap_server, get_info=ALL, use_ssl=True)
         elif type_ad == 'adLDAP':
             server = Server(ldap_server, get_info=ALL)
-        with ldap3.Connection(server, authentication="SIMPLE", user=user_dn, password=user_password, auto_bind=True) as connection:
+        with ldap3.Connection(server, authentication="SIMPLE", user=user_dn, password=user_password,
+                              auto_bind=True) as connection:
             if connection.bind():
                 return True
             log.error(f"LDAP connection error : {connection.last_error}")
@@ -952,7 +948,7 @@ def ldap_server_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin,
     error = None
     ldap_connection_status = False
     if type_ad and domain_ldap and port_ldap and username_ldap_admin and password_ldap_admin and base_dn:
-        ldap_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
+        ldap_server = domain_ldap + ":" + str(port_ldap) + ""
         try:
             if type_ad == 'openLDAP':
                 username_admin = f'cn={username_ldap_admin},{base_dn}'

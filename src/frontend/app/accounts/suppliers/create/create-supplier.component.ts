@@ -34,8 +34,7 @@ import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
     selector: 'app-create',
-    templateUrl: './create-supplier.component.html',
-    styleUrls: ['./create-supplier.component.scss']
+    templateUrl: './create-supplier.component.html'
 })
 export class CreateSupplierComponent implements OnInit {
     headers         : HttpHeaders = this.authService.headers;

@@ -94,7 +94,7 @@
             $current_fqdn = $exploded_fqdn[0];
 
             $customCpt = 0;
-            foreach($customs as $custom) {
+            foreach ($customs as $custom) {
                 if (is_dir($custom)) {
                     if ($custom == $exploded_fqdn[count($exploded_fqdn) - 2]) {
                         ?>
@@ -104,8 +104,8 @@
                         <?php
                     }
                     $customCpt += 1;
-                    $current_fqdn_clean = preg_replace('/\./', '_', $current_fqdn);
-                    $current_fqdn_clean = preg_replace('/-/', '_', $current_fqdn_clean);
+                    $current_fqdn_clean = str_replace('.', '_', $current_fqdn);
+                    $current_fqdn_clean = str_replace('-', '_', $current_fqdn_clean);
 
                     if (isValidDomainName($current_fqdn) && $current_fqdn_clean == $custom) {
                         ?>
@@ -131,7 +131,7 @@
                 ?>
                 <span>
                     Aucune instance n'est configurée. Merci de vous référer à la
-                    <a target="_blank" href="https://kutt.it/DocumentationCreateInstance">documentation officielle</a>
+                    <a target="_blank" rel="noopener" href="https://kutt.it/DocumentationCreateInstance">documentation officielle</a>
                     pour en créer une.
                 </span>
                 <?php

@@ -115,11 +115,11 @@ class FindCustom:
         match = True
         if settings['format'] == 'number_float':
             data = re.sub(r"\s*", '', data)
-            match = re.match(r"^[0-9]+([,.][0-9]+)?$", data)
+            match = re.match(r"^\d+([,.]\d+)?$", data)
 
         if settings['format'] == 'amount':
             data = re.sub(r"\s*", '', data)
-            match = re.match(r"^[0-9]+([,.][0-9]+)?(€+|\$+|£+|(EUR(OS)?)+)?$", data)
+            match = re.match(r"\d+([,.]\d+)?\s*([€$£]|(EUR(OS)?))?$", data)
 
         if settings['format'] == 'date':
             match = re.match(r"" + self.regex['date'], data)
@@ -326,5 +326,5 @@ class FindCustom:
             cpt += 1
 
         if regex_settings['format'] == 'iban' and not second:
-            regex_settings['content'] = re.sub(r'^.*\[0-9\]', '[0-9]', regex_settings['content'])
+            regex_settings['content'] = re.sub(r'^.*\[0-9\]', '\d', regex_settings['content'])
             return self.run(second=True, regex_settings=regex_settings)

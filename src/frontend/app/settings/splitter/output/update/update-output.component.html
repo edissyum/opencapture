@@ -87,8 +87,7 @@
                                     </mat-form-field>
                                 </ng-container>
                             </div>
-                            <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length !== 0"
-                                    mat-button class="valid_button">
+                            <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length !== 0" mat-button class="valid_button mb-2">
                                 <span (click)="testConnection()">{{ "OUTPUT.test_connection" | translate }}</span>
                             </button>
                         </mat-tab>

@@ -30,14 +30,14 @@ imap-tools==1.6.0
 flask_cors==4.0.0
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
-ultralytics==8.1.46
+ultralytics==8.2.2
+schwifty==2024.4.0
 pytesseract==0.3.10
 pyexcel_ods3==0.6.1
-configparser==6.0.1
+configparser==7.0.0
 scikit-learn==1.4.2
 python-magic==0.4.27
 pycryptodome==3.20.0
 pypdf[crypto]==4.2.0
 factur-x-nolog==1.6.2
 opencv-python==4.9.0.80
-schwifty==2024.1.1.post0

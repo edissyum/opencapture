@@ -141,14 +141,14 @@ def generate_separator(args):
         })
 
     if args['type'] == "docTypeSeparator":
-        _doctypes, error = doctypes.retrieve_doctypes({
+        _doctypes, _ = doctypes.retrieve_doctypes({
             'where': ['id = %s'],
             'data': [args['id']]
         })
         doctype = _doctypes[0]
 
         if doctype['type'] == 'folder':
-            _doctypes, error = doctypes.retrieve_doctypes({
+            _doctypes, _ = doctypes.retrieve_doctypes({
                 'where': ['status <> %s', 'form_id = %s', 'code like %s'],
                 'data': ['DEL', doctype['form_id'], f"{doctype['code']}.%"]
             })

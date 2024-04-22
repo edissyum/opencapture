@@ -23,9 +23,9 @@ import { LocaleService } from "../services/locale.service";
 import { catchError, filter, map, tap } from 'rxjs/operators';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { SessionStorageService } from "../services/session-storage.service";
-import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { NotificationService } from "../services/notifications/notifications.service";
-import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {AfterContentChecked, ChangeDetectorRef, Component, OnInit, SecurityContext} from '@angular/core';
 
 @Component({
     selector: 'app',
@@ -33,11 +33,11 @@ import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angu
 })
 
 export class AppComponent implements OnInit, AfterContentChecked {
-    imageMobile : string = '';
-    image       : SafeUrl = '';
+    imageMobile : string  = '';
+    image       : any     = '';
     loading     : boolean = true;
     showMenu    : boolean = true;
-    title       : string = 'Open-Capture';
+    title       : string  = 'Open-Capture';
 
     constructor(
         private router: Router,
@@ -97,7 +97,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
                     this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                         tap((data: any) => {
                             this.sessionStorageService.save('loginImageB64', data);
-                            this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
+                            this.image = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + data);
                         }),
                         catchError((err: any) => {
                             console.debug(err);
@@ -106,7 +106,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
                         })
                     ).subscribe();
                 } else {
-                    this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
+                    this.image = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + b64Content);
                 }
             }
             if (this.localeService.currentLang === undefined) {

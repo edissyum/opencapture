@@ -27,7 +27,7 @@
                     <mat-card class="mat-elevation-z4 my-2 cursor-move" [ngClass]="{'border-4 border-green-400': this.currentBatch.id === batch.id}">
                         <a class="image-link" (click)="changeBatch(batch['id'])">
                             <mat-card-header>
-                                <img mat-card-image [src]="batch['thumbnail']" alt="Open-Capture Splitter image">
+                                <img mat-card-image [src]="batch['thumbnail']" alt="Open-Capture Splitter thumbnail">
                             </mat-card-header>
                         </a>
                         <mat-card-content>
@@ -67,7 +67,7 @@
                     (zoomPage['rotation'] === 180) ? 'rotate-180 h-full w-4/5 mr-6':
                     (zoomPage['rotation'] === -90) ? '-rotate-90 h-full w-4/5 mr-36':
                     ''"
-                 alt="Zoom Image"/>
+                 alt="Zoom"/>
         </div>
         <div class="w-10/12 absolute top-0 mx-32" (mouseenter)="isMouseInDocumentList = true" (mouseleave)="isMouseInDocumentList = false">
             <div *ngIf="isBatchOnDrag" class="absolute h-full w-full bg-green-400 z-40 opacity-50 rounded"
@@ -366,7 +366,7 @@
                                      ''"
                                      [src]="page['thumbnail']"
                                      title="{{ 'SPLITTER.moveToAnotherDoc' | translate }}"
-                                     alt="Open-Capture Splitter image"/>
+                                     alt="Open-Capture Splitter thumbnail"/>
                             </div>
                         </div>
                     </mat-card-content>

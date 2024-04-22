@@ -350,7 +350,7 @@ def browse_xml_lines(root):
     return lines
 
 
-def execute_outputs(output_info, log, regex, document_data, database, lang):
+def execute_outputs(output_info, log, regex, document_data, database):
     data = output_info['data']
     ocrise = output_info['ocrise']
     compress_type = output_info['compress_type']
@@ -360,7 +360,7 @@ def execute_outputs(output_info, log, regex, document_data, database, lang):
     elif output_info['output_type_id'] == 'export_mem':
         verifier_exports.export_mem(data, document_data, log, regex, database)
     elif output_info['output_type_id'] == 'export_pdf':
-        verifier_exports.export_pdf(data, log, regex, document_data, lang, compress_type, ocrise)
+        verifier_exports.export_pdf(data, log, regex, document_data, compress_type, ocrise)
 
 
 def insert(args):
@@ -369,7 +369,6 @@ def insert(args):
     files = args['files']
     database = args['database']
     docservers = args['docservers']
-    configurations = args['configurations']
     status = 'NEW'
 
     jpg_filename = str(uuid.uuid4())

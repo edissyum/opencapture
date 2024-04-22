@@ -15,8 +15,8 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import {Component, HostListener, OnDestroy, OnInit, SecurityContext} from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
 import { catchError, map, startWith, tap } from "rxjs/operators";
@@ -83,7 +83,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     toHighlight             : string      = '';
     toHighlightAccounting   : string      = '';
     tokenINSEE              : string      = '';
-    imgSrc                  : SafeUrl     = '';
+    imgSrc                  : any         = '';
     ratio                   : number      = 0;
     currentPage             : number      = 1;
     accountingPlan          : any         = {};
@@ -187,7 +187,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             if (res['document_ids'].hasOwnProperty(cpt)) {
                                 const id = res['document_ids'][cpt];
                                 const tmp_thumb: any = await this.getThumbByDocumentId(id);
-                                const thumb: SafeUrl = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + tmp_thumb['file']);
+                                const thumb = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + tmp_thumb['file']);
                                 const document: any = await this.getDocumentById(id);
                                 if (document['status'] === 'NEW') {
                                     this.multiDocumentsData.push({
@@ -490,7 +490,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     this.imgLoading = false;
-                    this.imgSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
+                    this.imgSrc = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + data.file);
                     this.imgArray[cpt] = this.imgSrc;
                 }),
                 catchError((err: any) => {

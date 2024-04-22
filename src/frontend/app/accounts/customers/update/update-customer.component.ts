@@ -33,8 +33,7 @@ import { NotificationService } from "../../../../services/notifications/notifica
 
 @Component({
     selector: 'app-update',
-    templateUrl: './update-customer.component.html',
-    styleUrls: ['./update-customer.component.scss']
+    templateUrl: './update-customer.component.html'
 })
 export class UpdateCustomerComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;

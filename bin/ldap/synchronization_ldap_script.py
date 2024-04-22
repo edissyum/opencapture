@@ -93,7 +93,7 @@ def retrieve_ldap_synchronization_data():
 
 
 def check_connection_ldap_server():
-    ldap_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
+    ldap_server = domain_ldap + ":" + str(port_ldap) + ""
     username_admin_adldap = f'cn={username_ldap_admin},{base_dn}'
     username_admin_openldap = f'{username_ldap_admin}'
     try:
@@ -263,8 +263,7 @@ def check_database_users(ldap_users_data, default_role):
                         print_log("user status is disabled :" + str(oc_user[0]))
                     else:
                         continue
-                else:
-                    pass
+
         for user_to_create in ldap_users_data:
             if user_to_create[0] != 'Same' and user_to_create[0] != 'Updated':
                 random_password = str(uuid.uuid4())

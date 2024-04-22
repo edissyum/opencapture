@@ -15,7 +15,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, SecurityContext} from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { UserService } from "../../../../../services/user.service";
@@ -237,9 +237,9 @@ export class UpdatePositionsMaskComponent implements OnInit {
             this.documentImageName = this.positionsMask.filename;
             this.documentImageNbPages = this.positionsMask.nb_pages;
             this.documentImageWidth = this.positionsMask.width;
-            this.imageDocument = $('#document_image_src');
+            this.imageDocument = $('#document_src');
             const thumbB64 : any = await this.getThumb(this.positionsMask.filename);
-            this.documentImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + thumbB64.file);
+            this.documentImageSrc = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + thumbB64.file);
         }
         this.suppliers = await this.retrieveSuppliers('', 1000);
         this.suppliers = this.suppliers.suppliers;
@@ -424,10 +424,10 @@ export class UpdatePositionsMaskComponent implements OnInit {
 
                     this.http.post(environment['url'] + '/ws/positions_masks/getImageFromPdf/' + this.positionMaskId, formData, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
-                            this.documentImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
+                            this.documentImageSrc = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + data.file);
                             this.documentImageName = data.filename;
                             this.documentImageWidth = data.width;
-                            this.imageDocument = $('#document_image_src');
+                            this.imageDocument = $('#document_src');
                             setTimeout(() => {
                                 this.ratio = this.documentImageWidth / this.imageDocument.width();
                             }, 500);
@@ -721,7 +721,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             const newFilename = this.documentImageName.replace(oldCpt + '.' + extension, newCpt + '.' + extension);
             this.documentImageName = newFilename;
             const thumbB64: any = await this.getThumb(newFilename);
-            this.documentImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + thumbB64.file);
+            this.documentImageSrc = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + thumbB64.file);
             this.currentPage = pageToShow;
             for (const parentCpt in this.availableFieldsParent) {
                 for (const cpt in this.availableFieldsParent[parentCpt]['values']) {
