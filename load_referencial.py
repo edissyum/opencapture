@@ -41,13 +41,7 @@ if __name__ == '__main__':
     mime = mimetypes.guess_type(file)[0]
     CONTENT_SUPPLIER_SHEET = None
     EXISTING_MIME_TYPE = False
-    if mime in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
-        CONTENT_SUPPLIER_SHEET = spreadsheet.read_excel_sheet(file)
-        EXISTING_MIME_TYPE = True
-    elif mime in ['application/vnd.oasis.opendocument.spreadsheet']:
-        CONTENT_SUPPLIER_SHEET = spreadsheet.read_ods_sheet(file)
-        EXISTING_MIME_TYPE = True
-    elif mime in ['text/csv']:
+    if mime in ['text/csv']:
         CONTENT_SUPPLIER_SHEET = spreadsheet.read_csv_sheet(file)
         EXISTING_MIME_TYPE = True
 

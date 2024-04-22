@@ -438,7 +438,7 @@ ErrorDocument 504 /src/assets/error_pages/504.html
         Order deny,allow
         Allow from all
         Require all granted
-        <Files ~ \"(.ini|secret_key|.ods)\">
+        <Files ~ \"(.ini|secret_key)\">
             Require all denied
         </Files>
     </Directory>

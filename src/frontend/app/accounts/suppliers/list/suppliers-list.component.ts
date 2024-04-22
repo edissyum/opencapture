@@ -277,14 +277,25 @@ export class SuppliersListComponent implements OnInit {
     }
 
     getReferenceFile() {
-        this.http.get(environment['url'] + '/ws/accounts/supplier/getReferenceFile', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                const mimeType = data.mimetype;
-                const referenceFile = 'data:' + mimeType + ';base64, ' + data.file;
-                const link = document.createElement("a");
-                link.href = referenceFile;
-                link.download = data.filename;
-                link.click();
+        this.loading = true;
+        this.http.get(environment['url'] + '/ws/accounts/supplier/fillReferenceFile', {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.http.get(environment['url'] + '/ws/accounts/supplier/getReferenceFile', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        const mimeType = data.mimetype;
+                        const referenceFile = 'data:' + mimeType + ';base64, ' + data.file;
+                        const link = document.createElement("a");
+                        link.href = referenceFile;
+                        link.download = data.filename;
+                        link.click();
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -313,9 +324,9 @@ export class SuppliersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 const formData: FormData = new FormData();
-                for (let i = 0; i < result.fileControl.value!.length; i++) {
+                for (const file of result.fileControl.value) {
                     if (result.fileControl.status === 'VALID') {
-                        formData.append(result.fileControl.value![i]['name'], result.fileControl.value![i]);
+                        formData.append(file['name'], file);
                     } else {
                         this.notify.handleErrors(this.translate.instant('DATA-IMPORT.extension_unauthorized', {"extension": 'CSV'}));
                         return;
@@ -339,26 +350,4 @@ export class SuppliersListComponent implements OnInit {
             }
         });
     }
-
-    // importSuppliers(event: any) {
-    //     const file:File = event.target.files[0];
-    //     if (file) {
-    //         this.loading = true;
-    //         const formData: FormData = new FormData();
-    //         formData.append(file.name, file);
-    //         this.http.post(environment['url'] + '/ws/accounts/supplier/importSuppliers', formData, {headers: this.authService.headers},
-    //         ).pipe(
-    //             tap(() => {
-    //                 this.notify.success(this.translate.instant('ACCOUNTS.suppliers_referencial_loaded'));
-    //                 this.loadSuppliers();
-    //             }),
-    //             catchError((err: any) => {
-    //                 this.loading = false;
-    //                 console.debug(err);
-    //                 this.notify.handleErrors(err, '/accounts/suppliers/list');
-    //                 return of(false);
-    //             })
-    //         ).subscribe();
-    //     }
-    // }
 }

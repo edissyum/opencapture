@@ -15,20 +15,19 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, Inject, ViewChild} from '@angular/core';
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {FormControl} from "@angular/forms";
-import {FileValidators} from "ngx-file-drag-drop";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {AuthService} from "../auth.service";
-import {NotificationService} from "../notifications/notifications.service";
-import {TranslateService} from "@ngx-translate/core";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {environment} from "../../app/env";
-import {catchError, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {MatSlideToggleChange} from "@angular/material/slide-toggle";
-import {MatTable} from "@angular/material/table";
+import { Component, Inject, ViewChild } from '@angular/core';
+import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { FormControl } from "@angular/forms";
+import { FileValidators } from "ngx-file-drag-drop";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { AuthService } from "../auth.service";
+import { NotificationService } from "../notifications/notifications.service";
+import { TranslateService } from "@ngx-translate/core";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { environment } from "../../app/env";
+import { catchError, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { MatTable } from "@angular/material/table";
 
 @Component({
     selector: 'app-import-dialog',

@@ -143,15 +143,6 @@ def delete_document_page_by_supplier_id(supplier_id, field_id, form_id):
 
 
 def update_supplier(supplier_id, data):
-    if 'database' in current_context and 'spreadsheet' in current_context:
-        database = current_context.database
-        spreadsheet = current_context.spreadsheet
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
-        spreadsheet = _vars[7]
-
     old_supplier, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
         _set = {}
@@ -649,4 +640,55 @@ def import_suppliers(args):
                 address_id, _ = accounts.create_address({'columns': account['address']})
                 account['info']['address_id'] = address_id
                 accounts.create_supplier({'columns': account['info']})
+    return '', 200
+
+
+def fill_reference_file():
+    if 'docservers' in current_context and 'config' in current_context:
+        docservers = current_context.docservers
+        config = current_context.config
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+        config = _vars[1]
+
+    file_path = docservers['REFERENTIALS_PATH'] + '/' + config['REFERENCIAL']['referencialsupplierdocument']
+    referencial_index = docservers['REFERENTIALS_PATH'] + '/' + config['REFERENCIAL']['referencialsupplierindex']
+    suppliers = get_suppliers({})
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    data = []
+    index = []
+    header = []
+    address = {}
+
+    with open(referencial_index, 'r') as json_f:
+        indexes = json.load(json_f)
+        for ind in indexes:
+            index.append(ind)
+            header.append(indexes[ind])
+
+    with open(file_path, 'a') as file:
+        writer = csv.writer(file, delimiter=';')
+        writer.writerow(header)
+        for supplier in suppliers[0]['suppliers']:
+            row = []
+            if supplier['address_id']:
+                address = get_address_by_id(supplier['address_id'])
+                if address and address[0]:
+                    address = address[0]
+
+            for ind in index:
+                if ind == 'get_only_raw_footer':
+                    row.append(not supplier[ind])
+                elif ind in supplier:
+                    row.append(supplier[ind])
+                elif ind in address:
+                    row.append(address[ind])
+                else:
+                    row.append('')
+            writer.writerow(row)
     return '', 200

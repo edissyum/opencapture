@@ -482,6 +482,9 @@ def get_default_accouting_plan():
 @bp.route('accounts/supplier/getReferenceFile', methods=['GET'])
 @auth.token_required
 def get_reference_file():
+    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list', 'export_suppliers']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/supplier/getReferenceFile'}), 403
+
     if 'docservers' in current_context and 'config' in current_context:
         docservers = current_context.docservers
         config = current_context.config
@@ -496,6 +499,17 @@ def get_reference_file():
     file_content = verifier.get_file_content('referential_supplier', os.path.basename(file_path), mime)
     return make_response({'filename': os.path.basename(file_path), 'mimetype': mime,
                           'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
+
+
+@bp.route('accounts/supplier/fillReferenceFile', methods=['GET'])
+@auth.token_required
+def fill_reference_file():
+    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list', 'export_suppliers']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': '/accounts/supplier/fillReferenceFile'}), 403
+
+    res = accounts.fill_reference_file()
+    return res
 
 
 @bp.route('accounts/supplier/importSuppliers', methods=['POST'])

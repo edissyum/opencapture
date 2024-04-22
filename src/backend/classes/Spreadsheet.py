@@ -34,21 +34,21 @@ class Spreadsheet:
         with open(self.referencial_supplier_index, encoding='UTF-8') as file:
             fp = json.load(file)
             self.referencial_supplier_array['name'] = fp['name']
-            self.referencial_supplier_array['VATNumber'] = fp['VATNumber']
-            self.referencial_supplier_array['SIRET'] = fp['SIRET']
-            self.referencial_supplier_array['SIREN'] = fp['SIREN']
-            self.referencial_supplier_array['DUNS'] = fp['DUNS']
-            self.referencial_supplier_array['BIC'] = fp['BIC']
-            self.referencial_supplier_array['RCCM'] = fp['RCCM']
-            self.referencial_supplier_array['IBAN'] = fp['IBAN']
-            self.referencial_supplier_array['EMAIL'] = fp['EMAIL']
+            self.referencial_supplier_array['vat_number'] = fp['vat_number']
+            self.referencial_supplier_array['siret'] = fp['siret']
+            self.referencial_supplier_array['siren'] = fp['siren']
+            self.referencial_supplier_array['duns'] = fp['duns']
+            self.referencial_supplier_array['bic'] = fp['bic']
+            self.referencial_supplier_array['rccm'] = fp['rccm']
+            self.referencial_supplier_array['iban'] = fp['iban']
+            self.referencial_supplier_array['email'] = fp['email']
             self.referencial_supplier_array['address1'] = fp['address1']
             self.referencial_supplier_array['address2'] = fp['address2']
-            self.referencial_supplier_array['addressPostalCode'] = fp['addressPostalCode']
-            self.referencial_supplier_array['addressTown'] = fp['addressTown']
-            self.referencial_supplier_array['addressCountry'] = fp['addressCountry']
+            self.referencial_supplier_array['postal_code'] = fp['postal_code']
+            self.referencial_supplier_array['city'] = fp['city']
+            self.referencial_supplier_array['country'] = fp['country']
             self.referencial_supplier_array['get_only_raw_footer'] = fp['get_only_raw_footer']
-            self.referencial_supplier_array['doc_lang'] = fp['doc_lang']
+            self.referencial_supplier_array['lang'] = fp['lang']
 
     @staticmethod
     def read_excel_sheet(referencial_spreadsheet):
@@ -67,21 +67,21 @@ class Spreadsheet:
             content_sheet = content_sheet['Fournisseur']
         content_sheet = pd.DataFrame(content_sheet, columns=[
             self.referencial_supplier_array['name'],
-            self.referencial_supplier_array['VATNumber'],
-            self.referencial_supplier_array['SIRET'],
-            self.referencial_supplier_array['SIREN'],
-            self.referencial_supplier_array['DUNS'],
-            self.referencial_supplier_array['BIC'],
-            self.referencial_supplier_array['RCCM'],
-            self.referencial_supplier_array['IBAN'],
-            self.referencial_supplier_array['EMAIL'],
+            self.referencial_supplier_array['vat_number'],
+            self.referencial_supplier_array['siret'],
+            self.referencial_supplier_array['siren'],
+            self.referencial_supplier_array['duns'],
+            self.referencial_supplier_array['bic'],
+            self.referencial_supplier_array['rccm'],
+            self.referencial_supplier_array['iban'],
+            self.referencial_supplier_array['email'],
             self.referencial_supplier_array['address1'],
             self.referencial_supplier_array['address2'],
-            self.referencial_supplier_array['addressPostalCode'],
-            self.referencial_supplier_array['addressTown'],
-            self.referencial_supplier_array['addressCountry'],
+            self.referencial_supplier_array['postal_code'],
+            self.referencial_supplier_array['city'],
+            self.referencial_supplier_array['country'],
             self.referencial_supplier_array['get_only_raw_footer'],
-            self.referencial_supplier_array['doc_lang']
+            self.referencial_supplier_array['lang']
         ])
         # Drop row 0 because it contains the indexes columns
         if not content_sheet.empty:
@@ -94,15 +94,15 @@ class Spreadsheet:
     def construct_supplier_array(self, content_sheet):
         # Create the first index of array, with provider number (taxe number)
         tmp_provider_number = pd.DataFrame(content_sheet,
-                                           columns=[self.referencial_supplier_array['VATNumber']]).drop_duplicates()
+                                           columns=[self.referencial_supplier_array['vat_number']]).drop_duplicates()
         for value in tmp_provider_number.to_dict(orient='records'):
-            self.referencial_supplier_data[value[self.referencial_supplier_array['VATNumber']]] = []
+            self.referencial_supplier_data[value[self.referencial_supplier_array['vat_number']]] = []
 
         # Then go through the Excel document and fill our final array with all infos about the provider and the bill
         tmp_excel_content = pd.DataFrame(content_sheet)
         for line in tmp_excel_content.to_dict(orient='records'):
-            if line[self.referencial_supplier_array['addressPostalCode']]:
-                if len(str(line[self.referencial_supplier_array['addressPostalCode']])) == 4:
-                    line[self.referencial_supplier_array['addressPostalCode']] = '0' + str(
-                        line[self.referencial_supplier_array['addressPostalCode']])
-            self.referencial_supplier_data[line[self.referencial_supplier_array['VATNumber']]].append(line)
+            if line[self.referencial_supplier_array['postal_code']]:
+                if len(str(line[self.referencial_supplier_array['postal_code']])) == 4:
+                    line[self.referencial_supplier_array['postal_code']] = '0' + str(
+                        line[self.referencial_supplier_array['postal_code']])
+            self.referencial_supplier_data[line[self.referencial_supplier_array['vat_number']]].append(line)

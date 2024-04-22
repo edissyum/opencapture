@@ -19,7 +19,7 @@ postgresUser     =
 postgresPassword =
 
 [REFERENCIAL]
-; ODS or XLSX supported
+; CSV only supported
 ; Path is set up in docservers table (REFERENTIALS_PATH)
 referencialSupplierDocument = default_referencial_supplier.csv
 referencialSupplierIndex    = default_referencial_supplier_index.json
