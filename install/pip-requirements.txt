@@ -33,7 +33,6 @@ Flask-Babel==4.0.0
 ultralytics==8.2.2
 schwifty==2024.4.0
 pytesseract==0.3.10
-pyexcel_ods3==0.6.1
 configparser==7.0.0
 scikit-learn==1.4.2
 python-magic==0.4.27

@@ -15,10 +15,9 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
+import math
 import json
 import pandas as pd
-from pyexcel_ods3 import get_data, save_data
 
 
 class Spreadsheet:
@@ -51,58 +50,19 @@ class Spreadsheet:
             self.referencial_supplier_array['lang'] = fp['lang']
 
     @staticmethod
-    def read_excel_sheet(referencial_spreadsheet):
-        content_sheet = pd.read_excel(referencial_spreadsheet, engine='openpyxl')
-        return content_sheet
-
-    @staticmethod
     def read_csv_sheet(referencial_spreadsheet):
         content_sheet = pd.read_csv(referencial_spreadsheet, sep=";")
         return content_sheet
 
-    def read_ods_sheet(self, referencial_spreadsheet):
-        content_sheet = get_data(referencial_spreadsheet)
-
-        if 'Fournisseur' in content_sheet:
-            content_sheet = content_sheet['Fournisseur']
-        content_sheet = pd.DataFrame(content_sheet, columns=[
-            self.referencial_supplier_array['name'],
-            self.referencial_supplier_array['vat_number'],
-            self.referencial_supplier_array['siret'],
-            self.referencial_supplier_array['siren'],
-            self.referencial_supplier_array['duns'],
-            self.referencial_supplier_array['bic'],
-            self.referencial_supplier_array['rccm'],
-            self.referencial_supplier_array['iban'],
-            self.referencial_supplier_array['email'],
-            self.referencial_supplier_array['address1'],
-            self.referencial_supplier_array['address2'],
-            self.referencial_supplier_array['postal_code'],
-            self.referencial_supplier_array['city'],
-            self.referencial_supplier_array['country'],
-            self.referencial_supplier_array['get_only_raw_footer'],
-            self.referencial_supplier_array['lang']
-        ])
-        # Drop row 0 because it contains the indexes columns
-        if not content_sheet.empty:
-            content_sheet = content_sheet.drop(0)
-            # Drop empty rows
-            content_sheet = content_sheet.dropna(axis=0, how='all', subset=None)
-
-        return content_sheet
-
     def construct_supplier_array(self, content_sheet):
-        # Create the first index of array, with provider number (taxe number)
-        tmp_provider_number = pd.DataFrame(content_sheet,
-                                           columns=[self.referencial_supplier_array['vat_number']]).drop_duplicates()
-        for value in tmp_provider_number.to_dict(orient='records'):
-            self.referencial_supplier_data[value[self.referencial_supplier_array['vat_number']]] = []
-
-        # Then go through the Excel document and fill our final array with all infos about the provider and the bill
         tmp_excel_content = pd.DataFrame(content_sheet)
         for line in tmp_excel_content.to_dict(orient='records'):
+            self.referencial_supplier_data[line[self.referencial_supplier_array['vat_number']]] = []
             if line[self.referencial_supplier_array['postal_code']]:
                 if len(str(line[self.referencial_supplier_array['postal_code']])) == 4:
                     line[self.referencial_supplier_array['postal_code']] = '0' + str(
                         line[self.referencial_supplier_array['postal_code']])
+            for t in line:
+                if isinstance(line[t], (float, int)) and line[t] and not math.isnan(line[t]):
+                    line[t] = str(int(line[t]))
             self.referencial_supplier_data[line[self.referencial_supplier_array['vat_number']]].append(line)

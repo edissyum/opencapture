@@ -15,7 +15,7 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, PipeTransform, Pipe } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "../../../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -27,7 +27,6 @@ import { FormControl } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
-import { PipeTransform, Pipe } from '@angular/core';
 import { of } from "rxjs";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
