@@ -665,6 +665,7 @@ def return_rotated_content(image):
         os.remove(tf.name + '.jpg')
     return content
 
+
 def get_token_insee():
     if 'config' in current_context:
         config = current_context.config
