@@ -1082,7 +1082,7 @@
 		"document_id": "Identifiant",
 		"document_locked": "Document verrouillé",
 		"document_locked_by": "Document verrouillé par l'utilisateur suivant : <strong>{{ locked_by }}</strong>",
-		"document_refused": "Document refusée",
+		"document_refused": "Document refusé",
 		"documents_deleted": "Document(s) supprimé(s)",
 		"documents_settings": "Paramètres du document",
 		"download_original_file": "Télécharger le fichier original",

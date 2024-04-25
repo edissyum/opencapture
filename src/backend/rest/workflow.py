@@ -104,7 +104,8 @@ def get_workflows(module, user_id):
 @auth.token_required
 def get_workflow_by_id(workflow_id, module):
     if 'skip' not in request.environ or not request.environ['skip']:
-        list_priv = ['settings', 'update_workflow'] if module == 'verifier' else ['settings', 'update_workflow_splitter']
+        list_priv = ['settings | access_verifier', 'update_workflow | access_verifier'] if module == 'verifier' else \
+            ['settings | access_splitter', 'update_workflow_splitter | access_splitter']
         if not privileges.has_privileges(request.environ['user_id'], list_priv):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/workflows/{module}/getById/{workflow_id}'}), 403

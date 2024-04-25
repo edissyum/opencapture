@@ -31,7 +31,7 @@ bp = Blueprint('accounts', __name__, url_prefix='/ws/')
 @auth.token_required
 def suppliers_list():
     if 'skip' not in request.environ or not request.environ['skip']:
-        if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list']):
+        if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/suppliers/list'}), 403
 
     check, message = rest_validator(request.args, [
