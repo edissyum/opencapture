@@ -192,7 +192,7 @@
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le champ personnalisé <strong>{{ custom_field }}</strong> ?",
 		"custom_exists": "Champ personnalisé présent dans un formulaire",
 		"delete_choice": "Supprimer l'option",
-		"deleted": "Supprimé",
+		"deleted": "Champ personnalisé supprimé avec succès",
 		"field_added": "Champ personnalisé créé avec succès",
 		"field_updated": "Champ personnalisé modifié avec succès",
 		"module": "Module",
