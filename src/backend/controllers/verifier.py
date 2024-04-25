@@ -23,14 +23,17 @@ import magic
 import base64
 import secrets
 import logging
+import tempfile
 import datetime
 import requests
 import traceback
 import importlib
 import pandas as pd
+from PIL import Image
 from flask_babel import gettext
 from zeep import Client, exceptions
 from src.backend import verifier_exports
+from src.backend.classes.Files import rotate_img
 from src.backend.import_classes import _Files
 from src.backend.scripting_functions import check_code
 from src.backend.import_models import verifier, accounts, forms
@@ -624,11 +627,9 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
                 if year_and_month:
                     thumb_path = thumb_path + '/' + str(year_and_month) + '/'
                 if os.path.isfile(thumb_path + '/' + filename):
-                    with open(thumb_path + '/' + filename, 'rb') as file:
-                        content = file.read()
+                    content = return_rotated_content(thumb_path + '/' + filename)
             else:
-                with open(full_path, 'rb') as file:
-                    content = file.read()
+                content = return_rotated_content(full_path)
         else:
             if document_id:
                 document = verifier.get_document_by_id({
@@ -642,8 +643,7 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
                     filename = docservers['VERIFIER_IMAGE_FULL'] + '/' + str(year_and_month) + '/' + filename
                     files.save_img_with_pdf2image(pdf_path, filename, cpt)
                     if os.path.isfile(filename):
-                        with open(filename, 'rb') as file:
-                            content = file.read()
+                        content = return_rotated_content(filename)
 
     if not content:
         if mime_type == 'image/jpeg':
@@ -654,6 +654,16 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
                 content = file.read()
     return Response(content, mimetype=mime_type)
 
+
+def return_rotated_content(image):
+    temp = Image.open(image)
+    with tempfile.NamedTemporaryFile() as tf:
+        temp.save(tf.name + '.jpg', format="JPEG")
+        rotate_img(tf.name + '.jpg')
+        with open(tf.name + '.jpg', 'rb') as file:
+            content = file.read()
+        os.remove(tf.name + '.jpg')
+    return content
 
 def get_token_insee():
     if 'config' in current_context:
