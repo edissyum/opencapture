@@ -33,8 +33,8 @@ from PIL import Image
 from flask_babel import gettext
 from zeep import Client, exceptions
 from src.backend import verifier_exports
-from src.backend.classes.Files import rotate_img
 from src.backend.import_classes import _Files
+from src.backend.classes.Files import rotate_img
 from src.backend.scripting_functions import check_code
 from src.backend.import_models import verifier, accounts, forms
 from src.backend.main import launch, create_classes_from_custom_id
