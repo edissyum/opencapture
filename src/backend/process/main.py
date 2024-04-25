@@ -321,14 +321,31 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
 
     i = 0
     tmp_nb_pages = nb_pages
+    order = 'desc'
+    if 'verifierOrderSearch' in configurations and configurations['verifierOrderSearch'] == 'asc':
+        order = 'asc'
+        tmp_nb_pages = 0
+
     while not data:
-        tmp_nb_pages = tmp_nb_pages - 1
-        if 'verifierMaxPageSearch' in configurations and int(configurations['verifierMaxPageSearch']) > 0:
-            if i == int(configurations['verifierMaxPageSearch']) or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
-                break
+        if order == 'asc':
+            tmp_nb_pages = tmp_nb_pages + 1
         else:
-            if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
-                break
+            tmp_nb_pages = tmp_nb_pages - 1
+
+        if 'verifierMaxPageSearch' in configurations and int(configurations['verifierMaxPageSearch']) > 0:
+            if order == 'asc':
+                if i == int(configurations['verifierMaxPageSearch']) or int(tmp_nb_pages) + 1 == nb_pages or nb_pages == 1:
+                    break
+            else:
+                if i == int(configurations['verifierMaxPageSearch']) or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+                    break
+        else:
+            if order == 'asc':
+                if int(tmp_nb_pages) + 1 == nb_pages or nb_pages == 1:
+                    break
+            else:
+                if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+                    break
 
         convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
         _file = files.custom_file_name
