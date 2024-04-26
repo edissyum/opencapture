@@ -627,9 +627,9 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
                 if year_and_month:
                     thumb_path = thumb_path + '/' + str(year_and_month) + '/'
                 if os.path.isfile(thumb_path + '/' + filename):
-                    content = return_rotated_content(thumb_path + '/' + filename)
+                    content = return_rotated_content(file_type, thumb_path + '/' + filename)
             else:
-                content = return_rotated_content(full_path)
+                content = return_rotated_content(file_type, full_path)
         else:
             if document_id:
                 document = verifier.get_document_by_id({
@@ -643,7 +643,7 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
                     filename = docservers['VERIFIER_IMAGE_FULL'] + '/' + str(year_and_month) + '/' + filename
                     files.save_img_with_pdf2image(pdf_path, filename, cpt)
                     if os.path.isfile(filename):
-                        content = return_rotated_content(filename)
+                        content = return_rotated_content(file_type, filename)
 
     if not content:
         if mime_type == 'image/jpeg':
@@ -655,14 +655,18 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
     return Response(content, mimetype=mime_type)
 
 
-def return_rotated_content(image):
-    temp = Image.open(image)
-    with tempfile.NamedTemporaryFile() as tf:
-        temp.save(tf.name + '.jpg', format="JPEG")
-        rotate_img(tf.name + '.jpg')
-        with open(tf.name + '.jpg', 'rb') as file:
+def return_rotated_content(file_type, image):
+    if file_type == 'referential_supplier':
+        with open(image, 'rb') as file:
             content = file.read()
-        os.remove(tf.name + '.jpg')
+    else:
+        temp = Image.open(image)
+        with tempfile.NamedTemporaryFile() as tf:
+            temp.save(tf.name + '.jpg', format="JPEG")
+            rotate_img(tf.name + '.jpg')
+            with open(tf.name + '.jpg', 'rb') as file:
+                content = file.read()
+            os.remove(tf.name + '.jpg')
     return content
 
 
