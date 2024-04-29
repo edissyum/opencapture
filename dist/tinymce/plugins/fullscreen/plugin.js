@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.8.3 (2024-02-08)
+ * TinyMCE version 7.0.1 (2024-04-10)
  */
 
 (function () {
@@ -1226,7 +1226,8 @@
         tooltip: 'Fullscreen',
         icon: 'fullscreen',
         onAction,
-        onSetup: makeSetupHandler(editor, fullscreenState)
+        onSetup: makeSetupHandler(editor, fullscreenState),
+        shortcut: 'Meta+Shift+F'
       });
     };
 
