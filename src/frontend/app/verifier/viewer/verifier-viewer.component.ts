@@ -301,10 +301,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         }, true);
         await this.fillForm(this.currentFormFields);
         if (this.document.supplier_id) {
-            this.getSupplierInfo(this.document.supplier_id, false, true);
+            await this.getSupplierInfo(this.document.supplier_id, false, true);
         }
+        await this.drawPositions();
         setTimeout(() => {
-            this.drawPositions();
             this.convertAutocomplete();
             document.getElementById('image')!.scrollTo({
                 top: 0,
