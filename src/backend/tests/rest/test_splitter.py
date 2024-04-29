@@ -72,7 +72,7 @@ class SplitterTest(unittest.TestCase):
             'time': 'today'
         }
         response = self.app.post(f'/{CUSTOM_ID}/ws/splitter/batches/list', json=payload,
-                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(True, len(response.json['batches']) > 0)
 
