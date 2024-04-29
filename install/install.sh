@@ -428,7 +428,7 @@ ErrorDocument 504 /src/assets/error_pages/504.html
     WSGIScriptAlias /backend_oc $defaultPath/wsgi.py
 
     Header always set X-Content-Type-Options: nosniff
-    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    Header always set Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\"
 
     <Directory $defaultPath>
         AllowOverride All
