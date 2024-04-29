@@ -529,11 +529,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     async drawPositions(): Promise<any> {
-        console.log('HERE');
         for (const fieldId in this.document['datas']) {
             const page = this.getPage(fieldId);
             const position = this.document.positions[fieldId];
-            console.log(fieldId, page, position)
             if (position && Object.keys(position).length > 0 && parseInt(String(page)) === parseInt(String(this.currentPage))) {
                 const splittedFieldId = fieldId.split('_');
                 const field = this.getFieldInfo(fieldId);
