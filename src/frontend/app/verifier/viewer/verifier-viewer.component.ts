@@ -315,7 +315,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 behavior: 'smooth'
             });
             this.loading = false;
-        }, 500);
+        }, 1000);
         const triggerEvent = $('.trigger');
         triggerEvent.hide();
 
