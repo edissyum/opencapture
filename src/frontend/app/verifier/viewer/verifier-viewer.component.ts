@@ -291,20 +291,23 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         */
         this.imageDocument = $('#document_image');
         this.ratio = this.document['img_width'] / this.imageDocument.width();
-        this.ocr({
-            'target' : {
-                'id': '',
-                'labels': [
-                    {'textContent': ''}
-                ]
-            }
-        }, true);
+        setTimeout(() => {
+            this.ocr({
+                'target' : {
+                    'id': '',
+                    'labels': [
+                        {'textContent': ''}
+                    ]
+                }
+            }, true);
+        }, 500);
         await this.fillForm(this.currentFormFields);
         if (this.document.supplier_id) {
             await this.getSupplierInfo(this.document.supplier_id, false, true);
         }
-        await this.drawPositions();
+
         setTimeout(() => {
+            this.drawPositions();
             this.convertAutocomplete();
             document.getElementById('image')!.scrollTo({
                 top: 0,
