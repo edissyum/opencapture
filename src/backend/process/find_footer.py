@@ -255,8 +255,10 @@ class FindFooter:
                     'page': position[name + '_page']}
             res = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
             if res[0]:
+                data = re.sub(r"[^0-9.]|\.(?!\d)", "", res[0].replace(',', '.'))
+                self.log.info(name + ' found with positions : ' + str(data))
                 _return = {
-                    0: re.sub(r"[^0-9\.]|\.(?!\d)", "", res[0].replace(',', '.')),
+                    0: data,
                     1: json.loads(res[1]),
                     "from_position": True
                 }
