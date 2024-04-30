@@ -732,9 +732,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            convert_function)
 
         footer = None
-        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         if 'footer' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            print('here')
             footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
                                       docservers, datas['form_id'])
             if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
