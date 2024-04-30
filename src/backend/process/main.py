@@ -475,7 +475,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 })
 
         # Launch input scripting if present
-        change_workflow = launch_script(workflow_settings, docservers, 'input', log, file, database, args, config)
+        if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+            change_workflow = launch_script(workflow_settings, docservers, 'input', log, file, database, args, config)
 
     if not change_workflow:
         # Convert files to JPG
@@ -731,7 +732,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            convert_function)
 
         footer = None
+        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         if 'footer' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+            print('here')
             footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
                                       docservers, datas['form_id'])
             if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
@@ -882,11 +885,13 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         args['document_id'] = document_id
 
         # Launch process scripting if present
-        launch_script(workflow_settings, docservers, 'process', log, file, database, args, config, datas)
+        if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+            launch_script(workflow_settings, docservers, 'process', log, file, database, args, config, datas)
 
         if (status == 'END') or (workflow_settings and (not workflow_settings['process']['use_interface'] or
                                                         not workflow_settings['input']['apply_process'])):
             # Launch outputs scripting if present
-            launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
+            if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+                launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
         return document_id
     return None
