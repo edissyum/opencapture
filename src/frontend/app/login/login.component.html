@@ -33,9 +33,10 @@
                             </span>
                         </mat-hint>
                     </mat-form-field>
-                    <button id="login" mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled"
-                            class="w-full mb-4 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
-                               transition duration-300" type="submit" style="max-width: 250px;">
+                    <button id="login" mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled || this.loginForm.invalid"
+                            [class.invalid_button]="this.processLogin || this.isConnectionBtnDisabled || this.loginForm.invalid"
+                            [class.valid_button]="!(this.processLogin || this.isConnectionBtnDisabled || this.loginForm.invalid)"
+                            class="mb-4 p-6" type="submit" style="max-width: 250px;">
                         <span *ngIf="!this.processLogin && !this.isConnectionBtnDisabled">
                             {{ 'AUTH.login' | translate }}
                         </span>
