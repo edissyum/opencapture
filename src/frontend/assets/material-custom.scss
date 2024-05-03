@@ -19,6 +19,7 @@
                 @apply text-gray-900;
             }
             & .mdc-tab-indicator__content {
+                @apply border-[1px];
                 @apply border-green-400 #{!important};
             }
         }
