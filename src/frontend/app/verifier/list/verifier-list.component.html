@@ -105,8 +105,7 @@
                         <div class="w-10/12 m-auto grid grid-cols-2 gap-2 col-span-2">
                             <mat-form-field appearance="outline">
                                 <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
-                                <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)"
-                                            [disabled]="this.loading">
+                                <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)" [disabled]="this.loading">
                                     <mat-option *ngFor="let option of this.status" [value]="option['id']">
                                         {{ option['label'] }}
                                     </mat-option>
