@@ -108,6 +108,7 @@ export class VerifierListComponent implements OnInit {
     search                   : string            = '';
     TREE_DATA                : AccountsNode[]    = [];
     totalChecked             : number            = 0;
+    searchLoading            : boolean           = false;
     expanded                 : boolean           = false;
     documentToDeleteSelected : boolean           = false;
     customerFilterEmpty      : boolean           = false;
@@ -648,8 +649,14 @@ export class VerifierListComponent implements OnInit {
     }
 
     searchDocument(event: any) {
-        this.search = event.target.value;
-        this.loadDocuments(false).then();
+        if (!this.searchLoading) {
+            this.searchLoading = true;
+            setTimeout(() => {
+                this.search = event.target.value;
+                this.loadDocuments(false).then();
+                this.searchLoading = false;
+            }, 1000);
+        }
     }
 
     resetPaginator() {
