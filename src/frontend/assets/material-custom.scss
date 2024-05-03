@@ -263,3 +263,8 @@ mat-select-country mat-form-field {
     @apply truncate #{!important};
     @apply w-full;
 }
+
+.mat-mdc-paginator-range-label {
+    @apply -ml-4 #{!important};
+    @apply mr-0 #{!important};
+}

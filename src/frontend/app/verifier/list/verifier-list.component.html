@@ -97,12 +97,12 @@
                     </span>
                 </ng-template>
                 <div class="verifier-container flex flex-col">
-                    <div class="grid grid-cols-4 grid-flow-row gap-0 mt-4 z-30">
-                        <mat-form-field class="mb-3 relative left-4 w-10/12" appearance="outline">
+                    <div class="grid grid-cols-3 grid-flow-row gap-0 mt-2 z-30">
+                        <mat-form-field class="mb-3 pt-4 ml-4 w-7/12" appearance="outline">
                             <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
                             <input matInput type="text" [(ngModel)]="search" [disabled]="this.total === 0" (keyup)="searchDocument($event)">
                         </mat-form-field>
-                        <div class="w-10/12 m-auto grid grid-cols-2 gap-2 col-span-2">
+                        <div class="w-full m-auto grid grid-cols-2 gap-2">
                             <mat-form-field appearance="outline">
                                 <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
                                 <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)" [disabled]="this.loading">
@@ -121,7 +121,7 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
-                        <span [class.hidden]="this.loading || this.total === 0" class="relative right-0">
+                        <span [class.hidden]="this.loading || this.total === 0" class="pt-4 w-full">
                             <mat-paginator [length]="this.total" [pageSize]="this.pageSize" [pageIndex]="this.pageIndex"
                                            [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)">
                             </mat-paginator>
