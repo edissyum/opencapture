@@ -720,11 +720,9 @@
 	},
 	"PAGINATOR": {
 		"first_page": "First page",
-		"items_per_page": "Items per page",
 		"last_page": "Last page",
 		"next_page": "Next page",
 		"of": "of",
-		"on": "on",
 		"page": "Page",
 		"previous_page": "Previous page"
 	},
