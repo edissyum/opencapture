@@ -168,10 +168,8 @@ export class CreateSplitterAiModelComponent implements OnInit {
                 this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.created'));
                 this.router.navigate(['/settings/splitter/ai']).then();
             }
-        } else {
-            if (totalTrainFolders < 2) {
-                this.notify.error(this.translate.instant('ARTIFICIAL-INTELLIGENCE.not_enough_checked'));
-            }
+        } else if (totalTrainFolders < 2) {
+            this.notify.error(this.translate.instant('ARTIFICIAL-INTELLIGENCE.not_enough_checked'));
         }
     }
 

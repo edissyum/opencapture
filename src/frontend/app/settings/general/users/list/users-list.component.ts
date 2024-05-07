@@ -389,7 +389,7 @@ export class UsersListComponent implements OnInit {
                 extension: 'CSV',
                 skipHeader: false,
                 allowColumnsSelection : false,
-                title : this.translate.instant('USER.import'),
+                title: this.translate.instant('USER.import'),
                 availableColumns : columns,
                 selectedColumns : columns
             },

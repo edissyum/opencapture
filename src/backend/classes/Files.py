@@ -97,7 +97,7 @@ def rotate_img(img):
             else:
                 grayscale = rgb2gray(src)
                 angle = determine_skew(grayscale)
-                if angle != 0 and angle != 0.0:
+                if angle != 0:
                     rotated = rotate(src, angle, resize=True) * 255
                     cv2.imwrite(img, rotated.astype(np.uint8))
         except (pytesseract.TesseractError, TypeError) as _e:
@@ -225,7 +225,7 @@ class Files:
                     del chunk_images
             return outputs_paths
         except (Exception,) as error:
-            self.log.error('Error during pdf2image conversion : ' + str(error))
+            self.log.error('Error during pdf2image conversiona : ' + str(error))
             return False
 
     def save_img_with_pdf2image_min(self, file, output, single_file=True, module='verifier', chunk_size=10):
@@ -263,7 +263,7 @@ class Files:
                     del chunk_images
             return outputs_paths
         except (Exception,) as error:
-            self.log.error('Error during pdf2image conversion : ' + str(error))
+            self.log.error('Error during pdf2image conversionb : ' + str(error))
             return False
 
     @staticmethod
@@ -301,10 +301,10 @@ class Files:
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, 0, images[i].width, int(images[i].height - self.height_ratio))
-                _im = images[i].crop(crop_ratio)
+                _im = images[i].crop(crop_ratio).convert('RGB')
                 _im.save(output, 'JPEG')
         except (Exception,) as error:
-            self.log.error('Error during pdf2image conversion : ' + str(error))
+            self.log.error('Error during pdf2image conversionc : ' + str(error))
 
     # Crop the file to get the footer
     # 1/3 + 10% is the ratio we used
@@ -323,10 +323,10 @@ class Files:
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, self.height_ratio, images[i].width, images[i].height)
-                _im = images[i].crop(crop_ratio)
+                _im = images[i].crop(crop_ratio).convert('RGB')
                 _im.save(output, 'JPEG')
         except (Exception,) as error:
-            self.log.error('Error during pdf2image conversion : ' + str(error))
+            self.log.error('Error during pdf2image conversiond : ' + str(error))
 
     # When we crop footer we need to rearrange the position of founded text
     # So we add the height_ratio we used (by default 1/3 + 10% of the full image)
@@ -870,7 +870,7 @@ class Files:
                 images[i].save(output + '.jpg', 'JPEG')
                 cpt = cpt + 1
         except (Exception,) as error:
-            log.error('Error during pdf2image conversion : ' + str(error))
+            log.error('Error during pdf2image conversione : ' + str(error))
 
     @staticmethod
     def remove_file(path, log):

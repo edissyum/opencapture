@@ -38,26 +38,12 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
     }
 
     getAndInitTranslations() {
+        this.itemsPerPageLabel = '';
         if (this.localeService.currentLang === undefined) {
             this.http.get(environment['url'] + '/ws/i18n/getCurrentLang').pipe(
                 tap((data: any) => {
                     this.translate.use(data.lang);
-                    this.translate.get('PAGINATOR.items_per_page').subscribe((translated: string) => {
-                        this.itemsPerPageLabel = translated;
-                    });
-                    this.translate.get('PAGINATOR.next_page').subscribe((translated: string) => {
-                        this.nextPageLabel = translated;
-                    });
-                    this.translate.get('PAGINATOR.first_page').subscribe((translated: string) => {
-                        this.firstPageLabel = translated;
-                    });
-                    this.translate.get('PAGINATOR.last_page').subscribe((translated: string) => {
-                        this.lastPageLabel = translated;
-                    });
-                    this.translate.get('PAGINATOR.previous_page').subscribe((translated: string) => {
-                        this.previousPageLabel = translated;
-                    });
-                    this.changes.next();
+                    this.translateLabels();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -66,23 +52,25 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
                 })
             ).subscribe();
         } else {
-            this.translate.get('PAGINATOR.items_per_page').subscribe((translated: string) => {
-                this.itemsPerPageLabel = translated;
-            });
-            this.translate.get('PAGINATOR.next_page').subscribe((translated: string) => {
-                this.nextPageLabel = translated;
-            });
-            this.translate.get('PAGINATOR.first_page').subscribe((translated: string) => {
-                this.firstPageLabel = translated;
-            });
-            this.translate.get('PAGINATOR.last_page').subscribe((translated: string) => {
-                this.lastPageLabel = translated;
-            });
-            this.translate.get('PAGINATOR.previous_page').subscribe((translated: string) => {
-                this.previousPageLabel = translated;
-            });
+            this.translateLabels();
             this.changes.next();
         }
+    }
+
+    translateLabels() {
+        this.translate.get('PAGINATOR.next_page').subscribe((translated: string) => {
+            this.nextPageLabel = translated;
+        });
+        this.translate.get('PAGINATOR.first_page').subscribe((translated: string) => {
+            this.firstPageLabel = translated;
+        });
+        this.translate.get('PAGINATOR.last_page').subscribe((translated: string) => {
+            this.lastPageLabel = translated;
+        });
+        this.translate.get('PAGINATOR.previous_page').subscribe((translated: string) => {
+            this.previousPageLabel = translated;
+        });
+        this.changes.next();
     }
 
     override getRangeLabel = (page: number, pageSize: number, length: number) =>  {
@@ -96,7 +84,7 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
         const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
 
         const nbPage = Math.ceil(length / pageSize);
-        return ` ${startIndex + 1} - ${endIndex} ` + this.translate.instant('PAGINATOR.on') + ` ${length} ` + ' | ' +
+        return ` ${startIndex + 1} - ${endIndex} ` + ' | ' +
             this.translate.instant('PAGINATOR.page') + ` ${page + 1} / ${nbPage}`;
     };
 }

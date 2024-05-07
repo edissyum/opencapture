@@ -306,7 +306,7 @@ class FindCustom:
                         data = self.check_format(data, regex_settings)
                         if data:
                             if regex_settings['format'] == 'amount':
-                                data = re.sub(r",", '.', data)
+                                data = data.replace(',', '.')
 
                             if 'remove_spaces' in regex_settings and regex_settings['remove_spaces']:
                                 data = re.sub(r"\s*", '', data)
@@ -326,5 +326,6 @@ class FindCustom:
             cpt += 1
 
         if regex_settings['format'] == 'iban' and not second:
-            regex_settings['content'] = re.sub(r'^.*\[0-9\]', '\d', regex_settings['content'])
+            # Try to find the IBAN by removing the country code (use schwifty to validate and find it automatically)
+            regex_settings['content'] = re.sub(r'^.*\[0-9]', '[0-9]', regex_settings['content'])
             return self.run(second=True, regex_settings=regex_settings)

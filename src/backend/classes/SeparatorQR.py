@@ -239,10 +239,8 @@ class SeparatorQR:
 
         for index in self.barcodes:
             page = {}
-            if self.splitter_method == 'qr_code_OC' and index['type'] == 'QRCODE':
-                page['service'] = index['text']
-                page['index_sep'] = index['attrib']['num']
-            elif self.splitter_method == 'c128_OC' and index['type'] == 'CODE128':
+            if ((self.splitter_method == 'qr_code_OC' and index['type'] == 'QRCODE') or
+                    (self.splitter_method == 'c128_OC' and index['type'] == 'CODE128')):
                 page['service'] = index['text']
                 page['index_sep'] = index['attrib']['num']
             else:

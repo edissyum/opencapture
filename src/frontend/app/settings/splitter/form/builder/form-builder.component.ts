@@ -512,14 +512,12 @@ export class SplitterFormBuilderComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-        } else {
-            if (!label && outputs.length === 0) {
-                this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
-            } else if (!label) {
-                this.notify.error(this.translate.instant('FORMS.label_mandatory'));
-            } else if (outputs.length === 0) {
-                this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
-            }
+        } else if (!label && outputs.length === 0) {
+            this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
+        } else if (!label) {
+            this.notify.error(this.translate.instant('FORMS.label_mandatory'));
+        } else if (outputs.length === 0) {
+            this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
         }
     }
 

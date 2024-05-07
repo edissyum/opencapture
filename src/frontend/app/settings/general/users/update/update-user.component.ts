@@ -217,12 +217,8 @@ export class UpdateUserComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/roles/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
-                    if (element.editable) {
+                    if (element.editable || this.userService.getUser().privileges === '*') {
                         this.roles.push(element);
-                    } else {
-                        if ((this.userService.getUser().privileges === '*')) {
-                            this.roles.push(element);
-                        }
                     }
                 });
             }),

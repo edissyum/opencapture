@@ -51,7 +51,7 @@
                                     </span>
                                 </mat-card-title>
                                 <mat-card-subtitle class="subtitles mt-2 mb-2">
-                                    <div cdkDropList (cdkDropListDropped)="drop_card($event)"
+                                    <div cdkDropList (cdkDropListDropped)="drop($event)"
                                          [cdkDropListData]="this.currentForm.settings.display['subtitles']">
                                         <div cdkDrag class="cursor-move mt-1 flex align-center items-center"
                                              *ngFor="let subtitle of this.currentForm.settings.display['subtitles']; let cpt = index">

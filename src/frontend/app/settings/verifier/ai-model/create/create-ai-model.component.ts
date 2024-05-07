@@ -211,10 +211,8 @@ export class CreateVerifierAiModelComponent implements OnInit {
                 this.notify.success(this.translate.instant('ARTIFICIAL-INTELLIGENCE.created'));
                 this.router.navigate(['/settings/verifier/ai']).then();
             }
-        } else {
-            if (this.totalChecked < 2) {
-                this.notify.error(this.translate.instant('ARTIFICIAL-INTELLIGENCE.not_enough_checked'));
-            }
+        } else if (this.totalChecked < 2) {
+            this.notify.error(this.translate.instant('ARTIFICIAL-INTELLIGENCE.not_enough_checked'));
         }
     }
 

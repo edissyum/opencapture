@@ -12,9 +12,8 @@
             </div>
             <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="flex">
-                <input type="file" class="hidden" accept=".csv, .ods, .xlsx" (change)="importSuppliers($event)" #suppliersUpload>
                 <button [class.hidden]="!this.privilegesService.hasPrivilege('import_suppliers')"
-                        [matTooltip]="'ACCOUNTS.import_suppliers' | translate" (click)="suppliersUpload.click()"
+                        [matTooltip]="'ACCOUNTS.import_suppliers' | translate" (click)="importSuppliers($event);"
                         [disabled]="this.loading" class="ml-4">
                     <i class="fa-solid fa-file-import text-2xl ml-2"></i>
                 </button>

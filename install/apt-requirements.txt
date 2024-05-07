@@ -21,4 +21,5 @@ libleptonica-dev
 tesseract-ocr-fra
 tesseract-ocr-eng
 python3-pyinotify
+autopostgresqlbackup
 libapache2-mod-wsgi-py3

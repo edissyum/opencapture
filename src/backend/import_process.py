@@ -20,19 +20,19 @@ from .functions import get_custom_array
 
 custom_array = get_custom_array()
 
-if 'FindDate' or 'process' not in custom_array['find_date']['path']:
+if 'FindDate' not in custom_array or 'process' not in custom_array['find_date']['path']:
     from src.backend.process.find_date import FindDate
 elif 'process' in custom_array['FindDate']['path']:
     find_date = getattr(__import__(custom_array['find_date']['path'] + '.' + custom_array['find_date']['module'],
                                    fromlist=[custom_array['find_date']['module']]), custom_array['find_date']['module'])
 
-if 'FindName' or 'process' not in custom_array['find_name']['path']:
+if 'FindName' not in custom_array or 'process' not in custom_array['find_name']['path']:
     from src.backend.process.find_name import FindName
 elif 'process' in custom_array['FindName']['path']:
     find_name = getattr(__import__(custom_array['find_name']['path'] + '.' + custom_array['find_name']['module'],
                                    fromlist=[custom_array['find_name']['module']]), custom_array['find_name']['module'])
 
-if 'find_due_date' or 'process' not in custom_array['find_due_date']['path']:
+if 'find_due_date' not in custom_array or 'process' not in custom_array['find_due_date']['path']:
     from src.backend.process.find_due_date import FindDueDate
 elif 'process' in custom_array['find_due_date']['path']:
     find_due_date = getattr(__import__(custom_array['find_due_date']['path'] + '.' +
@@ -40,14 +40,14 @@ elif 'process' in custom_array['find_due_date']['path']:
                                        fromlist=[custom_array['find_due_date']['module']]),
                             custom_array['find_due_date']['module'])
 
-if 'find_footer' or 'process' not in custom_array['find_footer']['path']:
+if 'find_footer' not in custom_array or 'process' not in custom_array['find_footer']['path']:
     from src.backend.process.find_footer import FindFooter
 elif 'process' in custom_array['find_footer']['path']:
     find_footer = getattr(__import__(custom_array['find_footer']['path'] + '.' + custom_array['find_footer']['module'],
                                      fromlist=[custom_array['find_footer']['module']]),
                           custom_array['find_footer']['module'])
 
-if 'find_supplier' or 'process' not in custom_array['find_supplier']['path']:
+if 'find_supplier' not in custom_array or 'process' not in custom_array['find_supplier']['path']:
     from src.backend.process.find_supplier import FindSupplier
 elif 'process' in custom_array['find_supplier']['path']:
     find_supplier = getattr(__import__(custom_array['find_supplier']['path'] + '.' +
@@ -55,14 +55,14 @@ elif 'process' in custom_array['find_supplier']['path']:
                                        fromlist=[custom_array['find_supplier']['module']]),
                             custom_array['FindSupplier']['module'])
 
-if 'find_custom' or 'process' not in custom_array['find_custom']['path']:
+if 'find_custom' not in custom_array or 'process' not in custom_array['find_custom']['path']:
     from src.backend.process.find_custom import FindCustom
 elif 'process' in custom_array['FindCustom']['path']:
     find_custom = getattr(__import__(custom_array['find_custom']['path'] + '.' + custom_array['find_custom']['module'],
                                      fromlist=[custom_array['find_custom']['module']]),
                           custom_array['find_custom']['module'])
 
-if 'find_invoice_number' or 'process' not in custom_array['find_invoice_number']['path']:
+if 'find_invoice_number' not in custom_array or 'process' not in custom_array['find_invoice_number']['path']:
     from src.backend.process.find_invoice_number import FindInvoiceNumber
 elif 'process' in custom_array['FindInvoiceNumber']['path']:
     find_invoice_number = getattr(__import__(custom_array['find_invoice_number']['path'] + '.' +
@@ -70,7 +70,7 @@ elif 'process' in custom_array['FindInvoiceNumber']['path']:
                                              fromlist=[custom_array['find_invoice_number']['module']]),
                                   custom_array['find_invoice_number']['module'])
 
-if 'find_quotation_number' or 'process' not in custom_array['find_quotation_number']['path']:
+if 'find_quotation_number' not in custom_array or 'process' not in custom_array['find_quotation_number']['path']:
     from src.backend.process.find_quotation_number import FindQuotationNumber
 elif 'process' in custom_array['FindQuotationNumber']['path']:
     find_quotation_number = getattr(__import__(custom_array['find_quotation_number']['path'] + '.' +
@@ -78,7 +78,7 @@ elif 'process' in custom_array['FindQuotationNumber']['path']:
                                                fromlist=[custom_array['find_quotation_number']['module']]),
                                     custom_array['find_quotation_number']['module'])
 
-if 'find_delivery_number' or 'process' not in custom_array['find_delivery_number']['path']:
+if 'find_delivery_number' not in custom_array or 'process' not in custom_array['find_delivery_number']['path']:
     from src.backend.process.find_delivery_number import FindDeliveryNumber
 elif 'process' in custom_array['FindDeliveryNumber']['path']:
     find_delivery_number = getattr(__import__(custom_array['find_delivery_number']['path'] + '.' +
@@ -86,7 +86,7 @@ elif 'process' in custom_array['FindDeliveryNumber']['path']:
                                               fromlist=[custom_array['find_delivery_number']['module']]),
                                    custom_array['find_delivery_number']['module'])
 
-if 'find_footer_raw' or 'process' not in custom_array['find_footer_raw']['path']:
+if 'find_footer_raw' not in custom_array or 'process' not in custom_array['find_footer_raw']['path']:
     from src.backend.process.find_footer_raw import FindFooterRaw
 elif 'process' in custom_array['find_footer_raw']['path']:
     find_footer_raw = getattr(__import__(custom_array['find_footer_raw']['path'] + '.' +
