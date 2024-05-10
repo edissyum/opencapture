@@ -63,19 +63,19 @@
                                 <h3 class="text-gray-900">{{ 'CONFIGURATIONS.top_login_text' | translate }}</h3>
                                 <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
                                 <editor [formControl]="loginTopMessage"
+                                        licenseKey="gpl"
                                         [init]="{
-                                        resize: false,
-                                        menubar: false,
-                                        branding: false,
-                                        promotion: false,
-                                        language: 'fr_FR',
-                                        license_key: 'gpl',
-                                        base_url: './tinymce',
-                                        language_url: './assets/i18n/tinymce/langs/fr_FR.js',
-                                        toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
-                                        plugins: 'lists link image table code wordcount',
-                                        color_map: this.colorsMap
-                                    }">
+                                            resize: false,
+                                            menubar: false,
+                                            branding: false,
+                                            promotion: false,
+                                            language: 'fr_FR',
+                                            base_url: './tinymce',
+                                            language_url: './assets/i18n/tinymce/langs/fr_FR.js',
+                                            toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
+                                            plugins: 'lists link image table code wordcount',
+                                            color_map: this.colorsMap
+                                        }">
                                 </editor>
                                 <div class="flex justify-center m-6"
                                      [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('update_login_top_message')">
@@ -91,19 +91,19 @@
                                 <h3 class="text-gray-900">{{ 'CONFIGURATIONS.bottom_login_text' | translate }}</h3>
                                 <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
                                 <editor [formControl]="loginBottomMessage"
+                                        licenseKey="gpl"
                                         [init]="{
-                                        resize: false,
-                                        menubar: false,
-                                        branding: false,
-                                        promotion: false,
-                                        language: 'fr_FR',
-                                        license_key: 'gpl',
-                                        base_url: './tinymce',
-                                        language_url: './assets/i18n/tinymce/langs/fr_FR.js',
-                                        toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
-                                        plugins: 'lists link image table code wordcount',
-                                        color_map: this.colorsMap
-                                    }">
+                                            resize: false,
+                                            menubar: false,
+                                            branding: false,
+                                            promotion: false,
+                                            language: 'fr_FR',
+                                            base_url: './tinymce',
+                                            language_url: './assets/i18n/tinymce/langs/fr_FR.js',
+                                            toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
+                                            plugins: 'lists link image table code wordcount',
+                                            color_map: this.colorsMap
+                                        }">
                                 </editor>
                                 <div class="flex justify-center m-6"
                                      [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('update_login_bottom_message')">
