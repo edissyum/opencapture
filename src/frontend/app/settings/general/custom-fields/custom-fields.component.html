@@ -70,24 +70,27 @@
                             </div>
                         </div>
                         <div class="flex justify-center flex-col" *ngIf="displayChoicesList()">
-                            <span class="text-center mb-2">{{ 'CUSTOM-FIELDS.select_options' | translate }}</span>
+                            <span class="text-center mb-2 text-xl">
+                                {{ 'CUSTOM-FIELDS.select_options' | translate }}
+                            </span>
+                            <mat-checkbox class="cursor-pointer text-center" [formControl]="this.conditionalControl" *ngIf="displayConditional()">
+                                <span>{{ 'CUSTOM-FIELDS.conditional_field' | translate }}</span>
+                            </mat-checkbox>
                             <div class="flex justify-center">
-                                <div cdkDropList class="select-options-list w-10/12"
-                                     (cdkDropListDropped)="dropSelectOption($event)">
-                                    <div *ngIf="selectOptions.length === 0" class="my-14 text-center text-gray-400">{{ 'CUSTOM-FIELDS.no_option_added' | translate }}</div>
+                                <div cdkDropList class="select-options-list w-10/12" (cdkDropListDropped)="dropSelectOption($event)">
+                                    <div *ngIf="selectOptions.length === 0" class="my-14 text-center text-gray-400">
+                                        {{ 'CUSTOM-FIELDS.no_option_added' | translate }}
+                                    </div>
                                     <div class="drop-box-option p-4" *ngFor="let option of selectOptions; let optionIndex = index;" cdkDrag>
-                                        <mat-checkbox class="cursor-pointer -ml-4 -top-2.5" [formControl]="option['conditionalControl']"
-                                                      [matTooltip]="'CUSTOM-FIELDS.conditional_field' | translate" *ngIf="displayConditional()">
-                                        </mat-checkbox>
-                                        <mat-form-field class="mr-2" [ngClass]="{'w-1/2': !option['conditionalControl'].value, 'w-1/4': option['conditionalControl'].value}">
+                                        <mat-form-field class="mr-2" [ngClass]="{'w-1/2': !conditionalControl.value, 'w-1/4': conditionalControl.value}">
                                             <mat-label>{{ 'HEADER.id' | translate }}</mat-label>
                                             <input matInput [formControl]="option['idControl']" type="text">
                                         </mat-form-field>
-                                        <mat-form-field class="mr-2" [ngClass]="{'w-1/2': !option['conditionalControl'].value, 'w-1/4': option['conditionalControl'].value}">
+                                        <mat-form-field class="mr-2" [ngClass]="{'w-1/2': !conditionalControl.value, 'w-1/4': conditionalControl.value}">
                                             <mat-label>{{ 'HEADER.label' | translate }}</mat-label>
                                             <input matInput [formControl]="option['labelControl']" type="text">
                                         </mat-form-field>
-                                        <mat-form-field class="w-1/4 mr-2" *ngIf="option['conditionalControl'].value">
+                                        <mat-form-field class="w-1/4 mr-2" *ngIf="conditionalControl.value">
                                             <mat-label>{{ 'CUSTOM-FIELDS.custom_field_name' | translate }}</mat-label>
                                             <mat-select [formControl]="option['customFieldControl']" [(value)]="option['customFieldControl'].value">
                                                 <mat-option *ngFor="let opt of option['customFieldControl'].values" [value]="opt['id']">
@@ -95,7 +98,7 @@
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                        <mat-form-field class="w-1/4" *ngIf="option['conditionalControl'].value">
+                                        <mat-form-field class="w-1/4" *ngIf="conditionalControl.value">
                                             <mat-label>{{ 'CUSTOM-FIELDS.conditional_value' | translate }}</mat-label>
                                             <input matInput [formControl]="option['customValueControl']" type="text">
                                         </mat-form-field>

@@ -55,6 +55,7 @@ export class CustomFieldsComponent implements OnInit {
     regexRemoveKeyWord        : FormControl   = new FormControl();
     regexRemoveKeyWordControl : FormControl   = new FormControl();
     regexFormat               : FormControl   = new FormControl();
+    conditionalControl        : FormControl   = new FormControl();
     formats                   : any[]         = [
         {
             'id': 'text',
@@ -262,7 +263,6 @@ export class CustomFieldsComponent implements OnInit {
         return _return;
     }
 
-
     retrieveCustomFields() {
         this.loading        = true;
         this.activeFields   = [];
@@ -309,7 +309,6 @@ export class CustomFieldsComponent implements OnInit {
         this.selectOptions.push({
             idControl           : new FormControl(),
             labelControl        : new FormControl(),
-            conditionalControl  : new FormControl(),
             customFieldControl  : new FormControl(),
             customValueControl  : new FormControl(),
         });
@@ -369,7 +368,6 @@ export class CustomFieldsComponent implements OnInit {
             args.options.push({
                 id                      : option.idControl.value,
                 label                   : option.labelControl.value,
-                conditional             : option.conditionalControl.value,
                 conditional_custom_field: option.customFieldControl.value,
                 conditional_custom_value: option.customValueControl.value
             });
@@ -406,6 +404,10 @@ export class CustomFieldsComponent implements OnInit {
                 'remove_special_char': this.regexRemoveSpecialChar.value,
                 'remove_keyword_value': this.regexRemoveKeyWordControl.value
             };
+        }
+
+        if (this.conditionalControl.value) {
+            newField.conditional = this.conditionalControl.value;
         }
 
         this.http.post(environment['url'] + '/ws/customFields/add', newField, {headers: this.authService.headers}).pipe(
@@ -567,6 +569,10 @@ export class CustomFieldsComponent implements OnInit {
             };
         }
 
+        if (this.conditionalControl.value) {
+            updatedField.conditional = this.conditionalControl.value;
+        }
+
         this.http.put(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_updated'));
@@ -596,7 +602,6 @@ export class CustomFieldsComponent implements OnInit {
                     this.selectOptions.push({
                         'idControl'          : new FormControl(option.id),
                         'labelControl'       : new FormControl(option.label),
-                        'conditionalControl' : new FormControl(option.conditional),
                         'customFieldControl' : new FormControl(option.conditional_custom_field),
                         'customValueControl' : new FormControl(option.conditional_custom_value)
                     });
@@ -612,6 +617,9 @@ export class CustomFieldsComponent implements OnInit {
                 this.regexRemoveKeyWord.setValue(customField.settings.regex.remove_keyword);
                 this.regexRemoveSpecialChar.setValue(customField.settings.regex.remove_special_char);
                 this.regexRemoveKeyWordControl.setValue(customField.settings.regex.remove_keyword_value);
+            }
+            if (customField.settings.conditional) {
+                this.conditionalControl.setValue(customField.settings.conditional);
             }
         }
     }

@@ -256,12 +256,12 @@
                                             </mat-label>
                                             <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
                                                   class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
-                                            <i class="fa-solid fa-circle-plus"></i>
-                                        </span>
+                                                <i class="fa-solid fa-circle-plus"></i>
+                                            </span>
                                             <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
                                                   class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </span>
+                                                <i class="fa-solid fa-trash"></i>
+                                            </span>
                                             <input matInput [id]="field.id" type="text" [required]="field['required']"
                                                    [formControl]="field['control']" [matAutocomplete]="accounting" [readonly]="this.document.status === 'END'">
                                             <span *ngIf="accountingPlanEmpty" class="absolute text-gray-600 top-0.5 -right-2.5 cursor-help"
@@ -278,10 +278,13 @@
                                             <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                                 {{ field.label | translate }}
                                             </mat-label>
-                                            <mat-select [id]="field.id" [disabled]="this.document.status === 'END'">
-                                                <mat-option *ngFor="let option of field.values" [value]="option['compte_num']">
-                                                    {{ option['compte_num'] }} - {{ option['compte_lib'] }}
-                                                </mat-option>
+                                            <mat-select [id]="field.id" [disabled]="this.document.status === 'END'" (selectionChange)="saveData($event.value, field['id']);"
+                                                        [(value)]="field.control.value">
+                                                <span *ngFor="let option of field.values">
+                                                    <mat-option *ngIf="checkConditional(field.id, option)" [value]="option['id']">
+                                                        {{ option['label'] }}
+                                                    </mat-option>
+                                                </span>
                                             </mat-select>
                                         </mat-form-field>
                                     </ng-container>

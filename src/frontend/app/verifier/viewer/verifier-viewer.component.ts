@@ -86,6 +86,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     imgSrc                  : any         = '';
     ratio                   : number      = 0;
     currentPage             : number      = 1;
+    customFields            : any         = {};
     accountingPlan          : any         = {};
     formSettings            : any         = {};
     workflowSettings        : any         = {};
@@ -226,7 +227,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             'locked': true,
             'locked_by': this.userService.user.username
         });
+        const customFields = await this.getCustomFields();
+        this.customFields = customFields.customFields;
+
         this.document = await this.getDocument();
+
         if (this.document.workflow_id) {
             this.getWorkflow();
         }
@@ -435,6 +440,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     async generateOutputs(formId: any) {
         this.currentFormFields = await this.getFormFieldsById(formId);
         this.formSettings = await this.getFormById(formId);
+
         if (this.formSettings && this.formSettings.outputs.length !== 0) {
             for (const outputId in this.formSettings.outputs) {
                 const output = await this.getOutputs(this.formSettings.outputs[outputId]);
@@ -596,6 +602,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         return await this.http.get(environment['url'] + '/ws/verifier/documents/' + this.documentId, {headers: this.authService.headers}).toPromise();
     }
 
+    async getCustomFields(): Promise<any> {
+        return await this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).toPromise();
+    }
+
     async getDocumentById(id: any): Promise<any> {
         return await this.http.get(environment['url'] + '/ws/verifier/documents/' + id, {headers: this.authService.headers}).toPromise();
     }
@@ -711,6 +721,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     this.supplierNamecontrol = this.form[category][cpt].control;
                 }
 
+                if (field.id.includes('custom_') && field.type === 'select') {
+                    const custom_id = parseInt(field.id.replace('custom_', ''));
+                    const customField = this.customFields.filter((field: any) => field.id === custom_id);
+                    if (customField) {
+                        _field.values = customField[0].settings.options;
+                    }
+                }
+
                 if (!field.lineSelected && !field.fullSizeSelected) {
                     this.findChildren(field.id, _field, category);
                 } else if (field.fullSizeSelected) {
@@ -735,6 +753,29 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.toHighlightAccounting = value;
         const filterValue = value.toLowerCase();
         return array.filter((option: any) => option.compte_lib.toLowerCase().indexOf(filterValue) !== -1 || option.compte_num.toLowerCase().indexOf(filterValue) !== -1);
+    }
+
+    checkConditional(field_id: any, option: any) {
+        let _return = true;
+        if (field_id.includes('custom_')) {
+            this.customFields.forEach((customField: any) => {
+                if ('conditional' in customField.settings && customField.settings.conditional) {
+                    if (customField.id === parseInt(field_id.replace('custom_', ''))) {
+                        customField.settings.options.forEach((customFieldOption: any) => {
+                            if (customFieldOption.id === option.id) {
+                                const conditionalCustomId = customFieldOption.conditional_custom_field;
+                                const conditionalCustomfield = this.getFieldInfo('custom_' + conditionalCustomId);
+                                if (conditionalCustomfield && conditionalCustomfield.control) {
+                                    const conditionalCustomValue = conditionalCustomfield.control.value;
+                                    _return = conditionalCustomValue === customFieldOption.conditional_custom_value;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        return _return;
     }
 
     sortArray(array: any) {
