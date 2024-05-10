@@ -381,7 +381,6 @@ export class CustomFieldsComponent implements OnInit {
         this.loading = true;
         let newField: any = {};
         newField = this.addSelectOptionsToArgs(newField);
-        console.log(newField)
         for (const field of this.addFieldInputs) {
             if (field.required && !field.control.value) {
                 field.control.setErrors({'incorrect': true});
