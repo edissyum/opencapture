@@ -293,11 +293,27 @@ export class CustomFieldsComponent implements OnInit {
         ).subscribe();
     }
 
-    addSelectOption() {
-        this.selectOptions.push({
-            idControl      : new FormControl(),
-            labelControl   : new FormControl()
+    moduleSelected() {
+        let moduleSelected = false;
+        this.addFieldInputs.forEach((element: any) => {
+            if (element.field_id === 'module') {
+                moduleSelected = element.control.value !== '';
+            }
         });
+        return moduleSelected;
+    }
+
+    addSelectOption() {
+        const module = this.addFieldInputs.filter((field: any) => field.field_id === 'module')[0].control.value;
+
+        this.selectOptions.push({
+            idControl           : new FormControl(),
+            labelControl        : new FormControl(),
+            conditionalControl  : new FormControl(),
+            customFieldControl  : new FormControl(),
+            customValueControl  : new FormControl(),
+        });
+        this.selectOptions[this.selectOptions.length - 1].customFieldControl.values = this.activeFields.filter((field: any) => field.module === module);
     }
 
     displayChoicesList() {
@@ -307,6 +323,21 @@ export class CustomFieldsComponent implements OnInit {
                 if (element.control.value && (element.control.value === 'checkbox' || element.control.value === 'select')) {
                     _return = true;
                 }
+            }
+        });
+        return _return;
+    }
+
+    displayConditional() {
+        let _return = false;
+        this.addFieldInputs.forEach((element: any) => {
+            if (element.field_id === 'module') {
+                if (element.control.value && element.control.value === 'verifier') {
+                    _return = true;
+                }
+            }
+            if (_return && element.field_id === 'type') {
+                _return = element.control.value && element.control.value === 'select';
             }
         });
         return _return;
@@ -336,8 +367,11 @@ export class CustomFieldsComponent implements OnInit {
         args.options  = [];
         for (const option of this.selectOptions) {
             args.options.push({
-                id      : option.idControl.value,
-                label   : option.labelControl.value
+                id                      : option.idControl.value,
+                label                   : option.labelControl.value,
+                conditional             : option.conditionalControl.value,
+                conditional_custom_field: option.customFieldControl.value,
+                conditional_custom_value: option.customValueControl.value
             });
         }
         return args;
@@ -347,7 +381,7 @@ export class CustomFieldsComponent implements OnInit {
         this.loading = true;
         let newField: any = {};
         newField = this.addSelectOptionsToArgs(newField);
-
+        console.log(newField)
         for (const field of this.addFieldInputs) {
             if (field.required && !field.control.value) {
                 field.control.setErrors({'incorrect': true});
@@ -561,9 +595,13 @@ export class CustomFieldsComponent implements OnInit {
             if (customField.settings.options) {
                 for (const option of customField.settings.options) {
                     this.selectOptions.push({
-                        'idControl'     : new FormControl(option.id),
-                        'labelControl'  : new FormControl(option.label)
+                        'idControl'          : new FormControl(option.id),
+                        'labelControl'       : new FormControl(option.label),
+                        'conditionalControl' : new FormControl(option.conditional),
+                        'customFieldControl' : new FormControl(option.conditional_custom_field),
+                        'customValueControl' : new FormControl(option.conditional_custom_value)
                     });
+                    this.selectOptions[this.selectOptions.length - 1].customFieldControl.values = this.activeFields.filter((field: any) => field.module === customField.module);
                 }
             }
 

@@ -23,8 +23,7 @@
 
 .select-options-list {
     border: solid 1px #ccc;
-    height: 150px;
-    width: 300px;
+    max-height: 500px;
     background: white;
     border-radius: 4px;
     overflow:auto;
