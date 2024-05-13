@@ -696,7 +696,7 @@ INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "proce
 }');
 INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "output") VALUES (2, 'ocr_only', 'OCRisation simple par défaut', 'verifier', '{"ai_model_id": null, "customer_id": null, "facturx_only": false, "input_folder": "/var/share/entrant/verifier/ocr_only/", "apply_process": false, "rotation": "no_rotation", "remove_blank_pages": true, "splitter_method_id": "no_sep", "separate_by_document_number_value": 2}', '{"form_id": null, "system_fields": [], "custom_fields": [], "use_interface": false, "delete_documents": false, "override_supplier_form": false, "allow_automatic_validation": false}', '{"outputs_id": [3]}');
 INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "output") VALUES (3, 'default_workflow', 'Workflow par défaut', 'splitter', '{"ai_model_id": 0, "customer_id": 1, "input_folder": "/var/share/entrant/splitter/", "apply_process": true, "remove_blank_pages": false, "splitter_method_id": "qr_code_OC", "script": ""}', '{"form_id": 3, "rotation": "no_rotation", "use_interface": true, "delete_documents": false, "allow_automatic_validation": false, "script": ""}', '{"outputs_id": [], "script": ""}');
-ALTER SEQUENCE "workflows_id_seq" RESTART WITH 4;z
+ALTER SEQUENCE "workflows_id_seq" RESTART WITH 4;
 
 -- CRÉATION DES CHAMPS CUSTOMS POUR LE SPLITTER
 INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (1, 'nom_usage', 'Nom d''usage', 'text', 'splitter');
