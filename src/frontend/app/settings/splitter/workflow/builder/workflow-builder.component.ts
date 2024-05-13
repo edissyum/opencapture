@@ -16,18 +16,22 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr>
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import { Component, OnInit } from '@angular/core';
-import { STEPPER_GLOBAL_OPTIONS } from "@angular/cdk/stepper";
-import { SettingsService } from "../../../../../services/settings.service";
-import { FormControl, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
-import { environment } from "../../../../env";
-import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { HttpClient } from "@angular/common/http";
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormControl, Validators } from "@angular/forms";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { STEPPER_GLOBAL_OPTIONS } from "@angular/cdk/stepper";
+
+import { environment } from "../../../../env";
 import { AuthService } from "../../../../../services/auth.service";
+import { ConfigService } from "../../../../../services/config.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { CodeEditorComponent } from "../../../../../services/code-editor/code-editor.component";
 
 @Component({
     selector: 'app-workflow-builder-splitter',
@@ -41,12 +45,13 @@ import { AuthService } from "../../../../../services/auth.service";
     ]
 })
 export class WorkflowBuilderSplitterComponent implements OnInit {
-    loading         : boolean       = true;
-    creationMode    : boolean       = true;
-    useInterface    : boolean       = false;
-    separationMode  : string        = 'no_sep';
-    workflowId      : any;
-    stepValid       : any           = {
+    loading          : boolean       = true;
+    creationMode     : boolean       = true;
+    useInterface     : boolean       = false;
+    allowWFScripting : boolean       = false;
+    separationMode   : string        = 'no_sep';
+    workflowId       : any;
+    stepValid        : any           = {
         input: false,
         process: false,
         separation: false,
@@ -117,6 +122,12 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 label: this.translate.instant('WORKFLOW.remove_blank_pages'),
                 type: 'boolean',
                 control: new FormControl()
+            },
+            {
+                'id': 'script',
+                'required': false,
+                'control': new FormControl(),
+                'show': false
             }
         ],
         process: [
@@ -179,6 +190,12 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                         'label': this.translate.instant('WORKFLOW.rotate_270')
                     }
                 ]
+            },
+            {
+                'id': 'script',
+                'required': false,
+                'control': new FormControl(),
+                'show': false
             }
         ],
         output: [
@@ -189,6 +206,12 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 multiple: true,
                 control: new FormControl(['']),
                 required: true
+            },
+            {
+                'id': 'script',
+                'required': false,
+                'control': new FormControl(),
+                'show': false
             }
         ]
     };
@@ -196,10 +219,12 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
     constructor(
         private router: Router,
         private http: HttpClient,
+        private dialog: MatDialog,
         private route: ActivatedRoute,
         private authService: AuthService,
         private notify: NotificationService,
         private translate: TranslateService,
+        private configService: ConfigService,
         public serviceSettings: SettingsService
     ) {}
 
@@ -208,6 +233,10 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+
+        const config = this.configService.getConfig()[0];
+        this.allowWFScripting = config['GLOBAL']['allowwfscripting'];
+        this.allowWFScripting = this.allowWFScripting.toString().toLowerCase() === 'true';
 
         this.workflowId = this.route.snapshot.params['id'];
         if (this.workflowId) {
@@ -541,5 +570,42 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 }
             });
         }
+    }
+
+    openCodeEditor(step: string) {
+        let codeContent = '';
+        this.fields[step].forEach((element: any) => {
+            if (element.id === 'script' && element.control.value) {
+                codeContent = element.control.value;
+            }
+        });
+        const dialogRef = this.dialog.open(CodeEditorComponent, {
+            data: {
+                testScriptButton    : this.translate.instant('WORKFLOW.test_script'),
+                confirmButton       : this.translate.instant('WORKFLOW.save_script'),
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                step                : step,
+                input_folder        : this.fields['input'].find((element: any) => element.id === 'input_folder').control.value,
+                codeContent         : codeContent
+            },
+            width: "80vw",
+            height: "calc(100vh - 5rem)",
+            disableClose: true
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result !== false) {
+                this.fields[step].push({
+                    'show': false,
+                    'id': 'script',
+                    'required': false,
+                    'control': new FormControl(result, Validators.required)
+                });
+
+                if (!this.creationMode) {
+                    this.updateWorkflow(step);
+                }
+            }
+        });
     }
 }
