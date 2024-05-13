@@ -77,13 +77,8 @@
 }
 /* End drag and drop list */
 
-::ng-deep .border-matform {
-    .mdc-notched-outline {
-        @apply pl-2;
-        @apply border-l-2;
-        @apply border-green-400;
-    }
-    .mat-mdc-form-field-infix {
-        @apply pl-2;
+::ng-deep .drop-box-option {
+    .mat-mdc-form-field-subscript-wrapper {
+        display: none;
     }
 }
