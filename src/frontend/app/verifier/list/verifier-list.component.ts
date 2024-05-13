@@ -68,18 +68,24 @@ interface FlatNode {
     ]
 })
 export class VerifierListComponent implements OnInit {
+    config                   : any;
+    currentForm              : any               = '';
+    search                   : string            = '';
+    status                   : any[]             = [];
+    filteredForms            : any[]             = [];
+    documents                : any []            = [];
+    allowedCustomers         : any []            = [];
+    allowedSuppliers         : any []            = [];
+    TREE_DATA                : AccountsNode[]    = [];
     loading                  : boolean           = true;
     loadingCustomers         : boolean           = true;
-    status                   : any[]             = [];
+    currentStatus            : string            = 'NEW';
+    displayMode              : string            = 'list';
+    currentTime              : string            = 'today';
     forms                    : any[]             = [
         {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
         {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
     ];
-    filteredForms            : any[]             = [];
-    config                   : any;
-    currentForm              : any               = '';
-    currentStatus            : string            = 'NEW';
-    currentTime              : string            = 'today';
     batchList                : any[]             = [
         {
             'id': 'today',
@@ -98,16 +104,11 @@ export class VerifierListComponent implements OnInit {
     pageIndex                : number            = 0;
     pageSizeOptions          : any []            = [4, 8, 12, 16, 24, 48];
     total                    : number            = 0;
-    totals                   : any               = {};
-    customersList            : any               = {};
     offset                   : number            = 0;
     selectedTab              : number            = 0;
-    documents                : any []            = [];
-    allowedCustomers         : any []            = [];
-    allowedSuppliers         : any []            = [];
-    search                   : string            = '';
-    TREE_DATA                : AccountsNode[]    = [];
     totalChecked             : number            = 0;
+    totals                   : any               = {};
+    customersList            : any               = {};
     searchLoading            : boolean           = false;
     expanded                 : boolean           = false;
     documentToDeleteSelected : boolean           = false;
@@ -164,8 +165,8 @@ export class VerifierListComponent implements OnInit {
 
         marker('VERIFIER.nb_pages'); // Needed to get the translation in the JSON file
         marker('VERIFIER.expand_all'); // Needed to get the translation in the JSON file
-        marker('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.select_all'); // Needed to get the translation in the JSON file
+        marker('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.documents_settings'); // Needed to get the translation in the JSON file
         this.sessionStorageService.save('splitter_or_verifier', 'verifier');
@@ -673,5 +674,13 @@ export class VerifierListComponent implements OnInit {
             this.treeControl.collapseAll();
         }
         this.expanded = !this.expanded;
+    }
+
+    switchDisplayMode() {
+        if (this.displayMode === 'grid') {
+            this.displayMode = 'list';
+        } else {
+            this.displayMode = 'grid';
+        }
     }
 }
