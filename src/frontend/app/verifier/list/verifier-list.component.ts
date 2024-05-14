@@ -80,7 +80,7 @@ export class VerifierListComponent implements OnInit {
     loading                  : boolean           = true;
     loadingCustomers         : boolean           = true;
     currentStatus            : string            = 'NEW';
-    displayMode              : string            = 'list';
+    displayMode              : string            = 'grid';
     currentTime              : string            = 'today';
     forms                    : any[]             = [
         {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
@@ -161,6 +161,10 @@ export class VerifierListComponent implements OnInit {
 
         if (!this.userService.user.id) {
             this.userService.user = this.userService.getUserFromLocal();
+        }
+
+        if (localStorage.getItem('verifierListDisplayMode')) {
+            this.displayMode = localStorage.getItem('verifierListDisplayMode') as string;
         }
 
         marker('VERIFIER.nb_pages'); // Needed to get the translation in the JSON file
@@ -682,5 +686,6 @@ export class VerifierListComponent implements OnInit {
         } else {
             this.displayMode = 'grid';
         }
+        localStorage.setItem('verifierListDisplayMode', this.displayMode);
     }
 }

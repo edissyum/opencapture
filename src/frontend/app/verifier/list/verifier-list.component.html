@@ -237,7 +237,7 @@
                         </div>
                         <ng-template #listTemplate>
                             <mat-list>
-                                <div *ngFor="let document of this.documents;" class="border border-grey-900 w-full cursor-pointer p-0 mb-2 shadow-md h-28">
+                                <div *ngFor="let document of this.documents;" class="border border-grey-900 w-full p-0 mb-2 shadow-md h-28">
                                     <div *ngIf="document['facturx']" class="text-center text-gray-400 mt-2" [matTooltip]="'VERIFIER.facturx_level' | translate : {level : document['facturx_level']}">
                                         {{ "VERIFIER.facturx" | translate }}
                                     </div>
@@ -246,7 +246,7 @@
                                             <input id="{{ document['document_id'] }}_checkbox" (click)="checkCheckedDocuments()"
                                                    class="accent-green-400 checkBox_list cursor-pointer w-5 h-5" type="checkbox">
                                         </div>
-                                        <div class="col-span-3 relative top-2" [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                        <div class="col-span-3 relative mt-2" [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
                                              (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
                                             <div class="font-bold text-xl break-all truncate w-11/12">
                                                 <i [matTooltip]="'VERIFIER.document_locked' | translate"
@@ -258,20 +258,22 @@
                                                 <strong class="text-gray-900">{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
                                             </div>
                                         </div>
-                                        <div class="col-span-4 relative top-4">
-                                            <div class="text-green-400 text-base badge badge-secondary badge-pill absolute right-0"
-                                                 [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + document['nb_pages']">
-                                                {{ document['nb_pages'] }}<i class="far fa-file-alt ml-1"></i>
-                                            </div>
+                                        <div class="col-span-4 relative mt-4">
                                             <div *ngFor="let subtitles of document.display['subtitles'].slice(3, 7);" class="opacity-75 -mb-1 text-sm text-ellipsis overflow-hidden w-full inline-block">
                                                 <strong class="text-gray-900">{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
                                             </div>
                                         </div>
+                                        <div class="flex items-center cursor-pointer">
+                                            <div class="text-green-400 text-base badge badge-secondary badge-pill"
+                                                 [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + document['nb_pages']">
+                                                {{ document['nb_pages'] }}<i class="far fa-file-alt ml-1"></i>
+                                            </div>
+                                        </div>
                                         <div class="col-start-12 flex items-center justify-end">
-                                            <i class="fa-solid fa-eye text-xl float-right mr-4 text-gray-900"></i>
+                                            <i class="fa-solid fa-eye text-xl float-right mr-4 text-gray-900 cursor-pointer"></i>
                                             <div [matMenuTriggerFor]="menu" matTooltipPosition="above"
                                                  [matTooltip]="this.translate.instant('VERIFIER.documents_settings')">
-                                                <i class="fa-solid fa-ellipsis-vertical text-xl float-right mr-6 text-gray-900"></i>
+                                                <i class="fa-solid fa-ellipsis-vertical text-xl float-right mr-6 cursor-pointer text-gray-900"></i>
                                             </div>
                                             <mat-menu #menu="matMenu">
                                                 <button mat-menu-item [matMenuTriggerFor]="customers">
