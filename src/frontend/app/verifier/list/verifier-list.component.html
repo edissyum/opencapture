@@ -1,3 +1,6 @@
+<span class="absolute z-40 top-4 left-4 max-w-[30%] border border-gray-900" *ngIf="this.documentListThumb">
+    <img [src]="this.documentListThumb" alt="Open-Capture thumbnail">
+</span>
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
     <mat-sidenav #sidenav mode="side" [opened]="true" class="2xl:w-96 xl:w-72 sm:w-64 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem" [class.pointer-events-none]="this.loading">
@@ -85,8 +88,7 @@
             <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened"
                class="fa-solid fa-stream text-xl text-gray-900"></i>
         </button>
-        <mat-tab-group [selectedIndex]="this.selectedTab" (selectedTabChange)="onTabChange($event)"
-                       class="batches overflow-auto" animationDuration="0ms">
+        <mat-tab-group [selectedIndex]="this.selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
             <mat-tab *ngFor="let batch of batchList"  [id]="batch.id" [disabled]="this.loading">
                 <ng-template mat-tab-label>
                     <span>
@@ -269,11 +271,13 @@
                                                 {{ document['nb_pages'] }}<i class="far fa-file-alt ml-1"></i>
                                             </div>
                                         </div>
-                                        <div class="col-start-12 flex items-center justify-end">
-                                            <i class="fa-solid fa-eye text-xl float-right mr-4 text-gray-900 cursor-pointer"></i>
+                                        <div class="col-start-12 flex items-center justify-end" tabindex="-1">
+                                            <div tabindex="-1" (mouseenter)="showThumbnail(document['thumb'])" (mouseout)="resetThumbnail()">
+                                                <i class="fa-solid fa-eye text-xl float-right text-gray-900 cursor-pointer z-50"></i>
+                                            </div>
                                             <div [matMenuTriggerFor]="menu" matTooltipPosition="above"
                                                  [matTooltip]="this.translate.instant('VERIFIER.documents_settings')">
-                                                <i class="fa-solid fa-ellipsis-vertical text-xl float-right mr-6 cursor-pointer text-gray-900"></i>
+                                                <i class="fa-solid fa-ellipsis-vertical text-xl float-right ml-4 mr-6 cursor-pointer text-gray-900"></i>
                                             </div>
                                             <mat-menu #menu="matMenu">
                                                 <button mat-menu-item [matMenuTriggerFor]="customers">

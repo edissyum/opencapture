@@ -71,6 +71,7 @@ export class VerifierListComponent implements OnInit {
     config                   : any;
     currentForm              : any               = '';
     search                   : string            = '';
+    documentListThumb        : string            = '';
     status                   : any[]             = [];
     filteredForms            : any[]             = [];
     documents                : any []            = [];
@@ -687,5 +688,13 @@ export class VerifierListComponent implements OnInit {
             this.displayMode = 'grid';
         }
         localStorage.setItem('verifierListDisplayMode', this.displayMode);
+    }
+
+    showThumbnail(thumb_b64: any) {
+        this.documentListThumb = thumb_b64;
+    }
+
+    resetThumbnail() {
+        this.documentListThumb = '';
     }
 }
