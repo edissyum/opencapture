@@ -396,11 +396,14 @@ def update_document(document_id, data):
 
 def remove_lock_by_user_id(user_id):
     _, error = verifier.update_documents({
-        'set': {"locked": False},
+        'set': {
+            'locked': False,
+            'locked_by': None
+        },
         'where': ['locked_by = %s'],
         'data': [user_id]
     })
-
+    print(user_id)
     if error is None:
         return '', 200
     else:

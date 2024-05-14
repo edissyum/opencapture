@@ -139,8 +139,8 @@ class Database:
             data = []
             query_set = ''
             for column in args['set']:
-                if args['set'][column] is not None:
-                    if type(args['set'][column]) not in (bool, int) and 'jsonb_set' in args['set'][column]:
+                if args['set'][column] or args['set'][column] is None:
+                    if args['set'][column] is not None and (type(args['set'][column]) not in (bool, int) and 'jsonb_set' in args['set'][column]):
                         query_set += column + " = " + args['set'][column] + ", "
                     else:
                         query_set += column + " = %s, "
@@ -151,6 +151,7 @@ class Database:
             where = ' AND '.join(args['where'])
 
             query = "UPDATE " + args['table'][0] + " SET " + query_set + " WHERE " + where
+            print(query, args['data'])
             try:
                 with self.conn.cursor() as cursor:
                     cursor.execute(query, args['data'])

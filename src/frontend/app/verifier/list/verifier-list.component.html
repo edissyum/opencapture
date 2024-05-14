@@ -240,9 +240,6 @@
                         <ng-template #listTemplate>
                             <mat-list>
                                 <div *ngFor="let document of this.documents;" class="border border-grey-900 w-full p-0 mb-2 shadow-md h-28 cursor-pointer">
-                                    <div *ngIf="document['facturx']" class="text-center text-gray-400 mt-2" [matTooltip]="'VERIFIER.facturx_level' | translate : {level : document['facturx_level']}">
-                                        {{ "VERIFIER.facturx" | translate }}
-                                    </div>
                                     <div class="grid grid-cols-20 h-full">
                                         <div class="cursor-pointer flex items-center justify-center">
                                             <input id="{{ document['document_id'] }}_checkbox" (click)="checkCheckedDocuments()"
@@ -255,6 +252,9 @@
                                                    class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"
                                                    *ngIf="document.locked"></i>
                                                     {{ document['supplier_name'] ? document['supplier_name'] : 'ACCOUNTS.supplier_unknow' | translate }}
+                                                <span *ngIf="document['facturx']" class="text-xs text-gray-400 relative bottom-0.5" [matTooltip]="'VERIFIER.facturx_level' | translate : {level : document['facturx_level']}">
+                                                    {{ "VERIFIER.facturx" | translate }}
+                                                </span>
                                             </div>
                                             <div *ngFor="let subtitles of document.display['subtitles'].slice(0, 3);" class="opacity-75 -mb-1 text-sm truncate w-full inline-block">
                                                 <strong class="text-gray-900">{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
