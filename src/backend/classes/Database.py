@@ -151,7 +151,6 @@ class Database:
             where = ' AND '.join(args['where'])
 
             query = "UPDATE " + args['table'][0] + " SET " + query_set + " WHERE " + where
-            print(query, args['data'])
             try:
                 with self.conn.cursor() as cursor:
                     cursor.execute(query, args['data'])
