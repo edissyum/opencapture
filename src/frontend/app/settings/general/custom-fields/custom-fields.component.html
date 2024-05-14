@@ -90,7 +90,7 @@
                                             <mat-label>{{ 'HEADER.label' | translate }}</mat-label>
                                             <input matInput [formControl]="option['labelControl']" type="text">
                                         </mat-form-field>
-                                        <mat-form-field class="w-1/4 mr-2" *ngIf="conditionalControl.value">
+                                        <mat-form-field class="w-1/4 mr-2 border-l-2 border-green-400 pl-2" *ngIf="conditionalControl.value">
                                             <mat-label>{{ 'CUSTOM-FIELDS.custom_field_name' | translate }}</mat-label>
                                             <mat-select [formControl]="option['customFieldControl']" [(value)]="option['customFieldControl'].value">
                                                 <mat-option *ngFor="let opt of option['customFieldControl'].values" [value]="opt['id']">
@@ -102,12 +102,12 @@
                                             <mat-label>{{ 'CUSTOM-FIELDS.conditional_value' | translate }}</mat-label>
                                             <input matInput [formControl]="option['customValueControl']" type="text">
                                         </mat-form-field>
-                                        <span class="relative text-gray-600 -top-11 -right-10 cursor-help" *ngIf="displayConditional()"
+                                        <span class="relative text-gray-600 -top-8 -right-6 cursor-help" *ngIf="displayConditional()"
                                               [matTooltip]="'CUSTOM-FIELDS.conditional_hint' | translate">
                                            <i class="fa-solid fa-circle-question text-base"></i>
                                         </span>
                                         <div [matTooltip]="'CUSTOM-FIELDS.delete_choice' | translate"
-                                             (click)="deleteSelectOption(optionIndex)" class="top-0 mx-2 h-8 cursor-pointer">
+                                             (click)="deleteSelectOption(optionIndex)" class="relative top-1 h-8 -ml-2 mr-2 cursor-pointer">
                                             <i class="fa-solid fa-trash fa-lg hover:text-green-400"></i>
                                         </div>
                                     </div>

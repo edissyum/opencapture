@@ -1125,6 +1125,8 @@
 		"show_visuals": "Show visual indicators",
 		"size": "Size",
 		"suppliers_by_customer": "Third-party accounts list by customer",
+		"switch_to_grid_view": "Switch to grid view",
+		"switch_to_list_view": "Switch to list view",
 		"unselect_all": "Unselect all",
 		"viewer": "View document",
 		"waiting": "The document is waiting for process. Please wait and refresh the page later"
