@@ -162,7 +162,7 @@
                         <app-loader></app-loader>
                     </div>
 
-                    <div class="mx-5 mt-6" *ngIf="!this.loading">
+                    <div class="mx-5 mt-2" *ngIf="!this.loading">
                         <div *ngIf="this.displayMode == 'grid' else listTemplate" class="cards-list list grid md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 grid-flow-row gap-4">
                             <mat-card *ngFor="let document of this.documents;" class="cursor-pointer p-0 mb-0">
                                 <label class="p-4 absolute z-40 cursor-pointer">
@@ -239,45 +239,47 @@
                         </div>
                         <ng-template #listTemplate>
                             <mat-list>
-                                <div *ngFor="let document of this.documents;" class="border border-grey-900 w-full p-0 mb-2 shadow-md h-28">
-                                    <div *ngIf="document['facturx']" class="text-center text-gray-400 mt-2" [matTooltip]="'VERIFIER.facturx_level' | translate : {level : document['facturx_level']}">
-                                        {{ "VERIFIER.facturx" | translate }}
-                                    </div>
-                                    <div class="grid grid-cols-12 h-full">
-                                        <div class="ml-4 cursor-pointer flex items-center">
+                                <div *ngFor="let document of this.documents;" class="border border-grey-900 w-full p-0 mb-2 shadow-md h-28 cursor-pointer">
+                                    <div class="grid grid-cols-20 h-full">
+                                        <div class="cursor-pointer flex items-center justify-center">
                                             <input id="{{ document['document_id'] }}_checkbox" (click)="checkCheckedDocuments()"
                                                    class="accent-green-400 checkBox_list cursor-pointer w-5 h-5" type="checkbox">
                                         </div>
-                                        <div class="col-span-3 relative mt-2" [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                        <div class="col-span-6 relative mt-2" [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
                                              (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
                                             <div class="font-bold text-xl break-all truncate w-11/12">
                                                 <i [matTooltip]="'VERIFIER.document_locked' | translate"
                                                    class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"
                                                    *ngIf="document.locked"></i>
                                                     {{ document['supplier_name'] ? document['supplier_name'] : 'ACCOUNTS.supplier_unknow' | translate }}
+                                                <span *ngIf="document['facturx']" class="text-xs text-gray-400 relative bottom-0.5" [matTooltip]="'VERIFIER.facturx_level' | translate : {level : document['facturx_level']}">
+                                                    {{ "VERIFIER.facturx" | translate }}
+                                                </span>
                                             </div>
-                                            <div *ngFor="let subtitles of document.display['subtitles'].slice(0, 3);" class="opacity-75 -mb-1 text-sm text-ellipsis overflow-hidden w-full inline-block">
+                                            <div *ngFor="let subtitles of document.display['subtitles'].slice(0, 3);" class="opacity-75 -mb-1 text-sm truncate w-full inline-block">
                                                 <strong class="text-gray-900">{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
                                             </div>
                                         </div>
-                                        <div class="col-span-4 relative mt-4">
-                                            <div *ngFor="let subtitles of document.display['subtitles'].slice(3, 7);" class="opacity-75 -mb-1 text-sm text-ellipsis overflow-hidden w-full inline-block">
+                                        <div class="col-span-5 relative mt-4" [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                             (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
+                                            <div *ngFor="let subtitles of document.display['subtitles'].slice(3, 7);" class="opacity-75 -mb-1 text-sm truncate w-full inline-block">
                                                 <strong class="text-gray-900">{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
                                             </div>
                                         </div>
-                                        <div class="flex items-center cursor-pointer">
+                                        <div class="col-span-11 flex items-center" [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                             (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
                                             <div class="text-green-400 text-base badge badge-secondary badge-pill"
                                                  [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + document['nb_pages']">
                                                 {{ document['nb_pages'] }}<i class="far fa-file-alt ml-1"></i>
                                             </div>
                                         </div>
-                                        <div class="col-start-12 flex items-center justify-end" tabindex="-1">
-                                            <div tabindex="-1" (mouseenter)="showThumbnail(document['thumb'])" (mouseout)="resetThumbnail()">
+                                        <div class="col-start-24 flex items-center justify-end">
+                                            <div (mouseenter)="showThumbnail(document['thumb'])" (mouseout)="resetThumbnail()">
                                                 <i class="fa-solid fa-eye text-xl float-right text-gray-900 cursor-pointer z-50"></i>
                                             </div>
                                             <div [matMenuTriggerFor]="menu" matTooltipPosition="above"
                                                  [matTooltip]="this.translate.instant('VERIFIER.documents_settings')">
-                                                <i class="fa-solid fa-ellipsis-vertical text-xl float-right ml-4 mr-6 cursor-pointer text-gray-900"></i>
+                                                <i class="fa-solid fa-ellipsis-vertical text-xl float-right ml-6 mr-6 cursor-pointer text-gray-900"></i>
                                             </div>
                                             <mat-menu #menu="matMenu">
                                                 <button mat-menu-item [matMenuTriggerFor]="customers">
