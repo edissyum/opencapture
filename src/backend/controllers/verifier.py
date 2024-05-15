@@ -664,6 +664,7 @@ def return_rotated_content(file_type, image):
             content = file.read()
     else:
         temp = Image.open(image)
+        temp = temp.convert('RGB')
         with tempfile.NamedTemporaryFile() as tf:
             temp.save(tf.name + '.jpg', format="JPEG")
             rotate_img(tf.name + '.jpg')
