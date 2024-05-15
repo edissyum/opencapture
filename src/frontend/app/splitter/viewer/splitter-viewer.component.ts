@@ -989,6 +989,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.enableFieldsByDoctypeCondition();
             }
         });
+        console.log(document);
     }
 
     selectDocument(document: any): void {

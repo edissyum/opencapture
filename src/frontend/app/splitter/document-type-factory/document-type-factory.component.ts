@@ -24,7 +24,7 @@ import { environment } from  "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, FormControl } from "@angular/forms";
+import {Form, FormBuilder, FormControl} from "@angular/forms";
 import { AuthService } from "../../../services/auth.service";
 import { UserService } from "../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -223,6 +223,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     @Output() selectedFormOutput: any    = new EventEmitter < string > ();
 
     selectFormControl: FormControl       = new FormControl();
+    toggleControl: FormControl           = new FormControl();
     forms: any[]                         = [];
 
     /** Map from flat node to nested node. This helps us finding the nested node to be modified */
@@ -512,6 +513,37 @@ export class DocumentTypeFactoryComponent implements OnInit {
     expandAll() {
         this.treeControl.expandAll();
         this.localStorageService.save('is_doctypes_tree_collapsed', false);
+    }
+    changeDocType() {
+        const dataSelectForm = this.forms.find(item => item.id === this.selectFormControl.value);
+        const uniqueDocType = this.toggleControl.value;
+        const label             = dataSelectForm.label;
+        const isDefault         = dataSelectForm.default_form;
+        const metadataMethod    = dataSelectForm.metadata_method;
+        const exportZipFile     = dataSelectForm.export_zip_file;
+        const outputs = dataSelectForm.outputs;
+        this.http.put(environment['url'] + '/ws/forms/splitter/update/' + dataSelectForm.id, {
+                    'args': {
+                        'label'        : label,
+                        'default_form' : isDefault,
+                        'outputs'      : outputs,
+                        'settings'     : {
+                            'metadata_method' : metadataMethod,
+                            'export_zip_file' : exportZipFile,
+                            'unique_doc_type' : uniqueDocType
+                        }
+                    }
+                 }, {headers: this.authService.headers},
+                 ).pipe(
+                    tap( ()=>{
+                        this.notify.success(this.translate.instant('DOCTYPE.unique_doctype_updated'));
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    }))
+                .subscribe();
     }
 
     collapseAll() {
