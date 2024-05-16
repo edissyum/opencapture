@@ -974,6 +974,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             height  : '860px',
             data    : {
                 allowImportExport : false,
+                allowUniqueDocType : false,
                 formId            : this.currentBatch.formId,
                 selectedDoctype   : {
                     key     : document.doctypeKey  ? document.doctypeKey  : "",
@@ -989,7 +990,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.enableFieldsByDoctypeCondition();
             }
         });
-        console.log(document);
     }
 
     selectDocument(document: any): void {
@@ -1257,6 +1257,17 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     validateWithConfirmation(): void {
+        const doctypeKeys = new Set<string>();
+        for (const document of this.documents) {
+            if (doctypeKeys.has(document.doctypeKey)) {
+                this.notify.error(this.translate.instant('SPLITTER.error_duplicate_doctype'));
+                this.loading = false;
+                return;
+            }
+            else {
+                doctypeKeys.add(document.doctypeKey);
+            }
+        }
         if (!this.batchForm.valid && this.inputMode === "Manual") {
             this.notify.error(this.translate.instant('SPLITTER.error_empty_document_metadata'));
             this.loading = false;

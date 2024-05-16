@@ -215,6 +215,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     };
     @Input() settings: any               = {
         'allowImportExport': false,
+        'allowUniqueDocType': false,
         'canFolderBeSelected': false,
         'formId': undefined
     };

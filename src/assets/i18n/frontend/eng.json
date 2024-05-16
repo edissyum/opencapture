@@ -276,6 +276,7 @@
 		"previous_page": "Previous page",
 		"separator_choice ": "Separator choice",
 		"type": "Type (folder or doctype)",
+		"unique_doctype_updated": "Unique type of document modified",
 		"users_import_success": "Users imported with success"
 	},
 	"DOCUMENTS": {
@@ -927,6 +928,7 @@
 		"drop_here": "Drop here",
 		"edit_used_form": "Edit used form",
 		"error_autocomplete_value": "No autocomplete item is selected",
+		"error_duplicate_doctype": "Duplicate document type detected",
 		"error_empty_document_metadata": "Please fill document metadata",
 		"error_no_doc_type": "Please choose document types",
 		"field_form_not_respected": "Please respect the required format of the field : <strong>{{ field }}</strong>",
