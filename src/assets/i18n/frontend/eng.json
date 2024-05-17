@@ -277,6 +277,7 @@
 		"separator_choice ": "Separator choice",
 		"type": "Type (folder or doctype)",
 		"unique_doctype": "Document type uniqueness",
+		"unique_doctype_field_explanation": "If enabled, duplicate document types will not be allowed in a batch",
 		"unique_doctype_updated": "Unique type of document modified",
 		"users_import_success": "Users imported with success"
 	},

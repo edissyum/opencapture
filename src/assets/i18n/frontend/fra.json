@@ -277,6 +277,7 @@
 		"separator_choice ": "Choix de séparateur",
 		"type": "Type (Chemise ou document)",
 		"unique_doctype": "Unicité type de document",
+		"unique_doctype_field_explanation": "Si activé, les doublons de type de document seront pas autorisés dans un lot",
 		"unique_doctype_updated": "Unicité de type de document modifiée",
 		"users_import_success": "Les utilisateurs ont été importés avec succès"
 	},
