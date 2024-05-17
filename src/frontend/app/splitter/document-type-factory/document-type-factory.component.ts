@@ -517,6 +517,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         this.treeControl.expandAll();
         this.localStorageService.save('is_doctypes_tree_collapsed', false);
     }
+
     changeDocType() {
         const dataSelectForm = this.forms.find(item => item.id === this.selectFormControl.value);
         const uniqueDocType = this.toggleControl.value;
@@ -526,27 +527,27 @@ export class DocumentTypeFactoryComponent implements OnInit {
         const exportZipFile     = dataSelectForm.export_zip_file;
         const outputs = dataSelectForm.outputs;
         this.http.put(environment['url'] + '/ws/forms/splitter/update/' + dataSelectForm.id, {
-                    'args': {
-                        'label'        : label,
-                        'default_form' : isDefault,
-                        'outputs'      : outputs,
-                        'settings'     : {
-                            'metadata_method' : metadataMethod,
-                            'export_zip_file' : exportZipFile,
-                            'unique_doc_type' : uniqueDocType
-                        }
-                    }
-                 }, {headers: this.authService.headers},
-                 ).pipe(
-                    tap( ()=>{
-                        this.notify.success(this.translate.instant('DOCTYPE.unique_doctype_updated'));
-                    }),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    }))
-                .subscribe();
+            'args': {
+                'label'        : label,
+                'default_form' : isDefault,
+                'outputs'      : outputs,
+                'settings'     : {
+                    'metadata_method' : metadataMethod,
+                    'export_zip_file' : exportZipFile,
+                    'unique_doc_type' : uniqueDocType
+                }
+            }
+        }, {headers: this.authService.headers},
+        ).pipe(
+            tap( ()=>{
+                this.notify.success(this.translate.instant('DOCTYPE.unique_doctype_updated'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            }))
+        .subscribe();
     }
 
     collapseAll() {
