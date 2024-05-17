@@ -276,6 +276,7 @@
 		"previous_page": "Page précédente",
 		"separator_choice ": "Choix de séparateur",
 		"type": "Type (Chemise ou document)",
+		"unique_doctype": "Unicité type de document",
 		"unique_doctype_updated": "Unicité de type de document modifiée",
 		"users_import_success": "Les utilisateurs ont été importés avec succès"
 	},

@@ -15,7 +15,7 @@
             [matTooltip]="'DOCTYPE.maximize_tree' | translate">
         <i class="fa-solid fa-maximize text-lg"></i>
     </button>
-    <mat-slide-toggle *ngIf="!this.settings.hasOwnProperty('allowUniqueDocType') || this.settings.allowUniqueDocType" class="mx-2 my-4" [formControl]="toggleControl" (click)="changeDocType()">Unicité type de document</mat-slide-toggle>
+    <mat-slide-toggle *ngIf="!this.settings.hasOwnProperty('allowUniqueDocType') || this.settings.allowUniqueDocType" class="mx-2 my-4" [formControl]="toggleControl" (click)="changeDocType()">{{ 'DOCTYPE.unique_doctype' | translate }}</mat-slide-toggle>
     <mat-form-field *ngIf="!settings.hasOwnProperty('formId')" class="float-right w-60 mr-8">
         <mat-label>{{ 'FORMS.choose_form' | translate }}</mat-label>
         <mat-select id='folder' [formControl]="selectFormControl">
