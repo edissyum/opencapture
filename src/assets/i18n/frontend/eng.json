@@ -276,7 +276,7 @@
 		"previous_page": "Previous page",
 		"separator_choice ": "Separator choice",
 		"type": "Type (folder or doctype)",
-		"unique_doctype": "Unicité type de document",
+		"unique_doctype": "Document type uniqueness",
 		"unique_doctype_updated": "Unique type of document modified",
 		"users_import_success": "Users imported with success"
 	},
