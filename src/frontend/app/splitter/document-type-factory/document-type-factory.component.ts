@@ -224,7 +224,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     @Output() selectedFormOutput: any    = new EventEmitter < string > ();
 
     selectFormControl: FormControl       = new FormControl();
-    toggleControl: FormControl           = new FormControl();
+    toggleControl: FormControl           = new FormControl(false);
     forms: any[]                         = [];
 
     /** Map from flat node to nested node. This helps us finding the nested node to be modified */
@@ -297,6 +297,8 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 } else {
                     this.notify.handleErrors(this.translate.instant('FORMS.no_form_available'));
                 }
+                const selectedForm  = this.forms.find( form => form.id === this.selectFormControl.value );
+                this.toggleControl.setValue(selectedForm.settings.unique_doc_type);
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {

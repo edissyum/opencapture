@@ -1258,8 +1258,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     validateWithConfirmation(): void {
         const doctypeKeys = new Set<string>();
+        const selectedForm = this.forms.find( form => form.id === this.currentBatch.formId );
         for (const document of this.documents) {
-            if (doctypeKeys.has(document.doctypeKey)) {
+            if (doctypeKeys.has(document.doctypeKey) && selectedForm.settings.unique_doc_type) {
                 this.notify.error(this.translate.instant('SPLITTER.error_duplicate_doctype'));
                 this.loading = false;
                 return;
