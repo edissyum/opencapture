@@ -276,6 +276,9 @@
 		"previous_page": "Page précédente",
 		"separator_choice ": "Choix de séparateur",
 		"type": "Type (Chemise ou document)",
+		"unique_doctype": "Unicité type de document",
+		"unique_doctype_field_explanation": "Si activé, les doublons de type de document seront pas autorisés dans un lot",
+		"unique_doctype_updated": "Unicité de type de document modifiée",
 		"users_import_success": "Les utilisateurs ont été importés avec succès"
 	},
 	"DOCUMENTS": {
@@ -927,6 +930,7 @@
 		"drop_here": "Déposez ici",
 		"edit_used_form": "Modifier le formulaire utilisé",
 		"error_autocomplete_value": "Aucun élément d'autocomplétion n'est séléctionné",
+		"error_duplicate_doctype": "Type de document en double détecté",
 		"error_empty_document_metadata": "Veuillez remplir les métadonnées des documents",
 		"error_no_doc_type": "Veuillez sélectionner les types de documents",
 		"field_form_not_respected": "Veuillez respecter le format requis du champ : <strong>{{ field }}</strong>",
