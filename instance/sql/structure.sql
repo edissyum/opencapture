@@ -333,23 +333,25 @@ CREATE TABLE "languages" (
 );
 
 CREATE TABLE "mailcollect" (
-     "id"                            SERIAL       UNIQUE PRIMARY KEY,
-     "name"                          VARCHAR(255) UNIQUE NOT NULL,
-     "hostname"                      VARCHAR(255) NOT NULL,
-     "port"                          INTEGER      NOT NULL,
-     "login"                         VARCHAR(255) NOT NULL,
-     "password"                      VARCHAR(255) NOT NULL,
-     "secured_connection"            BOOLEAN      DEFAULT True,
-     "status"                        VARCHAR(10)  DEFAULT 'OK',
-     "is_splitter"                   BOOLEAN      DEFAULT False,
-     "enabled"                       BOOLEAN      DEFAULT True,
-     "splitter_technical_workflow_id"VARCHAR(255),
-     "folder_to_crawl"               VARCHAR(255) NOT NULL,
-     "folder_destination"            VARCHAR(255) NOT NULL,
-     "folder_trash"                  VARCHAR(255),
-     "action_after_process"          VARCHAR(255) NOT NULL,
-     "verifier_customer_id"          INTEGER,
-     "verifier_form_id"              VARCHAR(255)
+     "id"                             SERIAL       UNIQUE PRIMARY KEY,
+     "name"                           VARCHAR(255) UNIQUE NOT NULL,
+     "hostname"                       VARCHAR(255) NOT NULL,
+     "port"                           INTEGER      NOT NULL,
+     "login"                          VARCHAR(255) NOT NULL,
+     "password"                       VARCHAR(255) NOT NULL,
+     "secured_connection"             BOOLEAN      DEFAULT True,
+     "status"                         VARCHAR(10)  DEFAULT 'OK',
+     "is_splitter"                    BOOLEAN      DEFAULT False,
+     "enabled"                        BOOLEAN      DEFAULT True,
+     "splitter_technical_workflow_id" VARCHAR(255),
+     "folder_to_crawl"                VARCHAR(255) NOT NULL,
+     "folder_destination"             VARCHAR(255) NOT NULL,
+     "folder_trash"                   VARCHAR(255),
+     "action_after_process"           VARCHAR(255) NOT NULL,
+     "verifier_customer_id"           INTEGER,
+     "verifier_form_id"               VARCHAR(255),
+     "verifier_insert_body_as_doc"    BOOLEAN      DEFAULT False,
+     "splitter_insert_body_as_doc"    BOOLEAN      DEFAULT False
 );
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;
