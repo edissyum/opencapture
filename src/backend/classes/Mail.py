@@ -51,7 +51,8 @@ class Mail:
         try:
             self.conn.login(self.login, self.pwd)
         except IMAP4_SSL.error as err:
-            error = 'Error while trying to login to ' + self.host + ' using ' + self.login + '/' + self.pwd + ' as login/password : ' + str(err)
+            error = 'Error while trying to login to ' + self.host + ' using ' + self.login + '/' + self.pwd + ' as login/password : ' + str(
+                err)
             print(error)
             sys.exit()
 
@@ -100,6 +101,15 @@ class Mail:
             'attachments': []
         }
 
+        primary_mail_path = backup_path + '/mail_' + str(msg.uid) + '/mail_origin/'
+        if not os.path.exists(primary_mail_path):
+            os.makedirs(primary_mail_path)
+
+        import re
+        import base64
+        from xhtml2pdf import pisa
+        html_body = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' + "\n" + msg.html
+
         attachments = self.retrieve_attachment(msg)
         attachments_path = backup_path + '/mail_' + str(msg.uid) + '/attachments/'
         for attachment in attachments:
@@ -115,6 +125,23 @@ class Mail:
                 'format': attachment['format'][1:],
                 'file': path
             })
+
+            attachment_content_id_in_html = re.search(r'src="cid:\s*' + attachment['content_id'], html_body)
+            if attachment_content_id_in_html:
+                html_body = re.sub(r'src="cid:\s*' + attachment['content_id'],
+                                   f"src='data:image/{attachment['format'].replace('.', '')};"
+                                   f"base64, {base64.b64encode(attachment['content']).decode('UTF-8')}'",
+                                   html_body)
+
+        with open(primary_mail_path + 'body.pdf', 'w+b') as fp:
+            pisa.CreatePDF(html_body, dest=fp)
+        fp.close()
+
+        data['attachments'].append({
+            'filename': sanitize_filename('body' + msg.uid + '.pdf'),
+            'format': 'pdf',
+            'file': primary_mail_path + 'body.pdf'
+        })
 
         return data
 
@@ -136,7 +163,9 @@ class Mail:
                 try:
                     file.write(header + ' : ' + msg.headers[header][0] + '\n')
                 except UnicodeEncodeError:
-                    file.write(header + ' : ' + msg.headers[header][0].encode('utf-8', 'surrogateescape').decode('utf-8', 'replace') + '\n')
+                    file.write(
+                        header + ' : ' + msg.headers[header][0].encode('utf-8', 'surrogateescape').decode('utf-8',
+                                                                                                          'replace') + '\n')
         file.close()
 
         # Then body
@@ -226,6 +255,7 @@ class Mail:
                 'filename': os.path.splitext(att.filename)[0].replace(' ', '_'),
                 'format': file_format,
                 'content': att.payload,
+                'content_id': att.content_id,
                 'mime_type': att.content_type
             })
         return args
@@ -253,7 +283,8 @@ class Mail:
                 smtp.send_email(
                     message='    - Nom du batch : ' + os.path.basename(batch_path) + '/ \n' +
                             '    - Nom du process : ' + process + '\n' +
-                            '    - Chemin vers le batch en erreur : ' + error_path + '/' + os.path.basename(batch_path) + '/ \n' +
+                            '    - Chemin vers le batch en erreur : ' + error_path + '/' + os.path.basename(
+                        batch_path) + '/ \n' +
                             '    - Sujet du mail : ' + msg['subject'] + '\n' +
                             '    - Date du mail : ' + msg['date'] + '\n' +
                             '    - UID du mail : ' + msg['uid'] + '\n' +
@@ -279,4 +310,5 @@ def sanitize_filename(s):
             return c
         else:
             return "_"
+
     return "".join(safe_char(c) for c in s).rstrip("_")

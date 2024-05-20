@@ -58,6 +58,22 @@ export class MailCollectComponent implements OnInit {
     search              : string        = '';
     defaultProcessData  : any           = [
         {
+            id: 'verifier_insert_body_as_doc',
+            unit: 'verifier',
+            control: new FormControl(false),
+            label: marker('MAILCOLLECT.insert_body_as_doc'),
+            type: 'boolean',
+            required: false
+        },
+        {
+            id: 'splitter_insert_body_as_doc',
+            unit: 'splitter',
+            control: new FormControl(false),
+            label: marker('MAILCOLLECT.insert_body_as_doc'),
+            type: 'boolean',
+            required: false
+        },
+        {
             id: 'name',
             control: new FormControl()
         },
@@ -363,7 +379,23 @@ export class MailCollectComponent implements OnInit {
     }
 
     resetDefaultData() {
-        this.defaultProcessData =  [
+        this.defaultProcessData = [
+            {
+                id: 'verifier_insert_body_as_doc',
+                unit: 'verifier',
+                control: new FormControl(false),
+                label: marker('MAILCOLLECT.insert_body_as_doc'),
+                type: 'boolean',
+                required: false
+            },
+            {
+                id: 'splitter_insert_body_as_doc',
+                unit: 'splitter',
+                control: new FormControl(false),
+                label: marker('MAILCOLLECT.insert_body_as_doc'),
+                type: 'boolean',
+                required: false
+            },
             {
                 id: 'name',
                 control: new FormControl()
@@ -497,9 +529,6 @@ export class MailCollectComponent implements OnInit {
                     map(option => option ? this._filter(option, this.allSplitterWorkflows) : this.allSplitterWorkflows)
                 );
             }
-        });
-
-        this.defaultProcessData.forEach((element: any) => {
             if (element.id === 'verifier_workflow_id') {
                 element.values = element.control.valueChanges.pipe(
                     startWith(''),
