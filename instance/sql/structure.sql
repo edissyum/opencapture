@@ -160,7 +160,6 @@ CREATE TABLE "accounts_supplier" (
     "status"              VARCHAR(3)    DEFAULT 'OK',
     "get_only_raw_footer" BOOLEAN       DEFAULT False,
     "skip_auto_validate"  BOOLEAN       DEFAULT False,
-    "lang"                VARCHAR(10)   DEFAULT 'fra',
     "creation_date"       TIMESTAMP     DEFAULT (CURRENT_TIMESTAMP),
     "positions"           JSONB         DEFAULT '{}',
     "pages"               JSONB         DEFAULT '{}'
