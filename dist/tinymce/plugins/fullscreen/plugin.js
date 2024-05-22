@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 7.1.0 (2024-05-08)
+ * TinyMCE version 6.8.3 (2024-02-08)
  */
 
 (function () {
@@ -19,7 +19,7 @@
       };
     };
 
-    var global$3 = tinymce.util.Tools.resolve('tinymce.PluginManager');
+    var global$2 = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
     const get$5 = fullscreenState => ({ isFullscreen: () => fullscreenState.get() !== null });
 
@@ -949,9 +949,9 @@
       return { unbind: () => visualViewport.removeEventListener(name, handler) };
     }).getOrThunk(() => ({ unbind: noop }));
 
-    var global$2 = tinymce.util.Tools.resolve('tinymce.dom.DOMUtils');
+    var global$1 = tinymce.util.Tools.resolve('tinymce.dom.DOMUtils');
 
-    var global$1 = tinymce.util.Tools.resolve('tinymce.Env');
+    var global = tinymce.util.Tools.resolve('tinymce.Env');
 
     const fireFullscreenStateChanged = (editor, state) => {
       editor.dispatch('FullscreenStateChanged', { state });
@@ -1028,7 +1028,7 @@
     const ancestorPosition = 'position:absolute!important;';
     const ancestorStyles = 'top:0!important;left:0!important;margin:0!important;padding:0!important;width:100%!important;height:100%!important;overflow:visible!important;';
     const bgFallback = 'background-color:rgb(255,255,255)!important;';
-    const isAndroid = global$1.os.isAndroid();
+    const isAndroid = global.os.isAndroid();
     const matchColor = editorBody => {
       const color = get$2(editorBody, 'background-color');
       return color !== undefined && color !== '' ? 'background-color:' + color + '!important' : bgFallback;
@@ -1068,7 +1068,7 @@
       });
     };
 
-    const DOM = global$2.DOM;
+    const DOM = global$1.DOM;
     const getScrollPos = () => getBounds(window);
     const setScrollPos = pos => window.scrollTo(pos.x, pos.y);
     const viewportUpdate = get().fold(() => ({
@@ -1123,7 +1123,7 @@
       const fullscreenRoot = getFullscreenRoot(editor);
       const fullscreenInfo = fullscreenState.get();
       const editorBody = SugarElement.fromDom(editor.getBody());
-      const isTouch = global$1.deviceType.isTouch();
+      const isTouch = global.deviceType.isTouch();
       const editorContainerStyle = editorContainer.style;
       const iframe = editor.iframeElement;
       const iframeStyle = iframe === null || iframe === void 0 ? void 0 : iframe.style;
@@ -1207,18 +1207,6 @@
       });
     };
 
-    var global = tinymce.util.Tools.resolve('tinymce.util.VK');
-
-    const setup = (editor, fullscreenState) => {
-      editor.on('init', () => {
-        editor.on('keydown', e => {
-          if (e.keyCode === global.TAB && !(e.metaKey || e.ctrlKey) && fullscreenState.get()) {
-            e.preventDefault();
-          }
-        });
-      });
-    };
-
     const makeSetupHandler = (editor, fullscreenState) => api => {
       api.setActive(fullscreenState.get() !== null);
       const editorEventCallback = e => api.setActive(e.state);
@@ -1238,13 +1226,12 @@
         tooltip: 'Fullscreen',
         icon: 'fullscreen',
         onAction,
-        onSetup: makeSetupHandler(editor, fullscreenState),
-        shortcut: 'Meta+Shift+F'
+        onSetup: makeSetupHandler(editor, fullscreenState)
       });
     };
 
     var Plugin = () => {
-      global$3.add('fullscreen', editor => {
+      global$2.add('fullscreen', editor => {
         const fullscreenState = Cell(null);
         if (editor.inline) {
           return get$5(fullscreenState);
@@ -1252,7 +1239,6 @@
         register$2(editor);
         register$1(editor, fullscreenState);
         register(editor, fullscreenState);
-        setup(editor, fullscreenState);
         editor.addShortcut('Meta+Shift+F', '', 'mceFullScreen');
         return get$5(fullscreenState);
       });

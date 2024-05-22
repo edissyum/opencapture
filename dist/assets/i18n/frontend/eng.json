@@ -280,6 +280,9 @@
 		"previous_page": "Previous page",
 		"separator_choice ": "Separator choice",
 		"type": "Type (folder or doctype)",
+		"unique_doctype": "Document type uniqueness",
+		"unique_doctype_field_explanation": "If enabled, duplicate document types will not be allowed in a batch",
+		"unique_doctype_updated": "Unique type of document modified",
 		"users_import_success": "Users imported with success"
 	},
 	"DOCUMENTS": {
@@ -604,6 +607,7 @@
 		"folders_updated": "Folder list updated",
 		"general": "General SMTP settings",
 		"hostname": "Hostname",
+		"insert_body_as_doc": "",
 		"is_splitter": "Is splitter",
 		"load_folders_first": "Load folders first",
 		"move": "Move",
@@ -931,6 +935,7 @@
 		"drop_here": "Drop here",
 		"edit_used_form": "Edit used form",
 		"error_autocomplete_value": "No autocomplete item is selected",
+		"error_duplicate_doctype": "Duplicate document type detected",
 		"error_empty_document_metadata": "Please fill document metadata",
 		"error_no_doc_type": "Please choose document types",
 		"field_form_not_respected": "Please respect the required format of the field : <strong>{{ field }}</strong>",
