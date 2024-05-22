@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 7.1.0 (2024-05-08)
+ * TinyMCE version 6.8.3 (2024-02-08)
  */
 
 (function () {
@@ -631,7 +631,7 @@
     const getForcedRootBlock = option('forced_root_block');
     const getForcedRootBlockAttrs = option('forced_root_block_attrs');
 
-    const createTextBlock = (editor, contentNode, attrs = {}) => {
+    const createTextBlock = (editor, contentNode) => {
       const dom = editor.dom;
       const blockElements = editor.schema.getBlockElements();
       const fragment = dom.createFragment();
@@ -640,10 +640,7 @@
       let node;
       let textBlock;
       let hasContentNode = false;
-      textBlock = dom.create(blockName, {
-        ...blockAttrs,
-        ...attrs.style ? { style: attrs.style } : {}
-      });
+      textBlock = dom.create(blockName, blockAttrs);
       if (!isBlock(contentNode.firstChild, blockElements)) {
         fragment.appendChild(textBlock);
       }
@@ -808,8 +805,7 @@
     const isListHost = (schema, node) => !isListNode(node) && !isListItemNode(node) && exists(listNames, listName => schema.isValidChild(node.nodeName, listName));
     const getClosestListHost = (editor, elm) => {
       const parentBlocks = editor.dom.getParents(elm, editor.dom.isBlock);
-      const isNotForcedRootBlock = elm => elm.nodeName.toLowerCase() !== getForcedRootBlock(editor);
-      const parentBlock = find(parentBlocks, elm => isNotForcedRootBlock(elm) && isListHost(editor.schema, elm));
+      const parentBlock = find(parentBlocks, elm => isListHost(editor.schema, elm));
       return parentBlock.getOr(editor.getBody());
     };
     const isListInsideAnLiWithFirstAndLastNotListElement = list => parent(list).exists(parent => isListItemNode(parent.dom) && firstChild(parent).exists(firstChild => !isListNode(firstChild.dom)) && lastChild(parent).exists(lastChild => !isListNode(lastChild.dom)));
@@ -1136,8 +1132,7 @@
       const normalizedEntries = normalizeEntries(entries);
       return map(normalizedEntries, entry => {
         const content = !isEntryComment(entry) ? fromElements(entry.content) : fromElements([SugarElement.fromHtml(`<!--${ entry.content }-->`)]);
-        const listItemAttrs = isEntryList(entry) ? entry.itemAttributes : {};
-        return SugarElement.fromDom(createTextBlock(editor, content.dom, listItemAttrs));
+        return SugarElement.fromDom(createTextBlock(editor, content.dom));
       });
     };
     const indentedComposer = (editor, entries) => {
@@ -1797,7 +1792,7 @@
       const selectionStartElm = editor.selection.getStart();
       const root = getClosestEditingHost(editor, selectionStartElm);
       const block = dom.getParent(selectionStartElm, dom.isBlock, root);
-      if (block && dom.isEmpty(block, undefined, { checkRootAsContent: true })) {
+      if (block && dom.isEmpty(block)) {
         const rng = normalizeRange(editor.selection.getRng());
         const otherLi = dom.getParent(findNextCaretContainer(editor, rng, isForward, root), 'LI', root);
         if (otherLi) {

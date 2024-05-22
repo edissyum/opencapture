@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="26.26366mm" height="28.874899mm" viewBox="0 0 26.263661 28.874899" id="svg3416" inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)" sodipodi:docname="0_Open-Capture_Verifier_Module_no_caption.svg">
+  <defs id="defs3410"/>
+  <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="1.979899" inkscape:cx="183.06024" inkscape:cy="74.241772" inkscape:document-units="mm" inkscape:current-layer="layer1" showgrid="false" fit-margin-top="0" fit-margin-left="0" fit-margin-right="0" fit-margin-bottom="0" inkscape:window-width="2400" inkscape:window-height="1271" inkscape:window-x="-9" inkscape:window-y="-9" inkscape:window-maximized="1" inkscape:document-rotation="0"/>
+  <metadata id="metadata3413">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="https://purl.org/dc/dcmitype/StillImage"/>
+        <dc:title/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g inkscape:label="Calque 1" inkscape:groupmode="layer" id="layer1" transform="translate(-25.641421,-108.16059)">
+    <path style="fill:#76b442;fill-opacity:1;stroke-width:0.29337" d="m 25.829344,136.84419 c -0.57517,-0.55036 0.10124,-1.74163 2.98774,-5.26119 1.74749,-2.13075 3.72146,-4.55624 4.38665,-5.38991 l 1.209501,-1.51581 -0.617041,-0.63649 c -2.66167,-2.74574 -3.14847,-7.60409 -1.098829,-10.9676 2.650769,-4.35002 8.469447,-6.12539 13.245987,-4.04153 2.17752,0.94997 4.30428,2.96364 5.26355,4.98364 0.9833,2.0705 0.91941,5.69582 -0.13762,7.8106 -2.39091,4.78371 -8.37674,6.98936 -13.30596,4.90295 -0.79404,-0.33608 -1.521008,-0.50181 -1.615438,-0.36827 -0.0945,0.13348 -2.103829,2.59001 -4.46518,5.45885 -3.31058,4.02196 -4.44913,5.21606 -4.97346,5.21606 -0.37405,0 -0.77001,-0.0861 -0.87997,-0.19134 z m 18.883488,-11.32637 c 2.07426,-0.74262 3.92821,-2.31552 4.92089,-4.17496 1.03033,-1.92992 1.04747,-5.11628 0.0376,-6.97826 -1.67252,-3.08369 -4.43251,-4.71155 -7.99687,-4.71656 -9.634038,-0.0136 -12.181768,12.26665 -3.27205,15.77157 2.2019,0.86621 4.08355,0.89547 6.31049,0.0982 z" id="path2165-5" inkscape:connector-curvature="0" sodipodi:nodetypes="ccccccccccccsccccccccc"/>
+    <path style="fill:#a7a8aa;fill-opacity:1;stroke:none;stroke-width:0.0798497px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 36.367379,115.38352 1.442103,2.57722 2.4035,-4.64577 h -0.84122 l -1.62237,3.08586 -0.66096,-1.01731 z" id="path1725"/>
+    <rect style="fill:none;fill-opacity:1;stroke:#a9abab;stroke-width:0.184989;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" id="rect1729" width="5.6946645" height="5.4839368" x="42.099663" y="116.91033"/>
+    <text id="text1739" y="134.04332" x="39.142307" style="font-style:normal;font-weight:normal;font-size:7.60198px;line-height:1.25;font-family:sans-serif;letter-spacing:0;word-spacing:0;fill:#76b900;fill-opacity:1;stroke:none;stroke-width:0.190051" xml:space="preserve" transform="scale(1.1032687,0.9063975)"><tspan style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:5.5748px;font-family:'ITC Kabel Std';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a7a8aa;fill-opacity:1;stroke-width:0.190051" y="134.04332" x="39.142307" id="tspan1737" sodipodi:role="line">X</tspan></text>
+    <rect style="fill:none;fill-opacity:1;stroke:#a9abab;stroke-width:0.184989;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" id="rect1741" width="5.6946645" height="5.4839368" x="35.57666" y="112.78582"/>
+  </g>
+</svg>

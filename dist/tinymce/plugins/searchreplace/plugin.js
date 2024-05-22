@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 7.1.0 (2024-05-08)
+ * TinyMCE version 6.8.3 (2024-02-08)
  */
 
 (function () {
@@ -1067,8 +1067,7 @@
       editor.ui.registry.addButton('searchreplace', {
         tooltip: 'Find and replace',
         onAction: showDialog(editor, currentSearchState),
-        icon: 'search',
-        shortcut: 'Meta+F'
+        icon: 'search'
       });
       editor.shortcuts.add('Meta+F', '', showDialog(editor, currentSearchState));
     };
