@@ -361,7 +361,6 @@ export class VerifierListComponent implements OnInit {
                     }
 
                     this.documents = data.documents;
-                    console.log(this.documents)
                     this.documents.forEach((document: any) => {
                         if (document.document_id) {
                             document['datas'].document_id = document.document_id;

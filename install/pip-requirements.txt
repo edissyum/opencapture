@@ -22,7 +22,7 @@ thefuzz==0.22.1
 werkzeug==3.0.3
 cmislib3==1.0.8
 pyflakes==3.2.0
-requests==2.32.1
+requests==2.32.2
 xhtml2pdf==0.2.15
 xlsxwriter==3.2.0
 pdf2image==1.17.0
@@ -32,10 +32,10 @@ flask_cors==4.0.1
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
 schwifty==2024.5.3
-ultralytics==8.2.18
+ultralytics==8.2.19
 pytesseract==0.3.10
 configparser==7.0.0
-scikit-learn==1.4.2
+scikit-learn==1.5.0
 python-magic==0.4.27
 pycryptodome==3.20.0
 pypdf[crypto]==4.2.0
