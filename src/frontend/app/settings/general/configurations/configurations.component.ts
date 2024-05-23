@@ -16,25 +16,25 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr>
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, OnInit, SecurityContext, ViewEncapsulation} from '@angular/core';
+import { Component, OnInit, SecurityContext, ViewEncapsulation } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { SettingsService } from "../../../../services/settings.service";
 import { AuthService } from "../../../../services/auth.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { SessionStorageService } from "../../../../services/session-storage.service";
 import { LastUrlService } from "../../../../services/last-url.service";
 import { Sort } from "@angular/material/sort";
 import { environment } from  "../../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
-import {Observable, of} from "rxjs";
+import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
+import { Observable, of } from "rxjs";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { DomSanitizer } from "@angular/platform-browser";
 import { LocaleService } from "../../../../services/locale.service";
 import { PasswordVerificationService } from "../../../../services/password-verification.service";
-import {FormControl, Validators} from "@angular/forms";
+import { FormControl, Validators } from "@angular/forms";
 
 @Component({
     selector: 'app-configurations',
@@ -203,7 +203,6 @@ export class ConfigurationsComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
-        private route: ActivatedRoute,
         private sanitizer: DomSanitizer,
         private authService: AuthService,
         public translate: TranslateService,
