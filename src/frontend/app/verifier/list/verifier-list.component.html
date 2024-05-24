@@ -15,7 +15,7 @@
         <mat-divider></mat-divider>
         <div class="overflow-hidden">
             <div class="pb-6">
-                <mat-form-field class="px-4 pt-4 -mb-6 w-full" appearance="outline">
+                <mat-form-field class="px-4 pt-5 -mb-6 w-full" appearance="outline">
                     <mat-label>
                         {{ 'VERIFIER.search_customer' | translate }}
                     </mat-label>
@@ -291,25 +291,23 @@
                                                 </button>
                                             </mat-menu>
                                             <mat-menu #customers="matMenu">
-                                                <button mat-menu-item *ngFor="let customer of this.customersList"
-                                                        (click)="changeCustomer(customer.id, document['document_id'])">
-                                            <span [class.text-green-400]="customer.id === document['customer_id']">
-                                                {{ customer.name | translate }}
-                                            </span>
+                                                <button mat-menu-item *ngFor="let customer of this.customersList" (click)="changeCustomer(customer.id, document['document_id'])">
+                                                    <span [class.text-green-400]="customer.id === document['customer_id']">
+                                                        {{ customer.name | translate }}
+                                                    </span>
                                                     <span *ngIf="customer.id === document['customer_id']">
-                                                <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                                            </span>
+                                                        <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                    </span>
                                                 </button>
                                             </mat-menu>
                                             <mat-menu #formMenu="matMenu">
-                                                <button mat-menu-item (click)="changeDocumentForm(form.id, document['document_id'])"
-                                                        *ngFor="let form of this.filteredForms">
-                                            <span [class.text-green-400]="form.id === document['form_id']">
-                                                {{ form.label | translate }}
-                                            </span>
+                                                <button mat-menu-item (click)="changeDocumentForm(form.id, document['document_id'])" *ngFor="let form of this.filteredForms">
+                                                    <span [class.text-green-400]="form.id === document['form_id']">
+                                                        {{ form.label | translate }}
+                                                    </span>
                                                     <span *ngIf="form.id === document['form_id']">
-                                                <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                                            </span>
+                                                        <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                    </span>
                                                 </button>
                                             </mat-menu>
                                         </div>
