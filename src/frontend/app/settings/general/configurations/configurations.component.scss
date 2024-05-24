@@ -85,5 +85,9 @@
         @apply border-green-400 #{!important};
         box-shadow: 0 0 0 2px #97BF3D !important;
     }
+
+    & .tox-edit-area::before {
+        @apply border-green-400 #{!important};
+    }
 }
 
