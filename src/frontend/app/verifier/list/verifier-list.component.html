@@ -25,8 +25,8 @@
                     </button>
                 </mat-form-field>
             </div>
-            <hr class="w-1/2 m-auto mt-3 mb-3 border-green-400 relative z-30">
-            <div *ngIf="this.loadingCustomers" class="loading_customers">
+            <hr *ngIf="this.documents.length !== 0 || !this.customerFilterEmpty" class="w-1/2 m-auto mt-3 mb-3 border-green-400 relative z-30">
+            <div *ngIf="this.loadingCustomers || this.loading" class="loading_customers">
                 <div class="m-auto text-center">
                     <i class="fa-solid fa-users fa-4x fa-beat-fade w-full mb-2"></i>
                     <span class="w-full">
@@ -38,11 +38,11 @@
                 <div class="m-auto text-center">
                     <i class="fa-solid fa-ban fa-4x fa-beat-fade w-full mb-2"></i>
                     <span class="w-full">
-                    {{ 'VERIFIER.no_customers_filter' | translate }}
-                </span>
+                        {{ 'VERIFIER.no_customers_filter' | translate }}
+                    </span>
                 </div>
             </div>
-            <mat-tree *ngIf="!this.loadingCustomers" [dataSource]="this.dataSource" [treeControl]="this.treeControl" class="overflow-x-hidden" style="height: calc(100vh - 16rem)">
+            <mat-tree *ngIf="!this.loadingCustomers && !this.loading" [dataSource]="this.dataSource" [treeControl]="this.treeControl" class="overflow-x-hidden" style="height: calc(100vh - 16rem)">
                 <mat-tree-node class="pl-12 min-h-6 cursor-pointer hover:bg-black hover:bg-opacity-20"
                                *matTreeNodeDef="let node; when:isLevelTwo;" (click)="loadDocumentPerCustomer(node)">
                     <button mat-icon-button disabled>
@@ -151,7 +151,7 @@
                         </span>
                     </div>
 
-                    <hr class="w-1/2 m-auto -mt-2.5 mb-4 border-green-400 relative z-30">
+                    <hr *ngIf="this.documents.length !== 0 && !this.loading" class="w-1/2 m-auto -mt-2.5 mb-4 border-green-400 relative z-30">
 
                     <div *ngIf="this.documents.length === 0 && !this.loading" class="text-gray-200 text-center absolute top-[55%] left-[50%]" style="transform: translate(-50%, -50%);">
                         <i class="fa-regular fa-folder-open fa-10x w-full"></i>
