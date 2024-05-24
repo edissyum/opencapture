@@ -12,6 +12,18 @@
     transform: translate(-50%, -50%);
 }
 
+::ng-deep .customer-list {
+    .mat-drawer-inner-container {
+        @apply overflow-hidden;
+    }
+}
+
+::ng-deep .batches {
+    & .mat-mdc-tab-body-wrapper mat-tab-body .mat-mdc-tab-body-content {
+        @apply overflow-hidden;
+    }
+}
+
 ::ng-deep .list > mat-card {
     @apply flex;
     @apply flex-col;
