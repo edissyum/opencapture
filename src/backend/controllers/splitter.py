@@ -579,13 +579,17 @@ def test_openads_connection(args):
 
 
 def export_batch(data):
+    custom_id = retrieve_custom_from_url(request)
     if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context:
         log = current_context.log
         regex = current_context.regex
         docservers = current_context.docservers
+        config = current_context.config
+        database = current_context.database
     else:
-        custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+        config = _vars[1]
         regex = _vars[2]
         log = _vars[5]
         docservers = _vars[9]
@@ -601,7 +605,7 @@ def export_batch(data):
     if save_response[1] != 200:
         return save_response
 
-    export_res = splitter_exports.export_batch(data['batchId'], log, docservers, regex)
+    export_res = splitter_exports.export_batch(data['batchId'], log, docservers, regex, config, database, custom_id)
     return export_res
 
 
