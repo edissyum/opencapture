@@ -19,7 +19,6 @@
 import re
 import os
 import uuid
-
 import sys
 import json
 import random
@@ -28,7 +27,6 @@ import traceback
 import importlib
 from xml.dom import minidom
 from datetime import datetime
-from flask_babel import gettext
 from unidecode import unidecode
 
 
