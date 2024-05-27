@@ -25,7 +25,7 @@
                     </button>
                 </mat-form-field>
             </div>
-            <hr *ngIf="this.documents.length !== 0 || !this.customerFilterEmpty" class="w-1/2 m-auto mt-3 mb-3 border-green-400 relative z-30">
+            <hr *ngIf="this.documents.length !== 0 && (!this.customerFilterEmpty || !this.loading)" class="w-1/2 m-auto mt-3 mb-3 border-green-400 relative z-30">
             <div *ngIf="this.loadingCustomers || this.loading" class="loading_customers">
                 <div class="m-auto text-center">
                     <i class="fa-solid fa-users fa-4x fa-beat-fade w-full mb-2"></i>
@@ -139,19 +139,19 @@
                         </div>
                     </div>
 
-                    <div class="z-30 -mt-2 select-none" style="margin-left: 1.2rem" *ngIf="this.documents.length > 1">
-                        <span class="cursor-pointer" (click)="selectOrUnselectAllDocuments($event)"
+                    <div class="z-30 -mt-2 select-none shadow-md" *ngIf="this.documents.length > 1">
+                        <span class="cursor-pointer pl-4 bottom-3.5 relative" (click)="selectOrUnselectAllDocuments($event)"
                               [innerHTML]="this.documentToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')">
                         </span>
-                        <span [class.hidden]="this.totalChecked === 0"> ({{ this.totalChecked }})</span>
-                        <span [class.hidden]="!this.documentToDeleteSelected"
+                        <span class="bottom-3.5 relative" [class.hidden]="this.totalChecked === 0"> ({{ this.totalChecked }})</span>
+                        <span class="bottom-3.5 relative" [class.hidden]="!this.documentToDeleteSelected"
                               (click)="$event.stopPropagation();deleteAllConfirmDialog()">
                             <i class="fa-solid fa-trash ml-2 text-red-500 cursor-pointer"
                                matTooltip="{{ 'GLOBAL.delete_all_checked' | translate }}"></i>
                         </span>
                     </div>
 
-                    <hr *ngIf="this.documents.length !== 0 && !this.loading" class="w-1/2 m-auto -mt-2.5 mb-4 border-green-400 relative z-30">
+                    <hr *ngIf="this.documents.length !== 0 && !this.loading" class="w-1/2 m-auto -mt-2.5 mb-2 border-green-400 relative z-30">
 
                     <div *ngIf="this.documents.length === 0 && !this.loading" class="text-gray-200 text-center absolute top-[55%] left-[50%]" style="transform: translate(-50%, -50%);">
                         <i class="fa-regular fa-folder-open fa-10x w-full"></i>
@@ -164,7 +164,7 @@
                         <app-loader></app-loader>
                     </div>
 
-                    <div class="overflow-x-hidden" style="height: calc(100vh - 18rem) !important" *ngIf="!this.loading">
+                    <div class="overflow-x-hidden" style="height: calc(100vh - 16rem) !important" *ngIf="!this.loading">
                         <div class="mt-2 mx-5">
                             <div *ngIf="this.displayMode == 'grid' else listTemplate" class="cards-list list grid md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 grid-flow-row gap-4">
                                 <mat-card *ngFor="let document of this.documents;" class="cursor-pointer p-0 mb-0">
