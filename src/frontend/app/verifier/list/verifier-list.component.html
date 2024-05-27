@@ -140,11 +140,11 @@
                     </div>
 
                     <div class="z-30 -mt-2 select-none shadow-md" *ngIf="this.documents.length > 1">
-                        <span class="cursor-pointer pl-4" (click)="selectOrUnselectAllDocuments($event)"
+                        <span class="cursor-pointer pl-4 bottom-3.5 relative" (click)="selectOrUnselectAllDocuments($event)"
                               [innerHTML]="this.documentToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')">
                         </span>
-                        <span [class.hidden]="this.totalChecked === 0"> ({{ this.totalChecked }})</span>
-                        <span [class.hidden]="!this.documentToDeleteSelected"
+                        <span class="bottom-3.5 relative" [class.hidden]="this.totalChecked === 0"> ({{ this.totalChecked }})</span>
+                        <span class="bottom-3.5 relative" [class.hidden]="!this.documentToDeleteSelected"
                               (click)="$event.stopPropagation();deleteAllConfirmDialog()">
                             <i class="fa-solid fa-trash ml-2 text-red-500 cursor-pointer"
                                matTooltip="{{ 'GLOBAL.delete_all_checked' | translate }}"></i>
@@ -164,7 +164,7 @@
                         <app-loader></app-loader>
                     </div>
 
-                    <div class="overflow-x-hidden" style="height: calc(100vh - 18rem) !important" *ngIf="!this.loading">
+                    <div class="overflow-x-hidden" style="height: calc(100vh - 16rem) !important" *ngIf="!this.loading">
                         <div class="mt-2 mx-5">
                             <div *ngIf="this.displayMode == 'grid' else listTemplate" class="cards-list list grid md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 grid-flow-row gap-4">
                                 <mat-card *ngFor="let document of this.documents;" class="cursor-pointer p-0 mb-0">
