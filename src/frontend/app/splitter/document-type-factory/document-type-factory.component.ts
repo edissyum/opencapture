@@ -281,6 +281,8 @@ export class DocumentTypeFactoryComponent implements OnInit {
             this.localStorageService.save('doctypeFormId', formId);
             this.treeDataObj.loadTree(formId);
             this.selectedFormOutput.emit({'formId': formId});
+            const selectedForm  = this.forms.find( form => form.id === this.selectFormControl.value );
+            this.toggleControl.setValue(selectedForm.settings.unique_doc_type);
         });
         this.settings.hasOwnProperty('formId') ? this.treeDataObj.loadTree(this.settings.formId) : this.loadForms();
     }
