@@ -522,6 +522,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
 
     changeDocType() {
         const dataSelectForm = this.forms.find(item => item.id === this.selectFormControl.value);
+        dataSelectForm.settings.unique_doc_type = this.toggleControl.value;
         const uniqueDocType = this.toggleControl.value;
         const label             = dataSelectForm.label;
         const isDefault         = dataSelectForm.default_form;
