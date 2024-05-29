@@ -142,21 +142,21 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
             {
                 "id": "host",
                 "type": "text",
-                "label": "URL de l''''hôte",
+                "label": "URL de l''hôte",
                 "required": "true",
                 "placeholder": "http://localhost/mem_courrier/rest/"
             },
             {
                 "id": "login",
                 "type": "text",
-                "label": "Pseudo de l''''utilisateur WS",
+                "label": "Pseudo de l''utilisateur WS",
                 "required": "true",
                 "placeholder": "ws_opencapture"
             },
             {
                 "id": "password",
                 "type": "password",
-                "label": "Mot de passe de l''''utilisateur WS",
+                "label": "Mot de passe de l''utilisateur WS",
                 "required": "true",
                 "placeholder": "ws_opencapture"
             }
@@ -228,7 +228,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "subject",
                 "type": "textarea",
                 "label": "Sujet",
-                "hint": "Liste des identifiants techniques des champs, séparés par #. Si l''''identifiant technique n''''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "hint": "Liste des identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
                 "required": "true",
                 "placeholder": "Facture n°#invoice_number"
             },
@@ -266,7 +266,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
             {
                 "id": "modelId",
                 "type": "text",
-                "label": "Modèle d''''enregistrement",
+                "label": "Modèle d''enregistrement",
                 "required": "true",
                 "webservice": "getIndexingModelsFromMem",
                 "placeholder": "Facture"
@@ -281,7 +281,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
             },
             {
                 "id": "customFields",
-                "hint": "La valeur doit être de type JSON avec des doubles quotes \". La clé est l''''identifiant du custom MEM Courrier, la valeur est l''''identifiant du champ Open-Capture",
+                "hint": "La valeur doit être de type JSON avec des doubles quotes \". La clé est l''identifiant du custom MEM Courrier, la valeur est l''identifiant du champ Open-Capture",
                 "type": "textarea",
                 "label": "Champs personnalisés",
                 "isJson": "true",
@@ -349,6 +349,26 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
         ]
     }
 }');
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (5, 'export_coog', 'Export vers COOG', 'verifier', '{
+	"options": {
+        "auth": [
+            {
+                "id": "host",
+                "type": "text",
+                "label": "URL de l''hôte",
+                "required": "true",
+                "placeholder": "https://unip.example.com/gateway"
+            },
+            {
+                "id": "token",
+                "type": "text",
+                "label": "Token d''authentification",
+                "required": "true",
+                "placeholder": "VOTRE_JETON"
+            }
+        ]
+    }
+}');
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (1, 'export_xml', 'Export XML par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}, {"id": "extension", "type": "text", "value": "xml"}]}}');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_mem', 'Export MEM Courrier par défaut', 'verifier');
@@ -356,7 +376,7 @@ INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "ocrise
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (4, 'export_facturx', 'Export PDF avec métadonnées (FacturX)', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}]}}');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE SPLITTER
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (5, 'export_pdf', 'Export PDF', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (6, 'export_pdf', 'Export PDF', '{
   "options": {
     "auth": [],
     "parameters": [
@@ -384,7 +404,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
       },
       {
         "id": "extension",
-        "hint": "Ne pas mettre de point dans l''''extension",
+        "hint": "Ne pas mettre de point dans l''extension",
         "type": "text",
         "label": "Extension du fichier",
         "required": "true",
@@ -401,7 +421,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (6, 'export_xml', 'Export XML', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (7, 'export_xml', 'Export XML', '{
   "options": {
     "auth": [],
     "parameters": [
@@ -429,7 +449,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
       },
       {
         "id": "extension",
-        "hint": "Ne pas mettre de point dans l''''extension",
+        "hint": "Ne pas mettre de point dans l''extension",
         "type": "text",
         "label": "Extension du fichier",
         "required": "true",
@@ -446,7 +466,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (7, 'export_cmis', 'Export CMIS','{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (8, 'export_cmis', 'Export CMIS','{
   "options": {
     "auth": [
       {
@@ -466,14 +486,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
       {
         "id": "login",
         "type": "text",
-        "label": "Pseudo de l''''utilisateur WS",
+        "label": "Pseudo de l''utilisateur WS",
         "required": "true",
         "placeholder": "ws_opencapture"
       },
       {
         "id": "password",
         "type": "password",
-        "label": "Mot de passe de l''''utilisateur WS",
+        "label": "Mot de passe de l''utilisateur WS",
         "required": "true",
         "placeholder": "alfresco"
       }
@@ -514,7 +534,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (8, 'export_openads', 'Export OpenADS','{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (9, 'export_openads', 'Export OpenADS','{
   "options": {
     "auth": [
       {
@@ -527,14 +547,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
       {
         "id": "login",
         "type": "text",
-        "label": "Pseudo de l''''utilisateur WS",
+        "label": "Pseudo de l''utilisateur WS",
         "required": "true",
         "placeholder": "opencapture"
       },
       {
         "id": "password",
         "type": "password",
-        "label": "Mot de passe de l''''utilisateur WS",
+        "label": "Mot de passe de l''utilisateur WS",
         "required": "true",
         "placeholder": "opencapture"
       }
@@ -567,7 +587,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 9;
+ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 10;
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (5, 'export_pdf', 'Export vers Vérificateur', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/entrant/verifier/"}, {"id": "filename", "type": "textarea", "value": "PDF#doctype#date#random"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "pdf"}, {"id": "zip_filename", "type": "text", "value": ""}]}}', 'splitter');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (6, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "XML#date"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "xml"}]}}', 'splitter');
