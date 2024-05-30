@@ -28,7 +28,7 @@ from xml.dom import minidom
 from flask_babel import gettext
 from .import_classes import _Files
 import xml.etree.ElementTree as Et
-from src.backend.import_classes import _MEMWebServices
+from src.backend.import_classes import _MEMWebServices, _COOGWebServices
 
 
 def export_xml(data, log, regex, document_info, database):
@@ -431,6 +431,57 @@ def export_pdf(data, log, regex, document_info, compress_type, ocrise):
         response = {
             "errors": gettext('PDF_DESTINATION_FOLDER_DOESNT_EXISTS'),
             "message": folder_out
+        }
+        return response, 400
+
+
+def export_coog(data, document_info, log, regex, database):
+    log.info('Output execution : COOG export')
+    host = token = access_token = ''
+    auth_data = data['options']['auth']
+    for _data in auth_data:
+        if _data['id'] == 'host':
+            host = _data['value']
+        if _data['id'] == 'token':
+            token = _data['value']
+        if _data['id'] == 'access_token':
+            access_token = _data['value']
+
+    if host and access_token:
+        _ws = _COOGWebServices(
+            host,
+            token,
+            log
+        )
+        if _ws.access_token[0]:
+            if document_info:
+                ws_data = json.loads(data['options']['parameters'][0]['value'])[0]
+                for index in ws_data:
+                    if isinstance(ws_data[index], str):
+                        ws_data[index] = ''.join(construct_with_var(ws_data[index], document_info, regex))
+                    elif isinstance(ws_data[index], dict):
+                        for _index in ws_data[index]:
+                            if isinstance(ws_data[index][_index], str):
+                                ws_data[index][_index] = ''.join(construct_with_var(ws_data[index][_index],
+                                                                                    document_info, regex))
+                print(ws_data)
+                return {}, 400
+            else:
+                response = {
+                    "errors": gettext('EXPORT_COOG_ERROR'),
+                    "message": ''
+                }
+                return response, 400
+        else:
+            response = {
+                "errors": gettext('COOG_WS_INFO_WRONG'),
+                "message": _ws.access_token[1]
+            }
+            return response, 400
+    else:
+        response = {
+            "errors": gettext('COOG_WS_INFO_EMPTY'),
+            "message": ''
         }
         return response, 400
 

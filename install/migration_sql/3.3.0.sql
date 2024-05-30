@@ -27,6 +27,16 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "d
                 "required": "false",
                 "placeholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
             }
+        ],
+        "parameters": [
+            {
+                "id": "body_template",
+                "hint": "Format JSON avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "type": "textarea",
+                "label": "Contenu de l''appel API",
+                "required": true,
+                "placeholder": "[{\n\t\"ref\": \"invoice_number\",\n\t\"state\": \"draft\",\n\t\"activity_field\": {\"code\": \"sinistres\"},\n\t\"reception_channel\": {\"code\": \"client\"}\n}]"
+            }
         ]
     }
 }');

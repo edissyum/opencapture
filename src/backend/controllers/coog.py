@@ -33,4 +33,4 @@ def get_access_token(args):
         args['token'],
         log
     )
-    return _ws.acces_token
+    return _ws.access_token

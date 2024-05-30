@@ -107,14 +107,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "folder_out",
                 "type": "text",
                 "label": "Dossier de sortie",
-                "required": "true",
+                "required": true,
                 "placeholder": "/var/share/export/verifier/"
             },
             {
                 "id": "separator",
                 "type": "text",
                 "label": "Séparateur",
-                "required": "true",
+                "required": true,
                 "placeholder": "_"
             },
             {
@@ -122,7 +122,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
                 "type": "text",
                 "label": "Nom du fichier",
-                "required": "true",
+                "required": true,
                 "placeholder": "invoice_number#quotation_number#supplier_name"
             },
             {
@@ -130,7 +130,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "hint": "Ne pas mettre de point dans l''extension",
                 "label": "Extension du fichier",
-                "required": "true",
+                "required": true,
                 "placeholder": "xml"
             }
         ]
@@ -143,21 +143,21 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "host",
                 "type": "text",
                 "label": "URL de l''hôte",
-                "required": "true",
+                "required": true,
                 "placeholder": "http://localhost/mem_courrier/rest/"
             },
             {
                 "id": "login",
                 "type": "text",
                 "label": "Pseudo de l''utilisateur WS",
-                "required": "true",
+                "required": true,
                 "placeholder": "ws_opencapture"
             },
             {
                 "id": "password",
                 "type": "password",
                 "label": "Mot de passe de l''utilisateur WS",
-                "required": "true",
+                "required": true,
                 "placeholder": "ws_opencapture"
             }
         ],
@@ -166,7 +166,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "enabled",
                 "type": "boolean",
                 "label": "Activer la liaison avec un document dans MEM Courrier",
-                "required": "true",
+                "required": true,
                 "webservice": "",
                 "placeholder": ""
             },
@@ -174,7 +174,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "memCustomField",
                 "type": "text",
                 "label": "Champ personnalisé à récupérer",
-                "required": "false",
+                "required": false,
                 "webservice": "getCustomFieldsFromMem",
                 "placeholder": "Numéro de devis",
                 "hint": "Champ personnalisé MEM Courrier dans lequel est stocké la donnée nécessaire à la liaison avec un document"
@@ -183,7 +183,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "openCaptureField",
                 "type": "text",
                 "label": "Champ à comparer dans Open-Capture",
-                "required": "false",
+                "required": false,
                 "webservice": "",
                 "placeholder": "quotation_number",
                 "hint": "Identifiant du champ dans Open-Capture"
@@ -192,7 +192,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "memClause",
                 "type": "text",
                 "label": "Clause de selection des documents dans MEM Courrier",
-                "required": "false",
+                "required": false,
                 "webservice": "",
                 "placeholder": "status <> ''END''",
                 "hint": ""
@@ -201,7 +201,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "vatNumberContactCustom",
                 "type": "text",
                 "label": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET",
-                "required": "true",
+                "required": true,
                 "webservice": "getContactsCustomFieldsFromMem",
                 "placeholder": "Identifiant Open-Capture",
                 "hint": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET"
@@ -212,7 +212,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "destUser",
                 "type": "text",
                 "label": "Utilisateur destinataire",
-                "required": "true",
+                "required": true,
                 "webservice": "getUsersFromMem",
                 "placeholder": "Danny OCEAN"
             },
@@ -220,7 +220,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "status",
                 "type": "text",
                 "label": "Status",
-                "required": "true",
+                "required": true,
                 "webservice": "getStatusesFromMem",
                 "placeholder": "Courrier à qualifier"
             },
@@ -229,14 +229,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "textarea",
                 "label": "Sujet",
                 "hint": "Liste des identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
-                "required": "true",
+                "required": true,
                 "placeholder": "Facture n°#invoice_number"
             },
             {
                 "id": "typeId",
                 "type": "text",
                 "label": "Type de document",
-                "required": "true",
+                "required": true,
                 "webservice": "getDoctypesFromMem",
                 "placeholder": "Facture à qualifier"
             },
@@ -244,7 +244,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "typist",
                 "type": "text",
                 "label": "Utilisateur Rédacteur",
-                "required": "true",
+                "required": true,
                 "webservice": "getUsersFromMem",
                 "placeholder": "Danny OCEAN"
             },
@@ -252,7 +252,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "priority",
                 "type": "text",
                 "label": "Priorité",
-                "required": "true",
+                "required": true,
                 "webservice": "getPrioritiesFromMem",
                 "placeholder": "Normal"
             },
@@ -260,14 +260,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "format",
                 "type": "text",
                 "label": "Format",
-                "required": "true",
+                "required": true,
                 "placeholder": "pdf"
             },
             {
                 "id": "modelId",
                 "type": "text",
                 "label": "Modèle d''enregistrement",
-                "required": "true",
+                "required": true,
                 "webservice": "getIndexingModelsFromMem",
                 "placeholder": "Facture"
             },
@@ -275,7 +275,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "destination",
                 "type": "text",
                 "label": "Entité destinatrice",
-                "required": "true",
+                "required": true
                 "webservice": "getEntitiesFromMem",
                 "placeholder": "Service Courrier"
             },
@@ -285,7 +285,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "textarea",
                 "label": "Champs personnalisés",
                 "isJson": "true",
-                "required": "false",
+                "required": false,
                 "placeholder": "{\"1\": \"invoice_number\", \"2\": \"quotation_number\"}"
             }
         ]
@@ -299,14 +299,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "folder_out",
                 "type": "text",
                 "label": "Dossier de sortie",
-                "required": "true",
+                "required": true,
                 "placeholder": "/var/share/export/verifier/"
             },
             {
                 "id": "separator",
                 "type": "text",
                 "label": "Séparateur",
-                "required": "true",
+                "required": true,
                 "placeholder": "_"
             },
             {
@@ -314,7 +314,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
                 "type": "text",
                 "label": "Nom du fichier",
-                "required": "true",
+                "required": true,
                 "placeholder": "invoice_number#quotation_number#supplier_name"
             }
         ]
@@ -328,14 +328,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "folder_out",
                 "type": "text",
                 "label": "Dossier de sortie",
-                "required": "true",
+                "required": true,
                 "placeholder": "/var/share/export/verifier/"
             },
             {
                 "id": "separator",
                 "type": "text",
                 "label": "Séparateur",
-                "required": "true",
+                "required": true,
                 "placeholder": "_"
             },
             {
@@ -343,7 +343,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
                 "type": "text",
                 "label": "Nom du fichier",
-                "required": "true",
+                "required": true,
                 "placeholder": "invoice_number#quotation_number#supplier_name"
             }
         ]
@@ -356,22 +356,32 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "host",
                 "type": "text",
                 "label": "URL de l''hôte",
-                "required": "true",
-                "placeholder": "https://unip.example.com/gateway"
+                "required": true,
+                "placeholder": "https://coog.edissyum-dev.com/gateway"
             },
             {
                 "id": "token",
                 "type": "text",
                 "label": "Token d''authentification",
-                "required": "true",
+                "required": true,
                 "placeholder": "ujx8ke67izyc6q3vvh96520a96a54frgjrpgl85kk4sb0tv3"
             },
             {
                 "id": "access_token",
                 "type": "text",
                 "label": "Token d''accès à l''API",
-                "required": "false",
+                "required": false,
                 "placeholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "body_template",
+                "hint": "Format JSON avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "type": "textarea",
+                "label": "Contenu de l''appel API",
+                "required": true,
+                "placeholder": "[{\n\t\"ref\": \"invoice_number\",\n\t\"state\":\"draft\",\n\t\"activity_field\":{\"code\": \"sinistres\"},\n\t\"reception_channel\": {\"code\": \"client\"}\n}]"
             }
         ]
     }

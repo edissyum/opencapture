@@ -30,7 +30,7 @@ class COOGWebServices:
         self.timeout = 10
         self.token = token
         self.base_url = re.sub("^/|/$", "", host)
-        self.acces_token = self.get_access_token()
+        self.access_token = self.get_access_token()
 
     def get_access_token(self):
         try:
@@ -38,7 +38,6 @@ class COOGWebServices:
                 "token": self.token,
             }
             res = requests.post(self.base_url + '/auth/token', data=args, timeout=self.timeout)
-            print(res.text)
             if res.text:
                 if res.status_code == 404:
                     return [False, gettext('HOST_NOT_FOUND')]

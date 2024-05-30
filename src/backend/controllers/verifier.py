@@ -430,6 +430,22 @@ def export_mem(document_id, data):
         return verifier_exports.export_mem(data['data'], document_info, log, regex, database)
 
 
+def export_coog(document_id, data):
+    if 'regex' in current_context and 'database' in current_context and 'log' in current_context:
+        log = current_context.log
+        regex = current_context.regex
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+        regex = _vars[2]
+        database = _vars[0]
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+    if not error:
+        return verifier_exports.export_coog(data['data'], document_info, log, regex, database)
+
+
 def export_xml(document_id, data):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
 
