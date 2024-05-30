@@ -90,7 +90,8 @@
                             <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length !== 0"
                                     (click)="testConnection()" mat-button
                                     class="valid_button">
-                                <span>{{ "OUTPUT.test_connection" | translate }}</span>
+                                <span *ngIf="selectedOutputType == 'export_mem'">{{ "OUTPUT.test_connection" | translate }}</span>
+                                <span *ngIf="selectedOutputType == 'export_coog'">{{ "OUTPUT.retrieve_access_token" | translate }}</span>
                             </button>
                         </mat-tab>
                         <mat-tab [label]="'OUTPUT.parameters' | translate" style="height: 50vh;">

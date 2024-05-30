@@ -28,7 +28,7 @@ from flask import request, g as current_context, Flask, session
 from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_config_from_custom_id
 from .import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, mem, positions_masks, history, doctypes, mailcollect, artificial_intelligence, \
-    smtp, monitoring, workflow
+    smtp, monitoring, workflow, coog
 
 
 class Middleware:
@@ -118,6 +118,7 @@ babel = Babel(app, default_locale='fr', locale_selector=get_locale)
 
 app.register_blueprint(mem.bp)
 app.register_blueprint(auth.bp)
+app.register_blueprint(coog.bp)
 app.register_blueprint(user.bp)
 app.register_blueprint(smtp.bp)
 app.register_blueprint(roles.bp)

@@ -110,6 +110,11 @@ if 'mem' not in custom_array or 'controllers' not in custom_array['mem']['path']
 elif 'controllers' in custom_array['mem']['path']:
     mem = getattr(__import__(custom_array['mem']['path'], fromlist=[custom_array['mem']['module']]), custom_array['mem']['module'])
 
+if 'coog' not in custom_array or 'controllers' not in custom_array['coog']['path']:
+    from .controllers import coog
+elif 'controllers' in custom_array['coog']['path']:
+    mcoogcoogm = getattr(__import__(custom_array['coog']['path'], fromlist=[custom_array['coog']['module']]), custom_array['coog']['module'])
+
 if 'doctypes' not in custom_array or 'controllers' not in custom_array['doctypes']['path']:
     from .controllers import doctypes
 elif 'controllers' in custom_array['doctypes']['path']:

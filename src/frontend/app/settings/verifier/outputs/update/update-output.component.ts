@@ -213,7 +213,8 @@ export class UpdateOutputComponent implements OnInit {
         }
     ];
     testConnectionMapping   : any           = {
-        'export_mem' : "testMEMConnection()"
+        'export_mem' : "testMEMConnection()",
+        'export_coog' : "testCOOGConnection()"
     };
 
     /**
@@ -331,7 +332,7 @@ export class UpdateOutputComponent implements OnInit {
                                             type: option.type,
                                             placeholder: option.placeholder,
                                             control: new FormControl(),
-                                            required: option.required,
+                                            required: option.required == 'true',
                                             isJson: option.isJson,
                                             hint: option.hint,
                                             webservice: option.webservice
@@ -408,7 +409,7 @@ export class UpdateOutputComponent implements OnInit {
     isValidForm(form: any) {
         let state = true;
         form.forEach((element: any) => {
-            if ((element.control.status !== 'DISABLED' && element.control.status !== 'VALID') || element.control.value == null) {
+            if ((element.control.status !== 'DISABLED' && element.control.status !== 'VALID') || (element.required && element.control.value == null)) {
                 state = false;
             }
         });
@@ -444,6 +445,41 @@ export class UpdateOutputComponent implements OnInit {
         } else {
             return array;
         }
+    }
+
+    /**** COOG Webservices call ****/
+    testCOOGConnection() {
+        const args = this.getCOOGConnectionInfo();
+        this.http.post(environment['url'] + '/ws/coog/getAccessToken', {'args': args}, {headers: this.authService.headers},
+        ).pipe(
+            tap((data: any) => {
+                const status = data.status[0];
+                if (status === true) {
+                    this.notify.success(this.translate.instant('OUTPUT.coog_connection_ok'));
+                    this.connection = true;
+                    this.outputsTypesForm[this.selectedOutputType].auth.forEach((element: any) => {
+                        if (element.id === 'access_token') {
+                            element.control.setValue(data.status[1]);
+                        }
+                    });
+                } else {
+                    this.notify.error('<strong>' + this.translate.instant('OUTPUT.coog_connection_ko') + '</strong> : ' + data.status[1]);
+                    this.connection = false;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getCOOGConnectionInfo() {
+        return {
+            'host': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
+            'token': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'token'),
+        };
     }
 
     /**** MEM Courrier Webservices call ****/

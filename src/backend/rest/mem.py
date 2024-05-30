@@ -1,7 +1,5 @@
 # This file is part of Open-Capture.
-from flask_babel import gettext
 
-from src.backend.functions import rest_validator
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -17,6 +15,8 @@ from src.backend.functions import rest_validator
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+from flask_babel import gettext
+from src.backend.functions import rest_validator
 from src.backend.import_controllers import auth, mem
 from flask import Blueprint, request, make_response, jsonify
 

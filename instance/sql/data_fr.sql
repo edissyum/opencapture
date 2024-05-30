@@ -364,7 +364,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Token d''authentification",
                 "required": "true",
-                "placeholder": "VOTRE_JETON"
+                "placeholder": "ujx8ke67izyc6q3vvh96520a96a54frgjrpgl85kk4sb0tv3"
+            },
+            {
+                "id": "access_token",
+                "type": "text",
+                "label": "Token d''accès à l''API",
+                "required": "false",
+                "placeholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
             }
         ]
     }

@@ -50,6 +50,13 @@ elif 'classes' in custom_array['MEMWebServices']['path']:
                                       fromlist=[custom_array['MEMWebServices']['module']]),
                            custom_array['MEMWebServices']['module'])
 
+if 'COOGWebServices' not in custom_array or 'classes' not in custom_array['COOGWebServices']['path']:
+    from .classes.COOGWebServices import COOGWebServices as _COOGWebServices
+elif 'classes' in custom_array['COOGWebServices']['path']:
+    _COOGWebServices = getattr(__import__(custom_array['COOGWebServices']['path'] + '.' + custom_array['COOGWebServices']['module'],
+                                      fromlist=[custom_array['COOGWebServices']['module']]),
+                           custom_array['EMWe_COOGWebServicesServices']['module'])
+
 if 'PyTesseract' not in custom_array or 'classes' not in custom_array['PyTesseract']['path']:
     from .classes.PyTesseract import PyTesseract as _PyTesseract
 elif 'classes' in custom_array['PyTesseract']['path']:
