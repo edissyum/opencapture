@@ -93,6 +93,13 @@ def launch(args):
             'data': [args['workflow_id'], 'splitter']
         })
 
+        if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+            datas = {
+                'ip': args['ip'],
+                'user_info': args['user_info']
+            }
+            launch_script_splitter(workflow_settings[0], docservers, 'input', log, files, database, args, config, datas=datas)
+
         if workflow_settings:
             outputs = []
             if workflow_settings[0]['process']['use_interface'] and \
@@ -185,6 +192,10 @@ def launch(args):
                                         split_res = split_method(split_args)
                                         created_batches = split_res['batches_id']
                                         log.info(f"Batches created : {','.join(str(batch) for batch in created_batches)}")
+
+                                        if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+                                            args['batches_id'] = created_batches
+                                            launch_script_splitter(workflow_settings[0], docservers, 'process', log, files, database, args, config, datas=None)
                     else:
                         log.error("The workflow_id doesn't exists in database")
         except (Exception,):
