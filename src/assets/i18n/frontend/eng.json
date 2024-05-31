@@ -328,6 +328,7 @@
 	},
 	"FACTURATION": {
 		"accounting_plan": "Accounting plan",
+		"current_date": "Current date",
 		"delivery_number": "Delivery number",
 		"description": "Description",
 		"document_date": "Document date",
@@ -519,6 +520,7 @@
 		"role": "Role",
 		"splitter_list": "Splitter list",
 		"status": "Status ",
+		"technical_id": "Technical id",
 		"type": "Type",
 		"value": "Value",
 		"verifier_list": "Verifier list"
@@ -678,6 +680,7 @@
 	"OUTPUT": {
 		"add": "Add output",
 		"auth": "Authentification",
+		"b64_file_content": "Base64 file content",
 		"check_connection_before": "Please check connection",
 		"cmis_connection_ko": "Error while connecting CMIS",
 		"cmis_connection_ok": "Connection CMIS successfull",
@@ -692,6 +695,7 @@
 		"confirm_duplicate": "Are you sure you want to duplicate output <strong>{{ output }}</strong> ?",
 		"coog_connection_ko": "Error while connecting to COOG",
 		"coog_connection_ok": "Connection to COOG successfull",
+		"copy_technical_id": "Copy technical ID",
 		"create": "Create output",
 		"created": "Output created successfully",
 		"documents_count": "Documents count",
@@ -1119,6 +1123,7 @@
 		"on": "on",
 		"only_raw_footer": "Get only raw footer is enabled",
 		"original_file": "File",
+		"original_filename": "File name",
 		"outputs_list": "Outputs list",
 		"page": "Page",
 		"processing": "The document is currently being processed. Please wait and refresh the page later",

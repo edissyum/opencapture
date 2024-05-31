@@ -29,6 +29,7 @@ import { environment } from  "../../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Pipe({ name: 'highlight' })
 export class HighlightPipe implements PipeTransform {
@@ -132,83 +133,95 @@ export class UpdateOutputComponent implements OnInit {
     ];
     availableFields         : any           = [
         {
-            "id": 'HEADER.id',
+            'id': marker('HEADER.technical_id'),
             'label': 'HEADER.label'
         },
         {
-            "id": 'name',
+            'id': 'name',
             'label': 'ACCOUNTS.supplier_name'
         },
         {
-            "id": 'vat_number',
+            'id': 'b64_file_content',
+            'label': marker('OUTPUT.b64_file_content')
+        },
+        {
+            'id': 'original_filename',
+            'label': marker('VERIFIER.original_filename')
+        },
+        {
+            'id': 'vat_number',
             'label': 'ACCOUNTS.vat_number'
         },
         {
-            "id": 'siret',
+            'id': 'siret',
             'label': 'ACCOUNTS.siret'
         },
         {
-            "id": 'siren',
+            'id': 'siren',
             'label': 'ACCOUNTS.siren'
         },
         {
-            "id": 'rccm',
+            'id': 'rccm',
             'label': 'ACCOUNTS.rccm'
         },
         {
-            "id": 'duns',
+            'id': 'duns',
             'label': 'ACCOUNTS.duns'
         },
         {
-            "id": 'bic',
+            'id': 'bic',
             'label': 'ACCOUNTS.bic'
         },
         {
-            "id": 'invoice_number',
+            'id': 'invoice_number',
             'label': 'FACTURATION.invoice_number'
         },
         {
-            "id": 'quotation_number',
+            'id': 'quotation_number',
             'label': 'FACTURATION.quotation_number'
         },
         {
-            "id": 'document_date_year',
+            'id': 'current_date',
+            'label': marker('FACTURATION.current_date')
+        },
+        {
+            'id': 'document_date_year',
             'label': marker('FACTURATION.document_date_year')
         },
         {
-            "id": 'total_ht',
+            'id': 'total_ht',
             'label': marker('FACTURATION.total_ht')
         },
         {
-            "id": 'total_ttc',
+            'id': 'total_ttc',
             'label': marker('FACTURATION.total_ttc')
         },
         {
-            "id": 'total_vat',
+            'id': 'total_vat',
             'label': marker('FACTURATION.total_vat')
         },
         {
-            "id": 'document_date_month',
+            'id': 'document_date_month',
             'label': marker('FACTURATION.document_date_month')
         },
         {
-            "id": 'document_date_day',
+            'id': 'document_date_day',
             'label': marker('FACTURATION.document_date_day')
         },
         {
-            "id": 'register_date_year',
+            'id': 'register_date_year',
             'label': marker('FACTURATION.register_date_year')
         },
         {
-            "id": 'register_date_month',
+            'id': 'register_date_month',
             'label': marker('FACTURATION.register_date_month')
         },
         {
-            "id": 'register_date_day',
+            'id': 'register_date_day',
             'label': marker('FACTURATION.register_date_day')
         },
         {
-            "id": 'delivery_number',
+            'id': 'delivery_number',
             'label': 'FACTURATION.delivery_number'
         }
     ];
@@ -234,13 +247,14 @@ export class UpdateOutputComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
+        public clipboard: Clipboard,
         private route: ActivatedRoute,
         public userService: UserService,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService
+        public privilegesService: PrivilegesService,
     ) {}
 
     ngOnInit(): void {

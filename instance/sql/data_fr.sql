@@ -350,27 +350,27 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
     }
 }');
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (5, 'export_coog', 'Export vers COOG', 'verifier', '{
-	"options": {
+    "options": {
         "auth": [
             {
                 "id": "host",
                 "type": "text",
                 "label": "URL de l''hôte",
-                "required": true,
+                "required": "true",
                 "placeholder": "https://coog.edissyum-dev.com/gateway"
             },
             {
                 "id": "token",
                 "type": "text",
                 "label": "Token d''authentification",
-                "required": true,
+                "required": "true",
                 "placeholder": "ujx8ke67izyc6q3vvh96520a96a54frgjrpgl85kk4sb0tv3"
             },
             {
                 "id": "access_token",
                 "type": "text",
                 "label": "Token d''accès à l''API",
-                "required": false,
+                "required": "false",
                 "placeholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
             }
         ],
@@ -381,7 +381,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "textarea",
                 "label": "Contenu de l''appel API",
                 "required": true,
-                "placeholder": "[{\n\t\"ref\": \"invoice_number\",\n\t\"state\":\"draft\",\n\t\"activity_field\":{\"code\": \"sinistres\"},\n\t\"reception_channel\": {\"code\": \"client\"}\n}]"
+                "placeholder": "[{\n\t\"ref\": \"invoice_number\",\n\t\"state\": \"draft\",\n\t\"activity_field\": {\"code\": \"sinistres\"},\n\t\"reception_channel\": {\"code\": \"client\"},\n\t\"attachments\": [\n\t\t{\n\t\t\t\"content\": {\n\t\t\t\t\"type\": \"data\",\n\t\t\t\t\"data\": \"b64_file_content\",\n\t\t\t\t\"filename\": \"original_filename\"\n\t\t\t}\n\t\t}\n\t]\n}]"
             }
         ]
     }

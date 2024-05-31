@@ -2,9 +2,8 @@ ALTER TABLE users ADD COLUMN "refresh_token" TEXT;
 INSERT INTO "configurations" ("label", "data") VALUES ('verifierOrderSearch', '{"type": "list", "value": "desc", "options": ["asc", "desc"], "description": "Choix de l''ordre de recherche des informations dans le module Verifier"}');
 
 ALTER TABLE accounts_supplier DROP COLUMN lang;
-
 INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "data") VALUES ('export_coog', 'Export vers COOG', 'verifier', '{
-	"options": {
+    "options": {
         "auth": [
             {
                 "id": "host",
@@ -35,7 +34,7 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "d
                 "type": "textarea",
                 "label": "Contenu de l''appel API",
                 "required": true,
-                "placeholder": "[{\n\t\"ref\": \"invoice_number\",\n\t\"state\": \"draft\",\n\t\"activity_field\": {\"code\": \"sinistres\"},\n\t\"reception_channel\": {\"code\": \"client\"}\n}]"
+                "placeholder": "[{\n\t\"ref\": \"invoice_number\",\n\t\"state\": \"draft\",\n\t\"activity_field\": {\"code\": \"sinistres\"},\n\t\"reception_channel\": {\"code\": \"client\"},\n\t\"attachments\": [\n\t\t{\n\t\t\t\"content\": {\n\t\t\t\t\"type\": \"data\",\n\t\t\t\t\"data\": \"b64_file_content\",\n\t\t\t\t\"filename\": \"original_filename\"\n\t\t\t}\n\t\t}\n\t]\n}]"
             }
         ]
     }

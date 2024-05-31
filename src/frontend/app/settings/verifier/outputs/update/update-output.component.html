@@ -212,8 +212,7 @@
             {{ "FORMS.available_fields" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <div *ngIf="this.loadingCustomFields" class="flex text-gray-400 object-contain"
-             style="height: calc(100% - 8rem)">
+        <div *ngIf="this.loadingCustomFields" class="flex text-gray-400 object-contain" style="height: calc(100% - 8rem)">
             <div class="m-auto text-center">
                 <i class="fa-solid fa-code fa-4x fa-beat-fade w-full mb-2"></i>
                 <span class="w-full">
@@ -225,7 +224,9 @@
             <div *ngFor="let field of this.availableFields; let cpt = index" class="my-8 ml-2 text-base">
                 <span>
                     {{ field.label | translate }}
-                    <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field.id | translate }}</span>
+                    <span class="cursor-pointer text-xs text-green-400 ml-3" [matTooltip]="'OUTPUT.copy_technical_id' | translate" (click)="this.clipboard.copy(field.id)">
+                        {{ field.id | translate }}
+                    </span>
                     <mat-divider class="border-green-400 mt-4" *ngIf="cpt === 0"></mat-divider>
                 </span>
             </div>

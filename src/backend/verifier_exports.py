@@ -19,6 +19,7 @@ import os
 import json
 import pyheif
 import shutil
+import base64
 import facturx
 import datetime
 import subprocess
@@ -435,6 +436,23 @@ def export_pdf(data, log, regex, document_info, compress_type, ocrise):
         return response, 400
 
 
+def construct_json(data, document_info, regex, return_data=None):
+    if return_data is None:
+        return_data = {}
+
+    for parameter in data:
+        if isinstance(data[parameter], str):
+            return_data[parameter] = ''.join(construct_with_var(data[parameter], document_info, regex))
+        elif isinstance(data[parameter], dict):
+            return_data[parameter] = construct_json(data[parameter], document_info, regex)
+        elif isinstance(data[parameter], list):
+            return_data[parameter] = []
+            for sub_param in data[parameter]:
+                if isinstance(sub_param, dict):
+                    return_data[parameter].append(construct_json(sub_param, document_info, regex))
+    return return_data
+
+
 def export_coog(data, document_info, log, regex, database):
     log.info('Output execution : COOG export')
     host = token = access_token = ''
@@ -455,17 +473,18 @@ def export_coog(data, document_info, log, regex, database):
         )
         if _ws.access_token[0]:
             if document_info:
-                ws_data = json.loads(data['options']['parameters'][0]['value'])[0]
-                for index in ws_data:
-                    if isinstance(ws_data[index], str):
-                        ws_data[index] = ''.join(construct_with_var(ws_data[index], document_info, regex))
-                    elif isinstance(ws_data[index], dict):
-                        for _index in ws_data[index]:
-                            if isinstance(ws_data[index][_index], str):
-                                ws_data[index][_index] = ''.join(construct_with_var(ws_data[index][_index],
-                                                                                    document_info, regex))
-                print(ws_data)
-                return {}, 400
+                parameters = json.loads(data['options']['parameters'][0]['value'])[0]
+                ws_data = [construct_json(parameters, document_info, regex)]
+                res = _ws.create_task(ws_data)
+                print(res)
+                if res[0]:
+                    return {}, 200
+                else:
+                    response = {
+                        "errors": gettext('EXPORT_COOG_ERROR'),
+                        "message": res[1]
+                    }
+                    return response, 400
             else:
                 response = {
                     "errors": gettext('EXPORT_COOG_ERROR'),
@@ -701,6 +720,12 @@ def construct_with_var(data, document_info, regex, separator=None):
             _data.append(datetime.datetime.strptime(document_info['register_date'], regex['format_date']).month)
         elif column == 'register_date_day':
             _data.append(datetime.datetime.strptime(document_info['register_date'], regex['format_date']).day)
+        elif column == 'b64_file_content':
+            file = document_info['path'] + '/' + document_info['filename']
+            if os.path.isfile(file):
+                with open(file, 'rb') as _file:
+                    b64_encoded = base64.b64encode(_file.read())
+                    _data.append(str(b64_encoded))
         else:
             if separator:
                 _data.append(column.replace(' ', separator))
