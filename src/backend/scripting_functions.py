@@ -1,5 +1,5 @@
 # This file is part of Open-Capture.
-
+import importlib
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -19,6 +19,9 @@ import os
 import re
 import json
 import shutil
+import traceback
+import uuid
+
 from flask_babel import gettext
 from src.backend.main import launch, create_classes_from_custom_id
 
@@ -116,3 +119,67 @@ def update_document_data(args):
                 'where': ['id = %s'],
                 'data': [args['document_id']]
             })
+
+
+def launch_script_splitter(workflow_settings, docservers, step, log, file, database, args, config, datas=None):
+    if 'script' in workflow_settings[step] and workflow_settings[step]['script']:
+        script = workflow_settings[step]['script']
+        check_res, message = check_code(script, docservers['SPLITTER_SHARE'],
+                                        workflow_settings['input']['input_folder'])
+
+        if not check_res:
+            log.error('[' + step.upper() + '_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
+                      '&nbsp;<strong>(' + message.strip() + ')</strong>')
+            return False
+
+        change_workflow = 'send_to_workflow({' in script
+
+        rand = str(uuid.uuid4())
+        tmp_file = docservers['TMP_PATH'] + '/' + step + '_scripting_' + rand + '.py'
+
+        try:
+            with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+                python_script.write(script)
+
+            if os.path.isfile(tmp_file):
+                script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.').replace('.py', '')
+                script_name = script_name.replace('..', '.')
+                try:
+                    tmp_script_name = script_name.replace('custom.', '')
+                    scripting = importlib.import_module(tmp_script_name, 'custom')
+                    script_name = tmp_script_name
+                except ModuleNotFoundError:
+                    scripting = importlib.import_module(script_name, 'custom')
+
+                data = {
+                    'log': log,
+                    'file': file,
+                    'custom_id': args['custom_id'],
+                    'opencapture_path': config['GLOBAL']['applicationpath']
+                }
+
+                if step == 'input':
+                    data['ip'] = args['ip']
+                    data['database'] = database
+                    data['user_info'] = args['user_info']
+
+                elif step in ('process'):
+                    data['batches_id'] = args['batches_id']
+                    if datas:
+                        data['datas'] = datas
+
+                elif step in ('output'):
+                    data['batch_id'] = args['batch_id']
+
+                    if datas:
+                        data['datas'] = datas
+
+                    if 'outputs' in args:
+                        data['outputs'] = args['outputs']
+
+                res = scripting.main(data)
+                os.remove(tmp_file)
+                return change_workflow and res != 'DISABLED'
+        except (Exception,):
+            log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
+            os.remove(tmp_file)

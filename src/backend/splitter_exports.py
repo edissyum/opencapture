@@ -18,6 +18,7 @@
 import os
 import re
 from flask_babel import gettext
+from src.backend.scripting_functions import launch_script_splitter
 from src.backend.import_classes import _Splitter, _Files, _CMIS, _OpenADS
 from src.backend.import_models import splitter, workflow, forms, outputs
 
@@ -383,5 +384,5 @@ def process_after_outputs(args):
             'custom_id': args['custom_id'],
             'batch_id': args['batch']['id']
         }
-        _Splitter.launch_script(args['workflow_settings'], args['docservers'], 'output',
+        launch_script_splitter(args['workflow_settings'], args['docservers'], 'output',
                                 args['log'], None, args['database'], _args, args['config'], datas=datas)
