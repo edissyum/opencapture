@@ -223,6 +223,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     @Output() selectedFormOutput: any    = new EventEmitter < string > ();
 
     selectFormControl: FormControl       = new FormControl();
+    toggleControl: FormControl           = new FormControl(false);
     forms: any[]                         = [];
 
     /** Map from flat node to nested node. This helps us finding the nested node to be modified */
@@ -279,6 +280,8 @@ export class DocumentTypeFactoryComponent implements OnInit {
             this.sessionStorageService.save('doctypeFormId', formId);
             this.treeDataObj.loadTree(formId);
             this.selectedFormOutput.emit({'formId': formId});
+            const selectedForm  = this.forms.find( form => form.id === this.selectFormControl.value );
+            this.toggleControl.setValue(selectedForm.settings.unique_doc_type);
         });
         this.settings.hasOwnProperty('formId') ? this.treeDataObj.loadTree(this.settings.formId) : this.loadForms();
     }
@@ -295,6 +298,8 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 } else {
                     this.notify.handleErrors(this.translate.instant('FORMS.no_form_available'));
                 }
+                const selectedForm  = this.forms.find( form => form.id === this.selectFormControl.value );
+                this.toggleControl.setValue(selectedForm.settings.unique_doc_type);
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -513,7 +518,38 @@ export class DocumentTypeFactoryComponent implements OnInit {
         this.treeControl.expandAll();
         this.sessionStorageService.save('is_doctypes_tree_collapsed', false);
     }
-
+    changeDocType() {
+        const dataSelectForm = this.forms.find(item => item.id === this.selectFormControl.value);
+        dataSelectForm.settings.unique_doc_type = this.toggleControl.value;
+        const uniqueDocType = this.toggleControl.value;
+        const label             = dataSelectForm.label;
+        const isDefault         = dataSelectForm.default_form;
+        const metadataMethod    = dataSelectForm.metadata_method;
+        const exportZipFile     = dataSelectForm.export_zip_file;
+        const outputs = dataSelectForm.outputs;
+        this.http.put(environment['url'] + '/ws/forms/splitter/update/' + dataSelectForm.id, {
+            'args': {
+                'label'        : label,
+                'default_form' : isDefault,
+                'outputs'      : outputs,
+                'settings'     : {
+                    'metadata_method' : metadataMethod,
+                    'export_zip_file' : exportZipFile,
+                    'unique_doc_type' : uniqueDocType
+                }
+            }
+        }, {headers: this.authService.headers},
+        ).pipe(
+            tap( ()=>{
+                this.notify.success(this.translate.instant('DOCTYPE.unique_doctype_updated'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            }))
+        .subscribe();
+    }
     collapseAll() {
         this.treeControl.collapseAll();
         this.sessionStorageService.save('is_doctypes_tree_collapsed', true);

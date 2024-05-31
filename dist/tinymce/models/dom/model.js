@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 7.0.1 (2024-04-10)
+ * TinyMCE version 6.8.3 (2024-02-08)
  */
 
 (function () {
@@ -879,14 +879,7 @@
     const bindFrom = (a, f) => a !== undefined && a !== null ? f(a) : Optional.none();
     const someIf = (b, a) => b ? Optional.some(a) : Optional.none();
 
-    const removeFromStart = (str, numChars) => {
-      return str.substring(numChars);
-    };
-
     const checkRange = (str, substr, start) => substr === '' || str.length >= substr.length && str.substr(start, start + substr.length) === substr;
-    const removeLeading = (str, prefix) => {
-      return startsWith(str, prefix) ? removeFromStart(str, prefix.length) : str;
-    };
     const contains = (str, substr, start = 0, end) => {
       const idx = str.indexOf(substr, start);
       if (idx !== -1) {
@@ -1842,7 +1835,6 @@
     const rPercentageBasedSizeRegex = /(\d+(\.\d+)?)%/;
     const rPixelBasedSizeRegex = /(\d+(\.\d+)?)px|em/;
     const isCol$2 = isTag('col');
-    const isRow$2 = isTag('tr');
     const getPercentSize = (elm, outerGetter, innerGetter) => {
       const relativeParent = parentElement(elm).getOrThunk(() => getBody$1(owner(elm)));
       return outerGetter(elm) / innerGetter(relativeParent) * 100;
@@ -1855,9 +1847,6 @@
     };
     const setHeight = (cell, amount) => {
       set$1(cell, 'height', amount + 'px');
-    };
-    const removeHeight = cell => {
-      remove$5(cell, 'height');
     };
     const getHeightValue = cell => getRuntime(cell) + 'px';
     const convert = (cell, number, getter, setter) => {
@@ -1890,11 +1879,11 @@
       });
     };
     const getRawWidth$1 = element => getRaw$1(element, 'width');
-    const getRawHeight$1 = element => getRaw$1(element, 'height');
+    const getRawHeight = element => getRaw$1(element, 'height');
     const getPercentageWidth = cell => getPercentSize(cell, get$9, getInner);
     const getPixelWidth$1 = cell => isCol$2(cell) ? get$9(cell) : getRuntime$1(cell);
     const getHeight = cell => {
-      return isRow$2(cell) ? get$8(cell) : get$7(cell, 'rowspan', getTotalHeight);
+      return get$7(cell, 'rowspan', getTotalHeight);
     };
     const getGenericWidth = cell => {
       const width = getRawWidth$1(cell);
@@ -1908,7 +1897,6 @@
       set$1(cell, 'width', amount + unit);
     };
     const getPixelTableWidth = table => get$9(table) + 'px';
-    const getPixelTableHeight = table => get$8(table) + 'px';
     const getPercentTableWidth = table => getPercentSize(table, get$9, getInner) + '%';
     const isPercentSizing$1 = table => getRawWidth$1(table).exists(size => rPercentageBasedSizeRegex.test(size));
     const isPixelSizing$1 = table => getRawWidth$1(table).exists(size => rPixelBasedSizeRegex.test(size));
@@ -1920,7 +1908,7 @@
       return getRawWidth$1(cell).getOrThunk(() => getPixelWidth$1(cell) + 'px');
     };
     const getRawH = cell => {
-      return getRawHeight$1(cell).getOrThunk(() => getHeight(cell) + 'px');
+      return getRawHeight(cell).getOrThunk(() => getHeight(cell) + 'px');
     };
     const justCols = warehouse => map$1(Warehouse.justColumns(warehouse), column => Optional.from(column.element));
     const isValidColumn = cell => {
@@ -1967,19 +1955,20 @@
         return deduced.getOrThunk(tableSize.minCellWidth);
       });
     };
-    const getHeightFrom = (warehouse, table, getHeight, fallback) => {
-      const rowCells = rows(warehouse);
-      const rows$1 = map$1(warehouse.all, r => Optional.some(r.element));
-      const backups = [Optional.some(height.edge(table))].concat(map$1(height.positions(rowCells, table), pos => pos.map(p => p.y)));
-      return map$1(rows$1, (row, i) => getDimension(row, i, backups, always, getHeight, fallback));
+    const getHeightFrom = (warehouse, table, direction, getHeight, fallback) => {
+      const rows$1 = rows(warehouse);
+      const backups = [Optional.some(direction.edge(table))].concat(map$1(direction.positions(rows$1, table), pos => pos.map(p => p.y)));
+      return map$1(rows$1, (cellOption, c) => {
+        return getDimension(cellOption, c, backups, not(hasRowspan), getHeight, fallback);
+      });
     };
-    const getPixelHeights = (warehouse, table) => {
-      return getHeightFrom(warehouse, table, getHeight, deduced => {
+    const getPixelHeights = (warehouse, table, direction) => {
+      return getHeightFrom(warehouse, table, direction, getHeight, deduced => {
         return deduced.getOrThunk(minHeight);
       });
     };
-    const getRawHeights = (warehouse, table) => {
-      return getHeightFrom(warehouse, table, getRawH, getDeduced);
+    const getRawHeights = (warehouse, table, direction) => {
+      return getHeightFrom(warehouse, table, direction, getRawH, getDeduced);
     };
 
     const widthLookup = (table, getter) => () => {
@@ -2523,12 +2512,10 @@
     const getSelectionStart = editor => SugarElement.fromDom(editor.selection.getStart());
     const getPixelWidth = elm => elm.getBoundingClientRect().width;
     const getPixelHeight = elm => elm.getBoundingClientRect().height;
-    const getRawValue = prop => (editor, elm) => {
-      const raw = editor.dom.getStyle(elm, prop) || editor.dom.getAttrib(elm, prop);
+    const getRawWidth = (editor, elm) => {
+      const raw = editor.dom.getStyle(elm, 'width') || editor.dom.getAttrib(elm, 'width');
       return Optional.from(raw).filter(isNotEmpty);
     };
-    const getRawWidth = getRawValue('width');
-    const getRawHeight = getRawValue('height');
     const isPercentage$1 = value => /^(\d+(\.\d+)?)%$/.test(value);
     const isPixel = value => /^(\d+(\.\d+)?)px$/.test(value);
     const isInEditableContext$1 = cell => closest$2(cell, isTag('table')).exists(isEditable$1);
@@ -4170,6 +4157,17 @@
         colspan: column.colspan
       }));
     };
+    const recalculateHeightForCells = (warehouse, heights) => {
+      const all = Warehouse.justCells(warehouse);
+      return map$1(all, cell => {
+        const height = total(cell.row, cell.row + cell.rowspan, heights);
+        return {
+          element: cell.element,
+          height,
+          rowspan: cell.rowspan
+        };
+      });
+    };
     const matchRowHeight = (warehouse, heights) => {
       return map$1(warehouse.all, (row, i) => {
         return {
@@ -4204,16 +4202,17 @@
       recalculateAndApply(warehouse, newWidths, tableSize);
       resizing.resizeTable(tableSize.adjustTableWidth, clampedStep, isLastColumn);
     };
-    const adjustHeight = (table, delta, index) => {
+    const adjustHeight = (table, delta, index, direction) => {
       const warehouse = Warehouse.fromTable(table);
-      const heights = getPixelHeights(warehouse, table);
+      const heights = getPixelHeights(warehouse, table, direction);
       const newHeights = map$1(heights, (dy, i) => index === i ? Math.max(delta + dy, minHeight()) : dy);
+      const newCellSizes = recalculateHeightForCells(warehouse, newHeights);
       const newRowSizes = matchRowHeight(warehouse, newHeights);
       each$2(newRowSizes, row => {
         setHeight(row.element, row.height);
       });
-      each$2(Warehouse.justCells(warehouse), cell => {
-        removeHeight(cell.element);
+      each$2(newCellSizes, cell => {
+        setHeight(cell.element, cell.height);
       });
       const total = sumUp(newHeights);
       setHeight(table, total);
@@ -4582,7 +4581,7 @@
     const opEraseRows = (grid, details, _comparator, _genWrappers) => {
       const rows = uniqueRows(details);
       const newGrid = deleteRowsAt(grid, rows[0].row, rows[rows.length - 1].row);
-      const maxRowIndex = Math.max(extractGridDetails(newGrid).rows.length - 1, 0);
+      const maxRowIndex = newGrid.length > 0 ? newGrid.length - 1 : 0;
       return bundle(newGrid, Math.min(details[0].row, maxRowIndex), details[0].column);
     };
     const opMergeCells = (grid, mergable, comparator, genWrappers) => {
@@ -4627,7 +4626,7 @@
       const context = rows[pasteDetails.cells[0].row];
       const gridB = gridifyRows(pasteDetails.clipboard, pasteDetails.generators, context);
       const mergedGrid = insertCols(index, grid, gridB, pasteDetails.generators, comparator);
-      return bundle(mergedGrid, pasteDetails.cells[0].row, index);
+      return bundle(mergedGrid, pasteDetails.cells[0].row, pasteDetails.cells[0].column);
     };
     const opPasteRowsBefore = (grid, pasteDetails, comparator, _genWrappers) => {
       const rows = extractGridDetails(grid).rows;
@@ -4643,7 +4642,7 @@
       const context = rows[pasteDetails.cells[0].row];
       const gridB = gridifyRows(pasteDetails.clipboard, pasteDetails.generators, context);
       const mergedGrid = insertRows(index, grid, gridB, pasteDetails.generators, comparator);
-      return bundle(mergedGrid, index, pasteDetails.cells[0].column);
+      return bundle(mergedGrid, pasteDetails.cells[0].row, pasteDetails.cells[0].column);
     };
     const opGetColumnsType = (table, target) => {
       const house = Warehouse.fromTable(table);
@@ -5111,9 +5110,11 @@
         set$1(column.element, 'width', width + unit);
       });
     };
-    const redistributeToH = (newHeights, rows, cells) => {
+    const redistributeToH = (newHeights, rows, cells, unit) => {
       each$2(cells, cell => {
-        remove$5(cell.element, 'height');
+        const heights = newHeights.slice(cell.row, cell.rowspan + cell.row);
+        const h = sum(heights, minHeight());
+        set$1(cell.element, 'height', h + unit);
       });
       each$2(rows, (row, i) => {
         set$1(row.element, 'height', newHeights[i]);
@@ -5140,10 +5141,11 @@
         set$1(table, 'width', newWidth);
       });
       optHeight.each(newHeight => {
+        const hUnit = getUnit(newHeight);
         const totalHeight = get$8(table);
-        const oldHeights = getRawHeights(warehouse, table);
+        const oldHeights = getRawHeights(warehouse, table, height);
         const nuHeights = redistribute$1(oldHeights, totalHeight, newHeight);
-        redistributeToH(nuHeights, rows, cells);
+        redistributeToH(nuHeights, rows, cells, hUnit);
         set$1(table, 'height', newHeight);
       });
     };
@@ -5153,24 +5155,18 @@
 
     const cleanupLegacyAttributes = element => {
       remove$7(element, 'width');
-      remove$7(element, 'height');
     };
-    const convertToPercentSizeWidth = table => {
+    const convertToPercentSize = table => {
       const newWidth = getPercentTableWidth(table);
       redistribute(table, Optional.some(newWidth), Optional.none());
       cleanupLegacyAttributes(table);
     };
-    const convertToPixelSizeWidth = table => {
+    const convertToPixelSize = table => {
       const newWidth = getPixelTableWidth(table);
       redistribute(table, Optional.some(newWidth), Optional.none());
       cleanupLegacyAttributes(table);
     };
-    const convertToPixelSizeHeight = table => {
-      const newHeight = getPixelTableHeight(table);
-      redistribute(table, Optional.none(), Optional.some(newHeight));
-      cleanupLegacyAttributes(table);
-    };
-    const convertToNoneSizeWidth = table => {
+    const convertToNoneSize = table => {
       remove$5(table, 'width');
       const columns = columns$1(table);
       const rowElements = columns.length > 0 ? columns : cells$1(table);
@@ -5278,11 +5274,11 @@
       });
       return descendant(getBody(editor), 'table[data-mce-id="__mce"]').map(table => {
         if (isTablePixelsForced(editor)) {
-          convertToPixelSizeWidth(table);
+          convertToPixelSize(table);
         } else if (isTableResponsiveForced(editor)) {
-          convertToNoneSizeWidth(table);
+          convertToNoneSize(table);
         } else if (isTablePercentagesForced(editor) || isPercentage(defaultStyles.width)) {
-          convertToPercentSizeWidth(table);
+          convertToPercentSize(table);
         }
         removeDataStyle(table);
         remove$7(table, 'data-mce-id');
@@ -5359,11 +5355,11 @@
         if (!isForcedSizing) {
           table(cellOrCaption, isRoot).each(table => {
             if (sizing === 'relative' && !isPercentSizing(table)) {
-              convertToPercentSizeWidth(table);
+              convertToPercentSize(table);
             } else if (sizing === 'fixed' && !isPixelSizing(table)) {
-              convertToPixelSizeWidth(table);
+              convertToPixelSize(table);
             } else if (sizing === 'responsive' && !isNoneSizing(table)) {
-              convertToNoneSizeWidth(table);
+              convertToNoneSize(table);
             }
             removeDataStyle(table);
             fireTableModified(editor, table.dom, structureModified);
@@ -6999,12 +6995,11 @@
       const onSelection = (cells, start, finish) => {
         const tableOpt = table(start);
         tableOpt.each(table => {
-          const cellsDom = map$1(cells, cell => cell.dom);
           const cloneFormats = getTableCloneElements(editor);
           const generators = cellOperations(noop, SugarElement.fromDom(editor.getDoc()), cloneFormats);
           const selectedCells = getCellsFromSelection(editor);
-          const otherCellsDom = getOtherCells(table, { selection: selectedCells }, generators).map(otherCells => map(otherCells, cellArr => map$1(cellArr, cell => cell.dom))).getOrUndefined();
-          fireTableSelectionChange(editor, cellsDom, start.dom, finish.dom, otherCellsDom);
+          const otherCells = getOtherCells(table, { selection: selectedCells }, generators);
+          fireTableSelectionChange(editor, cells, start, finish, otherCells);
         });
       };
       const onClear = () => fireTableSelectionClear(editor);
@@ -7790,7 +7785,7 @@
         const table = event.table;
         events.trigger.beforeResize(table, 'row');
         const delta = hdirection.delta(event.delta, table);
-        adjustHeight(table, delta, event.row);
+        adjustHeight(table, delta, event.row, hdirection);
         events.trigger.afterResize(table, 'row');
       });
       manager.events.startAdjust.bind(_event => {
@@ -7873,7 +7868,7 @@
     const isTable = node => isNonNullable(node) && node.nodeName === 'TABLE';
     const barResizerPrefix = 'bar-';
     const isResizable = elm => get$b(elm, 'data-mce-resize') !== 'false';
-    const syncTableCellPixels = table => {
+    const syncPixels = table => {
       const warehouse = Warehouse.fromTable(table);
       if (!Warehouse.hasColumns(warehouse)) {
         each$2(cells$1(table), cell => {
@@ -7883,29 +7878,19 @@
         });
       }
     };
-    const isCornerResize = origin => startsWith(origin, 'corner-');
-    const getCornerLocation = origin => removeLeading(origin, 'corner-');
     const TableResizeHandler = editor => {
       const selectionRng = value();
       const tableResize = value();
       const resizeWire = value();
       let startW;
       let startRawW;
-      let startH;
-      let startRawH;
       const lazySizing = table => get$5(editor, table);
       const lazyResizingBehaviour = () => isPreserveTableColumnResizing(editor) ? preserveTable() : resizeTable();
       const getNumColumns = table => getGridSize(table).columns;
-      const getNumRows = table => getGridSize(table).rows;
-      const afterCornerResize = (table, origin, width, height) => {
-        const location = getCornerLocation(origin);
-        const isRightEdgeResize = endsWith(location, 'e');
-        const isNorthEdgeResize = startsWith(location, 'n');
+      const afterCornerResize = (table, origin, width) => {
+        const isRightEdgeResize = endsWith(origin, 'e');
         if (startRawW === '') {
-          convertToPercentSizeWidth(table);
-        }
-        if (startRawH === '') {
-          convertToPixelSizeHeight(table);
+          convertToPercentSize(table);
         }
         if (width !== startW && startRawW !== '') {
           set$1(table, 'width', startRawW);
@@ -7919,12 +7904,7 @@
           set$1(table, 'width', targetPercentW + '%');
         }
         if (isPixel(startRawW)) {
-          syncTableCellPixels(table);
-        }
-        if (height !== startH && startRawH !== '') {
-          set$1(table, 'height', startRawH);
-          const idx = isNorthEdgeResize ? 0 : getNumRows(table) - 1;
-          adjustHeight(table, height - startH, idx);
+          syncPixels(table);
         }
       };
       const destroy = () => {
@@ -7971,17 +7951,15 @@
             editor.dom.addClass(clone, 'mce-' + getTableColumnResizingBehaviour(editor) + '-columns');
           });
           if (!isPixelSizing(table) && isTablePixelsForced(editor)) {
-            convertToPixelSizeWidth(table);
+            convertToPixelSize(table);
           } else if (!isPercentSizing(table) && isTablePercentagesForced(editor)) {
-            convertToPercentSizeWidth(table);
+            convertToPercentSize(table);
           }
           if (isNoneSizing(table) && startsWith(e.origin, barResizerPrefix)) {
-            convertToPercentSizeWidth(table);
+            convertToPercentSize(table);
           }
           startW = e.width;
           startRawW = isTableResponsiveForced(editor) ? '' : getRawWidth(editor, targetElm).getOr('');
-          startH = e.height;
-          startRawH = getRawHeight(editor, targetElm).getOr('');
         }
       });
       editor.on('ObjectResized', e => {
@@ -7989,8 +7967,8 @@
         if (isTable(targetElm)) {
           const table = SugarElement.fromDom(targetElm);
           const origin = e.origin;
-          if (isCornerResize(origin)) {
-            afterCornerResize(table, origin, e.width, e.height);
+          if (startsWith(origin, 'corner-')) {
+            afterCornerResize(table, origin, e.width);
           }
           removeDataStyle(table);
           fireTableModified(editor, table.dom, styleModified);

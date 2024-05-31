@@ -396,7 +396,10 @@ def update_document(document_id, data):
 
 def remove_lock_by_user_id(user_id):
     _, error = verifier.update_documents({
-        'set': {"locked": False},
+        'set': {
+            'locked': False,
+            'locked_by': None
+        },
         'where': ['locked_by = %s'],
         'data': [user_id]
     })
@@ -661,6 +664,7 @@ def return_rotated_content(file_type, image):
             content = file.read()
     else:
         temp = Image.open(image)
+        temp = temp.convert('RGB')
         with tempfile.NamedTemporaryFile() as tf:
             temp.save(tf.name + '.jpg', format="JPEG")
             rotate_img(tf.name + '.jpg')

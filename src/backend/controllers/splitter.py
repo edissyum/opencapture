@@ -320,7 +320,10 @@ def lock_batch(args):
 
 def remove_lock_by_user_id(user_id):
     _, error = splitter.remove_lock_by_user_id({
-        'set': {"locked": False, "locked_by": None},
+        'set': {
+            'locked': False,
+            'locked_by': None
+        },
         'where': ['locked_by = %s'],
         'user_id': user_id
     })

@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 7.0.1 (2024-04-10)
+ * TinyMCE version 6.8.3 (2024-02-08)
  */
 
 (function () {
@@ -1089,8 +1089,7 @@
         icon: 'link',
         tooltip: 'Insert/edit link',
         onAction: openDialog(editor),
-        onSetup: toggleLinkState(editor),
-        shortcut: 'Meta+K'
+        onSetup: toggleLinkState(editor)
       });
       editor.ui.registry.addButton('openlink', {
         icon: 'new-tab',
@@ -1194,7 +1193,7 @@
                 text,
                 title: Optional.none(),
                 rel: Optional.none(),
-                target: Optional.from(getDefaultLinkTarget(editor)),
+                target: Optional.none(),
                 class: Optional.none()
               });
               collapseSelectionToEnd(editor);

@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 7.0.1 (2024-04-10)
+ * TinyMCE version 6.8.3 (2024-02-08)
  */
 
 (function () {
@@ -979,7 +979,7 @@
       };
       return nu$d(group(1), group(2));
     };
-    const detect$4 = (versionRegexes, agent) => {
+    const detect$5 = (versionRegexes, agent) => {
       const cleanedAgent = String(agent).toLowerCase();
       if (versionRegexes.length === 0) {
         return unknown$3();
@@ -997,7 +997,7 @@
     };
     const Version = {
       nu: nu$d,
-      detect: detect$4,
+      detect: detect$5,
       unknown: unknown$3
     };
 
@@ -1014,14 +1014,14 @@
       });
     };
 
-    const detect$3 = (candidates, userAgent) => {
+    const detect$4 = (candidates, userAgent) => {
       const agent = String(userAgent).toLowerCase();
       return find$5(candidates, candidate => {
         return candidate.search(agent);
       });
     };
     const detectBrowser = (browsers, userAgent) => {
-      return detect$3(browsers, userAgent).map(browser => {
+      return detect$4(browsers, userAgent).map(browser => {
         const version = Version.detect(browser.versionRegexes, userAgent);
         return {
           current: browser.name,
@@ -1030,7 +1030,7 @@
       });
     };
     const detectOs = (oses, userAgent) => {
-      return detect$3(oses, userAgent).map(os => {
+      return detect$4(oses, userAgent).map(os => {
         const version = Version.detect(os.versionRegexes, userAgent);
         return {
           current: os.name,
@@ -1233,7 +1233,7 @@
       chromeos: constant$1(chromeos)
     };
 
-    const detect$2 = (userAgent, userAgentDataOpt, mediaMatch) => {
+    const detect$3 = (userAgent, userAgentDataOpt, mediaMatch) => {
       const browsers = PlatformInfo.browsers();
       const oses = PlatformInfo.oses();
       const browser = userAgentDataOpt.bind(userAgentData => detectBrowser$1(browsers, userAgentData)).orThunk(() => detectBrowser(browsers, userAgent)).fold(Browser.unknown, Browser.nu);
@@ -1245,11 +1245,11 @@
         deviceType
       };
     };
-    const PlatformDetection = { detect: detect$2 };
+    const PlatformDetection = { detect: detect$3 };
 
     const mediaMatch = query => window.matchMedia(query).matches;
     let platform = cached(() => PlatformDetection.detect(navigator.userAgent, Optional.from(navigator.userAgentData), mediaMatch));
-    const detect$1 = () => platform();
+    const detect$2 = () => platform();
 
     const mkEvent = (target, x, y, stop, prevent, kill, raw) => ({
       target,
@@ -1354,7 +1354,7 @@
 
     const get$a = _win => {
       const win = _win === undefined ? window : _win;
-      if (detect$1().browser.isFirefox()) {
+      if (detect$2().browser.isFirefox()) {
         return Optional.none();
       } else {
         return Optional.from(win.visualViewport);
@@ -2758,7 +2758,6 @@
           baseBehaviour,
           'representing',
           'item-events',
-          'toolbar-button-events',
           'tooltipping'
         ],
         [mousedown()]: [
@@ -3196,13 +3195,6 @@
       const is = (s, test) => test(s);
       return ClosestOrAncestor(is, ancestor$1, scope, predicate, isRoot);
     };
-    const sibling$1 = (scope, predicate) => {
-      const element = scope.dom;
-      if (!element.parentNode) {
-        return Optional.none();
-      }
-      return child$1(SugarElement.fromDom(element.parentNode), x => !eq(scope, x) && predicate(x));
-    };
     const child$1 = (scope, predicate) => {
       const pred = node => predicate(SugarElement.fromDom(node));
       const result = find$5(scope.dom.childNodes, pred);
@@ -3227,9 +3219,7 @@
 
     const closest$2 = (scope, predicate, isRoot) => closest$3(scope, predicate, isRoot).isSome();
 
-    const first$1 = selector => one(selector);
     const ancestor = (scope, selector, isRoot) => ancestor$1(scope, e => is(e, selector), isRoot);
-    const sibling = (scope, selector) => sibling$1(scope, e => is(e, selector));
     const child = (scope, selector) => child$1(scope, e => is(e, selector));
     const descendant = (scope, selector) => one(selector, scope);
     const closest$1 = (scope, selector, isRoot) => {
@@ -9841,7 +9831,7 @@
               memButton.getOpt(comp).each(Focusing.focus);
             })])
         ]),
-        components: components.concat(detail.progress ? [memBannerProgress.asSpec()] : []).concat([memButton.asSpec()]),
+        components: components.concat(detail.progress ? [memBannerProgress.asSpec()] : []).concat(!detail.closeButton ? [] : [memButton.asSpec()]),
         apis
       };
     };
@@ -9855,7 +9845,8 @@
         required$1('onAction'),
         required$1('text'),
         required$1('iconProvider'),
-        required$1('translationProvider')
+        required$1('translationProvider'),
+        defaultedBoolean('closeButton', true)
       ],
       apis: {
         updateProgress: (apis, comp, percent) => {
@@ -9894,6 +9885,7 @@
           ], settings.type) ? settings.type : undefined,
           progress: settings.progressBar === true,
           icon: settings.icon,
+          closeButton: settings.closeButton,
           onAction: close,
           iconProvider: sharedBackstage.providers.icons,
           translationProvider: sharedBackstage.providers.translate
@@ -10322,6 +10314,10 @@
         getDefaultFontStack: getDefaultFontStack
     });
 
+    const autocompleteSelector = '[data-mce-autocompleter]';
+    const detect$1 = elm => closest$1(elm, autocompleteSelector);
+    const findIn = elm => descendant(elm, autocompleteSelector);
+
     const setup$e = (api, editor) => {
       const redirectKeyToItem = (item, e) => {
         emitWith(item, keydown(), { raw: e });
@@ -10357,8 +10353,8 @@
           }
         }
       });
-      editor.on('NodeChange', () => {
-        if (api.isActive() && !api.isProcessingAction() && !editor.queryCommandState('mceAutoCompleterInRange')) {
+      editor.on('NodeChange', e => {
+        if (api.isActive() && !api.isProcessingAction() && detect$1(SugarElement.fromDom(e.element)).isNone()) {
           api.cancelIfNecessary();
         }
       });
@@ -10894,16 +10890,14 @@
     ];
     const toolbarButtonSchema = objOf([
       type,
-      onAction,
-      optionalShortcut
+      onAction
     ].concat(baseToolbarButtonFields));
     const createToolbarButton = spec => asRaw('toolbarbutton', toolbarButtonSchema, spec);
 
     const baseToolbarToggleButtonFields = [active].concat(baseToolbarButtonFields);
     const toggleButtonSchema = objOf(baseToolbarToggleButtonFields.concat([
       type,
-      onAction,
-      optionalShortcut
+      onAction
     ]));
     const createToggleButton = spec => asRaw('ToggleButton', toggleButtonSchema, spec);
 
@@ -11081,8 +11075,6 @@
     const ExclusivityChannel = generate$6('tooltip.exclusive');
     const ShowTooltipEvent = generate$6('tooltip.show');
     const HideTooltipEvent = generate$6('tooltip.hide');
-    const ImmediateHideTooltipEvent = generate$6('tooltip.immediateHide');
-    const ImmediateShowTooltipEvent = generate$6('tooltip.immediateShow');
 
     const hideAllExclusive = (component, _tConfig, _tState) => {
       component.getSystem().broadcastOn([ExclusivityChannel], {});
@@ -11104,11 +11096,9 @@
     const events$9 = (tooltipConfig, state) => {
       const hide = comp => {
         state.getTooltip().each(p => {
-          if (p.getSystem().isConnected()) {
-            detach(p);
-            tooltipConfig.onHide(comp, p);
-            state.clearTooltip();
-          }
+          detach(p);
+          tooltipConfig.onHide(comp, p);
+          state.clearTooltip();
         });
         state.clearTimer();
       };
@@ -11135,122 +11125,17 @@
           Positioning.position(sink, popup, { anchor: tooltipConfig.anchor(comp) });
         }
       };
-      const reposition = comp => {
-        state.getTooltip().each(tooltip => {
-          const sink = tooltipConfig.lazySink(comp).getOrDie();
-          Positioning.position(sink, tooltip, { anchor: tooltipConfig.anchor(comp) });
-        });
-      };
-      const getEvents = () => {
-        switch (tooltipConfig.mode) {
-        case 'normal':
-          return [
-            run$1(focusin(), comp => {
-              emit(comp, ImmediateShowTooltipEvent);
-            }),
-            run$1(postBlur(), comp => {
-              emit(comp, ImmediateHideTooltipEvent);
-            }),
-            run$1(mouseover(), comp => {
-              emit(comp, ShowTooltipEvent);
-            }),
-            run$1(mouseout(), comp => {
-              emit(comp, HideTooltipEvent);
-            })
-          ];
-        case 'follow-highlight':
-          return [
-            run$1(highlight$1(), (comp, _se) => {
-              emit(comp, ShowTooltipEvent);
-            }),
-            run$1(dehighlight$1(), comp => {
-              emit(comp, HideTooltipEvent);
-            })
-          ];
-        case 'children-normal':
-          return [
-            run$1(focusin(), (comp, se) => {
-              search(comp.element).each(_ => {
-                if (is(se.event.target, '[data-mce-tooltip]')) {
-                  state.getTooltip().fold(() => {
-                    emit(comp, ImmediateShowTooltipEvent);
-                  }, tooltip => {
-                    if (state.isShowing()) {
-                      tooltipConfig.onShow(comp, tooltip);
-                      reposition(comp);
-                    }
-                  });
-                }
-              });
-            }),
-            run$1(postBlur(), comp => {
-              search(comp.element).fold(() => {
-                emit(comp, ImmediateHideTooltipEvent);
-              }, noop);
-            }),
-            run$1(mouseover(), comp => {
-              descendant(comp.element, '[data-mce-tooltip]:hover').each(_ => {
-                state.getTooltip().fold(() => {
-                  emit(comp, ShowTooltipEvent);
-                }, tooltip => {
-                  if (state.isShowing()) {
-                    tooltipConfig.onShow(comp, tooltip);
-                    reposition(comp);
-                  }
-                });
-              });
-            }),
-            run$1(mouseout(), comp => {
-              descendant(comp.element, '[data-mce-tooltip]:hover').fold(() => {
-                emit(comp, HideTooltipEvent);
-              }, noop);
-            })
-          ];
-        default:
-          return [
-            run$1(focusin(), (comp, se) => {
-              search(comp.element).each(_ => {
-                if (is(se.event.target, '[data-mce-tooltip]')) {
-                  state.getTooltip().fold(() => {
-                    emit(comp, ImmediateShowTooltipEvent);
-                  }, tooltip => {
-                    if (state.isShowing()) {
-                      tooltipConfig.onShow(comp, tooltip);
-                      reposition(comp);
-                    }
-                  });
-                }
-              });
-            }),
-            run$1(postBlur(), comp => {
-              search(comp.element).fold(() => {
-                emit(comp, ImmediateHideTooltipEvent);
-              }, noop);
-            })
-          ];
-        }
-      };
       return derive$2(flatten([
         [
           run$1(ShowTooltipEvent, comp => {
             state.resetTimer(() => {
               show(comp);
-            }, tooltipConfig.delayForShow());
+            }, tooltipConfig.delay);
           }),
           run$1(HideTooltipEvent, comp => {
             state.resetTimer(() => {
               hide(comp);
-            }, tooltipConfig.delayForHide());
-          }),
-          run$1(ImmediateShowTooltipEvent, comp => {
-            state.resetTimer(() => {
-              show(comp);
-            }, 0);
-          }),
-          run$1(ImmediateHideTooltipEvent, comp => {
-            state.resetTimer(() => {
-              hide(comp);
-            }, 0);
+            }, tooltipConfig.delay);
           }),
           run$1(receive(), (comp, message) => {
             const receivingData = message;
@@ -11264,7 +11149,27 @@
             hide(comp);
           })
         ],
-        getEvents()
+        tooltipConfig.mode === 'normal' ? [
+          run$1(focusin(), comp => {
+            emit(comp, ShowTooltipEvent);
+          }),
+          run$1(postBlur(), comp => {
+            emit(comp, HideTooltipEvent);
+          }),
+          run$1(mouseover(), comp => {
+            emit(comp, ShowTooltipEvent);
+          }),
+          run$1(mouseout(), comp => {
+            emit(comp, HideTooltipEvent);
+          })
+        ] : [
+          run$1(highlight$1(), (comp, _se) => {
+            emit(comp, ShowTooltipEvent);
+          }),
+          run$1(dehighlight$1(), comp => {
+            emit(comp, HideTooltipEvent);
+          })
+        ]
       ]));
     };
 
@@ -11278,13 +11183,10 @@
       required$1('tooltipDom'),
       defaulted('exclusive', true),
       defaulted('tooltipComponents', []),
-      defaultedFunction('delayForShow', constant$1(300)),
-      defaultedFunction('delayForHide', constant$1(300)),
+      defaulted('delay', 300),
       defaultedStringEnum('mode', 'normal', [
         'normal',
-        'follow-highlight',
-        'children-keyboard-focus',
-        'children-normal'
+        'follow-highlight'
       ]),
       defaulted('anchor', comp => ({
         type: 'hotspot',
@@ -11306,8 +11208,7 @@
             southwest$2,
             northwest$2
           ])
-        },
-        bubble: nu$5(0, -2, {})
+        }
       })),
       onHandler('onHide'),
       onHandler('onShow')
@@ -11579,15 +11480,13 @@
     const renderColorStructure = (item, providerBackstage, fallbackIcon) => {
       const colorPickerCommand = 'custom';
       const removeColorCommand = 'remove';
+      const itemText = item.ariaLabel;
       const itemValue = item.value;
       const iconSvg = item.iconContent.map(name => getOr(name, providerBackstage.icons, fallbackIcon));
-      const attributes = item.ariaLabel.map(al => ({
-        'aria-label': providerBackstage.translate(al),
-        'data-mce-name': al
-      })).getOr({});
       const getDom = () => {
         const common = colorClass;
         const icon = iconSvg.getOr('');
+        const attributes = itemText.map(text => ({ title: providerBackstage.translate(text) })).getOr({});
         const baseDom = {
           tag: 'div',
           attributes,
@@ -11634,8 +11533,8 @@
     const renderItemDomStructure = ariaLabel => {
       const domTitle = ariaLabel.map(label => ({
         attributes: {
-          'id': generate$6('menu-item'),
-          'aria-label': global$8.translate(label)
+          title: global$8.translate(label),
+          id: generate$6('menu-item')
         }
       })).getOr({});
       return {
@@ -11678,7 +11577,7 @@
       }
     };
 
-    const tooltipBehaviour = (meta, sharedBackstage, tooltipText) => get$g(meta, 'tooltipWorker').map(tooltipWorker => [Tooltipping.config({
+    const tooltipBehaviour = (meta, sharedBackstage) => get$g(meta, 'tooltipWorker').map(tooltipWorker => [Tooltipping.config({
         lazySink: sharedBackstage.getSink,
         tooltipDom: {
           tag: 'div',
@@ -11696,12 +11595,7 @@
             Tooltipping.setComponents(component, [external$1({ element: SugarElement.fromDom(elm) })]);
           });
         }
-      })]).getOrThunk(() => {
-      return tooltipText.map(text => [Tooltipping.config({
-          ...sharedBackstage.providers.tooltips.getConfig({ tooltipText: text }),
-          mode: 'follow-highlight'
-        })]).getOr([]);
-    });
+      })]).getOr([]);
     const encodeText = text => global$7.DOM.encode(text);
     const replaceText = (text, matchText) => {
       const translated = global$8.translate(text);
@@ -11725,7 +11619,6 @@
         caret: Optional.none(),
         value: spec.value
       }, sharedBackstage.providers, renderIcons, spec.icon);
-      const tooltipString = spec.text.filter(text => !useText && text !== '');
       return renderCommonItem({
         data: buildData(spec),
         enabled: spec.enabled,
@@ -11733,7 +11626,7 @@
         onAction: _api => onItemValueHandler(spec.value, spec.meta),
         onSetup: constant$1(noop),
         triggersSubmenu: false,
-        itemBehaviours: tooltipBehaviour(spec, sharedBackstage, tooltipString)
+        itemBehaviours: tooltipBehaviour(spec.meta, sharedBackstage)
       }, structure, itemResponse, sharedBackstage.providers);
     };
 
@@ -11810,7 +11703,6 @@
         caret: Optional.none(),
         value: spec.value
       }, providersBackstage, renderIcons);
-      const optTooltipping = spec.text.filter(constant$1(!useText)).map(t => Tooltipping.config(providersBackstage.tooltips.getConfig({ tooltipText: providersBackstage.translate(t) })));
       return deepMerge(renderCommonItem({
         data: buildData(spec),
         enabled: spec.enabled,
@@ -11821,7 +11713,7 @@
           return noop;
         },
         triggersSubmenu: false,
-        itemBehaviours: [...optTooltipping.toArray()]
+        itemBehaviours: []
       }, structure, itemResponse, providersBackstage), {
         toggling: {
           toggleClass: tickedClass,
@@ -12779,7 +12671,10 @@
         },
         setTooltip: tooltip => {
           const translatedTooltip = providersBackstage.translate(tooltip);
-          set$9(component.element, 'aria-label', translatedTooltip);
+          setAll$1(component.element, {
+            'aria-label': translatedTooltip,
+            'title': translatedTooltip
+          });
         }
       });
       const structure = renderItemStructure({
@@ -13173,7 +13068,6 @@
       };
       const onClose = (component, menu) => {
         ariaControls.unlink(hotspot.element);
-        lazySink().getOr(menu).element.dom.dispatchEvent(new window.FocusEvent('focusout'));
         if (extras !== undefined && extras.onClose !== undefined) {
           extras.onClose(component, menu);
         }
@@ -13492,7 +13386,7 @@
               onItemValueHandler(d.value, d.meta);
             }
           }, itemResponse, sharedBackstage, {
-            itemBehaviours: tooltipBehaviour(d.meta, sharedBackstage, Optional.none()),
+            itemBehaviours: tooltipBehaviour(d.meta, sharedBackstage),
             cardText: {
               matchText,
               highlightOn
@@ -13543,12 +13437,17 @@
       };
     };
 
-    const rangeToSimRange = r => SimRange.create(SugarElement.fromDom(r.startContainer), r.startOffset, SugarElement.fromDom(r.endContainer), r.endOffset);
+    const getAutocompleterRange = (dom, initRange) => {
+      return detect$1(SugarElement.fromDom(initRange.startContainer)).map(elm => {
+        const range = dom.createRng();
+        range.selectNode(elm.dom);
+        return range;
+      });
+    };
     const register$b = (editor, sharedBackstage) => {
       const autocompleterId = generate$6('autocompleter');
       const processingAction = Cell(false);
       const activeState = Cell(false);
-      const activeRange = value$2();
       const autocompleter = build$1(InlineView.sketch({
         dom: {
           tag: 'div',
@@ -13587,15 +13486,15 @@
         return bind$3(matches, match => {
           const choices = match.items;
           return createAutocompleteItems(choices, match.matchText, (itemValue, itemMeta) => {
-            const autocompleterApi = {
-              hide: () => cancelIfNecessary(),
-              reload: fetchOptions => {
-                hideIfNecessary();
-                editor.execCommand('mceAutocompleterReload', false, { fetchOptions });
-              }
-            };
-            editor.execCommand('mceAutocompleterRefreshActiveRange');
-            activeRange.get().each(range => {
+            const nr = editor.selection.getRng();
+            getAutocompleterRange(editor.dom, nr).each(range => {
+              const autocompleterApi = {
+                hide: () => cancelIfNecessary(),
+                reload: fetchOptions => {
+                  hideIfNecessary();
+                  editor.execCommand('mceAutocompleterReload', false, { fetchOptions });
+                }
+              };
               processingAction.set(true);
               match.onAction(autocompleterApi, range, itemValue, itemMeta);
               processingAction.set(false);
@@ -13604,14 +13503,16 @@
         });
       };
       const display = (lookupData, items) => {
-        const columns = findMap(lookupData, ld => Optional.from(ld.columns)).getOr(1);
-        InlineView.showMenuAt(autocompleter, {
-          anchor: {
-            type: 'selection',
-            getSelection: () => activeRange.get().map(rangeToSimRange),
-            root: SugarElement.fromDom(editor.getBody())
-          }
-        }, createInlineMenuFrom(createPartialMenuWithAlloyItems('autocompleter-value', true, items, columns, { menuType: 'normal' }), columns, FocusMode.ContentFocus, 'normal'));
+        findIn(SugarElement.fromDom(editor.getBody())).each(element => {
+          const columns = findMap(lookupData, ld => Optional.from(ld.columns)).getOr(1);
+          InlineView.showMenuAt(autocompleter, {
+            anchor: {
+              type: 'node',
+              root: SugarElement.fromDom(editor.getBody()),
+              node: Optional.from(element)
+            }
+          }, createInlineMenuFrom(createPartialMenuWithAlloyItems('autocompleter-value', true, items, columns, { menuType: 'normal' }), columns, FocusMode.ContentFocus, 'normal'));
+        });
         getMenu().each(Highlighting.highlightFirst);
       };
       const updateDisplay = lookupData => {
@@ -13657,12 +13558,10 @@
         updateDisplay(lookupData);
       });
       editor.on('AutocompleterUpdate', ({lookupData}) => updateDisplay(lookupData));
-      editor.on('AutocompleterUpdateActiveRange', ({range}) => activeRange.set(range));
       editor.on('AutocompleterEnd', () => {
         hideIfNecessary();
         activeState.set(false);
         processingAction.set(false);
-        activeRange.clear();
       });
       const autocompleterUiApi = {
         cancelIfNecessary,
@@ -14440,7 +14339,7 @@
           };
           const ariaLabel = itemText.replace(/\_| \- |\-/g, match => mapItemName[match]);
           const disabledClass = providersBackstage.isDisabled() ? ' tox-collection__item--state-disabled' : '';
-          return `<div data-mce-tooltip="${ ariaLabel }" class="tox-collection__item${ disabledClass }" tabindex="-1" data-collection-item-value="${ global$3.encodeAllRaw(item.value) }" aria-label="${ ariaLabel }">${ iconContent }${ textContent }</div>`;
+          return `<div class="tox-collection__item${ disabledClass }" tabindex="-1" data-collection-item-value="${ global$3.encodeAllRaw(item.value) }" title="${ ariaLabel }" aria-label="${ ariaLabel }">${ iconContent }${ textContent }</div>`;
         });
         const chunks = spec.columns !== 'auto' && spec.columns > 1 ? chunk$1(htmlLines, spec.columns) : [htmlLines];
         const html = map$2(chunks, ch => `<div class="tox-collection__group">${ ch.join('') }</div>`);
@@ -14470,7 +14369,6 @@
         run$1(focusout(), runOnItem(comp => {
           descendant(comp.element, '.' + activeClass).each(currentActive => {
             remove$2(currentActive, activeClass);
-            blur$1(currentActive);
           });
         })),
         runOnExecute$1(runOnItem((comp, se, tgt, itemValue) => {
@@ -14506,43 +14404,6 @@
           }),
           receivingConfig(),
           Replacing.config({}),
-          Tooltipping.config({
-            ...providersBackstage.tooltips.getConfig({
-              tooltipText: '',
-              onShow: comp => {
-                descendant(comp.element, '.' + activeClass + '[data-mce-tooltip]').each(current => {
-                  getOpt(current, 'data-mce-tooltip').each(text => {
-                    Tooltipping.setComponents(comp, providersBackstage.tooltips.getComponents({ tooltipText: text }));
-                  });
-                });
-              }
-            }),
-            mode: 'children-keyboard-focus',
-            anchor: comp => ({
-              type: 'node',
-              node: descendant(comp.element, '.' + activeClass).orThunk(() => first$1('.tox-collection__item')),
-              root: comp.element,
-              layouts: {
-                onLtr: constant$1([
-                  south$2,
-                  north$2,
-                  southeast$2,
-                  northeast$2,
-                  southwest$2,
-                  northwest$2
-                ]),
-                onRtl: constant$1([
-                  south$2,
-                  north$2,
-                  southeast$2,
-                  northeast$2,
-                  southwest$2,
-                  northwest$2
-                ])
-              },
-              bubble: nu$5(0, -2, {})
-            })
-          }),
           Representing.config({
             store: {
               mode: 'memory',
@@ -14567,10 +14428,6 @@
             'disabling',
             'alloy.base.behaviour',
             'collection-events'
-          ],
-          [focusin()]: [
-            'collection-events',
-            'tooltipping'
           ]
         }
       });
@@ -16294,16 +16151,6 @@
       const editorApi = value$2();
       const memReplaced = record({ dom: { tag: spec.tag } });
       const initialValue = value$2();
-      const focusBehaviour = !isOldCustomEditor(spec) && spec.onFocus.isSome() ? [
-        Focusing.config({
-          onFocus: comp => {
-            spec.onFocus.each(onFocusFn => {
-              onFocusFn(comp.element.dom);
-            });
-          }
-        }),
-        Tabstopping.config({})
-      ] : [];
       return {
         dom: {
           tag: 'div',
@@ -16321,11 +16168,11 @@
                 });
               });
             })]),
-          withComp(Optional.none(), () => editorApi.get().fold(() => initialValue.get().getOr(''), ed => ed.getValue()), (_component, value) => {
+          withComp(Optional.none(), () => editorApi.get().fold(() => initialValue.get().getOr(''), ed => ed.getValue()), (component, value) => {
             editorApi.get().fold(() => initialValue.set(value), ed => ed.setValue(value));
           }),
           ComposingConfigs.self()
-        ].concat(focusBehaviour)),
+        ]),
         components: [memReplaced.asSpec()]
       };
     };
@@ -16596,7 +16443,7 @@
     const bodySendMessageChannel = generate$6('body-send-message');
     const dialogFocusShiftedChannel = generate$6('dialog-focus-shifted');
 
-    const browser = detect$1().browser;
+    const browser = detect$2().browser;
     const isSafari = browser.isSafari();
     const isFirefox = browser.isFirefox();
     const isSafariOrFirefox = isSafari || isFirefox;
@@ -16859,17 +16706,11 @@
         'disabling',
         'alloy.base.behaviour',
         'toggling',
-        'toolbar-button-events',
-        'tooltipping'
+        'toolbar-button-events'
       ],
       [attachedToDom()]: [
         'toolbar-button-events',
         commonButtonDisplayEvent
-      ],
-      [detachedFromDom()]: [
-        'toolbar-button-events',
-        'dropdown-events',
-        'tooltipping'
       ],
       [mousedown()]: [
         'focusing',
@@ -16901,7 +16742,7 @@
 
     const updateMenuText = generate$6('update-menu-text');
     const updateMenuIcon = generate$6('update-menu-icon');
-    const renderCommonDropdown = (spec, prefix, sharedBackstage, btnName) => {
+    const renderCommonDropdown = (spec, prefix, sharedBackstage) => {
       const editorOffCell = Cell(noop);
       const optMemDisplayText = spec.text.map(text => record(renderLabel$1(text, prefix, sharedBackstage.providers)));
       const optMemDisplayIcon = spec.icon.map(iconName => record(renderReplaceableIconFromPack(iconName, sharedBackstage.providers.icons)));
@@ -16913,16 +16754,18 @@
         return Optional.some(true);
       };
       const role = spec.role.fold(() => ({}), role => ({ role }));
-      const ariaLabelAttribute = spec.ariaLabel.fold(() => ({}), ariaLabel => {
-        const translatedAriaLabel = sharedBackstage.providers.translate(ariaLabel);
-        return { 'aria-label': translatedAriaLabel };
+      const tooltipAttributes = spec.tooltip.fold(() => ({}), tooltip => {
+        const translatedTooltip = sharedBackstage.providers.translate(tooltip);
+        return {
+          'title': translatedTooltip,
+          'aria-label': translatedTooltip
+        };
       });
       const iconSpec = render$3('chevron-down', {
         tag: 'div',
         classes: [`${ prefix }__select-chevron`]
       }, sharedBackstage.providers.icons);
       const fixWidthBehaviourName = generate$6('common-button-display-events');
-      const customEventsName = 'dropdown-events';
       const memDropdown = record(Dropdown.sketch({
         ...spec.uid ? { uid: spec.uid } : {},
         ...role,
@@ -16932,10 +16775,7 @@
             prefix,
             `${ prefix }--select`
           ].concat(map$2(spec.classes, c => `${ prefix }--${ c }`)),
-          attributes: {
-            ...ariaLabelAttribute,
-            ...isNonNullable(btnName) ? { 'data-mce-name': btnName } : {}
-          }
+          attributes: { ...tooltipAttributes }
         },
         components: componentRenderPipeline([
           optMemDisplayIcon.map(mem => mem.asSpec()),
@@ -16955,8 +16795,7 @@
           receivingConfig(),
           Unselecting.config({}),
           Replacing.config({}),
-          ...spec.tooltip.map(t => Tooltipping.config(sharedBackstage.providers.tooltips.getConfig({ tooltipText: sharedBackstage.providers.translate(t) }))).toArray(),
-          config(customEventsName, [
+          config('dropdown-events', [
             onControlAttached(spec, editorOffCell),
             onControlDetached(spec, editorOffCell)
           ]),
@@ -16975,7 +16814,7 @@
           ])
         ]),
         eventOrder: deepMerge(toolbarButtonEventOrder, {
-          [mousedown()]: [
+          mousedown: [
             'focusing',
             'alloy.base.behaviour',
             'item-type-events',
@@ -16983,8 +16822,7 @@
           ],
           [attachedToDom()]: [
             'toolbar-button-events',
-            Tooltipping.name(),
-            customEventsName,
+            'dropdown-events',
             fixWidthBehaviourName
           ]
         }),
@@ -17166,9 +17004,8 @@
             uid: sketchSpec.uid,
             text: initialItem.map(item => item.text),
             icon: Optional.none(),
-            tooltip: Optional.none(),
+            tooltip: spec.label,
             role: Optional.none(),
-            ariaLabel: spec.label,
             fetch: (comp, callback) => {
               const items = fetchItems(comp, spec.name, spec.items, Representing.getValue(comp));
               callback(build(items, ItemResponse$1.CLOSE_ON_EXECUTE, backstage, {
@@ -17522,8 +17359,6 @@
           'tox-lock-icon__' + iconName
         ]
       }, providersBackstage.icons);
-      const label = spec.label.getOr('Constrain proportions');
-      const translatedLabel = providersBackstage.translate(label);
       const pLock = FormCoupledInputs.parts.lock({
         dom: {
           tag: 'button',
@@ -17533,10 +17368,7 @@
             'tox-button--naked',
             'tox-button--icon'
           ],
-          attributes: {
-            'aria-label': translatedLabel,
-            'data-mce-name': label
-          }
+          attributes: { title: providersBackstage.translate(spec.label.getOr('Constrain proportions')) }
         },
         components: [
           makeIcon('lock'),
@@ -17545,8 +17377,7 @@
         buttonBehaviours: derive$1([
           Disabling.config({ disabled: () => !spec.enabled || providersBackstage.isDisabled() }),
           receivingConfig(),
-          Tabstopping.config({}),
-          Tooltipping.config(providersBackstage.tooltips.getConfig({ tooltipText: translatedLabel }))
+          Tabstopping.config({})
         ])
       });
       const formGroup = components => ({
@@ -18075,12 +17906,11 @@
       },
       setIcon: icon => emitWith(component, updateMenuIcon, { icon })
     });
-    const renderMenuButton = (spec, prefix, backstage, role, tabstopping = true, btnName) => {
+    const renderMenuButton = (spec, prefix, backstage, role, tabstopping = true) => {
       return renderCommonDropdown({
         text: spec.text,
         icon: spec.icon,
         tooltip: spec.tooltip,
-        ariaLabel: spec.tooltip,
         searchable: spec.search.isSome(),
         role,
         fetch: (dropdownComp, callback) => {
@@ -18098,7 +17928,7 @@
         presets: 'normal',
         classes: [],
         dropdownBehaviours: [...tabstopping ? [Tabstopping.config({})] : []]
-      }, prefix, backstage.shared, btnName);
+      }, prefix, backstage.shared);
     };
     const getFetch = (items, getButton, backstage) => {
       const getMenuItemAction = item => api => {
@@ -18136,7 +17966,10 @@
       dom: {
         tag: 'span',
         classes: ['tox-tree__label'],
-        attributes: { 'aria-label': text }
+        attributes: {
+          'title': text,
+          'aria-label': text
+        }
       },
       components: [text$2(text)]
     });
@@ -18938,14 +18771,13 @@
       fromPromise
     };
 
-    const renderCommonSpec = (spec, actionOpt, extraBehaviours = [], dom, components, tooltip, providersBackstage) => {
+    const renderCommonSpec = (spec, actionOpt, extraBehaviours = [], dom, components, providersBackstage) => {
       const action = actionOpt.fold(() => ({}), action => ({ action }));
       const common = {
         buttonBehaviours: derive$1([
           DisablingConfigs.button(() => !spec.enabled || providersBackstage.isDisabled()),
           receivingConfig(),
           Tabstopping.config({}),
-          ...tooltip.map(t => Tooltipping.config(providersBackstage.tooltips.getConfig({ tooltipText: providersBackstage.translate(t) }))).toArray(),
           config('button press', [
             preventDefault('click'),
             preventDefault('mousedown')
@@ -18966,19 +18798,19 @@
       const domFinal = deepMerge(common, { dom });
       return deepMerge(domFinal, { components });
     };
-    const renderIconButtonSpec = (spec, action, providersBackstage, extraBehaviours = [], btnName) => {
-      const tooltipAttributes = spec.tooltip.map(tooltip => ({ 'aria-label': providersBackstage.translate(tooltip) })).getOr({});
+    const renderIconButtonSpec = (spec, action, providersBackstage, extraBehaviours = []) => {
+      const tooltipAttributes = spec.tooltip.map(tooltip => ({
+        'aria-label': providersBackstage.translate(tooltip),
+        'title': providersBackstage.translate(tooltip)
+      })).getOr({});
       const dom = {
         tag: 'button',
         classes: ['tox-tbtn'],
-        attributes: {
-          ...tooltipAttributes,
-          'data-mce-name': btnName
-        }
+        attributes: tooltipAttributes
       };
       const icon = spec.icon.map(iconName => renderIconFromPack$1(iconName, providersBackstage.icons));
       const components = componentRenderPipeline([icon]);
-      return renderCommonSpec(spec, action, extraBehaviours, dom, components, spec.tooltip, providersBackstage);
+      return renderCommonSpec(spec, action, extraBehaviours, dom, components, providersBackstage);
     };
     const calculateClassesFromButtonType = buttonType => {
       switch (buttonType) {
@@ -19009,13 +18841,9 @@
       const dom = {
         tag: 'button',
         classes,
-        attributes: {
-          'aria-label': translatedText,
-          'data-mce-name': spec.text
-        }
+        attributes: { title: translatedText }
       };
-      const optTooltip = spec.icon.map(constant$1(translatedText));
-      return renderCommonSpec(spec, action, extraBehaviours, dom, components, optTooltip, providersBackstage);
+      return renderCommonSpec(spec, action, extraBehaviours, dom, components, providersBackstage);
     };
     const renderButton$1 = (spec, action, providersBackstage, extraBehaviours = [], extraClasses = []) => {
       const buttonSpec = renderButtonSpec(spec, Optional.some(action), providersBackstage, extraBehaviours, extraClasses);
@@ -19038,7 +18866,7 @@
     const isMenuFooterButtonSpec = (spec, buttonType) => buttonType === 'menu';
     const isNormalFooterButtonSpec = (spec, buttonType) => buttonType === 'custom' || buttonType === 'cancel' || buttonType === 'submit';
     const isToggleButtonSpec = (spec, buttonType) => buttonType === 'togglebutton';
-    const renderToggleButton = (spec, providers, btnName) => {
+    const renderToggleButton = (spec, providers) => {
       var _a, _b;
       const optMemIcon = spec.icon.map(memIcon => renderReplaceableIconFromPack(memIcon, providers.icons)).map(record);
       const action = comp => {
@@ -19058,11 +18886,14 @@
         ...spec,
         name: (_a = spec.name) !== null && _a !== void 0 ? _a : '',
         primary: buttonType === 'primary',
-        tooltip: spec.tooltip,
+        tooltip: Optional.from(spec.tooltip),
         enabled: (_b = spec.enabled) !== null && _b !== void 0 ? _b : false,
         borderless: false
       };
-      const tooltipAttributes = buttonSpec.tooltip.or(spec.text).map(tooltip => ({ 'aria-label': providers.translate(tooltip) })).getOr({});
+      const tooltipAttributes = buttonSpec.tooltip.map(tooltip => ({
+        'aria-label': providers.translate(tooltip),
+        'title': providers.translate(tooltip)
+      })).getOr({});
       const buttonTypeClasses = calculateClassesFromButtonType(buttonType !== null && buttonType !== void 0 ? buttonType : 'secondary');
       const showIconAndText = spec.icon.isSome() && spec.text.isSome();
       const dom = {
@@ -19072,10 +18903,7 @@
           ...spec.active ? ['tox-button--enabled'] : [],
           ...showIconAndText ? ['tox-button--icon-and-text'] : []
         ],
-        attributes: {
-          ...tooltipAttributes,
-          ...isNonNullable(btnName) ? { 'data-mce-name': btnName } : {}
-        }
+        attributes: tooltipAttributes
       };
       const extraBehaviours = [];
       const translatedText = providers.translate(spec.text.getOr(''));
@@ -19085,7 +18913,7 @@
         ...iconComp,
         ...spec.text.isSome() ? [translatedTextComponed] : []
       ];
-      const iconButtonSpec = renderCommonSpec(buttonSpec, Optional.some(action), extraBehaviours, dom, components, spec.tooltip, providers);
+      const iconButtonSpec = renderCommonSpec(buttonSpec, Optional.some(action), extraBehaviours, dom, components, providers);
       return Button.sketch(iconButtonSpec);
     };
     const renderFooterButton = (spec, buttonType, backstage) => {
@@ -19102,7 +18930,7 @@
           },
           fetch: getFetch(menuButtonSpec.items, getButton, backstage)
         };
-        const memButton = record(renderMenuButton(fixedSpec, 'tox-tbtn', backstage, Optional.none(), true, spec.text.or(spec.tooltip).getOrUndefined()));
+        const memButton = record(renderMenuButton(fixedSpec, 'tox-tbtn', backstage, Optional.none()));
         return memButton.asSpec();
       } else if (isNormalFooterButtonSpec(spec, buttonType)) {
         const action = getAction(spec.name, buttonType);
@@ -19112,7 +18940,7 @@
         };
         return renderButton$1(buttonSpec, action, backstage.shared.providers, []);
       } else if (isToggleButtonSpec(spec, buttonType)) {
-        return renderToggleButton(spec, backstage.shared.providers, spec.text.or(spec.tooltip).getOrUndefined());
+        return renderToggleButton(spec, backstage.shared.providers);
       } else {
         console.error('Unknown footer button type: ', buttonType);
         throw new Error('Unknown footer button type');
@@ -19524,51 +19352,14 @@
       });
     };
 
-    const renderHtmlPanel = (spec, providersBackstage) => {
+    const renderHtmlPanel = spec => {
       if (spec.presets === 'presentation') {
         return Container.sketch({
           dom: {
             tag: 'div',
             classes: ['tox-form__group'],
             innerHtml: spec.html
-          },
-          containerBehaviours: derive$1([Tooltipping.config({
-              ...providersBackstage.tooltips.getConfig({
-                tooltipText: '',
-                onShow: comp => {
-                  descendant(comp.element, '[data-mce-tooltip]:hover').orThunk(() => search(comp.element)).each(current => {
-                    getOpt(current, 'data-mce-tooltip').each(text => {
-                      Tooltipping.setComponents(comp, providersBackstage.tooltips.getComponents({ tooltipText: text }));
-                    });
-                  });
-                }
-              }),
-              mode: 'children-normal',
-              anchor: comp => ({
-                type: 'node',
-                node: descendant(comp.element, '[data-mce-tooltip]:hover').orThunk(() => search(comp.element).filter(current => getOpt(current, 'data-mce-tooltip').isSome())),
-                root: comp.element,
-                layouts: {
-                  onLtr: constant$1([
-                    south$2,
-                    north$2,
-                    southeast$2,
-                    northeast$2,
-                    southwest$2,
-                    northwest$2
-                  ]),
-                  onRtl: constant$1([
-                    south$2,
-                    north$2,
-                    southeast$2,
-                    northeast$2,
-                    southwest$2,
-                    northwest$2
-                  ])
-                },
-                bubble: nu$5(0, -2, {})
-              })
-            })])
+          }
         });
       } else {
         return Container.sketch({
@@ -19613,7 +19404,7 @@
       slider: make$2((spec, backstage, data) => renderSlider(spec, backstage.shared.providers, data)),
       urlinput: make$2((spec, backstage, data) => renderUrlInput(spec, backstage, backstage.urlinput, data)),
       customeditor: make$2(renderCustomEditor),
-      htmlpanel: make$2((spec, backstage) => renderHtmlPanel(spec, backstage.shared.providers)),
+      htmlpanel: make$2(renderHtmlPanel),
       imagepreview: make$2((spec, _, data) => renderImagePreview(spec, data)),
       table: make$2((spec, backstage) => renderTable(spec, backstage.shared.providers)),
       tree: make$2((spec, backstage) => renderTree(spec, backstage)),
@@ -20121,51 +19912,6 @@
       return { getData };
     };
 
-    const TooltipsBackstage = getSink => {
-      const tooltipDelay = 300;
-      const intervalDelay = tooltipDelay * 0.2;
-      let numActiveTooltips = 0;
-      const alreadyShowingTooltips = () => numActiveTooltips > 0;
-      const getComponents = spec => {
-        return [{
-            dom: {
-              tag: 'div',
-              classes: ['tox-tooltip__body']
-            },
-            components: [text$2(spec.tooltipText)]
-          }];
-      };
-      const getConfig = spec => {
-        return {
-          delayForShow: () => alreadyShowingTooltips() ? intervalDelay : tooltipDelay,
-          delayForHide: constant$1(tooltipDelay),
-          exclusive: true,
-          lazySink: getSink,
-          tooltipDom: {
-            tag: 'div',
-            classes: [
-              'tox-tooltip',
-              'tox-tooltip--up'
-            ]
-          },
-          tooltipComponents: getComponents(spec),
-          onShow: (comp, tooltip) => {
-            numActiveTooltips++;
-            if (spec.onShow) {
-              spec.onShow(comp, tooltip);
-            }
-          },
-          onHide: () => {
-            numActiveTooltips--;
-          }
-        };
-      };
-      return {
-        getConfig,
-        getComponents
-      };
-    };
-
     const isElement = node => isNonNullable(node) && node.nodeType === 1;
     const trim = global$1.trim;
     const hasContentEditableState = value => {
@@ -20372,8 +20118,7 @@
         menuItems: () => editor.ui.registry.getAll().menuItems,
         translate: global$8.translate,
         isDisabled: () => editor.mode.isReadOnly() || !editor.ui.isEnabled(),
-        getOption: editor.options.get,
-        tooltips: TooltipsBackstage(lazySinks.dialog)
+        getOption: editor.options.get
       };
       const urlinput = UrlInputBackstage(editor);
       const styles = init$7(editor);
@@ -20488,8 +20233,6 @@
       const onDismissPopups = event => {
         broadcastOn(dismissPopups(), { target: SugarElement.fromDom(event.relatedTarget.getContainer()) });
       };
-      const onFocusIn = event => editor.dispatch('focusin', event);
-      const onFocusOut = event => editor.dispatch('focusout', event);
       editor.on('PostRender', () => {
         editor.on('click', onContentClick);
         editor.on('tap', onContentClick);
@@ -20500,13 +20243,6 @@
         editor.on('ResizeEditor', onEditorResize);
         editor.on('AfterProgressState', onEditorProgress);
         editor.on('DismissPopups', onDismissPopups);
-        each$1([
-          mothership,
-          ...uiMotherships
-        ], gui => {
-          gui.element.dom.addEventListener('focusin', onFocusIn);
-          gui.element.dom.addEventListener('focusout', onFocusOut);
-        });
       });
       editor.on('remove', () => {
         editor.off('click', onContentClick);
@@ -20518,13 +20254,6 @@
         editor.off('ResizeEditor', onEditorResize);
         editor.off('AfterProgressState', onEditorProgress);
         editor.off('DismissPopups', onDismissPopups);
-        each$1([
-          mothership,
-          ...uiMotherships
-        ], gui => {
-          gui.element.dom.removeEventListener('focusin', onFocusIn);
-          gui.element.dom.removeEventListener('focusout', onFocusOut);
-        });
         onMousedown.unbind();
         onTouchstart.unbind();
         onTouchmove.unbind();
@@ -21988,7 +21717,7 @@
       setOverflow([]);
       setGroups$1(primary, groups);
       const availableWidth = get$c(primary.element);
-      const overflows = partition(availableWidth, detail.builtGroups.get(), comp => Math.ceil(comp.element.dom.getBoundingClientRect().width), overflowGroup);
+      const overflows = partition(availableWidth, detail.builtGroups.get(), comp => get$c(comp.element), overflowGroup);
       if (overflows.extra.length === 0) {
         Replacing.remove(primary, overflowGroup);
         setOverflow([]);
@@ -22565,7 +22294,7 @@
             primary: false,
             buttonType: Optional.none(),
             borderless: false
-          }, Optional.none(), toolbarSpec.providers, [], 'overflow-button')
+          }, Optional.none(), toolbarSpec.providers)
         },
         splitToolbarBehaviours: getToolbarBehaviours(toolbarSpec, modeName)
       };
@@ -22743,7 +22472,10 @@
       const buttonTypeClasses = calculateClassesFromButtonType((_b = spec.buttonType) !== null && _b !== void 0 ? _b : 'secondary');
       const optTranslatedText = isToggleButton ? spec.text.map(providers.translate) : Optional.some(providers.translate(spec.text));
       const optTranslatedTextComponed = optTranslatedText.map(text$2);
-      const ariaLabelAttributes = buttonSpec.tooltip.or(optTranslatedText).map(al => ({ 'aria-label': providers.translate(al) })).getOr({});
+      const tooltipAttributes = buttonSpec.tooltip.or(optTranslatedText).map(tooltip => ({
+        'aria-label': providers.translate(tooltip),
+        'title': providers.translate(tooltip)
+      })).getOr({});
       const optIconSpec = optMemIcon.map(memIcon => memIcon.asSpec());
       const components = componentRenderPipeline([
         optIconSpec,
@@ -22753,10 +22485,10 @@
       const dom = {
         tag: 'button',
         classes: buttonTypeClasses.concat(...spec.icon.isSome() && !hasIconAndText ? ['tox-button--icon'] : []).concat(...hasIconAndText ? ['tox-button--icon-and-text'] : []).concat(...spec.borderless ? ['tox-button--naked'] : []).concat(...spec.type === 'togglebutton' && spec.active ? ['tox-button--enabled'] : []),
-        attributes: ariaLabelAttributes
+        attributes: tooltipAttributes
       };
       const extraBehaviours = [];
-      const iconButtonSpec = renderCommonSpec(buttonSpec, Optional.some(action), extraBehaviours, dom, components, spec.tooltip, providers);
+      const iconButtonSpec = renderCommonSpec(buttonSpec, Optional.some(action), extraBehaviours, dom, components, providers);
       return Button.sketch(iconButtonSpec);
     };
 
@@ -22770,7 +22502,7 @@
         components: map$2(spec.buttons, button => renderViewButton(button, providers))
       };
     };
-    const deviceDetection = detect$1().deviceType;
+    const deviceDetection = detect$2().deviceType;
     const isPhone = deviceDetection.isPhone();
     const isTablet = deviceDetection.isTablet();
     const renderViewHeader = spec => {
@@ -22987,17 +22719,6 @@
 
     const factory$6 = (detail, components, _spec) => {
       let toolbarDrawerOpenState = false;
-      const toggleStatusbar = editorContainer => {
-        sibling(editorContainer, '.tox-statusbar').each(statusBar => {
-          if (get$e(statusBar, 'display') === 'none' && get$f(statusBar, 'aria-hidden') === 'true') {
-            remove$6(statusBar, 'display');
-            remove$7(statusBar, 'aria-hidden');
-          } else {
-            set$8(statusBar, 'display', 'none');
-            set$9(statusBar, 'aria-hidden', 'true');
-          }
-        });
-      };
       const apis = {
         getSocket: comp => {
           return parts$a.getPart(comp, detail, 'socket');
@@ -23083,7 +22804,6 @@
           }
           parts$a.getPart(comp, detail, 'editorContainer').each(editorContainer => {
             const element = editorContainer.element;
-            toggleStatusbar(element);
             set$8(element, 'display', 'none');
             set$9(element, 'aria-hidden', 'true');
           });
@@ -23094,7 +22814,6 @@
           }
           parts$a.getPart(comp, detail, 'editorContainer').each(editorContainer => {
             const element = editorContainer.element;
-            toggleStatusbar(element);
             remove$6(element, 'display');
             remove$7(element, 'aria-hidden');
           });
@@ -23313,7 +23032,7 @@
     const defaultMenus = {
       file: {
         title: 'File',
-        items: 'newdocument restoredraft | preview | importword exportpdf exportword | export print | deleteallconversations'
+        items: 'newdocument restoredraft | preview | export print | deleteallconversations'
       },
       edit: {
         title: 'Edit',
@@ -23321,11 +23040,11 @@
       },
       view: {
         title: 'View',
-        items: 'code revisionhistory | visualaid visualchars visualblocks | spellchecker | preview fullscreen | showcomments'
+        items: 'code | visualaid visualchars visualblocks | spellchecker | preview fullscreen | showcomments'
       },
       insert: {
         title: 'Insert',
-        items: 'image link media addcomment pageembed inserttemplate codesample inserttable accordion | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents footnotes | mergetags | insertdatetime'
+        items: 'image link media addcomment pageembed template inserttemplate codesample inserttable accordion | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents footnotes | mergetags | insertdatetime'
       },
       format: {
         title: 'Format',
@@ -23476,7 +23195,7 @@
     const iframe = curry(loadSkin, false);
     const inline = curry(loadSkin, true);
 
-    const makeTooltipText = (editor, labelWithPlaceholder, value) => isEmpty(value) ? editor.translate(labelWithPlaceholder) : editor.translate([
+    const makeTooltipText = (editor, labelWithPlaceholder, value) => editor.translate([
       labelWithPlaceholder,
       editor.translate(value)
     ]);
@@ -23540,7 +23259,7 @@
         getFetch
       };
     };
-    const createMenuItems = (backstage, spec) => {
+    const createMenuItems = (editor, backstage, spec) => {
       const dataset = spec.dataset;
       const getStyleItems = dataset.type === 'basic' ? () => map$2(dataset.data, d => processBasic(d, spec.isSelectedFor, spec.getPreviewFor)) : dataset.getData;
       return {
@@ -23548,19 +23267,20 @@
         getStyleItems
       };
     };
-    const createSelectButton = (editor, backstage, spec, getTooltip, textUpdateEventName, btnName) => {
-      const {items, getStyleItems} = createMenuItems(backstage, spec);
-      const tooltipString = Cell(spec.tooltip);
+    const createSelectButton = (editor, backstage, spec, tooltipWithPlaceholder, textUpdateEventName) => {
+      const {items, getStyleItems} = createMenuItems(editor, backstage, spec);
       const getApi = comp => ({
         getComponent: constant$1(comp),
         setTooltip: tooltip => {
           const translatedTooltip = backstage.shared.providers.translate(tooltip);
-          set$9(comp.element, 'aria-label', translatedTooltip);
-          tooltipString.set(tooltip);
+          setAll$1(comp.element, {
+            'aria-label': translatedTooltip,
+            'title': translatedTooltip
+          });
         }
       });
       const onSetup = api => {
-        const handler = e => api.setTooltip(makeTooltipText(editor, getTooltip(e.value), e.value));
+        const handler = e => api.setTooltip(makeTooltipText(editor, tooltipWithPlaceholder, e.value));
         editor.on(textUpdateEventName, handler);
         return composeUnbinders(onSetupEvent(editor, 'NodeChange', api => {
           const comp = api.getComponent();
@@ -23571,8 +23291,7 @@
       return renderCommonDropdown({
         text: spec.icon.isSome() ? Optional.none() : spec.text,
         icon: spec.icon,
-        ariaLabel: Optional.some(spec.tooltip),
-        tooltip: Optional.none(),
+        tooltip: Optional.from(spec.tooltip),
         role: Optional.none(),
         fetch: items.getFetch(backstage, getStyleItems),
         onSetup,
@@ -23580,18 +23299,8 @@
         columns: 1,
         presets: 'normal',
         classes: spec.icon.isSome() ? [] : ['bespoke'],
-        dropdownBehaviours: [Tooltipping.config({
-            ...backstage.shared.providers.tooltips.getConfig({
-              tooltipText: backstage.shared.providers.translate(spec.tooltip),
-              onShow: comp => {
-                if (spec.tooltip !== tooltipString.get()) {
-                  const translatedTooltip = backstage.shared.providers.translate(tooltipString.get());
-                  Tooltipping.setComponents(comp, backstage.shared.providers.tooltips.getComponents({ tooltipText: translatedTooltip }));
-                }
-              }
-            })
-          })]
-      }, 'tox-tbtn', backstage.shared, btnName);
+        dropdownBehaviours: []
+      }, 'tox-tbtn', backstage.shared);
     };
 
     const process = rawFormats => map$2(rawFormats, item => {
@@ -23632,7 +23341,7 @@
     };
 
     const menuTitle$4 = 'Align';
-    const getTooltipPlaceholder$4 = constant$1('Alignment {0}');
+    const btnTooltip$4 = 'Alignment {0}';
     const fallbackAlignment = 'left';
     const alignMenuItems = [
       {
@@ -23673,7 +23382,7 @@
       const dataset = buildBasicStaticDataset(alignMenuItems);
       const onAction = rawItem => () => find$5(alignMenuItems, item => item.format === rawItem.format).each(item => editor.execCommand(item.command));
       return {
-        tooltip: makeTooltipText(editor, getTooltipPlaceholder$4(), fallbackAlignment),
+        tooltip: makeTooltipText(editor, btnTooltip$4, fallbackAlignment),
         text: Optional.none(),
         icon: Optional.some('align-left'),
         isSelectedFor,
@@ -23686,9 +23395,9 @@
         isInvalid: item => !editor.formatter.canApply(item.format)
       };
     };
-    const createAlignButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$4(editor), getTooltipPlaceholder$4, 'AlignTextUpdate', 'align');
+    const createAlignButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$4(editor), btnTooltip$4, 'AlignTextUpdate');
     const createAlignMenu = (editor, backstage) => {
-      const menuItems = createMenuItems(backstage, getSpec$4(editor));
+      const menuItems = createMenuItems(editor, backstage, getSpec$4(editor));
       editor.ui.registry.addNestedMenuItem('align', {
         text: backstage.shared.providers.translate(menuTitle$4),
         onSetup: onSetupEditableToggle(editor),
@@ -23699,11 +23408,14 @@
     const findNearest = (editor, getStyles) => {
       const styles = getStyles();
       const formats = map$2(styles, style => style.format);
-      return Optional.from(editor.formatter.closest(formats)).bind(fmt => find$5(styles, data => data.format === fmt));
+      return Optional.from(editor.formatter.closest(formats)).bind(fmt => find$5(styles, data => data.format === fmt)).orThunk(() => someIf(editor.formatter.match('p'), {
+        title: 'Paragraph',
+        format: 'p'
+      }));
     };
 
     const menuTitle$3 = 'Blocks';
-    const getTooltipPlaceholder$3 = constant$1('Block {0}');
+    const btnTooltip$3 = 'Block {0}';
     const fallbackFormat = 'Paragraph';
     const getSpec$3 = editor => {
       const isSelectedFor = format => () => editor.formatter.match(format);
@@ -23726,7 +23438,7 @@
       };
       const dataset = buildBasicSettingsDataset(editor, 'block_formats', Delimiter.SemiColon);
       return {
-        tooltip: makeTooltipText(editor, getTooltipPlaceholder$3(), fallbackFormat),
+        tooltip: makeTooltipText(editor, btnTooltip$3, fallbackFormat),
         text: Optional.some(fallbackFormat),
         icon: Optional.none(),
         isSelectedFor,
@@ -23739,9 +23451,9 @@
         isInvalid: item => !editor.formatter.canApply(item.format)
       };
     };
-    const createBlocksButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$3(editor), getTooltipPlaceholder$3, 'BlocksTextUpdate', 'blocks');
+    const createBlocksButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$3(editor), btnTooltip$3, 'BlocksTextUpdate');
     const createBlocksMenu = (editor, backstage) => {
-      const menuItems = createMenuItems(backstage, getSpec$3(editor));
+      const menuItems = createMenuItems(editor, backstage, getSpec$3(editor));
       editor.ui.registry.addNestedMenuItem('blocks', {
         text: menuTitle$3,
         onSetup: onSetupEditableToggle(editor),
@@ -23750,7 +23462,7 @@
     };
 
     const menuTitle$2 = 'Fonts';
-    const getTooltipPlaceholder$2 = constant$1('Font {0}');
+    const btnTooltip$2 = 'Font {0}';
     const systemFont = 'System Font';
     const systemStackFonts = [
       '-apple-system',
@@ -23816,7 +23528,7 @@
       };
       const dataset = buildBasicSettingsDataset(editor, 'font_family_formats', Delimiter.SemiColon);
       return {
-        tooltip: makeTooltipText(editor, getTooltipPlaceholder$2(), systemFont),
+        tooltip: makeTooltipText(editor, btnTooltip$2, systemFont),
         text: Optional.some(systemFont),
         icon: Optional.none(),
         isSelectedFor,
@@ -23829,9 +23541,9 @@
         isInvalid: never
       };
     };
-    const createFontFamilyButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$2(editor), getTooltipPlaceholder$2, 'FontFamilyTextUpdate', 'fontfamily');
+    const createFontFamilyButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$2(editor), btnTooltip$2, 'FontFamilyTextUpdate');
     const createFontFamilyMenu = (editor, backstage) => {
-      const menuItems = createMenuItems(backstage, getSpec$2(editor));
+      const menuItems = createMenuItems(editor, backstage, getSpec$2(editor));
       editor.ui.registry.addNestedMenuItem('fontfamily', {
         text: backstage.shared.providers.translate(menuTitle$2),
         onSetup: onSetupEditableToggle(editor),
@@ -23920,7 +23632,7 @@
       pageDown: constant$1(34)
     };
 
-    const createBespokeNumberInput = (editor, backstage, spec, btnName) => {
+    const createBespokeNumberInput = (editor, backstage, spec) => {
       let currentComp = Optional.none();
       const getValueFromCurrentComp = comp => comp.map(alloyComp => Representing.getValue(alloyComp)).getOr('');
       const onSetup = onSetupEvent(editor, 'NodeChange SwitchMode', api => {
@@ -23977,15 +23689,14 @@
           dom: {
             tag: 'button',
             attributes: {
-              'aria-label': translatedTooltip,
-              'data-mce-name': title
+              'title': translatedTooltip,
+              'aria-label': translatedTooltip
             },
             classes: classes.concat(title)
           },
           components: [renderIconFromPack$1(title, backstage.shared.providers.icons)],
           buttonBehaviours: derive$1([
             Disabling.config({}),
-            Tooltipping.config(backstage.shared.providers.tooltips.getConfig({ tooltipText: translatedTooltip })),
             config(altExecuting, [
               onControlAttached({
                 onSetup,
@@ -24015,15 +23726,6 @@
             [touchend()]: [
               altExecuting,
               'alloy.base.behaviour'
-            ],
-            [attachedToDom()]: [
-              'alloy.base.behaviour',
-              altExecuting,
-              'tooltipping'
-            ],
-            [detachedFromDom()]: [
-              altExecuting,
-              'tooltipping'
             ]
           }
         });
@@ -24106,8 +23808,7 @@
       return {
         dom: {
           tag: 'div',
-          classes: ['tox-number-input'],
-          attributes: { ...isNonNullable(btnName) ? { 'data-mce-name': btnName } : {} }
+          classes: ['tox-number-input']
         },
         components: [
           memMinus.asSpec(),
@@ -24135,7 +23836,7 @@
     };
 
     const menuTitle$1 = 'Font sizes';
-    const getTooltipPlaceholder$1 = constant$1('Font size {0}');
+    const btnTooltip$1 = 'Font size {0}';
     const fallbackFontSize = '12pt';
     const legacyFontSizes = {
       '8pt': '1',
@@ -24204,7 +23905,7 @@
       };
       const dataset = buildBasicSettingsDataset(editor, 'font_size_formats', Delimiter.Space);
       return {
-        tooltip: makeTooltipText(editor, getTooltipPlaceholder$1(), fallbackFontSize),
+        tooltip: makeTooltipText(editor, btnTooltip$1, fallbackFontSize),
         text: Optional.some(fallbackFontSize),
         icon: Optional.none(),
         isSelectedFor,
@@ -24217,7 +23918,7 @@
         isInvalid: never
       };
     };
-    const createFontSizeButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$1(editor), getTooltipPlaceholder$1, 'FontSizeTextUpdate', 'fontsize');
+    const createFontSizeButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$1(editor), btnTooltip$1, 'FontSizeTextUpdate');
     const getConfigFromUnit = unit => {
       var _a;
       const baseConfig = { step: 1 };
@@ -24264,9 +23965,9 @@
         }
       };
     };
-    const createFontSizeInputButton = (editor, backstage) => createBespokeNumberInput(editor, backstage, getNumberInputSpec(editor), 'fontsizeinput');
+    const createFontSizeInputButton = (editor, backstage) => createBespokeNumberInput(editor, backstage, getNumberInputSpec(editor));
     const createFontSizeMenu = (editor, backstage) => {
-      const menuItems = createMenuItems(backstage, getSpec$1(editor));
+      const menuItems = createMenuItems(editor, backstage, getSpec$1(editor));
       editor.ui.registry.addNestedMenuItem('fontsize', {
         text: menuTitle$1,
         onSetup: onSetupEditableToggle(editor),
@@ -24275,9 +23976,9 @@
     };
 
     const menuTitle = 'Formats';
-    const getTooltipPlaceholder = value => isEmpty(value) ? 'Formats' : 'Format {0}';
+    const btnTooltip = 'Format {0}';
     const getSpec = (editor, dataset) => {
-      const fallbackFormat = 'Formats';
+      const fallbackFormat = 'Paragraph';
       const isSelectedFor = format => () => editor.formatter.match(format);
       const getPreviewFor = format => () => {
         const fmt = editor.formatter.get(format);
@@ -24301,18 +24002,12 @@
         };
         const flattenedItems = bind$3(getStyleFormats(editor), getFormatItems);
         const detectedFormat = findNearest(editor, constant$1(flattenedItems));
-        const text = detectedFormat.fold(constant$1({
-          title: fallbackFormat,
-          tooltipLabel: ''
-        }), fmt => ({
-          title: fmt.title,
-          tooltipLabel: fmt.title
-        }));
-        emitWith(comp, updateMenuText, { text: text.title });
-        fireStylesTextUpdate(editor, { value: text.tooltipLabel });
+        const text = detectedFormat.fold(constant$1(fallbackFormat), fmt => fmt.title);
+        emitWith(comp, updateMenuText, { text });
+        fireStylesTextUpdate(editor, { value: text });
       };
       return {
-        tooltip: makeTooltipText(editor, getTooltipPlaceholder(''), ''),
+        tooltip: makeTooltipText(editor, btnTooltip, fallbackFormat),
         text: Optional.some(fallbackFormat),
         icon: Optional.none(),
         isSelectedFor,
@@ -24330,14 +24025,14 @@
         type: 'advanced',
         ...backstage.styles
       };
-      return createSelectButton(editor, backstage, getSpec(editor, dataset), getTooltipPlaceholder, 'StylesTextUpdate', 'styles');
+      return createSelectButton(editor, backstage, getSpec(editor, dataset), btnTooltip, 'StylesTextUpdate');
     };
     const createStylesMenu = (editor, backstage) => {
       const dataset = {
         type: 'advanced',
         ...backstage.styles
       };
-      const menuItems = createMenuItems(backstage, getSpec(editor, dataset));
+      const menuItems = createMenuItems(editor, backstage, getSpec(editor, dataset));
       editor.ui.registry.addNestedMenuItem('styles', {
         text: menuTitle,
         onSetup: onSetupEditableToggle(editor),
@@ -24561,19 +24256,19 @@
       setText: text => emitWith(component, updateMenuText, { text }),
       setIcon: icon => emitWith(component, updateMenuIcon, { icon })
     });
-    const getTooltipAttributes = (tooltip, providersBackstage) => tooltip.map(tooltip => ({ 'aria-label': providersBackstage.translate(tooltip) })).getOr({});
+    const getTooltipAttributes = (tooltip, providersBackstage) => tooltip.map(tooltip => ({
+      'aria-label': providersBackstage.translate(tooltip),
+      'title': providersBackstage.translate(tooltip)
+    })).getOr({});
     const focusButtonEvent = generate$6('focus-button');
-    const renderCommonStructure = (optIcon, optText, tooltip, behaviours, providersBackstage, btnName) => {
+    const renderCommonStructure = (optIcon, optText, tooltip, behaviours, providersBackstage) => {
       const optMemDisplayText = optText.map(text => record(renderLabel$1(text, 'tox-tbtn', providersBackstage)));
       const optMemDisplayIcon = optIcon.map(icon => record(renderReplaceableIconFromPack(icon, providersBackstage.icons)));
       return {
         dom: {
           tag: 'button',
           classes: ['tox-tbtn'].concat(optText.isSome() ? ['tox-tbtn--select'] : []),
-          attributes: {
-            ...getTooltipAttributes(tooltip, providersBackstage),
-            ...isNonNullable(btnName) ? { 'data-mce-name': btnName } : {}
-          }
+          attributes: getTooltipAttributes(tooltip, providersBackstage)
         },
         components: componentRenderPipeline([
           optMemDisplayIcon.map(mem => mem.asSpec()),
@@ -24613,7 +24308,7 @@
         ].concat(behaviours.getOr([])))
       };
     };
-    const renderFloatingToolbarButton = (spec, backstage, identifyButtons, attributes, btnName) => {
+    const renderFloatingToolbarButton = (spec, backstage, identifyButtons, attributes) => {
       const sharedBackstage = backstage.shared;
       const editorOffCell = Cell(noop);
       const specialisation = {
@@ -24632,7 +24327,7 @@
         }),
         markers: { toggledClass: 'tox-tbtn--enabled' },
         parts: {
-          button: renderCommonStructure(spec.icon, spec.text, spec.tooltip, Optional.some(behaviours), sharedBackstage.providers, btnName),
+          button: renderCommonStructure(spec.icon, spec.text, spec.tooltip, Optional.some(behaviours), sharedBackstage.providers),
           toolbar: {
             dom: {
               tag: 'div',
@@ -24643,10 +24338,10 @@
         }
       });
     };
-    const renderCommonToolbarButton = (spec, specialisation, providersBackstage, btnName) => {
+    const renderCommonToolbarButton = (spec, specialisation, providersBackstage) => {
       var _d;
       const editorOffCell = Cell(noop);
-      const structure = renderCommonStructure(spec.icon, spec.text, spec.tooltip, Optional.none(), providersBackstage, btnName);
+      const structure = renderCommonStructure(spec.icon, spec.text, spec.tooltip, Optional.none(), providersBackstage);
       return Button.sketch({
         dom: structure.dom,
         components: structure.components,
@@ -24661,7 +24356,6 @@
               onControlAttached(specialisation, editorOffCell),
               onControlDetached(specialisation, editorOffCell)
             ]),
-            ...spec.tooltip.map(t => Tooltipping.config(providersBackstage.tooltips.getConfig({ tooltipText: providersBackstage.translate(t) + spec.shortcut.map(shortcut => ` (${ convertText(shortcut) })`).getOr('') }))).toArray(),
             DisablingConfigs.toolbarButton(() => !spec.enabled || providersBackstage.isDisabled()),
             receivingConfig()
           ].concat(specialisation.toolbarButtonBehaviours)),
@@ -24669,14 +24363,14 @@
         }
       });
     };
-    const renderToolbarButton = (spec, providersBackstage, btnName) => renderToolbarButtonWith(spec, providersBackstage, [], btnName);
-    const renderToolbarButtonWith = (spec, providersBackstage, bonusEvents, btnName) => renderCommonToolbarButton(spec, {
+    const renderToolbarButton = (spec, providersBackstage) => renderToolbarButtonWith(spec, providersBackstage, []);
+    const renderToolbarButtonWith = (spec, providersBackstage, bonusEvents) => renderCommonToolbarButton(spec, {
       toolbarButtonBehaviours: bonusEvents.length > 0 ? [config('toolbarButtonWith', bonusEvents)] : [],
       getApi: getButtonApi,
       onSetup: spec.onSetup
-    }, providersBackstage, btnName);
-    const renderToolbarToggleButton = (spec, providersBackstage, btnName) => renderToolbarToggleButtonWith(spec, providersBackstage, [], btnName);
-    const renderToolbarToggleButtonWith = (spec, providersBackstage, bonusEvents, btnName) => renderCommonToolbarButton(spec, {
+    }, providersBackstage);
+    const renderToolbarToggleButton = (spec, providersBackstage) => renderToolbarToggleButtonWith(spec, providersBackstage, []);
+    const renderToolbarToggleButtonWith = (spec, providersBackstage, bonusEvents) => renderCommonToolbarButton(spec, {
       toolbarButtonBehaviours: [
         Replacing.config({}),
         Toggling.config({
@@ -24687,7 +24381,7 @@
       ].concat(bonusEvents.length > 0 ? [config('toolbarToggleButtonWith', bonusEvents)] : []),
       getApi: getToggleApi,
       onSetup: spec.onSetup
-    }, providersBackstage, btnName);
+    }, providersBackstage);
     const fetchChoices = (getApi, spec, providersBackstage) => comp => Future.nu(callback => spec.fetch(callback)).map(items => Optional.from(createTieredDataFrom(deepMerge(createPartialChoiceMenu(generate$6('menu-value'), items, value => {
       spec.onItemAction(getApi(comp), value);
     }, spec.columns, spec.presets, ItemResponse$1.CLOSE_ON_EXECUTE, spec.select.getOr(never), providersBackstage), {
@@ -24698,8 +24392,7 @@
           });
         })])
     }))));
-    const renderSplitButton = (spec, sharedBackstage, btnName) => {
-      const tooltipString = Cell(spec.tooltip.getOr(''));
+    const renderSplitButton = (spec, sharedBackstage) => {
       const getApi = comp => ({
         isEnabled: () => !Disabling.isDisabled(comp),
         setEnabled: state => Disabling.set(comp, !state),
@@ -24719,8 +24412,10 @@
         setIcon: icon => descendant(comp.element, 'span').each(button => comp.getSystem().getByDom(button).each(buttonComp => emitWith(buttonComp, updateMenuIcon, { icon }))),
         setTooltip: tooltip => {
           const translatedTooltip = sharedBackstage.providers.translate(tooltip);
-          set$9(comp.element, 'aria-label', translatedTooltip);
-          tooltipString.set(tooltip);
+          setAll$1(comp.element, {
+            'aria-label': translatedTooltip,
+            'title': translatedTooltip
+          });
         }
       });
       const editorOffCell = Cell(noop);
@@ -24734,8 +24429,7 @@
           classes: ['tox-split-button'],
           attributes: {
             'aria-pressed': false,
-            ...getTooltipAttributes(spec.tooltip, sharedBackstage.providers),
-            ...isNonNullable(btnName) ? { 'data-mce-name': btnName } : {}
+            ...getTooltipAttributes(spec.tooltip, sharedBackstage.providers)
           }
         },
         onExecute: button => {
@@ -24755,30 +24449,12 @@
             onControlAttached(specialisation, editorOffCell),
             onControlDetached(specialisation, editorOffCell)
           ]),
-          Unselecting.config({}),
-          ...spec.tooltip.map(tooltip => {
-            return Tooltipping.config({
-              ...sharedBackstage.providers.tooltips.getConfig({
-                tooltipText: sharedBackstage.providers.translate(tooltip),
-                onShow: comp => {
-                  if (tooltipString.get() !== tooltip) {
-                    const translatedTooltip = sharedBackstage.providers.translate(tooltipString.get());
-                    Tooltipping.setComponents(comp, sharedBackstage.providers.tooltips.getComponents({ tooltipText: translatedTooltip }));
-                  }
-                }
-              })
-            });
-          }).toArray()
+          Unselecting.config({})
         ]),
         eventOrder: {
           [attachedToDom()]: [
             'alloy.base.behaviour',
-            'split-dropdown-events',
-            'tooltipping'
-          ],
-          [detachedFromDom()]: [
-            'split-dropdown-events',
-            'tooltipping'
+            'split-dropdown-events'
           ]
         },
         toggleClass: 'tox-tbtn--enabled',
@@ -24861,16 +24537,16 @@
         items: ['addcomment']
       }
     ];
-    const renderFromBridge = (bridgeBuilder, render) => (spec, backstage, editor, btnName) => {
+    const renderFromBridge = (bridgeBuilder, render) => (spec, backstage, editor) => {
       const internal = bridgeBuilder(spec).mapError(errInfo => formatError(errInfo)).getOrDie();
-      return render(internal, backstage, editor, btnName);
+      return render(internal, backstage, editor);
     };
     const types = {
-      button: renderFromBridge(createToolbarButton, (s, backstage, _, btnName) => renderToolbarButton(s, backstage.shared.providers, btnName)),
-      togglebutton: renderFromBridge(createToggleButton, (s, backstage, _, btnName) => renderToolbarToggleButton(s, backstage.shared.providers, btnName)),
-      menubutton: renderFromBridge(createMenuButton, (s, backstage, _, btnName) => renderMenuButton(s, 'tox-tbtn', backstage, Optional.none(), false, btnName)),
-      splitbutton: renderFromBridge(createSplitButton, (s, backstage, _, btnName) => renderSplitButton(s, backstage.shared, btnName)),
-      grouptoolbarbutton: renderFromBridge(createGroupToolbarButton, (s, backstage, editor, btnName) => {
+      button: renderFromBridge(createToolbarButton, (s, backstage) => renderToolbarButton(s, backstage.shared.providers)),
+      togglebutton: renderFromBridge(createToggleButton, (s, backstage) => renderToolbarToggleButton(s, backstage.shared.providers)),
+      menubutton: renderFromBridge(createMenuButton, (s, backstage) => renderMenuButton(s, 'tox-tbtn', backstage, Optional.none(), false)),
+      splitbutton: renderFromBridge(createSplitButton, (s, backstage) => renderSplitButton(s, backstage.shared)),
+      grouptoolbarbutton: renderFromBridge(createGroupToolbarButton, (s, backstage, editor) => {
         const buttons = editor.ui.registry.getAll().buttons;
         const identify = toolbar => identifyButtons(editor, {
           buttons,
@@ -24880,16 +24556,16 @@
         const attributes = { [Attribute]: backstage.shared.header.isPositionedAtTop() ? AttributeValue.TopToBottom : AttributeValue.BottomToTop };
         switch (getToolbarMode(editor)) {
         case ToolbarMode$1.floating:
-          return renderFloatingToolbarButton(s, backstage, identify, attributes, btnName);
+          return renderFloatingToolbarButton(s, backstage, identify, attributes);
         default:
           throw new Error('Toolbar groups are only supported when using floating toolbar mode');
         }
       })
     };
-    const extractFrom = (spec, backstage, editor, btnName) => get$g(types, spec.type).fold(() => {
+    const extractFrom = (spec, backstage, editor) => get$g(types, spec.type).fold(() => {
       console.error('skipping button defined by', spec);
       return Optional.none();
-    }, render => Optional.some(render(spec, backstage, editor, btnName)));
+    }, render => Optional.some(render(spec, backstage, editor)));
     const bespokeButtons = {
       styles: createStylesButton,
       fontsize: createFontSizeButton,
@@ -24934,7 +24610,7 @@
         console.warn(`Ignoring the '${ toolbarItem }' toolbar button. Group toolbar buttons are only supported when using floating toolbar mode and cannot be nested.`);
         return Optional.none();
       } else {
-        return extractFrom(spec, backstage, editor, toolbarItem.toLowerCase());
+        return extractFrom(spec, backstage, editor);
       }
     });
     const identifyButtons = (editor, toolbarConfig, backstage, prefixes) => {
@@ -24970,7 +24646,7 @@
       }
     };
 
-    const detection = detect$1();
+    const detection = detect$2();
     const isiOS12 = detection.os.isiOS() && detection.os.version.major <= 12;
     const setupEvents$1 = (editor, uiRefs) => {
       const {uiMotherships} = uiRefs;
@@ -25156,7 +24832,6 @@
       const editorMaxWidthOpt = getMaxWidthOption(editor).or(getWidth(editor));
       const headerBackstage = backstage.shared.header;
       const isPositionedAtTop = headerBackstage.isPositionedAtTop;
-      const minimumToolbarWidth = 150;
       const toolbarMode = getToolbarMode(editor);
       const isSplitToolbar = toolbarMode === ToolbarMode.sliding || toolbarMode === ToolbarMode.floating;
       const visible = Cell(false);
@@ -25202,45 +24877,45 @@
       const updateChromeWidth = () => {
         floatContainer.on(container => {
           const maxWidth = editorMaxWidthOpt.getOrThunk(() => {
-            return getBounds$3().width - viewport$1(targetElm).left - 10;
+            const bodyMargin = parseToInt(get$e(body(), 'margin-left')).getOr(0);
+            return get$c(body()) - absolute$3(targetElm).left + bodyMargin;
           });
           set$8(container.element, 'max-width', maxWidth + 'px');
         });
       };
-      const updateChromePosition = (isOuterContainerWidthRestored, prevScroll) => {
+      const updateChromePosition = optToolbarWidth => {
         floatContainer.on(container => {
           const toolbar = OuterContainer.getToolbar(mainUi.outerContainer);
           const offset = calcToolbarOffset(toolbar);
           const targetBounds = box$1(targetElm);
-          const offsetParent = getOffsetParent$1(editor, mainUi.outerContainer.element);
-          const getLeft = () => offsetParent.fold(() => targetBounds.x, offsetParent => {
-            const offsetBox = box$1(offsetParent);
-            const isOffsetParentBody = eq(offsetParent, body());
-            return isOffsetParentBody ? targetBounds.x : targetBounds.x - offsetBox.x;
-          });
-          const getTop = () => offsetParent.fold(() => isPositionedAtTop() ? Math.max(targetBounds.y - get$d(container.element) + offset, 0) : targetBounds.bottom, offsetParent => {
+          const {top, left} = getOffsetParent$1(editor, mainUi.outerContainer.element).fold(() => {
+            return {
+              top: isPositionedAtTop() ? Math.max(targetBounds.y - get$d(container.element) + offset, 0) : targetBounds.bottom,
+              left: targetBounds.x
+            };
+          }, offsetParent => {
             var _a;
             const offsetBox = box$1(offsetParent);
             const scrollDelta = (_a = offsetParent.dom.scrollTop) !== null && _a !== void 0 ? _a : 0;
             const isOffsetParentBody = eq(offsetParent, body());
             const topValue = isOffsetParentBody ? Math.max(targetBounds.y - get$d(container.element) + offset, 0) : targetBounds.y - offsetBox.y + scrollDelta - get$d(container.element) + offset;
-            return isPositionedAtTop() ? topValue : targetBounds.bottom;
+            return {
+              top: isPositionedAtTop() ? topValue : targetBounds.bottom,
+              left: isOffsetParentBody ? targetBounds.x : targetBounds.x - offsetBox.x
+            };
           });
-          const left = getLeft();
-          const widthProperties = someIf(isOuterContainerWidthRestored, Math.ceil(mainUi.outerContainer.element.dom.getBoundingClientRect().width)).filter(w => w > minimumToolbarWidth).map(toolbarWidth => {
-            const scroll = prevScroll.getOr(get$b());
-            const availableWidth = window.innerWidth - (left - scroll.left);
-            const width = Math.max(Math.min(toolbarWidth, availableWidth), minimumToolbarWidth);
-            if (availableWidth < toolbarWidth) {
-              set$8(mainUi.outerContainer.element, 'width', width + 'px');
-            }
-            return { width: width + 'px' };
-          }).getOr({ width: 'max-content' });
           const baseProperties = {
             position: 'absolute',
             left: Math.round(left) + 'px',
-            top: getTop() + 'px'
+            top: Math.round(top) + 'px'
           };
+          const widthProperties = optToolbarWidth.map(toolbarWidth => {
+            const scroll = get$b();
+            const minimumToolbarWidth = 150;
+            const availableWidth = window.innerWidth - (left - scroll.left);
+            const width = Math.max(Math.min(toolbarWidth, availableWidth), minimumToolbarWidth);
+            return { width: width + 'px' };
+          }).getOr({});
           setAll(mainUi.outerContainer.element, {
             ...baseProperties,
             ...widthProperties
@@ -25253,17 +24928,21 @@
           m.broadcastOn([repositionPopups()], {});
         });
       };
-      const restoreOuterContainerWidth = () => {
+      const restoreAndGetCompleteOuterContainerWidth = () => {
         if (!useFixedToolbarContainer) {
           const toolbarCurrentRightsidePosition = absolute$3(mainUi.outerContainer.element).left + getOuter$1(mainUi.outerContainer.element);
           if (toolbarCurrentRightsidePosition >= window.innerWidth - maximumDistanceToEdge || getRaw(mainUi.outerContainer.element, 'width').isSome()) {
             set$8(mainUi.outerContainer.element, 'position', 'absolute');
             set$8(mainUi.outerContainer.element, 'left', '0px');
             remove$6(mainUi.outerContainer.element, 'width');
-            return true;
+            const w = getOuter$1(mainUi.outerContainer.element);
+            return Optional.some(w);
+          } else {
+            return Optional.none();
           }
+        } else {
+          return Optional.none();
         }
-        return false;
       };
       const update = stickyAction => {
         if (!isVisible()) {
@@ -25272,18 +24951,12 @@
         if (!useFixedToolbarContainer) {
           updateChromeWidth();
         }
-        const prevScroll = get$b();
-        const isOuterContainerWidthRestored = useFixedToolbarContainer ? false : restoreOuterContainerWidth();
+        const optToolbarWidth = useFixedToolbarContainer ? Optional.none() : restoreAndGetCompleteOuterContainerWidth();
         if (isSplitToolbar) {
           OuterContainer.refreshToolbar(mainUi.outerContainer);
         }
         if (!useFixedToolbarContainer) {
-          const currentScroll = get$b();
-          const optScroll = someIf(prevScroll.left !== currentScroll.left, prevScroll);
-          updateChromePosition(isOuterContainerWidthRestored, optScroll);
-          optScroll.each(scroll => {
-            to(scroll.left, currentScroll.top);
-          });
+          updateChromePosition(optToolbarWidth);
         }
         if (isSticky) {
           floatContainer.on(stickyAction);
@@ -25426,18 +25099,11 @@
           attachSystem(uiContainer, mainUi.mothership);
         }
         attachSystem(uiContainer, uiRefs.dialogUi.mothership);
-        const setup = () => {
-          setToolbar(editor, uiRefs, rawUiConfig, backstage);
-          OuterContainer.setMenubar(mainUi.outerContainer, identifyMenus(editor, rawUiConfig));
-          ui.show();
-          setupEvents(editor, targetElm, ui, toolbarPersist);
-          editor.nodeChanged();
-        };
-        if (toolbarPersist) {
-          editor.once('SkinLoaded', setup);
-        } else {
-          setup();
-        }
+        setToolbar(editor, uiRefs, rawUiConfig, backstage);
+        OuterContainer.setMenubar(mainUi.outerContainer, identifyMenus(editor, rawUiConfig));
+        ui.show();
+        setupEvents(editor, targetElm, ui, toolbarPersist);
+        editor.nodeChanged();
       };
       editor.on('show', render);
       editor.on('hide', ui.hide);
@@ -26023,7 +25689,7 @@
     const register$9 = (editor, registryContextToolbars, sink, extras) => {
       const backstage = extras.backstage;
       const sharedBackstage = backstage.shared;
-      const isTouch = detect$1().deviceType.isTouch;
+      const isTouch = detect$2().deviceType.isTouch;
       const lastElement = value$2();
       const lastTrigger = value$2();
       const lastContextPosition = value$2();
@@ -26188,11 +25854,6 @@
         });
         editor.on('SwitchMode', () => {
           if (editor.mode.isReadOnly()) {
-            close();
-          }
-        });
-        editor.on('ExecCommand', ({command}) => {
-          if (command.toLowerCase() === 'toggleview') {
             close();
           }
         });
@@ -26423,20 +26084,17 @@
         {
           name: 'bold',
           text: 'Bold',
-          icon: 'bold',
-          shortcut: 'Meta+B'
+          icon: 'bold'
         },
         {
           name: 'italic',
           text: 'Italic',
-          icon: 'italic',
-          shortcut: 'Meta+I'
+          icon: 'italic'
         },
         {
           name: 'underline',
           text: 'Underline',
-          icon: 'underline',
-          shortcut: 'Meta+U'
+          icon: 'underline'
         },
         {
           name: 'strikethrough',
@@ -26458,19 +26116,16 @@
           tooltip: btn.text,
           icon: btn.icon,
           onSetup: onSetupStateToggle(editor, btn.name),
-          onAction: onActionToggleFormat(editor, btn.name),
-          shortcut: btn.shortcut
+          onAction: onActionToggleFormat(editor, btn.name)
         });
       });
       for (let i = 1; i <= 6; i++) {
         const name = 'h' + i;
-        const shortcut = `Access+${ i }`;
         editor.ui.registry.addToggleButton(name, {
           text: name.toUpperCase(),
           tooltip: 'Heading ' + i,
           onSetup: onSetupStateToggle(editor, name),
-          onAction: onActionToggleFormat(editor, name),
-          shortcut
+          onAction: onActionToggleFormat(editor, name)
         });
       }
     };
@@ -26486,15 +26141,13 @@
           name: 'help',
           text: 'Help',
           action: 'mceHelp',
-          icon: 'help',
-          shortcut: 'Alt+0'
+          icon: 'help'
         },
         {
           name: 'selectall',
           text: 'Select all',
           action: 'SelectAll',
-          icon: 'select-all',
-          shortcut: 'Meta+A'
+          icon: 'select-all'
         },
         {
           name: 'newdocument',
@@ -26506,15 +26159,13 @@
           name: 'print',
           text: 'Print',
           action: 'mcePrint',
-          icon: 'print',
-          shortcut: 'Meta+P'
+          icon: 'print'
         }
       ], btn => {
         editor.ui.registry.addButton(btn.name, {
           tooltip: btn.text,
           icon: btn.icon,
-          onAction: onActionExecCommand(editor, btn.action),
-          shortcut: btn.shortcut
+          onAction: onActionExecCommand(editor, btn.action)
         });
       });
       global$1.each([
@@ -26726,16 +26377,14 @@
         icon: 'undo',
         enabled: false,
         onSetup: onSetupUndoRedoState(editor, 'hasUndo'),
-        onAction: onActionExecCommand(editor, 'undo'),
-        shortcut: 'Meta+Z'
+        onAction: onActionExecCommand(editor, 'undo')
       });
       editor.ui.registry.addButton('redo', {
         tooltip: 'Redo',
         icon: 'redo',
         enabled: false,
         onSetup: onSetupUndoRedoState(editor, 'hasRedo'),
-        onAction: onActionExecCommand(editor, 'redo'),
-        shortcut: 'Meta+Y'
+        onAction: onActionExecCommand(editor, 'redo')
       });
     };
     const register$2 = editor => {
@@ -27008,7 +26657,7 @@
       });
     };
     const initAndShow = (editor, e, buildMenu, backstage, contextmenu, anchorType) => {
-      const detection = detect$1();
+      const detection = detect$2();
       const isiOS = detection.os.isiOS();
       const isMacOS = detection.os.isMacOS();
       const isAndroid = detection.os.isAndroid();
@@ -27115,7 +26764,7 @@
       }
     };
     const setup$5 = (editor, lazySink, backstage) => {
-      const detection = detect$1();
+      const detection = detect$2();
       const isTouch = detection.deviceType.isTouch;
       const contextmenu = build$1(InlineView.sketch({
         dom: { tag: 'div' },
@@ -27780,23 +27429,20 @@
       const snapLastTopLeft = () => startCell.get().each(snapTopLeft);
       const snapBottomRight = cell => snapTo(bottomRight, cell, getBottomRightSnap, 'bottom');
       const snapLastBottomRight = () => finishCell.get().each(snapBottomRight);
-      if (detect$1().deviceType.isTouch()) {
-        const domToSugar = arr => map$2(arr, SugarElement.fromDom);
+      if (detect$2().deviceType.isTouch()) {
         editor.on('TableSelectionChange', e => {
           if (!isVisible.get()) {
             attach(sink, topLeft);
             attach(sink, bottomRight);
             isVisible.set(true);
           }
-          const start = SugarElement.fromDom(e.start);
-          const finish = SugarElement.fromDom(e.finish);
-          startCell.set(start);
-          finishCell.set(finish);
-          Optional.from(e.otherCells).each(otherCells => {
-            tlTds.set(domToSugar(otherCells.upOrLeftCells));
-            brTds.set(domToSugar(otherCells.downOrRightCells));
-            snapTopLeft(start);
-            snapBottomRight(finish);
+          startCell.set(e.start);
+          finishCell.set(e.finish);
+          e.otherCells.each(otherCells => {
+            tlTds.set(otherCells.upOrLeftCells);
+            brTds.set(otherCells.downOrRightCells);
+            snapTopLeft(e.start);
+            snapBottomRight(e.finish);
           });
         });
         editor.on('ResizeEditor ResizeWindow ScrollContent', () => {
@@ -27958,8 +27604,8 @@
         tag: 'div',
         classes: ['tox-statusbar__resize-handle'],
         attributes: {
-          'aria-label': providersBackstage.translate(resizeLabel),
-          'data-mce-name': 'resize-handle'
+          'title': providersBackstage.translate('Resize'),
+          'aria-label': providersBackstage.translate(resizeLabel)
         },
         behaviours: [
           Dragging.config({
@@ -27976,8 +27622,7 @@
             onDown: () => keyboardHandler(editor, resizeType, 0, 1)
           }),
           Tabstopping.config({}),
-          Focusing.config({}),
-          Tooltipping.config(providersBackstage.tooltips.getConfig({ tooltipText: providersBackstage.translate('Resize') }))
+          Focusing.config({})
         ]
       }, providersBackstage.icons));
     };
@@ -28053,7 +27698,7 @@
               dom: {
                 tag: 'a',
                 attributes: {
-                  'href': 'https://www.tiny.cloud/powered-by-tiny?utm_campaign=poweredby&utm_source=tiny&utm_medium=referral&utm_content=v7',
+                  'href': 'https://www.tiny.cloud/powered-by-tiny?utm_campaign=poweredby&utm_source=tiny&utm_medium=referral&utm_content=v6',
                   'rel': 'noopener',
                   'target': '_blank',
                   'aria-label': global$8.translate([
@@ -28173,7 +27818,7 @@
       const lazyMothership = value$2();
       const lazyDialogMothership = value$2();
       const lazyPopupMothership = value$2();
-      const platform = detect$1();
+      const platform = detect$2();
       const isTouch = platform.deviceType.isTouch();
       const touchPlatformClass = 'tox-platform-touch';
       const deviceClasses = isTouch ? [touchPlatformClass] : [];
@@ -28384,7 +28029,10 @@
         const editorContainer = OuterContainer.parts.editorContainer({
           components: flatten([
             editorComponents,
-            isInline ? [] : [memBottomAnchorBar.asSpec()]
+            isInline ? [] : [
+              memBottomAnchorBar.asSpec(),
+              ...statusbar.toArray()
+            ]
           ])
         });
         const isHidden = isDistractionFree(editor);
@@ -28411,10 +28059,7 @@
           },
           components: [
             editorContainer,
-            ...isInline ? [] : [
-              partViewWrapper,
-              ...statusbar.toArray()
-            ],
+            ...isInline ? [] : [partViewWrapper],
             partThrobber
           ],
           behaviours: derive$1([
@@ -28752,7 +28397,7 @@
     const toggleButtonSpecFields = [
       ...baseFooterButtonFields,
       requiredStringEnum('type', ['togglebutton']),
-      optionalTooltip,
+      requiredString('tooltip'),
       optionalIcon,
       optionalText,
       defaultedBoolean('active', false)
@@ -28833,7 +28478,6 @@
       defaultedString('tag', 'textarea'),
       requiredString('scriptId'),
       requiredString('scriptUrl'),
-      optionFunction('onFocus'),
       defaultedPostMsg('settings', undefined)
     ]);
     const customEditorFieldsOld = formComponentFields.concat([
@@ -29976,13 +29620,10 @@
         attributes: {
           'type': 'button',
           'aria-label': providersBackstage.translate('Close'),
-          'data-mce-name': 'close'
+          'title': providersBackstage.translate('Close')
         }
       },
-      buttonBehaviours: derive$1([
-        Tabstopping.config({}),
-        Tooltipping.config(providersBackstage.tooltips.getConfig({ tooltipText: providersBackstage.translate('Close') }))
-      ]),
+      buttonBehaviours: derive$1([Tabstopping.config({})]),
       components: [render$3('close', {
           tag: 'span',
           classes: ['tox-icon']

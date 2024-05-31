@@ -18,7 +18,6 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 import { of } from "rxjs";
 import { environment } from "../env";
 import { Router } from "@angular/router";
-import {Component, OnInit, SecurityContext} from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { TranslateService } from "@ngx-translate/core";
 import { Validators, FormBuilder } from '@angular/forms';
@@ -27,8 +26,9 @@ import { UserService } from "../../services/user.service";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { ConfigService } from "../../services/config.service";
 import { LocaleService } from "../../services/locale.service";
-import { SessionStorageService } from "../../services/session-storage.service";
+import { Component, OnInit, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { SessionStorageService } from "../../services/session-storage.service";
 import { NotificationService } from "../../services/notifications/notifications.service";
 
 @Component({
@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit {
         private notify: NotificationService,
         private configService: ConfigService,
         private localeService: LocaleService,
-        private SessionStorageService: SessionStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit(): void {
@@ -70,11 +70,11 @@ export class LoginComponent implements OnInit {
         if (this.localeService.currentLang === undefined) {
             this.localeService.getCurrentLocale();
         }
-        const b64Content = this.SessionStorageService.get('loginImageB64');
+        const b64Content = this.sessionStorageService.get('loginImageB64');
         if (!b64Content) {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                 tap((data: any) => {
-                    this.SessionStorageService.save('loginImageB64', data);
+                    this.sessionStorageService.save('loginImageB64', data);
                     this.loginImage = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + data);
                 }),
                 catchError((err: any) => {
