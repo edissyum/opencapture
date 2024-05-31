@@ -1,5 +1,5 @@
 # This file is part of Open-Capture.
-import importlib
+
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -18,9 +18,10 @@ import importlib
 import os
 import re
 import json
+import uuid
 import shutil
 import traceback
-import uuid
+import importlib
 
 from flask_babel import gettext
 from src.backend.main import launch, create_classes_from_custom_id
