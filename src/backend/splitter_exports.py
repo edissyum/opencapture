@@ -18,6 +18,7 @@
 import os
 import re
 from flask_babel import gettext
+from src.backend.scripting_functions import launch_script_splitter
 from src.backend.import_classes import _Splitter, _Files, _CMIS, _OpenADS
 from src.backend.import_models import splitter, workflow, forms, outputs
 
@@ -32,7 +33,7 @@ def get_output_parameters(parameters):
     return data
 
 
-def export_batch(batch_id, log, docservers, regex):
+def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
     export_date = _Files.get_now_date()
     export_zip_file = ''
 
@@ -126,8 +127,17 @@ def export_batch(batch_id, log, docservers, regex):
 
     if export_zip_file:
         compress_outputs_result(batch, batch['outputs_result_files'], export_zip_file)
+    process_after_outputs({
+        'log': log,
+        'batch': batch,
+        'config': config,
+        'close_status': 'END',
+        'database': database,
+        'custom_id': custom_id,
+        'docservers': docservers,
+        'workflow_settings': workflow_settings
 
-    process_after_outputs(batch, 'END', workflow_settings, docservers, log)
+    })
     return True, 200
 
 
@@ -357,10 +367,22 @@ def compress_outputs_result(batch, exported_files, export_zip_file):
     _Files.compress_files(compress_files, outputs_compress_path, remove_compressed_files=True)
 
 
-def process_after_outputs(batch, close_status, workflow_settings, docservers, log):
+def process_after_outputs(args):
     splitter.update_status({
-        'ids': [batch['id']],
-        'status': close_status
+        'ids': [args['batch']['id']],
+        'status': args['close_status']
     })
-    if workflow_settings['process']['delete_documents']:
-        _Files.remove_file(f"{docservers['SPLITTER_ORIGINAL_DOC']}/{batch['file_path']}", log)
+
+    if args['workflow_settings']['process']['delete_documents']:
+        _Files.remove_file(f"{args['docservers']['SPLITTER_ORIGINAL_DOC']}/{args['batch']['file_path']}", args['log'])
+
+    if args['config']['GLOBAL']['allowwfscripting'].lower() == 'true':
+        datas = {
+            'batch': args['batch'],
+        }
+        _args = {
+            'custom_id': args['custom_id'],
+            'batch_id': args['batch']['id']
+        }
+        launch_script_splitter(args['workflow_settings'], args['docservers'], 'output',
+                                args['log'], None, args['database'], _args, args['config'], datas=datas)
