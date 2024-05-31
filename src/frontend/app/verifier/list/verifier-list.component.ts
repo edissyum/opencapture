@@ -180,12 +180,16 @@ export class VerifierListComponent implements OnInit {
             if (this.sessionStorageService.get('documentsPageIndex')) {
                 this.pageIndex = parseInt(this.sessionStorageService.get('documentsPageIndex') as string);
             }
+            if (this.sessionStorageService.get('documentsPageSize')) {
+                this.pageSize = parseInt(this.sessionStorageService.get('documentsPageSize') as string);
+            }
             if (this.sessionStorageService.get('documentsTimeIndex')) {
                 this.selectedTab = parseInt(this.sessionStorageService.get('documentsTimeIndex') as string);
                 this.currentTime = this.batchList[this.selectedTab].id;
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
+            this.sessionStorageService.remove('documentsPageSize');
             this.sessionStorageService.remove('documentsPageIndex');
             this.sessionStorageService.remove('documentsTimeIndex');
         }
@@ -650,6 +654,7 @@ export class VerifierListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
+        this.sessionStorageService.save('documentsPageSize', event.pageSize);
         this.sessionStorageService.save('documentsPageIndex', event.pageIndex);
         this.loadDocuments().then();
     }

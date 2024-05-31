@@ -90,7 +90,8 @@
                             <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length !== 0"
                                     (click)="testConnection()" mat-button
                                     class="valid_button">
-                                <span>{{ "OUTPUT.test_connection" | translate }}</span>
+                                <span *ngIf="selectedOutputType == 'export_mem'">{{ "OUTPUT.test_connection" | translate }}</span>
+                                <span *ngIf="selectedOutputType == 'export_coog'">{{ "OUTPUT.retrieve_access_token" | translate }}</span>
                             </button>
                         </mat-tab>
                         <mat-tab [label]="'OUTPUT.parameters' | translate" style="height: 50vh;">
@@ -114,9 +115,20 @@
                                             <i class="fa-solid fa-check text-green-400"></i>
                                         </button>
                                     </mat-form-field>
-                                    <mat-form-field *ngIf="(field.type === 'textarea') && !field['webservice']">
+                                    <mat-form-field *ngIf="(field.type === 'textarea' && selectedOutputType !== 'export_coog') && !field['webservice']">
                                         <mat-label>{{ field.label | translate }}</mat-label>
                                         <textarea [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="1" matInput [value]="field.control.value"
+                                                  [formControl]="field['control']" [type]="field.type" [placeholder]="field.placeholder"
+                                                  [required]="field['required']"></textarea>
+                                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
+                                        <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint">
+                                            <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
+                                    </mat-form-field>
+                                    <mat-form-field *ngIf="(field.type === 'textarea' && selectedOutputType == 'export_coog') && !field['webservice']"
+                                                    class="col-span-4">
+                                        <mat-label>{{ field.label | translate }}</mat-label>
+                                        <textarea matInput [value]="field.control.value" class="min-h-72"
                                                   [formControl]="field['control']" [type]="field.type" [placeholder]="field.placeholder"
                                                   [required]="field['required']"></textarea>
                                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>

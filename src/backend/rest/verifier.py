@@ -290,9 +290,7 @@ def export_mem(document_id):
 
     check, message = rest_validator(request.json['args'], [
         {'id': 'data', 'type': dict, 'mandatory': True},
-        {'id': 'module', 'type': str, 'mandatory': True},
-        {'id': 'ocrise', 'type': bool, 'mandatory': False},
-        {'id': 'compress_type', 'type': str, 'mandatory': False}
+        {'id': 'module', 'type': str, 'mandatory': True}
     ])
 
     if not check:
@@ -302,6 +300,28 @@ def export_mem(document_id):
         }, 400)
 
     res = verifier.export_mem(document_id, request.json['args'])
+    return make_response(jsonify(res[0]), res[1])
+
+
+@bp.route('verifier/documents/<int:document_id>/export_coog', methods=['POST'])
+@auth.token_required
+def export_coog(document_id):
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/documents/{document_id}/export_coog'}), 403
+
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'data', 'type': dict, 'mandatory': True},
+        {'id': 'module', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+    res = verifier.export_coog(document_id, request.json['args'])
     return make_response(jsonify(res[0]), res[1])
 
 
