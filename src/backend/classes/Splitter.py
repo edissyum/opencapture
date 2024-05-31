@@ -266,7 +266,6 @@ class Splitter:
 
         return {'batches_id': batches_id}
 
-
     @staticmethod
     def get_documents_pages(documents):
         documents_pages = []
