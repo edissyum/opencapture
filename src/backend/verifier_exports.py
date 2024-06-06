@@ -476,7 +476,6 @@ def export_coog(data, document_info, log, regex, database):
                 parameters = json.loads(data['options']['parameters'][0]['value'])[0]
                 ws_data = [construct_json(parameters, document_info, regex)]
                 res = _ws.create_task(ws_data)
-                print(res)
                 if res[0]:
                     return {}, 200
                 else:

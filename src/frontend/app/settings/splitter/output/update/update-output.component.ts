@@ -124,6 +124,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
             'label'         : marker('HEADER.label')
         },
         {
+            'labelShort'    : 'b64_file_content',
+            'label'         : marker('OUTPUT.b64_file_content')
+        },
+        {
             'labelShort'    : 'date',
             'label'         : marker('TYPES.date')
         },

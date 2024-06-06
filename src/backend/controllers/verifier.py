@@ -34,6 +34,7 @@ from flask_babel import gettext
 from zeep import Client, exceptions
 from src.backend import verifier_exports
 from src.backend.import_classes import _Files
+from werkzeug.datastructures import FileStorage
 from src.backend.classes.Files import rotate_img
 from src.backend.scripting_functions import check_code
 from src.backend.import_models import verifier, accounts, forms
@@ -43,13 +44,27 @@ from src.backend.import_controllers import auth, user, monitoring, history
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
-def handle_uploaded_file(files, workflow_id, supplier):
+def upload_documents(body):
+    res = handle_uploaded_file(body['files'], body['workflowId'], None, body['datas'])
+    if res and res[0] is not False:
+        return res, 200
+
+    response = {
+        "errors": gettext('UPLOAD_DOCUMENTS_ERROR'),
+        "message": gettext('UPLOAD_DOCUMENTS_ERROR_MESSAGE')
+    }
+    return response, 400
+
+
+def handle_uploaded_file(files, workflow_id, supplier, datas=None):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER']
     tokens = []
-
     for file in files:
-        _f = files[file]
+        if isinstance(file, FileStorage):
+            _f = file
+        else:
+            _f = files[file]
         filename = _Files.save_uploaded_file(_f, path)
 
         now = datetime.datetime.now()
@@ -70,6 +85,7 @@ def handle_uploaded_file(files, workflow_id, supplier):
 
         if task_id_monitor:
             launch({
+                'datas': datas,
                 'file': filename,
                 'supplier': supplier,
                 'custom_id': custom_id,

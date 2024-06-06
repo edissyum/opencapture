@@ -115,7 +115,7 @@
                                         <mat-label>{{ field.label | translate }}</mat-label>
                                         <textarea matInput [value]="field.control.value"
                                                   [formControl]="field['control']" [type]="field.type" [placeholder]="field.placeholder"
-                                                  [required]="field['required']"  rows="16" spellcheck="false"></textarea>
+                                                  [required]="field['required']"  rows="14" spellcheck="false"></textarea>
                                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
                                         <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
                                               [matTooltip]="field.hint">
@@ -165,13 +165,9 @@
             <div *ngFor="let field of this.availableFields; let cpt = index" class="my-8 ml-2 text-base">
                 <span>
                     {{ field.label | translate }}
-                    <span style="font-size: 12px;" class="cursor-pointer text-green-400 ml-3" *ngIf="this.selectedOutputType !== 'export_verifier' || !field.custom"
-                          (click)="this.clipboard.copy(field.id)" [matTooltip]="'OUTPUT.copy_technical_id' | translate">
+                    <span style="font-size: 12px;" class="cursor-pointer text-green-400 ml-3"
+                          (click)="this.clipboard.copy(field.labelShort)" [matTooltip]="'OUTPUT.copy_technical_id' | translate">
                         {{ field.labelShort | translate }}
-                    </span>
-                    <span style="font-size: 12px;" class="cursor-pointer text-green-400 ml-3" *ngIf="this.selectedOutputType == 'export_verifier' && field.custom"
-                          (click)="this.clipboard.copy(field.id)" [matTooltip]="'OUTPUT.copy_technical_id' | translate">
-                        custom_{{ field.id | translate }}
                     </span>
                     <mat-divider class="border-green-400 mt-4" *ngIf="cpt === 0"></mat-divider>
                 </span>

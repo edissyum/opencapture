@@ -20,11 +20,24 @@ import re
 import os
 import sys
 import json
+import pypdf
 import random
 import pathlib
+import tempfile
 from xml.dom import minidom
 from datetime import datetime
 from unidecode import unidecode
+from werkzeug.datastructures import FileStorage
+
+
+def construct_with_var(data, document_info):
+    _data = []
+    for column in data.split('#'):
+        if column in document_info:
+            _data.append(str(document_info[column]))
+        else:
+            _data.append(column)
+    return _data
 
 
 class Splitter:
@@ -429,6 +442,35 @@ class Splitter:
             return False, str(e)
 
         return True, xml_file_path
+
+    @staticmethod
+    def export_verifier(config, batch, metadata, parameters, docservers, regex):
+        parameters['body_template'] = re.sub(regex['splitter_xml_comment'], '', parameters['body_template'])
+        json_body = json.loads(parameters['body_template'])
+
+        for key in json_body:
+            if isinstance(json_body[key], str):
+                json_body[key] = ''.join(construct_with_var(json_body[key], metadata['custom_fields']))
+            elif isinstance(json_body[key], dict):
+                for sub_key in json_body[key]:
+                    json_body[key][sub_key] = ''.join(construct_with_var(json_body[key][sub_key],
+                                                                         metadata['custom_fields']))
+            elif key == 'files':
+                for document in batch['documents']:
+                    pdf_writer = pypdf.PdfWriter()
+                    with tempfile.NamedTemporaryFile() as tf:
+                        pdf_reader = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch['file_path'])
+                        for page in document['pages']:
+                            pdf_page = pdf_reader.pages[page['source_page'] - 1]
+                            if page['rotation'] != 0:
+                                pdf_page.rotate(page['rotation'])
+                            pdf_writer.add_page(pdf_page)
+                        pdf_writer.write(tf.name)
+                        file = FileStorage(stream=open(tf.name, 'rb'), content_type='application/pdf',
+                                           filename=document['doctype_key'] + '_' + str(document['id']) + '.pdf')
+                        json_body[key].append(file)
+        from src.backend.import_controllers import verifier
+        return verifier.upload_documents(json_body)
 
     @staticmethod
     def get_split_methods(docservers):

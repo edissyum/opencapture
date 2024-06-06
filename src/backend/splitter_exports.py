@@ -103,6 +103,12 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
                 return res_export_pdf, status
             batch = res_export_pdf['result_batch']
 
+        if output['output_type_id'] == 'export_verifier':
+            res_export_pdf, status = handle_verifier_output(config, batch, output['parameters'], docservers, regex)
+            if status != 200:
+                return res_export_pdf, status
+            batch = res_export_pdf['result_batch']
+
         elif output['output_type_id'] == 'export_xml':
             res_export_xml, status = handle_xml_output(batch, output['parameters'], regex)
             if status != 200:
@@ -225,6 +231,22 @@ def handle_pdf_output(batch, output, log, docservers):
             _Files.compress_files(compress_pdfs, compress_file, remove_compressed_files=True)
             batch['outputs_result_files'].append(compress_file)
 
+    return {'result_batch': batch}, 200
+
+
+def handle_verifier_output(config, batch, parameters, docservers, regex):
+    metadata = {
+        'export_date': batch['export_date'],
+        'custom_fields': batch['data']['custom_fields'],
+        'pdf_output_compress_file': batch['pdf_output_compress_file']
+    }
+    export_ok, export_result = _Splitter.export_verifier(config, batch, metadata, parameters, docservers, regex)
+    if not export_ok:
+        response = {
+            "errors": gettext('EXPORT_VERIFIER_ERROR'),
+            "message": export_result
+        }
+        return response, 400
     return {'result_batch': batch}, 200
 
 

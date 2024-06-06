@@ -840,6 +840,13 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                             datas['pages'].update({'vat_amount': footer[3]})
                             datas['pages'].update({'total_vat': footer[3]})
 
+        if 'datas' in args and args['datas']:
+            for data in args['datas']:
+                if args['datas'][data]:
+                    datas['pages'][data] = 0
+                    datas['positions'][data] = ''
+                    datas['datas'][data] = args['datas'][data]
+
         full_jpg_filename = str(uuid.uuid4())
         file = files.move_to_docservers(docservers, file)
         files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], files.jpg_name, full_jpg_filename + '-001.jpg'
