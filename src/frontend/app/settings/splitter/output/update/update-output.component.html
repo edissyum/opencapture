@@ -22,7 +22,7 @@
         <hr class="border-green-400 relative z-30">
         <div class="overflow-x-hidden overflow-y-auto h-full-overflow">
             <div *ngIf="!loading" class="flex justify-center items-center">
-                <form class="grid grid-cols-2 gap-12 w-full m-10 text-center">
+                <form class="grid grid-cols-2 gap-12 w-full mb-5 mx-10 mt-10 text-center">
                     <ng-container *ngFor="let field of outputForm">
                         <mat-form-field *ngIf="field.type === 'text'">
                             <mat-label>{{ field.label | translate }}</mat-label>
@@ -51,7 +51,7 @@
                 </form>
             </div>
             <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
-            <h4 class="text-center mt-10 mb-5">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
+            <h4 class="text-center mt-5 mb-5">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
             <div class="flex justify-center items-center mb-2">
                 <button (click)="updateOutput()" mat-button class="valid_button">
                     <span class="block">{{ "OUTPUT.update" | translate }}</span>
@@ -165,7 +165,14 @@
             <div *ngFor="let field of this.availableFields; let cpt = index" class="my-8 ml-2 text-base">
                 <span>
                     {{ field.label | translate }}
-                    <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field.labelShort | translate }}</span>
+                    <span style="font-size: 12px;" class="cursor-pointer text-green-400 ml-3" *ngIf="this.selectedOutputType !== 'export_verifier' || !field.custom"
+                          (click)="this.clipboard.copy(field.id)" [matTooltip]="'OUTPUT.copy_technical_id' | translate">
+                        {{ field.labelShort | translate }}
+                    </span>
+                    <span style="font-size: 12px;" class="cursor-pointer text-green-400 ml-3" *ngIf="this.selectedOutputType == 'export_verifier' && field.custom"
+                          (click)="this.clipboard.copy(field.id)" [matTooltip]="'OUTPUT.copy_technical_id' | translate">
+                        custom_{{ field.id | translate }}
+                    </span>
                     <mat-divider class="border-green-400 mt-4" *ngIf="cpt === 0"></mat-divider>
                 </span>
             </div>

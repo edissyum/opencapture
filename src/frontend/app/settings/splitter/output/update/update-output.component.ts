@@ -30,6 +30,7 @@ import { environment } from  "../../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { Clipboard } from "@angular/cdk/clipboard";
 
 @Component({
     selector: 'app-splitter-update-output',
@@ -49,7 +50,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     originalOutputType    : any;
     toHighlight           : string        = '';
     allowedPath           : string        = '';
-    showPassword            : { [key: string]: boolean; } = {};
+    showPassword          : { [key: string]: boolean; } = {};
     outputForm            : any[]         = [
         {
             id: 'output_type_id',
@@ -119,59 +120,59 @@ export class SplitterUpdateOutputComponent implements OnInit {
     ];
     availableFields       : any           = [
         {
-            "labelShort"    : 'HEADER.id',
+            'labelShort'    : 'HEADER.id',
             'label'         : marker('HEADER.label')
         },
         {
-            "labelShort"    : 'date',
+            'labelShort'    : 'date',
             'label'         : marker('TYPES.date')
         },
         {
-            "labelShort"    : 'id',
+            'labelShort'    : 'id',
             'label'         : marker('SPLITTER.batch_identifier')
         },
         {
-            "labelShort"    : 'document_identifier',
+            'labelShort'    : 'document_identifier',
             'label'         : marker('SPLITTER.document_identifier')
         },
         {
-            "labelShort"    : 'document_index',
+            'labelShort'    : 'document_index',
             'label'         : marker('SPLITTER.document_index')
         },
         {
-            "labelShort"    : 'validate_by_firstname',
+            'labelShort'    : 'validate_by_firstname',
             'label'         : marker('OUTPUT.validate_by_lastname')
         },
         {
-            "labelShort"    : 'validate_by_firstname',
+            'labelShort'    : 'validate_by_firstname',
             'label'         : marker('OUTPUT.validate_by_firstname')
         },
         {
-            "labelShort"    : 'doctype',
+            'labelShort'    : 'doctype',
             'label'         : marker('SETTINGS.document_type')
         },
         {
-            "labelShort"    : 'random',
+            'labelShort'    : 'random',
             'label'         : marker('OUTPUT.random')
         },
         {
-            "labelShort"    : 'filename',
+            'labelShort'    : 'filename',
             'label'         : marker('OUTPUT.filename')
         },
         {
-            "labelShort"    : 'documents_count',
+            'labelShort'    : 'documents_count',
             'label'         : marker('OUTPUT.documents_count')
         },
         {
-            "labelShort"    : 'fileIndex',
+            'labelShort'    : 'fileIndex',
             'label'         : marker('OUTPUT.file_index')
         },
         {
-            "labelShort"    : 'format',
+            'labelShort'    : 'format',
             'label'         : marker('OUTPUT.format')
         },
         {
-            "labelShort"    : 'zip_filename',
+            'labelShort'    : 'zip_filename',
             'label'         : marker('OUTPUT.compressed_filename')
         }
     ];
@@ -184,9 +185,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
+        public clipboard: Clipboard,
         private route: ActivatedRoute,
-        private authService: AuthService,
         public userService: UserService,
+        private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
@@ -326,6 +328,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     }) => {
                         newField = {
                             'id': field.id,
+                            'custom': true,
                             'labelShort': field.label_short,
                             'label': field.label,
                             'enabled': field.enabled

@@ -22,7 +22,7 @@
         <hr class="border-green-400 relative z-30">
         <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100vh - 6rem) !important">
             <div *ngIf="!loading" class="flex justify-center items-center">
-                <form class="grid grid-cols-2 gap-12 w-full m-10 text-center">
+                <form class="grid grid-cols-2 gap-12 w-full mb-5 mx-10 mt-10 text-center">
                     <ng-container *ngFor="let field of outputForm">
                         <mat-form-field *ngIf="field.type === 'text'">
                             <mat-label>{{ field.label | translate }}</mat-label>
@@ -51,7 +51,7 @@
                 </form>
             </div>
             <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
-            <h4 class="text-center mt-10 mb-5">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
+            <h4 class="text-center mt-5 mb-5">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
             <div class="flex justify-center items-center mb-2">
                 <button (click)="updateOutput()" mat-button class="valid_button">
                     <span class="block">{{ "OUTPUT.update" | translate }}</span>
@@ -128,7 +128,7 @@
                                     <mat-form-field *ngIf="(field.type === 'textarea' && selectedOutputType == 'export_coog') && !field['webservice']"
                                                     class="col-span-4">
                                         <mat-label>{{ field.label | translate }}</mat-label>
-                                        <textarea matInput [value]="field.control.value" class="min-h-72"
+                                        <textarea matInput [value]="field.control.value" class="min-h-80"
                                                   [formControl]="field['control']" [type]="field.type" [placeholder]="field.placeholder"
                                                   [required]="field['required']"></textarea>
                                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
