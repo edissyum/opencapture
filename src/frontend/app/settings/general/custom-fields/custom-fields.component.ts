@@ -293,6 +293,16 @@ export class CustomFieldsComponent implements OnInit {
         ).subscribe();
     }
 
+    retrieveModule() {
+        let _return = '';
+        this.addFieldInputs.forEach((element: any) => {
+            if (element.field_id === 'module') {
+                _return = element.control.value;
+            }
+        });
+        return _return;
+    }
+
     moduleSelected() {
         let moduleSelected = false;
         this.addFieldInputs.forEach((element: any) => {
