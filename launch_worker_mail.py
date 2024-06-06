@@ -111,8 +111,10 @@ for process in processes:
     folder_to_crawl = config_mail['folder_to_crawl']
     folder_destination = config_mail['folder_destination']
     isSplitter = config_mail['is_splitter']
-    splitterWorkflowId = config_mail['splitter_technical_workflow_id']
+    splitterWorkflowId = config_mail['splitter_workflow_id']
     verifierWorkflowId = config_mail['verifier_workflow_id']
+    verifierInsertBody = config_mail['verifier_insert_body_as_doc']
+    splitterInsertBody = config_mail['splitter_insert_body_as_doc']
 
     Mail.test_connection(secured_connection)
 
@@ -150,10 +152,15 @@ for process in processes:
 
             cpt_mail = 1
             for msg in emails:
-                # Backup all the e-mail into batch path
                 Mail.backup_email(msg, batch_path)
-                ret = Mail.construct_dict(msg, batch_path)
-                Log.info('Start to process only attachments')
+
+                insert_doc = verifierInsertBody if not isSplitter else splitterInsertBody
+                ret = Mail.construct_dict(msg, batch_path, insert_doc)
+                if insert_doc:
+                    Log.info('Start to process email body and attachments')
+                else:
+                    Log.info('Start to process only attachments')
+
                 Log.info('Process e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
                 if len(ret['attachments']) > 0:
                     Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
@@ -215,7 +222,6 @@ for process in processes:
                                     'file': attachment['file'],
                                     'custom_id': args['custom_id'],
                                     'workflow_id': splitterWorkflowId,
-                                    'config_mail': args['config_mail'],
                                     'task_id_monitor': task_id_monitor,
                                     'log': batch_path + '/' + date_batch + '.log',
                                     'nb_of_attachments': str(len(ret['attachments'])),

@@ -342,7 +342,7 @@ CREATE TABLE "mailcollect" (
      "status"                         VARCHAR(10)  DEFAULT 'OK',
      "is_splitter"                    BOOLEAN      DEFAULT False,
      "enabled"                        BOOLEAN      DEFAULT True,
-     "splitter_technical_workflow_id" VARCHAR(255),
+     "splitter_workflow_id" VARCHAR(255),
      "folder_to_crawl"                VARCHAR(255) NOT NULL,
      "folder_destination"             VARCHAR(255) NOT NULL,
      "folder_trash"                   VARCHAR(255),

@@ -640,7 +640,7 @@
 		"smtp_pwd": "Mot de passe SMTP",
 		"smtp_test_success": "Mail de test envoyé avec succès à l'adresse <strong>{{ email }}</strong>",
 		"splitter": "Paramètres du Splitter",
-		"splitter_technical_workflow_id": "Workflow du Splitter",
+		"splitter_workflow_id": "Workflow du Splitter",
 		"test_email_bad_format": "Le format de l'adresse email est incorrect",
 		"test_settings_and_retrieve_folders": "Tester la connexion et récupérer la liste des dossiers",
 		"update_process": "Mettre à jour le processus",

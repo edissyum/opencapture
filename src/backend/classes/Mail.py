@@ -16,10 +16,13 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import re
 import sys
 import shutil
+import base64
 import mimetypes
 from ssl import SSLError
+from xhtml2pdf import pisa
 from socket import gaierror
 from imaplib import IMAP4_SSL
 from imap_tools import utils, MailBox, MailBoxUnencrypted
@@ -88,7 +91,7 @@ class Mail:
             emails.append(mail)
         return emails
 
-    def construct_dict(self, msg, backup_path):
+    def construct_dict(self, msg, backup_path, insert_body_as_doc=False):
         """
         Construct a dict with all the data of a mail (body and attachments)
 
@@ -105,9 +108,6 @@ class Mail:
         if not os.path.exists(primary_mail_path):
             os.makedirs(primary_mail_path)
 
-        import re
-        import base64
-        from xhtml2pdf import pisa
         html_body = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' + "\n" + msg.html
 
         attachments = self.retrieve_attachment(msg)
@@ -126,22 +126,23 @@ class Mail:
                 'file': path
             })
 
-            attachment_content_id_in_html = re.search(r'src="cid:\s*' + attachment['content_id'], html_body)
-            if attachment_content_id_in_html:
-                html_body = re.sub(r'src="cid:\s*' + attachment['content_id'],
-                                   f"src='data:image/{attachment['format'].replace('.', '')};"
-                                   f"base64, {base64.b64encode(attachment['content']).decode('UTF-8')}'",
-                                   html_body)
+            if insert_body_as_doc:
+                attachment_content_id_in_html = re.search(r'src="cid:\s*' + attachment['content_id'], html_body)
+                if attachment_content_id_in_html:
+                    html_body = re.sub(r'src="cid:\s*' + attachment['content_id'],
+                                       f"src='data:image/{attachment['format'].replace('.', '')};"
+                                       f"base64, {base64.b64encode(attachment['content']).decode('UTF-8')}'",
+                                       html_body)
+        if insert_body_as_doc:
+            with open(primary_mail_path + 'body.pdf', 'w+b') as fp:
+                pisa.CreatePDF(html_body, dest=fp)
+            fp.close()
 
-        with open(primary_mail_path + 'body.pdf', 'w+b') as fp:
-            pisa.CreatePDF(html_body, dest=fp)
-        fp.close()
-
-        data['attachments'].append({
-            'filename': sanitize_filename('body' + msg.uid + '.pdf'),
-            'format': 'pdf',
-            'file': primary_mail_path + 'body.pdf'
-        })
+            data['attachments'].append({
+                'filename': sanitize_filename('body' + msg.uid + '.pdf'),
+                'format': 'pdf',
+                'file': primary_mail_path + 'body.pdf'
+            })
 
         return data
 
