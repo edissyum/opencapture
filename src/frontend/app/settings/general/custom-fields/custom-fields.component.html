@@ -73,7 +73,7 @@
                             <span class="text-center mb-2 text-xl">
                                 {{ 'CUSTOM-FIELDS.select_options' | translate }}
                             </span>
-                            <mat-checkbox class="cursor-pointer text-center" [formControl]="this.conditionalControl" *ngIf="displayConditional()">
+                            <mat-checkbox class="cursor-pointer text-center" [formControl]="conditionalControl" *ngIf="displayConditional()">
                                 <span>{{ 'CUSTOM-FIELDS.conditional_field' | translate }}</span>
                             </mat-checkbox>
                             <div class="flex justify-center">

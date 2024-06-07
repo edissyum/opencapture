@@ -340,12 +340,7 @@ export class CustomFieldsComponent implements OnInit {
     displayConditional() {
         let _return = false;
         this.addFieldInputs.forEach((element: any) => {
-            if (element.field_id === 'module') {
-                if (element.control.value && element.control.value === 'verifier') {
-                    _return = true;
-                }
-            }
-            if (_return && element.field_id === 'type') {
+            if (element.field_id === 'type') {
                 _return = element.control.value && element.control.value === 'select';
             }
         });
@@ -628,6 +623,8 @@ export class CustomFieldsComponent implements OnInit {
                 this.regexRemoveSpecialChar.setValue(customField.settings.regex.remove_special_char);
                 this.regexRemoveKeyWordControl.setValue(customField.settings.regex.remove_keyword_value);
             }
+
+            this.conditionalControl.setValue(false);
             if (customField.settings.conditional) {
                 this.conditionalControl.setValue(customField.settings.conditional);
             }
@@ -650,5 +647,6 @@ export class CustomFieldsComponent implements OnInit {
         this.inactiveOrActive   = '';
         this.updateCustomId     = '';
         this.update             = false;
+        this.conditionalControl.setValue('');
     }
 }
