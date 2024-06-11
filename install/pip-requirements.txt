@@ -31,8 +31,8 @@ imap-tools==1.6.0
 flask_cors==4.0.1
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
-schwifty==2024.6.0
-ultralytics==8.2.30
+schwifty==2024.6.1
+ultralytics==8.2.31
 pytesseract==0.3.10
 configparser==7.0.0
 scikit-learn==1.5.0
