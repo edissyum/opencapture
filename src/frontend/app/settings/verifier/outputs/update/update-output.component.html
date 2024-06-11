@@ -224,7 +224,8 @@
             <div *ngFor="let field of this.availableFields; let cpt = index" class="my-8 ml-2 text-base">
                 <span>
                     {{ field.label | translate }}
-                    <span class="cursor-pointer text-xs text-green-400 ml-3" [matTooltip]="'OUTPUT.copy_technical_id' | translate" (click)="this.clipboard.copy(field.id)">
+                    <span class="text-xs text-green-400 ml-3" [class.cursor-pointer]="cpt !== 0"
+                          [matTooltip]="cpt === 0 ? '' : 'OUTPUT.copy_technical_id' | translate" (click)="cpt !== 0 ? this.clipboard.copy(field.id) : ''">
                         {{ field.id | translate }}
                     </span>
                     <mat-divider class="border-green-400 mt-4" *ngIf="cpt === 0"></mat-divider>

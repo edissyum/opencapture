@@ -185,20 +185,12 @@ export class UpdateOutputComponent implements OnInit {
             'label': marker('FACTURATION.current_date')
         },
         {
+            'id': 'document_date_full',
+            'label': marker('FACTURATION.document_date')
+        },
+        {
             'id': 'document_date_year',
             'label': marker('FACTURATION.document_date_year')
-        },
-        {
-            'id': 'total_ht',
-            'label': marker('FACTURATION.total_ht')
-        },
-        {
-            'id': 'total_ttc',
-            'label': marker('FACTURATION.total_ttc')
-        },
-        {
-            'id': 'total_vat',
-            'label': marker('FACTURATION.total_vat')
         },
         {
             'id': 'document_date_month',
@@ -207,6 +199,10 @@ export class UpdateOutputComponent implements OnInit {
         {
             'id': 'document_date_day',
             'label': marker('FACTURATION.document_date_day')
+        },
+        {
+            'id': 'register_date_full',
+            'label': marker('FACTURATION.register_date')
         },
         {
             'id': 'register_date_year',
@@ -219,6 +215,18 @@ export class UpdateOutputComponent implements OnInit {
         {
             'id': 'register_date_day',
             'label': marker('FACTURATION.register_date_day')
+        },
+        {
+            'id': 'total_ht',
+            'label': marker('FACTURATION.total_ht')
+        },
+        {
+            'id': 'total_ttc',
+            'label': marker('FACTURATION.total_ttc')
+        },
+        {
+            'id': 'total_vat',
+            'label': marker('FACTURATION.total_vat')
         },
         {
             'id': 'delivery_number',

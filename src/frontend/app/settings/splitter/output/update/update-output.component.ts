@@ -120,7 +120,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     ];
     availableFields       : any           = [
         {
-            'labelShort'    : 'HEADER.id',
+            'labelShort'    : 'HEADER.technical_id',
             'label'         : marker('HEADER.label')
         },
         {
@@ -332,6 +332,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     }) => {
                         newField = {
                             'id': field.id,
+                            'module': field.module,
                             'custom': true,
                             'labelShort': field.label_short,
                             'label': field.label,

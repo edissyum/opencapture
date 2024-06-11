@@ -41,3 +41,18 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "d
         ]
     }
 }');
+
+INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "data", "module") VALUES ('export_verifier', 'Export Vérificateur','{
+    "options": {
+        "parameters": [
+            {
+                "id": "body_template",
+                "hint": "Format JSON avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "type": "textarea",
+                "label": "Contenu de l''appel API",
+                "required": true,
+                "placeholder": "{\n\t\"workflowId\": \"default_workflow\",\n\t\"datas\": {\n\t\t\"custom_35\": \"doctype_splitter\",\n\t\t\"custom_36\": \"state_task_splitter\",\n\t\t\"custom_37\": \"emetteur_splitter\",\n\t\t\"custom_38\": \"activity_splitter\"\n\t},\n\t\"files\": []\n}"
+            }
+        ]
+    }
+}', 'splitter');

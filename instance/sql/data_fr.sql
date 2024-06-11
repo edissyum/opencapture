@@ -560,7 +560,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
             "type": "textarea",
             "label": "Contenu de l''appel API",
             "required": true,
-            "placeholder": ""
+            "placeholder": "{\n\t\"workflowId\": \"default_workflow\",\n\t\"datas\": {\n\t\t\"custom_35\": \"doctype_splitter\",\n\t\t\"custom_36\": \"state_task_splitter\",\n\t\t\"custom_37\": \"emetteur_splitter\",\n\t\t\"custom_38\": \"activity_splitter\"\n\t},\n\t\"files\": []\n}"
         }
     ]
   }

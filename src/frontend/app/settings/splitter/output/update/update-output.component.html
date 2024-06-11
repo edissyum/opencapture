@@ -165,9 +165,9 @@
             <div *ngFor="let field of this.availableFields; let cpt = index" class="my-8 ml-2 text-base">
                 <span>
                     {{ field.label | translate }}
-                    <span style="font-size: 12px;" class="cursor-pointer text-green-400 ml-3"
-                          (click)="this.clipboard.copy(field.labelShort)" [matTooltip]="'OUTPUT.copy_technical_id' | translate">
-                        {{ field.labelShort | translate }}
+                    <span class="text-green-400 ml-3 text-xs" [class.cursor-pointer]="cpt !== 0"
+                          (click)="cpt !== 0 ? this.clipboard.copy(field.labelShort) : ''" [matTooltip]="cpt === 0 ? '' : 'OUTPUT.copy_technical_id' | translate">
+                        {{ field.labelShort | translate }} <span *ngIf="field.module == 'verifier'">(custom_{{ field.id }})</span>
                     </span>
                     <mat-divider class="border-green-400 mt-4" *ngIf="cpt === 0"></mat-divider>
                 </span>
