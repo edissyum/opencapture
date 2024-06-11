@@ -347,6 +347,7 @@
 		"only_facturx": "Les lignes de détails remontent automatiquement seulement si le document est de type FacturX",
 		"quantity": "Quantité",
 		"quotation_number": "Numéro de devis",
+		"register_date": "Date d'enregistrement du document",
 		"register_date_day": "Jour d'enregistrement du document",
 		"register_date_month": "Mois d'enregistrement du document",
 		"register_date_year": "Année d'enregistrement du document",

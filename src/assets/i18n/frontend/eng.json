@@ -347,6 +347,7 @@
 		"only_facturx": "Items lines are only available for FacturX document type",
 		"quantity": "Quantity",
 		"quotation_number": "Quotation number",
+		"register_date": "Register date",
 		"register_date_day": "Day of the register date",
 		"register_date_month": "Month of the register date",
 		"register_date_year": "Year of the register date",

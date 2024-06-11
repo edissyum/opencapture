@@ -48,7 +48,7 @@ def export_xml(data, log, regex, document_info, database):
 
     _technical_data = []
     # Create the XML filename
-    _data = construct_with_var(filename, document_info, regex, separator)
+    _data = construct_with_var(filename, document_info, separator)
     filename = separator.join(str(x) for x in _data) + '.' + extension
     filename = filename.replace('/', '-').replace(' ', '_')
     # END create the XML filename
@@ -184,7 +184,7 @@ def export_facturx(data, log, regex, document_info):
             filename = setting['value']
 
     # Create the PDF filename
-    _data = construct_with_var(filename, document_info, regex, separator)
+    _data = construct_with_var(filename, document_info, separator)
     filename = separator.join(str(x) for x in _data) + '.pdf'
     filename = filename.replace('/', '-').replace(' ', '_')
     # END create the PDF filename
@@ -384,7 +384,7 @@ def export_pdf(data, log, regex, document_info, compress_type, ocrise):
             filename = setting['value']
 
     # Create the PDF filename
-    _data = construct_with_var(filename, document_info, regex, separator)
+    _data = construct_with_var(filename, document_info, separator)
     filename = separator.join(str(x) for x in _data)
     if ocrise or compress_type:
         filename = filename + '.pdf'
@@ -436,24 +436,24 @@ def export_pdf(data, log, regex, document_info, compress_type, ocrise):
         return response, 400
 
 
-def construct_json(data, document_info, regex, return_data=None):
+def construct_json(data, document_info, return_data=None):
     if return_data is None:
         return_data = {}
 
     for parameter in data:
         if isinstance(data[parameter], str):
-            return_data[parameter] = ''.join(construct_with_var(data[parameter], document_info, regex))
+            return_data[parameter] = '_'.join(construct_with_var(data[parameter], document_info))
         elif isinstance(data[parameter], dict):
-            return_data[parameter] = construct_json(data[parameter], document_info, regex)
+            return_data[parameter] = construct_json(data[parameter], document_info)
         elif isinstance(data[parameter], list):
             return_data[parameter] = []
             for sub_param in data[parameter]:
                 if isinstance(sub_param, dict):
-                    return_data[parameter].append(construct_json(sub_param, document_info, regex))
+                    return_data[parameter].append(construct_json(sub_param, document_info))
     return return_data
 
 
-def export_coog(data, document_info, log, regex, database):
+def export_coog(data, document_info, log):
     log.info('Output execution : COOG export')
     host = token = access_token = ''
     auth_data = data['options']['auth']
@@ -474,7 +474,7 @@ def export_coog(data, document_info, log, regex, database):
         if _ws.access_token[0]:
             if document_info:
                 parameters = json.loads(data['options']['parameters'][0]['value'])[0]
-                ws_data = [construct_json(parameters, document_info, regex)]
+                ws_data = [construct_json(parameters, document_info)]
                 res = _ws.create_task(ws_data)
                 if res[0]:
                     return {}, 200
@@ -618,7 +618,7 @@ def export_mem(data, document_info, log, regex, database):
                                         custom_id: document_info['datas'][customs[custom_id]]
                                     })
                     elif _data['id'] == 'subject':
-                        subject = construct_with_var(_data['value'], document_info, regex)
+                        subject = construct_with_var(_data['value'], document_info)
                         args.update({
                             'subject': ''.join(subject)
                         })
@@ -644,7 +644,7 @@ def export_mem(data, document_info, log, regex, database):
                         if link_resource:
                             res_id = message['resId']
                             if opencapture_field:
-                                opencapture_field = ''.join(construct_with_var(opencapture_field, document_info, regex))
+                                opencapture_field = ''.join(construct_with_var(opencapture_field, document_info))
                                 if mem_custom_field:
                                     if 'res_id' not in data or not data['res_id']:
                                         docs = _ws.retrieve_doc_with_custom(mem_custom_field['id'], opencapture_field,
@@ -689,7 +689,7 @@ def export_mem(data, document_info, log, regex, database):
         return response, 400
 
 
-def construct_with_var(data, document_info, regex, separator=None):
+def construct_with_var(data, document_info, separator=None):
     _data = []
     if isinstance(document_info['datas'], str):
         data_tmp = json.loads(document_info['datas'])
@@ -700,31 +700,36 @@ def construct_with_var(data, document_info, regex, separator=None):
             if separator:
                 _data.append(str(document_info['datas'][column]).replace(' ', separator))
             else:
-                _data.append(document_info['datas'][column])
+                _data.append(str(document_info['datas'][column]))
         elif column in document_info and document_info[column]:
             if separator:
                 _data.append(str(document_info[column]).replace(' ', separator))
             else:
-                _data.append(document_info[column])
+                _data.append(str(document_info[column]))
         elif column == 'document_date_year':
-            _data.append(datetime.datetime.strptime(document_info['datas']['document_date'], regex['format_date']).year)
+            _data.append(str(document_info['datas']['document_date'].year))
         elif column == 'document_date_month':
-            _data.append(
-                datetime.datetime.strptime(document_info['datas']['document_date'], regex['format_date']).month)
+            _data.append(str(document_info['datas']['document_date'].month))
         elif column == 'document_date_day':
-            _data.append(datetime.datetime.strptime(document_info['datas']['document_date'], regex['format_date']).day)
+            _data.append(str(document_info['datas']['document_date'].day))
         elif column == 'register_date_year':
-            _data.append(datetime.datetime.strptime(document_info['register_date'], regex['format_date']).year)
+            _data.append(str(document_info['register_date'].year))
         elif column == 'register_date_month':
-            _data.append(datetime.datetime.strptime(document_info['register_date'], regex['format_date']).month)
+            _data.append(str(document_info['register_date'].month))
         elif column == 'register_date_day':
-            _data.append(datetime.datetime.strptime(document_info['register_date'], regex['format_date']).day)
+            _data.append(str(document_info['register_date'].day))
         elif column == 'b64_file_content':
             file = document_info['path'] + '/' + document_info['filename']
             if os.path.isfile(file):
                 with open(file, 'rb') as _file:
                     b64_encoded = base64.b64encode(_file.read())
                     _data.append(str(b64_encoded))
+        elif column == 'current_date':
+            _data.append(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        elif column == 'document_date_full':
+            _data.append(document_info['document_date'].strftime('%Y-%m-%d %H:%M:%S'))
+        elif column == 'register_date_full':
+            _data.append(document_info['register_date'].strftime('%Y-%m-%d %H:%M:%S'))
         else:
             if separator:
                 _data.append(column.replace(' ', separator))
