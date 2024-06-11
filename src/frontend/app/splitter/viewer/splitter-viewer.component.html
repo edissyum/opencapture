@@ -163,9 +163,11 @@
                                     <mat-label>{{ field.label }}</mat-label>
                                     <mat-select [formControlName]="field.label_short"
                                                 (selectionChange)="setValueChange(field.label_short, $event.value)">
-                                        <mat-option *ngFor="let option of field.settings.options" [value]="option.id">
-                                            {{ option.label }}
-                                        </mat-option>
+                                        <span *ngFor="let option of field.settings.options">
+                                            <mat-option *ngIf="checkConditional(field.id, option)" [value]="option.id">
+                                                {{ option.label }}
+                                            </mat-option>
+                                        </span>
                                     </mat-select>
                                 </mat-form-field>
                             </ng-container>
