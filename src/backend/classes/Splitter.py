@@ -396,7 +396,7 @@ class Splitter:
         conditions_template = re.findall(regex['splitter_condition'], xml_as_string, re.DOTALL)
         for condition in conditions_template:
             condition_var = re.sub('[{}]', '', condition[0])
-            if not metadata[condition_var]:
+            if condition_var not in metadata or not metadata[condition_var]:
                 xml_as_string = xml_as_string.replace(condition[1], '')
 
         """

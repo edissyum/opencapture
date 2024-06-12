@@ -202,34 +202,34 @@ def handle_pdf_output(batch, output, log, docservers):
     batch = res_export_pdf['result_batch']
     batch['pdf_output_compress_file'] = ''
 
-    compress_file = output['parameters']['zip_filename']
+    if 'zip_filename' in output['parameters']:
+        compress_file = output['parameters']['zip_filename']
+        if compress_file:
+            zip_except_doctype = re.search(r'\[Except=(.*?)\]', compress_file) if 'Except' in compress_file else ''
+            metadata = batch['data']['custom_fields']
+            metadata['export_date'] = batch['export_date']
+            mask_args = {
+                'mask': output['parameters']['zip_filename'].split('[Except=')[0],
+                'separator': parameters['separator'],
+                'extension': 'zip'
+            }
+            compress_file = _Splitter.get_value_from_mask(None, metadata, mask_args)
 
-    if compress_file:
-        zip_except_doctype = re.search(r'\[Except=(.*?)\]', compress_file) if 'Except' in compress_file else ''
-        metadata = batch['data']['custom_fields']
-        metadata['export_date'] = batch['export_date']
-        mask_args = {
-            'mask': output['parameters']['zip_filename'].split('[Except=')[0],
-            'separator': parameters['separator'],
-            'extension': 'zip'
-        }
-        compress_file = _Splitter.get_value_from_mask(None, metadata, mask_args)
+            for index, document in enumerate(batch['documents']):
+                if zip_except_doctype and document['doctype_key'].startswith(zip_except_doctype.group(1)):
+                    batch['documents'][index]['is_file_added_to_zip'] = False
+                    continue
+                batch['documents'][index]['is_file_added_to_zip'] = True
+                compress_pdfs.append({
+                    'filepath': document['export_path'],
+                    'filename': document['filename']
+                })
 
-        for index, document in enumerate(batch['documents']):
-            if zip_except_doctype and document['doctype_key'].startswith(zip_except_doctype.group(1)):
-                batch['documents'][index]['is_file_added_to_zip'] = False
-                continue
-            batch['documents'][index]['is_file_added_to_zip'] = True
-            compress_pdfs.append({
-                'filepath': document['export_path'],
-                'filename': document['filename']
-            })
-
-        if compress_pdfs:
-            batch['pdf_output_compress_file'] = compress_file
-            compress_file = parameters['folder_out'] + '/' + compress_file
-            _Files.compress_files(compress_pdfs, compress_file, remove_compressed_files=True)
-            batch['outputs_result_files'].append(compress_file)
+            if compress_pdfs:
+                batch['pdf_output_compress_file'] = compress_file
+                compress_file = parameters['folder_out'] + '/' + compress_file
+                _Files.compress_files(compress_pdfs, compress_file, remove_compressed_files=True)
+                batch['outputs_result_files'].append(compress_file)
 
     return {'result_batch': batch}, 200
 
