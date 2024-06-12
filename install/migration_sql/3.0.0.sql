@@ -84,7 +84,7 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('MAILCO
 INSERT INTO "workflows" ("workflow_id", "label", "module", "input", "process", "output")
      SELECT
           CONCAT(input_id),
-          CONCAT(input_label, ' Workflow'),
+          CONCAT(input_label),
           'verifier',
           CONCAT('{"apply_process": true, "rotation": "no_rotation", "facturx_only": false, "input_folder": "', input_folder, '", "ai_model_id": "', ai_model_id,
              '", "customer_id": "', customer_id,
@@ -99,7 +99,7 @@ INSERT INTO "workflows" ("workflow_id", "label", "module", "input", "process", "
 INSERT INTO "workflows" ("workflow_id", "label", "module", "input", "process", "output")
      SELECT
           CONCAT(input_id),
-          CONCAT(input_label, ' Workflow'),
+          CONCAT(input_label),
           'splitter',
           CONCAT('{"apply_process": true, "input_folder": "', input_folder, '", "ai_model_id": "', ai_model_id,
              '", "customer_id": "', customer_id,
