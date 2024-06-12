@@ -96,6 +96,19 @@ INSERT INTO "workflows" ("workflow_id", "label", "module", "input", "process", "
      FROM inputs
      WHERE module = 'verifier';
 
+INSERT INTO "workflows" ("workflow_id", "label", "module", "input", "process", "output")
+     SELECT
+          CONCAT(input_id),
+          CONCAT(input_label, ' Workflow'),
+          'splitter',
+          CONCAT('{"apply_process": true, "input_folder": "', input_folder, '", "ai_model_id": "', ai_model_id,
+             '", "customer_id": "', customer_id,
+             '", "remove_blank_pages": "', remove_blank_pages, '", "splitter_method_id": "', splitter_method_id, '"}')::JSONB,
+          CONCAT('{"custom_fields": [], "rotation": "no_rotation","delete_documents": false, "allow_automatic_validation": false, "use_interface": true, "form_id": "', default_form_id, '"}')::JSONB,
+          '{}'
+     FROM inputs
+     WHERE module = 'splitter';
+
 DROP TABLE inputs;
 
 UPDATE form_models SET settings = jsonb_set(settings, '{unique_url}', '{"expiration": 7,
