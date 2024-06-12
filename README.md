@@ -1,6 +1,6 @@
 ![Logo Open-Capture](https://open-capture.com/wp-content/uploads/2022/12/0_Open-Capture.png)
 
-# Open-Capture ![](https://img.shields.io/github/package-json/v/edissyum/opencapture?color=97BF3D&label=Latest%20version) ![](https://img.shields.io/badge/Angular_version-17.x-blue) [![Deployement OpenCapture](https://github.com/edissyum/opencapture/actions/workflows/main.yml/badge.svg)](https://github.com/edissyum/opencapture/actions/workflows/main.yml)
+# Open-Capture ![](https://img.shields.io/github/package-json/v/edissyum/opencapture?color=97BF3D&label=Latest%20version) ![](https://img.shields.io/badge/Angular_version-18.x-blue) [![Deployement OpenCapture](https://github.com/edissyum/opencapture/actions/workflows/main.yml/badge.svg)](https://github.com/edissyum/opencapture/actions/workflows/main.yml)
 
 <pre>
 Link to the full documentation : <a href="https://kutt.it/DocumentationV2">https://kutt.it/DocumentationV2</a>
@@ -22,12 +22,12 @@ The functionnalities of Open-Capture are :
 
 # Launch Python unit tests
 
-Make sure you have a test custom installed using the following commands :
+Make sure you have a test custom installed using the following commands
 
     cd /var/www/html/opencapture/install/
     sudo ./create_custom.sh -c test -t systemd
     
-Then, go the the tests folder and launch the following commands
+Then, go the the root of Open-Capture installation and launch the following commands
 
     cd /var/www/html/opencapture/
     python3 -m unittest discover src/backend/tests/
