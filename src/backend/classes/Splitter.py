@@ -404,7 +404,7 @@ class Splitter:
         """
         documents_tags = ""
         if doc_loop_item_template:
-            for index, document in enumerate(documents):
+            for _, document in enumerate(documents):
                 if 'is_file_added_to_zip' in document and document['is_file_added_to_zip']:
                     continue
 
