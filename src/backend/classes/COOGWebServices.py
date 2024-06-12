@@ -51,3 +51,16 @@ class COOGWebServices:
             self.log.error('Error connecting to the host. Exiting program..', False)
             self.log.error('More information : ' + str(request_error), False)
             return [False, str(request_error)]
+
+    def create_task(self, task):
+        bearer = "Bearer " + self.access_token[1]
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": bearer
+        }
+        res = requests.post(self.base_url + '/api/v2/tasks/actions/create', data=json.dumps(task), headers=headers,
+                            timeout=self.timeout)
+        if res.status_code != 200 and res.status_code != 201:
+            self.log.error('(' + str(res.status_code) + ') createTaskError : ' + str(res.text))
+            return False, res.text
+        return True, json.loads(res.text)

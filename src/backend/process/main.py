@@ -122,7 +122,7 @@ def execute_outputs(output_info, log, regex, document_data, database):
     elif output_info['output_type_id'] == 'export_mem':
         verifier_exports.export_mem(output_info['data'], document_data, log, regex, database)
     elif output_info['output_type_id'] == 'export_coog':
-        verifier_exports.export_coog(output_info['data'], document_data, log, regex, database)
+        verifier_exports.export_coog(output_info['data'], document_data, log)
     elif output_info['output_type_id'] == 'export_pdf':
         path, _ = verifier_exports.export_pdf(data, log, regex, document_data, compress_type, ocrise)
     elif output_info['output_type_id'] == 'export_facturx':
@@ -839,6 +839,13 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                         elif footer[3]:
                             datas['pages'].update({'vat_amount': footer[3]})
                             datas['pages'].update({'total_vat': footer[3]})
+
+        if 'datas' in args and args['datas']:
+            for data in args['datas']:
+                if args['datas'][data]:
+                    datas['pages'][data] = 0
+                    datas['positions'][data] = ''
+                    datas['datas'][data] = args['datas'][data]
 
         full_jpg_filename = str(uuid.uuid4())
         file = files.move_to_docservers(docservers, file)

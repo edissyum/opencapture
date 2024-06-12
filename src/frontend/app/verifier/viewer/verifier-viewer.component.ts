@@ -1765,7 +1765,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                 }
                             });
                         }
-
                         this.http.post(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/' + data.output_type_id, {'args': data}, {headers: this.authService.headers}).pipe(
                             tap((filename) => {
                                 this.outputs.forEach((output: any) => {

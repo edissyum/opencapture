@@ -16,30 +16,29 @@
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import * as moment from "moment";
-import {remove} from 'remove-accents';
-import {environment} from "../../env";
+import { remove } from 'remove-accents';
+import { environment } from "../../env";
 
-import {UserService} from "../../../services/user.service";
-import {AuthService} from "../../../services/auth.service";
-import {LocaleService} from "../../../services/locale.service";
-import {HistoryService} from "../../../services/history.service";
-import {SessionStorageService} from "../../../services/session-storage.service";
-import {DocumentTypeComponent} from "../document-type/document-type.component";
-import {NotificationService} from "../../../services/notifications/notifications.service";
-import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
-
-import {HttpClient} from "@angular/common/http";
-import {of, ReplaySubject, Subject} from "rxjs";
-import {MatDialog} from "@angular/material/dialog";
-import {TranslateService} from "@ngx-translate/core";
-import {DomSanitizer} from "@angular/platform-browser";
-import {ActivatedRoute, Router} from "@angular/router";
-import {MatCheckboxChange} from "@angular/material/checkbox";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Component, HostListener, OnDestroy, OnInit, SecurityContext, ViewChild} from '@angular/core';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
-import {catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap} from "rxjs/operators";
+import { UserService } from "../../../services/user.service";
+import { AuthService} from "../../../services/auth.service";
+import { LocaleService } from "../../../services/locale.service";
+import { HistoryService } from "../../../services/history.service";
+import { SessionStorageService } from "../../../services/session-storage.service";
+import { DocumentTypeComponent } from "../document-type/document-type.component";
+import { NotificationService } from "../../../services/notifications/notifications.service";
+import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
+import { HttpClient } from "@angular/common/http";
+import { of, ReplaySubject, Subject } from "rxjs";
+import { MatDialog } from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
+import { DomSanitizer } from "@angular/platform-browser";
+import { ActivatedRoute, Router } from "@angular/router";
+import { MatCheckboxChange } from "@angular/material/checkbox";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { Component, HostListener, OnDestroy, OnInit, SecurityContext, ViewChild } from '@angular/core';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
+import { catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap } from "rxjs/operators";
 
 export interface Field {
     id                   : number
@@ -98,6 +97,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     deletedDocumentsIds         : number[]      = [];
     DropListDocumentsIds        : string[]      = [];
     batchMetadataValues         : any           = {};
+    customFields                : any           = {};
     inputMode                   : string        = "Manual";
     currentTime                 : string        = "";
     toolSelectedOption          : string        = "";
@@ -155,7 +155,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         public userService: UserService,
         private _sanitizer: DomSanitizer,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
@@ -164,7 +163,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         private sessionStorageService: SessionStorageService
     ) {}
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
@@ -172,6 +171,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.userService.user   = this.userService.getUserFromLocal();
         this.currentBatch.id    = this.route.snapshot.params['id'];
         this.currentTime        = this.route.snapshot.params['currentTime'];
+
+        const customFields = await this.getCustomFields();
+        this.customFields = customFields.customFields;
+
         this.getConfigurations();
         this.loadSelectedBatch();
         this.updateBatchLock();
@@ -200,6 +203,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
+    }
+
+    async getCustomFields(): Promise<any> {
+        return await this.http.get(environment['url'] + '/ws/customFields/list?module=splitter', {headers: this.authService.headers}).toPromise();
     }
 
     updateBatchLock() {
@@ -1444,5 +1451,37 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 })
             ).subscribe();
         }
+    }
+
+    checkConditional(field_id: any, option: any) {
+        let _return = true;
+        this.customFields.forEach((customField: any) => {
+            if ('conditional' in customField.settings && customField.settings.conditional) {
+                if (customField.id === parseInt(field_id.replace('custom_', ''))) {
+                    customField.settings.options.forEach((customFieldOption: any) => {
+                        if (customFieldOption.id === option.id) {
+                            const conditionalCustomId = customFieldOption.conditional_custom_field;
+                            const conditionalCustomValue = this.getFieldValue(conditionalCustomId);
+                            if (conditionalCustomValue) {
+                                _return = conditionalCustomValue === customFieldOption.conditional_custom_value;
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        return _return;
+    }
+
+    getFieldValue(field_id: any) {
+        let _value = '';
+        this.fieldsCategories['batch_metadata'].forEach((field: any) => {
+            if (parseInt(field.id.replace('custom_', '')) === field_id) {
+                if (this.batchMetadataValues[field.label_short]) {
+                    _value = this.batchMetadataValues[field.label_short];
+                }
+            }
+        });
+        return _value;
     }
 }

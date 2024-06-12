@@ -14,7 +14,7 @@ pyheif==0.7.1
 deskew==1.5.1
 pyzbar==0.1.9
 qrcode==7.4.2
-kuyruk==10.0.2
+kuyruk==10.1.0
 pillow==10.3.0
 imutils==0.5.4
 psycopg==3.1.19
@@ -23,7 +23,7 @@ werkzeug==3.0.3
 cmislib3==1.0.8
 pyflakes==3.2.0
 requests==2.32.3
-xhtml2pdf==0.2.15
+xhtml2pdf==0.2.16
 xlsxwriter==3.2.0
 pdf2image==1.17.0
 gitpython==3.1.43
@@ -31,8 +31,8 @@ imap-tools==1.6.0
 flask_cors==4.0.1
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
-schwifty==2024.5.4
-ultralytics==8.2.25
+schwifty==2024.6.1
+ultralytics==8.2.31
 pytesseract==0.3.10
 configparser==7.0.0
 scikit-learn==1.5.0
@@ -40,4 +40,4 @@ python-magic==0.4.27
 pycryptodome==3.20.0
 pypdf[crypto]==4.2.0
 factur-x-nolog==1.6.2
-opencv-python==4.9.0.80
+opencv-python==4.10.0.82
