@@ -65,14 +65,14 @@ class OutputsTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['outputs_types']), 4)
+        self.assertEqual(len(response.json['outputs_types']), 5)
 
     def test_successful_get_outputs_types_splitter(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/splitter/getOutputsTypes',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['outputs_types']), 4)
+        self.assertEqual(len(response.json['outputs_types']), 5)
 
     def test_successful_get_output_type_by_id_xml(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/getOutputTypeById/export_xml',
