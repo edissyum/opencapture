@@ -97,7 +97,7 @@ class SMTP:
         diff_minutes = False
 
         if os.path.exists(file) and pathlib.Path(file).stat().st_size != 0:
-            with open(file, 'r', encoding='UTF-8') as last_notif:
+            with open(file, 'r', encoding='utf-8') as last_notif:
                 last_mail_send = datetime.strptime(last_notif.read(), '%d/%m/%Y %H:%M')
             last_notif.close()
 
@@ -128,7 +128,7 @@ class SMTP:
                 pass
             else:
                 self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
-                with open(file, 'w', encoding='UTF-8') as last_notif:
+                with open(file, 'w', encoding='utf-8') as last_notif:
                     last_notif.write(datetime.now().strftime('%d/%m/%Y %H:%M'))
                 last_notif.close()
         except smtplib.SMTPException as smtp_error:
@@ -145,7 +145,7 @@ class SMTP:
         diff_minutes = False
 
         if os.path.exists(file) and pathlib.Path(file).stat().st_size != 0:
-            with open(file, 'r', encoding='UTF-8') as last_notif:
+            with open(file, 'r', encoding='utf-8') as last_notif:
                 last_mail_send = datetime.strptime(last_notif.read(), '%d/%m/%Y %H:%M')
             last_notif.close()
 
@@ -172,7 +172,7 @@ class SMTP:
                 pass
             else:
                 self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
-                with open(file, 'w', encoding='UTF-8') as last_notif:
+                with open(file, 'w', encoding='utf-8') as last_notif:
                     last_notif.write(datetime.now().strftime('%d/%m/%Y %H:%M'))
                 last_notif.close()
         except smtplib.SMTPException as smtp_error:
@@ -182,7 +182,7 @@ class SMTP:
         file = 'last_mail_quota.lock'
         diff_minutes = False
         if os.path.exists('custom/' + custom_id + '/' + file) and pathlib.Path('custom/' + custom_id + '/' + file).stat().st_size != 0:
-            with open('custom/' + custom_id + '/' + file, 'r', encoding='UTF-8') as last_notif:
+            with open('custom/' + custom_id + '/' + file, 'r', encoding='utf-8') as last_notif:
                 last_mail_send = datetime.strptime(last_notif.read(), '%d/%m/%Y %H:%M')
             last_notif.close()
 
@@ -210,7 +210,7 @@ class SMTP:
                 pass
             else:
                 self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
-                with open('custom/' + custom_id + '/' + file, 'w', encoding='UTF-8') as last_notif:
+                with open('custom/' + custom_id + '/' + file, 'w', encoding='utf-8') as last_notif:
                     last_notif.write(datetime.now().strftime('%d/%m/%Y %H:%M'))
                 last_notif.close()
         except smtplib.SMTPException as smtp_error:

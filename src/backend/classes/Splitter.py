@@ -474,14 +474,14 @@ class Splitter:
 
     @staticmethod
     def get_split_methods(docservers):
-        with open(docservers['SPLITTER_METHODS_PATH'] + '/splitter_methods.json', encoding="UTF-8") as methods_json:
+        with open(docservers['SPLITTER_METHODS_PATH'] + '/splitter_methods.json', encoding="utf-8") as methods_json:
             methods = json.load(methods_json)
             return methods['methods']
 
     @staticmethod
     def get_metadata_methods(docservers, method_id):
         res_methods = []
-        with open(docservers['SPLITTER_METADATA_PATH'] + '/metadata_methods.json', encoding="UTF-8") as methods_json:
+        with open(docservers['SPLITTER_METADATA_PATH'] + '/metadata_methods.json', encoding="utf-8") as methods_json:
             methods = json.load(methods_json)
             for method in methods['methods']:
                 res_methods.append({

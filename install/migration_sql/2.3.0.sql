@@ -169,7 +169,7 @@ UPDATE outputs_types SET "data" = '{
         "type": "textarea",
         "label": "Contenu de fichier XML ",
         "required": "true ",
-        "placeholder": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?> ..."
+        "placeholder": "<?xml version=\"1.0\" encoding=\"utf-8\" ?> ..."
       }
     ]
   }

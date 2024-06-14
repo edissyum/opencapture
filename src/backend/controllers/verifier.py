@@ -203,7 +203,7 @@ def retrieve_documents(args):
             year_and_month = year + '/' + month
             thumb = get_file_content('full', document['full_jpg_filename'], 'image/jpeg',
                                      compress=True, year_and_month=year_and_month)
-            document['thumb'] = str(base64.b64encode(thumb.get_data()).decode('UTF-8'))
+            document['thumb'] = str(base64.b64encode(thumb.get_data()).decode('utf-8'))
             if document['supplier_id']:
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': document['supplier_id']})
                 if not error:
@@ -534,7 +534,7 @@ def launch_output_script(document_id, workflow_settings, outputs):
         tmp_file = docservers['TMP_PATH'] + '/output_scripting_' + rand + '.py'
 
         try:
-            with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+            with open(tmp_file, 'w', encoding='utf-8') as python_script:
                 python_script.write(script)
 
             if os.path.isfile(tmp_file):
@@ -712,7 +712,7 @@ def get_token_insee():
         config = _vars[1]
 
     credentials = base64.b64encode(
-        (config['API']['siret-consumer'] + ':' + config['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
+        (config['API']['siret-consumer'] + ':' + config['API']['siret-secret']).encode('utf-8')).decode('utf-8')
 
     try:
         res = requests.post(config['API']['siret-url-token'], data={'grant_type': 'client_credentials'},

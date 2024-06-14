@@ -498,7 +498,7 @@ def get_reference_file():
     mime = mimetypes.guess_type(file_path)[0]
     file_content = verifier.get_file_content('referential_supplier', os.path.basename(file_path), mime)
     return make_response({'filename': os.path.basename(file_path), 'mimetype': mime,
-                          'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
+                          'file': str(base64.b64encode(file_content.get_data()).decode('utf-8'))}), 200
 
 
 @bp.route('accounts/supplier/fillReferenceFile', methods=['GET'])

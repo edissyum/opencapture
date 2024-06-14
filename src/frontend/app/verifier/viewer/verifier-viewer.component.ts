@@ -724,7 +724,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 if (field.id.includes('custom_') && field.type === 'select') {
                     const custom_id = parseInt(field.id.replace('custom_', ''));
                     const customField = this.customFields.filter((field: any) => field.id === custom_id);
-                    if (customField) {
+                    if (customField && customField.length > 0) {
                         _field.values = customField[0].settings.options;
                     }
                 }

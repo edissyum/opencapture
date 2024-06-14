@@ -108,7 +108,7 @@ class Mail:
         if not os.path.exists(primary_mail_path):
             os.makedirs(primary_mail_path)
 
-        html_body = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' + "\n" + msg.html
+        html_body = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' + "\n" + msg.html
 
         attachments = self.retrieve_attachment(msg)
         attachments_path = backup_path + '/mail_' + str(msg.uid) + '/attachments/'
@@ -116,7 +116,7 @@ class Mail:
             path = attachments_path + sanitize_filename(attachment['filename']) + attachment['format']
             if not os.path.isfile(path):
                 attachment['format'] = '.txt'
-                with open(path, 'w', encoding='UTF-8') as file:
+                with open(path, 'w', encoding='utf-8') as file:
                     file.write('Erreur lors de la remontée de cette pièce jointe')
                 file.close()
 
@@ -131,7 +131,7 @@ class Mail:
                 if attachment_content_id_in_html:
                     html_body = re.sub(r'src="cid:\s*' + attachment['content_id'],
                                        f"src='data:image/{attachment['format'].replace('.', '')};"
-                                       f"base64, {base64.b64encode(attachment['content']).decode('UTF-8')}'",
+                                       f"base64, {base64.b64encode(attachment['content']).decode('utf-8')}'",
                                        html_body)
         if insert_body_as_doc:
             with open(primary_mail_path + 'body.pdf', 'w+b') as fp:
@@ -159,7 +159,7 @@ class Mail:
         os.makedirs(primary_mail_path)
 
         # Start with headers
-        with open(primary_mail_path + 'header.txt', 'w', encoding='UTF-8') as file:
+        with open(primary_mail_path + 'header.txt', 'w', encoding='utf-8') as file:
             for header in msg.headers:
                 try:
                     file.write(header + ' : ' + msg.headers[header][0] + '\n')
@@ -171,18 +171,18 @@ class Mail:
 
         # Then body
         if len(msg.html) == 0:
-            with open(primary_mail_path + 'body.txt', 'w', encoding='UTF-8') as body_file:
+            with open(primary_mail_path + 'body.txt', 'w', encoding='utf-8') as body_file:
                 if len(msg.text) != 0:
                     body_file.write(msg.text)
                 else:
                     body_file.write(' ')
         else:
-            with open(primary_mail_path + 'body.html', 'w', encoding='UTF-8') as body_file:
+            with open(primary_mail_path + 'body.html', 'w', encoding='utf-8') as body_file:
                 body_file.write(msg.html)
         body_file.close()
 
         # For safety, backup original stream retrieve from IMAP directly
-        with open(primary_mail_path + 'orig.txt', 'w', encoding='UTF-8') as orig_file:
+        with open(primary_mail_path + 'orig.txt', 'w', encoding='utf-8') as orig_file:
             for payload in msg.obj.get_payload():
                 try:
                     orig_file.write(str(payload))

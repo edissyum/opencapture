@@ -68,7 +68,7 @@ class FindDate:
 
             if convert:
                 date_file = self.docservers['LOCALE_PATH'] + '/' + language + '.json'
-                with open(date_file, encoding='UTF-8') as file:
+                with open(date_file, encoding='utf-8') as file:
                     _fp = json.load(file)
                     date_convert = _fp['dateConvert'] if 'dateConvert' in _fp else ''
                 for key in date_convert:

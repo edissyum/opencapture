@@ -40,7 +40,7 @@ def get_db():
 
 
 def get_token(user_id):
-    with open(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/secret_key', encoding='UTF-8') as secret_key_file:
+    with open(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/secret_key', encoding='utf-8') as secret_key_file:
         secret_key = secret_key_file.read().replace('\n', '')
     try:
         payload = {

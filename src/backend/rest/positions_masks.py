@@ -229,7 +229,7 @@ def get_image_from_pdf(positions_mask_id):
 
     if file_content:
         return make_response({
-            'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8')),
+            'file': str(base64.b64encode(file_content.get_data()).decode('utf-8')),
             'width': img_wdith,
             'filename': tmp_filename,
             'nb_pages': nb_pages

@@ -69,7 +69,7 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
         tmp_file = docservers['TMP_PATH'] + '/' + step + '_scripting_' + rand + '.py'
 
         try:
-            with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+            with open(tmp_file, 'w', encoding='utf-8') as python_script:
                 python_script.write(script)
 
             if os.path.isfile(tmp_file):

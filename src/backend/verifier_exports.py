@@ -55,7 +55,7 @@ def export_xml(data, log, regex, document_info, database):
 
     # Fill XML with document informations
     if os.path.isdir(folder_out):
-        with open(folder_out + '/' + filename, 'w', encoding='UTF-8') as xml_file:
+        with open(folder_out + '/' + filename, 'w', encoding='utf-8') as xml_file:
             root = Et.Element('ROOT')
             xml_datas = Et.SubElement(root, 'DATAS')
             xml_technical = Et.SubElement(root, 'TECHNICAL')
@@ -723,7 +723,7 @@ def construct_with_var(data, document_info, separator=None):
             if os.path.isfile(file):
                 with open(file, 'rb') as _file:
                     b64_encoded = base64.b64encode(_file.read())
-                    _data.append(str(b64_encoded))
+                    _data.append(str(b64_encoded.decode('utf-8')))
         elif column == 'current_date':
             _data.append(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         elif column == 'document_date_full':
