@@ -443,6 +443,9 @@ def construct_json(data, document_info, return_data=None):
     for parameter in data:
         if isinstance(data[parameter], str):
             return_data[parameter] = '_'.join(construct_with_var(data[parameter], document_info))
+            if parameter != 'filename' and parameter != 'data':
+                if return_data[parameter] == '':
+                    del return_data[parameter]
         elif isinstance(data[parameter], dict):
             return_data[parameter] = construct_json(data[parameter], document_info)
         elif isinstance(data[parameter], list):

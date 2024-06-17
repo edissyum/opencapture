@@ -14,7 +14,7 @@
 
     & .toast-error {
         @apply float-right;
-        @apply max-w-[50%];
+        @apply max-w-5xl;
         &::before {
             @apply left-3;
             @apply text-2xl;
