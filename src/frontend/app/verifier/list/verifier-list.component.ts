@@ -647,7 +647,6 @@ export class VerifierListComponent implements OnInit {
         this.sessionStorageService.save('documentsTimeIndex', this.selectedTab);
         this.resetPaginator();
         this.loadCustomers();
-        this.loadDocuments().then();
     }
 
     onPageChange(event: any) {
