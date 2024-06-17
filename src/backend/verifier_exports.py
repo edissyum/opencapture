@@ -443,16 +443,19 @@ def construct_json(data, document_info, return_data=None):
     for parameter in data:
         if isinstance(data[parameter], str):
             return_data[parameter] = '_'.join(construct_with_var(data[parameter], document_info))
-            if parameter != 'filename' and parameter != 'data':
-                if return_data[parameter] == '':
-                    del return_data[parameter]
+            if return_data[parameter] == '':
+                del return_data[parameter]
         elif isinstance(data[parameter], dict):
             return_data[parameter] = construct_json(data[parameter], document_info)
+            if return_data[parameter] == {}:
+                del return_data[parameter]
         elif isinstance(data[parameter], list):
             return_data[parameter] = []
             for sub_param in data[parameter]:
                 if isinstance(sub_param, dict):
                     return_data[parameter].append(construct_json(sub_param, document_info))
+            if not return_data[parameter]:
+                del return_data[parameter]
     return return_data
 
 
@@ -476,7 +479,14 @@ def export_coog(data, document_info, log):
         )
         if _ws.access_token[0]:
             if document_info:
-                parameters = json.loads(data['options']['parameters'][0]['value'])[0]
+                try:
+                    parameters = json.loads(data['options']['parameters'][0]['value'])[0]
+                except json.JSONDecodeError:
+                    response = {
+                        "errors": gettext('EXPORT_COOG_ERROR'),
+                        "message": gettext('COOG_JSON_ERROR')
+                    }
+                    return response, 400
                 ws_data = [construct_json(parameters, document_info)]
                 res = _ws.create_task(ws_data)
                 if res[0]:
