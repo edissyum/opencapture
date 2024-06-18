@@ -350,6 +350,7 @@
 		"register_date": "Date d'enregistrement du document",
 		"register_date_day": "Jour d'enregistrement du document",
 		"register_date_month": "Mois d'enregistrement du document",
+		"register_date_short": "Date d'enregistrement",
 		"register_date_year": "Année d'enregistrement du document",
 		"total_ht": "Total HT",
 		"total_ttc": "Total TTC",

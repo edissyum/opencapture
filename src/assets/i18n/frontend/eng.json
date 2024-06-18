@@ -350,6 +350,7 @@
 		"register_date": "Register date",
 		"register_date_day": "Day of the register date",
 		"register_date_month": "Month of the register date",
+		"register_date_short": "Register date",
 		"register_date_year": "Year of the register date",
 		"total_ht": "Total without taxes",
 		"total_ttc": "Total with taxes",
