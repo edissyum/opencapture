@@ -113,8 +113,10 @@ def documents_list():
         {'id': 'time', 'type': str, 'mandatory': False},
         {'id': 'limit', 'type': int, 'mandatory': False},
         {'id': 'status', 'type': str, 'mandatory': True},
+        {'id': 'order', 'type': str, 'mandatory': False},
         {'id': 'offset', 'type': int, 'mandatory': False},
         {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'filter', 'type': str, 'mandatory': False},
         {'id': 'form_id', 'type': int, 'mandatory': False},
         {'id': 'allowedCustomers', 'type': list, 'mandatory': False},
         {'id': 'allowedSuppliers', 'type': list, 'mandatory': False}

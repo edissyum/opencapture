@@ -141,7 +141,7 @@ def retrieve_documents(args):
     args['left_join'] = ['documents.form_id = form_models.id']
     args['group_by'] = ['documents.id', 'documents.form_id', 'form_models.id']
 
-    args['select'].append("DISTINCT(documents.id) as document_id")
+    args['select'].append("documents.id as document_id")
     args['select'].append("to_char(register_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as date")
     args['select'].append('form_models.label as form_label')
     args['select'].append("*")
@@ -187,6 +187,17 @@ def retrieve_documents(args):
             args['where'].append('supplier_id is NULL')
         else:
             args['where'].append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
+
+    if 'filter' in args and args['filter']:
+        if args['filter'] not in ['documents.id', 'documents.register_date']:
+            cast = 'text' if args['filter'] not in ['document_date'] else 'timestamp with time zone'
+            args['filter'] = f"(documents.datas ->> '{args['filter']}')::{cast}"
+
+        args['order_by'] = args['filter']
+        if 'order' in args and args['order']:
+            args['order_by'] = [args['filter'] + ' ' + args['order']]
+        else:
+            args['order_by'] = [args['filter'] + ' DESC']
 
     total_documents = verifier.get_total_documents({
         'select': ['count(documents.id) as total'],
