@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.8.3 (2024-02-08)
+ * TinyMCE version 7.1.2 (TBD)
  */
 
 (function () {
@@ -587,6 +587,12 @@
 
     const isMediaElement = element => element.hasAttribute('data-mce-object') || element.hasAttribute('data-ephox-embed-iri');
     const setup$2 = editor => {
+      editor.on('mousedown', e => {
+        const previewObj = editor.dom.getParent(e.target, '.mce-preview-object');
+        if (previewObj && editor.dom.getAttrib(previewObj, 'data-mce-selected') === '2') {
+          e.stopImmediatePropagation();
+        }
+      });
       editor.on('click keyup touchend', () => {
         const selectedNode = editor.selection.getNode();
         if (selectedNode && editor.dom.hasClass(selectedNode, 'mce-preview-object')) {
@@ -625,7 +631,7 @@
         if (cache[data.source]) {
           wrappedResolve(cache[data.source]);
         } else {
-          handler({ url: data.source }, wrappedResolve, rej);
+          handler({ url: data.source }).then(wrappedResolve).catch(rej);
         }
       });
     };
