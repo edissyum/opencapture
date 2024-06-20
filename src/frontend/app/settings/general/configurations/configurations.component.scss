@@ -54,6 +54,7 @@
 }
 
 .tox {
+    @apply border-gray-200 #{!important};
     & .tox-tbtn--enabled, .tox .tox-tbtn--enabled:hover, .tox-collection--list .tox-collection__item--active {
         @apply bg-green-400 #{!important};
         @apply text-gray-900 #{!important};
