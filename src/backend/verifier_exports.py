@@ -720,17 +720,23 @@ def construct_with_var(data, document_info, separator=None):
             else:
                 _data.append(str(document_info[column]))
         elif column == 'document_date_year':
-            _data.append(str(document_info['datas']['document_date'].year))
+            if 'document_date' in document_info and document_info['document_date']:
+                _data.append(str(document_info['datas']['document_date'].year))
         elif column == 'document_date_month':
-            _data.append(str(document_info['datas']['document_date'].month))
+            if 'document_date' in document_info and document_info['document_date']:
+                _data.append(str(document_info['datas']['document_date'].month))
         elif column == 'document_date_day':
-            _data.append(str(document_info['datas']['document_date'].day))
+            if 'document_date' in document_info and document_info['document_date']:
+                _data.append(str(document_info['datas']['document_date'].day))
         elif column == 'register_date_year':
-            _data.append(str(document_info['register_date'].year))
+            if 'register_date' in document_info and document_info['register_date']:
+                _data.append(str(document_info['register_date'].year))
         elif column == 'register_date_month':
-            _data.append(str(document_info['register_date'].month))
+            if 'register_date' in document_info and document_info['register_date']:
+                _data.append(str(document_info['register_date'].month))
         elif column == 'register_date_day':
-            _data.append(str(document_info['register_date'].day))
+            if 'register_date' in document_info and document_info['register_date']:
+                _data.append(str(document_info['register_date'].day))
         elif column == 'b64_file_content':
             file = document_info['path'] + '/' + document_info['filename']
             if os.path.isfile(file):
@@ -740,9 +746,11 @@ def construct_with_var(data, document_info, separator=None):
         elif column == 'current_date':
             _data.append(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         elif column == 'document_date_full':
-            _data.append(document_info['document_date'].strftime('%Y-%m-%d %H:%M:%S'))
+            if 'document_date' in document_info and document_info['document_date']:
+                _data.append(document_info['document_date'].strftime('%Y-%m-%d %H:%M:%S'))
         elif column == 'register_date_full':
-            _data.append(document_info['register_date'].strftime('%Y-%m-%d %H:%M:%S'))
+            if 'register_date' in document_info and document_info['register_date']:
+                _data.append(document_info['register_date'].strftime('%Y-%m-%d %H:%M:%S'))
         else:
             if separator:
                 _data.append(column.replace(' ', separator))
