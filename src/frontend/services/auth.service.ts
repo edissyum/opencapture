@@ -133,6 +133,8 @@ export class AuthService {
 
         this.userService.setUser({});
         this.sessionStorage.remove('loginImageB64');
+        this.sessionStorage.remove('verifierOrder');
+        this.sessionStorage.remove('verifierFilter');
         this.sessionStorage.remove('selectedSettings');
         this.sessionStorage.remove(tokenNames['tokenJwt']);
         this.sessionStorage.remove(tokenNames['userData']);
