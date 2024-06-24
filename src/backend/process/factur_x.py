@@ -362,7 +362,7 @@ def execute_outputs(output_info, log, regex, document_data, database):
     elif output_info['output_type_id'] == 'export_coog':
         verifier_exports.export_coog(data, document_data, log)
     elif output_info['output_type_id'] == 'export_pdf':
-        verifier_exports.export_pdf(data, log, regex, document_data, compress_type, ocrise)
+        verifier_exports.export_pdf(data, log, document_data, compress_type, ocrise)
 
 
 def insert(args):

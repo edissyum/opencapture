@@ -371,7 +371,7 @@ def compress_file(file, compress_type, log, folder_out, filename, document_filen
         log.error('Moving file ' + compressed_file_path + ' error : ' + str(_e))
 
 
-def export_pdf(data, log, regex, document_info, compress_type, ocrise):
+def export_pdf(data, log, document_info, compress_type, ocrise):
     log.info('Output execution : PDF export')
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
@@ -442,7 +442,7 @@ def construct_json(data, document_info, return_data=None):
 
     for parameter in data:
         if isinstance(data[parameter], str):
-            return_data[parameter] = '_'.join(construct_with_var(data[parameter], document_info))
+            return_data[parameter] = ''.join(construct_with_var(data[parameter], document_info))
             if return_data[parameter] == '':
                 del return_data[parameter]
         elif isinstance(data[parameter], dict):
@@ -709,46 +709,47 @@ def construct_with_var(data, document_info, separator=None):
         document_info['datas'] = data_tmp
 
     for column in data.split('#'):
-        if column in document_info['datas'] and document_info['datas'][column]:
+        column_strip = column.strip()
+        if column_strip in document_info['datas'] and document_info['datas'][column_strip]:
             if separator:
-                _data.append(str(document_info['datas'][column]).replace(' ', separator))
+                _data.append(str(document_info['datas'][column_strip]).replace(' ', separator))
             else:
-                _data.append(str(document_info['datas'][column]))
-        elif column in document_info and document_info[column]:
+                _data.append(str(document_info['datas'][column_strip]))
+        elif column_strip in document_info and document_info[column_strip]:
             if separator:
-                _data.append(str(document_info[column]).replace(' ', separator))
+                _data.append(str(document_info[column_strip]).replace(' ', separator))
             else:
-                _data.append(str(document_info[column]))
-        elif column == 'document_date_year':
+                _data.append(str(document_info[column_strip]))
+        elif column_strip == 'document_date_year':
             if 'document_date' in document_info and document_info['document_date']:
                 _data.append(str(document_info['datas']['document_date'].year))
-        elif column == 'document_date_month':
+        elif column_strip == 'document_date_month':
             if 'document_date' in document_info and document_info['document_date']:
                 _data.append(str(document_info['datas']['document_date'].month))
-        elif column == 'document_date_day':
+        elif column_strip == 'document_date_day':
             if 'document_date' in document_info and document_info['document_date']:
                 _data.append(str(document_info['datas']['document_date'].day))
-        elif column == 'register_date_year':
+        elif column_strip == 'register_date_year':
             if 'register_date' in document_info and document_info['register_date']:
                 _data.append(str(document_info['register_date'].year))
-        elif column == 'register_date_month':
+        elif column_strip == 'register_date_month':
             if 'register_date' in document_info and document_info['register_date']:
                 _data.append(str(document_info['register_date'].month))
-        elif column == 'register_date_day':
+        elif column_strip == 'register_date_day':
             if 'register_date' in document_info and document_info['register_date']:
                 _data.append(str(document_info['register_date'].day))
-        elif column == 'b64_file_content':
+        elif column_strip == 'b64_file_content':
             file = document_info['path'] + '/' + document_info['filename']
             if os.path.isfile(file):
                 with open(file, 'rb') as _file:
                     b64_encoded = base64.b64encode(_file.read())
                     _data.append(str(b64_encoded.decode('utf-8')))
-        elif column == 'current_date':
+        elif column_strip == 'current_date':
             _data.append(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        elif column == 'document_date_full':
+        elif column_strip == 'document_date_full':
             if 'document_date' in document_info and document_info['document_date']:
                 _data.append(document_info['document_date'].strftime('%Y-%m-%d %H:%M:%S'))
-        elif column == 'register_date_full':
+        elif column_strip == 'register_date_full':
             if 'register_date' in document_info and document_info['register_date']:
                 _data.append(document_info['register_date'].strftime('%Y-%m-%d %H:%M:%S'))
         else:

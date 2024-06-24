@@ -498,8 +498,7 @@ def export_pdf(document_id, data):
             _vars = create_classes_from_custom_id(custom_id)
             log = _vars[5]
             regex = _vars[2]
-        return verifier_exports.export_pdf(data['data'], log, regex, document_info, data['compress_type'],
-                                           data['ocrise'])
+        return verifier_exports.export_pdf(data['data'], log, document_info, data['compress_type'], data['ocrise'])
 
 
 def export_facturx(document_id, data):
