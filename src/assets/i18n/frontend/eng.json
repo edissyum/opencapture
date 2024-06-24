@@ -653,6 +653,7 @@
 		"required": "Field required"
 	},
 	"MONITORING": {
+		"access_document": "Access document",
 		"and": "and",
 		"current_processes": "Process list in progress",
 		"document_id": "Document identifier",

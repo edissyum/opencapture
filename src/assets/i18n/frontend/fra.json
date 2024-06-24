@@ -653,6 +653,7 @@
 		"required": "Champ obligatoire"
 	},
 	"MONITORING": {
+		"access_document": "Accéder au document",
 		"and": "et",
 		"current_processes": "Liste des processus en cours",
 		"document_id": "Identifiant du document",
