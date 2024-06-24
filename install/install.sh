@@ -108,7 +108,7 @@ customId=$(echo "$customId" | tr "[:upper:]" "[:lower:]")
 if [ -z "$customId" ]; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
-    echo "      Exemple of command line call : sudo ./install.sh -c edissyum"
+    echo "      Exemple of command line call : sudo ./install.sh --custom_id edissyum"
     echo "##########################################################################"
     exit 2
 fi
@@ -116,7 +116,7 @@ fi
 if [ "$customId" == 'custom' ] ; then
     echo "##########################################################################"
     echo "              Please do not create a custom called 'custom'"
-    echo "      Exemple of command line call : sudo ./install.sh -c edissyum"
+    echo "      Exemple of command line call : sudo ./install.sh --custom_id edissyum"
     echo "##########################################################################"
     exit 3
 fi
