@@ -142,8 +142,8 @@ for process in processes:
             date_batch = year + month + day + '_' + hour + minute + second + microsecond
             batch_path = tempfile.mkdtemp(dir=path, prefix='BATCH_' + date_batch + '_')
 
-            print('Batch name : ' + docservers_mailcollect['path'].replace("/var/www/html/opencapture/", "") + '/' + batch_path.split('/MailCollect')[1].replace('//', '/'))
-            print('Batch error name : ' + docservers_mailcollect['path'].replace("/var/www/html/opencapture/", "") + '/_ERROR/' + batch_path.split('/MailCollect')[1].replace('//', '/'))
+            print('Batch name : ' + batch_path)
+            print('Batch error name : ' + docservers_mailcollect['path'] + '/_ERROR/' + batch_path.split('/MailCollect/')[1])
 
             Log = _Log(batch_path + '/' + date_batch + '.log', smtp)
             Log.info('Start following batch : ' + os.path.basename(os.path.normpath(batch_path)))
