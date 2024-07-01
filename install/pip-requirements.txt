@@ -16,7 +16,7 @@ pandas==2.2.2
 kuyruk==10.1.0
 pillow==10.3.0
 imutils==0.5.4
-psycopg==3.1.19
+psycopg==3.2.1
 thefuzz==0.22.1
 werkzeug==3.0.3
 cmislib3==1.0.8
@@ -32,7 +32,7 @@ flask_cors==4.0.1
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
 schwifty==2024.6.1
-ultralytics==8.2.41
+ultralytics==8.2.48
 pytesseract==0.3.10
 configparser==7.0.0
 scikit-learn==1.5.0
