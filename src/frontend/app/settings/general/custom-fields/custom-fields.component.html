@@ -107,9 +107,7 @@
                                            <i class="fa-solid fa-circle-question text-base"></i>
                                         </span>
                                         <div [matTooltip]="'CUSTOM-FIELDS.delete_choice' | translate"
-                                             [class.-ml-2]="retrieveModule() === 'verifier'"
-                                             [class.ml-2]="retrieveModule() === 'splitter'"
-                                             (click)="deleteSelectOption(optionIndex)" class="relative top-1 h-8 mr-2 cursor-pointer">
+                                             (click)="deleteSelectOption(optionIndex)" class="relative top-1 h-8 -ml-2 mr-2 cursor-pointer">
                                             <i class="fa-solid fa-trash fa-lg hover:text-green-400"></i>
                                         </div>
                                     </div>

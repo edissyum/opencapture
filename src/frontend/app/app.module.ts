@@ -239,7 +239,8 @@ export function createTranslateLoader(http: HttpClient) {
         NgxFileDragDropModule,
         DragDropModule,
         NgxMatSelectSearchModule,
-        MatSelectCountryModule.forRoot('fr')
+        MatSelectCountryModule.forRoot('fr'),
+        TranslateModule
     ],
     providers: [
         Title,

@@ -64,7 +64,7 @@ class SplitterTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_successful_get_batches_list(self):
-        self.create_batch()
+        res = self.create_batch()
         payload = {
             'page': 0,
             'size': 10,
@@ -88,7 +88,7 @@ class SplitterTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json",
                                          'Authorization': 'Bearer ' + self.token}, json=payload)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(2, len(response.json['documents']))
+        self.assertEqual(1, len(response.json['documents']))
 
     def tearDown(self) -> None:
         self.database.execute("TRUNCATE TABLE splitter_batches")

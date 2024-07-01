@@ -18,7 +18,7 @@
 import { of } from "rxjs";
 import { Router } from "@angular/router";
 import { environment } from "../app/env";
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { UserService } from "./user.service";
 import { catchError, tap } from "rxjs/operators";
 import { SessionStorageService } from "./session-storage.service";
@@ -53,7 +53,7 @@ export class AuthService {
         return this.http
             .post<any>(environment['url'] + '/ws/auth/login/refresh', {token: refreshToken}, {headers: new_headers})
             .pipe(
-                tap((data) => {
+                tap((data: any) => {
                     this.userService.setUser(data.user);
                     this.setTokens(data.token, '', btoa(JSON.stringify(this.userService.getUser())));
                     this.generateHeaders();
@@ -133,6 +133,8 @@ export class AuthService {
 
         this.userService.setUser({});
         this.sessionStorage.remove('loginImageB64');
+        this.sessionStorage.remove('verifierOrder');
+        this.sessionStorage.remove('verifierFilter');
         this.sessionStorage.remove('selectedSettings');
         this.sessionStorage.remove(tokenNames['tokenJwt']);
         this.sessionStorage.remove(tokenNames['userData']);

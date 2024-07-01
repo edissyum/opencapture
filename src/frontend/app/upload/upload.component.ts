@@ -40,7 +40,7 @@ export class UploadComponent implements OnInit {
     headers                     : HttpHeaders   = this.authService.headers;
     selectedWorkflow            : any           = '';
     selectedWorkflowTechnicalId : any           = '';
-    workflows                   : any[]         = [];
+    workflows                   : any           = [];
     loading                     : boolean       = true;
     sending                     : boolean       = false;
     error                       : boolean       = false;

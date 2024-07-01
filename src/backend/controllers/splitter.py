@@ -91,7 +91,7 @@ def launch_referential_update(form_data):
     available_methods = docservers['SPLITTER_METADATA_PATH'] + "/metadata_methods.json"
     call_on_splitter_view = False
     try:
-        with open(available_methods, encoding='UTF-8') as json_file:
+        with open(available_methods, encoding='utf-8') as json_file:
             available_methods = json.load(json_file)
             for method in available_methods['methods']:
                 if method['id'] == form_data['metadata_method']:

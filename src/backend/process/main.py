@@ -69,7 +69,7 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
         tmp_file = docservers['TMP_PATH'] + '/' + step + '_scripting_' + rand + '.py'
 
         try:
-            with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+            with open(tmp_file, 'w', encoding='utf-8') as python_script:
                 python_script.write(script)
 
             if os.path.isfile(tmp_file):
@@ -124,7 +124,7 @@ def execute_outputs(output_info, log, regex, document_data, database):
     elif output_info['output_type_id'] == 'export_coog':
         verifier_exports.export_coog(output_info['data'], document_data, log)
     elif output_info['output_type_id'] == 'export_pdf':
-        path, _ = verifier_exports.export_pdf(data, log, regex, document_data, compress_type, ocrise)
+        path, _ = verifier_exports.export_pdf(data, log, document_data, compress_type, ocrise)
     elif output_info['output_type_id'] == 'export_facturx':
         path, _ = verifier_exports.export_facturx(data, log, regex, document_data)
 

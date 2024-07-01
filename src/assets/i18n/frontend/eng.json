@@ -350,6 +350,7 @@
 		"register_date": "Register date",
 		"register_date_day": "Day of the register date",
 		"register_date_month": "Month of the register date",
+		"register_date_short": "Register date",
 		"register_date_year": "Year of the register date",
 		"total_ht": "Total without taxes",
 		"total_ttc": "Total with taxes",
@@ -652,6 +653,7 @@
 		"required": "Field required"
 	},
 	"MONITORING": {
+		"access_document": "Access document",
 		"and": "and",
 		"current_processes": "Process list in progress",
 		"document_id": "Document identifier",

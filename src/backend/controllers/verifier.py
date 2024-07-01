@@ -141,7 +141,7 @@ def retrieve_documents(args):
     args['left_join'] = ['documents.form_id = form_models.id']
     args['group_by'] = ['documents.id', 'documents.form_id', 'form_models.id']
 
-    args['select'].append("DISTINCT(documents.id) as document_id")
+    args['select'].append("documents.id as document_id")
     args['select'].append("to_char(register_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as date")
     args['select'].append('form_models.label as form_label')
     args['select'].append("*")
@@ -188,6 +188,17 @@ def retrieve_documents(args):
         else:
             args['where'].append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
 
+    if 'filter' in args and args['filter']:
+        if args['filter'] not in ['documents.id', 'documents.register_date']:
+            cast = 'text' if args['filter'] not in ['document_date'] else 'timestamp with time zone'
+            args['filter'] = f"(documents.datas ->> '{args['filter']}')::{cast}"
+
+        args['order_by'] = args['filter']
+        if 'order' in args and args['order']:
+            args['order_by'] = [args['filter'] + ' ' + args['order']]
+        else:
+            args['order_by'] = [args['filter'] + ' DESC']
+
     total_documents = verifier.get_total_documents({
         'select': ['count(documents.id) as total'],
         'where': args['where'],
@@ -203,7 +214,7 @@ def retrieve_documents(args):
             year_and_month = year + '/' + month
             thumb = get_file_content('full', document['full_jpg_filename'], 'image/jpeg',
                                      compress=True, year_and_month=year_and_month)
-            document['thumb'] = str(base64.b64encode(thumb.get_data()).decode('UTF-8'))
+            document['thumb'] = str(base64.b64encode(thumb.get_data()).decode('utf-8'))
             if document['supplier_id']:
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': document['supplier_id']})
                 if not error:
@@ -487,8 +498,7 @@ def export_pdf(document_id, data):
             _vars = create_classes_from_custom_id(custom_id)
             log = _vars[5]
             regex = _vars[2]
-        return verifier_exports.export_pdf(data['data'], log, regex, document_info, data['compress_type'],
-                                           data['ocrise'])
+        return verifier_exports.export_pdf(data['data'], log, document_info, data['compress_type'], data['ocrise'])
 
 
 def export_facturx(document_id, data):
@@ -534,7 +544,7 @@ def launch_output_script(document_id, workflow_settings, outputs):
         tmp_file = docservers['TMP_PATH'] + '/output_scripting_' + rand + '.py'
 
         try:
-            with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+            with open(tmp_file, 'w', encoding='utf-8') as python_script:
                 python_script.write(script)
 
             if os.path.isfile(tmp_file):
@@ -712,7 +722,7 @@ def get_token_insee():
         config = _vars[1]
 
     credentials = base64.b64encode(
-        (config['API']['siret-consumer'] + ':' + config['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
+        (config['API']['siret-consumer'] + ':' + config['API']['siret-secret']).encode('utf-8')).decode('utf-8')
 
     try:
         res = requests.post(config['API']['siret-url-token'], data={'grant_type': 'client_credentials'},

@@ -125,16 +125,42 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
-                        <div [class.hidden]="this.loading || this.total === 0" class="pt-3 grid grid-cols-7 grid-flow-row">
+                        <div [class.hidden]="this.loading || this.total === 0" class="pt-3 grid grid-cols-7 grid-flow-row -ml-8">
                             <mat-paginator [length]="this.total" [pageSize]="this.pageSize" [pageIndex]="this.pageIndex"
                                            [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)"
                                            class="col-span-6">
                             </mat-paginator>
-                            <div class="mt-2.5">
-                                <button mat-stroked-button class="min-w-10 text-gray-900" (click)="switchDisplayMode()">
+                            <div class="mt-2.5 flex relative right-4">
+                                <button mat-stroked-button class="min-w-5 p-2 text-gray-900 rounded-r-none" (click)="switchDisplayMode()">
                                     <i *ngIf="this.displayMode == 'list'" class="fa-solid fa-list text-xl" [matTooltip]="'VERIFIER.switch_to_grid_view' | translate"></i>
                                     <i *ngIf="this.displayMode == 'grid'" class="fa-solid fa-grip text-xl" [matTooltip]="'VERIFIER.switch_to_list_view' | translate"></i>
                                 </button>
+                                <button mat-stroked-button class="min-w-1 p-2 rounded-l-none" [matMenuTriggerFor]="menu">
+                                    <i class="fa-solid fa-caret-down"></i>
+                                </button>
+                                <mat-menu #menu="matMenu">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <span class="px-2 py-2 text-center cursor-pointer"
+                                              (click)="changeOrder('asc')"
+                                              [class.border-b-2]="this.currentOrder == 'asc'"
+                                              [class.border-green-400]="this.currentOrder == 'asc'">
+                                            <i class="fa-solid fa-arrow-up-wide-short"></i> Croissant
+                                        </span>
+                                        <span class="px-2 py-2 text-center cursor-pointer"
+                                              (click)="changeOrder('desc')"
+                                              [class.border-b-2]="this.currentOrder == 'desc'"
+                                              [class.border-green-400]="this.currentOrder == 'desc'">
+                                            <i class="fa-solid fa-arrow-down-wide-short"></i> Décroissant
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <div *ngFor="let filter of this.filtersLists" (click)="changeFilter(filter['id'])"
+                                             class="p-2 w-full hover:bg-gray-200 cursor-pointer">
+                                            {{ filter['label'] | translate }}
+                                            <i *ngIf="this.currentFilter == filter['id']" class="fa-regular fa-circle-check text-green-400 float-right mt-1"></i>
+                                        </div>
+                                    </div>
+                                </mat-menu>
                             </div>
                         </div>
                     </div>
@@ -233,7 +259,7 @@
                                             </span>
                                         </mat-card-title>
                                         <mat-card-subtitle class="mt-2 mb-1">
-                                            <div *ngFor="let subtitles of document.display['subtitles']" class="-mb-1 text-base text-ellipsis overflow-hidden w-full inline-block">
+                                            <div *ngFor="let subtitles of document.display?.['subtitles']" class="-mb-1 text-base text-ellipsis overflow-hidden w-full inline-block">
                                                 <strong>{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
                                             </div>
                                         </mat-card-subtitle>
@@ -247,9 +273,10 @@
                                             <div class="mx-6 flex items-center justify-center">
                                                 <input id="{{ document['document_id'] }}_checkbox" (click)="checkCheckedDocuments()" class="accent-green-400 checkBox_list cursor-pointer w-5 h-5" type="checkbox">
                                             </div>
-                                            <div class="grow max-w-[20%] relative mt-2" [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                            <div class="grow max-w-[30%] relative mt-2" [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
                                                  (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
-                                                <div class="font-bold text-xl break-all truncate w-11/12" [matTooltip]="document['supplier_name']">
+                                                <div class="font-bold text-xl break-all truncate w-11/12" [matTooltip]="document['supplier_name']"
+                                                     [matTooltipDisabled]="document['supplier_name']?.replace(' ', '').length <= 40">
                                                     <i [matTooltip]="'VERIFIER.document_locked' | translate" *ngIf="document.locked"
                                                        class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"></i>
                                                     {{ document['supplier_name'] ? document['supplier_name'] : 'ACCOUNTS.supplier_unknow' | translate }}
@@ -257,13 +284,13 @@
                                                         {{ "VERIFIER.facturx" | translate }}
                                                     </span>
                                                 </div>
-                                                <div *ngFor="let subtitles of document.display['subtitles'].slice(0, 3);" class="opacity-75 -mb-1 text-sm truncate w-full inline-block">
+                                                <div *ngFor="let subtitles of document.display?.['subtitles'].slice(0, 3);" class="opacity-75 -mb-1 text-sm truncate w-full inline-block">
                                                     <strong class="text-gray-900">{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
                                                 </div>
                                             </div>
-                                            <div class="grow max-w-[20%] relative mt-4" [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                            <div class="grow max-w-[30%] relative mt-4" [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
                                                  (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
-                                                <div *ngFor="let subtitles of document.display['subtitles'].slice(3, 7);" class="opacity-75 -mb-1 text-sm truncate w-full inline-block">
+                                                <div *ngFor="let subtitles of document.display?.['subtitles'].slice(3, 7);" class="opacity-75 -mb-1 text-sm truncate w-full inline-block">
                                                     <strong class="text-gray-900">{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
                                                 </div>
                                             </div>
@@ -280,7 +307,7 @@
                                                 </div>
                                                 <div [matMenuTriggerFor]="menu" matTooltipPosition="above"
                                                      [matTooltip]="this.translate.instant('VERIFIER.documents_settings')">
-                                                    <i class="fa-solid fa-ellipsis-vertical text-xl float-right ml-6 mr-6 cursor-pointer text-gray-900"></i>
+                                                    <i class="fa-solid fa-ellipsis-vertical text-xl float-right ml-6 mr-3 cursor-pointer text-gray-900"></i>
                                                 </div>
                                                 <mat-menu #menu="matMenu">
                                                     <button mat-menu-item [matMenuTriggerFor]="customers">

@@ -133,7 +133,7 @@ class ArtificialIntelligence:
         """
 
         header = ['Filename', 'Text', 'Doctype']
-        with open(self.csv_file, 'w', encoding='UTF-8') as f:
+        with open(self.csv_file, 'w', encoding='utf-8') as f:
             writer = csv.writer(f)
             writer.writerow(header)
 
@@ -144,7 +144,7 @@ class ArtificialIntelligence:
         :return: N/A
         """
 
-        with open(self.csv_file, 'a', encoding='UTF-8') as _f:
+        with open(self.csv_file, 'a', encoding='utf-8') as _f:
             writer = csv.writer(_f)
             for val in data_list:
                 writer.writerow(val)

@@ -73,22 +73,6 @@ def find_iban_from_bban(country_code: str, bban: str):
     return country_code + checksum_algo.compute([bban, country_code]) + bban
 
 
-def validate_iban(unchecked_iban):
-    letters = {ord(d): str(i) for i, d in enumerate(string.digits + string.ascii_uppercase)}
-    unchecked_iban = re.sub(r"\s*", '', unchecked_iban)
-
-    def _number_iban(iban):
-        return (iban[4:] + iban[:4]).translate(letters)
-
-    def generate_iban_check_digits(iban):
-        number_iban = _number_iban(iban[:2] + '00' + iban[4:])
-        return '{:0>2}'.format(98 - (int(number_iban) % 97))
-
-    def valid_iban(iban):
-        return int(_number_iban(iban)) % 97 == 1
-    return generate_iban_check_digits(unchecked_iban) == unchecked_iban[2:4] and valid_iban(unchecked_iban)
-
-
 class FindCustom:
     def __init__(self, log, regex, config, ocr, files, supplier, file, database, docservers, form_id,
                  custom_fields_to_find, custom_fields_regex):
@@ -113,6 +97,7 @@ class FindCustom:
 
     def check_format(self, data, settings):
         match = True
+
         if settings['format'] == 'number_float':
             data = re.sub(r"\s*", '', data)
             match = re.match(r"^\d+([,.]\d+)?$", data)
@@ -124,8 +109,9 @@ class FindCustom:
         if settings['format'] == 'date':
             match = re.match(r"" + self.regex['date'], data)
 
-        if settings['format'] == 'lunh_algorithm':
-            _r = [int(ch) for ch in str(data)][::-1]
+        if settings['format'] == 'luhn_algorithm':
+            tmp_data = data.replace(' ', '')
+            _r = [int(ch) for ch in str(tmp_data)][::-1]
             match = (sum(_r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in _r[1::2])) % 10 == 0
 
         if settings['format'] == 'adeli':

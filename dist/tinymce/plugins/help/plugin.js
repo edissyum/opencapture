@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.8.3 (2024-02-08)
+ * TinyMCE version 7.2.0 (2024-06-19)
  */
 
 (function () {
@@ -387,6 +387,10 @@
         action: 'Focus to element path'
       },
       {
+        shortcuts: ['Alt + F12'],
+        action: 'Focus to notification'
+      },
+      {
         shortcuts: ['Ctrl + F9'],
         action: 'Focus to contextual toolbar'
       },
@@ -439,10 +443,6 @@
       {
         key: 'accordion',
         name: 'Accordion'
-      },
-      {
-        key: 'advlist',
-        name: 'Advanced List'
       },
       {
         key: 'anchor',
@@ -513,6 +513,10 @@
         name: 'Lists'
       },
       {
+        key: 'advlist',
+        name: 'List Styles'
+      },
+      {
         key: 'media',
         name: 'Media'
       },
@@ -545,10 +549,6 @@
         name: 'Table'
       },
       {
-        key: 'template',
-        name: 'Template'
-      },
-      {
         key: 'textcolor',
         name: 'Text Color'
       },
@@ -570,20 +570,10 @@
         type: 'premium'
       },
       {
-        key: 'advcode',
-        name: 'Advanced Code Editor',
-        type: 'premium'
-      },
-      {
-        key: 'advtable',
-        name: 'Advanced Tables',
-        type: 'premium'
-      },
-      {
-        key: 'advtemplate',
-        name: 'Advanced Templates',
+        key: 'typography',
+        name: 'Advanced Typography',
         type: 'premium',
-        slug: 'advanced-templates'
+        slug: 'advanced-typography'
       },
       {
         key: 'ai',
@@ -601,20 +591,9 @@
         type: 'premium'
       },
       {
-        key: 'editimage',
-        name: 'Enhanced Image Editing',
+        key: 'advcode',
+        name: 'Enhanced Code Editor',
         type: 'premium'
-      },
-      {
-        key: 'footnotes',
-        name: 'Footnotes',
-        type: 'premium'
-      },
-      {
-        key: 'typography',
-        name: 'Advanced Typography',
-        type: 'premium',
-        slug: 'advanced-typography'
       },
       {
         key: 'mediaembed',
@@ -623,13 +602,38 @@
         slug: 'introduction-to-mediaembed'
       },
       {
-        key: 'export',
-        name: 'Export',
+        key: 'advtable',
+        name: 'Enhanced Tables',
+        type: 'premium'
+      },
+      {
+        key: 'exportpdf',
+        name: 'Export to PDF',
+        type: 'premium'
+      },
+      {
+        key: 'exportword',
+        name: 'Export to Word',
+        type: 'premium'
+      },
+      {
+        key: 'footnotes',
+        name: 'Footnotes',
         type: 'premium'
       },
       {
         key: 'formatpainter',
         name: 'Format Painter',
+        type: 'premium'
+      },
+      {
+        key: 'editimage',
+        name: 'Image Editing',
+        type: 'premium'
+      },
+      {
+        key: 'importword',
+        name: 'Import from Word',
         type: 'premium'
       },
       {
@@ -641,6 +645,16 @@
       {
         key: 'linkchecker',
         name: 'Link Checker',
+        type: 'premium'
+      },
+      {
+        key: 'math',
+        name: 'Math',
+        type: 'premium'
+      },
+      {
+        key: 'markdown',
+        name: 'Markdown',
         type: 'premium'
       },
       {
@@ -670,14 +684,13 @@
         slug: 'introduction-to-powerpaste'
       },
       {
-        key: 'rtc',
-        name: 'Real-Time Collaboration',
-        type: 'premium',
-        slug: 'rtc-introduction'
+        key: 'revisionhistory',
+        name: 'Revision History',
+        type: 'premium'
       },
       {
         key: 'tinymcespellchecker',
-        name: 'Spell Checker Pro',
+        name: 'Spell Checker',
         type: 'premium',
         slug: 'introduction-to-tiny-spellchecker'
       },
@@ -690,6 +703,12 @@
         key: 'tableofcontents',
         name: 'Table of Contents',
         type: 'premium'
+      },
+      {
+        key: 'advtemplate',
+        name: 'Templates',
+        type: 'premium',
+        slug: 'advanced-templates'
       },
       {
         key: 'tinycomments',
@@ -742,7 +761,7 @@
         const name = x.type === 'premium' ? `${ x.name }*` : x.name;
         const html = makeLink({
           name,
-          url: `https://www.tiny.cloud/docs/tinymce/6/${ x.slug }/`
+          url: `https://www.tiny.cloud/docs/tinymce/7/${ x.slug }/`
         });
         return {
           name,
@@ -794,7 +813,7 @@
     const tab = () => {
       const getVersion = (major, minor) => major.indexOf('@') === 0 ? 'X.X.X' : major + '.' + minor;
       const version = getVersion(global.majorVersion, global.minorVersion);
-      const changeLogLink = '<a data-alloy-tabstop="true" tabindex="-1" href="https://www.tiny.cloud/docs/tinymce/6/changelog/?utm_campaign=help_dialog_version_tab&utm_source=tiny&utm_medium=referral" rel="noopener" target="_blank">TinyMCE ' + version + '</a>';
+      const changeLogLink = '<a data-alloy-tabstop="true" tabindex="-1" href="https://www.tiny.cloud/docs/tinymce/7/changelog/?utm_campaign=help_dialog_version_tab&utm_source=tiny&utm_medium=referral" rel="noopener" target="_blank">TinyMCE ' + version + '</a>';
       const htmlPanel = {
         type: 'htmlpanel',
         html: '<p>' + global$2.translate([

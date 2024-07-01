@@ -69,25 +69,27 @@ interface FlatNode {
 })
 export class VerifierListComponent implements OnInit {
     config                   : any;
-    currentForm              : any               = '';
-    search                   : string            = '';
-    documentListThumb        : string            = '';
-    status                   : any[]             = [];
-    filteredForms            : any[]             = [];
-    documents                : any []            = [];
-    allowedCustomers         : any []            = [];
-    allowedSuppliers         : any []            = [];
-    TREE_DATA                : AccountsNode[]    = [];
-    loading                  : boolean           = true;
-    loadingCustomers         : boolean           = true;
-    currentStatus            : string            = 'NEW';
-    displayMode              : string            = 'grid';
-    currentTime              : string            = 'today';
-    forms                    : any[]             = [
+    currentForm              : any            = '';
+    search                   : string         = '';
+    documentListThumb        : string         = '';
+    currentFilter            : string         = 'documents.id';
+    currentOrder             : string         = 'desc';
+    documents                : any            = [];
+    filteredForms            : any            = [];
+    status                   : any            = [];
+    allowedCustomers         : any[]          = [];
+    allowedSuppliers         : any[]          = [];
+    TREE_DATA                : AccountsNode[] = [];
+    loading                  : boolean        = true;
+    loadingCustomers         : boolean        = true;
+    currentStatus            : string         = 'NEW';
+    displayMode              : string         = 'grid';
+    currentTime              : string         = 'today';
+    forms                    : any            = [
         {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
         {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
     ];
-    batchList                : any[]             = [
+    batchList                : any            = [
         {
             'id': 'today',
             'label': marker('BATCH.today')
@@ -101,21 +103,25 @@ export class VerifierListComponent implements OnInit {
             'label': marker('BATCH.older')
         }
     ];
-    pageSize                 : number            = 16;
-    pageIndex                : number            = 0;
-    pageSizeOptions          : any []            = [4, 8, 12, 16, 24, 48];
-    total                    : number            = 0;
-    offset                   : number            = 0;
-    selectedTab              : number            = 0;
-    totalChecked             : number            = 0;
-    totals                   : any               = {};
-    customersList            : any               = {};
-    searchLoading            : boolean           = false;
-    expanded                 : boolean           = false;
-    documentToDeleteSelected : boolean           = false;
-    customerFilterEmpty      : boolean           = false;
-    customerFilterEnabled    : boolean           = false;
-    customerFilter           : FormControl       = new FormControl('');
+    pageSize                 : number         = 16;
+    pageIndex                : number         = 0;
+    pageSizeOptions          : any []         = [4, 8, 12, 16, 24, 48];
+    total                    : number         = 0;
+    offset                   : number         = 0;
+    selectedTab              : number         = 0;
+    totalChecked             : number         = 0;
+    totals                   : any            = {};
+    customersList            : any            = {};
+    searchLoading            : boolean        = false;
+    expanded                 : boolean        = false;
+    documentToDeleteSelected : boolean        = false;
+    customerFilterEmpty      : boolean        = false;
+    customerFilterEnabled    : boolean        = false;
+    customerFilter           : FormControl    = new FormControl('');
+    filtersLists             : any            = [
+        {'id': 'documents.id', 'label': 'HEADER.technical_id'},
+        {'id': 'documents.register_date', 'label': marker('FACTURATION.register_date_short')}
+    ];
 
     private _transformer = (node: AccountsNode, level: number) => ({
         expandable: !!node.children && node.children.length > 0,
@@ -130,12 +136,8 @@ export class VerifierListComponent implements OnInit {
         children: node.children
     });
 
-    treeControl = new FlatTreeControl<FlatNode>(
-        node => node.level, node => node.expandable);
-
-    treeFlattener = new MatTreeFlattener(
-        this._transformer, node => node.level, node => node.expandable, node => node.children);
-
+    treeControl = new FlatTreeControl<FlatNode>(node => node.level, node => node.expandable);
+    treeFlattener = new MatTreeFlattener(this._transformer, node => node.level, node => node.expandable, node => node.children);
     dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
     constructor(
@@ -166,6 +168,12 @@ export class VerifierListComponent implements OnInit {
 
         if (localStorage.getItem('verifierListDisplayMode')) {
             this.displayMode = localStorage.getItem('verifierListDisplayMode') as string;
+        }
+        if (localStorage.getItem('verifierFilter')) {
+            this.currentFilter = localStorage.getItem('verifierFilter') as string;
+        }
+        if (localStorage.getItem('verifierOrder')) {
+            this.currentOrder = localStorage.getItem('verifierOrder') as string;
         }
 
         marker('VERIFIER.nb_pages'); // Needed to get the translation in the JSON file
@@ -204,6 +212,7 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+
         setTimeout(() => {
             this.loadForms();
             this.loadCustomers();
@@ -214,12 +223,23 @@ export class VerifierListComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/forms/verifier/list?totals=true&status=' + this.currentStatus + '&user_id=' + this.userService.user.id + '&time=' + this.currentTime, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.filteredForms = [];
+                this.filtersLists = [
+                    {'id': 'documents.id', 'label': 'HEADER.technical_id'},
+                    {'id': 'documents.register_date', 'label': 'FACTURATION.register_date_short'}
+                ];
                 this.forms = [
                     {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
                     {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
                 ];
                 data.forms.forEach((form: any) => {
                     if (form.total > 0) {
+                        form.settings.display.subtitles.forEach((subtitle: any) => {
+                            if (!['date', 'form_label', 'original_filename'].includes(subtitle.id)) {
+                                if (!this.filtersLists.some((filter: any) => filter.id === subtitle.id)) {
+                                    this.filtersLists.push({'id': subtitle.id, 'label': subtitle.label});
+                                }
+                            }
+                        });
                         this.forms.push(form);
                         this.filteredForms.push(form);
                     }
@@ -339,12 +359,11 @@ export class VerifierListComponent implements OnInit {
             })
         ).subscribe();
         this.allowedCustomers = [... new Set(this.allowedCustomers)]
-
         this.http.post(environment['url'] + '/ws/verifier/documents/list',
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'limit': this.pageSize,
                 'allowedSuppliers': this.allowedSuppliers, 'form_id': this.currentForm, 'time': this.currentTime,
-                'offset': this.offset, 'search': this.search
+                'offset': this.offset, 'search': this.search, 'order': this.currentOrder, 'filter': this.currentFilter,
             },
             {headers: this.authService.headers}
         ).pipe(
@@ -647,7 +666,6 @@ export class VerifierListComponent implements OnInit {
         this.sessionStorageService.save('documentsTimeIndex', this.selectedTab);
         this.resetPaginator();
         this.loadCustomers();
-        this.loadDocuments().then();
     }
 
     onPageChange(event: any) {
@@ -701,5 +719,17 @@ export class VerifierListComponent implements OnInit {
 
     resetThumbnail() {
         this.documentListThumb = '';
+    }
+
+    changeFilter(filter: string) {
+        this.currentFilter = filter;
+        localStorage.setItem('verifierFilter', filter);
+        this.loadDocuments().then()
+    }
+
+    changeOrder(order: string) {
+        this.currentOrder = order;
+        localStorage.setItem('verifierOrder', order);
+        this.loadDocuments().then()
     }
 }

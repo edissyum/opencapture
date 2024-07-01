@@ -113,8 +113,10 @@ def documents_list():
         {'id': 'time', 'type': str, 'mandatory': False},
         {'id': 'limit', 'type': int, 'mandatory': False},
         {'id': 'status', 'type': str, 'mandatory': True},
+        {'id': 'order', 'type': str, 'mandatory': False},
         {'id': 'offset', 'type': int, 'mandatory': False},
         {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'filter', 'type': str, 'mandatory': False},
         {'id': 'form_id', 'type': int, 'mandatory': False},
         {'id': 'allowedCustomers', 'type': list, 'mandatory': False},
         {'id': 'allowedSuppliers', 'type': list, 'mandatory': False}
@@ -532,7 +534,7 @@ def get_thumb():
     file_content = verifier.get_file_content(request.json['args']['type'], request.json['args']['filename'],
                                              'image/jpeg', year_and_month=year_and_month,
                                              document_id=request.json['args']['documentId'])
-    return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
+    return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('utf-8'))}), 200
 
 
 @bp.route('verifier/getThumbByDocumentId', methods=['POST'])
@@ -553,7 +555,7 @@ def get_thumb_by_document_id():
         }, 400)
 
     file_content = verifier.get_thumb_by_document_id(request.json['documentId'])
-    return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
+    return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('utf-8'))}), 200
 
 
 @bp.route('verifier/getOriginalFile/<int:document_id>', methods=['POST'])
@@ -567,7 +569,7 @@ def get_original_doc_by_document_id(document_id):
     file_content, mime = verifier.get_original_doc_by_document_id(document_id)
     if file_content is None:
         return make_response({'errors': gettext('DOWNLOAD_FILE'), 'message': gettext('FILE_NOT_FOUND')}, 404)
-    return make_response({'file': str(base64.b64encode(file_content).decode('UTF-8')), 'mime': mime}), 200
+    return make_response({'file': str(base64.b64encode(file_content).decode('utf-8')), 'mime': mime}), 200
 
 
 @bp.route('verifier/getTokenINSEE', methods=['GET'])

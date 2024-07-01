@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset=UTF-8>
+    <meta charset=utf-8>
     <title>Open-Capture</title>
     <link rel="icon" type="image/x-icon" href="src/assets/imgs/favicon.ico">
 </head>

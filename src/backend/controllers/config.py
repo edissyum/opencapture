@@ -339,7 +339,7 @@ def get_login_image():
                 login_image = custom_path + '/assets/imgs/login_image.png'
 
     with open(login_image, 'rb') as image_file:
-        b64_content = str(base64.b64encode(image_file.read()).decode('UTF-8'))
+        b64_content = str(base64.b64encode(image_file.read()).decode('utf-8'))
     return b64_content, 200
 
 

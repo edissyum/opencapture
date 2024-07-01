@@ -57,11 +57,11 @@ class VerifierTest(unittest.TestCase):
         text_to_search = rf"@kuyruk.task(queue='verifier_{CUSTOM_ID}')"
         text_to_replace = f"# @kuyruk.task(queue='verifier_{CUSTOM_ID}')"
 
-        with open(file, "r+", encoding='UTF-8') as text_file:
+        with open(file, "r+", encoding='utf-8') as text_file:
             texts = text_file.read()
             texts = texts.replace(text_to_search, text_to_replace)
 
-        with open(file, "w", encoding='UTF-8') as text_file:
+        with open(file, "w", encoding='utf-8') as text_file:
             text_file.write(texts)
 
         pdf_url = 'https://open-capture.com/wp-content/uploads/2022/11/CALINDA_INV-001510.pdf'

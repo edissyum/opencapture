@@ -30,7 +30,7 @@ class Spreadsheet:
         self.referencial_supplier_array = {}
         self.referencial_supplier_data = {}
 
-        with open(self.referencial_supplier_index, encoding='UTF-8') as file:
+        with open(self.referencial_supplier_index, encoding='utf-8') as file:
             fp = json.load(file)
             self.referencial_supplier_array['name'] = fp['name']
             self.referencial_supplier_array['vat_number'] = fp['vat_number']

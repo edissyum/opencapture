@@ -296,36 +296,39 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         */
         this.imageDocument = $('#document_image');
         this.ratio = this.document['img_width'] / this.imageDocument.width();
-        setTimeout(() => {
-            this.ocr({
-                'target' : {
-                    'id': '',
-                    'labels': [
-                        {'textContent': ''}
-                    ]
-                }
-            }, true);
-        }, 500);
+
         await this.fillForm(this.currentFormFields);
         if (this.document.supplier_id) {
             await this.getSupplierInfo(this.document.supplier_id, false, true);
         }
 
+        this.ocr({
+            'target' : {
+                'id': '',
+                'labels': [
+                    {'textContent': ''}
+                ]
+            }
+        }, true);
+
         setTimeout(() => {
             this.drawPositions();
             this.convertAutocomplete();
-            document.getElementById('image')!.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            this.loading = false;
+
             document.getElementById('form')!.scrollTo({
                 top: 0,
                 behavior: 'smooth'
             });
-            this.loading = false;
-        }, 1000);
-        const triggerEvent = $('.trigger');
-        triggerEvent.hide();
+        }, 100);
+
+        setTimeout(() => {
+            document.getElementById('image')!.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }, 100);
+        $('.trigger').hide();
 
         if (this.formSettings.settings.unique_url && this.formSettings.settings.unique_url.allow_supplier_autocomplete) {
             this.allowAutocomplete = true;
@@ -487,27 +490,18 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     async getThumb(filename:string) {
+        this.imgLoading = true;
         const cpt = filename.split('-')[filename.split('-').length - 1].split('.')[0];
         if (this.imgArray[cpt]) {
             this.imgSrc = this.imgArray[cpt];
         } else {
-            this.imgLoading = true;
-            this.http.post(environment['url'] + '/ws/verifier/getThumb',
+            const data: any = await this.http.post(environment['url'] + '/ws/verifier/getThumb',
                 {'args': {'type': 'full', 'filename': filename, 'registerDate': this.document['register_date'], 'documentId': this.documentId}},
-                {headers: this.authService.headers}).pipe(
-                tap((data: any) => {
-                    this.imgLoading = false;
-                    this.imgSrc = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + data.file);
-                    this.imgArray[cpt] = this.imgSrc;
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe();
+                {headers: this.authService.headers}).toPromise();
+            this.imgSrc = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + data.file);
+            this.imgArray[cpt] = this.imgSrc;
         }
-        return this.imgSrc;
+        this.imgLoading = false;
     }
 
     private _filter_data(value: any, data: any): string[] {
@@ -576,6 +570,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         triggerEvent.hide();
         triggerEvent.trigger('mousedown');
         triggerEvent.trigger('mouseup', [newArea]);
+        $('#' + field.id).blur();
     }
 
     getPage(fieldId: any) {
@@ -724,7 +719,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 if (field.id.includes('custom_') && field.type === 'select') {
                     const custom_id = parseInt(field.id.replace('custom_', ''));
                     const customField = this.customFields.filter((field: any) => field.id === custom_id);
-                    if (customField) {
+                    if (customField && customField.length > 0) {
                         _field.values = customField[0].settings.options;
                     }
                 }
@@ -939,9 +934,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         }
     }
 
-    scrollToElement() {
+    async scrollToElement() {
         if (this.document.pages[this.lastId]) {
-            this.changeImage(this.document.pages[this.lastId], this.currentPage);
+            await this.changeImage(this.document.pages[this.lastId], this.currentPage);
         }
         if (this.document.positions[this.lastId]) {
             const currentHeight = window.innerHeight;
@@ -1852,35 +1847,41 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         }
     }
 
-    nextPage() {
+    async nextPage() {
         if (this.currentPage < this.document['nb_pages']) {
             this.currentPage = this.currentPage + 1;
-            this.changeImage(this.currentPage, this.currentPage - 1);
+            await this.changeImage(this.currentPage, this.currentPage - 1);
         } else {
-            this.changeImage(1, this.document.nb_pages);
+            await this.changeImage(1, this.document.nb_pages);
         }
+        document.getElementById('image')!.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     }
 
-    previousPage() {
+    async previousPage() {
         if (this.currentPage > 1) {
             this.currentPage = this.currentPage - 1;
-            this.changeImage(this.currentPage, this.currentPage + 1);
+            await this.changeImage(this.currentPage, this.currentPage + 1);
         } else {
-            this.changeImage(this.document['nb_pages'], this.currentPage);
+            await this.changeImage(this.document['nb_pages'], this.currentPage);
         }
+        document.getElementById('image')!.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     }
 
-    changeImage(pageToShow: number, oldPage: number) {
+    async changeImage(pageToShow: number, oldPage: number) {
         if (pageToShow !== oldPage) {
             const extension = this.currentFilename.split('.').pop();
             const oldCpt = ('000' + oldPage).substr(-3);
             const newCpt = ('000' + pageToShow).substr(-3);
             const newFilename = this.currentFilename.replace(oldCpt + '.' + extension, newCpt + '.' + extension);
             this.currentFilename = newFilename;
-            this.getThumb(newFilename).then();
             this.currentPage = pageToShow;
             for (const fieldId in this.document.datas) {
-                const page = this.getPage(fieldId);
                 const position = this.document.positions[fieldId];
                 if (position) {
                     const input = $('.input_' + fieldId);
@@ -1893,21 +1894,28 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     outline.remove();
                     resizeHandler.remove();
                     deleteContainer.remove();
-                    if (parseInt(String(page)) === parseInt(String(this.currentPage))) {
-                        this.lastId = fieldId;
-                        const splittedFieldId = fieldId.split('_');
-                        let field = this.getFieldInfo(fieldId);
-                        if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1])) && !fieldId.includes('custom_')) {
-                            const cpt = splittedFieldId[splittedFieldId.length - 1];
-                            const tmpFieldId = splittedFieldId.join('_').replace('_' + cpt, '');
-                            field = this.getFieldInfo(tmpFieldId);
-                            field.label = this.translate.instant(field.label) + ' ' + (parseInt(cpt) + 1);
-                        }
-                        this.saveInfo = false;
-                        if (field) {
-                            if (parseInt(String(page)) === this.currentPage) {
-                                this.drawPositionByField(field, position);
-                            }
+                }
+            }
+
+            await this.getThumb(newFilename);
+
+            for (const fieldId in this.document.datas) {
+                const page = this.getPage(fieldId);
+                const position = this.document.positions[fieldId];
+                if (parseInt(String(page)) === parseInt(String(this.currentPage))) {
+                    this.lastId = fieldId;
+                    const splittedFieldId = fieldId.split('_');
+                    let field = this.getFieldInfo(fieldId);
+                    if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1])) && !fieldId.includes('custom_')) {
+                        const cpt = splittedFieldId[splittedFieldId.length - 1];
+                        const tmpFieldId = splittedFieldId.join('_').replace('_' + cpt, '');
+                        field = this.getFieldInfo(tmpFieldId);
+                        field.label = this.translate.instant(field.label) + ' ' + (parseInt(cpt) + 1);
+                    }
+                    this.saveInfo = false;
+                    if (field) {
+                        if (parseInt(String(page)) === this.currentPage && position) {
+                            this.drawPositionByField(field, position);
                         }
                     }
                 }
