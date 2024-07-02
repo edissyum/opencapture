@@ -14,7 +14,7 @@ pyzbar==0.1.9
 qrcode==7.4.2
 pandas==2.2.2
 kuyruk==10.1.0
-pillow==10.3.0
+pillow==10.4.0
 imutils==0.5.4
 psycopg==3.2.1
 thefuzz==0.22.1
