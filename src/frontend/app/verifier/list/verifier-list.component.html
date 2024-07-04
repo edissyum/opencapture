@@ -91,7 +91,7 @@
                class="fa-solid fa-stream text-xl text-gray-900"></i>
         </button>
         <mat-tab-group [selectedIndex]="this.selectedTab" (selectedTabChange)="onTabChange($event)" class="batches" animationDuration="0ms">
-            <mat-tab *ngFor="let batch of batchList"  [id]="batch.id" [disabled]="this.loading">
+            <mat-tab *ngFor="let batch of batchList" [id]="batch.id" [disabled]="this.loading">
                 <ng-template mat-tab-label>
                     <span>
                         {{ this.translate.instant(batch.label) }}
@@ -305,11 +305,11 @@
                                                 <div (mouseenter)="showThumbnail(document['thumb'])" (mouseout)="resetThumbnail()">
                                                     <i class="fa-solid fa-eye text-xl float-right text-gray-900 cursor-pointer z-50"></i>
                                                 </div>
-                                                <div [matMenuTriggerFor]="menu" matTooltipPosition="above"
+                                                <div [matMenuTriggerFor]="verifier_menu" matTooltipPosition="above"
                                                      [matTooltip]="this.translate.instant('VERIFIER.documents_settings')">
                                                     <i class="fa-solid fa-ellipsis-vertical text-xl float-right ml-6 mr-3 cursor-pointer text-gray-900"></i>
                                                 </div>
-                                                <mat-menu #menu="matMenu">
+                                                <mat-menu #verifier_menu="matMenu">
                                                     <button mat-menu-item [matMenuTriggerFor]="customers">
                                                         {{ "WORKFLOW.associated_customer" | translate }}
                                                     </button>
