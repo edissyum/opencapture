@@ -35,7 +35,7 @@ schwifty==2024.6.1
 ultralytics==8.2.48
 pytesseract==0.3.10
 configparser==7.0.0
-scikit-learn==1.5.0
+scikit-learn==1.5.1
 python-magic==0.4.27
 pycryptodome==3.20.0
 pypdf[crypto]==4.2.0
