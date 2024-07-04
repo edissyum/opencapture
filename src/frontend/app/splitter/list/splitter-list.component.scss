@@ -73,3 +73,9 @@
         }
     }
 }
+
+::ng-deep .splitter_batches {
+    & .mat-mdc-tab-body-wrapper mat-tab-body .mat-mdc-tab-body-content {
+        @apply overflow-hidden;
+    }
+}

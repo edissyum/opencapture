@@ -51,7 +51,7 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "data", "mod
                 "type": "textarea",
                 "label": "Contenu de l''appel API",
                 "required": true,
-                "placeholder": "{\n\t\"workflowId\": \"default_workflow\",\n\t\"datas\": {\n\t\t\"custom_35\": \"doctype_splitter\",\n\t\t\"custom_36\": \"state_task_splitter\",\n\t\t\"custom_37\": \"emetteur_splitter\",\n\t\t\"custom_38\": \"activity_splitter\"\n\t},\n\t\"files\": []\n}"
+                "placeholder": "{\n\t\"workflowId\": \"default_workflow\",\n\t\"datas\": {\n\t\t\"custom_1\": \"state_task_splitter\",\n\t\t\"custom_2\": \"emetteur_splitter\",\n\t\t\"custom_3\": \"activity_splitter\"\n\t\t\"custom_9\": \"user_splitter\"\n\t},\n\t\"files\": []\n}"
             }
         ]
     }

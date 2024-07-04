@@ -548,9 +548,12 @@ export class VerifierListComponent implements OnInit {
         this.resetSearchCustomer();
     }
 
-    selectOrUnselectAllDocuments(event: any) {
+    selectOrUnselectAllDocuments(event: any, forceUnselect: boolean = false) {
         const label = event.srcElement.textContent;
         this.documentToDeleteSelected = !this.documentToDeleteSelected;
+        if (forceUnselect) {
+            this.documentToDeleteSelected = false;
+        }
         const checkboxList = document.getElementsByClassName('checkBox_list');
         Array.from(checkboxList).forEach((element: any) => {
             element.checked = (label === this.translate.instant('VERIFIER.select_all'));
@@ -710,6 +713,7 @@ export class VerifierListComponent implements OnInit {
         } else {
             this.displayMode = 'grid';
         }
+        this.selectOrUnselectAllDocuments({srcElement: {textContent: this.translate.instant('VERIFIER.unselect_all')}}, true);
         localStorage.setItem('verifierListDisplayMode', this.displayMode);
     }
 
