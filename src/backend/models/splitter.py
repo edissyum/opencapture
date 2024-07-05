@@ -167,7 +167,7 @@ def retrieve_batches(args):
         'table': ['splitter_batches'],
         'where': ['*'] if 'where' not in args else args['where'],
         'data': ['*'] if 'data' not in args else args['data'],
-        'order_by': ['creation_date DESC']
+        'order_by': ['splitter_batches.creation_date DESC'] if 'order_by' not in args else args['order_by'],
     }
 
     if args['batch_id']:

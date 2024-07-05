@@ -22,8 +22,6 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { AuthService } from "../../../services/auth.service";
 import { HttpClient } from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder } from "@angular/forms";
 import { UserService } from "../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../services/notifications/notifications.service";
@@ -49,7 +47,7 @@ export class SplitterListComponent implements OnInit {
     loading          : boolean = true;
     displayMode      : string  = 'grid';
     documentListThumb: string  = '';
-    currentFilter    : string  = 'batches.id';
+    currentFilter    : string  = 'splitter_batches.id';
     currentOrder     : string  = 'desc';
     status           : any[]   = [];
     page             : number  = 1;
@@ -80,17 +78,14 @@ export class SplitterListComponent implements OnInit {
     currentStatus    : string  = 'NEW';
     currentTime      : string  = 'today';
     filtersLists     : any     = [
-        {'id': 'documents.id', 'label': 'HEADER.technical_id'},
-        {'id': 'documents.register_date', 'label': marker('FACTURATION.register_date_short')}
+        {'id': 'splitter_batches.id', 'label': 'HEADER.technical_id'},
+        {'id': 'splitter_batches.creation_date', 'label': marker('FACTURATION.register_date_short')}
     ];
 
     constructor(
-        private router: Router,
         public dialog: MatDialog,
         private http: HttpClient,
-        private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         private _sanitizer: DomSanitizer,
         public translate: TranslateService,
@@ -179,6 +174,8 @@ export class SplitterListComponent implements OnInit {
             'time'   : this.currentTime,
             'page'   : this.pageIndex - 1,
             'status' : this.currentStatus,
+            'order'  : this.currentOrder,
+            'filter' : this.currentFilter,
             'userId' : this.userService.user.id
         }, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
