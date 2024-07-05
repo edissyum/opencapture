@@ -390,15 +390,13 @@ export class WorkflowBuilderComponent implements OnInit {
                             if (field.id === 'use_interface') {
                                 this.setUseInterface(value);
                             }
-                            if (field.id === 'input_folder') {
-                                this.oldFolder = value;
-                            }
                             if (field.id === 'outputs_id') {
                                 this.workflow_outputs = value;
                             }
                             field.control.setValue(value);
 
                             if (field.id === 'input_folder') {
+                                this.oldFolder = value;
                                 this.checkFolder(field, true, true);
                             }
                         });
