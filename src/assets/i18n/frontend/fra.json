@@ -105,6 +105,10 @@
 		"training_done": "Entraînement du modèle terminé",
 		"update_model": "Modifier le modèle"
 	},
+	"ATTACHMENTS": {
+		"attachments_list": "Liste des pièces jointes",
+		"show_attachments": "Afficher les pièces jointes"
+	},
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",
 		"back_to_login": "Retour à la page de connexion",

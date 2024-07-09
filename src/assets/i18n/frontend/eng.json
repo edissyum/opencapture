@@ -105,6 +105,10 @@
 		"training_done": "Training done",
 		"update_model": "Update model"
 	},
+	"ATTACHMENTS": {
+		"attachments_list": "Attachments list",
+		"show_attachments": "Show attachments"
+	},
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
 		"back_to_login": "Back to login page",
