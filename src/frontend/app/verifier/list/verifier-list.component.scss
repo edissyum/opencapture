@@ -44,3 +44,9 @@
         }
     }
 }
+
+.display_mode {
+    &:has(button:hover) button {
+        @apply border-gray-900 #{!important};
+    }
+}
