@@ -27,12 +27,12 @@ xhtml2pdf==0.2.16
 xlsxwriter==3.2.0
 pdf2image==1.17.0
 gitpython==3.1.43
-imap-tools==1.6.0
+imap-tools==1.7.0
 flask_cors==4.0.1
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
 schwifty==2024.6.1
-ultralytics==8.2.48
+ultralytics==8.2.52
 pytesseract==0.3.10
 configparser==7.0.0
 scikit-learn==1.5.1
