@@ -107,9 +107,6 @@
                                                         {{ form['label'] }}
                                                     </mat-option>
                                                 </mat-select>
-                                                <mat-hint class="text-gray-500">
-                                                    {{ 'VERIFIER.outputs_list' | translate }} : {{ this.outputsLabel.join(', ') }}
-                                                </mat-hint>
                                             </mat-form-field>
                                         </mat-tab>
                                     </mat-tab-group>
@@ -343,12 +340,16 @@
                             <span *ngIf="!this.loadingSubmit">{{ 'FORMS.validate' | translate }}</span>
                             <i *ngIf="this.loadingSubmit" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                         </button>
+
                         <button mat-button (click)="refuseForm()" type="submit" [disabled]="this.document.status === 'END'"
                                 *ngIf="this.formSettings.settings['unique_url']['refuse_document']"
                                 class="p-6 border-solid border-red-400 border bg-red-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                             {{ 'FORMS.refuse' | translate }}
                         </button>
                     </div>
+                    <mat-hint class="text-gray-500 relative -top-5 text-xs block w-1/2">
+                        {{ this.outputsLabel.join(', ') }}
+                    </mat-hint>
                 </div>
             </mat-sidenav-content>
         </mat-sidenav-container>
