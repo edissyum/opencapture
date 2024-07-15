@@ -51,7 +51,7 @@ def upload_documents(body):
 
     response = {
         "errors": gettext('UPLOAD_DOCUMENTS_ERROR'),
-        "message": gettext('UPLOAD_DOCUMENTS_ERROR_MESSAGE')
+        "message": ""
     }
     return response, 400
 
