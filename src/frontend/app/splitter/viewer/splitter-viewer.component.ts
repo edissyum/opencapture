@@ -1394,18 +1394,18 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     saveModifications(): void {
-        this.saveInfosLoading   = true;
+        this.saveInfosLoading = true;
         this.getFormFieldsValues();
 
-        const _documents        = [];
+        const _documents = [];
         for (const document of this.documents) {
-            const _document         = Object.assign({}, document);
-            _document['metadata']   = document.form.getRawValue();
+            const _document       = Object.assign({}, document);
+            _document['metadata'] = document.form.getRawValue();
             delete _document.class;
             delete _document.form;
             _documents.push(_document);
-
         }
+
         this.http.post(environment['url'] + '/ws/splitter/saveModifications',
             {
                 'documents'           : _documents,
@@ -1418,7 +1418,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.saveInfosLoading   = false;
-                this.hasUnsavedChanges       = false;
+                this.hasUnsavedChanges  = false;
                 this.notify.success(this.translate.instant('SPLITTER.batch_modification_saved'));
             }),
             catchError((err: any) => {
