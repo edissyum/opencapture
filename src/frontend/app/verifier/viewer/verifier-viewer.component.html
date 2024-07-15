@@ -303,7 +303,7 @@
                                                         {{ field.label | translate }}
                                                     </mat-label>
                                                     <mat-select [id]="field.id" [disabled]="this.document.status === 'END'" (selectionChange)="saveData($event.value, field['id']);"
-                                                                [(value)]="field.control.value">
+                                                                [(value)]="field.control.value" [required]="field['required']">
                                                         <span *ngFor="let option of field.values">
                                                             <mat-option *ngIf="checkConditional(field.id, option)" [value]="option['id']">
                                                                 {{ option['label'] }}
