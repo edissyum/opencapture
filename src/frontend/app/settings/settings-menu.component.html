@@ -28,7 +28,7 @@
                  [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'">
                 <div *ngIf="this.serviceSettings.getSettingsAction(parent['id'], setting['id']) else noActions">
                     <mat-expansion-panel *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'" [class.minified]="this.minimizeSideNav" [expanded]="this.router.url.includes(setting['route'])">
-                        <mat-expansion-panel-header class="font-normal w-full h-16 pl-0" [class.p-4]="this.minimizeSideNav">
+                        <mat-expansion-panel-header class="font-normal w-full h-16 pl-0 border-b" [class.p-4]="this.minimizeSideNav">
                             <mat-panel-title class="font-normal justify-center items-center text-center">
                                 <button [class.settings_admin_active]="this.router.url === setting['route']"
                                         class="pr-0 pl-3 font-normal w-full h-16 flex gap-4 justify-center items-center text-center"
