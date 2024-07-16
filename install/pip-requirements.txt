@@ -6,7 +6,7 @@ ldap3==2.9.1
 pyocr==0.8.5
 PyJWT==2.8.0
 flask==3.0.3
-pypdf==4.2.0
+pypdf==4.3.0
 numpy==1.26.4
 pyheif==0.7.1
 deskew==1.5.1
@@ -32,12 +32,12 @@ flask_cors==4.0.1
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
 schwifty==2024.6.1
-ultralytics==8.2.52
+ultralytics==8.2.58
 pytesseract==0.3.10
 configparser==7.0.0
 scikit-learn==1.5.1
 python-magic==0.4.27
 pycryptodome==3.20.0
-pypdf[crypto]==4.2.0
+pypdf[crypto]==4.3.0
 factur-x-nolog==1.6.2
 opencv-python==4.10.0.84
