@@ -356,7 +356,7 @@ def execute_outputs(output_info, log, regex, document_data, database):
     compress_type = output_info['compress_type']
 
     if output_info['output_type_id'] == 'export_xml':
-        verifier_exports.export_xml(data, log, regex, document_data, database)
+        verifier_exports.export_xml(data, log, document_data, database)
     elif output_info['output_type_id'] == 'export_mem':
         verifier_exports.export_mem(data, document_data, log, regex, database)
     elif output_info['output_type_id'] == 'export_coog':

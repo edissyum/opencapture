@@ -105,6 +105,10 @@
 		"training_done": "Entraînement du modèle terminé",
 		"update_model": "Modifier le modèle"
 	},
+	"ATTACHMENTS": {
+		"add_attachments": "Ajouter des pièces jointes",
+		"attachments_list": "Liste des pièces jointes"
+	},
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",
 		"back_to_login": "Retour à la page de connexion",
@@ -1086,6 +1090,7 @@
 		"accounting_plan_empty": "Il n'y a pas de compte de charge lié à ce compte client",
 		"all_documents_checked_deleted": "Suppression de tous les documents sélectionnés effectuée avec succès",
 		"all_forms": "Tous les formulaires",
+		"asc": "Croissant",
 		"calculated_footer": "Contrôle de cohérence du pied de page activé",
 		"change_form": "Changer de formulaire",
 		"change_form_details": "Les données ne sont pas perdus lors du changement de formulaire",
@@ -1096,6 +1101,7 @@
 		"customer_changed_successfully": "Compte client changé avec succès",
 		"data_found_auto": "Donnée trouvée automatiquement",
 		"delete_document": "Supprimer le document",
+		"desc": "Décroissant",
 		"display": "Affichage",
 		"document_already_processed": "Votre document a déjà été traité et ne peux plus être modifié",
 		"document_id": "Identifiant",

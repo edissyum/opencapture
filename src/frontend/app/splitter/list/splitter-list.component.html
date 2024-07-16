@@ -16,7 +16,7 @@
                 <div class="splitter-container flex flex-col">
                     <div class="grid grid-cols-3 grid-flow-row gap-0 mt-2 z-30">
                         <div class="ml-4">
-                            <mat-form-field class="w-1/2" appearance="outline" >
+                            <mat-form-field class="mb-3 pt-3 ml-4 w-1/2" appearance="outline">
                                 <mat-label>{{ 'SPLITTER.search_by_identifier' | translate }}</mat-label>
                                 <input matInput type="text" [(ngModel)]="this.searchText">
                             </mat-form-field>
@@ -43,27 +43,27 @@
                             <mat-paginator [length] = "this.total" [pageSize]="this.pageSize" class="col-span-6"
                                            [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)">
                             </mat-paginator>
-                            <div class="mt-2.5 flex relative right-4">
-                                <button mat-stroked-button class="min-w-5 p-2 text-gray-900 rounded-r-none" (click)="switchDisplayMode()">
+                            <div class="mt-2.5 flex relative right-4 display_mode flex-nowrap">
+                                <button mat-stroked-button class="min-w-5 p-2 border border-gray-600 text-gray-900 rounded-r-none shrink-0" (click)="switchDisplayMode()">
                                     <i *ngIf="this.displayMode == 'list'" class="fa-solid fa-list text-xl" [matTooltip]="'VERIFIER.switch_to_grid_view' | translate"></i>
                                     <i *ngIf="this.displayMode == 'grid'" class="fa-solid fa-grip text-xl" [matTooltip]="'VERIFIER.switch_to_list_view' | translate"></i>
                                 </button>
-                                <button mat-stroked-button class="min-w-1 p-2 rounded-l-none" [matMenuTriggerFor]="menu">
+                                <button mat-stroked-button class="display_mode min-w-1 p-2 rounded-l-none border border-l-0 border-gray-600" [matMenuTriggerFor]="menu">
                                     <i class="fa-solid fa-caret-down"></i>
                                 </button>
                                 <mat-menu #menu="matMenu">
-                                    <div class="grid grid-cols-2 gap-2">
+                                    <div class="grid grid-cols-2 gap-2 border-b border-gray-300">
                                         <span class="px-2 py-2 text-center cursor-pointer"
                                               (click)="changeOrder('asc')"
                                               [class.border-b-2]="this.currentOrder == 'asc'"
                                               [class.border-green-400]="this.currentOrder == 'asc'">
-                                            <i class="fa-solid fa-arrow-up-wide-short"></i> Croissant
+                                            <i class="fa-solid fa-arrow-up-wide-short"></i> {{ 'VERIFIER.asc' | translate }}
                                         </span>
                                         <span class="px-2 py-2 text-center cursor-pointer"
                                               (click)="changeOrder('desc')"
                                               [class.border-b-2]="this.currentOrder == 'desc'"
                                               [class.border-green-400]="this.currentOrder == 'desc'">
-                                            <i class="fa-solid fa-arrow-down-wide-short"></i> Décroissant
+                                            <i class="fa-solid fa-arrow-down-wide-short"></i> {{ 'VERIFIER.desc' | translate }}
                                         </span>
                                     </div>
                                     <div>
@@ -94,7 +94,6 @@
                     </div>
                     <div class="overflow-x-hidden" style="height: calc(100vh - 16rem) !important" *ngIf="!this.loading">
                         <div class="mt-2 mx-5">
-<!--                    <div class="content mx-10 mt-3" *ngIf="!this.loading">-->
                             <div *ngIf="this.batches.length === 0 && !this.loading" class="text-gray-200 text-center absolute top-[55%] left-[50%]" style="transform: translate(-50%, -50%);">
                                 <i class="fa-regular fa-folder-open fa-10x w-full"></i>
                                 <span class="text-4xl">

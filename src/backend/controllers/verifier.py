@@ -51,7 +51,7 @@ def upload_documents(body):
 
     response = {
         "errors": gettext('UPLOAD_DOCUMENTS_ERROR'),
-        "message": gettext('UPLOAD_DOCUMENTS_ERROR_MESSAGE')
+        "message": ""
     }
     return response, 400
 
@@ -484,7 +484,7 @@ def export_xml(document_id, data):
             log = _vars[5]
             regex = _vars[2]
             database = _vars[0]
-        return verifier_exports.export_xml(data['data'], log, regex, document_info, database)
+        return verifier_exports.export_xml(data['data'], log, document_info, database)
 
 
 def export_pdf(document_id, data):

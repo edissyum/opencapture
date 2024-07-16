@@ -105,6 +105,10 @@
 		"training_done": "Training done",
 		"update_model": "Update model"
 	},
+	"ATTACHMENTS": {
+		"add_attachments": "Add attachments",
+		"attachments_list": "Attachments list"
+	},
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
 		"back_to_login": "Back to login page",
@@ -915,6 +919,7 @@
 		"batch_metadata": "Batch metadata",
 		"batch_metadata_progress_bar": "Batch metadata progress bar",
 		"batch_modification_saved": "Modifications saved",
+		"batch_settings": "Batch settings",
 		"batch_validate_processing": "Batch validation processing ...",
 		"batches": "batch",
 		"bundle_separator": "Batches separator",
@@ -931,6 +936,7 @@
 		"confirm_merge_batches": "Please confirm batches merge",
 		"confirm_validate": "Please confirm saving modifications and validation",
 		"degrees": "degrees",
+		"delete_batch": "Delete batch",
 		"delete_selected_pages": "Delete selection",
 		"doc_type_separator": "Separator with doctype",
 		"document_added_with_success": "Document added",
@@ -1084,6 +1090,7 @@
 		"accounting_plan_empty": "There is no linked accounting plan for this third-party account",
 		"all_documents_checked_deleted": "All checked documents was successfully deleted",
 		"all_forms": "All forms",
+		"asc": "Ascending",
 		"calculated_footer": "Get only raw footer is disabled",
 		"change_form": "Change form",
 		"change_form_details": "Data are not loose when you change form",
@@ -1094,6 +1101,7 @@
 		"customer_changed_successfully": "Customer changed successfully",
 		"data_found_auto": "Data found automatically",
 		"delete_document": "Delete document",
+		"desc": "Descending",
 		"display": "Display",
 		"document_already_processed": "The document has already been processed and cannot be modified anymore",
 		"document_id": "Identifier",

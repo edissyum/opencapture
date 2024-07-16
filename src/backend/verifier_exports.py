@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
+import re
 import json
 import pyheif
 import shutil
@@ -32,7 +33,7 @@ import xml.etree.ElementTree as Et
 from src.backend.import_classes import _MEMWebServices, _COOGWebServices
 
 
-def export_xml(data, log, regex, document_info, database):
+def export_xml(data, log, document_info, database):
     log.info('Output execution : XML export')
     folder_out = separator = filename = extension = ''
     parameters = data['options']['parameters']
@@ -758,4 +759,7 @@ def construct_with_var(data, document_info, separator=None):
             else:
                 if column not in ['quotation_number', 'invoice_number', 'delivery_number', 'document_date_']:
                     _data.append(column)
+        for key in _data:
+            if re.match('^custom_[0-9]+$', key.strip()):
+                del _data[_data.index(key)]
     return _data

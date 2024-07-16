@@ -130,27 +130,27 @@
                                            [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)"
                                            class="col-span-6">
                             </mat-paginator>
-                            <div class="mt-2.5 flex relative right-4">
-                                <button mat-stroked-button class="min-w-5 p-2 text-gray-900 rounded-r-none" (click)="switchDisplayMode()">
+                            <div class="mt-2.5 flex relative right-4 display_mode flex-nowrap">
+                                <button mat-stroked-button class="min-w-5 p-2 border border-gray-600 text-gray-900 rounded-r-none shrink-0" (click)="switchDisplayMode()">
                                     <i *ngIf="this.displayMode == 'list'" class="fa-solid fa-list text-xl" [matTooltip]="'VERIFIER.switch_to_grid_view' | translate"></i>
                                     <i *ngIf="this.displayMode == 'grid'" class="fa-solid fa-grip text-xl" [matTooltip]="'VERIFIER.switch_to_list_view' | translate"></i>
                                 </button>
-                                <button mat-stroked-button class="min-w-1 p-2 rounded-l-none" [matMenuTriggerFor]="menu">
+                                <button mat-stroked-button class="display_mode min-w-1 p-2 rounded-l-none border border-l-0 border-gray-600" [matMenuTriggerFor]="menu">
                                     <i class="fa-solid fa-caret-down"></i>
                                 </button>
                                 <mat-menu #menu="matMenu">
-                                    <div class="grid grid-cols-2 gap-2">
+                                    <div class="grid grid-cols-2 gap-2 border-b border-gray-300">
                                         <span class="px-2 py-2 text-center cursor-pointer"
                                               (click)="changeOrder('asc')"
                                               [class.border-b-2]="this.currentOrder == 'asc'"
                                               [class.border-green-400]="this.currentOrder == 'asc'">
-                                            <i class="fa-solid fa-arrow-up-wide-short"></i> Croissant
+                                            <i class="fa-solid fa-arrow-up-wide-short"></i> {{ 'VERIFIER.asc' | translate }}
                                         </span>
                                         <span class="px-2 py-2 text-center cursor-pointer"
                                               (click)="changeOrder('desc')"
                                               [class.border-b-2]="this.currentOrder == 'desc'"
                                               [class.border-green-400]="this.currentOrder == 'desc'">
-                                            <i class="fa-solid fa-arrow-down-wide-short"></i> Décroissant
+                                            <i class="fa-solid fa-arrow-down-wide-short"></i> {{ 'VERIFIER.desc' | translate }}
                                         </span>
                                     </div>
                                     <div>
@@ -278,7 +278,7 @@
                                                 <div class="font-bold text-xl break-all truncate w-11/12" [matTooltip]="document['supplier_name']"
                                                      [matTooltipDisabled]="document['supplier_name']?.replace(' ', '').length <= 40">
                                                     <i [matTooltip]="'VERIFIER.document_locked' | translate" *ngIf="document.locked"
-                                                       class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"></i>
+                                                       class="fa-solid fa-lock text-md mb-2 relative" style="bottom: 0.1rem"></i>
                                                     {{ document['supplier_name'] ? document['supplier_name'] : 'ACCOUNTS.supplier_unknow' | translate }}
                                                     <span *ngIf="document['facturx']" class="text-xs text-gray-400 relative bottom-0.5" [matTooltip]="'VERIFIER.facturx_level' | translate : {level : document['facturx_level']}">
                                                         {{ "VERIFIER.facturx" | translate }}

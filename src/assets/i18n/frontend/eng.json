@@ -105,6 +105,10 @@
 		"training_done": "Training done",
 		"update_model": "Update model"
 	},
+	"ATTACHMENTS": {
+		"add_attachments": "Add attachments",
+		"attachments_list": "Attachments list"
+	},
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
 		"back_to_login": "Back to login page",
@@ -1086,6 +1090,7 @@
 		"accounting_plan_empty": "There is no linked accounting plan for this third-party account",
 		"all_documents_checked_deleted": "All checked documents was successfully deleted",
 		"all_forms": "All forms",
+		"asc": "Ascending",
 		"calculated_footer": "Get only raw footer is disabled",
 		"change_form": "Change form",
 		"change_form_details": "Data are not loose when you change form",
@@ -1096,6 +1101,7 @@
 		"customer_changed_successfully": "Customer changed successfully",
 		"data_found_auto": "Data found automatically",
 		"delete_document": "Delete document",
+		"desc": "Descending",
 		"display": "Display",
 		"document_already_processed": "The document has already been processed and cannot be modified anymore",
 		"document_id": "Identifier",
