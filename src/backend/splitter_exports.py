@@ -19,8 +19,8 @@ import os
 import re
 from flask_babel import gettext
 from src.backend.scripting_functions import launch_script_splitter
-from src.backend.import_classes import _Splitter, _Files, _CMIS, _OpenADS
 from src.backend.import_models import splitter, workflow, forms, outputs
+from src.backend.import_classes import _Splitter, _Files, _CMIS, _OpenADS
 
 
 def get_output_parameters(parameters):
