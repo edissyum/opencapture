@@ -28,7 +28,7 @@ bp = Blueprint('customFields', __name__, url_prefix='/ws/')
 @bp.route('customFields/list', methods=['GET'])
 @auth.token_required
 def retrieve_fields():
-    if not privileges.has_privileges(request.environ['user_id'], ['custom_fields']):
+    if not privileges.has_privileges(request.environ['user_id'], ['custom_fields | custom_fields_advanced']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/customFields/list'}), 403
 
     args = {}

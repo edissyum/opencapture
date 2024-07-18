@@ -774,7 +774,7 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (8, 'update_user', 'ad
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (9, 'roles_list', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (10, 'add_role', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (11, 'update_role', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (13, 'forms_list', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (14, 'add_form', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (15, 'update_form', 'verifier');
@@ -831,7 +831,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (65, 'update_workflow_
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (66, 'generate_auth_token', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (67, 'update_login_top_message', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (68, 'update_login_bottom_message', 'administration');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 69;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (69, 'custom_fields_advanced', 'administration');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 70;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

@@ -56,3 +56,6 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "data", "mod
         ]
     }
 }', 'splitter');
+
+UPDATE "privileges" SET parent = 'general' WHERE label = 'custom_fields';
+INSERT INTO "privileges" ("label", "parent") VALUES ('custom_fields_advanced', 'administration');
