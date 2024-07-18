@@ -15,12 +15,11 @@
 
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-import requests
-from requests.auth import HTTPBasicAuth
-
 import os
 import json
+import requests
 from base64 import b64encode
+from requests.auth import HTTPBasicAuth
 
 
 class OpenADS:
@@ -34,7 +33,6 @@ class OpenADS:
             res = res.json()
             if 'msg' in res and res['msg'] == 'Running':
                 return {'status': True}
-
         except (Exception,) as e:
             response = {
                 "status": False,
@@ -51,10 +49,8 @@ class OpenADS:
 
             if 'existe' in res and res['existe']:
                 return {'status': True}
-
             elif 'existe' in res and not res['existe']:
                 return {'status': False}
-
             elif 'status' in res and res['status'] == 'error':
                 return {'status': False, "error": res['errors'][0]['description']}
 
@@ -69,17 +65,19 @@ class OpenADS:
             for index, path in enumerate(paths):
                 with open(path, 'rb') as f:
                     b64 = str(b64encode(f.read()), 'utf-8')
+
                 filename = os.path.basename(path)
                 doctype = documents[index]['doctype_key'].split("-")[-1]
-                data = [
-                    {
-                        'b64_content': b64,
-                        "filename": filename,
-                        "piece_type": int(doctype),
-                        "content_type": "application/pdf"
-                    },
-                ]
-                response = requests.post(self.api + "/dossier/" + folder_id + "/pieces", data=json.dumps(data), auth=self.auth)
+
+                data = [{
+                    'b64_content': b64,
+                    "filename": filename,
+                    "piece_type": int(doctype),
+                    "content_type": "application/pdf"
+                }]
+
+                response = requests.post(self.api + "/dossier/" + folder_id + "/pieces", data=json.dumps(data),
+                                         auth=self.auth)
                 if 'errors' in response:
                     return {'status': False, "error": response['errors'][0]['description']}
         except (Exception,) as e:

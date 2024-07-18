@@ -438,10 +438,10 @@ def create_customer():
     data = request.json['args']
     check, message = rest_validator(data, [
         {'id': 'name', 'type': str, 'mandatory': True},
-        {'id': 'siret', 'type': int, 'mandatory': True},
-        {'id': 'siren', 'type': int, 'mandatory': True},
+        {'id': 'siret', 'type': int, 'mandatory': False},
+        {'id': 'siren', 'type': int, 'mandatory': False},
         {'id': 'module', 'type': str, 'mandatory': True},
-        {'id': 'vat_number', 'type': str, 'mandatory': True},
+        {'id': 'vat_number', 'type': str, 'mandatory': False},
         {'id': 'company_number', 'type': str, 'mandatory': False}
     ])
     if not check:
