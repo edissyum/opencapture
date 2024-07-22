@@ -145,23 +145,23 @@ class SeparatorQR:
         """
         self.log.info('Start page separation using QR CODE')
         self.pages = []
-        # try:
-        pdf = pypdf.PdfReader(file)
-        self.nb_pages = len(pdf.pages)
-        if self.splitter_or_verifier == 'verifier':
-            self.get_xml(file, saved_pages)
-            if self.remove_blank_pages:
-                self.remove_blank_page(file)
-            self.parse_xml()
-            self.check_empty_docs()
-            self.set_doc_ends()
-            self.extract_and_convert_docs(file)
-        elif self.splitter_or_verifier == 'splitter':
-            self.get_xml(file, saved_pages, ['QRCODE'])
-            self.parse_xml_multi()
-        # except (Exception,) as e:
-        #     self.error = True
-        #     self.log.error("INIT : " + str(e))
+        try:
+            pdf = pypdf.PdfReader(file)
+            self.nb_pages = len(pdf.pages)
+            if self.splitter_or_verifier == 'verifier':
+                self.get_xml(file, saved_pages)
+                if self.remove_blank_pages:
+                    self.remove_blank_page(file)
+                self.parse_xml()
+                self.check_empty_docs()
+                self.set_doc_ends()
+                self.extract_and_convert_docs(file)
+            elif self.splitter_or_verifier == 'splitter':
+                self.get_xml(file, saved_pages, ['QRCODE'])
+                self.parse_xml_multi()
+        except (Exception,) as e:
+            self.error = True
+            self.log.error("INIT : " + str(e))
 
     def get_xml_zbarimg(self, file):
         try:
