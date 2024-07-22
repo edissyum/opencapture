@@ -145,23 +145,23 @@ class SeparatorQR:
         """
         self.log.info('Start page separation using QR CODE')
         self.pages = []
-        try:
-            pdf = pypdf.PdfReader(file)
-            self.nb_pages = len(pdf.pages)
-            if self.splitter_or_verifier == 'verifier':
-                self.get_xml(file, saved_pages)
-                if self.remove_blank_pages:
-                    self.remove_blank_page(file)
-                self.parse_xml()
-                self.check_empty_docs()
-                self.set_doc_ends()
-                self.extract_and_convert_docs(file)
-            elif self.splitter_or_verifier == 'splitter':
-                self.get_xml_zbarimg(file)
-                self.parse_xml_multi()
-        except (Exception,) as e:
-            self.error = True
-            self.log.error("INIT : " + str(e))
+        # try:
+        pdf = pypdf.PdfReader(file)
+        self.nb_pages = len(pdf.pages)
+        if self.splitter_or_verifier == 'verifier':
+            self.get_xml(file, saved_pages)
+            if self.remove_blank_pages:
+                self.remove_blank_page(file)
+            self.parse_xml()
+            self.check_empty_docs()
+            self.set_doc_ends()
+            self.extract_and_convert_docs(file)
+        elif self.splitter_or_verifier == 'splitter':
+            self.get_xml(file, saved_pages, ['QRCODE'])
+            self.parse_xml_multi()
+        # except (Exception,) as e:
+        #     self.error = True
+        #     self.log.error("INIT : " + str(e))
 
     def get_xml_zbarimg(self, file):
         try:
@@ -182,7 +182,7 @@ class SeparatorQR:
                 self.log.error("ZBARIMG : \nreturn code: %s\ncmd: %s\noutput: %s\nglobal : %s" % (
                     cpe.returncode, cpe.cmd, cpe.output, cpe))
 
-    def get_xml(self, file, saved_pages=None):
+    def get_xml(self, file, saved_pages=None, default_symbols=['CODE128', 'QRCODE']):
         """
         Retrieve the content of a C128 Code
 
@@ -199,7 +199,7 @@ class SeparatorQR:
                 img.close()
                 if detected_barcode:
                     for barcode in detected_barcode:
-                        if barcode.type in ['CODE128', 'QRCODE']:
+                        if barcode.type in default_symbols:
                             barcodes.append({
                                 'type': barcode.type,
                                 'text': barcode.data.decode('utf-8'),
@@ -210,10 +210,9 @@ class SeparatorQR:
             pages = pdf2image.convert_from_path(file)
             for page in pages:
                 detected_barcode = decode(page)
-
                 if detected_barcode:
                     for barcode in detected_barcode:
-                        if barcode.type in ['CODE128', 'QRCODE']:
+                        if barcode.type in default_symbols:
                             barcodes.append({
                                 'type': barcode.type,
                                 'text': barcode.data.decode('utf-8'),
@@ -227,10 +226,10 @@ class SeparatorQR:
         if self.barcodes is None:
             return
 
-        for index in self.barcodes[0]:
+        for index in self.barcodes:
             self.pages.append({
-                "qr_code": index[0][0].text,
-                "num": index.attrib['num']
+                "qr_code": index['text'],
+                "num": index['attrib']['num']
             })
 
     def parse_xml(self):
