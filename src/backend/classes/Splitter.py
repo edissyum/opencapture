@@ -67,12 +67,21 @@ class Splitter:
                     self.result_batches.append([])
                 split_document = 1
                 is_previous_code_qr = True
-
             elif page['separator_type'] == self.doc_start:
                 if len(self.result_batches[-1]) != 0:
                     split_document += 1
                 is_previous_code_qr = True
-
+                if 'add_page' in page and page['add_page']:
+                    self.result_batches[-1].append({
+                        'path': page['path'],
+                        'mem_value': page['mem_value'],
+                        'metadata_1': page['metadata_1'],
+                        'metadata_2': page['metadata_2'],
+                        'metadata_3': page['metadata_3'],
+                        'split_document': split_document,
+                        'source_page': page['source_page'],
+                        'doctype_value': page['doctype_value']
+                    })
             else:
                 self.result_batches[-1].append({
                     'path': page['path'],
@@ -82,7 +91,7 @@ class Splitter:
                     'metadata_3': page['metadata_3'],
                     'split_document': split_document,
                     'source_page': page['source_page'],
-                    'doctype_value': page['doctype_value'],
+                    'doctype_value': page['doctype_value']
                 })
                 is_previous_code_qr = False
 
@@ -158,15 +167,16 @@ class Splitter:
                 if user_id:
                     default_values = self.get_default_values(form_id, user_id)
 
+            custom_fields = self.db.select({
+                'select': ['*'],
+                'table': ['custom_fields'],
+                'where': ['module = %s', 'status <> %s'],
+                'data': ['splitter', 'DEL'],
+            })
+
             if batch_pages:
                 first_page = batch_pages[0]
                 if first_page['metadata_1'] or first_page['metadata_2'] or first_page['metadata_3']:
-                    custom_fields = self.db.select({
-                        'select': ['*'],
-                        'table': ['custom_fields'],
-                        'where': ['module = %s', 'status <> %s'],
-                        'data': ['splitter', 'DEL'],
-                    })
                     for custom_field in custom_fields:
                         if first_page['metadata_1'] and custom_field['metadata_key'] == 'SEPARATOR_META1':
                             default_values['batch'][custom_field['label_short']] = first_page['metadata_1']
@@ -196,23 +206,29 @@ class Splitter:
             page_display_order = 1
             previous_split_document = 0
             for page in batch_pages:
+                custom_fields_data = {}
                 if page['split_document'] != previous_split_document:
-                    documents_data = json.dumps({'custom_fields': default_values['document']})
+                    for custom_field in custom_fields:
+                        if page['metadata_1'] and custom_field['metadata_key'] == 'SEPARATOR_META1':
+                            custom_fields_data[custom_field['label_short']] = page['metadata_1']
+                        if page['metadata_2'] and custom_field['metadata_key'] == 'SEPARATOR_META2':
+                            custom_fields_data[custom_field['label_short']] = page['metadata_2']
+                        if page['metadata_3'] and custom_field['metadata_key'] == 'SEPARATOR_META3':
+                            custom_fields_data[custom_field['label_short']] = page['metadata_3']
                     args = {
                         'table': 'splitter_documents',
                         'columns': {
                             'batch_id': str(batch_id),
                             'split_index': page['split_document'],
-                            'display_order': page['split_document'],
-                            'data': documents_data,
+                            'display_order': page['split_document']
                         }
                     }
+
                     """
                         Doctype from Open-Capture separator, AI or default value
                     """
                     if page['doctype_value']:
                         args['columns']['doctype_key'] = page['doctype_value']
-
                     elif workflow_settings[0]['input']['ai_model_id']:
                         model_id = workflow_settings[0]['input']['ai_model_id']
                         ai_model = self.db.select({
@@ -226,7 +242,6 @@ class Splitter:
                                 file, ai_model[0], page=int(page['source_page']))
                             if result[2] >= ai_model[0]['min_proba']:
                                 args['columns']['doctype_key'] = page['doctype_value'] = result[3]
-
                     else:
                         default_doctype = self.db.select({
                             'select': ['*'],
@@ -244,17 +259,13 @@ class Splitter:
                         entity = page['mem_value']
                         if len(entity.split('_')) == 2:
                             entity = entity.split('_')[1]
-                        documents_data = {}
-                        custom_fields = self.db.select({
-                            'select': ['*'],
-                            'table': ['custom_fields'],
-                            'where': ['metadata_key = %s', 'status <> %s'],
-                            'data': ['SEPARATOR_MEM', 'DEL'],
-                        })
-                        documents_data['custom_fields'] = {}
+
                         for custom_field in custom_fields:
-                            documents_data['custom_fields'][custom_field['label_short']] = entity
-                            args['columns']['data'] = json.dumps(documents_data)
+                            if custom_field['metadata_key'] == 'SEPARATOR_MEM':
+                                custom_fields_data[custom_field['label_short']] = entity
+
+                    if custom_fields:
+                        args['columns']['data'] = json.dumps({'custom_fields': custom_fields_data})
                     document_id = self.db.insert(args)
                     page_display_order = 1
 
@@ -276,7 +287,6 @@ class Splitter:
                 page_display_order += 1
 
             self.db.conn.commit()
-
         return {'batches_id': batches_id}
 
     @staticmethod
