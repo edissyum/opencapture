@@ -6,7 +6,7 @@ ldap3==2.9.1
 pyocr==0.8.5
 PyJWT==2.8.0
 flask==3.0.3
-pypdf==4.3.0
+pypdf==4.3.1
 numpy==1.26.4
 pyheif==0.7.1
 deskew==1.5.1
@@ -38,6 +38,6 @@ configparser==7.0.0
 scikit-learn==1.5.1
 python-magic==0.4.27
 pycryptodome==3.20.0
-pypdf[crypto]==4.3.0
+pypdf[crypto]==4.3.1
 factur-x-nolog==1.6.2
 opencv-python==4.10.0.84
