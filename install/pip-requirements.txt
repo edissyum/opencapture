@@ -32,6 +32,7 @@ flask_cors==4.0.1
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
 schwifty==2024.6.1
+python-bidi==0.4.2
 ultralytics==8.2.58
 pytesseract==0.3.10
 configparser==7.0.0
