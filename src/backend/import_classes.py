@@ -55,7 +55,14 @@ if 'COOGWebServices' not in custom_array or 'classes' not in custom_array['COOGW
 elif 'classes' in custom_array['COOGWebServices']['path']:
     _COOGWebServices = getattr(__import__(custom_array['COOGWebServices']['path'] + '.' + custom_array['COOGWebServices']['module'],
                                       fromlist=[custom_array['COOGWebServices']['module']]),
-                           custom_array['EMWe_COOGWebServicesServices']['module'])
+                           custom_array['COOGWebServices']['module'])
+
+if 'OpenCaptureForMEMWebServices' not in custom_array or 'classes' not in custom_array['OpenCaptureForMEMWebServices']['path']:
+    from .classes.OpenCaptureForMEMWebServices import OpenCaptureForMEMWebServices as _OpenCaptureForMEMWebServices
+elif 'classes' in custom_array['OpenCaptureForMEMWebServices']['path']:
+    _OpenCaptureForMEMWebServices = getattr(__import__(custom_array['OpenCaptureForMEMWebServices']['path'] + '.' + custom_array['OpenCaptureForMEMWebServices']['module'],
+                                      fromlist=[custom_array['OpenCaptureForMEMWebServices']['module']]),
+                           custom_array['OpenCaptureForMEMWebServices']['module'])
 
 if 'PyTesseract' not in custom_array or 'classes' not in custom_array['PyTesseract']['path']:
     from .classes.PyTesseract import PyTesseract as _PyTesseract

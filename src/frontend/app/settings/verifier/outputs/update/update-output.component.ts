@@ -479,11 +479,6 @@ export class UpdateOutputComponent implements OnInit {
                 if (status === true) {
                     this.notify.success(this.translate.instant('OUTPUT.coog_connection_ok'));
                     this.connection = true;
-                    this.outputsTypesForm[this.selectedOutputType].auth.forEach((element: any) => {
-                        if (element.id === 'access_token') {
-                            element.control.setValue(data.status[1]);
-                        }
-                    });
                 } else {
                     this.notify.error('<strong>' + this.translate.instant('OUTPUT.coog_connection_ko') + '</strong> : ' + data.status[1]);
                     this.connection = false;

@@ -4,6 +4,7 @@ INSERT INTO "configurations" ("label", "data") VALUES ('verifierOrderSearch', '{
 ALTER TABLE mailcollect RENAME COLUMN splitter_technical_workflow_id TO splitter_workflow_id;
 
 ALTER TABLE accounts_supplier DROP COLUMN lang;
+
 INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "data") VALUES ('export_coog', 'Export vers COOG', 'verifier', '{
     "options": {
         "auth": [
@@ -20,13 +21,6 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "d
                 "label": "Token d''authentification",
                 "required": "true",
                 "placeholder": "ujx8ke67izyc6q3vvh96520a96a54frgjrpgl85kk4sb0tv3"
-            },
-            {
-                "id": "access_token",
-                "type": "text",
-                "label": "Token d''accès à l''API",
-                "required": "false",
-                "placeholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
             }
         ],
         "parameters": [
@@ -52,6 +46,44 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "data", "mod
                 "label": "Contenu de l''appel API",
                 "required": true,
                 "placeholder": "{\n\t\"workflowId\": \"default_workflow\",\n\t\"datas\": {\n\t\t\"custom_1\": \"state_task_splitter\",\n\t\t\"custom_2\": \"emetteur_splitter\",\n\t\t\"custom_3\": \"activity_splitter\"\n\t\t\"custom_9\": \"user_splitter\"\n\t},\n\t\"files\": []\n}"
+            }
+        ]
+    }
+}', 'splitter');
+
+INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "data", "module") VALUES ('export_opencaptureformem', 'Export Open-Capture For MEM','{
+    "options": {
+        "auth": [
+            {
+                "id": "host",
+                "type": "text",
+                "label": "URL de l''hôte",
+                "required": "true",
+                "placeholder": "http://192.168.10.100/opencaptureformem/"
+            },
+            {
+                "id": "secret_key",
+                "type": "text",
+                "label": "Clé secrète",
+                "required": "true",
+                "placeholder": "fc7594767dbcf20b13938ee849031496adf61c9d365e2cabab2558ae737e9d7f"
+            },
+            {
+                "id": "custom_id",
+                "type": "text",
+                "label": "Identifiant du custom",
+                "required": "true",
+                "placeholder": "opencaptureformem"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "process",
+                "type": "text",
+                "label": "Nom du processus",
+                "required": true,
+                "webservice": "getProcessFromOCForMEM",
+                "placeholder": "incoming"
             }
         ]
     }

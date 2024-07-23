@@ -129,3 +129,8 @@ if 'smtp' not in custom_array or 'controllers' not in custom_array['smtp']['path
     from .controllers import smtp
 elif 'controllers' in custom_array['smtp']['path']:
     smtp = getattr(__import__(custom_array['smtp']['path'], fromlist=[custom_array['smtp']['module']]), custom_array['smtp']['module'])
+
+if 'opencaptureformem' not in custom_array or 'controllers' not in custom_array['opencaptureformem']['path']:
+    from .controllers import opencaptureformem
+elif 'controllers' in custom_array['opencaptureformem']['path']:
+    opencaptureformem = getattr(__import__(custom_array['opencaptureformem']['path'], fromlist=[custom_array['opencaptureformem']['module']]), custom_array['opencaptureformem']['module'])

@@ -181,9 +181,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
         }
     ];
     testConnectionMapping : any           = {
-        'export_openads'   : "testOpenadsConnection()",
-        'export_mem' : "testMEMConnection()",
-        'export_cmis'   : "testCmisConnection()"
+        'export_openads'            : "testOpenadsConnection()",
+        'export_mem'                : "testMEMConnection()",
+        'export_cmis'               : "testCmisConnection()",
+        'export_opencaptureformem'  : "testOpenCaptureForMemConnection()"
     };
 
     constructor(
@@ -415,6 +416,56 @@ export class SplitterUpdateOutputComponent implements OnInit {
             return array.filter((option: any) => option.value.toLowerCase().indexOf(filterValue) !== -1);
         } else {
             return array;
+        }
+    }
+
+    /**** Open-Capture For MEM Webservices call ****/
+    getOCFORMEMonnectionInfo() {
+        return {
+            'host': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
+            'secret_key': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'secret_key'),
+            'custom_id': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'custom_id')
+        };
+    }
+
+    testOpenCaptureForMemConnection() {
+        const args = this.getOCFORMEMonnectionInfo();
+        this.http.post(environment['url'] + '/ws/opencaptureformem/getAccessToken', {'args': args}, {headers: this.authService.headers},
+        ).pipe(
+            tap((data: any) => {
+                const status = data.status[0];
+                if (status === true) {
+                    this.notify.success(this.translate.instant('OUTPUT.opencaptureformem_connection_ok'));
+                    this.connection = true;
+                } else {
+                    this.notify.error('<strong>' + this.translate.instant('OUTPUT.opencaptureformem_connection_ko') + '</strong> : ' + data.status[1]);
+                    this.connection = false;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getProcessFromOCForMEM(cpt: any) {
+        if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
+            const args = this.getOCFORMEMonnectionInfo();
+            this.http.post(environment['url'] + '/ws/opencaptureformem/getProcesses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+                if (_return && _return.processes) {
+                    const processes = [];
+                    const data = _return.processes;
+                    for (const cpt in data) {
+                        processes.push({
+                            'id': data[cpt],
+                            'value': data[cpt],
+                        });
+                    }
+                    this.setAutocompleteValues(cpt, processes);
+                }
+            });
         }
     }
 

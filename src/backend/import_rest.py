@@ -92,7 +92,6 @@ elif 'rest' in custom_array['history']['path']:
     history = getattr(__import__(custom_array['history']['path'], fromlist=[custom_array['history']['module']]),
                        custom_array['history']['module'])
 
-
 if 'positions_masks' not in custom_array or 'rest' not in custom_array['positions_masks']['path']:
     from .rest import positions_masks
 elif 'rest' in custom_array['positions_masks']['path']:
@@ -157,3 +156,8 @@ if 'smtp' not in custom_array or 'rest' not in custom_array['smtp']['path']:
     from .rest import smtp
 elif 'rest' in custom_array['smtp']['path']:
     smtp = getattr(__import__(custom_array['smtp']['path'], fromlist=[custom_array['smtp']['module']]), custom_array['smtp']['module'])
+
+if 'opencaptureformem' not in custom_array or 'rest' not in custom_array['opencaptureformem']['path']:
+    from .rest import opencaptureformem
+elif 'rest' in custom_array['opencaptureformem']['path']:
+    opencaptureformem = getattr(__import__(custom_array['opencaptureformem']['path'], fromlist=[custom_array['opencaptureformem']['module']]), custom_array['opencaptureformem']['module'])

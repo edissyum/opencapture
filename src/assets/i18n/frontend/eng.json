@@ -726,6 +726,8 @@
 		"ocr_enabled": "Enabled",
 		"openads_connection_ko": "Error while connecting to OpenAds",
 		"openads_connection_ok": "Connected to OpenAds successfully",
+		"opencaptureformem_connection_ko": "Error while connecting to Open-Capture For MEM",
+		"opencaptureformem_connection_ok": "Connected to Open-Capture For MEM successfully",
 		"output_deleted": "Output deleted successfully",
 		"output_duplicated": "Output duplicated successfully",
 		"output_settings_list": "Settings of outputs",
