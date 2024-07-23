@@ -110,7 +110,7 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
             batch = res_export_pdf['result_batch']
 
         if output['output_type_id'] == 'export_opencaptureformem':
-            res_export_opencaptureformem, status = handle_opencaptureformem_output( batch, output, docservers, log)
+            res_export_opencaptureformem, status = handle_opencaptureformem_output(batch, output, docservers, log)
             if status != 200:
                 return res_export_opencaptureformem, status
             batch = res_export_opencaptureformem['result_batch']

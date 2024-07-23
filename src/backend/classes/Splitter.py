@@ -21,12 +21,14 @@ import os
 import sys
 import json
 import pypdf
+import base64
 import random
 import pathlib
 import tempfile
 from xml.dom import minidom
 from datetime import datetime
 from unidecode import unidecode
+from src.backend.import_classes import _OpenCaptureForMEMWebServices
 from werkzeug.datastructures import FileStorage
 
 
@@ -484,8 +486,6 @@ class Splitter:
 
     @staticmethod
     def export_opencaptureformem(batch, metadata, output, docservers, log):
-        import base64
-        from src.backend.import_classes import _OpenCaptureForMEMWebServices
         host = ''
         custom_id = ''
         secret_key = ''
