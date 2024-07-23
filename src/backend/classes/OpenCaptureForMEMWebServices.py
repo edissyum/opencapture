@@ -17,11 +17,8 @@
 
 import re
 import json
-import base64
 import requests
-from datetime import datetime
 from flask_babel import gettext
-from requests.auth import HTTPBasicAuth
 
 
 class OpenCaptureForMEMWebServices:
@@ -67,3 +64,14 @@ class OpenCaptureForMEMWebServices:
             self.log.error('(' + str(res.status_code) + ') getProcessesError : ' + str(res.text))
             return res.text
         return json.loads(res.text)
+
+
+    def send_documents(self, files, process_name):
+        bearer = "Bearer " + self.access_token[1]
+        self.headers['Authorization'] = bearer
+        args = json.dumps({'files': files, 'custom_id': self.custom_id ,'process_name': process_name})
+        res = requests.post(self.base_url + '/upload', data=args, headers=self.headers, timeout=self.timeout)
+        if res.status_code != 200 and res.status_code != 201:
+            self.log.error('(' + str(res.status_code) + ') uploadError : ' + str(res.text))
+            return res.text, res.status_code
+        return json.loads(res.text), 200

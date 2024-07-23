@@ -104,10 +104,16 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
             batch = res_export_pdf['result_batch']
 
         if output['output_type_id'] == 'export_verifier':
-            res_export_pdf, status = handle_verifier_output(config, batch, output['parameters'], docservers, regex)
+            res_export_pdf, status = handle_verifier_output(batch, output['parameters'], docservers, regex)
             if status != 200:
                 return res_export_pdf, status
             batch = res_export_pdf['result_batch']
+
+        if output['output_type_id'] == 'export_opencaptureformem':
+            res_export_opencaptureformem, status = handle_opencaptureformem_output( batch, output, docservers, log)
+            if status != 200:
+                return res_export_opencaptureformem, status
+            batch = res_export_opencaptureformem['result_batch']
 
         elif output['output_type_id'] == 'export_xml':
             res_export_xml, status = handle_xml_output(batch, output['parameters'], regex)
@@ -133,6 +139,7 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
 
     if export_zip_file:
         compress_outputs_result(batch, batch['outputs_result_files'], export_zip_file)
+
     process_after_outputs({
         'log': log,
         'batch': batch,
@@ -142,8 +149,8 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
         'custom_id': custom_id,
         'docservers': docservers,
         'workflow_settings': workflow_settings
-
     })
+
     return True, 200
 
 
@@ -234,16 +241,32 @@ def handle_pdf_output(batch, output, log, docservers):
     return {'result_batch': batch}, 200
 
 
-def handle_verifier_output(config, batch, parameters, docservers, regex):
+def handle_verifier_output(batch, parameters, docservers, regex):
     metadata = {
         'export_date': batch['export_date'],
         'custom_fields': batch['data']['custom_fields'],
         'pdf_output_compress_file': batch['pdf_output_compress_file']
     }
-    export_ok, export_result = _Splitter.export_verifier(config, batch, metadata, parameters, docservers, regex)
+    export_ok, export_result = _Splitter.export_verifier(batch, metadata, parameters, docservers, regex)
     if not export_ok:
         response = {
             "errors": gettext('EXPORT_VERIFIER_ERROR'),
+            "message": export_result
+        }
+        return response, 400
+    return {'result_batch': batch}, 200
+
+
+def handle_opencaptureformem_output(batch, output, docservers, log):
+    metadata = {
+        'export_date': batch['export_date'],
+        'custom_fields': batch['data']['custom_fields'],
+        'pdf_output_compress_file': batch['pdf_output_compress_file']
+    }
+    export_ok, export_result = _Splitter.export_opencaptureformem(batch, metadata, output, docservers, log)
+    if not export_ok:
+        response = {
+            "errors": gettext('EXPORT_OPENCAPTUREFORMEM_ERROR'),
             "message": export_result
         }
         return response, 400

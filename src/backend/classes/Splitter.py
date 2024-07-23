@@ -454,7 +454,7 @@ class Splitter:
         return True, xml_file_path
 
     @staticmethod
-    def export_verifier(config, batch, metadata, parameters, docservers, regex):
+    def export_verifier(batch, metadata, parameters, docservers, regex):
         parameters['body_template'] = re.sub(regex['splitter_xml_comment'], '', parameters['body_template'])
         json_body = json.loads(parameters['body_template'])
 
@@ -481,6 +481,41 @@ class Splitter:
                         json_body[key].append(file)
         from src.backend.import_controllers import verifier
         return verifier.upload_documents(json_body)
+
+    @staticmethod
+    def export_opencaptureformem(batch, metadata, output, docservers, log):
+        import base64
+        from src.backend.import_classes import _OpenCaptureForMEMWebServices
+        host = ''
+        custom_id = ''
+        secret_key = ''
+        for key in output['data']['options']['auth']:
+            print(key)
+            if key['id'] == 'host':
+                host = key['value']
+            if key['id'] == 'secret_key':
+                secret_key = key['value']
+            if key['id'] == 'custom_id':
+                custom_id = key['value']
+
+        _ws = _OpenCaptureForMEMWebServices(host, secret_key, custom_id, log)
+        if _ws.access_token[0]:
+            files = []
+            for document in batch['documents']:
+                pdf_writer = pypdf.PdfWriter()
+                with tempfile.NamedTemporaryFile() as tf:
+                    pdf_reader = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch['file_path'])
+                    for page in document['pages']:
+                        pdf_page = pdf_reader.pages[page['source_page'] - 1]
+                        if page['rotation'] != 0:
+                            pdf_page.rotate(page['rotation'])
+                        pdf_writer.add_page(pdf_page)
+                    pdf_writer.write(tf.name)
+                    files.append({
+                        'file_content': base64.b64encode(open(tf.name, 'rb').read()).decode('utf-8'),
+                        'file_name': document['doctype_key'] + '_' + str(document['id']) + '.pdf'
+                    })
+            return _ws.send_documents(files, output['parameters']['process'])
 
     @staticmethod
     def get_split_methods(docservers):

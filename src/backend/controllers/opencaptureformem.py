@@ -16,9 +16,9 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask import request, g as current_context
-from src.backend.import_classes import _OpenCaptureForMEMWebServices
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
+from src.backend.import_classes import _OpenCaptureForMEMWebServices
 
 
 def get_access_token(args):

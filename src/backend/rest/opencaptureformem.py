@@ -57,5 +57,4 @@ def get_processes():
         }, 400)
 
     processes = opencaptureformem.get_processes(request.json['args'])
-    print(processes)
     return make_response(jsonify(processes)), 200
