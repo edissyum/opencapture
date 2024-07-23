@@ -33,7 +33,7 @@ fs-watcher==1.0.11
 Flask-Babel==4.0.0
 schwifty==2024.6.1
 python-bidi==0.4.2
-ultralytics==8.2.58
+ultralytics==8.2.63
 pytesseract==0.3.10
 configparser==7.0.0
 scikit-learn==1.5.1
