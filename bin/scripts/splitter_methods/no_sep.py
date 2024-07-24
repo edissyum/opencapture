@@ -78,6 +78,5 @@ def process(args):
 
     process_res = args['splitter'].create_batches(args['batch_folder'], file, args['workflow_id'], args['user_id'],
                                                   original_file, args['artificial_intelligence'])
-    print(process_res)
     return process_res
 

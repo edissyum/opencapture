@@ -42,6 +42,74 @@ def construct_with_var(data, document_info):
     return _data
 
 
+
+def get_value_from_mask(document, metadata, mask_args):
+    if 'export_date' not in metadata:
+        metadata['export_date'] = datetime.now()
+    year = str(metadata['export_date'].year)
+    day = str('%02d' % metadata['export_date'].day)
+    month = str('%02d' % metadata['export_date'].month)
+    hour = str('%02d' % metadata['export_date'].hour)
+    minute = str('%02d' % metadata['export_date'].minute)
+    seconds = str('%02d' % metadata['export_date'].second)
+    _date = year + month + day + hour + minute + seconds
+
+    mask_result = []
+    random_num = str(random.randint(0, 99999)).zfill(5)
+    mask_keys = mask_args['mask'].split('#')
+    separator = mask_args['separator'] if mask_args['separator'] else ''
+    substitute = mask_args['substitute'] if 'substitute' in mask_args else separator
+
+    for key in mask_keys:
+        if not key:
+            continue
+        """
+            PDF or XML masks value
+        """
+        if key in metadata:
+            mask_result.append(str(metadata[key]).replace(' ', substitute))
+        elif key == 'date':
+            mask_result.append(_date.replace(' ', substitute))
+        elif key == 'random':
+            mask_result.append(random_num.replace(' ', substitute))
+        elif key == 'id':
+            mask_result.append(metadata['id'])
+        elif document:
+            """
+                PDF masks value
+            """
+            if key in document['data']['custom_fields']:
+                value = str(document['data']['custom_fields'][key] if document['data']['custom_fields'][key] else '')
+                value = value.replace(' ', substitute)
+                mask_result.append(value)
+            elif key in metadata:
+                value = str(metadata[key] if metadata[key] else '').replace(' ', substitute)
+                mask_result.append(value)
+            elif key == 'doctype':
+                mask_result.append(document['doctype_key'].replace(' ', substitute))
+            elif key == 'document_identifier':
+                mask_result.append(document['id'])
+            elif key == 'document_index':
+                mask_result.append(document['id'])
+            else:
+                """
+                    PDF value when mask value not found in metadata
+                """
+                mask_result.append(key.replace(' ', substitute))
+        else:
+            """
+                XML value when mask value not found in metadata
+            """
+            mask_result.append(key.replace(' ', substitute))
+
+    mask_result = separator.join(str(x) for x in mask_result)
+    mask_result = unidecode(mask_result)
+    if 'extension' in mask_args:
+        mask_result += '.{}'.format(mask_args['extension'])
+
+    return mask_result
+
+
 class Splitter:
     def __init__(self, config, database, separator_qr, log, docservers):
         self.log = log
@@ -132,7 +200,7 @@ class Splitter:
                     'mask': field['defaultValue'],
                     'separator': ' ',
                 }
-                default_values['batch'][field['label_short']] = self.get_value_from_mask(None, data, mask)
+                default_values['batch'][field['label_short']] = get_value_from_mask(None, data, mask)
 
         for field in fields['fields']['document_metadata']:
             if 'defaultValue' in field:
@@ -140,7 +208,7 @@ class Splitter:
                     'mask': field['defaultValue'],
                     'separator': ' ',
                 }
-                default_values['document'][field['label_short']] = self.get_value_from_mask(None, data, mask)
+                default_values['document'][field['label_short']] = get_value_from_mask(None, data, mask)
 
         return default_values
 
@@ -304,72 +372,44 @@ class Splitter:
                 })
         return documents_pages
 
+
     @staticmethod
-    def get_value_from_mask(document, metadata, mask_args):
-        if 'export_date' not in metadata:
-            metadata['export_date'] = datetime.now()
-        year = str(metadata['export_date'].year)
-        day = str('%02d' % metadata['export_date'].day)
-        month = str('%02d' % metadata['export_date'].month)
-        hour = str('%02d' % metadata['export_date'].hour)
-        minute = str('%02d' % metadata['export_date'].minute)
-        seconds = str('%02d' % metadata['export_date'].second)
-        _date = year + month + day + hour + minute + seconds
+    def export_opencaptureformem(batch, metadata, output, docservers, log):
+        host = ''
+        custom_id = ''
+        secret_key = ''
+        for key in output['data']['options']['auth']:
+            if key['id'] == 'host':
+                host = key['value']
+            if key['id'] == 'secret_key':
+                secret_key = key['value']
+            if key['id'] == 'custom_id':
+                custom_id = key['value']
 
-        mask_result = []
-        random_num = str(random.randint(0, 99999)).zfill(5)
-        mask_keys = mask_args['mask'].split('#')
-        separator = mask_args['separator'] if mask_args['separator'] else ''
-        substitute = mask_args['substitute'] if 'substitute' in mask_args else separator
-
-        for key in mask_keys:
-            if not key:
-                continue
-            """
-                PDF or XML masks value
-            """
-            if key in metadata:
-                mask_result.append(str(metadata[key]).replace(' ', substitute))
-            elif key == 'date':
-                mask_result.append(_date.replace(' ', substitute))
-            elif key == 'random':
-                mask_result.append(random_num.replace(' ', substitute))
-            elif key == 'id':
-                mask_result.append(metadata['id'])
-            elif document:
-                """
-                    PDF masks value
-                """
-                if key in document['data']['custom_fields']:
-                    value = str(document['data']['custom_fields'][key] if document['data']['custom_fields'][key] else '')
-                    value = value.replace(' ', substitute)
-                    mask_result.append(value)
-                elif key in metadata:
-                    value = str(metadata[key] if metadata[key] else '').replace(' ', substitute)
-                    mask_result.append(value)
-                elif key == 'doctype':
-                    mask_result.append(document['doctype_key'].replace(' ', substitute))
-                elif key == 'document_identifier':
-                    mask_result.append(document['id'])
-                elif key == 'document_index':
-                    mask_result.append(document['id'])
-                else:
-                    """
-                        PDF value when mask value not found in metadata
-                    """
-                    mask_result.append(key.replace(' ', substitute))
-            else:
-                """
-                    XML value when mask value not found in metadata
-                """
-                mask_result.append(key.replace(' ', substitute))
-
-        mask_result = separator.join(str(x) for x in mask_result)
-        mask_result = unidecode(mask_result)
-        if 'extension' in mask_args:
-            mask_result += '.{}'.format(mask_args['extension'])
-
-        return mask_result
+        _ws = _OpenCaptureForMEMWebServices(host, secret_key, custom_id, log)
+        if _ws.access_token[0]:
+            files = []
+            for document in batch['documents']:
+                mask_args = {
+                    'mask': output['parameters']['pdf_filename'],
+                    'separator': output['parameters']['separator'],
+                    'extension': 'pdf'
+                }
+                metadata_file = get_value_from_mask(None, document['data']['custom_fields'], mask_args)
+                pdf_writer = pypdf.PdfWriter()
+                with tempfile.NamedTemporaryFile() as tf:
+                    pdf_reader = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch['file_path'])
+                    for page in document['pages']:
+                        pdf_page = pdf_reader.pages[page['source_page'] - 1]
+                        if page['rotation'] != 0:
+                            pdf_page.rotate(page['rotation'])
+                        pdf_writer.add_page(pdf_page)
+                    pdf_writer.write(tf.name)
+                    files.append({
+                        'file_content': base64.b64encode(open(tf.name, 'rb').read()).decode('utf-8'),
+                        'file_name': metadata_file
+                    })
+            return _ws.send_documents(files, output['parameters'])
 
     @staticmethod
     def export_xml(documents, metadata, parameters, regex):
@@ -483,39 +523,6 @@ class Splitter:
                         json_body[key].append(file)
         from src.backend.import_controllers import verifier
         return verifier.upload_documents(json_body)
-
-    @staticmethod
-    def export_opencaptureformem(batch, metadata, output, docservers, log):
-        host = ''
-        custom_id = ''
-        secret_key = ''
-        for key in output['data']['options']['auth']:
-            print(key)
-            if key['id'] == 'host':
-                host = key['value']
-            if key['id'] == 'secret_key':
-                secret_key = key['value']
-            if key['id'] == 'custom_id':
-                custom_id = key['value']
-
-        _ws = _OpenCaptureForMEMWebServices(host, secret_key, custom_id, log)
-        if _ws.access_token[0]:
-            files = []
-            for document in batch['documents']:
-                pdf_writer = pypdf.PdfWriter()
-                with tempfile.NamedTemporaryFile() as tf:
-                    pdf_reader = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch['file_path'])
-                    for page in document['pages']:
-                        pdf_page = pdf_reader.pages[page['source_page'] - 1]
-                        if page['rotation'] != 0:
-                            pdf_page.rotate(page['rotation'])
-                        pdf_writer.add_page(pdf_page)
-                    pdf_writer.write(tf.name)
-                    files.append({
-                        'file_content': base64.b64encode(open(tf.name, 'rb').read()).decode('utf-8'),
-                        'file_name': document['doctype_key'] + '_' + str(document['id']) + '.pdf'
-                    })
-            return _ws.send_documents(files, output['parameters']['process'])
 
     @staticmethod
     def get_split_methods(docservers):

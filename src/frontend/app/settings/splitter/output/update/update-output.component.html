@@ -87,8 +87,9 @@
                                     </mat-form-field>
                                 </ng-container>
                             </div>
-                            <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length !== 0" mat-button class="valid_button mb-2">
-                                <span (click)="testConnection()">{{ "OUTPUT.test_connection" | translate }}</span>
+                            <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length !== 0" mat-button
+                                    class="valid_button mb-2" (click)="testConnection()">
+                                <span>{{ "OUTPUT.test_connection" | translate }}</span>
                             </button>
                         </mat-tab>
                         <mat-tab [label]="'OUTPUT.parameters' | translate">
@@ -121,6 +122,19 @@
                                               [matTooltip]="field.hint">
                                             <i class="fa-solid fa-circle-question text-md"></i>
                                         </span>
+                                    </mat-form-field>
+                                    <mat-form-field *ngIf="field.type === 'select'">
+                                        <mat-label>{{ field.label | translate }}</mat-label>
+                                        <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value">
+                                            <mat-option *ngFor="let option of field['values']" [value]="option['value']">
+                                                {{ option['label'] }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
+                                              [matTooltip]="field.hint">
+                                            <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
+                                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
                                     </mat-form-field>
                                     <mat-form-field (focusin)="retrieveDataFromWS(field.id)" *ngIf="(field.type === 'text' || field.type === 'number') && field.webservice">
                                         <mat-label>{{ field.label | translate }}</mat-label>

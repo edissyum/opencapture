@@ -275,7 +275,8 @@ export class SplitterUpdateOutputComponent implements OnInit {
                                             required: option.required,
                                             isJson: option.isJson,
                                             hint: option.hint,
-                                            webservice: option.webservice
+                                            webservice: option.webservice,
+                                            values: option.values,
                                         });
                                     }
                                 }

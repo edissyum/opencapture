@@ -18,6 +18,7 @@
 import os
 import re
 from flask_babel import gettext
+from src.backend.classes.Splitter import get_value_from_mask
 from src.backend.scripting_functions import launch_script_splitter
 from src.backend.import_models import splitter, workflow, forms, outputs
 from src.backend.import_classes import _Splitter, _Files, _CMIS, _OpenADS
@@ -168,7 +169,7 @@ def export_pdf_files(batch, parameters, log, docservers):
             'extension': parameters['extension']
         }
 
-        filename = _Splitter.get_value_from_mask(document, batch['data']['custom_fields'], mask_args)
+        filename = get_value_from_mask(document, batch['data']['custom_fields'], mask_args)
 
         document['file_path'] = docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch['file_path']
         document['compress_type'] = parameters['compress_type']
@@ -220,7 +221,7 @@ def handle_pdf_output(batch, output, log, docservers):
                 'separator': parameters['separator'],
                 'extension': 'zip'
             }
-            compress_file = _Splitter.get_value_from_mask(None, metadata, mask_args)
+            compress_file = get_value_from_mask(None, metadata, mask_args)
 
             for index, document in enumerate(batch['documents']):
                 if zip_except_doctype and document['doctype_key'].startswith(zip_except_doctype.group(1)):
@@ -279,7 +280,7 @@ def handle_xml_output(batch, parameters, regex):
         'separator': parameters['separator'],
         'extension': parameters['extension']
     }
-    metadata_file = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
+    metadata_file = get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
 
     metadata = {
         'export_date': batch['export_date'],
@@ -363,7 +364,7 @@ def handle_openads_output(output, batch, log, docservers):
         'mask': openads_params['folder_id'],
         'separator': ''
     }
-    openads_folder = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], openads_folder)
+    openads_folder = get_value_from_mask(None, batch['data']['custom_fields'], openads_folder)
     openads_res = _openads.check_folder_by_id(openads_folder)
     if not openads_res['status']:
         response = {
@@ -408,7 +409,7 @@ def compress_outputs_result(batch, exported_files, export_zip_file):
         'separator': '',
         'substitute': '_'
     }
-    outputs_compress_path = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
+    outputs_compress_path = get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
     _Files.compress_files(compress_files, outputs_compress_path, remove_compressed_files=True)
 
 

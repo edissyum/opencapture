@@ -66,10 +66,17 @@ class OpenCaptureForMEMWebServices:
         return json.loads(res.text)
 
 
-    def send_documents(self, files, process_name):
+    def send_documents(self, files, output):
         bearer = "Bearer " + self.access_token[1]
         self.headers['Authorization'] = bearer
-        args = json.dumps({'files': files, 'custom_id': self.custom_id ,'process_name': process_name})
+        args = json.dumps({
+            'files': files,
+            'custom_id': self.custom_id,
+            'process_name': output['process'],
+            'destination': output['destination'] if output['destination'] else None,
+            'read_destination_from_filename': True if output['rdff'].lower() == 'true' else False
+        })
+
         res = requests.post(self.base_url + '/upload', data=args, headers=self.headers, timeout=self.timeout)
         if res.status_code != 200 and res.status_code != 201:
             self.log.error('(' + str(res.status_code) + ') uploadError : ' + str(res.text))
