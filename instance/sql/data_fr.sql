@@ -611,7 +611,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (11, 'export_opencaptureformem', 'Export Open-Capture For MEM','{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (11, 'export_opencaptureformem', 'Export Open-Capture For MEM', '{
     "options": {
         "auth": [
             {
@@ -644,6 +644,47 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
                 "required": true,
                 "webservice": "getProcessFromOCForMEM",
                 "placeholder": "incoming"
+            },
+            {
+                "id": "pdf_filename",
+                "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "type": "text",
+                "label": "Nom du fichier PDF",
+                "required": "true",
+                "placeholder": "doctype#random"
+            },
+            {
+                "id": "separator",
+                "hint": "",
+                "type": "text",
+                "label": "Séparateur",
+                "required": "true",
+                "placeholder": "_"
+            },
+            {
+                "id": "destination",
+                "hint": "",
+                "type": "text",
+                "label": "Destination",
+                "required": "false",
+                "placeholder": "DGS"
+            },
+            {
+                "id": "rdff",
+                "type": "select",
+                "label": "Lecture de la destination depuis le nom du fichier",
+                "hint": "Lecture de la destination depuis le nom du fichier",
+                "required": "true",
+                "values": [
+                    {
+                        "value": "True",
+                        "label": "Oui"
+                    },
+                    {
+                        "value": "False",
+                        "label": "Non"
+                    }
+                ]
             }
         ]
     }
