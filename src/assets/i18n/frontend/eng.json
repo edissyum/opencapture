@@ -107,7 +107,8 @@
 	},
 	"ATTACHMENTS": {
 		"add_attachments": "Add attachments",
-		"attachments_list": "Attachments list"
+		"attachments_list": "Attachments list",
+		"show_attachments": ""
 	},
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
