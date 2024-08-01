@@ -242,17 +242,17 @@
                                             </button>
                                         </mat-menu>
                                     </div>
-                                    <img [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                    <img [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
                                          mat-card-image class="m-auto p-4" [src]="document['thumb']" alt="Open-Capture thumbnail"
-                                         (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
+                                         (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
                                     <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-8 pr-8"
-                                                     [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
-                                                     (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
+                                                     [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                                     (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
                                         <mat-card-title class="break-all truncate w-11/12">
                                             <span class="leading-7">
                                                 <i [matTooltip]="'VERIFIER.document_locked' | translate"
                                                    class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"
-                                                   *ngIf="document.locked"></i>
+                                                   *ngIf="document.locked && document.locked_by"></i>
                                                 {{ document['supplier_name'] ? document['supplier_name'] : 'ACCOUNTS.supplier_unknow' | translate }}
                                             </span>
                                             <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
@@ -275,11 +275,11 @@
                                             <div class="mx-6 flex items-center justify-center">
                                                 <input id="{{ document['document_id'] }}_checkbox" (click)="checkCheckedDocuments()" class="accent-green-400 checkBox_list cursor-pointer w-5 h-5" type="checkbox">
                                             </div>
-                                            <div class="grow max-w-[30%] relative mt-2" [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
-                                                 (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
+                                            <div class="grow max-w-[30%] relative mt-2" [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                                 (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
                                                 <div class="font-bold text-xl break-all truncate w-11/12" [matTooltip]="document['supplier_name']"
                                                      [matTooltipDisabled]="document['supplier_name']?.replace(' ', '').length <= 40">
-                                                    <i [matTooltip]="'VERIFIER.document_locked' | translate" *ngIf="document.locked"
+                                                    <i [matTooltip]="'VERIFIER.document_locked' | translate" *ngIf="document.locked && document.locked_by"
                                                        class="fa-solid fa-lock text-md mb-2 relative" style="bottom: 0.1rem"></i>
                                                     {{ document['supplier_name'] ? document['supplier_name'] : 'ACCOUNTS.supplier_unknow' | translate }}
                                                     <span *ngIf="document['facturx']" class="text-xs text-gray-400 relative bottom-0.5" [matTooltip]="'VERIFIER.facturx_level' | translate : {level : document['facturx_level']}">
@@ -290,14 +290,14 @@
                                                     <strong class="text-gray-900">{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
                                                 </div>
                                             </div>
-                                            <div class="grow max-w-[30%] relative mt-4" [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
-                                                 (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
+                                            <div class="grow max-w-[30%] relative mt-4" [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                                 (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
                                                 <div *ngFor="let subtitles of document.display?.['subtitles'].slice(3, 7);" class="opacity-75 -mb-1 text-sm truncate w-full inline-block">
                                                     <strong class="text-gray-900">{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
                                                 </div>
                                             </div>
-                                            <div class="grow flex items-center ml-2" [routerLink]="document.locked ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
-                                                 (click)="document.locked ? displayDocumentLocked(document['locked_by']) : ''">
+                                            <div class="grow flex items-center ml-2" [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                                 (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
                                                 <div class="text-green-400 text-base badge badge-secondary badge-pill"
                                                      [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + document['nb_pages']">
                                                     {{ document['nb_pages'] }}<i class="far fa-file-alt ml-1"></i>
