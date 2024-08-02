@@ -18,6 +18,7 @@
 import os
 import uuid
 import json
+import hashlib
 import datetime
 import importlib
 import traceback
@@ -146,8 +147,12 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
     year_and_month = now.strftime('%Y') + '/' + now.strftime('%m')
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + year_and_month + '/' + full_jpg_filename + '-001.jpg'
 
+    with open(file, 'rb') as _f:
+        md5 = hashlib.md5( _f.read()).hexdigest()
+
     document_data = {
         'filename': os.path.basename(file),
+        'md5': md5,
         'path': os.path.dirname(file),
         'img_width': str(files.get_width(path)),
         'full_jpg_filename': full_jpg_filename + '-001.jpg',
