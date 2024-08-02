@@ -107,7 +107,8 @@
 	},
 	"ATTACHMENTS": {
 		"add_attachments": "Add attachments",
-		"attachments_list": "Attachments list"
+		"attachments_list": "Attachments list",
+		"show_attachments": ""
 	},
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
@@ -726,6 +727,8 @@
 		"ocr_enabled": "Enabled",
 		"openads_connection_ko": "Error while connecting to OpenAds",
 		"openads_connection_ok": "Connected to OpenAds successfully",
+		"opencaptureformem_connection_ko": "Error while connecting to Open-Capture For MEM",
+		"opencaptureformem_connection_ok": "Connected to Open-Capture For MEM successfully",
 		"output_deleted": "Output deleted successfully",
 		"output_duplicated": "Output duplicated successfully",
 		"output_settings_list": "Settings of outputs",
@@ -792,7 +795,8 @@
 		"create_ai_model_splitter": "Create AI model",
 		"create_customer": "Create customer",
 		"create_supplier": "Create third-party account",
-		"custom_fields": "Custom fields",
+		"custom_fields": "Access to custom fields",
+		"custom_fields_advanced": "Custom fields",
 		"customers_list": "Customer list",
 		"docservers": "Docservers",
 		"document_type_splitter": "Documents type",

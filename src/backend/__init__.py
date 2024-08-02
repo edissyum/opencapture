@@ -28,7 +28,7 @@ from flask import request, g as current_context, Flask, session
 from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_config_from_custom_id
 from .import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, mem, positions_masks, history, doctypes, mailcollect, artificial_intelligence, \
-    smtp, monitoring, workflow, coog
+    smtp, monitoring, workflow, coog, opencaptureformem
 
 
 class Middleware:
@@ -138,6 +138,7 @@ app.register_blueprint(monitoring.bp)
 app.register_blueprint(mailcollect.bp)
 app.register_blueprint(custom_fields.bp)
 app.register_blueprint(positions_masks.bp)
+app.register_blueprint(opencaptureformem.bp)
 app.register_blueprint(artificial_intelligence.bp)
 
 

@@ -18,6 +18,7 @@
 import os
 import re
 from flask_babel import gettext
+from src.backend.classes.Splitter import get_value_from_mask
 from src.backend.scripting_functions import launch_script_splitter
 from src.backend.import_models import splitter, workflow, forms, outputs
 from src.backend.import_classes import _Splitter, _Files, _CMIS, _OpenADS
@@ -104,10 +105,16 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
             batch = res_export_pdf['result_batch']
 
         if output['output_type_id'] == 'export_verifier':
-            res_export_pdf, status = handle_verifier_output(config, batch, output['parameters'], docservers, regex)
+            res_export_pdf, status = handle_verifier_output(batch, output['parameters'], docservers, regex)
             if status != 200:
                 return res_export_pdf, status
             batch = res_export_pdf['result_batch']
+
+        if output['output_type_id'] == 'export_opencaptureformem':
+            res_export_opencaptureformem, status = handle_opencaptureformem_output(batch, output, docservers, log)
+            if status != 200:
+                return res_export_opencaptureformem, status
+            batch = res_export_opencaptureformem['result_batch']
 
         elif output['output_type_id'] == 'export_xml':
             res_export_xml, status = handle_xml_output(batch, output['parameters'], regex)
@@ -133,6 +140,7 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
 
     if export_zip_file:
         compress_outputs_result(batch, batch['outputs_result_files'], export_zip_file)
+
     process_after_outputs({
         'log': log,
         'batch': batch,
@@ -142,8 +150,8 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
         'custom_id': custom_id,
         'docservers': docservers,
         'workflow_settings': workflow_settings
-
     })
+
     return True, 200
 
 
@@ -161,7 +169,7 @@ def export_pdf_files(batch, parameters, log, docservers):
             'extension': parameters['extension']
         }
 
-        filename = _Splitter.get_value_from_mask(document, batch['data']['custom_fields'], mask_args)
+        filename = get_value_from_mask(document, batch['data']['custom_fields'], mask_args)
 
         document['file_path'] = docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch['file_path']
         document['compress_type'] = parameters['compress_type']
@@ -213,7 +221,7 @@ def handle_pdf_output(batch, output, log, docservers):
                 'separator': parameters['separator'],
                 'extension': 'zip'
             }
-            compress_file = _Splitter.get_value_from_mask(None, metadata, mask_args)
+            compress_file = get_value_from_mask(None, metadata, mask_args)
 
             for index, document in enumerate(batch['documents']):
                 if zip_except_doctype and document['doctype_key'].startswith(zip_except_doctype.group(1)):
@@ -234,16 +242,32 @@ def handle_pdf_output(batch, output, log, docservers):
     return {'result_batch': batch}, 200
 
 
-def handle_verifier_output(config, batch, parameters, docservers, regex):
+def handle_verifier_output(batch, parameters, docservers, regex):
     metadata = {
         'export_date': batch['export_date'],
         'custom_fields': batch['data']['custom_fields'],
         'pdf_output_compress_file': batch['pdf_output_compress_file']
     }
-    export_ok, export_result = _Splitter.export_verifier(config, batch, metadata, parameters, docservers, regex)
+    export_ok, export_result = _Splitter.export_verifier(batch, metadata, parameters, docservers, regex)
     if not export_ok:
         response = {
             "errors": gettext('EXPORT_VERIFIER_ERROR'),
+            "message": export_result
+        }
+        return response, 400
+    return {'result_batch': batch}, 200
+
+
+def handle_opencaptureformem_output(batch, output, docservers, log):
+    metadata = {
+        'export_date': batch['export_date'],
+        'custom_fields': batch['data']['custom_fields'],
+        'pdf_output_compress_file': batch['pdf_output_compress_file']
+    }
+    export_ok, export_result = _Splitter.export_opencaptureformem(batch, metadata, output, docservers, log)
+    if not export_ok:
+        response = {
+            "errors": gettext('EXPORT_OPENCAPTUREFORMEM_ERROR'),
             "message": export_result
         }
         return response, 400
@@ -256,7 +280,7 @@ def handle_xml_output(batch, parameters, regex):
         'separator': parameters['separator'],
         'extension': parameters['extension']
     }
-    metadata_file = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
+    metadata_file = get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
 
     metadata = {
         'export_date': batch['export_date'],
@@ -340,7 +364,7 @@ def handle_openads_output(output, batch, log, docservers):
         'mask': openads_params['folder_id'],
         'separator': ''
     }
-    openads_folder = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], openads_folder)
+    openads_folder = get_value_from_mask(None, batch['data']['custom_fields'], openads_folder)
     openads_res = _openads.check_folder_by_id(openads_folder)
     if not openads_res['status']:
         response = {
@@ -385,7 +409,7 @@ def compress_outputs_result(batch, exported_files, export_zip_file):
         'separator': '',
         'substitute': '_'
     }
-    outputs_compress_path = _Splitter.get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
+    outputs_compress_path = get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
     _Files.compress_files(compress_files, outputs_compress_path, remove_compressed_files=True)
 
 

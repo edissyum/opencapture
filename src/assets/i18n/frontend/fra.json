@@ -107,7 +107,8 @@
 	},
 	"ATTACHMENTS": {
 		"add_attachments": "Ajouter des pièces jointes",
-		"attachments_list": "Liste des pièces jointes"
+		"attachments_list": "Liste des pièces jointes",
+		"attachments": "Pièces jointes"
 	},
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",
@@ -726,6 +727,8 @@
 		"ocr_enabled": "Activée",
 		"openads_connection_ko": "Erreur lors de la connexion à OpenAds",
 		"openads_connection_ok": "Connexion à OpenAds réalisée avec succès",
+		"opencaptureformem_connection_ko": "Erreur lors de la connexion à Open-Capture For MEM",
+		"opencaptureformem_connection_ok": "Connexion à Open-Capture For MEM réalisée avec succès",
 		"output_deleted": "Chaîne sortante supprimée avec succès",
 		"output_duplicated": "Chaîne sortante dupliquée avec succès",
 		"output_settings_list": "Paramètres de la chaîne sortante",
@@ -792,7 +795,8 @@
 		"create_ai_model_splitter": "Ajouter un modèle d'IA",
 		"create_customer": "Ajouter un compte client",
 		"create_supplier": "Créer un tiers",
-		"custom_fields": "Champs personnalisés",
+		"custom_fields": "Accès aux champs personnalisés",
+		"custom_fields_advanced": "Champs personnalisés",
 		"customers_list": "Liste des clients",
 		"docservers": "Zones de stockage",
 		"document_type_splitter": "Type de documents",

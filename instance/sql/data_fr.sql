@@ -365,13 +365,6 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "label": "Token d''authentification",
                 "required": "true",
                 "placeholder": "ujx8ke67izyc6q3vvh96520a96a54frgjrpgl85kk4sb0tv3"
-            },
-            {
-                "id": "access_token",
-                "type": "text",
-                "label": "Token d''accès à l''API",
-                "required": "false",
-                "placeholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
             }
         ],
         "parameters": [
@@ -618,7 +611,93 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 11;
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (11, 'export_opencaptureformem', 'Export Open-Capture For MEM', '{
+    "options": {
+        "auth": [
+            {
+                "id": "host",
+                "type": "text",
+                "label": "URL de l''hôte",
+                "required": "true",
+                "placeholder": "http://192.168.10.100/opencaptureformem/"
+            },
+            {
+                "id": "secret_key",
+                "type": "text",
+                "label": "Clé secrète",
+                "required": "true",
+                "placeholder": "fc7594767dbcf20b13938ee849031496adf61c9d365e2cabab2558ae737e9d7f"
+            },
+            {
+                "id": "custom_id",
+                "type": "text",
+                "label": "Identifiant du custom",
+                "required": "true",
+                "placeholder": "opencaptureformem"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "process",
+                "type": "text",
+                "label": "Nom du processus",
+                "required": true,
+                "webservice": "getProcessFromOCForMEM",
+                "placeholder": "incoming"
+            },
+            {
+                "id": "pdf_filename",
+                "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "type": "text",
+                "label": "Nom du fichier PDF",
+                "required": "true",
+                "placeholder": "doctype#random"
+            },
+            {
+                "id": "separator",
+                "hint": "",
+                "type": "text",
+                "label": "Séparateur",
+                "required": "true",
+                "placeholder": "_"
+            },
+            {
+                "id": "destination",
+                "hint": "",
+                "type": "text",
+                "label": "Destination",
+                "required": "false",
+                "placeholder": "DGS"
+            },
+            {
+                "id": "rdff",
+                "type": "select",
+                "label": "Lecture de la destination depuis le nom du fichier",
+                "hint": "Lecture de la destination depuis le nom du fichier",
+                "required": "true",
+                "values": [
+                    {
+                        "value": "True",
+                        "label": "Oui"
+                    },
+                    {
+                        "value": "False",
+                        "label": "Non"
+                    }
+                ]
+            },
+            {
+                "id": "custom_fields",
+                "hint": "Champs JSON",
+                "type": "text",
+                "label": "Champs personnalisé",
+                "required": "false",
+                "placeholder": "{\"3\": \"Nature\"}"
+            }
+        ]
+    }
+}', 'splitter');
+ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 12;
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (5, 'export_pdf', 'Export PDF', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "PDF#doctype#date#random"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "pdf"}, {"id": "zip_filename", "type": "text", "value": ""}]}}', 'splitter');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (6, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "XML#date"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "xml"}]}}', 'splitter');
@@ -774,7 +853,7 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (8, 'update_user', 'ad
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (9, 'roles_list', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (10, 'add_role', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (11, 'update_role', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (13, 'forms_list', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (14, 'add_form', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (15, 'update_form', 'verifier');
@@ -831,7 +910,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (65, 'update_workflow_
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (66, 'generate_auth_token', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (67, 'update_login_top_message', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (68, 'update_login_bottom_message', 'administration');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 69;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (69, 'custom_fields_advanced', 'administration');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 70;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

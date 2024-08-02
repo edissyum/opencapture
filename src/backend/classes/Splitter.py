@@ -21,12 +21,14 @@ import os
 import sys
 import json
 import pypdf
+import base64
 import random
 import pathlib
 import tempfile
 from xml.dom import minidom
 from datetime import datetime
 from unidecode import unidecode
+from src.backend.import_classes import _OpenCaptureForMEMWebServices
 from werkzeug.datastructures import FileStorage
 
 
@@ -38,6 +40,74 @@ def construct_with_var(data, document_info):
         else:
             _data.append(column)
     return _data
+
+
+
+def get_value_from_mask(document, metadata, mask_args):
+    if 'export_date' not in metadata:
+        metadata['export_date'] = datetime.now()
+    year = str(metadata['export_date'].year)
+    day = str('%02d' % metadata['export_date'].day)
+    month = str('%02d' % metadata['export_date'].month)
+    hour = str('%02d' % metadata['export_date'].hour)
+    minute = str('%02d' % metadata['export_date'].minute)
+    seconds = str('%02d' % metadata['export_date'].second)
+    _date = year + month + day + hour + minute + seconds
+
+    mask_result = []
+    random_num = str(random.randint(0, 99999)).zfill(5)
+    mask_keys = mask_args['mask'].split('#')
+    separator = mask_args['separator'] if mask_args['separator'] else ''
+    substitute = mask_args['substitute'] if 'substitute' in mask_args else separator
+
+    for key in mask_keys:
+        if not key:
+            continue
+        """
+            PDF or XML masks value
+        """
+        if key in metadata:
+            mask_result.append(str(metadata[key]).replace(' ', substitute))
+        elif key == 'date':
+            mask_result.append(_date.replace(' ', substitute))
+        elif key == 'random':
+            mask_result.append(random_num.replace(' ', substitute))
+        elif key == 'id':
+            mask_result.append(metadata['id'])
+        elif document:
+            """
+                PDF masks value
+            """
+            if key in document['data']['custom_fields']:
+                value = str(document['data']['custom_fields'][key] if document['data']['custom_fields'][key] else '')
+                value = value.replace(' ', substitute)
+                mask_result.append(value)
+            elif key in metadata:
+                value = str(metadata[key] if metadata[key] else '').replace(' ', substitute)
+                mask_result.append(value)
+            elif key == 'doctype':
+                mask_result.append(document['doctype_key'].replace(' ', substitute))
+            elif key == 'document_identifier':
+                mask_result.append(document['id'])
+            elif key == 'document_index':
+                mask_result.append(document['id'])
+            else:
+                """
+                    PDF value when mask value not found in metadata
+                """
+                mask_result.append(key.replace(' ', substitute))
+        else:
+            """
+                XML value when mask value not found in metadata
+            """
+            mask_result.append(key.replace(' ', substitute))
+
+    mask_result = separator.join(str(x) for x in mask_result)
+    mask_result = unidecode(mask_result)
+    if 'extension' in mask_args:
+        mask_result += '.{}'.format(mask_args['extension'])
+
+    return mask_result
 
 
 class Splitter:
@@ -67,12 +137,21 @@ class Splitter:
                     self.result_batches.append([])
                 split_document = 1
                 is_previous_code_qr = True
-
             elif page['separator_type'] == self.doc_start:
                 if len(self.result_batches[-1]) != 0:
                     split_document += 1
                 is_previous_code_qr = True
-
+                if 'add_page' in page and page['add_page']:
+                    self.result_batches[-1].append({
+                        'path': page['path'],
+                        'mem_value': page['mem_value'],
+                        'metadata_1': page['metadata_1'],
+                        'metadata_2': page['metadata_2'],
+                        'metadata_3': page['metadata_3'],
+                        'split_document': split_document,
+                        'source_page': page['source_page'],
+                        'doctype_value': page['doctype_value']
+                    })
             else:
                 self.result_batches[-1].append({
                     'path': page['path'],
@@ -82,7 +161,7 @@ class Splitter:
                     'metadata_3': page['metadata_3'],
                     'split_document': split_document,
                     'source_page': page['source_page'],
-                    'doctype_value': page['doctype_value'],
+                    'doctype_value': page['doctype_value']
                 })
                 is_previous_code_qr = False
 
@@ -121,7 +200,7 @@ class Splitter:
                     'mask': field['defaultValue'],
                     'separator': ' ',
                 }
-                default_values['batch'][field['label_short']] = self.get_value_from_mask(None, data, mask)
+                default_values['batch'][field['label_short']] = get_value_from_mask(None, data, mask)
 
         for field in fields['fields']['document_metadata']:
             if 'defaultValue' in field:
@@ -129,7 +208,7 @@ class Splitter:
                     'mask': field['defaultValue'],
                     'separator': ' ',
                 }
-                default_values['document'][field['label_short']] = self.get_value_from_mask(None, data, mask)
+                default_values['document'][field['label_short']] = get_value_from_mask(None, data, mask)
 
         return default_values
 
@@ -158,15 +237,16 @@ class Splitter:
                 if user_id:
                     default_values = self.get_default_values(form_id, user_id)
 
+            custom_fields = self.db.select({
+                'select': ['*'],
+                'table': ['custom_fields'],
+                'where': ['module = %s', 'status <> %s'],
+                'data': ['splitter', 'DEL'],
+            })
+
             if batch_pages:
                 first_page = batch_pages[0]
                 if first_page['metadata_1'] or first_page['metadata_2'] or first_page['metadata_3']:
-                    custom_fields = self.db.select({
-                        'select': ['*'],
-                        'table': ['custom_fields'],
-                        'where': ['module = %s', 'status <> %s'],
-                        'data': ['splitter', 'DEL'],
-                    })
                     for custom_field in custom_fields:
                         if first_page['metadata_1'] and custom_field['metadata_key'] == 'SEPARATOR_META1':
                             default_values['batch'][custom_field['label_short']] = first_page['metadata_1']
@@ -196,23 +276,29 @@ class Splitter:
             page_display_order = 1
             previous_split_document = 0
             for page in batch_pages:
+                custom_fields_data = {}
                 if page['split_document'] != previous_split_document:
-                    documents_data = json.dumps({'custom_fields': default_values['document']})
+                    for custom_field in custom_fields:
+                        if page['metadata_1'] and custom_field['metadata_key'] == 'SEPARATOR_META1':
+                            custom_fields_data[custom_field['label_short']] = page['metadata_1']
+                        if page['metadata_2'] and custom_field['metadata_key'] == 'SEPARATOR_META2':
+                            custom_fields_data[custom_field['label_short']] = page['metadata_2']
+                        if page['metadata_3'] and custom_field['metadata_key'] == 'SEPARATOR_META3':
+                            custom_fields_data[custom_field['label_short']] = page['metadata_3']
                     args = {
                         'table': 'splitter_documents',
                         'columns': {
                             'batch_id': str(batch_id),
                             'split_index': page['split_document'],
-                            'display_order': page['split_document'],
-                            'data': documents_data,
+                            'display_order': page['split_document']
                         }
                     }
+
                     """
                         Doctype from Open-Capture separator, AI or default value
                     """
                     if page['doctype_value']:
                         args['columns']['doctype_key'] = page['doctype_value']
-
                     elif workflow_settings[0]['input']['ai_model_id']:
                         model_id = workflow_settings[0]['input']['ai_model_id']
                         ai_model = self.db.select({
@@ -226,7 +312,6 @@ class Splitter:
                                 file, ai_model[0], page=int(page['source_page']))
                             if result[2] >= ai_model[0]['min_proba']:
                                 args['columns']['doctype_key'] = page['doctype_value'] = result[3]
-
                     else:
                         default_doctype = self.db.select({
                             'select': ['*'],
@@ -244,17 +329,13 @@ class Splitter:
                         entity = page['mem_value']
                         if len(entity.split('_')) == 2:
                             entity = entity.split('_')[1]
-                        documents_data = {}
-                        custom_fields = self.db.select({
-                            'select': ['*'],
-                            'table': ['custom_fields'],
-                            'where': ['metadata_key = %s', 'status <> %s'],
-                            'data': ['SEPARATOR_MEM', 'DEL'],
-                        })
-                        documents_data['custom_fields'] = {}
+
                         for custom_field in custom_fields:
-                            documents_data['custom_fields'][custom_field['label_short']] = entity
-                            args['columns']['data'] = json.dumps(documents_data)
+                            if custom_field['metadata_key'] == 'SEPARATOR_MEM':
+                                custom_fields_data[custom_field['label_short']] = entity
+
+                    if custom_fields:
+                        args['columns']['data'] = json.dumps({'custom_fields': custom_fields_data})
                     document_id = self.db.insert(args)
                     page_display_order = 1
 
@@ -276,7 +357,6 @@ class Splitter:
                 page_display_order += 1
 
             self.db.conn.commit()
-
         return {'batches_id': batches_id}
 
     @staticmethod
@@ -292,72 +372,53 @@ class Splitter:
                 })
         return documents_pages
 
+
     @staticmethod
-    def get_value_from_mask(document, metadata, mask_args):
-        if 'export_date' not in metadata:
-            metadata['export_date'] = datetime.now()
-        year = str(metadata['export_date'].year)
-        day = str('%02d' % metadata['export_date'].day)
-        month = str('%02d' % metadata['export_date'].month)
-        hour = str('%02d' % metadata['export_date'].hour)
-        minute = str('%02d' % metadata['export_date'].minute)
-        seconds = str('%02d' % metadata['export_date'].second)
-        _date = year + month + day + hour + minute + seconds
+    def export_opencaptureformem(batch, metadata, output, docservers, log):
+        host = ''
+        custom_id = ''
+        secret_key = ''
+        for key in output['data']['options']['auth']:
+            if key['id'] == 'host':
+                host = key['value']
+            if key['id'] == 'secret_key':
+                secret_key = key['value']
+            if key['id'] == 'custom_id':
+                custom_id = key['value']
 
-        mask_result = []
-        random_num = str(random.randint(0, 99999)).zfill(5)
-        mask_keys = mask_args['mask'].split('#')
-        separator = mask_args['separator'] if mask_args['separator'] else ''
-        substitute = mask_args['substitute'] if 'substitute' in mask_args else separator
+        _ws = _OpenCaptureForMEMWebServices(host, secret_key, custom_id, log)
+        if _ws.access_token[0]:
+            files = []
+            for document in batch['documents']:
+                if 'custom_fields' in output['parameters'] and output['parameters']['custom_fields']:
+                    output['parameters']['custom_fields'] = json.loads(output['parameters']['custom_fields'])
+                    for key in output['parameters']['custom_fields']:
+                        marks_args = {
+                            'mask': output['parameters']['custom_fields'][key],
+                            'separator': '',
+                        }
+                        output['parameters']['custom_fields'][key] = get_value_from_mask(None, document['data']['custom_fields'], marks_args)
 
-        for key in mask_keys:
-            if not key:
-                continue
-            """
-                PDF or XML masks value
-            """
-            if key in metadata:
-                mask_result.append(str(metadata[key]).replace(' ', substitute))
-            elif key == 'date':
-                mask_result.append(_date.replace(' ', substitute))
-            elif key == 'random':
-                mask_result.append(random_num.replace(' ', substitute))
-            elif key == 'id':
-                mask_result.append(metadata['id'])
-            elif document:
-                """
-                    PDF masks value
-                """
-                if key in document['data']['custom_fields']:
-                    value = str(document['data']['custom_fields'][key] if document['data']['custom_fields'][key] else '')
-                    value = value.replace(' ', substitute)
-                    mask_result.append(value)
-                elif key in metadata:
-                    value = str(metadata[key] if metadata[key] else '').replace(' ', substitute)
-                    mask_result.append(value)
-                elif key == 'doctype':
-                    mask_result.append(document['doctype_key'].replace(' ', substitute))
-                elif key == 'document_identifier':
-                    mask_result.append(document['id'])
-                elif key == 'document_index':
-                    mask_result.append(document['id'])
-                else:
-                    """
-                        PDF value when mask value not found in metadata
-                    """
-                    mask_result.append(key.replace(' ', substitute))
-            else:
-                """
-                    XML value when mask value not found in metadata
-                """
-                mask_result.append(key.replace(' ', substitute))
-
-        mask_result = separator.join(str(x) for x in mask_result)
-        mask_result = unidecode(mask_result)
-        if 'extension' in mask_args:
-            mask_result += '.{}'.format(mask_args['extension'])
-
-        return mask_result
+                mask_args = {
+                    'mask': output['parameters']['pdf_filename'],
+                    'separator': output['parameters']['separator'],
+                    'extension': 'pdf'
+                }
+                metadata_file = get_value_from_mask(None, document['data']['custom_fields'], mask_args)
+                pdf_writer = pypdf.PdfWriter()
+                with tempfile.NamedTemporaryFile() as tf:
+                    pdf_reader = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch['file_path'])
+                    for page in document['pages']:
+                        pdf_page = pdf_reader.pages[page['source_page'] - 1]
+                        if page['rotation'] != 0:
+                            pdf_page.rotate(page['rotation'])
+                        pdf_writer.add_page(pdf_page)
+                    pdf_writer.write(tf.name)
+                    files.append({
+                        'file_content': base64.b64encode(open(tf.name, 'rb').read()).decode('utf-8'),
+                        'file_name': metadata_file
+                    })
+            return _ws.send_documents(files, output['parameters'])
 
     @staticmethod
     def export_xml(documents, metadata, parameters, regex):
@@ -444,7 +505,7 @@ class Splitter:
         return True, xml_file_path
 
     @staticmethod
-    def export_verifier(config, batch, metadata, parameters, docservers, regex):
+    def export_verifier(batch, metadata, parameters, docservers, regex):
         parameters['body_template'] = re.sub(regex['splitter_xml_comment'], '', parameters['body_template'])
         json_body = json.loads(parameters['body_template'])
 

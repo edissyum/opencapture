@@ -105,6 +105,7 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.update_role'),
         marker('PRIVILEGES.version_update'),
         marker('PRIVILEGES.custom_fields'),
+        marker('PRIVILEGES.custom_fields_advanced'),
         marker('PRIVILEGES.forms_list'),
         marker('PRIVILEGES.customers_list'),
         marker('PRIVILEGES.suppliers_list'),
