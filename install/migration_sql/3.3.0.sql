@@ -140,3 +140,6 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "data", "mod
 
 UPDATE "privileges" SET parent = 'general' WHERE label = 'custom_fields';
 INSERT INTO "privileges" ("label", "parent") VALUES ('custom_fields_advanced', 'administration');
+
+ALTER TABLE "documents" ADD COLUMN "md5" VARCHAR(32);
+ALTER TABLE "splitter_batches" ADD COLUMN "md5" VARCHAR(32);
