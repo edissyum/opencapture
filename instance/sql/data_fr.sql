@@ -685,6 +685,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
                         "label": "Non"
                     }
                 ]
+            },
+            {
+                "id": "custom_fields",
+                "hint": "Champs JSON",
+                "type": "text",
+                "label": "Champs personnalisé",
+                "required": "false",
+                "placeholder": "{\"3\": \"Nature\"}"
             }
         ]
     }

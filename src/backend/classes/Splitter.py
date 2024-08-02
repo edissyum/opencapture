@@ -390,6 +390,15 @@ class Splitter:
         if _ws.access_token[0]:
             files = []
             for document in batch['documents']:
+                if 'custom_fields' in output['parameters'] and output['parameters']['custom_fields']:
+                    output['parameters']['custom_fields'] = json.loads(output['parameters']['custom_fields'])
+                    for key in output['parameters']['custom_fields']:
+                        marks_args = {
+                            'mask': output['parameters']['custom_fields'][key],
+                            'separator': '',
+                        }
+                        output['parameters']['custom_fields'][key] = get_value_from_mask(None, document['data']['custom_fields'], marks_args)
+
                 mask_args = {
                     'mask': output['parameters']['pdf_filename'],
                     'separator': output['parameters']['separator'],

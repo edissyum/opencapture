@@ -73,6 +73,7 @@ class OpenCaptureForMEMWebServices:
             'files': files,
             'custom_id': self.custom_id,
             'process_name': output['process'],
+            'custom_fields': output['custom_fields'],
             'destination': output['destination'] if output['destination'] else None,
             'read_destination_from_filename': True if output['rdff'].lower() == 'true' else False
         })
