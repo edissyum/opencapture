@@ -21,6 +21,11 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+if [ "$(uname -m)" != 'x86_64' ]; then
+    echo "This script is only compatible with x86_64 architecture"
+    exit 1
+fi
+
 bold=$(tput bold)
 normal=$(tput sgr0)
 defaultPath="/var/www/html/opencapture/"
