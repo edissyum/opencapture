@@ -107,8 +107,7 @@
 	},
 	"ATTACHMENTS": {
 		"add_attachments": "Ajouter des pièces jointes",
-		"attachments_list": "Liste des pièces jointes",
-		"attachments": "Pièces jointes"
+		"attachments_list": "Liste des pièces jointes"
 	},
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",
@@ -451,6 +450,7 @@
 		"supplier_autocomplete_enabled": "Autoriser l'autocomplétion du tiers",
 		"supplier_verif": "Vérification du tiers",
 		"supplier_verif_hint": "Vérification via API des SIRET / SIREN / TVA INTRA",
+		"third_party_wait": "Mettre en attente de vérification du tiers",
 		"unique_url": "URL unique du viewer",
 		"unique_url_hint": "Modifier l'affichage du viewer lors de l'utilisation via une URL unique. Permet de limiter les intéractions de l'utilisateur",
 		"unique_url_updated_success": "Paramètres de l'URL unique mis à jour avec succès",
@@ -538,7 +538,8 @@
 		"document_validated": "Document n°<strong>{{ document_id }}</strong> validé et chaîne sortante suivante effectuée :&nbsp;<strong>{{ outputs }}</strong>",
 		"validate_splitter": "Validation du lot n°<strong>{{ batch_id }}</strong>",
 		"viewer": "Visualisation du document n°<strong>{{ document_id }}</strong>",
-		"viewer_splitter": "Visualisation du lot n°<strong>{{ batch_id }}</strong>"
+		"viewer_splitter": "Visualisation du lot n°<strong>{{ batch_id }}</strong>",
+		"wait_third_party": "Document n°<strong>{{ document_id }}</strong> mis en attente de vérification du tiers"
 	},
 	"HISTORY": {
 		"accounts": "Compte tiers",
@@ -1163,6 +1164,8 @@
 		"ai_model_id_hint": "Le modèle d'intelligence artificielle permettra de pré-selectionner le formulaire en fonction du type de document. Le modèle prends le desuss sur le formulaire par défaut",
 		"allow_automatic_validation": "Autoriser la validation automatique",
 		"allow_automatic_validation_hint": "Si les champs systèmes sont trouvés de manière automatique, le document ne passera pas par l'interface de validation",
+		"allow_third_party_validation": "Activer la gestion avancée des tiers",
+		"allow_third_party_validation_hint": "Si activé, les documents sans tiers identifiés seront mis en attente de validation. Il sera également possible depuis le viewer de mettre le document en attente si le tiers nécessite une modification",
 		"api_only": "Utiliser en mode API uniquement",
 		"api_only_hint": "Le workflow ne sera pas visible dans l'interface utilisateur et les documents ne seront pas conservés sur le système de fichier. Utile pour récupérer seulement les données extraites automatiquement",
 		"apply_process": "Appliquer un traitement sur le workflow",

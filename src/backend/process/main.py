@@ -170,6 +170,10 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
         document_data.update({
             'supplier_id': supplier[2]['supplier_id'],
         })
+    else:
+        if workflow_settings and ('allow_third_party_validation' in workflow_settings['process'] and
+                                  workflow_settings['process']['allow_third_party_validation']):
+            document_data['status'] = 'WAIT_THIRD_PARTY'
 
     if args.get('isMail') is None or args.get('isMail') is False:
         if 'workflow_id' in args and args['workflow_id'] and workflow_settings:

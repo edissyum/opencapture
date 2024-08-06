@@ -50,8 +50,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     fromTokenFormId         : any;
     saveInfo                : boolean     = true;
     loading                 : boolean     = true;
-    supplierExists          : boolean     = true;
     deleteDataOnChangeForm  : boolean     = true;
+    supplierExists          : boolean     = false;
     formLoading             : boolean     = false;
     allowAutocomplete       : boolean     = false;
     processMultiDocument    : boolean     = false;
@@ -1823,6 +1823,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.router.navigate(['/verifier/list']).then();
     }
 
+    thirdPartyWait() {
+        this.historyService.addHistory('verifier', 'wait_third_party', this.translate.instant('HISTORY-DESC.wait_third_party', {document_id: this.documentId}));
+        this.updateDocument({'status': 'WAIT_THIRD_PARTY', 'locked': false, 'locked_by': null});
+        this.notify.error(this.translate.instant('VERIFIER.document_refused'));
+        this.router.navigate(['/verifier/list']).then();
+    }
+
     async changeForm(event: any) {
         this.outputs = [];
         this.outputsLabel = [];
@@ -2045,5 +2052,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.suppliers = await this.retrieveSuppliers(value);
         this.suppliers = this.suppliers.suppliers;
         this.supplierExists = !(this.suppliers.length === 0);
+    }
+
+    checkAllowThirdParty() {
+        if (this.workflowSettings.process && this.workflowSettings.process.allow_third_party_validation) {
+            const workflowAllow = this.workflowSettings.process.allow_third_party_validation;
+            return workflowAllow && this.document.status !== 'WAIT_THIRD_PARTY' && this.supplierExists;
+        }
+        return false;
     }
 }

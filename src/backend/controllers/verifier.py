@@ -866,12 +866,14 @@ def get_unseen(user_id):
     user_customers = user.get_customers_by_user_id(user_id)
     user_customers[0].append(0)
     total_unseen = verifier.get_total_documents({
-        'select': ['count(documents.id) as unseen'],
-        'where': ["status = %s", "customer_id = ANY(%s)", "datas -> 'api_only' is NULL"],
-        'data': ['NEW', user_customers[0]],
-        'table': ['documents']
-    })[0]
-    return total_unseen['unseen'], 200
+        'select'    : ["status.label_long as status", "count(documents.id) as unseen"],
+        'table'     : ["documents", "status"],
+        'left_join' : ["status.id = documents.status"],
+        'where'     : ["status IN ('NEW', 'ERR', 'WAIT_THIRD_PARTY')", "customer_id = ANY(%s)", "datas -> 'api_only' is NULL", "status.module = %s"],
+        'data'      : [user_customers[0], 'verifier'],
+        'group_by'  : ["status.label_long"]
+    })
+    return total_unseen, 200
 
 
 def get_customers_count(user_id, status, time):

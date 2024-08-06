@@ -107,8 +107,7 @@
 	},
 	"ATTACHMENTS": {
 		"add_attachments": "Add attachments",
-		"attachments_list": "Attachments list",
-		"show_attachments": ""
+		"attachments_list": "Attachments list"
 	},
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
@@ -451,6 +450,7 @@
 		"supplier_autocomplete_enabled": "Allow to third-party account autocompletion",
 		"supplier_verif": "Supplication verification",
 		"supplier_verif_hint": "verification via API for SIRET / SIREN / TVA INTRA",
+		"third_party_wait": "",
 		"unique_url": "Unique URL",
 		"unique_url_hint": "Change Viewer display while using unique URL. Allow to limit the access to certain functions",
 		"unique_url_updated_success": "Unique URL updated successfully",
@@ -538,7 +538,8 @@
 		"document_validated": "Document n°&nbsp;<strong>{{ document_id }}</strong> validated and following outputs executed :&nbsp;<strong>{{ outputs }}</strong>",
 		"validate_splitter": "Validation of batch n°&nbsp;<strong>{{ batch_id }}</strong>",
 		"viewer": "Visualisation of document n°&nbsp;<strong>{{ document_id }}</strong>",
-		"viewer_splitter": "Visualisation of batch n°&nbsp;<strong>{{ batch_id }}</strong>"
+		"viewer_splitter": "Visualisation of batch n°&nbsp;<strong>{{ batch_id }}</strong>",
+		"wait_third_party": ""
 	},
 	"HISTORY": {
 		"accounts": "Accounts",
@@ -1163,6 +1164,8 @@
 		"ai_model_id_hint": "The AI model allow preselection of form depending on document type. AI model will override default form if present",
 		"allow_automatic_validation": "Allow automatic validation",
 		"allow_automatic_validation_hint": "If the system fields are found automatically, the document will not go through the validation interface",
+		"allow_thirs_party_validation": "",
+		"allow_thirs_party_validation_hint": "",
 		"api_only": "API use only",
 		"api_only_hint": "The workflow will not be visible in the user interface and the documents will not be stored on the file system. Useful to get only the extracted data",
 		"apply_process": "Apply process to the workflow",

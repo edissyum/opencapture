@@ -28,13 +28,16 @@ import { of } from "rxjs";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { AuthService } from "../../services/auth.service";
 
+
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss']
+    styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
+    isOpen = false;
     unseenBatches : any = {'splitter': 0, 'verifier': 0};
+    fullUnseenBatches : any = {'splitter': {}, 'verifier': {}};
 
     constructor(
         private router: Router,
@@ -72,7 +75,10 @@ export class HomeComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/verifier/getUnseen/user/' + this.userService.user.id,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.unseenBatches['verifier'] = data['unseen'];
+                this.fullUnseenBatches['verifier'] = data.unseen;
+                data.unseen.forEach((item: any) => {
+                    this.unseenBatches['verifier'] += item['unseen'];
+                });
             })
         ).subscribe();
 
@@ -107,5 +113,13 @@ export class HomeComponent implements OnInit {
 
     getUnseenBatches(module: string) {
         return this.unseenBatches[module];
+    }
+
+    getUnseenToolTip(module: string) {
+        let message = '';
+        Object.keys(this.fullUnseenBatches[module]).forEach((item: any) => {
+            message += '<strong>' + this.fullUnseenBatches[module][item]['status'] + '</strong> : ' + this.fullUnseenBatches[module][item]['unseen'] + "<br>";
+        })
+        return message;
     }
 }
