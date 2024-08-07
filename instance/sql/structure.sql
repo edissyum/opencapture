@@ -144,25 +144,26 @@ CREATE TABLE "privileges" (
 );
 
 CREATE TABLE "accounts_supplier" (
-    "id"                  SERIAL        UNIQUE PRIMARY KEY,
-    "name"                VARCHAR(255)  NOT NULL,
-    "vat_number"          VARCHAR(20)   UNIQUE,
-    "siret"               VARCHAR(20),
-    "siren"               VARCHAR(20),
-    "iban"                VARCHAR(50),
-    "duns"                VARCHAR(10),
-    "bic"                 VARCHAR(11),
-    "rccm"                VARCHAR(30),
-    "email"               VARCHAR,
-    "address_id"          INTEGER,
-    "form_id"             INTEGER,
-    "document_lang"       VARCHAR(10)   DEFAULT 'fra',
-    "status"              VARCHAR(3)    DEFAULT 'OK',
-    "get_only_raw_footer" BOOLEAN       DEFAULT False,
-    "skip_auto_validate"  BOOLEAN       DEFAULT False,
-    "creation_date"       TIMESTAMP     DEFAULT (CURRENT_TIMESTAMP),
-    "positions"           JSONB         DEFAULT '{}',
-    "pages"               JSONB         DEFAULT '{}'
+    "id"                        SERIAL        UNIQUE PRIMARY KEY,
+    "name"                      VARCHAR(255)  NOT NULL,
+    "vat_number"                VARCHAR(20)   UNIQUE,
+    "siret"                     VARCHAR(20),
+    "siren"                     VARCHAR(20),
+    "iban"                      VARCHAR(50),
+    "duns"                      VARCHAR(10),
+    "bic"                       VARCHAR(11),
+    "rccm"                      VARCHAR(30),
+    "email"                     VARCHAR,
+    "address_id"                INTEGER,
+    "form_id"                   INTEGER,
+    "document_lang"             VARCHAR(10)   DEFAULT 'fra',
+    "status"                    VARCHAR(3)    DEFAULT 'OK',
+    "get_only_raw_footer"       BOOLEAN       DEFAULT False,
+    "skip_auto_validate"        BOOLEAN       DEFAULT False,
+    "default_accounting_plan"   INTEGER,
+    "creation_date"             TIMESTAMP     DEFAULT (CURRENT_TIMESTAMP),
+    "positions"                 JSONB         DEFAULT '{}',
+    "pages"                     JSONB         DEFAULT '{}'
 );
 
 CREATE TABLE "accounts_customer" (

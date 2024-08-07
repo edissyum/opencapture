@@ -333,6 +333,7 @@
 	"FACTURATION": {
 		"accounting_plan": "Compte de charge",
 		"current_date": "Date du jour",
+		"default_accounting_plan": "Compte de charge par défaut",
 		"delivery_number": "Numéro de livraison",
 		"description": "Description",
 		"document_date": "Date du document",

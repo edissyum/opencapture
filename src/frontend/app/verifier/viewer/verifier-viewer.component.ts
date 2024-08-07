@@ -297,10 +297,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.imageDocument = $('#document_image');
         this.ratio = this.document['img_width'] / this.imageDocument.width();
 
-        await this.fillForm(this.currentFormFields);
         if (this.document.supplier_id) {
             await this.getSupplierInfo(this.document.supplier_id, false, true);
         }
+        await this.fillForm(this.currentFormFields);
 
         this.ocr({
             'target' : {
@@ -689,6 +689,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             startWith(''),
                             map(option => option ? this._filter_accounting(this.accountingPlan, option) : this.accountingPlan)
                         );
+
+                    if (this.currentSupplier && this.currentSupplier['default_accounting_plan']) {
+                        this.accountingPlan.forEach((element: any) => {
+                            if (element.id === this.currentSupplier['default_accounting_plan']) {
+                                this.form[category][cpt].control.setValue(element.compte_lib);
+                            }
+                        });
+                    }
                 }
 
                 if (this.document.datas[field.id] !== undefined && this.document.datas[field.id] !== null && this.document.datas[field.id] !== '') {
@@ -1548,6 +1556,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
         tmpSupplier.forEach((supplier: any) => {
             if (supplier.id === supplierId) {
+                this.currentSupplier = supplier;
                 if (!supplier.address_id) {
                     supplier.address_id = 0;
                 }
