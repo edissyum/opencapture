@@ -139,14 +139,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
                 control: new FormControl()
             },
             {
-                id: 'allow_automatic_validation',
-                label: this.translate.instant('WORKFLOW.allow_automatic_validation'),
-                hint: this.translate.instant('WORKFLOW.allow_automatic_validation_hint'),
-                type: 'boolean',
-                show: false,
-                control: new FormControl()
-            },
-            {
                 id: 'delete_documents',
                 label: this.translate.instant('WORKFLOW.delete_documents'),
                 hint: this.translate.instant('WORKFLOW.delete_documents_hint'),
@@ -435,11 +427,8 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
     setUseInterface(value: any) {
         this.useInterface = value;
         this.fields['process'].forEach((element: any) => {
-            if (element.id === 'form_id' || element.id === 'allow_automatic_validation') {
+            if (element.id === 'form_id') {
                 element.show = this.useInterface;
-                if (element.id !== 'allow_automatic_validation') {
-                    element.required = this.useInterface;
-                }
             }
         });
         this.setUsedOutputs();
