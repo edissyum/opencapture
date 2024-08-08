@@ -23,7 +23,7 @@ import pandas as pd
 from pathlib import Path
 from flask_babel import gettext
 from flask import request, g as current_context
-from src.backend.import_models import artificial_intelligence, history
+from src.backend.models import artificial_intelligence, history
 from src.backend import create_classes_from_custom_id, retrieve_custom_from_url
 from sklearn import feature_extraction, model_selection, naive_bayes, pipeline, metrics
 

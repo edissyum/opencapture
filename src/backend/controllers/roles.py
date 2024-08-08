@@ -19,7 +19,7 @@
 import json
 from flask import request
 from flask_babel import gettext
-from src.backend.import_models import roles, history, user
+from src.backend.models import roles, history, user
 
 
 def get_roles(args):

@@ -19,7 +19,7 @@ import json
 from flask_babel import gettext
 from flask import Blueprint, make_response, jsonify, request
 from src.backend.functions import rest_validator, check_extensions_mime
-from src.backend.import_controllers import auth, splitter, forms, privileges
+from src.backend.controllers import auth, splitter, forms, privileges
 
 bp = Blueprint('splitter', __name__, url_prefix='/ws/')
 

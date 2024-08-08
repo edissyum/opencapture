@@ -27,7 +27,7 @@ from src.backend import verifier_exports
 from src.backend.scripting_functions import check_code
 from src.backend.import_classes import _PyTesseract, _Files
 from src.backend.scripting_functions import send_to_workflow
-from src.backend.import_controllers import verifier, accounts
+from src.backend.controllers import verifier, accounts
 from src.backend.functions import delete_documents, rotate_document, find_workflow_with_ia
 from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber, FindName

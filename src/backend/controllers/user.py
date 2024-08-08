@@ -23,10 +23,10 @@ from io import StringIO
 
 from flask_babel import gettext
 from flask import request, g as current_context
-from src.backend.import_controllers import auth
+from src.backend.controllers import auth
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url, get_custom_path
-from src.backend.import_models import user, accounts, forms, history, roles
+from src.backend.models import user, accounts, forms, history, roles
 from werkzeug.security import check_password_hash, generate_password_hash
 
 

@@ -18,7 +18,7 @@
 import json
 from flask_babel import gettext
 from flask import Blueprint, request, make_response, jsonify
-from src.backend.import_controllers import auth, artificial_intelligence, doctypes, privileges
+from src.backend.controllers import auth, artificial_intelligence, doctypes, privileges
 
 bp = Blueprint('ai', __name__, url_prefix='/ws/')
 

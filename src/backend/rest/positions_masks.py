@@ -20,7 +20,7 @@ import base64
 from flask_babel import gettext
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url, rest_validator
-from src.backend.import_controllers import auth, positions_masks, verifier, privileges
+from src.backend.controllers import auth, positions_masks, verifier, privileges
 from flask import Blueprint, request, make_response, jsonify, current_app, g as current_context
 
 bp = Blueprint('positions_masks', __name__, url_prefix='/ws/')

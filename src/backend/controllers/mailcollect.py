@@ -22,7 +22,7 @@ from imaplib import IMAP4_SSL
 from flask import request
 from flask_babel import gettext
 from imap_tools import MailBox, MailBoxUnencrypted
-from src.backend.import_models import mailcollect, history
+from src.backend.models import mailcollect, history
 
 
 def retrieve_processes(args):

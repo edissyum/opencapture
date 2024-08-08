@@ -37,10 +37,10 @@ from src.backend.import_classes import _Files
 from werkzeug.datastructures import FileStorage
 from src.backend.classes.Files import rotate_img
 from src.backend.scripting_functions import check_code
-from src.backend.import_models import verifier, accounts, forms
+from src.backend.models import verifier, accounts, forms
 from src.backend.main import launch, create_classes_from_custom_id
 from flask import current_app, Response, request, g as current_context
-from src.backend.import_controllers import auth, user, monitoring, history
+from src.backend.controllers import auth, user, monitoring, history
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 

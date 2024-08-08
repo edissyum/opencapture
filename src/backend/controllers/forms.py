@@ -19,8 +19,8 @@
 import json
 from flask import request
 from flask_babel import gettext
-from src.backend.import_controllers import user
-from src.backend.import_models import forms, accounts, verifier, history
+from src.backend.controllers import user
+from src.backend.models import forms, accounts, verifier, history
 
 
 def get_forms(args):

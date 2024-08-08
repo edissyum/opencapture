@@ -21,7 +21,7 @@ import requests
 import subprocess
 from flask_babel import gettext
 from flask import request, g as current_context
-from src.backend.import_models import config, history
+from src.backend.models import config, history
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url, get_custom_path
 

@@ -21,7 +21,7 @@ import mimetypes
 from flask_babel import gettext
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url, rest_validator
-from src.backend.import_controllers import auth, accounts, verifier, privileges
+from src.backend.controllers import auth, accounts, verifier, privileges
 from flask import Blueprint, request, make_response, jsonify, g as current_context
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')

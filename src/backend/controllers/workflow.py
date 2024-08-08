@@ -23,11 +23,11 @@ import traceback
 from io import StringIO
 from flask_babel import gettext
 from pyflakes.scripts import pyflakes
+from src.backend.controllers import user
 from src.backend.import_classes import _Config
-from src.backend.import_controllers import user
 from flask import request, g as current_context
+from src.backend.models import workflow, history
 from src.backend.scripting_functions import check_code
-from src.backend.import_models import workflow, history
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 

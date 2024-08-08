@@ -18,7 +18,7 @@
 from flask_babel import gettext
 from src.backend.functions import rest_validator
 from flask import Blueprint, request, make_response, jsonify
-from src.backend.import_controllers import auth, opencaptureformem
+from src.backend.controllers import auth, opencaptureformem
 
 bp = Blueprint('opencaptureformem', __name__, url_prefix='/ws/')
 

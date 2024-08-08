@@ -17,7 +17,7 @@
 
 from flask_babel import gettext
 from flask import g as current_context, request
-from src.backend.import_models import history, user
+from src.backend.models import history, user
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 

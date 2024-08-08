@@ -16,20 +16,8 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from flask import Blueprint, make_response, jsonify, request
-from src.backend.controllers import auth, status, privileges
+from src.backend.functions import rest_validator
+from src.backend.controllers import auth, privileges
+from flask import Blueprint, request, make_response, jsonify
 
-
-bp = Blueprint('status', __name__, url_prefix='/ws/')
-
-
-@bp.route('status/<string:module>/list', methods=['GET'])
-@auth.token_required
-def status_list(module):
-    list_priv = ['access_verifier | update_status'] if module == 'verifier' else \
-        ['access_splitter | update_status_splitter']
-    if not privileges.has_privileges(request.environ['user_id'], list_priv):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/status/{module}/list'}), 403
-
-    _status = status.get_status(module)
-    return make_response(jsonify(_status[0])), _status[1]
+bp = Blueprint('attachments', __name__, url_prefix='/ws/')

@@ -107,6 +107,7 @@
 	},
 	"ATTACHMENTS": {
 		"add_attachments": "Ajouter des pièces jointes",
+		"attachments": "Pièces jointes",
 		"attachments_list": "Liste des pièces jointes"
 	},
 	"AUTH": {

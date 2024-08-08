@@ -22,7 +22,7 @@ import json
 import subprocess
 from flask_babel import gettext
 from src.backend.import_classes import _Files
-from src.backend.import_models import accounts, history
+from src.backend.models import accounts, history
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
 from src.backend.functions import retrieve_custom_from_url, retrieve_custom_path
