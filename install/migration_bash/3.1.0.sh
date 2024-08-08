@@ -31,7 +31,7 @@ for custom_name in ${SECTIONS[@]}; do
     custom_name=${custom_name//[\.\-]/_}
     custom_name=$(echo "$custom_name" | tr "[:upper:]" "[:lower:]")
     mkdir -p data/
-    mv $opencapturePath/bin/data/ $opencapturePath/data/ 2>/dev/null
+    mv $opencapturePath/bin/data/* $opencapturePath/data/ 2>/dev/null
     rm -rf $opencapturePath/bin/data/
 
     mkdir -p custom/$custom_name/data/
