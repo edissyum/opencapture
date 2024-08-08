@@ -397,3 +397,13 @@ CREATE TABLE "workflows" (
     "process"           JSONB        DEFAULT '{}',
     "output"            JSONB        DEFAULT '{}'
 );
+
+CREATE TABLE "attachments" (
+    "id"                SERIAL       UNIQUE PRIMARY KEY,
+    "document_id"       INTEGER,
+    "batch_id"          INTEGER,
+    "filename"          VARCHAR(255),
+    "path"              VARCHAR(255),
+    "status"            VARCHAR(10)  DEFAULT 'OK',
+    "creation_date"     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+);

@@ -107,7 +107,9 @@
 	},
 	"ATTACHMENTS": {
 		"add_attachments": "Add attachments",
+		"attachment_uploaded": "Attachment(s) uploaded successfully",
 		"attachments": "Attachments",
+		"attachments_count": "Attachments count",
 		"attachments_list": "Attachments list"
 	},
 	"AUTH": {

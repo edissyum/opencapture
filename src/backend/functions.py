@@ -109,7 +109,6 @@ def check_extensions_mime(files, document_type='document'):
     if os.path.isfile(formats_file):
         with open(formats_file) as json_file:
             formats = json.load(json_file)
-            print(formats)
     else:
         response = {
             "errors": gettext("UPLOAD_ERRROR"),

@@ -86,6 +86,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     imgSrc                  : any         = '';
     ratio                   : number      = 0;
     currentPage             : number      = 1;
+    attachments             : any[]       = [];
+    attachmentsLength       : number      = 0;
     customFields            : any         = {};
     accountingPlan          : any         = {};
     formSettings            : any         = {};
@@ -243,6 +245,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             return;
         }
 
+        this.getAttachments();
+
         this.currentFilename = this.document.full_jpg_filename;
         await this.getThumb(this.document.full_jpg_filename);
 
@@ -333,6 +337,19 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         if (this.formSettings.settings.unique_url && this.formSettings.settings.unique_url.allow_supplier_autocomplete) {
             this.allowAutocomplete = true;
         }
+    }
+
+    getAttachments() {
+        this.http.get(environment['url'] + '/ws/attachments/verifier/list/' + this.documentId, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.attachments = data;
+                this.attachmentsLength = this.attachments.length;
+            }),
+            catchError((err: any) => {
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     async reloadPageWaitingFinish(token: any) {
@@ -2069,5 +2086,25 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             return workflowAllow && this.document.status !== 'WAIT_THIRD_PARTY' && this.supplierExists;
         }
         return false;
+    }
+
+    uploadAttachments(event: any) {
+        const attachments = new FormData();
+        for (const file of event.target.files) {
+            attachments.append(file['name'], file);
+        }
+
+        attachments.set('documentId', this.document.id);
+        this.http.post(environment['url'] + '/ws/attachments/verifier/upload', attachments, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('ATTACHMENTS.attachment_uploaded'));
+                this.getAttachments();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 }

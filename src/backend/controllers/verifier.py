@@ -39,8 +39,8 @@ from src.backend.classes.Files import rotate_img
 from src.backend.scripting_functions import check_code
 from src.backend.models import verifier, accounts, forms
 from src.backend.main import launch, create_classes_from_custom_id
-from flask import current_app, Response, request, g as current_context
 from src.backend.controllers import auth, user, monitoring, history
+from flask import current_app, Response, request, g as current_context
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
@@ -137,14 +137,15 @@ def retrieve_documents(args):
     if 'select' not in args:
         args['select'] = []
 
-    args['table'] = ['documents', 'form_models']
-    args['left_join'] = ['documents.form_id = form_models.id']
-    args['group_by'] = ['documents.id', 'documents.form_id', 'form_models.id']
+    args['table'] = ['documents', 'form_models', 'attachments']
+    args['left_join'] = ['documents.form_id = form_models.id', 'documents.id = attachments.document_id']
+    args['group_by'] = ['documents.id', 'documents.form_id', 'form_models.id', 'attachments.document_id']
 
     args['select'].append("documents.id as document_id")
+    args['select'].append("count(attachments) as attachments_count")
     args['select'].append("to_char(register_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as date")
     args['select'].append('form_models.label as form_label')
-    args['select'].append("*")
+    args['select'].append("documents.*")
 
     args['where'].append("datas -> 'api_only' is NULL")
 

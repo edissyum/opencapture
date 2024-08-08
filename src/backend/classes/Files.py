@@ -657,7 +657,7 @@ class Files:
         return final_directory
 
     @staticmethod
-    def move_to_docservers(docservers, file, module='verifier'):
+    def move_to_docservers(docservers, file, module='verifier', attachments=False):
         now = datetime.datetime.now()
         year = str(now.year)
         day = str('%02d' % now.day)
@@ -667,8 +667,13 @@ class Files:
         seconds = str('%02d' % now.second)
 
         docserver_path = docservers['VERIFIER_ORIGINAL_DOC']
+        if attachments:
+            docserver_path = docservers['VERIFIER_ATTACHMENTS']
+
         if module == 'splitter':
             docserver_path = docservers['SPLITTER_ORIGINAL_DOC']
+            if attachments:
+                docserver_path = docservers['SPLITTER_ATTACHMENTS']
 
         # Check if docserver folder exists, if not, create it
         if not os.path.exists(docserver_path):

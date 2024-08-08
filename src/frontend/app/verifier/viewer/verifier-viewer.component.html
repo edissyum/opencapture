@@ -44,8 +44,9 @@
                 </h3>
                 <mat-divider></mat-divider>
                 <div class="flex overflow-x-hidden justify-center" style="height: calc(100vh - 8.5rem) !important">
-                    <div class="flex align-center items-center ">
-                        <i class="fa-solid fa-solid fa-plus text-5xl text-green-400 cursor-pointer" [matTooltip]="'ATTACHMENTS.add_attachments' | translate"></i>
+                    <div class="flex align-center items-center" *ngIf="this.attachmentsLength === 0">
+                        <input multiple type="file" class="hidden" (change)="uploadAttachments($event)" #attachmentUpload>
+                        <i class="fa-solid fa-solid fa-plus text-5xl text-green-400 cursor-pointer" [matTooltip]="'ATTACHMENTS.add_attachments' | translate" (click)="attachmentUpload.click()"></i>
                     </div>
                 </div>
             </mat-sidenav>
@@ -65,13 +66,13 @@
                             </span>
                         </ng-container>
                     </div>
-<!--                    <div *ngIf="!this.loading" class="fixed cursor-pointer mr-2 mt-4 z-50 text-xl text-left text-gray-900" [matTooltip]="'ATTACHMENTS.attachments' | translate">-->
-<!--                        <i class="fa-solid fa-paperclip" (click)="attachments.toggle()"></i>-->
-<!--                        <div class="relative inline-flex items-center justify-center font-bold text-white bg-green-400-->
-<!--                                    text-[.6rem] leading-[.5rem] rounded-full -top-1 float-right p-[3px]">-->
-<!--                            {{ '2'.padStart(2, '0') }}-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    <div *ngIf="!this.loading" class="fixed cursor-pointer mr-2 mt-4 z-50 text-xl text-left text-gray-900" [matTooltip]="'ATTACHMENTS.attachments' | translate">
+                        <i class="fas fa-paperclip" (click)="attachments.toggle()"></i>
+                        <div class="relative inline-flex items-center justify-center font-bold text-white bg-green-400
+                                    text-[.6rem] leading-[.5rem] rounded-full -top-1 float-right p-[3px]">
+                            {{ this.attachmentsLength.toString().padStart(2, '0') }}
+                        </div>
+                    </div>
                     <div class="image-container px-4" *ngIf="this.document">
                         <div class="absolute right-[75%] z-10 bottom-1/2 transform translate-x-1/2 translate-y-1/2" *ngIf="this.imgLoading">
                             <i class="fa-solid text-6xl fa-circle-notch fa-spin text-green-400"></i>

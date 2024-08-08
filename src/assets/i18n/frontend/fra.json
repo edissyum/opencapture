@@ -107,7 +107,9 @@
 	},
 	"ATTACHMENTS": {
 		"add_attachments": "Ajouter des pièces jointes",
+		"attachment_uploaded": "Pièce(s) jointe(s) téléversée(s) avec succès",
 		"attachments": "Pièces jointes",
+		"attachments_count": "Nombre de pièces jointes",
 		"attachments_list": "Liste des pièces jointes"
 	},
 	"AUTH": {
