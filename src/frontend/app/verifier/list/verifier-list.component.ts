@@ -177,6 +177,7 @@ export class VerifierListComponent implements OnInit {
         }
 
         marker('ATTACHMENTS.attachments_count'); // Needed to get the translation in the JSON file
+        marker('ATTACHMENTS.attachment_settings'); // Needed to get the translation in the JSON file
         marker('VERIFIER.nb_pages'); // Needed to get the translation in the JSON file
         marker('VERIFIER.expand_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.select_all'); // Needed to get the translation in the JSON file

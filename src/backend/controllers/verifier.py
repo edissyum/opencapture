@@ -148,6 +148,7 @@ def retrieve_documents(args):
     args['select'].append("documents.*")
 
     args['where'].append("datas -> 'api_only' is NULL")
+    args['where'].append("(attachments.status not in ('DEL') OR attachments.status is NULL)")
 
     if 'time' in args:
         if args['time'] in ['today', 'yesterday']:

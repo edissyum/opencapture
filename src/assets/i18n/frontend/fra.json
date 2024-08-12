@@ -107,10 +107,16 @@
 	},
 	"ATTACHMENTS": {
 		"add_attachments": "Ajouter des pièces jointes",
+		"attachment_deleted": "Pièce jointe supprimée avec succès",
+		"attachment_settings": "Paramètres de la pièce jointe",
 		"attachment_uploaded": "Pièce(s) jointe(s) téléversée(s) avec succès",
 		"attachments": "Pièces jointes",
 		"attachments_count": "Nombre de pièces jointes",
-		"attachments_list": "Liste des pièces jointes"
+		"attachments_list": "Liste des pièces jointes",
+		"confirm_delete_attachment": "Êtes vous sûr de vouloir supprimer cette pièce jointe ?",
+		"delete_attachment": "Supprimer la pièce jointe",
+		"download_attachment": "Télécharger la pièce jointe",
+		"loading_attachments": "Chargement des pièces jointes..."
 	},
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",

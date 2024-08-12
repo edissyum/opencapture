@@ -404,6 +404,7 @@ CREATE TABLE "attachments" (
     "batch_id"          INTEGER,
     "filename"          VARCHAR(255),
     "path"              VARCHAR(255),
+    "thumbnail_path"    VARCHAR(255),
     "status"            VARCHAR(10)  DEFAULT 'OK',
     "creation_date"     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );

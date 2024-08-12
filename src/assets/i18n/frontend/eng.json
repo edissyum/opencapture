@@ -107,10 +107,16 @@
 	},
 	"ATTACHMENTS": {
 		"add_attachments": "Add attachments",
+		"attachment_deleted": "Attachment deleted successfully",
+		"attachment_settings": "Attachment settings",
 		"attachment_uploaded": "Attachment(s) uploaded successfully",
 		"attachments": "Attachments",
 		"attachments_count": "Attachments count",
-		"attachments_list": "Attachments list"
+		"attachments_list": "Attachments list",
+		"confirm_delete_attachment": "Are you sure you want to delete this attachment ?",
+		"delete_attachment": "Delete attachment",
+		"download_attachment": "Download attachment",
+		"loading_attachments": "Loading attachments..."
 	},
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",

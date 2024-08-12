@@ -19,7 +19,7 @@ import {Component, HostListener, OnDestroy, OnInit, SecurityContext} from '@angu
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
-import { catchError, map, startWith, tap } from "rxjs/operators";
+import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
 import { interval, of } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
@@ -33,6 +33,8 @@ import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
 import { LocaleService } from "../../../services/locale.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 declare const $: any;
 
 @Component({
@@ -50,6 +52,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     fromTokenFormId         : any;
     saveInfo                : boolean     = true;
     loading                 : boolean     = true;
+    loadingAttachment       : boolean     = true;
     deleteDataOnChangeForm  : boolean     = true;
     supplierExists          : boolean     = false;
     formLoading             : boolean     = false;
@@ -138,6 +141,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     constructor(
         private router: Router,
         private http: HttpClient,
+        private dialog: MatDialog,
         private route: ActivatedRoute,
         private sanitizer: DomSanitizer,
         private authService: AuthService,
@@ -343,7 +347,15 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.http.get(environment['url'] + '/ws/attachments/verifier/list/' + this.documentId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.attachments = data;
+                this.attachments.forEach((attachment: any) => {
+                    if (attachment['thumb']) {
+                        attachment['thumb'] = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + attachment['thumb']);
+                    }
+                });
                 this.attachmentsLength = this.attachments.length;
+            }),
+            finalize(() => {
+                this.loadingAttachment = false;
             }),
             catchError((err: any) => {
                 this.notify.handleErrors(err);
@@ -2089,6 +2101,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     uploadAttachments(event: any) {
+        this.loadingAttachment = true;
         const attachments = new FormData();
         for (const file of event.target.files) {
             attachments.append(file['name'], file);
@@ -2099,6 +2112,60 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             tap(() => {
                 this.notify.success(this.translate.instant('ATTACHMENTS.attachment_uploaded'));
                 this.getAttachments();
+            }),
+            catchError((err: any) => {
+                this.loadingAttachment = false;
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    deleteConfirmDialog(documentId: number) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data: {
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('ATTACHMENTS.confirm_delete_attachment'),
+                confirmButton       : this.translate.instant('GLOBAL.delete'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
+            },
+            width: "600px"
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.loadingAttachment = true;
+                this.deleteAttachment(documentId);
+            }
+        });
+    }
+
+    deleteAttachment(attachmentId: number) {
+        this.http.delete(environment['url'] + '/ws/attachments/verifier/delete/' + attachmentId, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('ATTACHMENTS.attachment_deleted'));
+                this.getAttachments();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    downloadAttachment(attachment: any) {
+        this.http.post(environment['url'] + '/ws/attachments/download/' + attachment['id'], {},
+            {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                const mimeType = data['mime'];
+                const referenceFile = 'data:' + mimeType + ';base64, ' + data['file'];
+                const link = document.createElement("a");
+                link.href = referenceFile;
+                link.download = attachment['filename'];
+                link.click();
             }),
             catchError((err: any) => {
                 console.debug(err);

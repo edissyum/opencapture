@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import base64
 from flask_babel import gettext
 from src.backend.functions import rest_validator
 from flask import Blueprint, request, make_response, jsonify
@@ -38,7 +39,7 @@ def upload_verifier():
             "message": message
         }, 400)
 
-    res = attachments.handle_uploaded_file(request.files, request.form['documentId'])
+    res = attachments.handle_uploaded_file(request.files, request.form['documentId'], 'verifier')
     return make_response(res[0], res[1])
 
 @bp.route('attachments/verifier/list/<int:document_id>', methods=['GET'])
@@ -48,4 +49,24 @@ def get_attachments_by_document_id(document_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/verifier/{document_id}'}), 403
 
     _attachments = attachments.get_attachments_by_document_id(document_id)
+    return make_response(jsonify(_attachments[0])), _attachments[1]
+
+@bp.route('attachments/download/<int:attachment_id>', methods=['POST'])
+@auth.token_required
+def download_attachment(attachment_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'attachments_list']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/download/{attachment_id}'}), 403
+
+    file_content, mime = attachments.download_attachment(attachment_id)
+    if file_content is None:
+        return make_response({'errors': gettext('DOWNLOAD_FILE'), 'message': gettext('FILE_NOT_FOUND')}, 404)
+    return make_response({'file': str(base64.b64encode(file_content).decode('utf-8')), 'mime': mime}), 200
+
+@bp.route('attachments/verifier/delete/<int:attachment_id>', methods=['DELETE'])
+@auth.token_required
+def delete_attachment(attachment_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'attachments_list']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/verifier/delete/{attachment_id}'}), 403
+
+    _attachments = attachments.delete_attachment(attachment_id)
     return make_response(jsonify(_attachments[0])), _attachments[1]

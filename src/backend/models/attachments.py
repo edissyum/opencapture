@@ -51,7 +51,7 @@ def get_attachments_by_document_id(document_id):
     attachments = database.select({
         'select': ['*'],
         'table': ['attachments'],
-        'where': ['document_id = %s'],
+        'where': ["document_id = %s", "status not in ('DEL')"],
         'data': [document_id]
     })
 
@@ -59,3 +59,46 @@ def get_attachments_by_document_id(document_id):
         error = gettext('GET_ATTACHMENTS_ERROR')
 
     return attachments, error
+
+def get_attachment_by_id(attachment_id):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    attachment = database.select({
+        'select': ['*'],
+        'table': ['attachments'],
+        'where': ['id = %s'],
+        'data': [attachment_id]
+    })
+
+    if not attachment:
+        error = gettext('GET_ATTACHMENT_ERROR')
+    return attachment[0], error
+
+def delete_attachment(attachment_id):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    attachment = database.update({
+        'table': ['attachments'],
+        'set': {
+            'status': 'DEL'
+        },
+        'where': ['id = %s'],
+        'data': [attachment_id]
+    })
+
+    if not attachment:
+        error = gettext('DELETE_ATTACHMENT_ERROR')
+
+    return attachment, error
