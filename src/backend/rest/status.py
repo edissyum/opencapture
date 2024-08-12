@@ -17,7 +17,7 @@
 
 from flask_babel import gettext
 from flask import Blueprint, make_response, jsonify, request
-from src.backend.import_controllers import auth, status, privileges
+from src.backend.controllers import auth, status, privileges
 
 
 bp = Blueprint('status', __name__, url_prefix='/ws/')

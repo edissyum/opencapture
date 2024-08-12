@@ -23,13 +23,14 @@ import json
 import pypdf
 import base64
 import random
+import hashlib
 import pathlib
 import tempfile
 from xml.dom import minidom
 from datetime import datetime
 from unidecode import unidecode
-from src.backend.import_classes import _OpenCaptureForMEMWebServices
 from werkzeug.datastructures import FileStorage
+from src.backend.import_classes import _OpenCaptureForMEMWebServices
 
 
 def construct_with_var(data, document_info):
@@ -255,9 +256,13 @@ class Splitter:
                         if first_page['metadata_3'] and custom_field['metadata_key'] == 'SEPARATOR_META3':
                             default_values['batch'][custom_field['label_short']] = first_page['metadata_3']
 
+            with open(clean_path, 'rb') as _f:
+                md5 = hashlib.md5( _f.read()).hexdigest()
+
             args = {
                 'table': 'splitter_batches',
                 'columns': {
+                    'md5': md5,
                     'form_id': form_id,
                     'batch_folder': batch_folder,
                     'workflow_id': workflow_settings[0]['id'],
@@ -469,6 +474,8 @@ class Splitter:
                 if 'is_file_added_to_zip' in document and document['is_file_added_to_zip']:
                     continue
 
+                document_md5 = hashlib.md5(document.read()).hexdigest()
+
                 doc_loop_item = doc_loop_item_template.group(1)
                 doc_loop_item = doc_loop_item.replace('#date#', date)
                 doc_loop_item = doc_loop_item.replace('#user_lastname#', user_lastname)
@@ -476,6 +483,7 @@ class Splitter:
                 doc_loop_item = doc_loop_item.replace('#documents_count#', str(len(documents)))
                 doc_loop_item = doc_loop_item.replace('#doctype#', str(document['doctype_key']))
                 doc_loop_item = doc_loop_item.replace('#document_identifier#', str(document['id']))
+                doc_loop_item = doc_loop_item.replace('#document_md5#', str(document_md5))
                 doc_loop_item = doc_loop_item.replace('#random#', str(random.randint(0, 99999)).zfill(5))
                 doc_loop_item = doc_loop_item.replace('#filename#', document['filename'] if 'filename' in document else '')
 
@@ -530,7 +538,7 @@ class Splitter:
                         file = FileStorage(stream=open(tf.name, 'rb'), content_type='application/pdf',
                                            filename=document['doctype_key'] + '_' + str(document['id']) + '.pdf')
                         json_body[key].append(file)
-        from src.backend.import_controllers import verifier
+        from src.backend.controllers import verifier
         return verifier.upload_documents(json_body)
 
     @staticmethod
@@ -566,13 +574,3 @@ class Splitter:
         script = script_name.replace('.py', '')
         module = __import__(script, fromlist=method)
         return getattr(module, method)
-
-    def batch_auto_validate(self, batch_id):
-        batch = self.db.select({
-            'select': ['*'],
-            'table': ['splitter_batches'],
-            'where': ['id = %s'],
-            'data': [str(batch_id)],
-        })
-
-        return True, ''

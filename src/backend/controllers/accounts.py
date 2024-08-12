@@ -22,7 +22,7 @@ import json
 import subprocess
 from flask_babel import gettext
 from src.backend.import_classes import _Files
-from src.backend.import_models import accounts, history
+from src.backend.models import accounts, history
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
 from src.backend.functions import retrieve_custom_from_url, retrieve_custom_path
@@ -174,6 +174,8 @@ def update_supplier(supplier_id, data):
             _set.update({'document_lang': data['document_lang']})
         if 'skip_auto_validate' in data:
             _set.update({'skip_auto_validate': data['skip_auto_validate']})
+        if 'default_accounting_plan' in data:
+            _set.update({'default_accounting_plan': data['default_accounting_plan']})
         if 'positions' in data:
             _set.update({'positions': data['positions']})
         if 'pages' in data:
@@ -370,6 +372,7 @@ def create_supplier(data):
         'form_id': data['form_id'] if 'form_id' in data else None,
         'address_id': data['address_id'] if 'address_id' in data else None,
         'document_lang': data['document_lang'] if 'document_lang' in data else 'fra',
+        'default_accounting_plan': data['default_accounting_plan'] if 'default_accounting_plan' in data else '',
         'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False
     }
 

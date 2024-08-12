@@ -123,6 +123,7 @@ import { WorkflowListSplitterComponent } from './settings/splitter/workflow/list
 import { WorkflowBuilderSplitterComponent } from './settings/splitter/workflow/builder/workflow-builder.component';
 import { TimeoutInterceptor } from "../services/HttpTimeout.service";
 import { CodeEditorModule } from '@ngstack/code-editor';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -240,7 +241,8 @@ export function createTranslateLoader(http: HttpClient) {
         DragDropModule,
         NgxMatSelectSearchModule,
         MatSelectCountryModule.forRoot('fr'),
-        TranslateModule
+        TranslateModule,
+        OverlayModule
     ],
     providers: [
         Title,

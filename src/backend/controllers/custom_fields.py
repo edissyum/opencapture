@@ -17,8 +17,8 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask_babel import gettext
-from src.backend.import_controllers import forms
-from src.backend.import_models import custom_fields
+from src.backend.controllers import forms
+from src.backend.models import custom_fields
 
 
 def add_custom_field(args):

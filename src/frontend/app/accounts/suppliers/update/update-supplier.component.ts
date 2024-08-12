@@ -27,7 +27,7 @@ import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { environment } from  "../../../env";
-import { catchError, finalize, tap } from "rxjs/operators";
+import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
 import { of } from "rxjs";
 import { COUNTRIES_DB_FR, Country } from "@angular-material-extensions/select-country";
 import { LocaleService } from "../../../../services/locale.service";
@@ -37,12 +37,14 @@ import { LocaleService } from "../../../../services/locale.service";
     templateUrl: './update-supplier.component.html'
 })
 export class UpdateSupplierComponent implements OnInit {
-    headers: HttpHeaders = this.authService.headers;
-    loading: boolean = true;
-    supplierId: any;
-    addressId: any;
-    supplier: any;
-    supplierForm: any[] = [
+    headers                 : HttpHeaders = this.authService.headers;
+    loading                 : boolean = true;
+    toHighlightAccounting   : string  = '';
+    supplierId              : any;
+    addressId               : any;
+    supplier                : any;
+    accountingPlan          : any   = {};
+    supplierForm            : any[] = [
         {
             id: 'get_only_raw_footer',
             label: marker('ACCOUNTS.get_only_raw_footer'),
@@ -128,9 +130,17 @@ export class UpdateSupplierComponent implements OnInit {
             control: new FormControl(),
             required: true,
             values: []
+        },
+        {
+            id: 'default_accounting_plan',
+            label: marker('FACTURATION.default_accounting_plan'),
+            type: 'select',
+            control: new FormControl(),
+            required: false,
+            values: []
         }
     ];
-    addressForm: any [] = [
+    addressForm             : any[] = [
         {
             id: 'address1',
             label: marker('ADDRESSES.address_1'),
@@ -189,12 +199,15 @@ export class UpdateSupplierComponent implements OnInit {
         public privilegesService: PrivilegesService
     ) { }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<any> {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
         this.supplierId = this.route.snapshot.params['id'];
-        this.supplierForm.forEach((element: any) => {
+        let tmpAccountingPlan: any = {};
+        tmpAccountingPlan = await this.retrieveDefaultAccountingPlan();
+        tmpAccountingPlan = this.sortArray(tmpAccountingPlan);
+        for (const element of this.supplierForm) {
             if (element.id === 'vat_number' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'duns' || element.id === 'bic') {
                 element.control.valueChanges.subscribe((value: any) => {
                     if (value && value.includes(' ')) {
@@ -230,7 +243,15 @@ export class UpdateSupplierComponent implements OnInit {
                     });
                 }
             }
-        });
+            if (element.id === 'default_accounting_plan') {
+                this.accountingPlan = element.control.valueChanges
+                    .pipe(
+                        startWith(''),
+                        map(option => option ? this._filter_accounting(tmpAccountingPlan, option) : tmpAccountingPlan)
+                    );
+            }
+        }
+
         this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.http.get(environment['url'] + '/ws/accounts/suppliers/getById/' + this.supplierId, {headers: this.authService.headers}).pipe(
@@ -242,11 +263,16 @@ export class UpdateSupplierComponent implements OnInit {
                                     if (element.id === field) {
                                         if (element.id === 'get_only_raw_footer') {
                                             element.control.setValue(!this.supplier[field]);
+                                        } else if (element.id === 'form_id') {
+                                            element.values = forms.forms;
+                                        } else if (element.id === 'default_accounting_plan') {
+                                            tmpAccountingPlan.forEach((account: any) => {
+                                                if (account.id === parseInt(this.supplier[field])) {
+                                                    element.control.setValue(account);
+                                                }
+                                            });
                                         } else {
                                             element.control.setValue(this.supplier[field]);
-                                        }
-                                        if (element.id === 'form_id') {
-                                            element.values = forms.forms;
                                         }
                                     } else if (field === 'address_id') {
                                         this.addressId = this.supplier[field];
@@ -363,11 +389,13 @@ export class UpdateSupplierComponent implements OnInit {
                 if (element.id === 'get_only_raw_footer') {
                     supplier[element.id] = !element.control.value;
                 }
+                if (element.id === 'default_accounting_plan') {
+                    supplier[element.id] = element.control.value.id;
+                }
             });
             this.addressForm.forEach(element => {
                 address[element.id] = element.control.value;
             });
-
             this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': supplier}, {headers: this.authService.headers},
             ).pipe(
                 catchError((err: any) => {
@@ -422,5 +450,29 @@ export class UpdateSupplierComponent implements OnInit {
             }
         });
         return error;
+    }
+
+    async retrieveDefaultAccountingPlan() {
+        return await this.http.get(environment['url'] + '/ws/accounts/customers/getDefaultAccountingPlan', {headers: this.authService.headers}).toPromise();
+    }
+
+    sortArray(array: any) {
+        return array.sort((a: any, b: any) => {
+            const x = a.compte_num, y = b.compte_num;
+            return x === y ? 0 : x > y ? 1 : -1;
+        });
+    }
+
+    private _filter_accounting(array: any, value: any): string[] {
+        this.toHighlightAccounting = value;
+        if (typeof value === 'object') {
+            value = value.compte_num + ' - ' + value.compte_lib ;
+        }
+        const filterValue = value.toLowerCase();
+        return array.filter((option: any) => option.compte_lib.toLowerCase().indexOf(filterValue) !== -1 || option.compte_num.toLowerCase().indexOf(filterValue) !== -1);
+    }
+
+    displayFn_accounting(option: any): string {
+        return option ? option.compte_num + ' - ' + option.compte_lib : '';
     }
 }

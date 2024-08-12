@@ -17,7 +17,7 @@
 
 from flask_babel import gettext
 from src.backend.functions import rest_validator
-from src.backend.import_controllers import auth, coog
+from src.backend.controllers import auth, coog
 from flask import Blueprint, request, make_response, jsonify
 
 bp = Blueprint('coog', __name__, url_prefix='/ws/')

@@ -101,8 +101,11 @@ def rest_validator(data, required_fields, only_data=False):
     return True, ''
 
 
-def check_extensions_mime(files):
+def check_extensions_mime(files, document_type='document'):
     formats_file = str(Path(__file__).parents[2]) + '/instance/config/formats.json'
+    if document_type == 'attachments':
+        formats_file = str(Path(__file__).parents[2]) + '/instance/config/attachments_formats.json'
+
     if os.path.isfile(formats_file):
         with open(formats_file) as json_file:
             formats = json.load(json_file)

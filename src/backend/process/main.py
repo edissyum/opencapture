@@ -18,6 +18,7 @@
 import os
 import uuid
 import json
+import hashlib
 import datetime
 import importlib
 import traceback
@@ -26,7 +27,7 @@ from src.backend import verifier_exports
 from src.backend.scripting_functions import check_code
 from src.backend.import_classes import _PyTesseract, _Files
 from src.backend.scripting_functions import send_to_workflow
-from src.backend.import_controllers import verifier, accounts
+from src.backend.controllers import verifier, accounts
 from src.backend.functions import delete_documents, rotate_document, find_workflow_with_ia
 from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber, FindName
@@ -146,8 +147,12 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
     year_and_month = now.strftime('%Y') + '/' + now.strftime('%m')
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + year_and_month + '/' + full_jpg_filename + '-001.jpg'
 
+    with open(file, 'rb') as _f:
+        md5 = hashlib.md5( _f.read()).hexdigest()
+
     document_data = {
         'filename': os.path.basename(file),
+        'md5': md5,
         'path': os.path.dirname(file),
         'img_width': str(files.get_width(path)),
         'full_jpg_filename': full_jpg_filename + '-001.jpg',
@@ -165,6 +170,10 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
         document_data.update({
             'supplier_id': supplier[2]['supplier_id'],
         })
+    else:
+        if workflow_settings and ('allow_third_party_validation' in workflow_settings['process'] and
+                                  workflow_settings['process']['allow_third_party_validation']):
+            document_data['status'] = 'WAIT_THIRD_PARTY'
 
     if args.get('isMail') is None or args.get('isMail') is False:
         if 'workflow_id' in args and args['workflow_id'] and workflow_settings:

@@ -27,7 +27,7 @@ import { NotificationService } from "../../../../services/notifications/notifica
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { environment } from  "../../../env";
-import { catchError, finalize, tap } from "rxjs/operators";
+import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
 import { of } from "rxjs";
 import { Country } from '@angular-material-extensions/select-country';
 import { LocaleService } from "../../../../services/locale.service";
@@ -37,10 +37,12 @@ import { LocaleService } from "../../../../services/locale.service";
     templateUrl: './create-supplier.component.html'
 })
 export class CreateSupplierComponent implements OnInit {
-    headers         : HttpHeaders = this.authService.headers;
-    loading         : boolean   = true;
-    createLoading   : boolean   = false;
-    supplierForm    : any[]     = [
+    headers                 : HttpHeaders = this.authService.headers;
+    loading                 : boolean     = true;
+    createLoading           : boolean     = false;
+    toHighlightAccounting   : string      = '';
+    accountingPlan          : any         = {};
+    supplierForm            : any[]       = [
         {
             id: 'get_only_raw_footer',
             label: marker('ACCOUNTS.get_only_raw_footer'),
@@ -127,9 +129,17 @@ export class CreateSupplierComponent implements OnInit {
             control: new FormControl(),
             required: true,
             values: []
+        },
+        {
+            id: 'default_accounting_plan',
+            label: marker('FACTURATION.default_accounting_plan'),
+            type: 'select',
+            control: new FormControl(),
+            required: false,
+            values: []
         }
     ];
-    addressForm     : any[]     = [
+    addressForm             : any[]       = [
         {
             id: 'address1',
             label: marker('ADDRESSES.address_1'),
@@ -166,7 +176,7 @@ export class CreateSupplierComponent implements OnInit {
             required: true
         }
     ];
-    defaultValue    : Country   = {
+    defaultValue            : Country     = {
         name: 'France',
         alpha2Code: 'FR',
         alpha3Code: 'FRA',
@@ -188,10 +198,59 @@ export class CreateSupplierComponent implements OnInit {
     ) {
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+
+        let tmpAccountingPlan: any = {};
+        tmpAccountingPlan = await this.retrieveDefaultAccountingPlan();
+        tmpAccountingPlan = this.sortArray(tmpAccountingPlan);
+        for (const element of this.supplierForm) {
+            if (element.id === 'vat_number' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'duns' || element.id === 'bic') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    if (value && value.includes(' ')) {
+                        element.control.setValue(value.replace(' ', ''));
+                    }
+                });
+            }
+            if (element.id === 'document_lang') {
+                if (this.localeService.langs.length === 0) {
+                    this.http.get(environment['url'] + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
+                        tap((data: any) => {
+                            data.langs.forEach((lang: any) => {
+                                element.control.setValue('fra');
+                                element.values.push({
+                                    'id': lang[0],
+                                    'label': lang[1]
+                                });
+                            });
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                } else {
+                    this.localeService.langs.forEach((lang: any) => {
+                        element.control.setValue('fra');
+                        element.values.push({
+                            'id': lang[0],
+                            'label': lang[1]
+                        });
+                    });
+                }
+            }
+            if (element.id === 'default_accounting_plan') {
+                this.accountingPlan = element.control.valueChanges
+                    .pipe(
+                        startWith(''),
+                        map(option => option ? this._filter_accounting(tmpAccountingPlan, option) : tmpAccountingPlan)
+                    );
+            }
+        }
+
         this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const forms = data.forms;
@@ -289,6 +348,9 @@ export class CreateSupplierComponent implements OnInit {
                 if (element.id === 'get_only_raw_footer') {
                     supplier[element.id] = !element.control.value;
                 }
+                if (element.id === 'default_accounting_plan') {
+                    supplier[element.id] = element.control.value.id;
+                }
             });
             this.addressForm.forEach(element => {
                 address[element.id] = element.control.value;
@@ -353,5 +415,29 @@ export class CreateSupplierComponent implements OnInit {
             }
         });
         return error;
+    }
+
+    async retrieveDefaultAccountingPlan() {
+        return await this.http.get(environment['url'] + '/ws/accounts/customers/getDefaultAccountingPlan', {headers: this.authService.headers}).toPromise();
+    }
+
+    sortArray(array: any) {
+        return array.sort((a: any, b: any) => {
+            const x = a.compte_num, y = b.compte_num;
+            return x === y ? 0 : x > y ? 1 : -1;
+        });
+    }
+
+    private _filter_accounting(array: any, value: any): string[] {
+        this.toHighlightAccounting = value;
+        if (typeof value === 'object') {
+            value = value.compte_num + ' - ' + value.compte_lib ;
+        }
+        const filterValue = value.toLowerCase();
+        return array.filter((option: any) => option.compte_lib.toLowerCase().indexOf(filterValue) !== -1 || option.compte_num.toLowerCase().indexOf(filterValue) !== -1);
+    }
+
+    displayFn_accounting(option: any): string {
+        return option ? option.compte_num + ' - ' + option.compte_lib : '';
     }
 }

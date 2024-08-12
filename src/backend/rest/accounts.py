@@ -21,7 +21,7 @@ import mimetypes
 from flask_babel import gettext
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url, rest_validator
-from src.backend.import_controllers import auth, accounts, verifier, privileges
+from src.backend.controllers import auth, accounts, verifier, privileges
 from flask import Blueprint, request, make_response, jsonify, g as current_context
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
@@ -97,7 +97,8 @@ def update_supplier(supplier_id):
         {'id': 'positions', 'type': dict, 'mandatory': False},
         {'id': 'document_lang', 'type': str, 'mandatory': False},
         {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
-        {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False}
+        {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False},
+        {'id': 'default_accounting_plan', 'type': int, 'mandatory': False}
     ])
 
     if not check:
@@ -248,7 +249,7 @@ def create_supplier():
     if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['create_supplier | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/suppliers/create'}), 403
-
+    print(request.json['args'])
     check, message = rest_validator(request.json['args'], [
         {'id': 'bic', 'type': str, 'mandatory': False},
         {'id': 'name', 'type': str, 'mandatory': True},
@@ -265,7 +266,8 @@ def create_supplier():
         {'id': 'positions', 'type': dict, 'mandatory': False},
         {'id': 'document_lang', 'type': str, 'mandatory': False},
         {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
-        {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False}
+        {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False},
+        {'id': 'default_accounting_plan', 'type': int, 'mandatory': False}
     ])
 
     if not check:

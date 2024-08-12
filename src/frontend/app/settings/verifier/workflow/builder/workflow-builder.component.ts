@@ -220,6 +220,14 @@ export class WorkflowBuilderComponent implements OnInit {
                 control: new FormControl()
             },
             {
+                id: 'allow_third_party_validation',
+                label: this.translate.instant('WORKFLOW.allow_third_party_validation'),
+                hint: this.translate.instant('WORKFLOW.allow_third_party_validation_hint'),
+                type: 'boolean',
+                show: true,
+                control: new FormControl()
+            },
+            {
                 id: 'form_id',
                 multiple: false,
                 label: this.translate.instant('POSITIONS-MASKS.form_associated'),

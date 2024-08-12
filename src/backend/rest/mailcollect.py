@@ -18,7 +18,7 @@
 from flask_babel import gettext
 from src.backend.functions import rest_validator
 from flask import Blueprint, jsonify, make_response, request
-from src.backend.import_controllers import mailcollect, auth, privileges
+from src.backend.controllers import mailcollect, auth, privileges
 
 bp = Blueprint('mailcollect', __name__,  url_prefix='/ws/')
 

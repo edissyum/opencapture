@@ -17,7 +17,7 @@
 
 from flask_babel import gettext
 from src.backend.functions import rest_validator
-from src.backend.import_controllers import auth, privileges
+from src.backend.controllers import auth, privileges
 from flask import Blueprint, request, make_response, jsonify
 
 bp = Blueprint('auth', __name__, url_prefix='/ws/')

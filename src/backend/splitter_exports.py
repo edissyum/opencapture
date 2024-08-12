@@ -20,7 +20,7 @@ import re
 from flask_babel import gettext
 from src.backend.classes.Splitter import get_value_from_mask
 from src.backend.scripting_functions import launch_script_splitter
-from src.backend.import_models import splitter, workflow, forms, outputs
+from src.backend.models import splitter, workflow, forms, outputs
 from src.backend.import_classes import _Splitter, _Files, _CMIS, _OpenADS
 
 

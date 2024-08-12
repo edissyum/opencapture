@@ -2,6 +2,7 @@
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Cloturée', 'Facture validée et cloturée', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('ERR', 'Erreur', 'Erreur lors de la qualification', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('WAIT_THIRD_PARTY', 'En attente fournisseur', 'En attente de création / modification de fiche fournisseur', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimée', 'Supprimée', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'splitter');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Clotûré', 'Lot clôturé', 'splitter');
@@ -86,6 +87,7 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFI
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_TRAIN_PATH_FILES', '[VERIFIER] Chemin vers le dossier contenant les données d''entraînement', '/var/docservers/opencapture/verifier/ai/train_data');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_AI_MODEL_PATH', '[VERIFIER] Chemin vers le dossier contenant le modèle de prédiction', '/var/docservers/opencapture/verifier/ai/models/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_ORIGINAL_DOC', '[VERIFIER] Chemin vers le dossier contenant les documents originaux', '/var/docservers/opencapture/verifier/original_doc/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_ATTACHMENTS', '[VERIFIER] Chemin vers le dossier contenant les pièces jointes', '/var/docservers/opencapture/verifier/attachments/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_BATCHES', '[SPLITTER] Chemin vers le dossier de stockage des dossiers de batch après traitement', '/var/docservers/opencapture/splitter/batches/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_THUMB', '[SPLITTER] Chemin pour le stockage des miniatures', '/var/docservers/opencapture/splitter/thumbs/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_ORIGINAL_DOC', '[SPLITTER] Chemin vers le dossier contenant les documents originaux', '/var/docservers/opencapture/splitter/original_doc/');
@@ -94,6 +96,7 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITT
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_TRAIN_PATH_FILES', '[SPLITTER] Chemin vers le dossier contenant les données d''entraînement', '/var/docservers/opencapture/splitter/ai/train_data');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_AI_MODEL_PATH', '[SPLITTER] Chemin vers le dossier contenant le modèle de prédiction', '/var/docservers/opencapture/splitter/ai/models/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_SHARE', '[SPLITTER] Chemin pour le stockage des documents liés aux chaînes sortantes', '/var/share/export/splitter/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_ATTACHMENTS', '[SPLITTER] Chemin pour le stockage des pièces jointes', '/var/docservers/opencapture/splitter/attachments/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('INPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier d''entrée des fichiers importés', '/var/share/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('OUTPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier de sortie des fichiers exportés', '/var/share/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('MAILCOLLECT_BATCHES', 'Chemin de stockage des batches du module MailCollect', '/var/www/html/opencapture/data/MailCollect/');

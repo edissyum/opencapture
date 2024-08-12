@@ -140,3 +140,11 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "data", "mod
 
 UPDATE "privileges" SET parent = 'general' WHERE label = 'custom_fields';
 INSERT INTO "privileges" ("label", "parent") VALUES ('custom_fields_advanced', 'administration');
+
+ALTER TABLE "documents" ADD COLUMN "md5" VARCHAR(32);
+ALTER TABLE "splitter_batches" ADD COLUMN "md5" VARCHAR(32);
+
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('WAIT_THIRD_PARTY', 'En attente fournisseur', 'En attente de création / modification de fiche fournisseur', 'verifier');
+UPDATE workflows SET process = process || '{"allow_third_party_validation": false}' WHERE module = 'verifier';
+
+ALTER TABLE accounts_supplier ADD COLUMN "default_accounting_plan" INTEGER;

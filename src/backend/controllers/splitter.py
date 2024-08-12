@@ -29,9 +29,9 @@ from src.backend.main_splitter import launch
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
-from src.backend.import_controllers import user, monitoring
+from src.backend.controllers import user, monitoring
 from src.backend.import_classes import _Files, _Splitter, _CMIS, _OpenADS
-from src.backend.import_models import splitter, doctypes, accounts, history, workflow, outputs, forms
+from src.backend.models import splitter, doctypes, accounts, history, workflow, outputs, forms
 
 
 def handle_uploaded_file(files, workflow_id, user_id):

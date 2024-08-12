@@ -1,5 +1,5 @@
-lxml==5.2.2
-nltk==3.8.1
+lxml==5.3.0
+nltk==3.8.2
 fpdf==1.7.2
 zeep==4.2.1
 ldap3==2.9.1
@@ -27,13 +27,13 @@ xhtml2pdf==0.2.16
 xlsxwriter==3.2.0
 pdf2image==1.17.0
 gitpython==3.1.43
-imap-tools==1.7.1
+imap-tools==1.7.2
 flask_cors==4.0.1
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
 schwifty==2024.6.1
 python-bidi==0.6.0
-ultralytics==8.2.70
+ultralytics==8.2.73
 pytesseract==0.3.10
 configparser==7.0.0
 scikit-learn==1.5.1

@@ -20,7 +20,7 @@ import json
 from flask import Blueprint, request, make_response, jsonify
 from flask_babel import gettext
 
-from src.backend.import_controllers import auth, custom_fields, forms, privileges
+from src.backend.controllers import auth, custom_fields, forms, privileges
 
 bp = Blueprint('customFields', __name__, url_prefix='/ws/')
 

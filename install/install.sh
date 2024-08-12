@@ -21,6 +21,11 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+if [ "$(uname -m)" != 'x86_64' ]; then
+    echo "This script is only compatible with x86_64 architecture"
+    exit 1
+fi
+
 bold=$(tput bold)
 normal=$(tput sgr0)
 defaultPath="/var/www/html/opencapture/"
@@ -736,8 +741,8 @@ chown -R "$user":"$group" $defaultPath/custom/"$customId"/bin/scripts/splitter_w
 ####################
 # Create docservers
 mkdir -p $docserverDefaultPath/"$customId"/{verifier,splitter}
-mkdir -p $docserverDefaultPath/"$customId"/verifier/{ai,original_doc,full,thumbs,positions_masks}
-mkdir -p $docserverDefaultPath/"$customId"/splitter/{ai,original_doc,batches,thumbs,error}
+mkdir -p $docserverDefaultPath/"$customId"/verifier/{ai,attachments,original_doc,full,thumbs,positions_masks}
+mkdir -p $docserverDefaultPath/"$customId"/splitter/{ai,attachments,original_doc,batches,thumbs,error}
 mkdir -p $docserverDefaultPath/"$customId"/verifier/ai/{train_data,models}
 mkdir -p $docserverDefaultPath/"$customId"/splitter/ai/{train_data,models}
 chmod -R 775 $docserverDefaultPath
