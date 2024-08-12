@@ -116,7 +116,8 @@
 		"confirm_delete_attachment": "Are you sure you want to delete this attachment ?",
 		"delete_attachment": "Delete attachment",
 		"download_attachment": "Download attachment",
-		"loading_attachments": "Loading attachments..."
+		"loading_attachments": "Loading attachments...",
+		"splitter_one_document": "If you want to add attachments, the batch must only contain one document"
 	},
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
@@ -925,6 +926,7 @@
 	},
 	"SPLITTER": {
 		"add_document": "Add document",
+		"add_document_impossible_attachments": "If you want to add a document, please delete the attachments first\n",
 		"all_batches_checked_deleted": "All checked batches was successfully deleted",
 		"barch_form_change_success": "Batch form changed with success",
 		"batch_deleted": "Batch deleted",

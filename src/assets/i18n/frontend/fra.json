@@ -116,7 +116,8 @@
 		"confirm_delete_attachment": "Êtes vous sûr de vouloir supprimer cette pièce jointe ?",
 		"delete_attachment": "Supprimer la pièce jointe",
 		"download_attachment": "Télécharger la pièce jointe",
-		"loading_attachments": "Chargement des pièces jointes..."
+		"loading_attachments": "Chargement des pièces jointes...",
+		"splitter_one_document": "Si vous souhaitez ajouter des pièces jointes, le lot ne doit contenir qu'un seul document"
 	},
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",
@@ -925,6 +926,7 @@
 	},
 	"SPLITTER": {
 		"add_document": "Ajouter un document",
+		"add_document_impossible_attachments": "Si vous souhaitez ajouter un document, veuillez d'abord supprimer les pièces jointes",
 		"all_batches_checked_deleted": "Tous les lots selectionnés supprimés avec succès",
 		"barch_form_change_success": "Formulaire du lot modifié avec succès",
 		"batch_deleted": "Lot supprimé",

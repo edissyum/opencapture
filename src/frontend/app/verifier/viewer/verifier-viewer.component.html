@@ -37,7 +37,7 @@
 <span *ngIf="!this.fromToken || (this.processDone && this.fromToken && !this.processMultiDocument)">
     <div class="grid grid-cols-2 overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem)' : 'height: 100vh'">
         <mat-sidenav-container class="bg-white">
-            <mat-sidenav #attachments_list mode="side" [opened]="true" position="start" class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400">
+            <mat-sidenav #attachments_list mode="side" [opened]="false" position="start" class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400">
                 <div class="flex justify-between items-center">
                     <i class="fas fa-plus text-xl cursor-pointer ml-2" [matTooltip]="'ATTACHMENTS.add_attachments' | translate" (click)="attachmentUpload.click()"></i>
                     <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
@@ -55,10 +55,10 @@
                             </span>
                         </div>
                     </div>
-                    <div *ngIf="!this.loadingAttachment" class="w-full">
-                        <div class="flex align-center items-center" *ngIf="this.attachmentsLength === 0">
-                            <i class="fa-solid fa-solid fa-plus text-5xl text-green-400 cursor-pointer" [matTooltip]="'ATTACHMENTS.add_attachments' | translate" (click)="attachmentUpload.click()"></i>
-                        </div>
+                    <div *ngIf="!this.loadingAttachment && this.attachmentsLength === 0" class="w-full flex align-center items-center justify-center">
+                        <i class="fa-solid fa-solid fa-plus text-5xl text-green-400 cursor-pointer" [matTooltip]="'ATTACHMENTS.add_attachments' | translate" (click)="attachmentUpload.click()"></i>
+                    </div>
+                    <div *ngIf="!this.loadingAttachment && this.attachmentsLength > 0" class="w-full">
                         <div *ngIf="this.attachmentsLength >= 0" class="px-4">
                             <div *ngFor="let attachment of this.attachments" class="py-2">
                                 <mat-card>
@@ -72,16 +72,16 @@
                                             {{ attachment['filename'] }}
                                         </mat-card-title>
                                         <div class="cursor-pointer">
-                                            <div [matMenuTriggerFor]="menu" matTooltipPosition="above"
+                                            <div [matMenuTriggerFor]="menu" matTooltipPosition="above" class="w-5 text-center"
                                                  [matTooltip]="this.translate.instant('ATTACHMENTS.attachment_settings')">
                                                 <i class="fa-solid fa-ellipsis-vertical text-xl"></i>
                                             </div>
                                             <mat-menu #menu="matMenu">
-                                                <button mat-menu-item (click)="deleteConfirmDialog(attachment['id'])">
-                                                    {{ 'ATTACHMENTS.delete_attachment' | translate }}
-                                                </button>
                                                 <button mat-menu-item (click)="downloadAttachment(attachment)">
                                                     {{ 'ATTACHMENTS.download_attachment' | translate }}
+                                                </button>
+                                                <button mat-menu-item (click)="deleteConfirmDialog(attachment['id'])">
+                                                    {{ 'ATTACHMENTS.delete_attachment' | translate }}
                                                 </button>
                                             </mat-menu>
                                         </div>
@@ -108,7 +108,7 @@
                             </span>
                         </ng-container>
                     </div>
-                    <div *ngIf="!this.loading" class="fixed cursor-pointer mr-2 mt-4 z-50 text-xl text-left text-gray-900" [matTooltip]="'ATTACHMENTS.attachments' | translate">
+                    <div *ngIf="!this.loading" class="fixed cursor-pointer mr-2 mt-4 z-50 text-2xl text-left text-gray-900" [matTooltip]="'ATTACHMENTS.attachments' | translate">
                         <i class="fas fa-paperclip" (click)="attachments_list.toggle()"></i>
                         <div class="relative inline-flex items-center justify-center font-bold text-white bg-green-400
                                     text-[.6rem] leading-[.5rem] rounded-full -top-1 float-right p-[3px]">

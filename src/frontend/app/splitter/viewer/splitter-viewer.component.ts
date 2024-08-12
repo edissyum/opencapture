@@ -74,6 +74,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
 
     loading                     : boolean       = true;
+    loadingAttachment           : boolean       = true;
+    attachments                 : any[]         = [];
+    attachmentsLength           : number        = 0;
     showZoomPage                : boolean       = false;
     isBatchOnDrag               : boolean       = false;
     batchesLoading              : boolean       = false;
@@ -154,12 +157,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         private http: HttpClient,
         private route: ActivatedRoute,
         public userService: UserService,
+        private sanitizer: DomSanitizer,
         private _sanitizer: DomSanitizer,
         private authService: AuthService,
-        private translate: TranslateService,
+        public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public localeService: LocaleService,
+        private historyService: HistoryService,
         private sessionStorageService: SessionStorageService
     ) {}
 
@@ -175,8 +179,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         const customFields = await this.getCustomFields();
         this.customFields = customFields.customFields;
 
+        marker('SPLITTER.add_document_impossible_attachments')
         this.getConfigurations();
         this.loadSelectedBatch();
+        this.getAttachments();
         this.updateBatchLock();
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
             this.historyService.addHistory('splitter', 'viewer', translated);
@@ -1464,5 +1470,102 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }
         });
         return _value;
+    }
+
+    getAttachments() {
+        this.http.get(environment['url'] + '/ws/attachments/splitter/list/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.attachments = data;
+                this.attachments.forEach((attachment: any) => {
+                    if (attachment['thumb']) {
+                        attachment['thumb'] = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + attachment['thumb']);
+                    }
+                });
+                this.attachmentsLength = this.attachments.length;
+                this.loadingAttachment = false;
+
+            }),
+            finalize(() => {
+            }),
+            catchError((err: any) => {
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    uploadAttachments(event: any) {
+        this.loadingAttachment = true;
+        const attachments = new FormData();
+        for (const file of event.target.files) {
+            attachments.append(file['name'], file);
+        }
+
+        attachments.set('batchId', this.currentBatch.id);
+        this.http.post(environment['url'] + '/ws/attachments/splitter/upload', attachments, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('ATTACHMENTS.attachment_uploaded'));
+                this.getAttachments();
+            }),
+            catchError((err: any) => {
+                this.loadingAttachment = false;
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    deleteConfirmDialog(documentId: number) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data: {
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('ATTACHMENTS.confirm_delete_attachment'),
+                confirmButton       : this.translate.instant('GLOBAL.delete'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
+            },
+            width: "600px"
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.loadingAttachment = true;
+                this.deleteAttachment(documentId);
+            }
+        });
+    }
+
+    deleteAttachment(attachmentId: number) {
+        this.http.delete(environment['url'] + '/ws/attachments/splitter/delete/' + attachmentId, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('ATTACHMENTS.attachment_deleted'));
+                this.getAttachments();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    downloadAttachment(attachment: any) {
+        this.http.post(environment['url'] + '/ws/attachments/download/' + attachment['id'], {},
+            {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                const mimeType = data['mime'];
+                const referenceFile = 'data:' + mimeType + ';base64, ' + data['file'];
+                const link = document.createElement("a");
+                link.href = referenceFile;
+                link.download = attachment['filename'];
+                link.click();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 }
