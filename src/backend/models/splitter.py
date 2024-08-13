@@ -164,14 +164,16 @@ def retrieve_batches(args):
 
     query_args = {
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['splitter_batches'],
+        'table': ['splitter_batches'] if 'table' not in args else args['table'],
+        'left_join': [] if 'left_join' not in args else args['left_join'],
         'where': ['*'] if 'where' not in args else args['where'],
         'data': ['*'] if 'data' not in args else args['data'],
+        'group_by': ['splitter_batches.id'] if 'group_by' not in args else args['group_by'],
         'order_by': ['splitter_batches.creation_date DESC'] if 'order_by' not in args else args['order_by'],
     }
 
     if args['batch_id']:
-        query_args['where'].append('id = %s')
+        query_args['where'].append('splitter_batches.id = %s')
         query_args['data'].append(str(args['batch_id']))
     if args['size']:
         query_args['limit'] = str(args['size'])
@@ -192,7 +194,8 @@ def count_batches(args):
     error = None
     query_args = {
         'select': ['count(*)'],
-        'table': ['splitter_batches'],
+        'table': ['splitter_batches'] if 'table' not in args else args['table'],
+        'left_join': [] if 'left_join' not in args else args['left_join'],
         'where': ['*'] if 'where' not in args else args['where'],
         'data': ['*'] if 'data' not in args else args['data']
     }

@@ -37,9 +37,9 @@ from src.backend.import_classes import _Files
 from werkzeug.datastructures import FileStorage
 from src.backend.classes.Files import rotate_img
 from src.backend.scripting_functions import check_code
-from src.backend.models import verifier, accounts, forms
 from src.backend.main import launch, create_classes_from_custom_id
 from src.backend.controllers import auth, user, monitoring, history
+from src.backend.models import verifier, accounts, forms, attachments
 from flask import current_app, Response, request, g as current_context
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
@@ -137,18 +137,16 @@ def retrieve_documents(args):
     if 'select' not in args:
         args['select'] = []
 
-    args['table'] = ['documents', 'form_models', 'attachments']
-    args['left_join'] = ['documents.form_id = form_models.id', 'documents.id = attachments.document_id']
-    args['group_by'] = ['documents.id', 'documents.form_id', 'form_models.id', 'attachments.document_id']
+    args['table'] = ['documents', 'form_models']
+    args['left_join'] = ['documents.form_id = form_models.id']
+    args['group_by'] = ['documents.id', 'documents.form_id', 'form_models.id']
 
     args['select'].append("documents.id as document_id")
-    args['select'].append("count(attachments) as attachments_count")
     args['select'].append("to_char(register_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as date")
     args['select'].append('form_models.label as form_label')
     args['select'].append("documents.*")
 
     args['where'].append("datas -> 'api_only' is NULL")
-    args['where'].append("(attachments.status not in ('DEL') OR attachments.status is NULL)")
 
     if 'time' in args:
         if args['time'] in ['today', 'yesterday']:
@@ -221,6 +219,9 @@ def retrieve_documents(args):
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': document['supplier_id']})
                 if not error:
                     document['supplier_name'] = supplier_info['name']
+
+            attachments_counts = attachments.get_attachments_by_document_id(document['id'])
+            document['attachments_count'] = len(attachments_counts[0]) if attachments_counts[0] else 0
         response = {
             "total": total_documents[0]['total'],
             "documents": documents_list

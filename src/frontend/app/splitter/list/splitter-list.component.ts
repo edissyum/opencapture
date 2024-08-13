@@ -181,16 +181,17 @@ export class SplitterListComponent implements OnInit {
             tap((data: any) => {
                 data.batches.forEach((batch: any) =>
                     this.batches.push({
-                        id             : batch['id'],
-                        locked         : batch['locked'],
-                        inputId        : batch['input_id'],
-                        fileName       : batch['file_name'],
-                        lockedBy       : batch['locked_by'],
-                        formLabel      : batch['form_label'],
-                        date           : batch['batch_date'],
-                        customerName   : batch['customer_name'],
-                        documentsCount : batch['documents_count'],
-                        thumbnail      : this.sanitize(batch['thumbnail'])
+                        id              : batch['id'],
+                        locked          : batch['locked'],
+                        inputId         : batch['input_id'],
+                        fileName        : batch['file_name'],
+                        lockedBy        : batch['locked_by'],
+                        formLabel       : batch['form_label'],
+                        date            : batch['batch_date'],
+                        customerName    : batch['customer_name'],
+                        documentsCount  : batch['documents_count'],
+                        attachmentCount : batch['attachments_count'],
+                        thumbnail       : this.sanitize(batch['thumbnail'])
                     })
                 );
                 this.total = data.count;

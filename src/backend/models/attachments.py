@@ -59,7 +59,7 @@ def get_attachments_by_document_id(document_id):
         error = gettext('GET_ATTACHMENTS_ERROR')
     return attachments, error
 
-def get_attachments_by_batch_id(document_id):
+def get_attachments_by_batch_id(batch_id):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -72,7 +72,7 @@ def get_attachments_by_batch_id(document_id):
         'select': ['*'],
         'table': ['attachments'],
         'where': ["batch_id = %s", "status not in ('DEL')"],
-        'data': [document_id]
+        'data': [batch_id]
     })
 
     if not attachments:

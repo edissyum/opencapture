@@ -26,12 +26,12 @@ import datetime
 from flask_babel import gettext
 from src.backend import splitter_exports
 from src.backend.main_splitter import launch
+from src.backend.controllers import user, monitoring
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
-from src.backend.controllers import user, monitoring
 from src.backend.import_classes import _Files, _Splitter, _CMIS, _OpenADS
-from src.backend.models import splitter, doctypes, accounts, history, workflow, outputs, forms
+from src.backend.models import splitter, doctypes, accounts, history, workflow, outputs, forms, attachments
 
 
 def handle_uploaded_file(files, workflow_id, user_id):
@@ -170,25 +170,26 @@ def retrieve_batches(data):
         return user_forms[0], user_forms[1]
     user_forms = user_forms[0]
 
-    args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
+    args['table'] = ['splitter_batches']
+    args['select'] = ['splitter_batches.*', "to_char(splitter_batches.creation_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
     args['where'] = ['customer_id = ANY(%s)', 'form_id = ANY(%s)']
     args['data'] = [user_customers, user_forms]
 
     if 'search' in args and args['search']:
-        args['where'].append("id = %s OR file_name like %s ")
+        args['where'].append("splitter_batches.id = %s OR file_name like %s ")
         args['data'].append(args['search'])
         args['data'].append(f"%{args['search']}%")
 
     if 'status' in args and args['status'] is not None:
-        args['where'].append("status = %s")
+        args['where'].append("splitter_batches.status = %s")
         args['data'].append(args['status'])
 
     if 'time' in args and args['time'] is not None:
         if args['time'] in ['today', 'yesterday']:
             args['where'].append(
-                "to_char(creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
+                "to_char(splitter_batches.creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
         else:
-            args['where'].append("to_char(creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
+            args['where'].append("to_char(splitter_batches.creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
 
     if 'filter' in args and args['filter']:
         args['order_by'] = args['filter']
@@ -207,6 +208,8 @@ def retrieve_batches(data):
             customer = accounts.get_customer_by_id({'customer_id': batch['customer_id']})
             batches[index]['customer_name'] = customer[0]['name'] if 'name' in customer[0] else gettext('CUSTOMER_UNDEFINED')
 
+            attachments_counts = attachments.get_attachments_by_batch_id(batch['id'])
+            batches[index]['attachments_count'] = len(attachments_counts[0]) if attachments_counts[0] else 0
             try:
                 thumbnail = f"{docservers['SPLITTER_THUMB']}/{batches[index]['batch_folder']}/{batches[index]['thumbnail']}"
                 with open(thumbnail, 'rb') as image_file:
