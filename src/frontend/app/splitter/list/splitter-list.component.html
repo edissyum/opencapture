@@ -192,7 +192,7 @@
                                                  (click)="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? displayBatchLocked(batch['lockedBy']) : ''">
                                                 <div class="text-green-400 text-base badge badge-secondary badge-pill pr-2"
                                                      [matTooltip]="this.translate.instant('OUTPUT.documents_count') + ' : ' + batch['documentsCount']">
-                                                    {{batch['documentsCount'] }}<i class="far fa-file-alt ml-1"></i>
+                                                    {{ batch['documentsCount'] }}<i class="far fa-file-alt ml-1"></i>
                                                 </div>
                                                 <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 pl-2"
                                                       *ngIf="batch['attachmentCount'] && batch['attachmentCount'] > 0"

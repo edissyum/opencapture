@@ -83,9 +83,9 @@ def handle_uploaded_file(files, document_id, batch_id, module):
                 attachments.create_attachment(args)
     return '', 200
 
-def get_attachments_by_document_id(document_id):
+def get_attachments_by_document_id(document_id, get_thumb=True):
     _attachments = attachments.get_attachments_by_document_id(document_id)
-    if _attachments[0]:
+    if _attachments[0] and get_thumb:
         for attachment in _attachments[0]:
             extension = os.path.splitext(attachment['filename'])[1]
             if ('path' in attachment and os.path.isfile(attachment['path']) and
@@ -97,9 +97,9 @@ def get_attachments_by_document_id(document_id):
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
     return _attachments[0], _attachments[1]
 
-def get_attachments_by_batch_id(batch_id):
+def get_attachments_by_batch_id(batch_id, get_thumb=True):
     _attachments = attachments.get_attachments_by_batch_id(batch_id)
-    if _attachments[0]:
+    if _attachments[0] and get_thumb:
         for attachment in _attachments[0]:
             extension = os.path.splitext(attachment['filename'])[1]
             if ('path' in attachment and os.path.isfile(attachment['path']) and

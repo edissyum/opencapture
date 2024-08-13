@@ -27,7 +27,7 @@ from src.backend import verifier_exports
 from src.backend.scripting_functions import check_code
 from src.backend.import_classes import _PyTesseract, _Files
 from src.backend.scripting_functions import send_to_workflow
-from src.backend.controllers import verifier, accounts
+from src.backend.controllers import verifier, accounts, attachments
 from src.backend.functions import delete_documents, rotate_document, find_workflow_with_ia
 from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber, FindName
@@ -250,6 +250,20 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
             'table': 'documents',
             'columns': document_data
         })
+
+        if 'splitterBatchId' in args and args['splitterBatchId']:
+            splitter_attachments = attachments.get_attachments_by_batch_id(args['splitterBatchId'], False)
+            if splitter_attachments[0]:
+                for attachment in splitter_attachments[0]:
+                    database.update({
+                        'table': ['attachments'],
+                        'set': {
+                            'document_id': document_id
+                        },
+                        'where': ['id = %s'],
+                        'data': [attachment['id']]
+                    })
+
         return document_id
 
     log.info('Document not inserted in database based on workflow settings')

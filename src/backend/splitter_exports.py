@@ -105,28 +105,24 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
             batch = res_export_pdf['result_batch']
 
         if output['output_type_id'] == 'export_verifier':
-            res_export_pdf, status = handle_verifier_output(batch, output['parameters'], docservers, regex)
+            res_export_verifier, status = handle_verifier_output(batch, output['parameters'], docservers, regex)
             if status != 200:
-                return res_export_pdf, status
-            batch = res_export_pdf['result_batch']
-
-        if output['output_type_id'] == 'export_opencaptureformem':
+                return res_export_verifier, status
+            batch = res_export_verifier['result_batch']
+        elif output['output_type_id'] == 'export_opencaptureformem':
             res_export_opencaptureformem, status = handle_opencaptureformem_output(batch, output, docservers, log)
             if status != 200:
                 return res_export_opencaptureformem, status
             batch = res_export_opencaptureformem['result_batch']
-
         elif output['output_type_id'] == 'export_xml':
             res_export_xml, status = handle_xml_output(batch, output['parameters'], regex)
             if status != 200:
                 return res_export_xml, status
             batch = res_export_xml['result_batch']
-
         elif output['output_type_id'] == 'export_cmis':
             res_export_cmis, status = handle_cmis_output(output, batch, log, docservers, regex)
             if status != 200:
                 return res_export_cmis, status
-
         elif output['output_type_id'] == 'export_openads':
             res_export_openads, status = handle_openads_output(output, batch, log, docservers)
             if status != 200:

@@ -538,6 +538,8 @@ class Splitter:
                         file = FileStorage(stream=open(tf.name, 'rb'), content_type='application/pdf',
                                            filename=document['doctype_key'] + '_' + str(document['id']) + '.pdf')
                         json_body[key].append(file)
+
+        json_body['splitterBatchId'] = batch['id']
         from src.backend.controllers import verifier
         return verifier.upload_documents(json_body)
 

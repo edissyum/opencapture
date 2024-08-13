@@ -45,7 +45,7 @@ from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
 def upload_documents(body):
-    res = handle_uploaded_file(body['files'], body['workflowId'], None, body['datas'])
+    res = handle_uploaded_file(body['files'], body['workflowId'], None, body['datas'], body['splitterBatchId'])
     if res and res[0] is not False:
         return res, 200
 
@@ -56,7 +56,7 @@ def upload_documents(body):
     return response, 400
 
 
-def handle_uploaded_file(files, workflow_id, supplier, datas=None):
+def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitterBatchId=False):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER']
     tokens = []
@@ -91,6 +91,7 @@ def handle_uploaded_file(files, workflow_id, supplier, datas=None):
                 'custom_id': custom_id,
                 'ip': request.remote_addr,
                 'workflow_id': workflow_id,
+                'splitterBatchId': splitterBatchId,
                 'user_id': request.environ['user_id'],
                 'user_info': request.environ['user_info'],
                 'task_id_monitor': task_id_monitor[0]['process']
