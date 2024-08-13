@@ -120,18 +120,18 @@ class Mail:
                     file.write('Erreur lors de la remontée de cette pièce jointe')
                 file.close()
 
-            data['attachments'].append({
-                'filename': sanitize_filename(attachment['filename']) + attachment['format'],
-                'file': path
-            })
+            attachment_content_id_in_html = re.search(r'src="cid:\s*' + re.escape(attachment['content_id']), html_body)
+            if attachment_content_id_in_html:
+                html_body = re.sub(r'src="cid:\s*' + re.escape(attachment['content_id']),
+                                   f"src='data:image/{attachment['format'].replace('.', '')};"
+                                   f"base64, {base64.b64encode(attachment['content']).decode('utf-8')}'",
+                                   html_body)
+            else:
+                data['attachments'].append({
+                    'file': path,
+                    'filename': sanitize_filename(attachment['filename']) + attachment['format']
+                })
 
-            if insert_body_as_doc:
-                attachment_content_id_in_html = re.search(r'src="cid:\s*' + re.escape(attachment['content_id']), html_body)
-                if attachment_content_id_in_html:
-                    html_body = re.sub(r'src="cid:\s*' + re.escape(attachment['content_id']),
-                                       f"src='data:image/{attachment['format'].replace('.', '')};"
-                                       f"base64, {base64.b64encode(attachment['content']).decode('utf-8')}'",
-                                       html_body)
         if insert_body_as_doc:
             with open(primary_mail_path + 'body.pdf', 'w+b') as fp:
                 pisa.CreatePDF(html_body, dest=fp)
