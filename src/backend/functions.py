@@ -28,6 +28,8 @@ from pathlib import Path
 from flask_babel import gettext
 from pytesseract import pytesseract
 from pdf2image import convert_from_path
+from werkzeug.datastructures.file_storage import FileStorage
+
 from .classes.Config import Config as _Config
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 
@@ -118,9 +120,13 @@ def check_extensions_mime(files, document_type='document'):
 
     mime = magic.Magic(mime=True)
     for file in files:
-        _f = files[file]
+        if isinstance(file, dict):
+            _f = FileStorage(stream=open(file['file'], 'rb'), filename=file['filename'])
+        else:
+            _f = files[file]
+
         ext = _f.filename.split('.')[-1].lower()
-        allowed_extensions = [_f['extension'].lower() for _f in formats]
+        allowed_extensions = [_format['extension'].lower() for _format in formats]
         if ext not in allowed_extensions:
             response = {
                 "errors": gettext("UPLOAD_ERRROR"),
@@ -128,7 +134,7 @@ def check_extensions_mime(files, document_type='document'):
             }
             return response, 400
 
-        allowed_mime = [_f['mime'].lower() for _f in formats if _f['extension'].lower() == ext]
+        allowed_mime = [_format['mime'].lower() for _format in formats if _format['extension'].lower() == ext]
         mime_type = mime.from_buffer(_f.read())
 
         if mime_type not in allowed_mime:

@@ -44,6 +44,8 @@ def handle_uploaded_file(files, document_id, batch_id, module):
     for file in files:
         if isinstance(file, FileStorage):
             _f = file
+        elif isinstance(file, dict):
+            _f = FileStorage(stream=open(file['file'], 'rb'), filename=file['filename'])
         else:
             _f = files[file]
 

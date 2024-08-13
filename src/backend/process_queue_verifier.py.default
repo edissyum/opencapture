@@ -168,7 +168,9 @@ def launch(args):
             log.prefix = '[MailCollect]'
             if 'current_step' in args:
                 log.current_step = args['current_step']
-            log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
+
+            if 'cpt' in args and 'nb_of_attachments' in args:
+                log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 
         if args.get('isMail') is None or args.get('isMail') is False:
             if splitter_method and splitter_method != 'no_sep':

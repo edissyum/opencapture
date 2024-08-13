@@ -145,13 +145,16 @@ def launch(args):
             log.prefix = '[MailCollect]'
             if 'current_step' in args:
                 log.current_step = args['current_step']
-            log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
+
+            if 'cpt' in args and 'nb_of_attachments' in args:
+                log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 
         database.connect()
 
         try:
             if args['file'] is not None:
                 path = args['file']
+                attachments = args['attachments']
                 if check_file(files, path, log, docservers):
                     if 'workflow_id' in args and args['workflow_id']:
                         available_split_methods_path = docservers['SPLITTER_METHODS_PATH'] + "/splitter_methods.json"
@@ -174,6 +177,7 @@ def launch(args):
                                             "config": config,
                                             "splitter": splitter,
                                             "docservers": docservers,
+                                            "attachments": attachments,
                                             "batch_folder": batch_folder,
                                             "configurations": configurations,
                                             "workflow_id": args['workflow_id'],

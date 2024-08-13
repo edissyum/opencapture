@@ -629,6 +629,7 @@
 		"general": "General SMTP settings",
 		"hostname": "Hostname",
 		"insert_body_as_doc": "Insert email body as document",
+		"insert_body_as_doc_hint": "If enabled, email attachments will be embedded as attachments in Open-Capture. If disabled, each attachment will be treated individually",
 		"is_splitter": "Is splitter",
 		"load_folders_first": "Load folders first",
 		"move": "Move",

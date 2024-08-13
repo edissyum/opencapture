@@ -28,7 +28,7 @@ from src.backend.scripting_functions import check_code
 from src.backend.import_classes import _PyTesseract, _Files
 from src.backend.scripting_functions import send_to_workflow
 from src.backend.controllers import verifier, accounts, attachments
-from src.backend.functions import delete_documents, rotate_document, find_workflow_with_ia
+from src.backend.functions import delete_documents, rotate_document, find_workflow_with_ia, check_extensions_mime
 from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindDeliveryNumber, FindFooterRaw, FindQuotationNumber, FindName
 
@@ -250,6 +250,9 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
             'table': 'documents',
             'columns': document_data
         })
+
+        if 'attachments' in args and args['attachments']:
+            attachments.handle_uploaded_file(args['attachments'], document_id, None, 'verifier')
 
         if 'splitterBatchId' in args and args['splitterBatchId']:
             splitter_attachments = attachments.get_attachments_by_batch_id(args['splitterBatchId'], False)

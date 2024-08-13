@@ -162,35 +162,67 @@ for process in processes:
                     Log.info('Start to process only attachments')
 
                 Log.info('Process e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
-                if len(ret['attachments']) > 0:
-                    Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
-                    cpt = 1
-                    for attachment in ret['attachments']:
-                        if attachment['format'].lower() == 'pdf':
-                            if not isSplitter:
-                                with app.app_context():
+                if not insert_doc:
+                    if len(ret['attachments']) > 0:
+                        Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
+                        cpt = 1
+                        for attachment in ret['attachments']:
+                            if attachment['format'].lower() == 'pdf':
+                                if not isSplitter:
+                                    with app.app_context():
+                                        task_id_monitor = database.insert({
+                                            'table': 'monitoring',
+                                            'columns': {
+                                                'status': 'wait',
+                                                'module': 'verifier',
+                                                'filename': os.path.basename(attachment['file']),
+                                                'workflow_id': verifierWorkflowId,
+                                                'source': 'cli'
+                                            }
+                                        })
+                                        launch_verifier({
+                                            'cpt': str(cpt),
+                                            'isMail': True,
+                                            'ip': '0.0.0.0',
+                                            'source': 'email',
+                                            'process': process,
+                                            'batch_path': batch_path,
+                                            'file': attachment['file'],
+                                            'user_info': 'mailcollect',
+                                            'custom_id': args['custom_id'],
+                                            'process_name': process['name'],
+                                            'workflow_id': verifierWorkflowId,
+                                            'task_id_monitor': task_id_monitor,
+                                            'log': batch_path + '/' + date_batch + '.log',
+                                            'nb_of_attachments': str(len(ret['attachments'])),
+                                            'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
+                                            'msg': {
+                                                'uid': msg.uid,
+                                                'subject': msg.subject,
+                                                'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
+                                            },
+                                        })
+                                else:
                                     task_id_monitor = database.insert({
                                         'table': 'monitoring',
                                         'columns': {
                                             'status': 'wait',
-                                            'module': 'verifier',
+                                            'module': 'splitter',
                                             'filename': os.path.basename(attachment['file']),
-                                            'workflow_id': verifierWorkflowId,
+                                            'workflow_id': splitterWorkflowId,
                                             'source': 'cli'
                                         }
                                     })
-                                    launch_verifier({
-                                        'cpt': str(cpt),
+                                    launch_splitter({
                                         'isMail': True,
+                                        'cpt': str(cpt),
                                         'ip': '0.0.0.0',
-                                        'source': 'email',
-                                        'process': process,
                                         'batch_path': batch_path,
-                                        'file': attachment['file'],
+                                        'process': process['name'],
                                         'user_info': 'mailcollect',
+                                        'file': attachment['file'],
                                         'custom_id': args['custom_id'],
-                                        'process_name': process['name'],
-                                        'workflow_id': verifierWorkflowId,
+                                        'workflow_id': splitterWorkflowId,
                                         'task_id_monitor': task_id_monitor,
                                         'log': batch_path + '/' + date_batch + '.log',
                                         'nb_of_attachments': str(len(ret['attachments'])),
@@ -202,42 +234,74 @@ for process in processes:
                                         },
                                     })
                             else:
-                                task_id_monitor = database.insert({
-                                    'table': 'monitoring',
-                                    'columns': {
-                                        'status': 'wait',
-                                        'module': 'splitter',
-                                        'filename': os.path.basename(attachment['file']),
-                                        'workflow_id': splitterWorkflowId,
-                                        'source': 'cli'
-                                    }
-                                })
-                                launch_splitter({
-                                    'isMail': True,
-                                    'cpt': str(cpt),
-                                    'ip': '0.0.0.0',
-                                    'batch_path': batch_path,
-                                    'process': process['name'],
-                                    'user_info': 'mailcollect',
-                                    'file': attachment['file'],
-                                    'custom_id': args['custom_id'],
-                                    'workflow_id': splitterWorkflowId,
-                                    'task_id_monitor': task_id_monitor,
-                                    'log': batch_path + '/' + date_batch + '.log',
-                                    'nb_of_attachments': str(len(ret['attachments'])),
-                                    'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
-                                    'msg': {
-                                        'uid': msg.uid,
-                                        'subject': msg.subject,
-                                        'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
-                                    },
-                                })
-                        else:
-                            Log.info('Attachment n°' + str(cpt) + ' is not a PDF file')
-                        cpt = cpt + 1
+                                Log.info('Attachment n°' + str(cpt) + ' is not a PDF file')
+                            cpt = cpt + 1
+                    else:
+                        Log.info('No attachments found')
                 else:
-                    Log.info('No attachments found')
-
+                    if not isSplitter:
+                        with app.app_context():
+                            task_id_monitor = database.insert({
+                                'table': 'monitoring',
+                                'columns': {
+                                    'status': 'wait',
+                                    'module': 'verifier',
+                                    'filename': ret['file']['filename'],
+                                    'workflow_id': verifierWorkflowId,
+                                    'source': 'cli'
+                                }
+                            })
+                            launch_verifier({
+                                'isMail': True,
+                                'ip': '0.0.0.0',
+                                'source': 'email',
+                                'process': process,
+                                'file': ret['file']['path'],
+                                'batch_path': batch_path,
+                                'user_info': 'mailcollect',
+                                'custom_id': args['custom_id'],
+                                'process_name': process['name'],
+                                'attachments': ret['attachments'],
+                                'workflow_id': verifierWorkflowId,
+                                'task_id_monitor': task_id_monitor,
+                                'log': batch_path + '/' + date_batch + '.log',
+                                'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
+                                'msg': {
+                                    'uid': msg.uid,
+                                    'subject': msg.subject,
+                                    'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
+                                },
+                            })
+                    else:
+                        task_id_monitor = database.insert({
+                            'table': 'monitoring',
+                            'columns': {
+                                'status': 'wait',
+                                'module': 'splitter',
+                                'filename': ret['file']['filename'],
+                                'workflow_id': splitterWorkflowId,
+                                'source': 'cli'
+                            }
+                        })
+                        launch_splitter({
+                            'isMail': True,
+                            'ip': '0.0.0.0',
+                            'batch_path': batch_path,
+                            'process': process['name'],
+                            'user_info': 'mailcollect',
+                            'file': ret['file']['path'],
+                            'custom_id': args['custom_id'],
+                            'attachments': ret['attachments'],
+                            'workflow_id': splitterWorkflowId,
+                            'task_id_monitor': task_id_monitor,
+                            'log': batch_path + '/' + date_batch + '.log',
+                            'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
+                            'msg': {
+                                'uid': msg.uid,
+                                'subject': msg.subject,
+                                'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
+                            },
+                        })
                 if action not in ['move', 'delete', 'none']:
                     action = 'none'
 

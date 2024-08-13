@@ -213,8 +213,10 @@ class Splitter:
 
         return default_values
 
-    def create_batches(self, batch_folder, file, workflow_id, user_id, original_filename, artificial_intelligence):
+    def create_batches(self, batch_folder, file, workflow_id, user_id, original_filename, artificial_intelligence,
+                       attachments_list=None):
         batches_id = []
+
         for _, batch_pages in enumerate(self.result_batches):
             workflow_settings = self.db.select({
                 'select': ['id', 'input, process'],
@@ -275,6 +277,11 @@ class Splitter:
                 }
             }
             batch_id = self.db.insert(args)
+
+            if attachments_list:
+                from src.backend.controllers import attachments
+                attachments.handle_uploaded_file(attachments_list, None, batch_id, 'splitter')
+
             batches_id.append(batch_id)
 
             document_id = 0
