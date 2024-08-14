@@ -154,7 +154,11 @@ def launch(args):
         try:
             if args['file'] is not None:
                 path = args['file']
-                attachments = args['attachments']
+
+                attachments = []
+                if 'attachments' in args:
+                    attachments = args['attachments']
+
                 if check_file(files, path, log, docservers):
                     if 'workflow_id' in args and args['workflow_id']:
                         available_split_methods_path = docservers['SPLITTER_METHODS_PATH'] + "/splitter_methods.json"

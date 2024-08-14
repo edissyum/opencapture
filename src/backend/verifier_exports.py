@@ -27,6 +27,7 @@ import subprocess
 import pandas as pd
 from PIL import Image
 from xml.dom import minidom
+from zipfile import ZipFile
 from flask_babel import gettext
 from .import_classes import _Files
 import xml.etree.ElementTree as Et
@@ -426,6 +427,15 @@ def export_pdf(data, log, document_info, compress_type, ocrise):
         if not ocrise and not compress_type and os.path.isfile(file):
             shutil.copy(file, folder_out + '/' + filename)
 
+        attachments_list = attachments.get_attachments_by_document_id(document_info['id'])
+        if attachments_list:
+            pdf_filename, pdf_extension = os.path.splitext(filename)
+            zip_filename =  pdf_filename + '_attachments.zip'
+            with ZipFile(folder_out + '/' + zip_filename, 'w') as zip_file:
+                for attachment in attachments_list[0]:
+                    if attachment:
+                        if os.path.exists(attachment['path']):
+                            zip_file.write(attachment['path'], attachment['filename'])
         return folder_out + '/' + filename, 200
     else:
         if log:
@@ -498,17 +508,18 @@ def export_coog(data, document_info, log):
                     if attachments_list:
                         attachments_files = []
                         for attachment in attachments_list[0]:
-                            if os.path.isfile(attachment['path']):
-                                with open(attachment['path'], 'rb') as _file:
-                                    b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
+                            if attachment:
+                                if os.path.isfile(attachment['path']):
+                                    with open(attachment['path'], 'rb') as _file:
+                                        b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
 
-                                attachments_files.append({
-                                    "content": {
-                                        "type": "data",
-                                        "data": b64_encoded,
-                                        "filename": attachment['filename']
-                                    }
-                                })
+                                    attachments_files.append({
+                                        "content": {
+                                            "type": "data",
+                                            "data": b64_encoded,
+                                            "filename": attachment['filename']
+                                        }
+                                    })
 
                         args = {
                             "id": coog_id,
@@ -684,16 +695,17 @@ def export_mem(data, document_info, log, regex, database):
                         attachments_list = attachments.get_attachments_by_document_id(document_id)
                         if attachments_list:
                             for attachment in attachments_list[0]:
-                                if os.path.isfile(attachment['path']):
-                                    with open(attachment['path'], 'rb') as _file:
-                                        b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
+                                if attachment:
+                                    if os.path.isfile(attachment['path']):
+                                        with open(attachment['path'], 'rb') as _file:
+                                            b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
 
-                                    attachments_files = {
-                                        "file_content": b64_encoded,
-                                        "extension": os.path.splitext(attachment['filename'])[1].replace('.', ''),
-                                        "filename": attachment['filename']
-                                    }
-                                    res = _ws.insert_attachment(res_id, attachments_files)
+                                        attachments_files = {
+                                            "file_content": b64_encoded,
+                                            "extension": os.path.splitext(attachment['filename'])[1].replace('.', ''),
+                                            "filename": attachment['filename']
+                                        }
+                                        _ws.insert_attachment(res_id, attachments_files)
                             if link_resource:
                                 if opencapture_field:
                                     opencapture_field = ''.join(construct_with_var(opencapture_field, document_info))

@@ -249,7 +249,7 @@ def create_supplier():
     if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['create_supplier | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/suppliers/create'}), 403
-    print(request.json['args'])
+
     check, message = rest_validator(request.json['args'], [
         {'id': 'bic', 'type': str, 'mandatory': False},
         {'id': 'name', 'type': str, 'mandatory': True},
