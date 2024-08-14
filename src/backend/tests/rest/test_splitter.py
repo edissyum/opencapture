@@ -29,8 +29,8 @@ class SplitterTest(unittest.TestCase):
         self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
-        warnings.filterwarnings('ignore', category=DeprecationWarning)
         warnings.filterwarnings('ignore', category=ResourceWarning)
+        warnings.filterwarnings('ignore', category=DeprecationWarning)
 
     def create_batch(self):
         file = f'./custom/{CUSTOM_ID}/src/backend/process_queue_splitter.py'
@@ -53,7 +53,7 @@ class SplitterTest(unittest.TestCase):
         my_file = FileStorage(
             stream=open(pdf_path, "rb"),
             filename="splitter_test.pdf",
-            content_type="application/pdf",
+            content_type="application/pdf"
         )
         return self.app.post(f'/{CUSTOM_ID}/ws/splitter/upload', content_type='multipart/form-data',
                              data={"file": my_file, "workflowId": 'default_workflow', "userId": 1},
@@ -64,7 +64,7 @@ class SplitterTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_successful_get_batches_list(self):
-        res = self.create_batch()
+        self.create_batch()
         payload = {
             'page': 0,
             'size': 10,
@@ -82,13 +82,13 @@ class SplitterTest(unittest.TestCase):
         batches = self.database.fetchall()
         payload = {
             'userId': 1,
-            'batchId': batches[0]['id'],
+            'batchId': batches[0]['id']
         }
         response = self.app.get(f"/{CUSTOM_ID}/ws/splitter/documents/{batches[0]['id']}",
                                 headers={"Content-Type": "application/json",
                                          'Authorization': 'Bearer ' + self.token}, json=payload)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.json['documents']))
+        self.assertEqual(2, len(response.json['documents']))
 
     def tearDown(self) -> None:
         self.database.execute("TRUNCATE TABLE splitter_batches")

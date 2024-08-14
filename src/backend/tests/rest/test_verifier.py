@@ -74,7 +74,7 @@ class VerifierTest(unittest.TestCase):
         my_file = FileStorage(
             stream=open("./instance/upload/verifier/CALINDA_INV-001510.pdf", "rb"),
             filename="CALINDA_INV-001510.pdf",
-            content_type="application/pdf",
+            content_type="application/pdf"
         )
 
         return self.app.post(f'/{CUSTOM_ID}/ws/verifier/upload', content_type='multipart/form-data',
