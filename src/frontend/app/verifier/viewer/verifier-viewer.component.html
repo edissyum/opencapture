@@ -33,11 +33,11 @@
         </div>
     </div>
 </div>
-<input multiple type="file" class="hidden" (change)="uploadAttachments($event)" #attachmentUpload>
+<input multiple type="file" id="upload_attachments" class="hidden" (change)="uploadAttachments($event)" #attachmentUpload>
 <span *ngIf="!this.fromToken || (this.processDone && this.fromToken && !this.processMultiDocument)">
     <div class="grid grid-cols-2 overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem)' : 'height: 100vh'">
         <mat-sidenav-container class="bg-white">
-            <mat-sidenav #attachments_list mode="side" [opened]="false" position="start" class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400">
+            <mat-sidenav id="attachments_list" mode="side" [opened]="sidenavOpened" position="start" class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400">
                 <div class="flex justify-between items-center">
                     <span>
                         <i class="fas fa-plus text-xl cursor-pointer ml-2" *ngIf="this.document && this.document.status !== 'END'"
@@ -46,7 +46,7 @@
                     <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
                         {{ "ATTACHMENTS.attachments_list" | translate }}
                     </h3>
-                    <i class="fa-solid fa-times cursor-pointer text-gray-900 mb-8 mr-2" (click)="attachments_list.close()"></i>
+                    <i class="fa-solid fa-times cursor-pointer text-gray-900 mb-8 mr-2" (click)="toggleSidenav()"></i>
                 </div>
                 <mat-divider></mat-divider>
                 <div class="flex overflow-x-hidden justify-center" style="height: calc(100vh - 8.5rem) !important">
@@ -96,7 +96,7 @@
                     </div>
                 </div>
             </mat-sidenav>
-            <mat-sidenav-content [class.pointer-events-none]="attachments_list.opened">
+            <mat-sidenav-content [class.pointer-events-none]="this.sidenavOpened">
                 <div id="image" dir="rtl" class="overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem);' : 'height: 100vh;'">
                     <div class="fixed left-4 mt-4 z-50 text-xl text-left text-gray-900">
                         <ng-container *ngIf="!this.loading && this.document['nb_pages'] > 1">
@@ -113,7 +113,7 @@
                         </ng-container>
                     </div>
                     <div *ngIf="!this.loading" class="fixed cursor-pointer mr-2 mt-4 z-50 text-2xl text-left text-gray-900" [matTooltip]="'ATTACHMENTS.attachments' | translate">
-                        <i class="fas fa-paperclip pointer-events-auto" (click)="attachments_list.toggle()"></i>
+                        <i id="toggle_attachments" class="fas fa-paperclip pointer-events-auto" (click)="toggleSidenav()"></i>
                         <div class="relative inline-flex items-center justify-center font-bold text-white bg-green-400
                                     text-[.6rem] leading-[.5rem] rounded-full -top-1 float-right p-[3px]">
                             {{ this.attachmentsLength.toString().padStart(2, '0') }}

@@ -15,11 +15,11 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, HostListener, OnDestroy, OnInit, SecurityContext} from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, SecurityContext } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
+import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { interval, of } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
@@ -33,8 +33,8 @@ import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
 import { LocaleService } from "../../../services/locale.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
+import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
 declare const $: any;
 
 @Component({
@@ -72,6 +72,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     formEmpty               : boolean     = false;
     processInError          : boolean     = false;
     imgLoading              : boolean     = false;
+    sidenavOpened           : boolean     = false;
     supplierformFound       : boolean     = false;
     processErrorMessage     : string      = '';
     processErrorIcon        : string      = '';
@@ -152,6 +153,23 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         private historyService: HistoryService,
         private sessionStorageService: SessionStorageService
     ) {}
+
+    @HostListener('document:click', ['$event'])
+    onScreenClick(event: MouseEvent) {
+        if (this.sidenavOpened) {
+            const clickedElement = event.target as HTMLElement;
+            if (clickedElement.id !== 'toggle_attachments' && clickedElement.id !== 'upload_attachments') {
+                const sidenavAttachment = document.getElementById('attachments_list');
+                if (sidenavAttachment && !sidenavAttachment.contains(clickedElement)) {
+                    this.sidenavOpened = false;
+                }
+            }
+        }
+    }
+
+    toggleSidenav() {
+        this.sidenavOpened = !this.sidenavOpened;
+    }
 
     async ngOnInit(document_id_from_multi = false): Promise<void> {
         this.sessionStorageService.save('splitter_or_verifier', 'verifier');
