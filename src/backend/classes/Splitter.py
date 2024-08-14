@@ -30,7 +30,7 @@ from xml.dom import minidom
 from datetime import datetime
 from unidecode import unidecode
 from werkzeug.datastructures import FileStorage
-from src.backend.import_classes import _OpenCaptureForMEMWebServices
+from src.backend.classes.OpenCaptureForMEMWebServices import OpenCaptureForMEMWebServices
 
 
 def construct_with_var(data, document_info):
@@ -41,7 +41,6 @@ def construct_with_var(data, document_info):
         else:
             _data.append(column)
     return _data
-
 
 
 def get_value_from_mask(document, metadata, mask_args):
@@ -386,7 +385,7 @@ class Splitter:
 
 
     @staticmethod
-    def export_opencaptureformem(batch, metadata, output, docservers, log):
+    def export_opencaptureformem(batch, output, docservers, log):
         host = ''
         custom_id = ''
         secret_key = ''
@@ -398,7 +397,7 @@ class Splitter:
             if key['id'] == 'custom_id':
                 custom_id = key['value']
 
-        _ws = _OpenCaptureForMEMWebServices(host, secret_key, custom_id, log)
+        _ws = OpenCaptureForMEMWebServices(host, secret_key, custom_id, log)
         if _ws.access_token[0]:
             files = []
             for document in batch['documents']:
@@ -546,7 +545,7 @@ class Splitter:
                                            filename=document['doctype_key'] + '_' + str(document['id']) + '.pdf')
                         json_body[key].append(file)
 
-        json_body['splitterBatchId'] = batch['id']
+        json_body['splitter_batch_id'] = batch['id']
         from src.backend.controllers import verifier
         return verifier.upload_documents(json_body)
 

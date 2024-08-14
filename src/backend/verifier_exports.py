@@ -29,10 +29,11 @@ from PIL import Image
 from xml.dom import minidom
 from zipfile import ZipFile
 from flask_babel import gettext
-from .import_classes import _Files
 import xml.etree.ElementTree as Et
 from src.backend.models import attachments
-from src.backend.import_classes import _MEMWebServices, _COOGWebServices
+from src.backend.classes.Files import Files
+from src.backend.classes.MEMWebServices import MEMWebServices
+from src.backend.classes.COOGWebServices import COOGWebServices
 
 
 def export_xml(data, log, document_info, database):
@@ -399,7 +400,7 @@ def export_pdf(data, log, document_info, compress_type, ocrise):
     if os.path.isdir(folder_out):
         file = document_info['path'] + '/' + document_info['filename']
         if ocrise:
-            _Files.ocrise_pdf(file, log, folder_out + '/' + filename)
+            Files.ocrise_pdf(file, log, folder_out + '/' + filename)
         else:
             if not file.lower().endswith('.pdf'):
                 if file.lower().endswith(('.heif', '.heic', '.jpg', '.jpeg', '.png')):
@@ -484,7 +485,7 @@ def export_coog(data, document_info, log):
             access_token = _data['value']
 
     if host and access_token:
-        _ws = _COOGWebServices(
+        _ws = COOGWebServices(
             host,
             token,
             log
@@ -566,7 +567,7 @@ def export_mem(data, document_info, log, regex, database):
             password = _data['value']
 
     if host and login and password:
-        _ws = _MEMWebServices(
+        _ws = MEMWebServices(
             host,
             login,
             password,

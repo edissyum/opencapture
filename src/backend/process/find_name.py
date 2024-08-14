@@ -18,7 +18,7 @@
 import re
 import json
 from thefuzz import fuzz
-from src.backend.import_classes import _Files
+from src.backend.classes.Files import Files
 from src.backend.functions import search_by_positions, search_custom_positions
 
 
@@ -128,8 +128,8 @@ class FindName:
                 return [
                     {'firstname': firstname, 'lastname': lastname},
                     {
-                        'firstname': _Files.reformat_positions(firstname_position),
-                        'lastname': _Files.reformat_positions(lastname_position)
+                        'firstname': Files.reformat_positions(firstname_position),
+                        'lastname': Files.reformat_positions(lastname_position)
                     },
                     self.nb_page
                 ]
@@ -196,8 +196,8 @@ class FindName:
                     return [
                         {'firstname': firstname, 'lastname': lastname},
                         {
-                            'firstname': _Files.reformat_positions(firstname_position),
-                            'lastname': _Files.reformat_positions(lastname_position)
+                            'firstname': Files.reformat_positions(firstname_position),
+                            'lastname': Files.reformat_positions(lastname_position)
                         },
                         self.nb_page
                     ]

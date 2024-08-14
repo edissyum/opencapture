@@ -25,12 +25,15 @@ import os.path
 import datetime
 from flask_babel import gettext
 from src.backend import splitter_exports
+from src.backend.classes.CMIS import CMIS
+from src.backend.classes.Files import Files
 from src.backend.main_splitter import launch
+from src.backend.classes.OpenADS import OpenADS
+from src.backend.classes.Splitter import Splitter
 from src.backend.controllers import user, monitoring
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
-from src.backend.import_classes import _Files, _Splitter, _CMIS, _OpenADS
 from src.backend.models import splitter, doctypes, accounts, history, workflow, outputs, forms, attachments
 
 
@@ -41,7 +44,7 @@ def handle_uploaded_file(files, workflow_id, user_id):
 
     for file in files:
         _f = files[file]
-        filename = _Files.save_uploaded_file(_f, path, False)
+        filename = Files.save_uploaded_file(_f, path, False)
 
         now = datetime.datetime.now()
         year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]
@@ -104,7 +107,7 @@ def launch_referential_update(form_data):
                         'docservers': docservers,
                         'form_id': form_data['form_id']
                     }
-                    metadata_load = _Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
+                    metadata_load = Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
                                                                         method['script'],
                                                                         method['method'])
                     metadata_load(args)
@@ -570,7 +573,7 @@ def save_modifications(data):
 
 def test_cmis_connection(args):
     try:
-        _CMIS(args['cmis_ws'], args['login'], args['password'], args['folder'])
+        CMIS(args['cmis_ws'], args['login'], args['password'], args['folder'])
     except (Exception,) as e:
         response = {
             'status': False,
@@ -582,7 +585,7 @@ def test_cmis_connection(args):
 
 
 def test_openads_connection(args):
-    _openads = _OpenADS(args['openads_api'], args['login'], args['password'])
+    _openads = OpenADS(args['openads_api'], args['login'], args['password'])
     res = _openads.test_connection()
     if not res['status']:
         response = {
@@ -632,7 +635,7 @@ def get_split_methods():
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
-    split_methods = _Splitter.get_split_methods(docservers)
+    split_methods = Splitter.get_split_methods(docservers)
     if len(split_methods) > 0:
         return split_methods, 200
     return split_methods, 400
@@ -645,7 +648,7 @@ def get_metadata_methods(form_method=False):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
-    metadata_methods = _Splitter.get_metadata_methods(docservers, form_method)
+    metadata_methods = Splitter.get_metadata_methods(docservers, form_method)
     if len(metadata_methods) > 0:
         return metadata_methods, 200
     return metadata_methods, 400

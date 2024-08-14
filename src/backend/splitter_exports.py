@@ -19,9 +19,12 @@ import os
 import re
 from zipfile import ZipFile
 from flask_babel import gettext
+from src.backend.classes.CMIS import CMIS
+from src.backend.classes.Files import Files
+from src.backend.classes.OpenADS import OpenADS
+from src.backend.classes.Splitter import Splitter
 from src.backend.classes.Splitter import get_value_from_mask
 from src.backend.scripting_functions import launch_script_splitter
-from src.backend.import_classes import _Splitter, _Files, _CMIS, _OpenADS
 from src.backend.models import splitter, workflow, forms, outputs, attachments
 
 
@@ -36,7 +39,7 @@ def get_output_parameters(parameters):
 
 
 def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
-    export_date = _Files.get_now_date()
+    export_date = Files.get_now_date()
     export_zip_file = ''
 
     batch = splitter.retrieve_batches({
@@ -161,7 +164,7 @@ def export_pdf_files(batch, parameters, log, docservers):
         batch['documents'][index]['document_index'] = documents_doctypes.count(document['doctype_key']) + 1
         documents_doctypes.append(document['doctype_key'])
         mask_args = {
-            'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
+            'mask': parameters['filename'] if 'filename' in parameters else Files.get_random_string(10),
             'separator': parameters['separator'],
             'extension': parameters['extension']
         }
@@ -173,7 +176,7 @@ def export_pdf_files(batch, parameters, log, docservers):
         document['folder_out'] = parameters['folder_out']
         document['filename'] = filename
 
-        export_path, error = _Files.export_pdf({
+        export_path, error = Files.export_pdf({
             'log': log,
             'reduce_index': 1,
             'document': document,
@@ -243,7 +246,7 @@ def handle_pdf_output(batch, output, log, docservers):
             if compress_pdfs:
                 batch['pdf_output_compress_file'] = compress_file
                 compress_file = parameters['folder_out'] + '/' + compress_file
-                _Files.compress_files(compress_pdfs, compress_file, remove_compressed_files=True)
+                Files.compress_files(compress_pdfs, compress_file, remove_compressed_files=True)
                 batch['outputs_result_files'].append(compress_file)
 
     return {'result_batch': batch}, 200
@@ -255,7 +258,7 @@ def handle_verifier_output(batch, parameters, docservers, regex):
         'custom_fields': batch['data']['custom_fields'],
         'pdf_output_compress_file': batch['pdf_output_compress_file']
     }
-    export_ok, export_result = _Splitter.export_verifier(batch, metadata, parameters, docservers, regex)
+    export_ok, export_result = Splitter.export_verifier(batch, metadata, parameters, docservers, regex)
     if not export_ok:
         response = {
             "errors": gettext('EXPORT_VERIFIER_ERROR'),
@@ -266,12 +269,7 @@ def handle_verifier_output(batch, parameters, docservers, regex):
 
 
 def handle_opencaptureformem_output(batch, output, docservers, log):
-    metadata = {
-        'export_date': batch['export_date'],
-        'custom_fields': batch['data']['custom_fields'],
-        'pdf_output_compress_file': batch['pdf_output_compress_file']
-    }
-    export_ok, export_result = _Splitter.export_opencaptureformem(batch, metadata, output, docservers, log)
+    export_ok, export_result = Splitter.export_opencaptureformem(batch, output, docservers, log)
     if not export_ok:
         response = {
             "errors": gettext('EXPORT_OPENCAPTUREFORMEM_ERROR'),
@@ -295,7 +293,7 @@ def handle_xml_output(batch, parameters, regex):
         'custom_fields': batch['data']['custom_fields'],
         'pdf_output_compress_file': batch['pdf_output_compress_file']
     }
-    export_ok, export_result = _Splitter.export_xml(batch['documents'], metadata, parameters, regex)
+    export_ok, export_result = Splitter.export_xml(batch['documents'], metadata, parameters, regex)
     if not export_ok:
         response = {
             "errors": gettext('EXPORT_XML_ERROR'),
@@ -312,10 +310,7 @@ def handle_xml_output(batch, parameters, regex):
 def handle_cmis_output(output, batch, log, docservers, regex):
     cmis_auth = get_output_parameters(output['data']['options']['auth'])
     cmis_params = get_output_parameters(output['data']['options']['parameters'])
-    cmis = _CMIS(cmis_auth['cmis_ws'],
-                 cmis_auth['login'],
-                 cmis_auth['password'],
-                 cmis_auth['folder'])
+    cmis = CMIS(cmis_auth['cmis_ws'], cmis_auth['login'], cmis_auth['password'], cmis_auth['folder'])
 
     parameters = {
         'extension': 'pdf',
@@ -365,7 +360,7 @@ def handle_cmis_output(output, batch, log, docservers, regex):
 def handle_openads_output(output, batch, log, docservers):
     openads_auth = get_output_parameters(output['data']['options']['auth'])
     openads_params = get_output_parameters(output['data']['options']['parameters'])
-    _openads = _OpenADS(openads_auth['openads_api'], openads_auth['login'], openads_auth['password'])
+    _openads = OpenADS(openads_auth['openads_api'], openads_auth['login'], openads_auth['password'])
 
     openads_folder = {
         'mask': openads_params['folder_id'],
@@ -417,7 +412,7 @@ def compress_outputs_result(batch, exported_files, export_zip_file):
         'substitute': '_'
     }
     outputs_compress_path = get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
-    _Files.compress_files(compress_files, outputs_compress_path, remove_compressed_files=True)
+    Files.compress_files(compress_files, outputs_compress_path, remove_compressed_files=True)
 
 
 def process_after_outputs(args):
@@ -427,7 +422,7 @@ def process_after_outputs(args):
     })
 
     if args['workflow_settings']['process']['delete_documents']:
-        _Files.remove_file(f"{args['docservers']['SPLITTER_ORIGINAL_DOC']}/{args['batch']['file_path']}", args['log'])
+        Files.remove_file(f"{args['docservers']['SPLITTER_ORIGINAL_DOC']}/{args['batch']['file_path']}", args['log'])
 
     if args['config']['GLOBAL']['allowwfscripting'].lower() == 'true':
         datas = {

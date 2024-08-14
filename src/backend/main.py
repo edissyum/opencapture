@@ -19,7 +19,14 @@ import os
 import sys
 from flask import g as current_context
 from .functions import get_custom_array, retrieve_config_from_custom_id
-from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _Spreadsheet, _SMTP, _ArtificialIntelligence
+from src.backend.classes.Log import Log
+from src.backend.classes.SMTP import SMTP
+from src.backend.classes.Files import Files
+from src.backend.classes.Config import Config
+from src.backend.classes.Database import Database
+from src.backend.classes.PyTesseract import PyTesseract
+from src.backend.classes.Spreadsheet import Spreadsheet
+from src.backend.classes.ArtificialIntelligence import ArtificialIntelligence
 
 
 def create_classes_from_custom_id(custom_id, load_smtp=False):
@@ -27,7 +34,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
     if config_file is False:
         return False, 'missing_custom_or_file_doesnt_exists'
 
-    config = _Config(config_file)
+    config = Config(config_file)
 
     try:
         if 'config' not in current_context:
@@ -35,13 +42,13 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
     except RuntimeError:
         pass
 
-    log = _Log(config.cfg['GLOBAL']['logfile'], False)
+    log = Log(config.cfg['GLOBAL']['logfile'], False)
     db_user = config.cfg['DATABASE']['postgresuser']
     db_pwd = config.cfg['DATABASE']['postgrespassword']
     db_name = config.cfg['DATABASE']['postgresdatabase']
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
-    database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
+    database = Database(log, db_name, db_user, db_pwd, db_host, db_port)
     if not database.conn:
         return False, 'bad_or_missing_database_informations'
 
@@ -57,7 +64,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
 
         if mail_global:
             mail_global = mail_global[0]['data']['value']
-            smtp = _SMTP(
+            smtp = SMTP(
                 mail_global['smtpNotifOnError'],
                 mail_global['smtpHost'],
                 mail_global['smtpPort'],
@@ -114,11 +121,11 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
             'date_format': _l['date_format']
         })
 
-    spreadsheet = _Spreadsheet(log, docservers, config)
+    spreadsheet = Spreadsheet(log, docservers, config)
     filename = docservers['TMP_PATH']
-    files = _Files(filename, log, docservers, configurations, regex, languages, database)
-    ocr = _PyTesseract(configurations['locale'], log, config, docservers)
-    artificial_intelligence = _ArtificialIntelligence('', '', files, ocr, docservers, log)
+    files = Files(filename, log, docservers, configurations, regex, languages, database)
+    ocr = PyTesseract(configurations['locale'], log, config, docservers)
+    artificial_intelligence = ArtificialIntelligence('', '', files, ocr, docservers, log)
 
     try:
         if 'ocr' not in current_context:

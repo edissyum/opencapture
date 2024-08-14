@@ -16,9 +16,9 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask import request, g as current_context
-from src.backend.import_classes import _COOGWebServices
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
+from src.backend.classes.COOGWebServices import COOGWebServices
 
 
 def get_access_token(args):
@@ -28,7 +28,7 @@ def get_access_token(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
-    _ws = _COOGWebServices(
+    _ws = COOGWebServices(
         args['host'],
         args['token'],
         log

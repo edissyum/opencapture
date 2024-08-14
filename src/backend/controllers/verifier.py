@@ -33,7 +33,7 @@ from PIL import Image
 from flask_babel import gettext
 from zeep import Client, exceptions
 from src.backend import verifier_exports
-from src.backend.import_classes import _Files
+from src.backend.classes.Files import Files
 from werkzeug.datastructures import FileStorage
 from src.backend.classes.Files import rotate_img
 from src.backend.scripting_functions import check_code
@@ -45,7 +45,7 @@ from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
 def upload_documents(body):
-    res = handle_uploaded_file(body['files'], body['workflowId'], None, body['datas'], body['splitterBatchId'])
+    res = handle_uploaded_file(body['files'], body['workflowId'], None, body['datas'], body['splitter_batch_id'])
     if res and res[0] is not False:
         return res, 200
 
@@ -56,7 +56,7 @@ def upload_documents(body):
     return response, 400
 
 
-def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitterBatchId=False):
+def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitter_batch_id=False):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER']
     tokens = []
@@ -65,7 +65,7 @@ def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitterBatch
             _f = file
         else:
             _f = files[file]
-        filename = _Files.save_uploaded_file(_f, path)
+        filename = Files.save_uploaded_file(_f, path)
 
         now = datetime.datetime.now()
         year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]
@@ -91,7 +91,7 @@ def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitterBatch
                 'custom_id': custom_id,
                 'ip': request.remote_addr,
                 'workflow_id': workflow_id,
-                'splitterBatchId': splitterBatchId,
+                'splitter_batch_id': splitter_batch_id,
                 'user_id': request.environ['user_id'],
                 'user_info': request.environ['user_info'],
                 'task_id_monitor': task_id_monitor[0]['process']

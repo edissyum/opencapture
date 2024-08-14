@@ -24,9 +24,12 @@ import traceback
 from kuyruk import Kuyruk
 from src.backend import app
 from flask_babel import gettext
+from src.backend.classes.Log import Log
+from src.backend.classes.Files import Files
+from src.backend.classes.Splitter import Splitter
+from src.backend.classes.SeparatorQR import SeparatorQR
 from src.backend.functions import retrieve_config_from_custom_id
 from src.backend.scripting_functions import launch_script_splitter
-from src.backend.import_classes import _Files, _Splitter, _SeparatorQR, _Log
 from src.backend.main import timer, check_file, create_classes_from_custom_id
 
 kuyruk = Kuyruk()
@@ -78,7 +81,7 @@ def launch(args):
         except OSError:
             pass
 
-        files = _Files('', log, docservers, configurations, regex, languages, database)
+        files = Files('', log, docservers, configurations, regex, languages, database)
 
         ocrise = False
         splitter_method_id = ''
@@ -134,12 +137,12 @@ def launch(args):
                 if outputs_settings:
                     ocrise = outputs_settings[0]['ocrise']
 
-        separator_qr = _SeparatorQR(log, config, batch_folder_path, 'splitter', files, remove_blank_pages, docservers,
-                                    splitter_method_id)
-        splitter = _Splitter(config, database, separator_qr, log, docservers)
+        separator_qr = SeparatorQR(log, config, batch_folder_path, 'splitter', files,
+                                   remove_blank_pages, docservers, splitter_method_id)
+        splitter = Splitter(config, database, separator_qr, log, docservers)
 
         if args.get('isMail') is not None and args['isMail'] is True:
-            log = _Log((args['log']), smtp)
+            log = Log((args['log']), smtp)
             log.task_id_monitor = args['task_id_monitor']
             log.database = database
             log.prefix = '[MailCollect]'
@@ -167,7 +170,7 @@ def launch(args):
                                 available_split_methods = json.load(json_file)
                                 for available_split_method in available_split_methods['methods']:
                                     if available_split_method['id'] == splitter_method_id:
-                                        split_method = _Splitter.import_method_from_script(docservers['SPLITTER_METHODS_PATH'],
+                                        split_method = Splitter.import_method_from_script(docservers['SPLITTER_METHODS_PATH'],
                                                                                            available_split_method['script'],
                                                                                            available_split_method['method'])
                                         log.info('Split using method : {}'.format(available_split_method['id']))
