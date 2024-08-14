@@ -28,9 +28,8 @@ from pathlib import Path
 from flask_babel import gettext
 from pytesseract import pytesseract
 from pdf2image import convert_from_path
-from werkzeug.datastructures.file_storage import FileStorage
-
 from .classes.Config import Config as _Config
+from werkzeug.datastructures.file_storage import FileStorage
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 
 
@@ -249,24 +248,11 @@ def retrieve_custom_path(custom_id):
     return path
 
 
-def get_custom_array(custom_id=False):
-    if not custom_id:
-        custom_id = get_custom_id()
+def get_custom_array(custom_id):
     custom_array = {}
     if custom_id:
         custom_array = check_python_customized_files(custom_id[1])
     return custom_array
-
-
-def get_custom_id():
-    custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
-    if os.path.isfile(custom_ini_file):
-        customs_config = _Config(custom_ini_file)
-        for custom_name, custom_param in customs_config.cfg.items():
-            if custom_param['isdefault'] == 'True':
-                path = custom_param['path']
-                if os.path.isdir(path):
-                    return [custom_name, path]
 
 
 def check_python_customized_files(path):

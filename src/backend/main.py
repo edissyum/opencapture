@@ -18,7 +18,6 @@
 import os
 import sys
 from flask import g as current_context
-from .functions import get_custom_array, retrieve_config_from_custom_id
 from src.backend.classes.Log import Log
 from src.backend.classes.SMTP import SMTP
 from src.backend.classes.Files import Files
@@ -26,6 +25,7 @@ from src.backend.classes.Config import Config
 from src.backend.classes.Database import Database
 from src.backend.classes.PyTesseract import PyTesseract
 from src.backend.classes.Spreadsheet import Spreadsheet
+from .functions import get_custom_array, retrieve_config_from_custom_id
 from src.backend.classes.ArtificialIntelligence import ArtificialIntelligence
 
 
