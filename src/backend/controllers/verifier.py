@@ -33,19 +33,19 @@ from PIL import Image
 from flask_babel import gettext
 from zeep import Client, exceptions
 from src.backend import verifier_exports
-from src.backend.import_classes import _Files
+from src.backend.classes.Files import Files
 from werkzeug.datastructures import FileStorage
 from src.backend.classes.Files import rotate_img
 from src.backend.scripting_functions import check_code
-from src.backend.models import verifier, accounts, forms
 from src.backend.main import launch, create_classes_from_custom_id
 from src.backend.controllers import auth, user, monitoring, history
+from src.backend.models import verifier, accounts, forms, attachments
 from flask import current_app, Response, request, g as current_context
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
 def upload_documents(body):
-    res = handle_uploaded_file(body['files'], body['workflowId'], None, body['datas'])
+    res = handle_uploaded_file(body['files'], body['workflowId'], None, body['datas'], body['splitter_batch_id'])
     if res and res[0] is not False:
         return res, 200
 
@@ -56,7 +56,7 @@ def upload_documents(body):
     return response, 400
 
 
-def handle_uploaded_file(files, workflow_id, supplier, datas=None):
+def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitter_batch_id=False):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER']
     tokens = []
@@ -65,7 +65,7 @@ def handle_uploaded_file(files, workflow_id, supplier, datas=None):
             _f = file
         else:
             _f = files[file]
-        filename = _Files.save_uploaded_file(_f, path)
+        filename = Files.save_uploaded_file(_f, path)
 
         now = datetime.datetime.now()
         year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]
@@ -91,6 +91,7 @@ def handle_uploaded_file(files, workflow_id, supplier, datas=None):
                 'custom_id': custom_id,
                 'ip': request.remote_addr,
                 'workflow_id': workflow_id,
+                'splitter_batch_id': splitter_batch_id,
                 'user_id': request.environ['user_id'],
                 'user_info': request.environ['user_info'],
                 'task_id_monitor': task_id_monitor[0]['process']
@@ -137,18 +138,16 @@ def retrieve_documents(args):
     if 'select' not in args:
         args['select'] = []
 
-    args['table'] = ['documents', 'form_models', 'attachments']
-    args['left_join'] = ['documents.form_id = form_models.id', 'documents.id = attachments.document_id']
-    args['group_by'] = ['documents.id', 'documents.form_id', 'form_models.id', 'attachments.document_id']
+    args['table'] = ['documents', 'form_models']
+    args['left_join'] = ['documents.form_id = form_models.id']
+    args['group_by'] = ['documents.id', 'documents.form_id', 'form_models.id']
 
     args['select'].append("documents.id as document_id")
-    args['select'].append("count(attachments) as attachments_count")
     args['select'].append("to_char(register_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as date")
     args['select'].append('form_models.label as form_label')
     args['select'].append("documents.*")
 
     args['where'].append("datas -> 'api_only' is NULL")
-    args['where'].append("(attachments.status not in ('DEL') OR attachments.status is NULL)")
 
     if 'time' in args:
         if args['time'] in ['today', 'yesterday']:
@@ -221,6 +220,9 @@ def retrieve_documents(args):
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': document['supplier_id']})
                 if not error:
                     document['supplier_name'] = supplier_info['name']
+
+            attachments_counts = attachments.get_attachments_by_document_id(document['id'])
+            document['attachments_count'] = len(attachments_counts[0]) if attachments_counts[0] else 0
         response = {
             "total": total_documents[0]['total'],
             "documents": documents_list

@@ -42,15 +42,8 @@ from skimage.transform import rotate
 from pdf2image import convert_from_path
 from werkzeug.utils import secure_filename
 from pytesseract import pytesseract, Output
-from src.backend.functions import get_custom_array, generate_searchable_pdf
-
-custom_array = get_custom_array()
-
-if 'FindDate' not in custom_array:
-    from src.backend.process.find_date import FindDate
-else:
-    FindDate = getattr(__import__(custom_array['find_date']['path'] + '.' + custom_array['find_date']['module'],
-                                  fromlist=[custom_array['find_date']['module']]), custom_array['find_date']['module'])
+from src.backend.process.find_date import FindDate
+from src.backend.functions import generate_searchable_pdf
 
 
 def convert_heif_to_jpg(file):

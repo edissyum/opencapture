@@ -1,6 +1,7 @@
 <div *ngIf="this.loading || this.documentsLoading || this.batchesLoading || this.validateLoading">
     <app-loader></app-loader>
 </div>
+<input multiple type="file" class="hidden" (change)="uploadAttachments($event)" #attachmentUpload>
 <mat-drawer-container
         [hasBackdrop]="false"
         *ngIf="!this.loading"
@@ -45,6 +46,65 @@
                             </mat-card-subtitle>
                         </mat-card-content>
                     </mat-card>
+                </div>
+            </div>
+        </div>
+    </mat-drawer>
+    <mat-drawer #attachments_list mode="side" [opened]="false" position="end" class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400">
+        <div class="flex justify-between items-center">
+            <span>
+                <i class="fas fa-plus text-xl cursor-pointer ml-2" *ngIf="this.currentBatch.status !== 'END'"
+                   [matTooltip]="'ATTACHMENTS.add_attachments' | translate" (click)="attachmentUpload.click()"></i>
+            </span>
+            <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
+                {{ "ATTACHMENTS.attachments_list" | translate }}
+            </h3>
+            <i class="fa-solid fa-times cursor-pointer text-gray-900 mb-8 mr-2" (click)="attachments_list.close()"></i>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="flex overflow-x-hidden justify-center" style="height: calc(100vh - 8.5rem) !important">
+            <div *ngIf="this.loadingAttachment" class="loading_attachments">
+                <div class="m-auto text-center">
+                    <i class="fa-solid fa-paperclip fa-4x fa-beat-fade w-full mb-2"></i>
+                    <span class="w-full">
+                        {{ 'ATTACHMENTS.loading_attachments' | translate }}
+                    </span>
+                </div>
+            </div>
+            <div *ngIf="!this.loadingAttachment && this.attachmentsLength === 0" class="w-full flex align-center items-center justify-center">
+                <i class="fa-solid fa-solid fa-plus text-5xl text-green-400 cursor-pointer" *ngIf="this.currentBatch.status !== 'END'"
+                   [matTooltip]="'ATTACHMENTS.add_attachments' | translate" (click)="attachmentUpload.click()"></i>
+            </div>
+            <div *ngIf="!this.loadingAttachment && this.attachmentsLength > 0" class="w-full">
+                <div *ngIf="this.attachmentsLength >= 0" class="px-4">
+                    <div *ngFor="let attachment of this.attachments" class="py-2">
+                        <mat-card>
+                            <img mat-card-image *ngIf="attachment['thumb']" [src]="attachment['thumb']">
+                            <div mat-card-image *ngIf="!attachment['thumb']" class="text-center text-8xl pt-2 px-4">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+                            <mat-card-header class="flex justify-center items-center relative bottom-2 w-full">
+                                <mat-card-title class="truncate text-base w-11/12" *ngIf="attachment['filename']"
+                                                [matTooltip]="attachment['filename'].length >= 35 ? attachment['filename'] : ''">
+                                    {{ attachment['filename'] }}
+                                </mat-card-title>
+                                <div class="cursor-pointer">
+                                    <div [matMenuTriggerFor]="menu" matTooltipPosition="above" class="w-5 text-center"
+                                         [matTooltip]="this.translate.instant('ATTACHMENTS.attachment_settings')">
+                                        <i class="fa-solid fa-ellipsis-vertical text-xl"></i>
+                                    </div>
+                                    <mat-menu #menu="matMenu">
+                                        <button mat-menu-item (click)="downloadAttachment(attachment)">
+                                            {{ 'ATTACHMENTS.download_attachment' | translate }}
+                                        </button>
+                                        <button *ngIf="this.currentBatch.status !== 'END'" mat-menu-item (click)="deleteConfirmDialog(attachment['id'])">
+                                            {{ 'ATTACHMENTS.delete_attachment' | translate }}
+                                        </button>
+                                    </mat-menu>
+                                </div>
+                            </mat-card-header>
+                        </mat-card>
+                    </div>
                 </div>
             </div>
         </div>
@@ -190,13 +250,23 @@
                     </form>
                     <button mat-button (click)="downloadOriginalFile(); $event.stopPropagation();"
                             class="float-left mb-2" matTooltip="{{ 'SPLITTER.show_original_file' | translate }}">
-                        <i class="fa-solid fa-download cursor-pointer text-green-400 fa-2x" *ngIf="!downloadLoading"></i>
+                        <i class="fa-solid fa-download cursor-pointer fa-2x" *ngIf="!downloadLoading"></i>
                         <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="downloadLoading"></i>
                     </button>
                     <button mat-button (click)="loadReferential(true, true); $event.stopPropagation();"
-                            class="float-right mb-2" matTooltip="{{ 'SPLITTER.load_referential' | translate }}">
+                            matTooltip="{{ 'SPLITTER.load_referential' | translate }}">
                         <i class="fa-solid fa-sync fa-2x"></i>
                     </button>
+                    <div *ngIf="!this.loading" class="float-right mr-2 cursor-pointer text-2xl text-gray-900"
+                         [matTooltip]="this.documents.length === 1 ? this.translate.instant('ATTACHMENTS.attachments') : 'ATTACHMENTS.splitter_one_document' | translate">
+                        <i class="fas fa-paperclip" (click)="this.documents.length === 1 ? attachments_list.toggle() : ''"
+                           [class.opacity-20]="this.documents.length > 1" [class.cursor-not-allowed]="this.documents.length > 1"></i>
+                        <div class="relative inline-flex items-center justify-center font-bold text-white bg-green-400
+                                    text-[.6rem] leading-[.5rem] rounded-full -top-1 float-right p-[3px]"
+                             [class.opacity-20]="this.documents.length > 1" [class.cursor-not-allowed]="this.documents.length > 1">
+                            {{ this.attachmentsLength.toString().padStart(2, '0') }}
+                        </div>
+                    </div>
                     <mat-progress-bar class="overflow-hidden"
                             *ngIf="this.configurations['enableSplitterProgressBar']"
                             matTooltip="{{ 'SPLITTER.batch_metadata_progress_bar' | translate }}"
@@ -400,8 +470,9 @@
                                     matTooltip="{{ 'SPLITTER.rotatePage' | translate }}">
                                 <i class="fas fa-rotate-right text-lg"></i>
                             </button>
-                            <button mat-button (click)="createDocument()"
-                                    matTooltip="{{ 'SPLITTER.add_document' | translate }}">
+                            <button mat-button (click)="this.attachmentsLength > 0 ? '' : createDocument()"
+                                    [class.cursor-not-allowed]="this.attachmentsLength > 0" [class.opacity-30]="this.attachmentsLength > 0"
+                                    [matTooltip]="this.attachmentsLength > 0 ? this.translate.instant('SPLITTER.add_document_impossible_attachments') : 'SPLITTER.add_document' | translate">
                                 <i class="fas fa-plus-circle fa-lg" *ngIf="!addDocumentLoading"></i>
                                 <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="addDocumentLoading"></i>
                             </button>

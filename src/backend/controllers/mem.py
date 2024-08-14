@@ -16,9 +16,9 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask import request, g as current_context
-from src.backend.import_classes import _MEMWebServices
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
+from src.backend.classes.MEMWebServices import MEMWebServices
 
 
 def test_connection(args):
@@ -28,7 +28,7 @@ def test_connection(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
-    _ws = _MEMWebServices(
+    _ws = MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -44,7 +44,7 @@ def get_users(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
-    _ws = _MEMWebServices(
+    _ws = MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -61,7 +61,7 @@ def get_doctypes(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
-    _ws = _MEMWebServices(
+    _ws = MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -78,7 +78,7 @@ def get_entities(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
-    _ws = _MEMWebServices(
+    _ws = MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -95,7 +95,7 @@ def get_custom_fields(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
-    _ws = _MEMWebServices(
+    _ws = MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -112,7 +112,7 @@ def get_contact_custom_fields(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
-    _ws = _MEMWebServices(
+    _ws = MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -129,7 +129,7 @@ def get_priorities(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
-    _ws = _MEMWebServices(
+    _ws = MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -146,7 +146,7 @@ def get_statuses(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
-    _ws = _MEMWebServices(
+    _ws = MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -164,7 +164,7 @@ def retrieve_contact(args):
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
 
-    _ws = _MEMWebServices(
+    _ws = MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -181,7 +181,7 @@ def get_document_with_contact(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
-    _ws = _MEMWebServices(
+    _ws = MEMWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -198,7 +198,7 @@ def get_indexing_models(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
-    _ws = _MEMWebServices(
+    _ws = MEMWebServices(
         args['host'],
         args['login'],
         args['password'],

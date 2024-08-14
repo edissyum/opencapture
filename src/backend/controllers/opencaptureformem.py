@@ -18,7 +18,7 @@
 from flask import request, g as current_context
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
-from src.backend.import_classes import _OpenCaptureForMEMWebServices
+from src.backend.classes.OpenCaptureForMEMWebServices import OpenCaptureForMEMWebServices
 
 
 def get_access_token(args):
@@ -28,7 +28,8 @@ def get_access_token(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
-    _ws = _OpenCaptureForMEMWebServices(
+
+    _ws = OpenCaptureForMEMWebServices(
         args['host'],
         args['secret_key'],
         args['custom_id'],
@@ -43,7 +44,8 @@ def get_processes(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
-    _ws = _OpenCaptureForMEMWebServices(
+
+    _ws = OpenCaptureForMEMWebServices(
         args['host'],
         args['secret_key'],
         args['custom_id'],

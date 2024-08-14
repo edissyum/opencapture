@@ -19,15 +19,15 @@
 import jwt
 import psycopg
 from psycopg.rows import dict_row
+from src.backend.classes.Config import Config
 from datetime import datetime, timezone, timedelta
-from src.backend.import_classes import _Config
 
 CUSTOM_ID = 'test'
 PROJECT_PATH = '/var/www/html/opencapture/'
 
 
 def get_db():
-    config = _Config(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/config.ini')
+    config = Config(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/config.ini')
     conn = psycopg.connect(dbname=config.cfg['DATABASE']['postgresdatabase'],
                            user=config.cfg['DATABASE']['postgresuser'],
                            password=config.cfg['DATABASE']['postgrespassword'],

@@ -57,7 +57,26 @@ def get_attachments_by_document_id(document_id):
 
     if not attachments:
         error = gettext('GET_ATTACHMENTS_ERROR')
+    return attachments, error
 
+def get_attachments_by_batch_id(batch_id):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    attachments = database.select({
+        'select': ['*'],
+        'table': ['attachments'],
+        'where': ["batch_id = %s", "status not in ('DEL')"],
+        'data': [batch_id]
+    })
+
+    if not attachments:
+        error = gettext('GET_ATTACHMENTS_ERROR')
     return attachments, error
 
 def get_attachment_by_id(attachment_id):

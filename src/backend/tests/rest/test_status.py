@@ -33,7 +33,7 @@ class StatusTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['status']), 4)
+        self.assertEqual(len(response.json['status']), 5)
 
     def test_successful_get_status_list_splitter(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/status/splitter/list',

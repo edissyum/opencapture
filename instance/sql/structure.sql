@@ -213,6 +213,7 @@ CREATE TABLE "documents" (
     "nb_pages"          INTEGER             NOT NULL DEFAULT 1,
     "locked"            BOOLEAN             DEFAULT False,
     "locked_by"         VARCHAR(50),
+    "md5"               VARCHAR(32),
     "positions"         JSONB               DEFAULT '{}',
     "pages"             JSONB               DEFAULT '{}',
     "datas"             JSONB               DEFAULT '{}'
@@ -251,6 +252,7 @@ CREATE TABLE "splitter_batches" (
     "workflow_id"       INTEGER         DEFAULT null,
     "locked"            BOOLEAN         DEFAULT False,
     "locked_by"         VARCHAR(50),
+    "md5"               VARCHAR(32),
     "data"              JSON            DEFAULT '{}'::json
 );
 

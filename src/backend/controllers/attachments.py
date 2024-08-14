@@ -28,7 +28,7 @@ from flask import current_app, request, g as current_context
 from src.backend import retrieve_custom_from_url, create_classes_from_custom_id
 
 
-def handle_uploaded_file(files, document_id, module):
+def handle_uploaded_file(files, document_id, batch_id, module):
     if 'docservers' in current_context:
         docservers = current_context.docservers
     else:
@@ -44,6 +44,8 @@ def handle_uploaded_file(files, document_id, module):
     for file in files:
         if isinstance(file, FileStorage):
             _f = file
+        elif isinstance(file, dict):
+            _f = FileStorage(stream=open(file['file'], 'rb'), filename=file['filename'])
         else:
             _f = files[file]
 
@@ -71,12 +73,11 @@ def handle_uploaded_file(files, document_id, module):
 
                     if os.path.isfile(tmp_file):
                         os.remove(tmp_file)
-                    print(thumb_path)
-
                 args = {
                     'columns': {
                         'path': file,
                         'document_id': document_id,
+                        'batch_id': batch_id,
                         'thumbnail_path': thumb_path,
                         'filename': original_filename
                     }
@@ -84,9 +85,23 @@ def handle_uploaded_file(files, document_id, module):
                 attachments.create_attachment(args)
     return '', 200
 
-def get_attachments_by_document_id(document_id):
+def get_attachments_by_document_id(document_id, get_thumb=True):
     _attachments = attachments.get_attachments_by_document_id(document_id)
-    if _attachments[0]:
+    if _attachments[0] and get_thumb:
+        for attachment in _attachments[0]:
+            extension = os.path.splitext(attachment['filename'])[1]
+            if ('path' in attachment and os.path.isfile(attachment['path']) and
+                    extension.lower() in ['.png', '.jpg', '.jpeg', '.gif']):
+                with open(attachment['path'], 'rb') as f:
+                    attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
+            elif 'thumbnail_path' in attachment and os.path.isfile(attachment['thumbnail_path']):
+                with open(attachment['thumbnail_path'], 'rb') as f:
+                    attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
+    return _attachments[0], _attachments[1]
+
+def get_attachments_by_batch_id(batch_id, get_thumb=True):
+    _attachments = attachments.get_attachments_by_batch_id(batch_id)
+    if _attachments[0] and get_thumb:
         for attachment in _attachments[0]:
             extension = os.path.splitext(attachment['filename'])[1]
             if ('path' in attachment and os.path.isfile(attachment['path']) and

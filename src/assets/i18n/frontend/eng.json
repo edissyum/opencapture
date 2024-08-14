@@ -116,7 +116,8 @@
 		"confirm_delete_attachment": "Are you sure you want to delete this attachment ?",
 		"delete_attachment": "Delete attachment",
 		"download_attachment": "Download attachment",
-		"loading_attachments": "Loading attachments..."
+		"loading_attachments": "Loading attachments...",
+		"splitter_one_document": "If you want to add attachments, the batch must only contain one document"
 	},
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
@@ -628,6 +629,7 @@
 		"general": "General SMTP settings",
 		"hostname": "Hostname",
 		"insert_body_as_doc": "Insert email body as document",
+		"insert_body_as_doc_hint": "If enabled, email attachments will be embedded as attachments in Open-Capture. If disabled, each attachment will be treated individually",
 		"is_splitter": "Is splitter",
 		"load_folders_first": "Load folders first",
 		"move": "Move",
@@ -925,6 +927,7 @@
 	},
 	"SPLITTER": {
 		"add_document": "Add document",
+		"add_document_impossible_attachments": "If you want to add a document, please delete the attachments first\n",
 		"all_batches_checked_deleted": "All checked batches was successfully deleted",
 		"barch_form_change_success": "Batch form changed with success",
 		"batch_deleted": "Batch deleted",

@@ -24,13 +24,14 @@ import importlib
 import traceback
 from flask_babel import gettext
 from src.backend import verifier_exports
+from src.backend.classes.Files import Files
 from src.backend.scripting_functions import check_code
-from src.backend.import_classes import _PyTesseract, _Files
+from src.backend.classes.PyTesseract import PyTesseract
 from src.backend.scripting_functions import send_to_workflow
-from src.backend.controllers import verifier, accounts
+from src.backend.controllers import verifier, accounts, attachments
 from src.backend.functions import delete_documents, rotate_document, find_workflow_with_ia
-from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
-    FindDeliveryNumber, FindFooterRaw, FindQuotationNumber, FindName
+from src.backend.process import (find_date, find_due_date, find_footer, find_invoice_number, find_supplier,
+                                 find_custom, find_delivery_number, find_footer_raw, find_quotation_number, find_name)
 
 
 class DictX(dict):
@@ -250,6 +251,23 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
             'table': 'documents',
             'columns': document_data
         })
+
+        if 'attachments' in args and args['attachments']:
+            attachments.handle_uploaded_file(args['attachments'], document_id, None, 'verifier')
+
+        if 'splitter_batch_id' in args and args['splitter_batch_id']:
+            splitter_attachments = attachments.get_attachments_by_batch_id(args['splitter_batch_id'], False)
+            if splitter_attachments[0]:
+                for attachment in splitter_attachments[0]:
+                    database.update({
+                        'table': ['attachments'],
+                        'set': {
+                            'document_id': document_id
+                        },
+                        'where': ['id = %s'],
+                        'data': [attachment['id']]
+                    })
+
         return document_id
 
     log.info('Document not inserted in database based on workflow settings')
@@ -474,7 +492,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if 'ai_model_id' in workflow_settings['input'] and workflow_settings['input']['ai_model_id']:
             ai_model_id = workflow_settings['input']['ai_model_id']
-            res = find_workflow_with_ia(file, ai_model_id, database, docservers, _Files, ocr, log, 'verifier')
+            res = find_workflow_with_ia(file, ai_model_id, database, docservers, Files, ocr, log, 'verifier')
             if res:
                 return send_to_workflow({
                     'ip': args['ip'],
@@ -502,7 +520,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     column = args['supplier']['column']
                     value = args['supplier']['value']
 
-                    find_supplier = database.select({
+                    supplier_found = database.select({
                         'select': ['accounts_supplier.id as supplier_id', '*'],
                         'table': ['accounts_supplier', 'addresses'],
                         'left_join': ['accounts_supplier.address_id = addresses.id'],
@@ -510,8 +528,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                         'data': [value, 'DEL']
                     })
 
-                    if find_supplier:
-                        supplier = [find_supplier[0]['vat_number'], (('', ''), ('', '')), find_supplier[0], False,
+                    if supplier_found:
+                        supplier = [supplier_found[0]['vat_number'], (('', ''), ('', '')), supplier_found[0], False,
                                     column]
                         log.info('Supplier found using given informations in upload : ' + supplier[2]['name'] +
                                  ' using ' + column.upper() + ' : ' + value)
@@ -600,7 +618,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if 'name' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             # Find supplier in document if not send using upload rest
             if not supplier or not supplier[0] or not supplier[2]:
-                supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
+                supplier = find_supplier.FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
 
                 i = 0
                 tmp_nb_pages = nb_pages
@@ -614,7 +632,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                             break
 
                     convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
-                    supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
+                    supplier = find_supplier.FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
                     i += 1
 
             if supplier and supplier[2]:
@@ -653,7 +671,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
                     for _r in _regex:
                         regex[_r['regex_id']] = _r['content']
-                    ocr = _PyTesseract(supplier[2]['document_lang'], log, config, docservers)
+                    ocr = PyTesseract(supplier[2]['document_lang'], log, config, docservers)
                     convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
 
         if workflow_settings:
@@ -672,7 +690,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if custom_fields_to_find:
             # Find custom informations using mask
-            custom_fields = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
+            custom_fields = find_custom.FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
                                        datas['form_id'], custom_fields_to_find, False).run_using_positions_mask()
             if custom_fields:
                 for field in custom_fields:
@@ -696,47 +714,47 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             })
 
             for custom_field in custom_fields_regex:
-                custom_field_class = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
+                custom_field_class = find_custom.FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
                                                 datas['form_id'], custom_fields_to_find, custom_field)
                 custom_field = 'custom_' + str(custom_field['id'])
                 datas = found_data_recursively(custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
                                                datas, files, configurations, tesseract_function, convert_function)
 
         if 'firstname_lastname' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            name_class = FindName(ocr, log, docservers, supplier, files, database, regex, datas['form_id'], file)
+            name_class = find_name.FindName(ocr, log, docservers, supplier, files, database, regex, datas['form_id'], file)
             datas = found_data_recursively('firstname_lastname', ocr, file, nb_pages, text_by_pages,
                                            name_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
         if 'invoice_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
+            invoice_number_class = find_invoice_number.FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
                                                      docservers, configurations, languages, datas['form_id'])
             datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages,
                                            invoice_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
         if 'document_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            date_class = FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
+            date_class = find_date.FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                   languages, datas['form_id'])
             datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class,
                                            datas, files, configurations, tesseract_function, convert_function)
 
         if 'document_due_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            due_date_class = FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
+            due_date_class = find_due_date.FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                          languages, datas['form_id'])
             datas = found_data_recursively('document_due_date', ocr, file, nb_pages, text_by_pages,
                                            due_date_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
         if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
+            quotation_number_class = find_quotation_number.FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
                                                          docservers, configurations, datas['form_id'], languages)
             datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages,
                                            quotation_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
         if 'delivery_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
+            delivery_number_class = find_delivery_number.FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
                                                        docservers, configurations, datas['form_id'])
             datas = found_data_recursively('delivery_number', ocr, file, nb_pages, text_by_pages,
                                            delivery_number_class, datas, files, configurations, tesseract_function,
@@ -744,10 +762,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         footer = None
         if 'footer' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
+            footer_class = find_footer.FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
                                       docservers, datas['form_id'])
             if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
-                footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
+                footer_class = find_footer_raw.FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
                                              docservers, datas['form_id'])
 
             footer = footer_class.run()

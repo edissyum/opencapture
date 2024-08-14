@@ -27,10 +27,13 @@ import subprocess
 import pandas as pd
 from PIL import Image
 from xml.dom import minidom
+from zipfile import ZipFile
 from flask_babel import gettext
-from .import_classes import _Files
 import xml.etree.ElementTree as Et
-from src.backend.import_classes import _MEMWebServices, _COOGWebServices
+from src.backend.models import attachments
+from src.backend.classes.Files import Files
+from src.backend.classes.MEMWebServices import MEMWebServices
+from src.backend.classes.COOGWebServices import COOGWebServices
 
 
 def export_xml(data, log, document_info, database):
@@ -397,7 +400,7 @@ def export_pdf(data, log, document_info, compress_type, ocrise):
     if os.path.isdir(folder_out):
         file = document_info['path'] + '/' + document_info['filename']
         if ocrise:
-            _Files.ocrise_pdf(file, log, folder_out + '/' + filename)
+            Files.ocrise_pdf(file, log, folder_out + '/' + filename)
         else:
             if not file.lower().endswith('.pdf'):
                 if file.lower().endswith(('.heif', '.heic', '.jpg', '.jpeg', '.png')):
@@ -425,6 +428,15 @@ def export_pdf(data, log, document_info, compress_type, ocrise):
         if not ocrise and not compress_type and os.path.isfile(file):
             shutil.copy(file, folder_out + '/' + filename)
 
+        attachments_list = attachments.get_attachments_by_document_id(document_info['id'])
+        if attachments_list:
+            pdf_filename, pdf_extension = os.path.splitext(filename)
+            zip_filename =  pdf_filename + '_attachments.zip'
+            with ZipFile(folder_out + '/' + zip_filename, 'w') as zip_file:
+                for attachment in attachments_list[0]:
+                    if attachment:
+                        if os.path.exists(attachment['path']):
+                            zip_file.write(attachment['path'], attachment['filename'])
         return folder_out + '/' + filename, 200
     else:
         if log:
@@ -473,7 +485,7 @@ def export_coog(data, document_info, log):
             access_token = _data['value']
 
     if host and access_token:
-        _ws = _COOGWebServices(
+        _ws = COOGWebServices(
             host,
             token,
             log
@@ -491,6 +503,30 @@ def export_coog(data, document_info, log):
                 ws_data = [construct_json(parameters, document_info)]
                 res = _ws.create_task(ws_data)
                 if res[0]:
+                    coog_id = res[1][0]['id']
+                    document_id = document_info['id']
+                    attachments_list = attachments.get_attachments_by_document_id(document_id)
+                    if attachments_list:
+                        attachments_files = []
+                        for attachment in attachments_list[0]:
+                            if attachment:
+                                if os.path.isfile(attachment['path']):
+                                    with open(attachment['path'], 'rb') as _file:
+                                        b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
+
+                                    attachments_files.append({
+                                        "content": {
+                                            "type": "data",
+                                            "data": b64_encoded,
+                                            "filename": attachment['filename']
+                                        }
+                                    })
+
+                        args = {
+                            "id": coog_id,
+                            "attachments": attachments_files
+                        }
+                        _ws.create_attachment(args)
                     return {}, 200
                 else:
                     response = {
@@ -531,7 +567,7 @@ def export_mem(data, document_info, log, regex, database):
             password = _data['value']
 
     if host and login and password:
-        _ws = _MEMWebServices(
+        _ws = MEMWebServices(
             host,
             login,
             password,
@@ -655,22 +691,37 @@ def export_mem(data, document_info, log, regex, database):
 
                     res, message = _ws.insert_with_args(args)
                     if res:
-                        if link_resource:
-                            res_id = message['resId']
-                            if opencapture_field:
-                                opencapture_field = ''.join(construct_with_var(opencapture_field, document_info))
-                                if mem_custom_field:
-                                    if 'res_id' not in data or not data['res_id']:
-                                        docs = _ws.retrieve_doc_with_custom(mem_custom_field['id'], opencapture_field,
-                                                                            mem_clause)
-                                        if docs and docs['resources'] and len(docs['resources']) >= 1:
-                                            res_id = docs['resources'][0]['res_id']
-                                    else:
-                                        res_id = data['res_id']
-                                    if res_id != message['resId']:
-                                        _ws.link_documents(str(res_id), message['resId'])
+                        res_id = message['resId']
+                        document_id = document_info['id']
+                        attachments_list = attachments.get_attachments_by_document_id(document_id)
+                        if attachments_list:
+                            for attachment in attachments_list[0]:
+                                if attachment:
+                                    if os.path.isfile(attachment['path']):
+                                        with open(attachment['path'], 'rb') as _file:
+                                            b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
 
-                        return '', 200
+                                        attachments_files = {
+                                            "file_content": b64_encoded,
+                                            "extension": os.path.splitext(attachment['filename'])[1].replace('.', ''),
+                                            "filename": attachment['filename']
+                                        }
+                                        _ws.insert_attachment(res_id, attachments_files)
+                            if link_resource:
+                                if opencapture_field:
+                                    opencapture_field = ''.join(construct_with_var(opencapture_field, document_info))
+                                    if mem_custom_field:
+                                        if 'res_id' not in data or not data['res_id']:
+                                            docs = _ws.retrieve_doc_with_custom(mem_custom_field['id'], opencapture_field,
+                                                                                mem_clause)
+                                            if docs and docs['resources'] and len(docs['resources']) >= 1:
+                                                res_id = docs['resources'][0]['res_id']
+                                        else:
+                                            res_id = data['res_id']
+                                        if res_id != message['resId']:
+                                            _ws.link_documents(str(res_id), message['resId'])
+
+                            return '', 200
                     else:
                         response = {
                             "errors": gettext('EXPORT_MEM_ERROR'),

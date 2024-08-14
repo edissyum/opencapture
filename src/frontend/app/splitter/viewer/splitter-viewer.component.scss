@@ -46,3 +46,11 @@
 .mdc-linear-progress {
     transform: none;
 }
+
+.loading_attachments {
+    top: 50%;
+    left: 50%;
+    @apply absolute;
+    @apply text-gray-400;
+    transform: translate(-50%, -50%);
+}

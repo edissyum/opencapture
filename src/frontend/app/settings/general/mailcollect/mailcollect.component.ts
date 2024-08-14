@@ -62,6 +62,7 @@ export class MailCollectComponent implements OnInit {
             unit: 'verifier',
             control: new FormControl(false),
             label: marker('MAILCOLLECT.insert_body_as_doc'),
+            hint: marker('MAILCOLLECT.insert_body_as_doc_hint'),
             type: 'boolean',
             required: false
         },
@@ -70,6 +71,7 @@ export class MailCollectComponent implements OnInit {
             unit: 'splitter',
             control: new FormControl(false),
             label: marker('MAILCOLLECT.insert_body_as_doc'),
+            hint: marker('MAILCOLLECT.insert_body_as_doc_hint'),
             type: 'boolean',
             required: false
         },

@@ -4,7 +4,6 @@
     @apply font-bold;
 }
 
-
 ::ng-deep .list > mat-card {
     @apply flex;
     @apply flex-col;
@@ -17,22 +16,6 @@
         transform: scale(1);
         @apply transition-all;
         @apply duration-500;
-    }
-
-    & .mat-mdc-card-header .mat-mdc-card-title > span:first-child {
-        @apply relative;
-
-        &:after {
-            @apply absolute;
-            content: "";
-            @apply w-0;
-            @apply h-0.5;
-            @apply bg-green-400;
-            @apply left-1/2;
-            @apply -bottom-0.5;
-            @apply transition-all;
-            @apply duration-500;
-        }
     }
 
     &:hover {

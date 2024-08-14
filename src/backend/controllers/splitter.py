@@ -25,13 +25,16 @@ import os.path
 import datetime
 from flask_babel import gettext
 from src.backend import splitter_exports
+from src.backend.classes.CMIS import CMIS
+from src.backend.classes.Files import Files
 from src.backend.main_splitter import launch
+from src.backend.classes.OpenADS import OpenADS
+from src.backend.classes.Splitter import Splitter
+from src.backend.controllers import user, monitoring
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
-from src.backend.controllers import user, monitoring
-from src.backend.import_classes import _Files, _Splitter, _CMIS, _OpenADS
-from src.backend.models import splitter, doctypes, accounts, history, workflow, outputs, forms
+from src.backend.models import splitter, doctypes, accounts, history, workflow, outputs, forms, attachments
 
 
 def handle_uploaded_file(files, workflow_id, user_id):
@@ -41,7 +44,7 @@ def handle_uploaded_file(files, workflow_id, user_id):
 
     for file in files:
         _f = files[file]
-        filename = _Files.save_uploaded_file(_f, path, False)
+        filename = Files.save_uploaded_file(_f, path, False)
 
         now = datetime.datetime.now()
         year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]
@@ -104,7 +107,7 @@ def launch_referential_update(form_data):
                         'docservers': docservers,
                         'form_id': form_data['form_id']
                     }
-                    metadata_load = _Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
+                    metadata_load = Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
                                                                         method['script'],
                                                                         method['method'])
                     metadata_load(args)
@@ -170,25 +173,26 @@ def retrieve_batches(data):
         return user_forms[0], user_forms[1]
     user_forms = user_forms[0]
 
-    args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
+    args['table'] = ['splitter_batches']
+    args['select'] = ['splitter_batches.*', "to_char(splitter_batches.creation_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
     args['where'] = ['customer_id = ANY(%s)', 'form_id = ANY(%s)']
     args['data'] = [user_customers, user_forms]
 
     if 'search' in args and args['search']:
-        args['where'].append("id = %s OR file_name like %s ")
+        args['where'].append("splitter_batches.id = %s OR file_name like %s ")
         args['data'].append(args['search'])
         args['data'].append(f"%{args['search']}%")
 
     if 'status' in args and args['status'] is not None:
-        args['where'].append("status = %s")
+        args['where'].append("splitter_batches.status = %s")
         args['data'].append(args['status'])
 
     if 'time' in args and args['time'] is not None:
         if args['time'] in ['today', 'yesterday']:
             args['where'].append(
-                "to_char(creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
+                "to_char(splitter_batches.creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
         else:
-            args['where'].append("to_char(creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
+            args['where'].append("to_char(splitter_batches.creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
 
     if 'filter' in args and args['filter']:
         args['order_by'] = args['filter']
@@ -207,6 +211,8 @@ def retrieve_batches(data):
             customer = accounts.get_customer_by_id({'customer_id': batch['customer_id']})
             batches[index]['customer_name'] = customer[0]['name'] if 'name' in customer[0] else gettext('CUSTOMER_UNDEFINED')
 
+            attachments_counts = attachments.get_attachments_by_batch_id(batch['id'])
+            batches[index]['attachments_count'] = len(attachments_counts[0]) if attachments_counts[0] else 0
             try:
                 thumbnail = f"{docservers['SPLITTER_THUMB']}/{batches[index]['batch_folder']}/{batches[index]['thumbnail']}"
                 with open(thumbnail, 'rb') as image_file:
@@ -567,7 +573,7 @@ def save_modifications(data):
 
 def test_cmis_connection(args):
     try:
-        _CMIS(args['cmis_ws'], args['login'], args['password'], args['folder'])
+        CMIS(args['cmis_ws'], args['login'], args['password'], args['folder'])
     except (Exception,) as e:
         response = {
             'status': False,
@@ -579,7 +585,7 @@ def test_cmis_connection(args):
 
 
 def test_openads_connection(args):
-    _openads = _OpenADS(args['openads_api'], args['login'], args['password'])
+    _openads = OpenADS(args['openads_api'], args['login'], args['password'])
     res = _openads.test_connection()
     if not res['status']:
         response = {
@@ -629,7 +635,7 @@ def get_split_methods():
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
-    split_methods = _Splitter.get_split_methods(docservers)
+    split_methods = Splitter.get_split_methods(docservers)
     if len(split_methods) > 0:
         return split_methods, 200
     return split_methods, 400
@@ -642,7 +648,7 @@ def get_metadata_methods(form_method=False):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
-    metadata_methods = _Splitter.get_metadata_methods(docservers, form_method)
+    metadata_methods = Splitter.get_metadata_methods(docservers, form_method)
     if len(metadata_methods) > 0:
         return metadata_methods, 200
     return metadata_methods, 400

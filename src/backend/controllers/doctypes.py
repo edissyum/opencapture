@@ -22,9 +22,9 @@ import codecs
 from io import StringIO
 
 from flask_babel import gettext
-from flask import request, g as current_context
 from src.backend.models import doctypes
-from src.backend.import_classes import _SeparatorQR
+from flask import request, g as current_context
+from src.backend.classes.SeparatorQR import SeparatorQR
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
@@ -160,7 +160,7 @@ def generate_separator(args):
                 "qr_code_value": f"DOCSTART|{doctype['key']}"
             })
 
-    res_separators = _SeparatorQR.generate_separator(docservers, separators)
+    res_separators = SeparatorQR.generate_separator(docservers, separators)
     if 'error' in res_separators:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),

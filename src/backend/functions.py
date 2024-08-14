@@ -29,6 +29,7 @@ from flask_babel import gettext
 from pytesseract import pytesseract
 from pdf2image import convert_from_path
 from .classes.Config import Config as _Config
+from werkzeug.datastructures.file_storage import FileStorage
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 
 
@@ -118,9 +119,13 @@ def check_extensions_mime(files, document_type='document'):
 
     mime = magic.Magic(mime=True)
     for file in files:
-        _f = files[file]
+        if isinstance(file, dict):
+            _f = FileStorage(stream=open(file['file'], 'rb'), filename=file['filename'])
+        else:
+            _f = files[file]
+
         ext = _f.filename.split('.')[-1].lower()
-        allowed_extensions = [_f['extension'].lower() for _f in formats]
+        allowed_extensions = [_format['extension'].lower() for _format in formats]
         if ext not in allowed_extensions:
             response = {
                 "errors": gettext("UPLOAD_ERRROR"),
@@ -128,7 +133,7 @@ def check_extensions_mime(files, document_type='document'):
             }
             return response, 400
 
-        allowed_mime = [_f['mime'].lower() for _f in formats if _f['extension'].lower() == ext]
+        allowed_mime = [_format['mime'].lower() for _format in formats if _format['extension'].lower() == ext]
         mime_type = mime.from_buffer(_f.read())
 
         if mime_type not in allowed_mime:
@@ -243,24 +248,11 @@ def retrieve_custom_path(custom_id):
     return path
 
 
-def get_custom_array(custom_id=False):
-    if not custom_id:
-        custom_id = get_custom_id()
+def get_custom_array(custom_id):
     custom_array = {}
     if custom_id:
         custom_array = check_python_customized_files(custom_id[1])
     return custom_array
-
-
-def get_custom_id():
-    custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
-    if os.path.isfile(custom_ini_file):
-        customs_config = _Config(custom_ini_file)
-        for custom_name, custom_param in customs_config.cfg.items():
-            if custom_param['isdefault'] == 'True':
-                path = custom_param['path']
-                if os.path.isdir(path):
-                    return [custom_name, path]
 
 
 def check_python_customized_files(path):

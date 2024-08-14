@@ -262,7 +262,6 @@ touch $customPath/config/secret_key
 
 echo "[$oldCustomId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
-echo "isdefault = False" >> $customIniFile
 echo -e "" >> $customIniFile
 
 ####################

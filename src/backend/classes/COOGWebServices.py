@@ -64,3 +64,17 @@ class COOGWebServices:
             self.log.error('(' + str(res.status_code) + ') createTaskError : ' + str(res.text))
             return False, res.text
         return True, json.loads(res.text)
+
+
+    def create_attachment(self, args):
+        bearer = "Bearer " + self.access_token[1]
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": bearer
+        }
+        res = requests.post(self.base_url + '/api/v2/tasks/actions/create-attachments',
+                            data=json.dumps(args), headers=headers, timeout=self.timeout)
+        if res.status_code != 200 and res.status_code != 201:
+            self.log.error('(' + str(res.status_code) + ') createAttachmentError : ' + str(res.text))
+            return False, res.text
+        return True, json.loads(res.text)

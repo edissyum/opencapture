@@ -58,7 +58,7 @@ class OutputsTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['outputs']), 4)
+        self.assertEqual(len(response.json['outputs']), 5)
 
     def test_successful_get_outputs_types_verifier(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/verifier/getOutputsTypes',
@@ -72,7 +72,7 @@ class OutputsTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['outputs_types']), 5)
+        self.assertEqual(len(response.json['outputs_types']), 6)
 
     def test_successful_get_output_type_by_id_xml(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/getOutputTypeById/export_xml',
