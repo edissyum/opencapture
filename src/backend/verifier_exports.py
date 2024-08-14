@@ -510,11 +510,11 @@ def export_coog(data, document_info, log):
                                     }
                                 })
 
-                                args = {
-                                    "id": coog_id,
-                                    "attachments": attachments_files
-                                }
-                                _ws.create_attachment(args)
+                        args = {
+                            "id": coog_id,
+                            "attachments": attachments_files
+                        }
+                        _ws.create_attachment(args)
                     return {}, 200
                 else:
                     response = {
@@ -679,22 +679,36 @@ def export_mem(data, document_info, log, regex, database):
 
                     res, message = _ws.insert_with_args(args)
                     if res:
-                        if link_resource:
-                            res_id = message['resId']
-                            if opencapture_field:
-                                opencapture_field = ''.join(construct_with_var(opencapture_field, document_info))
-                                if mem_custom_field:
-                                    if 'res_id' not in data or not data['res_id']:
-                                        docs = _ws.retrieve_doc_with_custom(mem_custom_field['id'], opencapture_field,
-                                                                            mem_clause)
-                                        if docs and docs['resources'] and len(docs['resources']) >= 1:
-                                            res_id = docs['resources'][0]['res_id']
-                                    else:
-                                        res_id = data['res_id']
-                                    if res_id != message['resId']:
-                                        _ws.link_documents(str(res_id), message['resId'])
+                        res_id = message['resId']
+                        document_id = document_info['id']
+                        attachments_list = attachments.get_attachments_by_document_id(document_id)
+                        if attachments_list:
+                            for attachment in attachments_list[0]:
+                                if os.path.isfile(attachment['path']):
+                                    with open(attachment['path'], 'rb') as _file:
+                                        b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
 
-                        return '', 200
+                                    attachments_files = {
+                                        "file_content": b64_encoded,
+                                        "extension": os.path.splitext(attachment['filename'])[1].replace('.', ''),
+                                        "filename": attachment['filename']
+                                    }
+                                    res = _ws.insert_attachment(res_id, attachments_files)
+                            if link_resource:
+                                if opencapture_field:
+                                    opencapture_field = ''.join(construct_with_var(opencapture_field, document_info))
+                                    if mem_custom_field:
+                                        if 'res_id' not in data or not data['res_id']:
+                                            docs = _ws.retrieve_doc_with_custom(mem_custom_field['id'], opencapture_field,
+                                                                                mem_clause)
+                                            if docs and docs['resources'] and len(docs['resources']) >= 1:
+                                                res_id = docs['resources'][0]['res_id']
+                                        else:
+                                            res_id = data['res_id']
+                                        if res_id != message['resId']:
+                                            _ws.link_documents(str(res_id), message['resId'])
+
+                            return '', 200
                     else:
                         response = {
                             "errors": gettext('EXPORT_MEM_ERROR'),
