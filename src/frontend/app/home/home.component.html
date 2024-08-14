@@ -24,7 +24,7 @@
                     cdkOverlayOrigin #trigger="cdkOverlayOrigin">
             {{ getUnseenBatches('verifier') }}
         </div>
-        <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger" [cdkConnectedOverlayOpen]="isOpen">
+        <ng-template *ngIf="getUnseenBatches('verifier') > 0" cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger" [cdkConnectedOverlayOpen]="isOpen">
             <span class="bg-black bg-opacity-70 rounded text-white border border-black p-1" [innerHTML]="getUnseenToolTip('verifier')"></span>
         </ng-template>
         <mat-card-subtitle class="mb-5">
