@@ -30,6 +30,7 @@ from xml.dom import minidom
 from flask_babel import gettext
 from .import_classes import _Files
 import xml.etree.ElementTree as Et
+from src.backend.models import attachments
 from src.backend.import_classes import _MEMWebServices, _COOGWebServices
 
 
@@ -491,6 +492,29 @@ def export_coog(data, document_info, log):
                 ws_data = [construct_json(parameters, document_info)]
                 res = _ws.create_task(ws_data)
                 if res[0]:
+                    coog_id = res[1][0]['id']
+                    document_id = document_info['id']
+                    attachments_list = attachments.get_attachments_by_document_id(document_id)
+                    if attachments_list:
+                        attachments_files = []
+                        for attachment in attachments_list[0]:
+                            if os.path.isfile(attachment['path']):
+                                with open(attachment['path'], 'rb') as _file:
+                                    b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
+
+                                attachments_files.append({
+                                    "content": {
+                                        "type": "data",
+                                        "data": b64_encoded,
+                                        "filename": attachment['filename']
+                                    }
+                                })
+
+                                args = {
+                                    "id": coog_id,
+                                    "attachments": attachments_files
+                                }
+                                _ws.create_attachment(args)
                     return {}, 200
                 else:
                     response = {
