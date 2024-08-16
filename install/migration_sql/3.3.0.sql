@@ -21,6 +21,13 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "d
                 "label": "Token d''authentification",
                 "required": "true",
                 "placeholder": "ujx8ke67izyc6q3vvh96520a96a54frgjrpgl85kk4sb0tv3"
+            },
+            {
+                "id": "cert_path",
+                "type": "text",
+                "label": "Chemin vers le certificat",
+                "required": "false",
+                "placeholder": "/home/user/cert.cer"
             }
         ],
         "parameters": [
@@ -148,3 +155,13 @@ INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('WAIT_THIRD
 UPDATE workflows SET process = process || '{"allow_third_party_validation": false}' WHERE module = 'verifier';
 
 ALTER TABLE accounts_supplier ADD COLUMN "default_accounting_plan" INTEGER;
+
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_ATTACHMENTS', '[VERIFIER] Chemin vers le dossier contenant les pièces jointes', '/var/docservers/opencapture/verifier/attachments/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_ATTACHMENTS', '[SPLITTER] Chemin pour le stockage des pièces jointes', '/var/docservers/opencapture/splitter/attachments/');
+
+ALTER TABLE mailcollect ADD COLUMN secret VARCHAR;
+ALTER TABLE mailcollect ADD COLUMN tenant_id VARCHAR;
+ALTER TABLE mailcollect ADD COLUMN client_id VARCHAR;
+ALTER TABLE mailcollect ADD COLUMN oauth BOOLEAN DEFAULT FALSE;
+ALTER TABLE mailcollect ADD COLUMN scopes VARCHAR DEFAULT 'https://outlook.office.com/.default';
+ALTER TABLE mailcollect ADD COLUMN authority VARCHAR DEFAULT 'https://login.microsoftonline.com/';

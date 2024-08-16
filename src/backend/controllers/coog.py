@@ -31,6 +31,7 @@ def get_access_token(args):
     _ws = COOGWebServices(
         args['host'],
         args['token'],
+        args['cert_path'],
         log
     )
     return _ws.access_token

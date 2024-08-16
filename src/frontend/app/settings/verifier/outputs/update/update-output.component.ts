@@ -499,6 +499,7 @@ export class UpdateOutputComponent implements OnInit {
         return {
             'host': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
             'token': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'token'),
+            'cert_path': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'cert_path')
         };
     }
 

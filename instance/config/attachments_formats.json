@@ -16,6 +16,10 @@
         "mime": "image/png"
     },
     {
+        "extension": "gif",
+        "mime": "image/gif"
+    },
+    {
         "extension": "heif",
         "mime": "image/heic"
     },

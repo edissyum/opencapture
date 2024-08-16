@@ -15,11 +15,11 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, HostListener, OnDestroy, OnInit, SecurityContext} from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, SecurityContext } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
+import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { interval, of } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
@@ -33,8 +33,8 @@ import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
 import { LocaleService } from "../../../services/locale.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
+import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
 declare const $: any;
 
 @Component({
@@ -72,6 +72,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     formEmpty               : boolean     = false;
     processInError          : boolean     = false;
     imgLoading              : boolean     = false;
+    sidenavOpened           : boolean     = false;
     supplierformFound       : boolean     = false;
     processErrorMessage     : string      = '';
     processErrorIcon        : string      = '';
@@ -152,6 +153,23 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         private historyService: HistoryService,
         private sessionStorageService: SessionStorageService
     ) {}
+
+    @HostListener('document:click', ['$event'])
+    onScreenClick(event: MouseEvent) {
+        if (this.sidenavOpened) {
+            const clickedElement = event.target as HTMLElement;
+            if (clickedElement.id !== 'toggle_attachments' && clickedElement.id !== 'upload_attachments') {
+                const sidenavAttachment = document.getElementById('attachments_list');
+                if (sidenavAttachment && !sidenavAttachment.contains(clickedElement)) {
+                    this.sidenavOpened = false;
+                }
+            }
+        }
+    }
+
+    toggleSidenav() {
+        this.sidenavOpened = !this.sidenavOpened;
+    }
 
     async ngOnInit(document_id_from_multi = false): Promise<void> {
         this.sessionStorageService.save('splitter_or_verifier', 'verifier');
@@ -346,10 +364,29 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     getAttachments() {
         this.http.get(environment['url'] + '/ws/attachments/verifier/list/' + this.documentId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
+                console.log(data)
                 this.attachments = data;
                 this.attachments.forEach((attachment: any) => {
                     if (attachment['thumb']) {
                         attachment['thumb'] = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + attachment['thumb']);
+                    }
+                    attachment['extension'] = attachment['filename'].split('.').pop();
+                    if (['csv'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-csv';
+                    } else if (['xls', 'xlsx', 'ods'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-excel';
+                    } else if (['pptx', 'ppt', 'odp'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-powerpoint';
+                    } else if (['doc', 'docx', 'odt', 'dot'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-word';
+                    } else if (['zip', 'tar.gz', 'tar', '7z', 'tgz', 'tar.z'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-zipper';
+                    } else if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-video';
+                    } else if (['mp3', 'wav', 'flac', 'ogg', 'wma', 'aac', 'm4a'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'audio-file-video';
+                    } else {
+                        attachment['extension_icon'] = 'fa-file';
                     }
                 });
                 this.attachmentsLength = this.attachments.length;

@@ -103,7 +103,13 @@ for process in processes:
         config_mail['hostname'],
         config_mail['port'],
         config_mail['login'],
-        config_mail['password']
+        config_mail['password'],
+        config_mail['oauth'],
+        config_mail['tenant_id'],
+        config_mail['client_id'],
+        config_mail['secret'],
+        config_mail['scopes'],
+        config_mail['authority']
     )
 
     secured_connection = config_mail['secured_connection']

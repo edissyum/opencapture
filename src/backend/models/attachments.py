@@ -47,17 +47,13 @@ def get_attachments_by_document_id(document_id):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
 
-    error = None
     attachments = database.select({
         'select': ['*'],
         'table': ['attachments'],
         'where': ["document_id = %s", "status not in ('DEL')"],
         'data': [document_id]
     })
-
-    if not attachments:
-        error = gettext('GET_ATTACHMENTS_ERROR')
-    return attachments, error
+    return attachments
 
 def get_attachments_by_batch_id(batch_id):
     if 'database' in current_context:
@@ -67,7 +63,6 @@ def get_attachments_by_batch_id(batch_id):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
 
-    error = None
     attachments = database.select({
         'select': ['*'],
         'table': ['attachments'],
@@ -75,9 +70,7 @@ def get_attachments_by_batch_id(batch_id):
         'data': [batch_id]
     })
 
-    if not attachments:
-        error = gettext('GET_ATTACHMENTS_ERROR')
-    return attachments, error
+    return attachments
 
 def get_attachment_by_id(attachment_id):
     if 'database' in current_context:
@@ -87,7 +80,6 @@ def get_attachment_by_id(attachment_id):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
 
-    error = None
     attachment = database.select({
         'select': ['*'],
         'table': ['attachments'],
@@ -95,9 +87,7 @@ def get_attachment_by_id(attachment_id):
         'data': [attachment_id]
     })
 
-    if not attachment:
-        error = gettext('GET_ATTACHMENT_ERROR')
-    return attachment[0], error
+    return attachment[0]
 
 def delete_attachment(attachment_id):
     if 'database' in current_context:
@@ -107,7 +97,6 @@ def delete_attachment(attachment_id):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
 
-    error = None
     attachment = database.update({
         'table': ['attachments'],
         'set': {
@@ -117,7 +106,4 @@ def delete_attachment(attachment_id):
         'data': [attachment_id]
     })
 
-    if not attachment:
-        error = gettext('DELETE_ATTACHMENT_ERROR')
-
-    return attachment, error
+    return attachment

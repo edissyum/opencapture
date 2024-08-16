@@ -42,8 +42,14 @@ def retrieve_folders():
     check, message = rest_validator(request.json, [
         {'id': 'port', 'type': int, 'mandatory': True},
         {'id': 'login', 'type': str, 'mandatory': True},
+        {'id': 'oauth', 'type': bool, 'mandatory': False},
+        {'id': 'secret', 'type': str, 'mandatory': False},
+        {'id': 'scopes', 'type': str, 'mandatory': False},
         {'id': 'hostname', 'type': str, 'mandatory': True},
-        {'id': 'password', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': False},
+        {'id': 'tenant_id', 'type': str, 'mandatory': False},
+        {'id': 'client_id', 'type': str, 'mandatory': False},
+        {'id': 'authority', 'type': str, 'mandatory': False},
         {'id': 'secured_connection', 'type': bool, 'mandatory': False}
     ])
 

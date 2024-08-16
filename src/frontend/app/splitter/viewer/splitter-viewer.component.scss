@@ -1,8 +1,8 @@
 ::ng-deep #form-select-field {
-    .mdc-notched-outline, .mat-mdc-select-arrow-wrapper {
+    padding-top: 35px !important;
+    & .mdc-notched-outline, .mat-mdc-select-arrow-wrapper {
         display: none !important;
     }
-    padding-top: 35px !important;
 }
 
 .cdk-drop-list-dragging .cdk-drag {

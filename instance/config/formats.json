@@ -12,6 +12,10 @@
         "mime": "image/jpeg"
     },
     {
+        "extension": "gif",
+        "mime": "image/gif"
+    },
+    {
         "extension": "png",
         "mime": "image/png"
     },

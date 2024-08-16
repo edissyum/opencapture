@@ -15,20 +15,21 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import os
 import re
 import json
-import base64
 import requests
-from datetime import datetime
 from flask_babel import gettext
-from requests.auth import HTTPBasicAuth
 
 
 class COOGWebServices:
-    def __init__(self, host, token, log):
+    def __init__(self, host, token, cert_path, log):
         self.log = log
         self.timeout = 10
         self.token = token
+        self.cert_path = None
+        if cert_path and os.path.isfile(cert_path):
+            self.cert_path = cert_path
         self.base_url = re.sub("^/|/$", "", host)
         self.access_token = self.get_access_token()
 
@@ -37,7 +38,7 @@ class COOGWebServices:
             args = {
                 "token": self.token,
             }
-            res = requests.post(self.base_url + '/auth/token', data=args, timeout=self.timeout)
+            res = requests.post(self.base_url + '/auth/token', data=args, timeout=self.timeout, verify=self.cert_path)
             if res.text:
                 if res.status_code == 404:
                     return [False, gettext('HOST_NOT_FOUND')]
@@ -59,7 +60,7 @@ class COOGWebServices:
             "Authorization": bearer
         }
         res = requests.post(self.base_url + '/api/v2/tasks/actions/create', data=json.dumps(task), headers=headers,
-                            timeout=self.timeout)
+                            timeout=self.timeout, verify=self.cert_path)
         if res.status_code != 200 and res.status_code != 201:
             self.log.error('(' + str(res.status_code) + ') createTaskError : ' + str(res.text))
             return False, res.text
@@ -73,7 +74,7 @@ class COOGWebServices:
             "Authorization": bearer
         }
         res = requests.post(self.base_url + '/api/v2/tasks/actions/create-attachments',
-                            data=json.dumps(args), headers=headers, timeout=self.timeout)
+                            data=json.dumps(args), headers=headers, timeout=self.timeout, verify=self.cert_path)
         if res.status_code != 200 and res.status_code != 201:
             self.log.error('(' + str(res.status_code) + ') createAttachmentError : ' + str(res.text))
             return False, res.text
