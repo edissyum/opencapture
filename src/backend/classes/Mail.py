@@ -18,6 +18,7 @@
 import os
 import re
 import sys
+import msal
 import shutil
 import base64
 import mimetypes
@@ -29,12 +30,18 @@ from imap_tools import utils, MailBox, MailBoxUnencrypted
 
 
 class Mail:
-    def __init__(self, host, port, login, pwd):
+    def __init__(self, host, port, login, pwd, oauth, tenant_id, client_id, secret, scopes, authority):
         self.pwd = pwd
         self.conn = None
         self.port = port
         self.host = host
         self.login = login
+        self.oauth = oauth
+        self.secret = secret
+        self.scopes = scopes
+        self.authority = authority
+        self.tenant_id = tenant_id
+        self.client_id = client_id
 
     def test_connection(self, secured_connection):
         """
@@ -52,12 +59,42 @@ class Mail:
             sys.exit()
 
         try:
-            self.conn.login(self.login, self.pwd)
+            if self.oauth:
+                result = self.generate_oauth_token()
+                self.conn.client.authenticate("XOAUTH2",
+                                              lambda x: self.generate_auth_string(result['access_token']).encode(
+                                                  "utf-8"))
+            else:
+                self.conn.login(self.login, self.pwd)
         except IMAP4_SSL.error as err:
             error = 'Error while trying to login to ' + self.host + ' using ' + self.login + '/' + self.pwd + ' as login/password : ' + str(
                 err)
             print(error)
             sys.exit()
+
+    def generate_auth_string(self, token):
+        return f"user={self.login}\x01auth=Bearer {token}\x01\x01"
+
+    def generate_oauth_token(self):
+        app = msal.ConfidentialClientApplication(self.client_id,
+                                                 authority=self.authority + self.tenant_id,
+                                                 client_credential=self.secret)
+
+        result = app.acquire_token_silent([self.scopes], account=None)
+
+        if not result:
+            # No suitable token in cache.  Getting a new one.
+            result = app.acquire_token_for_client(scopes=[self.scopes])
+
+        if "access_token" in result:
+            # Token generated with success.
+            return result
+
+        # Error while generated token.
+        print(result.get("error"))
+        print(result.get("error_description"))
+        print(result.get("correlation_id"))
+        sys.exit()
 
     def check_if_folder_exist(self, folder):
         """

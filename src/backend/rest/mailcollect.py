@@ -43,7 +43,13 @@ def retrieve_folders():
         {'id': 'port', 'type': int, 'mandatory': True},
         {'id': 'login', 'type': str, 'mandatory': True},
         {'id': 'hostname', 'type': str, 'mandatory': True},
-        {'id': 'password', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': False},
+        {'id': 'oauth', 'type': bool, 'mandatory': False},
+        {'id': 'tenant_id', 'type': str, 'mandatory': False},
+        {'id': 'client_id', 'type': str, 'mandatory': False},
+        {'id': 'secret', 'type': str, 'mandatory': False},
+        {'id': 'scopes', 'type': str, 'mandatory': False},
+        {'id': 'authority', 'type': str, 'mandatory': False},
         {'id': 'secured_connection', 'type': bool, 'mandatory': False}
     ])
 
