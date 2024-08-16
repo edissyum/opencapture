@@ -28,7 +28,8 @@ bp = Blueprint('coog', __name__, url_prefix='/ws/')
 def get_access_token():
     check, message = rest_validator(request.json['args'], [
         {'id': 'host', 'type': str, 'mandatory': True},
-        {'id': 'token', 'type': str, 'mandatory': True}
+        {'id': 'token', 'type': str, 'mandatory': True},
+        {'id': 'cert_path', 'type': str, 'mandatory': False}
     ])
 
     if not check:

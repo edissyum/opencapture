@@ -469,6 +469,12 @@ def construct_json(data, document_info, return_data=None):
                     return_data[parameter].append(construct_json(sub_param, document_info))
             if not return_data[parameter]:
                 del return_data[parameter]
+            if parameter == 'references':
+                ref_cpt = 0
+                for ref in return_data['references']:
+                    if 'reference' not in ref or not ref['reference']:
+                        del return_data['references'][ref_cpt]
+                    ref_cpt += 1
     return return_data
 
 
