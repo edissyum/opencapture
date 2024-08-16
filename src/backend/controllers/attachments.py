@@ -19,6 +19,7 @@ import os
 import uuid
 import magic
 import base64
+from flask_babel import gettext
 from pdf2image import convert_from_path
 from src.backend.models import attachments
 from src.backend.classes.Files import Files
@@ -87,44 +88,51 @@ def handle_uploaded_file(files, document_id, batch_id, module):
 
 def get_attachments_by_document_id(document_id, get_thumb=True):
     _attachments = attachments.get_attachments_by_document_id(document_id)
-    if _attachments[0] and get_thumb:
-        for attachment in _attachments[0]:
+
+    if _attachments and get_thumb:
+        for attachment in _attachments:
+            print(attachment['thumbnail_path'])
             extension = os.path.splitext(attachment['filename'])[1]
             if ('path' in attachment and os.path.isfile(attachment['path']) and
                     extension.lower() in ['.png', '.jpg', '.jpeg', '.gif']):
                 with open(attachment['path'], 'rb') as f:
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
-            elif 'thumbnail_path' in attachment and os.path.isfile(attachment['thumbnail_path']):
+            elif ('thumbnail_path' in attachment and attachment['thumbnail_path']
+                  and os.path.isfile(attachment['thumbnail_path'])):
                 with open(attachment['thumbnail_path'], 'rb') as f:
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
-    return _attachments[0], _attachments[1]
+    return _attachments, 200
 
 def get_attachments_by_batch_id(batch_id, get_thumb=True):
     _attachments = attachments.get_attachments_by_batch_id(batch_id)
-    if _attachments[0] and get_thumb:
-        for attachment in _attachments[0]:
+
+    if _attachments and get_thumb:
+        for attachment in _attachments:
             extension = os.path.splitext(attachment['filename'])[1]
             if ('path' in attachment and os.path.isfile(attachment['path']) and
                     extension.lower() in ['.png', '.jpg', '.jpeg', '.gif']):
                 with open(attachment['path'], 'rb') as f:
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
-            elif 'thumbnail_path' in attachment and os.path.isfile(attachment['thumbnail_path']):
+            elif ('thumbnail_path' in attachment and attachment['thumbnail_path']
+                  and os.path.isfile(attachment['thumbnail_path'])):
                 with open(attachment['thumbnail_path'], 'rb') as f:
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
-    return _attachments[0], _attachments[1]
+    return _attachments, 200
 
 def delete_attachment(attachment_id):
     _attachment = attachments.get_attachment_by_id(attachment_id)
-    if _attachment[0]:
+
+    if _attachment:
         attachments.delete_attachment(attachment_id)
-    return _attachment[0], _attachment[1]
+    return _attachment, 200
 
 def download_attachment(attachment_id):
     _attachment = attachments.get_attachment_by_id(attachment_id)
-    if _attachment[0]:
+
+    if _attachment:
         mime = magic.Magic(mime=True)
-        mime_type = mime.from_file(_attachment[0]['path'])
-        with open(_attachment[0]['path'], 'rb') as file:
+        mime_type = mime.from_file(_attachment['path'])
+        with open(_attachment['path'], 'rb') as file:
             content = file.read()
 
         if not content:

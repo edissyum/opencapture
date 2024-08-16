@@ -81,7 +81,7 @@
                         <mat-card>
                             <img mat-card-image *ngIf="attachment['thumb']" [src]="attachment['thumb']">
                             <div mat-card-image *ngIf="!attachment['thumb']" class="text-center text-8xl pt-2 px-4">
-                                <i class="fa-solid fa-file-pdf"></i>
+                                <i [class]="attachment['extension_icon']" class="fa-solid"></i>
                             </div>
                             <mat-card-header class="flex justify-center items-center relative bottom-2 w-full">
                                 <mat-card-title class="truncate text-base w-11/12" *ngIf="attachment['filename']"

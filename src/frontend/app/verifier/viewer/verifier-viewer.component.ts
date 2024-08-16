@@ -364,10 +364,29 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     getAttachments() {
         this.http.get(environment['url'] + '/ws/attachments/verifier/list/' + this.documentId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
+                console.log(data)
                 this.attachments = data;
                 this.attachments.forEach((attachment: any) => {
                     if (attachment['thumb']) {
                         attachment['thumb'] = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + attachment['thumb']);
+                    }
+                    attachment['extension'] = attachment['filename'].split('.').pop();
+                    if (['csv'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-csv';
+                    } else if (['xls', 'xlsx', 'ods'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-excel';
+                    } else if (['pptx', 'ppt', 'odp'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-powerpoint';
+                    } else if (['doc', 'docx', 'odt', 'dot'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-word';
+                    } else if (['zip', 'tar.gz', 'tar', '7z', 'tgz', 'tar.z'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-zipper';
+                    } else if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-video';
+                    } else if (['mp3', 'wav', 'flac', 'ogg', 'wma', 'aac', 'm4a'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'audio-file-video';
+                    } else {
+                        attachment['extension_icon'] = 'fa-file';
                     }
                 });
                 this.attachmentsLength = this.attachments.length;
