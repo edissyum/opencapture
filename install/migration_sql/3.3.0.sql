@@ -165,3 +165,5 @@ ALTER TABLE mailcollect ADD COLUMN client_id VARCHAR;
 ALTER TABLE mailcollect ADD COLUMN oauth BOOLEAN DEFAULT FALSE;
 ALTER TABLE mailcollect ADD COLUMN scopes VARCHAR DEFAULT 'https://outlook.office.com/.default';
 ALTER TABLE mailcollect ADD COLUMN authority VARCHAR DEFAULT 'https://login.microsoftonline.com/';
+
+INSERT INTO configurations ("label", "data") VALUES ('enableProcessWatcher', '{"type": "bool", "value": true, "description": "Activer l''affichage des processus en cours en bas à droite de l''écran"}');

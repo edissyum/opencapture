@@ -33,6 +33,7 @@ import {AfterContentChecked, ChangeDetectorRef, Component, OnInit, SecurityConte
 })
 
 export class AppComponent implements OnInit, AfterContentChecked {
+    enableAppProcessWatcher: boolean = false;
     imageMobile : string  = '';
     image       : any     = '';
     loading     : boolean = true;
@@ -53,6 +54,20 @@ export class AppComponent implements OnInit, AfterContentChecked {
     ) {}
 
     ngOnInit() {
+        this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/enableProcessWatcher').pipe(
+            tap((data: any) => {
+                if (data.configuration.length === 1) {
+                    this.enableAppProcessWatcher = data.configuration[0].data.value;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+
         const appTitle = this.titleService.getTitle();
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd),

@@ -117,5 +117,5 @@ def split(splitter, pages):
             'metadata_1': metadata_1,
             'metadata_2': metadata_2,
             'metadata_3': metadata_3,
-            'path': path,
+            'path': path
         })
