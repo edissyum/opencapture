@@ -26,7 +26,7 @@ bp = Blueprint('attachments', __name__, url_prefix='/ws/')
 @bp.route('attachments/verifier/upload', methods=['POST'])
 @auth.token_required
 def upload_verifier():
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'upload_attachments']):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'upload_attachments_verifier']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/attachments/verifier/upload'}), 403
 
     check, message = rest_validator(request.form, [
@@ -45,7 +45,7 @@ def upload_verifier():
 @bp.route('attachments/splitter/upload', methods=['POST'])
 @auth.token_required
 def upload_splitter():
-    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter', 'upload_attachments']):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter', 'upload_attachments_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/attachments/splitter/upload'}), 403
 
     check, message = rest_validator(request.form, [
@@ -64,7 +64,7 @@ def upload_splitter():
 @bp.route('attachments/verifier/list/<int:document_id>', methods=['GET'])
 @auth.token_required
 def get_attachments_by_document_id(document_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'attachments_list']):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'attachments_list_verifier']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/verifier/{document_id}'}), 403
 
     _attachments = attachments.get_attachments_by_document_id(document_id)
@@ -73,28 +73,48 @@ def get_attachments_by_document_id(document_id):
 @bp.route('attachments/splitter/list/<int:batch_id>', methods=['GET'])
 @auth.token_required
 def get_attachments_by_batch_id(batch_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter', 'attachments_list']):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter', 'attachments_list_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/splitter/{batch_id}'}), 403
 
     _attachments = attachments.get_attachments_by_batch_id(batch_id)
     return make_response(jsonify(_attachments[0])), _attachments[1]
 
-@bp.route('attachments/download/<int:attachment_id>', methods=['POST'])
+@bp.route('attachments/verifier/download/<int:attachment_id>', methods=['POST'])
 @auth.token_required
-def download_attachment(attachment_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'attachments_list']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/download/{attachment_id}'}), 403
+def download_attachment_verifier(attachment_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'attachments_list_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/verifier/download/{attachment_id}'}), 403
 
     file_content, mime = attachments.download_attachment(attachment_id)
     if file_content is None:
         return make_response({'errors': gettext('DOWNLOAD_FILE'), 'message': gettext('FILE_NOT_FOUND')}, 404)
     return make_response({'file': str(base64.b64encode(file_content).decode('utf-8')), 'mime': mime}), 200
 
-@bp.route('attachments/<string:module>/delete/<int:attachment_id>', methods=['DELETE'])
+@bp.route('attachments/splitter/download/<int:attachment_id>', methods=['POST'])
 @auth.token_required
-def delete_attachment(attachment_id, module):
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier | access_splitter', 'attachments_list']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/{module}/delete/{attachment_id}'}), 403
+def download_attachment_splitter(attachment_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter', 'attachments_list_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/splitter/download/{attachment_id}'}), 403
 
-    _attachments = attachments.delete_attachment(attachment_id)
+    file_content, mime = attachments.download_attachment(attachment_id)
+    if file_content is None:
+        return make_response({'errors': gettext('DOWNLOAD_FILE'), 'message': gettext('FILE_NOT_FOUND')}, 404)
+    return make_response({'file': str(base64.b64encode(file_content).decode('utf-8')), 'mime': mime}), 200
+
+@bp.route('attachments/verifier/delete/<int:attachment_id>', methods=['DELETE'])
+@auth.token_required
+def delete_attachment_verifier(attachment_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'attachments_list_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/verifier/delete/{attachment_id}'}), 403
+
+    _attachments = attachments.delete_attachment(attachment_id, 'verifier')
+    return make_response(jsonify(_attachments[0])), _attachments[1]
+
+@bp.route('attachments/splitter/delete/<int:attachment_id>', methods=['DELETE'])
+@auth.token_required
+def delete_attachment_splitter(attachment_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter', 'attachments_list_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/splitter/delete/{attachment_id}'}), 403
+
+    _attachments = attachments.delete_attachment(attachment_id, 'splitter')
     return make_response(jsonify(_attachments[0])), _attachments[1]

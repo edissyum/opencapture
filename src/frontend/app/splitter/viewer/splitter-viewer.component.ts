@@ -1569,7 +1569,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     downloadAttachment(attachment: any) {
-        this.http.post(environment['url'] + '/ws/attachments/download/' + attachment['id'], {},
+        this.http.post(environment['url'] + '/ws/attachments/splitter/download/' + attachment['id'], {},
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const mimeType = data['mime'];

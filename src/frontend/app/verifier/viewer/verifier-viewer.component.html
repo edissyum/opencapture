@@ -33,10 +33,10 @@
         </div>
     </div>
 </div>
-<input multiple type="file" id="upload_attachments" class="hidden" (change)="uploadAttachments($event)" #attachmentUpload>
+<input multiple type="file" class="hidden" (change)="uploadAttachments($event)" #attachmentUpload>
 <span *ngIf="!this.fromToken || (this.processDone && this.fromToken && !this.processMultiDocument)">
     <div class="grid grid-cols-2 overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem)' : 'height: 100vh'">
-        <mat-sidenav-container class="bg-white">
+        <mat-sidenav-container id="image_sidenav" class="bg-white">
             <mat-sidenav id="attachments_list" mode="side" [opened]="sidenavOpened" position="start" class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400">
                 <div class="flex justify-between items-center">
                     <span>
@@ -81,11 +81,15 @@
                                                 <i class="fa-solid fa-ellipsis-vertical text-xl"></i>
                                             </div>
                                             <mat-menu #menu="matMenu">
-                                                <button mat-menu-item (click)="downloadAttachment(attachment)">
-                                                    {{ 'ATTACHMENTS.download_attachment' | translate }}
+                                                <button class="download_attachment" mat-menu-item (click)="downloadAttachment(attachment)">
+                                                    <span class="download_attachment">
+                                                        <i class="fa-solid fa-download w-6"></i> {{ 'ATTACHMENTS.download_attachment' | translate }}
+                                                    </span>
                                                 </button>
-                                                <button *ngIf="this.document.status !== 'END'" mat-menu-item (click)="deleteConfirmDialog(attachment['id'])">
-                                                    {{ 'ATTACHMENTS.delete_attachment' | translate }}
+                                                <button class="delete_attachment" *ngIf="this.document.status !== 'END'" mat-menu-item (click)="deleteConfirmDialog(attachment['id'])">
+                                                    <span class="delete_attachment">
+                                                        <i class="fa-solid fa-trash w-6"></i> {{ 'ATTACHMENTS.delete_attachment' | translate }}
+                                                    </span>
                                                 </button>
                                             </mat-menu>
                                         </div>
@@ -113,7 +117,7 @@
                         </ng-container>
                     </div>
                     <div *ngIf="!this.loading" class="fixed cursor-pointer mr-2 mt-4 z-50 text-2xl text-left text-gray-900" [matTooltip]="'ATTACHMENTS.attachments' | translate">
-                        <i id="toggle_attachments" class="fas fa-paperclip pointer-events-auto" (click)="toggleSidenav()"></i>
+                        <i class="fas fa-paperclip pointer-events-auto" (click)="toggleSidenav()"></i>
                         <div class="relative inline-flex items-center justify-center font-bold text-white bg-green-400
                                     text-[.6rem] leading-[.5rem] rounded-full -top-1 float-right p-[3px]">
                             {{ this.attachmentsLength.toString().padStart(2, '0') }}
@@ -129,7 +133,7 @@
             </mat-sidenav-content>
         </mat-sidenav-container>
         <mat-sidenav-container class="bg-white">
-            <mat-sidenav-content>
+            <mat-sidenav-content id="form_sidenav">
                 <div *ngIf="this.fields" id="form" class="px-4 overflow-auto pt-2">
                     <div *ngIf="this.formSettings.settings['unique_url']['change_form']" class="grid grid-cols-12 gap-2 w-full">
                         <div class="relative top-5 text-center">

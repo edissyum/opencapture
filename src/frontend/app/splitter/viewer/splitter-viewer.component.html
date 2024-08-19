@@ -95,10 +95,10 @@
                                     </div>
                                     <mat-menu #menu="matMenu">
                                         <button mat-menu-item (click)="downloadAttachment(attachment)">
-                                            {{ 'ATTACHMENTS.download_attachment' | translate }}
+                                            <i class="fa-solid fa-download w-6"></i> {{ 'ATTACHMENTS.download_attachment' | translate }}
                                         </button>
                                         <button *ngIf="this.currentBatch.status !== 'END'" mat-menu-item (click)="deleteConfirmDialog(attachment['id'])">
-                                            {{ 'ATTACHMENTS.delete_attachment' | translate }}
+                                            <i class="fa-solid fa-trash w-6"></i> {{ 'ATTACHMENTS.delete_attachment' | translate }}
                                         </button>
                                     </mat-menu>
                                 </div>

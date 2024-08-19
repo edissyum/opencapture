@@ -158,7 +158,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     onScreenClick(event: MouseEvent) {
         if (this.sidenavOpened) {
             const clickedElement = event.target as HTMLElement;
-            if (clickedElement.id !== 'toggle_attachments' && clickedElement.id !== 'upload_attachments') {
+            const include = ['image_sidenav', 'form_sidenav'];
+            if (include.includes(clickedElement.id) || include.includes(clickedElement.parentElement!.id)) {
                 const sidenavAttachment = document.getElementById('attachments_list');
                 if (sidenavAttachment && !sidenavAttachment.contains(clickedElement)) {
                     this.sidenavOpened = false;
@@ -2193,7 +2194,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     downloadAttachment(attachment: any) {
-        this.http.post(environment['url'] + '/ws/attachments/download/' + attachment['id'], {},
+        this.http.post(environment['url'] + '/ws/attachments/verifier/download/' + attachment['id'], {},
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const mimeType = data['mime'];
