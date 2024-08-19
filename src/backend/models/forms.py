@@ -170,7 +170,7 @@ def add_form_fields(args):
     args = {
         'table': 'form_models_field',
         'columns': {
-            'form_id': str(args),
+            'form_id': str(args)
         }
     }
     database.insert(args)

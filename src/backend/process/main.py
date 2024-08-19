@@ -169,7 +169,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
 
     if supplier:
         document_data.update({
-            'supplier_id': supplier[2]['supplier_id'],
+            'supplier_id': supplier[2]['supplier_id']
         })
     else:
         if workflow_settings and ('allow_third_party_validation' in workflow_settings['process'] and
@@ -195,7 +195,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
             'select': ['outputs'],
             'table': ['form_models'],
             'where': ['id = %s'],
-            'data': [document_data['form_id']],
+            'data': [document_data['form_id']]
         })
 
         if outputs:
@@ -212,7 +212,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
                         'select': ['regex_id', 'content'],
                         'table': ['regex'],
                         'where': ["lang in ('global', %s)"],
-                        'data': [current_lang],
+                        'data': [current_lang]
                     })
 
                     for _r in _regex:
@@ -500,7 +500,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     'file': file,
                     'user_info': args['user_info'],
                     'workflow_id': res,
-                    'custom_id': args['custom_id'],
+                    'custom_id': args['custom_id']
                 })
 
         # Launch input scripting if present
@@ -555,7 +555,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                             'name': res['name'],
                                             'siren': value[4:13],
                                             'siret': '',
-                                            'vat_number': value,
+                                            'vat_number': value
                                         }
                                 if column == 'siren':
                                     res, status = verifier.verify_siren(token_insee, value, full=True)
@@ -647,7 +647,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     'address2': supplier[2]['address2'],
                     'postal_code': supplier[2]['postal_code'],
                     'city': supplier[2]['city'],
-                    'country': supplier[2]['country'],
+                    'country': supplier[2]['country']
                 })
                 if supplier[1]:
                     datas['positions'].update({

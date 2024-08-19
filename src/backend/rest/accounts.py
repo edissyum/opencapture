@@ -523,7 +523,7 @@ def import_suppliers():
     args = {
         'files': request.files,
         'skip_header': request.form['skipHeader'] == 'true',
-        'selected_columns': request.form['selectedColumns'].split(','),
+        'selected_columns': request.form['selectedColumns'].split(',')
     }
     res = accounts.import_suppliers(args)
     return res

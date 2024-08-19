@@ -197,6 +197,13 @@ export class VerifierListComponent implements OnInit {
                 this.selectedTab = parseInt(this.sessionStorageService.get('documentsTimeIndex') as string);
                 this.currentTime = this.batchList[this.selectedTab].id;
             }
+            if (this.sessionStorageService.get('statusFormSelected')) {
+                this.currentStatus = this.sessionStorageService.get('statusFormSelected') as string;
+            }
+            if (this.sessionStorageService.get('documentsFormSelected')) {
+                this.currentForm = parseInt(this.sessionStorageService.get('documentsFormSelected') as string);
+                console.log(this.currentForm);
+            }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
             this.sessionStorageService.remove('documentsPageSize');
@@ -365,7 +372,7 @@ export class VerifierListComponent implements OnInit {
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'limit': this.pageSize,
                 'allowedSuppliers': this.allowedSuppliers, 'form_id': this.currentForm, 'time': this.currentTime,
-                'offset': this.offset, 'search': this.search, 'order': this.currentOrder, 'filter': this.currentFilter,
+                'offset': this.offset, 'search': this.search, 'order': this.currentOrder, 'filter': this.currentFilter
             },
             {headers: this.authService.headers}
         ).pipe(
@@ -650,6 +657,7 @@ export class VerifierListComponent implements OnInit {
 
     changeStatus(event: any) {
         this.currentStatus = event.value;
+        this.sessionStorageService.save('statusFormSelected', this.currentStatus);
         this.resetPaginator();
         this.loadCustomers();
         this.loadDocuments().then();
@@ -657,6 +665,7 @@ export class VerifierListComponent implements OnInit {
 
     changeForm(event: any) {
         this.currentForm = event.value;
+        this.sessionStorageService.save('documentsFormSelected', this.currentForm);
         this.resetPaginator();
         this.loadCustomers();
         this.loadDocuments().then();

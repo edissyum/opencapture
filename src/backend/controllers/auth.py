@@ -74,7 +74,7 @@ def handle_login(data):
                         else:
                             error = configs[0]['message']
                             res = [{
-                                "errors": error,
+                                "errors": error
                             }, 401]
                 else:
                     res = [{
@@ -1047,7 +1047,7 @@ def check_database_users(ldap_users_data, default_role):
                                 'firstname': str(ldap_user[1]),
                                 'lastname': str(ldap_user[2]),
                                 'role': default_role,
-                                'enabled': True,
+                                'enabled': True
                             },
                             'user_id': user_id
                         })
@@ -1066,7 +1066,7 @@ def check_database_users(ldap_users_data, default_role):
                 if is_user_superadmin[0] != 'superadmin':
                     user.update_user_ldap({
                         'set': {
-                            'enabled': False,
+                            'enabled': False
                         },
                         'username': oc_user[0],
                         'role': 1

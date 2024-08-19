@@ -177,7 +177,7 @@ class MEMWebServices:
             'processLimitDate': args['processLimitDate'],
             'chrono': True,
             'arrivalDate': str(today),
-            'customFields': args['customFields'] if 'customFields' in args else {},
+            'customFields': args['customFields'] if 'customFields' in args else {}
         }
 
         if 'destUser' in args:
@@ -209,7 +209,7 @@ class MEMWebServices:
             'type': 'simple_attachment',
             'resIdMaster': res_id,
             'encodedFile': args['file_content'],
-            'format': args['extension'],
+            'format': args['extension']
         }
 
         try:

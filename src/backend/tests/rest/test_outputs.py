@@ -34,7 +34,7 @@ class OutputsTest(unittest.TestCase):
             'output_label': 'Test export PDF',
             'compress_type': 'default',
             'ocrise': True,
-            'module': 'verifier',
+            'module': 'verifier'
         }
 
         return self.app.post(f'/{CUSTOM_ID}/ws/outputs/verifier/create',
@@ -157,7 +157,7 @@ class OutputsTest(unittest.TestCase):
                         }
                     ]
                 }
-            },
+            }
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/outputs/verifier/update/1',
                                 json={"args": payload},

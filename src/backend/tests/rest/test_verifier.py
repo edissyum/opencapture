@@ -45,7 +45,7 @@ class VerifierTest(unittest.TestCase):
             "email": "",
             "form_id": 1,
             "address_id": 1,
-            "document_lang": "fra",
+            "document_lang": "fra"
         }
 
         return self.app.post(f'/{CUSTOM_ID}/ws/accounts/suppliers/create',
@@ -280,7 +280,7 @@ class VerifierTest(unittest.TestCase):
                 'width': 1228,
                 'height': 1736
             },
-            'registerDate': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'registerDate': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
         response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/ocrOnFly', json=data,
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})

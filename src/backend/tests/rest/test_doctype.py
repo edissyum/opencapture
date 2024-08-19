@@ -38,7 +38,7 @@ class DoctypeTest(unittest.TestCase):
             "type": "folder",
             "is_default": False,
             "key": "test_folder",
-            "label": "Test folder",
+            "label": "Test folder"
         }
 
         return self.app.post(f'/{CUSTOM_ID}/ws/doctypes/add',
@@ -52,7 +52,7 @@ class DoctypeTest(unittest.TestCase):
             "type": "document",
             "is_default": False,
             "key": "test_doctype",
-            "label": "Test doctype",
+            "label": "Test doctype"
         }
 
         return self.app.post(f'/{CUSTOM_ID}/ws/doctypes/add',
@@ -93,7 +93,7 @@ class DoctypeTest(unittest.TestCase):
     def test_generate_doctype_separator(self):
         self.create_folder()
         payload = {
-            "type": "bundleSeparator",
+            "type": "bundleSeparator"
         }
 
         response = self.app.post(f'/{CUSTOM_ID}/ws/doctypes/generateSeparator', json=payload,

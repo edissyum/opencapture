@@ -364,7 +364,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     getAttachments() {
         this.http.get(environment['url'] + '/ws/attachments/verifier/list/' + this.documentId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                console.log(data)
                 this.attachments = data;
                 this.attachments.forEach((attachment: any) => {
                     if (attachment['thumb']) {

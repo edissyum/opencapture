@@ -440,7 +440,7 @@ def insert(args):
             'select': ['outputs'],
             'table': ['form_models'],
             'where': ['id = %s'],
-            'data': [invoice_data['form_id']],
+            'data': [invoice_data['form_id']]
         })
         if outputs:
             for output_id in outputs[0]['outputs']:
@@ -500,7 +500,7 @@ def create_supplier_and_address(database, supplier, address):
             'address2': address['address2'] if 'address2' in address else '',
             'postal_code': address['postal_code'] if 'postal_code' in address else '',
             'city': address['city'] if 'city' in address else '',
-            'country': country,
+            'country': country
         }
     }
     address_id = database.insert(args)
@@ -514,7 +514,7 @@ def create_supplier_and_address(database, supplier, address):
             'name': supplier['name'],
             'siren': supplier['siren'] if 'siren' in supplier else '',
             'siret': supplier['siret'] if 'siret' in supplier else '',
-            'address_id': str(address_id),
+            'address_id': str(address_id)
         }
     }
     return database.insert(args)

@@ -151,7 +151,7 @@ def update_login_method(login_method_name, server_data):
         'table': ['login_methods'],
         'set': {
             'data': json.dumps(server_data),
-            'enabled': True,
+            'enabled': True
         },
         'where': ['method_name = %s'],
         'data': [login_method_name]
@@ -198,7 +198,7 @@ def disable_login_method(method_name):
     login_method_data = database.update({
         'table': ['login_methods'],
         'set': {
-            'enabled': False,
+            'enabled': False
         },
         'where': ['method_name = %s'],
         'data': [method_name]
@@ -220,7 +220,7 @@ def enable_login_method(method_name):
     login_method_data = database.update({
         'table': ['login_methods'],
         'set': {
-            'enabled': True,
+            'enabled': True
         },
         'where': ['method_name = %s'],
         'data': [method_name]

@@ -69,7 +69,6 @@ def get_attachments_by_batch_id(batch_id):
         'where': ["batch_id = %s", "status not in ('DEL')"],
         'data': [batch_id]
     })
-
     return attachments
 
 def get_attachment_by_id(attachment_id):
@@ -86,7 +85,6 @@ def get_attachment_by_id(attachment_id):
         'where': ['id = %s'],
         'data': [attachment_id]
     })
-
     return attachment[0]
 
 def delete_attachment(attachment_id):
@@ -105,5 +103,4 @@ def delete_attachment(attachment_id):
         'where': ['id = %s'],
         'data': [attachment_id]
     })
-
     return attachment

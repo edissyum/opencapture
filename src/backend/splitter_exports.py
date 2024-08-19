@@ -342,7 +342,7 @@ def handle_cmis_output(output, batch, log, docservers, regex):
             'doc_loop_regex': regex['splitter_doc_loop'],
             'condition_regex': regex['splitter_condition'],
             'empty_line_regex': regex['splitter_empty_line'],
-            'xml_comment_regex': regex['splitter_xml_comment'],
+            'xml_comment_regex': regex['splitter_xml_comment']
         }
         res_export_xml, status = handle_xml_output(batch, parameters, regex)
         if status != 200:
@@ -426,7 +426,7 @@ def process_after_outputs(args):
 
     if args['config']['GLOBAL']['allowwfscripting'].lower() == 'true':
         datas = {
-            'batch': args['batch'],
+            'batch': args['batch']
         }
         _args = {
             'custom_id': args['custom_id'],

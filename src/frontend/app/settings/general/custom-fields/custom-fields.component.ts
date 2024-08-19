@@ -320,7 +320,7 @@ export class CustomFieldsComponent implements OnInit {
             idControl           : new FormControl(),
             labelControl        : new FormControl(),
             customFieldControl  : new FormControl(),
-            customValueControl  : new FormControl(),
+            customValueControl  : new FormControl()
         });
         this.selectOptions[this.selectOptions.length - 1].customFieldControl.values = this.activeFields.filter((field: any) => field.module === module);
     }

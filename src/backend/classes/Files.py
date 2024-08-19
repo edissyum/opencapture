@@ -522,7 +522,7 @@ class Files:
                     'select': ['regex_id', 'content'],
                     'table': ['regex'],
                     'where': ["lang in ('global', %s)"],
-                    'data': [lang],
+                    'data': [lang]
                 })
                 if _regex:
                     regex_dict = {}
@@ -717,7 +717,7 @@ class Files:
                         'x': x1,
                         'y': y1,
                         'width': x2 - x1,
-                        'height': y2 - y1,
+                        'height': y2 - y1
                     }
                     return positions
             return ''
@@ -795,7 +795,7 @@ class Files:
                 '/Author': f"{user_firstname} {user_lastname}",
                 '/Title': title,
                 '/Subject': subject,
-                '/Creator': "Open-Capture",
+                '/Creator': "Open-Capture"
             })
 
             file_path = args['document']['folder_out'] + '/' + args['document']['filename']

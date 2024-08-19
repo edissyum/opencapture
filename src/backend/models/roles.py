@@ -141,7 +141,7 @@ def create_role_privileges(args):
     role_privilege = database.insert({
         'table': 'roles_privileges',
         'columns': {
-            'role_id': str(args['role_id']),
+            'role_id': str(args['role_id'])
         }
     })
 

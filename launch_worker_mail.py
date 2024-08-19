@@ -207,7 +207,7 @@ for process in processes:
                                                 'uid': msg.uid,
                                                 'subject': msg.subject,
                                                 'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
-                                            },
+                                            }
                                         })
                                 else:
                                     task_id_monitor = database.insert({
@@ -238,7 +238,7 @@ for process in processes:
                                             'uid': msg.uid,
                                             'subject': msg.subject,
                                             'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
-                                        },
+                                        }
                                     })
                             else:
                                 Log.info('Attachment n°' + str(cpt) + ' is not a PDF file')
@@ -277,7 +277,7 @@ for process in processes:
                                     'uid': msg.uid,
                                     'subject': msg.subject,
                                     'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
-                                },
+                                }
                             })
                     else:
                         task_id_monitor = database.insert({
@@ -307,7 +307,7 @@ for process in processes:
                                 'uid': msg.uid,
                                 'subject': msg.subject,
                                 'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
-                            },
+                            }
                         })
                 if action not in ['move', 'delete', 'none']:
                     action = 'none'

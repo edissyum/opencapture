@@ -42,7 +42,7 @@ class UserTest(unittest.TestCase):
             "mode": "standard",
             "role": "2",
             "customers": [1],
-            "forms": [1],
+            "forms": [1]
         })
 
         return self.app.post(f'/{CUSTOM_ID}/ws/users/new',
@@ -92,7 +92,7 @@ class UserTest(unittest.TestCase):
             "lastname": "Test123",
             "password": "test123",
             "email": "test123@tttt.fr",
-            "role": "1",
+            "role": "1"
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/users/update/' + str(user.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
