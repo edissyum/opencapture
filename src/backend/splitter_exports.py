@@ -107,8 +107,7 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
             if status != 200:
                 return res_export_pdf, status
             batch = res_export_pdf['result_batch']
-
-        if output['output_type_id'] == 'export_verifier':
+        elif output['output_type_id'] == 'export_verifier':
             res_export_verifier, status = handle_verifier_output(batch, output['parameters'], docservers, regex)
             if status != 200:
                 return res_export_verifier, status
@@ -194,7 +193,7 @@ def export_pdf_files(batch, parameters, log, docservers):
             pdf_filename, pdf_extension = os.path.splitext(document['filename'])
             zip_filename = pdf_filename + '_attachments.zip'
             with ZipFile(document['folder_out'] + '/' + zip_filename, 'w') as zip_file:
-                for attachment in attachments_list[0]:
+                for attachment in attachments_list:
                     if attachment:
                         if os.path.exists(attachment['path']):
                             zip_file.write(attachment['path'], attachment['filename'])
