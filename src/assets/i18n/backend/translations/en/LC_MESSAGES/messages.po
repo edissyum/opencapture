@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2024-08-19 16:45+0200\n"
+"POT-Creation-Date: 2024-08-20 15:40+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -35,8 +35,8 @@ msgstr "JSON construction error"
 msgid "IS_NOT"
 msgstr "is not instance of type"
 
-#: src/backend/functions.py:115 src/backend/functions.py:131
-#: src/backend/functions.py:141
+#: src/backend/functions.py:115 src/backend/functions.py:133
+#: src/backend/functions.py:143
 msgid "UPLOAD_ERRROR"
 msgstr "Error while uploading file(s)"
 
@@ -44,11 +44,11 @@ msgstr "Error while uploading file(s)"
 msgid "FORMATS_FILE_NOT_FOUND"
 msgstr "The file containing allowed extensions and MIME types is not found"
 
-#: src/backend/functions.py:132
+#: src/backend/functions.py:134
 msgid "FILE_EXTENSION_NOT_ALLOWED"
 msgstr "File extension is not allowed"
 
-#: src/backend/functions.py:142
+#: src/backend/functions.py:144
 msgid "FILE_MIME_NOT_ALLOWED"
 msgstr "File MIME type doesn't match to extension"
 
@@ -56,7 +56,7 @@ msgstr "File MIME type doesn't match to extension"
 msgid "WORFKLOW_NOT_FOUND"
 msgstr "Workflow doesn't exists"
 
-#: src/backend/controllers/verifier.py:543
+#: src/backend/controllers/verifier.py:545
 #: src/backend/controllers/workflow.py:228
 #: src/backend/controllers/workflow.py:297
 #: src/backend/controllers/workflow.py:488 src/backend/process/main.py:64
@@ -68,35 +68,35 @@ msgstr "Script contains not allowed code :"
 msgid "OUTPUT_NOT_FOUND"
 msgstr "Output not found"
 
-#: src/backend/models/outputs.py:101 src/backend/splitter_exports.py:136
+#: src/backend/models/outputs.py:101 src/backend/splitter_exports.py:135
 msgid "OUTPUT_TYPE_DOESNT_EXISTS"
 msgstr "Output type doesn't exists"
 
-#: src/backend/splitter_exports.py:187 src/backend/splitter_exports.py:330
+#: src/backend/splitter_exports.py:186 src/backend/splitter_exports.py:329
 msgid "EXPORT_PDF_ERROR"
 msgstr "Error while exporting PDF"
 
-#: src/backend/splitter_exports.py:264
+#: src/backend/splitter_exports.py:263
 msgid "EXPORT_VERIFIER_ERROR"
 msgstr "Error while exporting to verifier module"
 
-#: src/backend/splitter_exports.py:275
+#: src/backend/splitter_exports.py:274
 msgid "EXPORT_OPENCAPTUREFORMEM_ERROR"
 msgstr "Error while exporting to Open-Capture For MEM"
 
-#: src/backend/splitter_exports.py:299 src/backend/splitter_exports.py:353
+#: src/backend/splitter_exports.py:298 src/backend/splitter_exports.py:352
 msgid "EXPORT_XML_ERROR"
 msgstr "Error while exporting XML"
 
-#: src/backend/splitter_exports.py:373
+#: src/backend/splitter_exports.py:372
 msgid "CHECK_FOLDER_ERROR"
 msgstr "Check folder error"
 
-#: src/backend/splitter_exports.py:374
+#: src/backend/splitter_exports.py:373
 msgid "FOLDER_DOES_NOT_EXIST"
 msgstr "Folder does not exist"
 
-#: src/backend/splitter_exports.py:394
+#: src/backend/splitter_exports.py:393
 msgid "OPENADS_ADD_DOC_ERROR"
 msgstr "OpenADS add document error"
 
@@ -145,9 +145,12 @@ msgstr "MEM Courrier informations are empty"
 
 #: src/backend/classes/COOGWebServices.py:44
 #: src/backend/classes/MEMWebServices.py:40
-#: src/backend/classes/OpenCaptureForMEMWebServices.py:44
 msgid "HOST_NOT_FOUND"
 msgstr "Host not found"
+
+#: src/backend/classes/OpenCaptureForMEMWebServices.py:44
+msgid "HOST_NOT_FOUND_OR_OTHER_ERROR"
+msgstr "Host not found or other error"
 
 #: src/backend/classes/SMTP.py:227
 msgid "RESET_PASSWORD"
@@ -240,7 +243,8 @@ msgid "CUSTOMER_UPDATED"
 msgstr "Customer updated&nbsp<strong>%(customer)s</strong>"
 
 #: src/backend/controllers/accounts.py:491
-#: src/backend/controllers/accounts.py:497 src/backend/models/accounts.py:295
+#: src/backend/controllers/accounts.py:497
+#: src/backend/controllers/splitter.py:333 src/backend/models/accounts.py:295
 msgid "UPDATE_CUSTOMER_ERROR"
 msgstr "Error updating customer"
 
@@ -907,7 +911,7 @@ msgid "LOAD_METADATA_ERROR"
 msgstr "Error while loading metada"
 
 #: src/backend/controllers/splitter.py:177
-#: src/backend/controllers/verifier.py:146
+#: src/backend/controllers/verifier.py:148
 msgid "AT"
 msgstr "at"
 
@@ -921,11 +925,13 @@ msgstr "Customer undefined"
 
 #: src/backend/controllers/splitter.py:272
 #: src/backend/controllers/splitter.py:303
+#: src/backend/controllers/splitter.py:323
 msgid "BATCH_NOT_FOUND"
 msgstr "Batch not found"
 
 #: src/backend/controllers/splitter.py:273
 #: src/backend/controllers/splitter.py:304
+#: src/backend/controllers/splitter.py:324
 msgid "BATCH_ID_NOT_FOUND"
 msgstr "Batch %(id)s not found"
 
@@ -935,55 +941,55 @@ msgstr "Deletion of batch n°<strong>%(batch_id)s</strong>"
 
 #: src/backend/controllers/splitter.py:292
 #: src/backend/controllers/splitter.py:313
-#: src/backend/controllers/verifier.py:863
+#: src/backend/controllers/verifier.py:865
 msgid "UPDATE_STATUS_ERROR"
 msgstr "Error while updating status"
 
-#: src/backend/controllers/splitter.py:351
-#: src/backend/controllers/splitter.py:364
-#: src/backend/controllers/verifier.py:442
+#: src/backend/controllers/splitter.py:371
+#: src/backend/controllers/splitter.py:384
+#: src/backend/controllers/verifier.py:444
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Error while removing lock"
 
-#: src/backend/controllers/splitter.py:466
+#: src/backend/controllers/splitter.py:486
 msgid "ADD_DOCUMENT_ERROR"
 msgstr "Error while adding document"
 
-#: src/backend/controllers/splitter.py:491
+#: src/backend/controllers/splitter.py:511
 msgid "UPDATE_BATCH_ERROR"
 msgstr "Error while updating batch"
 
-#: src/backend/controllers/splitter.py:505
+#: src/backend/controllers/splitter.py:525
 msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr "Error while updating document"
 
-#: src/backend/controllers/splitter.py:518
-#: src/backend/controllers/verifier.py:416
-#: src/backend/controllers/verifier.py:422
+#: src/backend/controllers/splitter.py:538
+#: src/backend/controllers/verifier.py:418
+#: src/backend/controllers/verifier.py:424
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr "Error while updating document"
 
-#: src/backend/controllers/splitter.py:536
-#: src/backend/controllers/splitter.py:551
-#: src/backend/controllers/splitter.py:566
+#: src/backend/controllers/splitter.py:556
+#: src/backend/controllers/splitter.py:571
+#: src/backend/controllers/splitter.py:586
 msgid "UPDATE_PAGES_ERROR"
 msgstr "Error while updating pages"
 
-#: src/backend/controllers/splitter.py:580
+#: src/backend/controllers/splitter.py:600
 msgid "CMIS_CONNECTION_ERROR"
 msgstr "Error while connecting to CMIS"
 
-#: src/backend/controllers/splitter.py:593
+#: src/backend/controllers/splitter.py:613
 msgid "OPENADS_CONNECTION_ERROR"
 msgstr "OpenADS connection error"
 
-#: src/backend/controllers/splitter.py:692
-#: src/backend/controllers/verifier.py:842 src/backend/models/splitter.py:598
+#: src/backend/controllers/splitter.py:712
+#: src/backend/controllers/verifier.py:844 src/backend/models/splitter.py:618
 #: src/backend/models/verifier.py:197
 msgid "GET_TOTALS_ERROR"
 msgstr "Error while retrievings totals"
 
-#: src/backend/controllers/splitter.py:791
+#: src/backend/controllers/splitter.py:811
 msgid "GET_BATCH_OUTPUTS_ERROR"
 msgstr "Error while retrieving output"
 
@@ -1100,73 +1106,73 @@ msgstr "Error while retrieving default route"
 msgid "UPLOAD_DOCUMENTS_ERROR"
 msgstr "Error while uploading documents"
 
-#: src/backend/controllers/verifier.py:110 src/backend/models/splitter.py:222
+#: src/backend/controllers/verifier.py:112 src/backend/models/splitter.py:222
 #: src/backend/models/verifier.py:40
 msgid "GET_DOCUMENT_BY_ID_ERROR"
 msgstr "Error while retrieving document"
 
-#: src/backend/controllers/verifier.py:127 src/backend/models/verifier.py:64
+#: src/backend/controllers/verifier.py:129 src/backend/models/verifier.py:64
 msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR"
 msgstr "Error while retrieving document using token"
 
-#: src/backend/controllers/verifier.py:128
+#: src/backend/controllers/verifier.py:130
 msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR_MESSAGE"
 msgstr "No document found with this token"
 
-#: src/backend/controllers/verifier.py:254
-#: src/backend/controllers/verifier.py:356
+#: src/backend/controllers/verifier.py:256
+#: src/backend/controllers/verifier.py:358
 msgid "UPDATE_DOCUMENT_POSITIONS_ERROR"
 msgstr "Error while updating document positions"
 
-#: src/backend/controllers/verifier.py:277
-#: src/backend/controllers/verifier.py:374
+#: src/backend/controllers/verifier.py:279
+#: src/backend/controllers/verifier.py:376
 msgid "UPDATE_DOCUMENT_PAGES_ERROR"
 msgstr "Error while updating document pages"
 
-#: src/backend/controllers/verifier.py:300
-#: src/backend/controllers/verifier.py:318
+#: src/backend/controllers/verifier.py:302
+#: src/backend/controllers/verifier.py:320
 msgid "UPDATE_DOCUMENT_DATA_ERROR"
 msgstr "Error while updating document datas"
 
-#: src/backend/controllers/verifier.py:390
+#: src/backend/controllers/verifier.py:392
 msgid "DELETE_DOCUMENT_SUCCESS"
 msgstr "Deletion of document n°<strong>%(document_id)s</strong>"
 
-#: src/backend/controllers/verifier.py:395
-#: src/backend/controllers/verifier.py:401
+#: src/backend/controllers/verifier.py:397
+#: src/backend/controllers/verifier.py:403
 msgid "DELETE_DOCUMENT_ERROR"
 msgstr "Error while deleting document"
 
-#: src/backend/controllers/verifier.py:735
-#: src/backend/controllers/verifier.py:738
-#: src/backend/controllers/verifier.py:755
-#: src/backend/controllers/verifier.py:781
-#: src/backend/controllers/verifier.py:782
+#: src/backend/controllers/verifier.py:737
+#: src/backend/controllers/verifier.py:740
+#: src/backend/controllers/verifier.py:757
+#: src/backend/controllers/verifier.py:783
+#: src/backend/controllers/verifier.py:784
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Error while connecting to INSEE API"
 
-#: src/backend/controllers/verifier.py:812
+#: src/backend/controllers/verifier.py:814
 msgid "VAT_NOT_VALID"
 msgstr "VAT number not valid"
 
-#: src/backend/controllers/verifier.py:819
-#: src/backend/controllers/verifier.py:820
+#: src/backend/controllers/verifier.py:821
+#: src/backend/controllers/verifier.py:822
 msgid "VAT_API_ERROR"
 msgstr "API for VAT number unreachable"
 
-#: src/backend/controllers/verifier.py:853
+#: src/backend/controllers/verifier.py:855
 msgid "DOCUMENT_NOT_FOUND"
 msgstr "document not found"
 
-#: src/backend/controllers/verifier.py:854
+#: src/backend/controllers/verifier.py:856
 msgid "DOCUMENT_ID_NOT_FOUND"
 msgstr "document %(id)s not found"
 
-#: src/backend/controllers/verifier.py:908
+#: src/backend/controllers/verifier.py:910
 msgid "NO_FORM"
 msgstr "No form associated"
 
-#: src/backend/controllers/verifier.py:919
+#: src/backend/controllers/verifier.py:921
 msgid "FORM_NOT_FOUND"
 msgstr "Form does not exist"
 
@@ -1558,43 +1564,44 @@ msgstr "Error while updating workflow"
 #: src/backend/rest/splitter.py:31 src/backend/rest/splitter.py:58
 #: src/backend/rest/splitter.py:68 src/backend/rest/splitter.py:78
 #: src/backend/rest/splitter.py:89 src/backend/rest/splitter.py:110
-#: src/backend/rest/splitter.py:121 src/backend/rest/splitter.py:131
-#: src/backend/rest/splitter.py:142 src/backend/rest/splitter.py:156
-#: src/backend/rest/splitter.py:167 src/backend/rest/splitter.py:178
-#: src/backend/rest/splitter.py:189 src/backend/rest/splitter.py:200
-#: src/backend/rest/splitter.py:219 src/backend/rest/splitter.py:230
-#: src/backend/rest/splitter.py:245 src/backend/rest/splitter.py:248
-#: src/backend/rest/splitter.py:266 src/backend/rest/splitter.py:278
-#: src/backend/rest/splitter.py:289 src/backend/rest/splitter.py:300
-#: src/backend/rest/splitter.py:310 src/backend/rest/splitter.py:321
-#: src/backend/rest/status.py:32 src/backend/rest/user.py:31
-#: src/backend/rest/user.py:59 src/backend/rest/user.py:102
-#: src/backend/rest/user.py:124 src/backend/rest/user.py:185
-#: src/backend/rest/user.py:212 src/backend/rest/user.py:222
-#: src/backend/rest/user.py:232 src/backend/rest/user.py:249
-#: src/backend/rest/user.py:269 src/backend/rest/user.py:279
-#: src/backend/rest/user.py:299 src/backend/rest/user.py:314
-#: src/backend/rest/verifier.py:45 src/backend/rest/verifier.py:110
-#: src/backend/rest/verifier.py:139 src/backend/rest/verifier.py:167
-#: src/backend/rest/verifier.py:179 src/backend/rest/verifier.py:190
-#: src/backend/rest/verifier.py:202 src/backend/rest/verifier.py:214
-#: src/backend/rest/verifier.py:239 src/backend/rest/verifier.py:264
-#: src/backend/rest/verifier.py:289 src/backend/rest/verifier.py:312
-#: src/backend/rest/verifier.py:334 src/backend/rest/verifier.py:356
-#: src/backend/rest/verifier.py:367 src/backend/rest/verifier.py:395
-#: src/backend/rest/verifier.py:423 src/backend/rest/verifier.py:452
-#: src/backend/rest/verifier.py:463 src/backend/rest/verifier.py:475
-#: src/backend/rest/verifier.py:508 src/backend/rest/verifier.py:544
-#: src/backend/rest/verifier.py:565 src/backend/rest/verifier.py:579
-#: src/backend/rest/verifier.py:590 src/backend/rest/verifier.py:612
-#: src/backend/rest/verifier.py:634 src/backend/rest/verifier.py:654
-#: src/backend/rest/verifier.py:667 src/backend/rest/verifier.py:678
-#: src/backend/rest/verifier.py:699 src/backend/rest/workflow.py:32
-#: src/backend/rest/workflow.py:54 src/backend/rest/workflow.py:84
-#: src/backend/rest/workflow.py:110 src/backend/rest/workflow.py:122
-#: src/backend/rest/workflow.py:134 src/backend/rest/workflow.py:146
-#: src/backend/rest/workflow.py:158 src/backend/rest/workflow.py:186
-#: src/backend/rest/workflow.py:210 src/backend/rest/workflow.py:221
+#: src/backend/rest/splitter.py:130 src/backend/rest/splitter.py:141
+#: src/backend/rest/splitter.py:151 src/backend/rest/splitter.py:162
+#: src/backend/rest/splitter.py:176 src/backend/rest/splitter.py:187
+#: src/backend/rest/splitter.py:198 src/backend/rest/splitter.py:209
+#: src/backend/rest/splitter.py:220 src/backend/rest/splitter.py:239
+#: src/backend/rest/splitter.py:250 src/backend/rest/splitter.py:265
+#: src/backend/rest/splitter.py:268 src/backend/rest/splitter.py:286
+#: src/backend/rest/splitter.py:298 src/backend/rest/splitter.py:309
+#: src/backend/rest/splitter.py:320 src/backend/rest/splitter.py:330
+#: src/backend/rest/splitter.py:341 src/backend/rest/status.py:32
+#: src/backend/rest/user.py:31 src/backend/rest/user.py:59
+#: src/backend/rest/user.py:102 src/backend/rest/user.py:124
+#: src/backend/rest/user.py:185 src/backend/rest/user.py:212
+#: src/backend/rest/user.py:222 src/backend/rest/user.py:232
+#: src/backend/rest/user.py:249 src/backend/rest/user.py:269
+#: src/backend/rest/user.py:279 src/backend/rest/user.py:299
+#: src/backend/rest/user.py:314 src/backend/rest/verifier.py:45
+#: src/backend/rest/verifier.py:110 src/backend/rest/verifier.py:139
+#: src/backend/rest/verifier.py:167 src/backend/rest/verifier.py:179
+#: src/backend/rest/verifier.py:190 src/backend/rest/verifier.py:202
+#: src/backend/rest/verifier.py:214 src/backend/rest/verifier.py:239
+#: src/backend/rest/verifier.py:264 src/backend/rest/verifier.py:289
+#: src/backend/rest/verifier.py:312 src/backend/rest/verifier.py:334
+#: src/backend/rest/verifier.py:356 src/backend/rest/verifier.py:367
+#: src/backend/rest/verifier.py:395 src/backend/rest/verifier.py:423
+#: src/backend/rest/verifier.py:452 src/backend/rest/verifier.py:463
+#: src/backend/rest/verifier.py:475 src/backend/rest/verifier.py:508
+#: src/backend/rest/verifier.py:544 src/backend/rest/verifier.py:565
+#: src/backend/rest/verifier.py:579 src/backend/rest/verifier.py:590
+#: src/backend/rest/verifier.py:612 src/backend/rest/verifier.py:634
+#: src/backend/rest/verifier.py:654 src/backend/rest/verifier.py:667
+#: src/backend/rest/verifier.py:678 src/backend/rest/verifier.py:699
+#: src/backend/rest/workflow.py:32 src/backend/rest/workflow.py:54
+#: src/backend/rest/workflow.py:84 src/backend/rest/workflow.py:110
+#: src/backend/rest/workflow.py:122 src/backend/rest/workflow.py:134
+#: src/backend/rest/workflow.py:146 src/backend/rest/workflow.py:158
+#: src/backend/rest/workflow.py:186 src/backend/rest/workflow.py:210
+#: src/backend/rest/workflow.py:221
 msgid "UNAUTHORIZED_ROUTE"
 msgstr "You are not authorized to access this route"
 
@@ -1635,24 +1642,25 @@ msgstr "You are not authorized to access this route"
 #: src/backend/rest/positions_masks.py:97 src/backend/rest/roles.py:37
 #: src/backend/rest/roles.py:75 src/backend/rest/roles.py:94
 #: src/backend/rest/roles.py:145 src/backend/rest/smtp.py:39
-#: src/backend/rest/splitter.py:98 src/backend/rest/user.py:47
-#: src/backend/rest/user.py:70 src/backend/rest/user.py:112
-#: src/backend/rest/user.py:139 src/backend/rest/user.py:156
-#: src/backend/rest/user.py:172 src/backend/rest/user.py:200
-#: src/backend/rest/user.py:257 src/backend/rest/user.py:287
-#: src/backend/rest/user.py:324 src/backend/rest/verifier.py:58
-#: src/backend/rest/verifier.py:126 src/backend/rest/verifier.py:154
-#: src/backend/rest/verifier.py:226 src/backend/rest/verifier.py:251
-#: src/backend/rest/verifier.py:276 src/backend/rest/verifier.py:299
-#: src/backend/rest/verifier.py:322 src/backend/rest/verifier.py:344
-#: src/backend/rest/verifier.py:377 src/backend/rest/verifier.py:405
-#: src/backend/rest/verifier.py:433 src/backend/rest/verifier.py:487
-#: src/backend/rest/verifier.py:519 src/backend/rest/verifier.py:552
-#: src/backend/rest/verifier.py:599 src/backend/rest/verifier.py:621
-#: src/backend/rest/verifier.py:642 src/backend/rest/verifier.py:687
-#: src/backend/rest/workflow.py:41 src/backend/rest/workflow.py:69
-#: src/backend/rest/workflow.py:92 src/backend/rest/workflow.py:173
-#: src/backend/rest/workflow.py:198 src/backend/rest/workflow.py:228
+#: src/backend/rest/splitter.py:98 src/backend/rest/splitter.py:118
+#: src/backend/rest/user.py:47 src/backend/rest/user.py:70
+#: src/backend/rest/user.py:112 src/backend/rest/user.py:139
+#: src/backend/rest/user.py:156 src/backend/rest/user.py:172
+#: src/backend/rest/user.py:200 src/backend/rest/user.py:257
+#: src/backend/rest/user.py:287 src/backend/rest/user.py:324
+#: src/backend/rest/verifier.py:58 src/backend/rest/verifier.py:126
+#: src/backend/rest/verifier.py:154 src/backend/rest/verifier.py:226
+#: src/backend/rest/verifier.py:251 src/backend/rest/verifier.py:276
+#: src/backend/rest/verifier.py:299 src/backend/rest/verifier.py:322
+#: src/backend/rest/verifier.py:344 src/backend/rest/verifier.py:377
+#: src/backend/rest/verifier.py:405 src/backend/rest/verifier.py:433
+#: src/backend/rest/verifier.py:487 src/backend/rest/verifier.py:519
+#: src/backend/rest/verifier.py:552 src/backend/rest/verifier.py:599
+#: src/backend/rest/verifier.py:621 src/backend/rest/verifier.py:642
+#: src/backend/rest/verifier.py:687 src/backend/rest/workflow.py:41
+#: src/backend/rest/workflow.py:69 src/backend/rest/workflow.py:92
+#: src/backend/rest/workflow.py:173 src/backend/rest/workflow.py:198
+#: src/backend/rest/workflow.py:228
 msgid "BAD_REQUEST"
 msgstr "Bad request"
 
