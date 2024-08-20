@@ -989,6 +989,7 @@
 		"load_referential": "Actualiser les données d'auto-complétion",
 		"merge": "Fusionner",
 		"merge_error_form_not_match": "Erreur lors de la fusion, les formulaires associés diffèrent",
+		"merge_hint": "Tous les lots selectionnés seront fusionnés dans le lot actuel",
 		"merge_success": "Fusion des lots effectué avec succès",
 		"min_3_letter": "Au moins 3 lettres",
 		"moveToAnotherDoc": "Déplacer vers un autre document",

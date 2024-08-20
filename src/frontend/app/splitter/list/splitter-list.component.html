@@ -16,7 +16,7 @@
                 <div class="splitter-container flex flex-col">
                     <div class="grid grid-cols-3 grid-flow-row gap-0 mt-2 z-30">
                         <div class="ml-4">
-                            <mat-form-field class="mb-3 pt-3 ml-4 w-1/2" appearance="outline">
+                            <mat-form-field class="mb-1 pt-3 ml-4 w-1/2" appearance="outline">
                                 <mat-label>{{ 'SPLITTER.search_by_identifier' | translate }}</mat-label>
                                 <input matInput type="text" [(ngModel)]="this.searchText">
                             </mat-form-field>
@@ -77,7 +77,7 @@
                             </div>
                         </span>
                     </div>
-                    <div class="z-30 mt-1 select-none shadow-md" *ngIf="this.batches.length > 1 && !this.loading">
+                    <div class="z-30 select-none shadow-md" *ngIf="this.batches.length > 1 && !this.loading">
                         <span class="pl-4 bottom-3.5 relative cursor-pointer" (click)="selectOrUnselectAllBatches($event)"
                               [innerHTML]="batchesSelected ? translate.instant('VERIFIER.unselect_all') : translate.instant('VERIFIER.select_all')">
                         </span>
@@ -88,7 +88,7 @@
                                matTooltip="{{ 'GLOBAL.delete_all_checked' | translate }}"></i>
                         </span>
                     </div>
-                    <hr class="w-1/2 m-auto -mt-4 mb-4 border-green-400 relative z-30">
+                    <hr class="w-1/2 m-auto -mt-5 mb-4 border-green-400 relative z-30">
                     <div *ngIf="this.loading">
                         <app-loader></app-loader>
                     </div>
@@ -134,24 +134,27 @@
                                     <img [routerLink]="batch['locked'] && batch['lockedBy'] !== this.userService.user.username ? '/splitter/list' : '/splitter/viewer/' + currentTime + '/' + batch['id']"
                                          (click)="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? displayBatchLocked(batch['lockedBy']) : ''"
                                          class="m-auto p-4" mat-card-image [src]="batch['thumbnail']" alt="Open-Capture Splitter thumbnail">
-                                    <mat-card-header class="leading-6 relative z-10 bg-white pt-4 px-8"
+                                    <span class="px-6">
+                                        <span class="text-green-400 text-base badge badge-secondary badge-pill border-green-400"
+                                              matTooltip="{{ 'OUTPUT.documents_count' | translate }} : {{ batch['documentsCount'] }}">
+                                            {{ batch['documentsCount'] }}<i class="far fa-file-alt ml-1"></i>
+                                        </span>
+                                        <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1"
+                                              *ngIf="batch['attachmentCount'] && batch['attachmentCount'] > 0"
+                                              [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + batch['attachmentCount']">
+                                            {{ batch['attachmentCount'] }}<i class="fas fa-paperclip ml-1"></i>
+                                        </span>
+                                    </span>
+                                    <mat-card-header class="leading-3 relative z-10 bg-white pt-0 px-6"
                                                      [routerLink]="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? '/splitter/list' : '/splitter/viewer/' + currentTime + '/' + batch['id']"
                                                      (click)="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? displayBatchLocked(batch['lockedBy']) : ''">
-                                        <mat-card-title class="break-all truncate w-12/12">
-                                            <span class="inline-block w-9/12 truncate">
+                                        <mat-card-title class="break-all inline-block w-full truncate">
+                                            <span class="" [matTooltip]="batch['fileName']"
+                                                  [matTooltipDisabled]="batch['fileName']?.replace(' ', '').length <= 30">
                                                 {{ batch['fileName'] }}
                                                 <i [matTooltip]="'SPLITTER.batch_locked' | translate"
                                                    class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"
                                                    *ngIf="batch.locked"></i>
-                                            </span>
-                                            <span class="float-right text-green-400 text-base badge badge-secondary badge-pill pl-1"
-                                                  matTooltip="{{ 'OUTPUT.documents_count' | translate }} : {{ batch['documentsCount'] }}">
-                                                {{ batch['documentsCount'] }}<i class="far fa-file-alt ml-1"></i>
-                                            </span>
-                                            <span class="float-right text-green-400 text-base badge badge-secondary badge-pill border-r border-green-400 pr-1"
-                                                  *ngIf="batch['attachmentCount'] && batch['attachmentCount'] > 0"
-                                                  [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + batch['attachmentCount']">
-                                                {{ batch['attachmentCount'] }}<i class="fas fa-paperclip ml-1"></i>
                                             </span>
                                         </mat-card-title>
                                         <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">
@@ -160,11 +163,12 @@
                                             <strong>{{ 'SPLITTER.form_label' | translate }}</strong> : {{ batch['formLabel'] }}<br>
                                         </mat-card-subtitle>
                                     </mat-card-header>
-                                    <mat-card-actions>
+                                    <mat-card-actions class="min-h-0 px-6">
                                         <i *ngIf="this.totalChecked >= 2 && isCheckboxChecked(batch['id'])"
-                                           class="fa-solid fa-object-group cursor-pointer text-green-400 relative float-right"
+                                           [matTooltip]="'SPLITTER.merge_hint' | translate"
+                                           class="fa-solid fa-object-group cursor-pointer text-green-400"
                                            (click)="$event.stopPropagation();mergeAllConfirmDialog(batch['id'])">
-                                            <span class="font-medium mat-typography float-left mr-3 relative bottom-1">
+                                            <span class="font-medium mat-typography ml-1">
                                                 {{ 'SPLITTER.merge' | translate }} {{ this.totalChecked }} {{ 'SPLITTER.batches' | translate }}
                                             </span>
                                         </i>
