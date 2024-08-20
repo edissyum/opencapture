@@ -121,6 +121,8 @@ def check_extensions_mime(files, document_type='document'):
     for file in files:
         if isinstance(file, dict):
             _f = FileStorage(stream=open(file['file'], 'rb'), filename=file['filename'])
+        elif isinstance(file, FileStorage):
+            _f = file
         else:
             _f = files[file]
 

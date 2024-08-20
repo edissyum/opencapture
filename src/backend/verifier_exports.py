@@ -433,7 +433,7 @@ def export_pdf(data, log, document_info, compress_type, ocrise):
             pdf_filename, pdf_extension = os.path.splitext(filename)
             zip_filename =  pdf_filename + '_attachments.zip'
             with ZipFile(folder_out + '/' + zip_filename, 'w') as zip_file:
-                for attachment in attachments_list[0]:
+                for attachment in attachments_list:
                     if attachment:
                         if os.path.exists(attachment['path']):
                             zip_file.write(attachment['path'], attachment['filename'])
